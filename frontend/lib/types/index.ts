@@ -108,18 +108,6 @@ export interface Review {
   createdAt: string
 }
 
-export interface BlogPost {
-  id: string
-  slug: string
-  title: string
-  excerpt?: string
-  content?: string
-  coverImage?: string
-  author?: string
-  publishedAt: string
-  tags: string[]
-  readTime?: number
-}
 
 // ─── Cart (client-side Zustand, synced with API on order) ─────────────────
 
@@ -215,22 +203,6 @@ export interface Order {
   updatedAt: string
 }
 
-// ─── Vehicles (configurator) ──────────────────────────────────────────────
-
-export interface VehicleModel {
-  id: string
-  name: string
-  years: number[]
-  engines: string[]
-}
-
-export interface VehicleMake {
-  id: string
-  name: string
-  logo?: string
-  type: VehicleType[]
-  models: VehicleModel[]
-}
 
 // ─── API Response wrappers ────────────────────────────────────────────────
 

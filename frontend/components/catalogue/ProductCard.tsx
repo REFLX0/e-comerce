@@ -2,11 +2,9 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
-import { Heart, Scale, ShoppingCart } from 'lucide-react'
+import { ShoppingCart } from 'lucide-react'
 import type { Product } from '@/lib/types'
 import { useCartStore } from '@/lib/store/cart.store'
-import { useWishlistStore } from '@/lib/store/wishlist.store'
-import { useComparatorStore } from '@/lib/store/comparator.store'
 import { PriceDisplay } from '../common/PriceDisplay'
 import { RatingStars } from '../common/RatingStars'
 import { toast } from 'sonner'
@@ -18,11 +16,6 @@ interface Props {
 
 export function ProductCard({ product }: Props) {
   const { addItem } = useCartStore()
-  const { items: wishlistItems, toggle: toggleWishlist } = useWishlistStore()
-  const { items: compareItems, toggle: toggleCompare } = useComparatorStore()
-
-  const isFavorite = wishlistItems.some((p) => p.id === product.id)
-  const isCompared = compareItems.some((p) => p.id === product.id)
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault()
@@ -31,21 +24,6 @@ export function ProductCard({ product }: Props) {
       addItem(product, product.variants[0], 1)
       toast.success('Produit ajouté au panier')
     }
-  }
-
-  const handleToggleWishlist = (e: React.MouseEvent) => {
-    e.preventDefault()
-    // For now, assume unauthenticated for token.
-    toggleWishlist(product)
-    if (!isFavorite) toast.success('Ajouté aux favoris')
-    else toast.info('Retiré des favoris')
-  }
-
-  const handleToggleCompare = (e: React.MouseEvent) => {
-    e.preventDefault()
-    toggleCompare(product)
-    if (!isCompared) toast.success('Ajouté au comparateur')
-    else toast.info('Retiré du comparateur')
   }
 
   const defaultVariant = product.variants[0]
@@ -65,24 +43,6 @@ export function ProductCard({ product }: Props) {
             NOUVEAU
           </span>
         )}
-      </div>
-
-      {/* Actions Hover */}
-      <div className="absolute top-4 right-4 z-10 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity translate-x-4 group-hover:translate-x-0 duration-300">
-        <button
-          onClick={handleToggleWishlist}
-          className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-soft hover:bg-brand-primary hover:text-white transition-colors text-gray-400"
-          title="Favoris"
-        >
-          <Heart size={20} className={isFavorite ? 'fill-red-500 text-red-500' : ''} />
-        </button>
-        <button
-          onClick={handleToggleCompare}
-          className={`w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-soft hover:bg-brand-primary hover:text-white transition-colors ${isCompared ? 'text-brand-primary' : 'text-gray-400'}`}
-          title="Comparer"
-        >
-          <Scale size={20} />
-        </button>
       </div>
 
       {/* Image */}

@@ -4,7 +4,7 @@ import { useAuthStore } from '@/lib/store/auth.store'
 import { useRouter, usePathname } from 'next/navigation'
 import { useEffect } from 'react'
 import Link from 'next/link'
-import { User, Package, Heart, LogOut } from 'lucide-react'
+import { User, Package, LogOut } from 'lucide-react'
 
 export default function AccountLayout({
   children,
@@ -31,7 +31,6 @@ export default function AccountLayout({
   const menuItems = [
     { href: '/compte', icon: <User size={20} />, label: 'Mon Profil' },
     { href: '/compte/commandes', icon: <Package size={20} />, label: 'Mes Commandes' },
-    { href: '/compte/favoris', icon: <Heart size={20} />, label: 'Mes Favoris' },
   ]
 
   return (

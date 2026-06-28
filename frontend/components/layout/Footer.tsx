@@ -1,20 +1,19 @@
 import Link from 'next/link'
-import { Share2, Phone, Mail, MapPin, CreditCard, Truck } from 'lucide-react'
+import { Phone, Mail, MapPin, Share2 } from 'lucide-react'
 
 export function Footer() {
   return (
     <footer className="bg-brand-primary-dark text-gray-300 pt-16 pb-8 mt-auto">
       <div className="section-padding">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12 border-b border-white/10 pb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 mb-12 border-b border-white/10 pb-12">
           {/* Informations */}
           <div>
             <h3 className="text-white font-display font-semibold text-lg mb-6">Informations</h3>
             <ul className="space-y-3 text-sm">
-              <li><Link href="/qui-sommes-nous" className="hover:text-brand-accent transition-colors">Qui sommes-nous ?</Link></li>
-              <li><Link href="/politique-de-confidentialite" className="hover:text-brand-accent transition-colors">Politique de confidentialité</Link></li>
-              <li><Link href="/conditions-de-vente" className="hover:text-brand-accent transition-colors">Conditions de vente</Link></li>
-              <li><Link href="/conditions-utilisation" className="hover:text-brand-accent transition-colors">Conditions d'utilisation</Link></li>
-              <li><Link href="/livraison-et-retour" className="hover:text-brand-accent transition-colors">Livraison et retour</Link></li>
+              <li><Link href="/a-propos" className="hover:text-brand-accent transition-colors">À propos</Link></li>
+              <li><Link href="/cgv" className="hover:text-brand-accent transition-colors">Conditions générales de vente</Link></li>
+              <li><Link href="/mentions-legales" className="hover:text-brand-accent transition-colors">Mentions légales</Link></li>
+              <li><Link href="/faq" className="hover:text-brand-accent transition-colors">FAQ</Link></li>
               <li><Link href="/contact" className="hover:text-brand-accent transition-colors">Contactez-nous</Link></li>
             </ul>
           </div>
@@ -23,25 +22,12 @@ export function Footer() {
           <div>
             <h3 className="text-white font-display font-semibold text-lg mb-6">Compte</h3>
             <ul className="space-y-3 text-sm">
-              <li><Link href="/mon-compte" className="hover:text-brand-accent transition-colors">Mon compte</Link></li>
-              <li><Link href="/mes-commandes" className="hover:text-brand-accent transition-colors">Mes commandes</Link></li>
-              <li><Link href="/favoris" className="hover:text-brand-accent transition-colors">Liste de mes favoris</Link></li>
-              <li><Link href="/comparer" className="hover:text-brand-accent transition-colors">Comparaison de produits</Link></li>
-              <li><Link href="/logout" className="hover:text-brand-accent transition-colors">Se déconnecter</Link></li>
+              <li><Link href="/compte" className="hover:text-brand-accent transition-colors">Mon compte</Link></li>
+              <li><Link href="/compte/commandes" className="hover:text-brand-accent transition-colors">Mes commandes</Link></li>
             </ul>
           </div>
 
-          {/* Boutique */}
-          <div>
-            <h3 className="text-white font-display font-semibold text-lg mb-6">Boutique</h3>
-            <ul className="space-y-3 text-sm">
-              <li><Link href="/nouveaux-produits" className="hover:text-brand-accent transition-colors">Nouveaux produits</Link></li>
-              <li><Link href="/meilleures-ventes" className="hover:text-brand-accent transition-colors">Meilleures ventes</Link></li>
-              <li><Link href="/promotions" className="hover:text-brand-accent transition-colors">Nos promotions</Link></li>
-            </ul>
-          </div>
-
-          {/* Contact (Besoin d'aide) */}
+          {/* Contact */}
           <div className="space-y-6">
             <Link href="/" className="inline-block">
               <span className="font-display font-bold text-3xl tracking-tight text-white">

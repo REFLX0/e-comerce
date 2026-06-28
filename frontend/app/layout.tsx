@@ -5,7 +5,6 @@ import { Providers } from '@/components/Providers'
 import { Toaster } from 'sonner'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
-import { ComparatorBar } from '@/components/layout/ComparatorBar'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -45,7 +44,6 @@ export default function RootLayout({
             {children}
           </main>
           <Footer />
-          <ComparatorBar />
           <Toaster position="bottom-right" richColors />
         </Providers>
       </body>

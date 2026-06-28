@@ -95,29 +95,6 @@ export function MobileMenu() {
             )}
           </div>
 
-          <div className="pt-4 border-t border-gray-100 space-y-4">
-            <Link
-              href="/promotions"
-              className="block text-lg font-medium text-brand-accent hover:text-brand-accent-hover"
-              onClick={() => setOpen(false)}
-            >
-              Promotions
-            </Link>
-            <Link
-              href="/trouver-mon-huile"
-              className="block text-lg font-medium text-gray-700 hover:text-brand-primary"
-              onClick={() => setOpen(false)}
-            >
-              Trouver mon huile
-            </Link>
-            <Link
-              href="/blog"
-              className="block text-lg font-medium text-gray-700 hover:text-brand-primary"
-              onClick={() => setOpen(false)}
-            >
-              Blog & Conseils
-            </Link>
-          </div>
         </div>
       </SheetContent>
     </Sheet>

@@ -2,11 +2,10 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { Search, Heart, User, ChevronDown } from 'lucide-react'
+import { Search, User, ChevronDown } from 'lucide-react'
 import { MiniCart } from './MiniCart'
 import { MobileMenu } from './MobileMenu'
 import { useAuthStore } from '@/lib/store/auth.store'
-import { useWishlistStore } from '@/lib/store/wishlist.store'
 import { useQuery } from '@tanstack/react-query'
 import { categoriesApi } from '@/lib/api/categories'
 import Image from 'next/image'
@@ -15,7 +14,6 @@ export function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isHoveringMenu, setIsHoveringMenu] = useState(false)
   const { isAuthenticated, user } = useAuthStore()
-  const wishlistItems = useWishlistStore((state) => state.items)
 
   const { data: categories } = useQuery({
     queryKey: ['categories-tree'],
@@ -47,7 +45,6 @@ export function Header() {
           <div className="hidden md:flex items-center gap-4">
             <Link href="/contact" className="hover:text-brand-accent transition-colors">Contact</Link>
             <Link href="/faq" className="hover:text-brand-accent transition-colors">FAQ</Link>
-            <Link href="/contact?service=professionel" className="hover:text-brand-accent transition-colors text-brand-accent font-semibold">Vous êtes professionnel ?</Link>
           </div>
         </div>
       </div>
@@ -109,11 +106,11 @@ export function Header() {
               )}
             </div>
 
-            <Link href="/promotions" className="text-sm font-medium text-brand-accent hover:text-brand-accent-hover transition-colors">
-              Promotions
+            <Link href="/a-propos" className="text-sm font-medium hover:text-brand-primary transition-colors">
+              À propos
             </Link>
-            <Link href="/trouver-mon-huile" className="text-sm font-medium hover:text-brand-primary transition-colors">
-              Configurateur
+            <Link href="/contact" className="text-sm font-medium hover:text-brand-primary transition-colors">
+              Contact
             </Link>
           </nav>
 
@@ -144,15 +141,6 @@ export function Header() {
               <User size={24} />
               {isAuthenticated && (
                 <span className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></span>
-              )}
-            </Link>
-
-            <Link href="/compte/favoris" className="p-2 text-gray-600 hover:text-brand-primary relative" aria-label="Favoris">
-              <Heart size={24} />
-              {wishlistItems.length > 0 && (
-                <span className="absolute top-0 right-0 inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-brand-accent rounded-full">
-                  {wishlistItems.length}
-                </span>
               )}
             </Link>
 

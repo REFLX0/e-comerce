@@ -7,9 +7,7 @@ import { StockIndicator } from '../common/StockIndicator'
 import { PriceDisplay } from '../common/PriceDisplay'
 import { VariantSelector } from './VariantSelector'
 import { AddToCartButton } from './AddToCartButton'
-import { Heart, Scale, Share2, Truck } from 'lucide-react'
-import { useWishlistStore } from '@/lib/store/wishlist.store'
-import { useComparatorStore } from '@/lib/store/comparator.store'
+import { Share2, Truck } from 'lucide-react'
 import { toast } from 'sonner'
 import Link from 'next/link'
 
@@ -19,13 +17,8 @@ interface Props {
 
 export function ProductInfo({ product }: Props) {
   const [selectedVariant, setSelectedVariant] = useState(product.variants[0])
-  const { items: wishlistItems, toggle: toggleWishlist } = useWishlistStore()
-  const { items: compareItems, toggle: toggleCompare } = useComparatorStore()
 
   if (!selectedVariant) return null
-
-  const isFavorite = wishlistItems.some((p) => p.id === product.id)
-  const isCompared = compareItems.some((p) => p.id === product.id)
 
   const handleShare = () => {
     if (navigator.share) {
@@ -123,20 +116,6 @@ export function ProductInfo({ product }: Props) {
 
       {/* Quick Actions */}
       <div className="flex items-center gap-6 border-t border-brand-surface-dark pt-6 mt-auto">
-        <button
-          onClick={() => toggleWishlist(product)}
-          className={`flex items-center gap-2 text-sm font-medium transition-colors ${isFavorite ? 'text-red-500' : 'text-gray-500 hover:text-brand-primary'}`}
-        >
-          <Heart size={20} className={isFavorite ? 'fill-red-500' : ''} />
-          {isFavorite ? 'Retirer des favoris' : 'Ajouter aux favoris'}
-        </button>
-        <button
-          onClick={() => toggleCompare(product)}
-          className={`flex items-center gap-2 text-sm font-medium transition-colors ${isCompared ? 'text-brand-primary' : 'text-gray-500 hover:text-brand-primary'}`}
-        >
-          <Scale size={20} />
-          Comparer
-        </button>
         <button
           onClick={handleShare}
           className="flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-brand-primary transition-colors ml-auto"
