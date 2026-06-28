@@ -56,9 +56,8 @@ export default function BlogPage() {
           {data && data.length === 0 && (
             <EmptyState
               title="Aucun article pour le moment"
-              description="Nos experts préparent de nouveaux contenus. Revenez bientôt !"
-              actionLabel="Retour à l'accueil"
-              actionHref="/"
+              message="Nos experts préparent de nouveaux contenus. Revenez bientôt !"
+              action={{ label: "Retour à l'accueil", href: "/" }}
             />
           )}
 

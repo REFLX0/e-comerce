@@ -112,11 +112,9 @@ export default function BrandPage() {
 
               <div className="flex items-center gap-3 w-full sm:w-auto">
                 <Sheet open={isMobileFiltersOpen} onOpenChange={setIsMobileFiltersOpen}>
-                  <SheetTrigger asChild>
-                    <button className="lg:hidden flex items-center justify-center gap-2 btn-secondary py-2 flex-1 sm:flex-none">
-                      <Filter size={18} />
-                      Filtres
-                    </button>
+                  <SheetTrigger render={<button className="lg:hidden flex items-center justify-center gap-2 btn-secondary py-2 flex-1 sm:flex-none" />}>
+                    <Filter size={18} />
+                    Filtres
                   </SheetTrigger>
                   <SheetContent side="left" className="w-full sm:max-w-sm overflow-y-auto bg-brand-surface p-0">
                     <div className="p-6">

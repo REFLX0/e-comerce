@@ -3,6 +3,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { productsApi } from '@/lib/api/products'
 import { categoriesApi } from '@/lib/api/categories'
+import type { ProductFilters } from '@/lib/types'
 import { FilterSidebar } from '@/components/catalogue/FilterSidebar'
 import { ActiveFilters } from '@/components/catalogue/ActiveFilters'
 import { SortDropdown } from '@/components/catalogue/SortDropdown'
