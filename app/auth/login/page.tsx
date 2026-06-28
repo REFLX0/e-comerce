@@ -31,11 +31,11 @@ export default function LoginPage() {
 
   const onSubmit = async (data: LoginFormData) => {
     try {
-      await login(data.email, data.password)
+      await login({ email: data.email, password: data.password })
       toast.success('Connexion réussie')
       router.push('/compte')
-    } catch (error: any) {
-      toast.error(error.message || 'Email ou mot de passe incorrect')
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Email ou mot de passe incorrect')
     }
   }
 
@@ -96,7 +96,7 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full btn-primary py-4 flex items-center justify-center gap-2 text-lg mt-2"
+            className="w-full btn-primary py-4 flex items-center justify-center gap-2 text-lg mt-2 disabled:opacity-50"
           >
             {isLoading ? 'Connexion...' : 'Se connecter'}
             {!isLoading && <ArrowRight size={20} />}

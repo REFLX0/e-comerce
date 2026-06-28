@@ -109,7 +109,7 @@ export function CartSummary() {
             </div>
             <div className="flex justify-between text-gray-600 text-sm">
               <span>TVA (19%)</span>
-              <span>{formatPrice(totalTTC - subtotalHT)}</span>
+              <span>{formatPrice(totalTTC - subtotalHT - shippingCost)}</span>
             </div>
             <div className="flex justify-between text-gray-600 text-sm">
               <span>Frais de livraison</span>
@@ -122,14 +122,14 @@ export function CartSummary() {
             
             {shippingCost > 0 && (
               <div className="bg-brand-primary/5 text-brand-primary p-3 rounded-lg text-xs">
-                Plus que {formatPrice(100 - totalTTC)} pour profiter de la livraison gratuite !
+                Plus que {formatPrice(100 - subtotalHT)} pour profiter de la livraison gratuite !
               </div>
             )}
             
             <div className="pt-4 border-t border-gray-100 flex justify-between items-center">
               <span className="font-bold text-brand-primary">Total TTC</span>
               <span className="font-display font-bold text-2xl text-brand-accent">
-                {formatPrice(totalTTC + shippingCost)}
+                {formatPrice(totalTTC)}
               </span>
             </div>
           </div>

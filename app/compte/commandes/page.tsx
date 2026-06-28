@@ -4,12 +4,18 @@ import { useQuery } from '@tanstack/react-query'
 import { ordersApi } from '@/lib/api/orders'
 import { formatPrice, formatDate } from '@/lib/utils/format'
 import { Package, ExternalLink } from 'lucide-react'
+import { useAuthStore } from '@/lib/store/auth.store'
 
 export default function AccountOrdersPage() {
-  const { data: orders, isLoading } = useQuery({
-    queryKey: ['my-orders'],
-    queryFn: ordersApi.getMyOrders,
+  const token = useAuthStore(state => state.token)
+
+  const { data, isLoading } = useQuery({
+    queryKey: ['my-orders', token],
+    queryFn: () => ordersApi.getAll(token!),
+    enabled: !!token,
   })
+
+  const orders = data?.data || []
 
   return (
     <div>
@@ -23,7 +29,7 @@ export default function AccountOrdersPage() {
             <div key={i} className="h-24 bg-brand-surface rounded-xl animate-pulse" />
           ))}
         </div>
-      ) : orders && orders.length > 0 ? (
+      ) : orders.length > 0 ? (
         <div className="space-y-6">
           {orders.map((order) => (
             <div key={order.id} className="border border-brand-surface-dark rounded-xl overflow-hidden hover:shadow-md transition-shadow">
@@ -34,7 +40,7 @@ export default function AccountOrdersPage() {
                 </div>
                 <div>
                   <div className="text-xs text-gray-500 uppercase tracking-wider mb-1">Total</div>
-                  <div className="font-semibold text-brand-primary">{formatPrice(order.totalAmount)}</div>
+                  <div className="font-semibold text-brand-primary">{formatPrice(order.totalTTC)}</div>
                 </div>
                 <div>
                   <div className="text-xs text-gray-500 uppercase tracking-wider mb-1">N° Commande</div>

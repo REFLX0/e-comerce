@@ -2,7 +2,6 @@
 
 import { useQuery } from '@tanstack/react-query'
 import { productsApi } from '@/lib/api/products'
-import { categoriesApi } from '@/lib/api/categories'
 import { FilterSidebar } from '@/components/catalogue/FilterSidebar'
 import { ActiveFilters } from '@/components/catalogue/ActiveFilters'
 import { SortDropdown } from '@/components/catalogue/SortDropdown'
@@ -13,42 +12,41 @@ import { ProductGridSkeleton } from '@/components/common/Skeleton'
 import { ErrorState } from '@/components/common/ErrorState'
 import { EmptyState } from '@/components/common/EmptyState'
 import { useSearchParams } from 'next/navigation'
-import { Filter } from 'lucide-react'
+import { Filter, Search } from 'lucide-react'
 import { useState } from 'react'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
+import type { ProductFilters } from '@/lib/types'
 
-export default function CategoryPage({ params }: { params: { slug: string } }) {
+export default function SearchPage() {
   const searchParams = useSearchParams()
+  const q = searchParams.get('q') || ''
   const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false)
 
-  // Construct filters
-  const filters: Record<string, string | number | boolean | undefined> = {}
+  // Construct filters object from URLSearchParams
+  const filters: ProductFilters = { search: q }
   searchParams.forEach((value, key) => {
-    if (value === 'true') filters[key] = true
-    else if (value === 'false') filters[key] = false
-    else if (!isNaN(Number(value)) && key.includes('price')) filters[key] = Number(value)
-    else filters[key] = value
+    if (key === 'q') return
+    const k = key as keyof ProductFilters
+    if (value === 'true') (filters as Record<string, unknown>)[k] = true
+    else if (value === 'false') (filters as Record<string, unknown>)[k] = false
+    else if (!isNaN(Number(value)) && key.includes('price')) (filters as Record<string, unknown>)[k] = Number(value)
+    else (filters as Record<string, unknown>)[k] = value
   })
+
+  // Ensure page is set
   filters.page = Number(filters.page) || 1
 
-  // Fetch Category Info
-  const { data: category, isLoading: catLoading, isError: catError } = useQuery({
-    queryKey: ['category', params.slug],
-    queryFn: () => categoriesApi.getBySlug(params.slug),
-  })
-
-  // Fetch Products
   const { data, isLoading, isError, refetch } = useQuery({
-    queryKey: ['products-by-category', params.slug, filters],
-    queryFn: () => productsApi.getByCategory(params.slug as string, filters as ProductFilters),
+    queryKey: ['products', 'search', filters],
+    queryFn: () => productsApi.getAll(filters),
+    enabled: !!q || Object.keys(filters).length > 1, // Don't fetch if completely empty
   })
 
   return (
     <div className="section-padding py-8">
       <Breadcrumb
         items={[
-          { label: 'Catalogue', href: '/catalogue' },
-          { label: category?.name || 'Chargement...' },
+          { label: 'Recherche' },
         ]}
       />
 
@@ -60,34 +58,23 @@ export default function CategoryPage({ params }: { params: { slug: string } }) {
 
         {/* Main Content */}
         <div className="flex-1 min-w-0">
-          {catLoading ? (
-            <div className="h-10 bg-brand-surface-dark rounded w-1/3 mb-6 animate-pulse" />
-          ) : catError ? (
-            <div className="mb-6 text-red-500">Impossible de charger les informations de la catégorie.</div>
-          ) : category && (
-            <div className="mb-6">
-              <h1 className="text-2xl md:text-3xl font-display font-bold text-brand-primary">
-                {category.name}
-              </h1>
-              {category.description && (
-                <p className="text-gray-500 mt-2 max-w-3xl">
-                  {category.description}
-                </p>
-              )}
-            </div>
-          )}
-
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-            <p className="text-gray-500">
-              {data?.total || 0} produits trouvés
-            </p>
+            <div>
+              <h1 className="text-2xl md:text-3xl font-display font-bold text-brand-primary">
+                Résultats pour "{q}"
+              </h1>
+              <p className="text-gray-500 mt-1">
+                {data?.total || 0} résultats trouvés
+              </p>
+            </div>
 
             <div className="flex items-center gap-3 w-full sm:w-auto">
-              {/* Mobile Filters Trigger */}
               <Sheet open={isMobileFiltersOpen} onOpenChange={setIsMobileFiltersOpen}>
-                <SheetTrigger render={<button className="lg:hidden flex items-center justify-center gap-2 btn-secondary py-2 flex-1 sm:flex-none" />}>
-                  <Filter size={18} />
-                  Filtres
+                <SheetTrigger asChild>
+                  <button className="lg:hidden flex items-center justify-center gap-2 btn-secondary py-2 flex-1 sm:flex-none">
+                    <Filter size={18} />
+                    Filtres
+                  </button>
                 </SheetTrigger>
                 <SheetContent side="left" className="w-full sm:max-w-sm overflow-y-auto bg-brand-surface p-0">
                   <div className="p-6">
@@ -103,7 +90,13 @@ export default function CategoryPage({ params }: { params: { slug: string } }) {
 
           <ActiveFilters />
 
-          {isLoading ? (
+          {!q && Object.keys(filters).length <= 1 ? (
+             <div className="text-center py-20 bg-brand-surface rounded-2xl border border-brand-surface-dark">
+                <Search className="mx-auto h-12 w-12 text-gray-400 mb-4" />
+                <h3 className="text-lg font-bold text-brand-primary">Aucune recherche</h3>
+                <p className="text-gray-500 mt-2">Veuillez entrer un terme de recherche.</p>
+             </div>
+          ) : isLoading ? (
             <ProductGridSkeleton count={12} />
           ) : isError ? (
             <ErrorState onRetry={() => refetch()} />
@@ -114,8 +107,8 @@ export default function CategoryPage({ params }: { params: { slug: string } }) {
             </>
           ) : (
             <EmptyState
-              message="Aucun produit ne correspond à vos critères dans cette catégorie."
-              action={{ label: "Effacer les filtres", onClick: () => window.location.href = `/categorie/${params.slug}` }}
+              message={`Aucun produit ne correspond à la recherche "${q}".`}
+              action={{ label: "Effacer les filtres", onClick: () => window.location.href = `/recherche?q=${q}` }}
             />
           )}
         </div>

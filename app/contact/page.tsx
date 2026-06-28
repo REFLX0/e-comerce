@@ -4,18 +4,44 @@ import { Breadcrumb } from '@/components/common/Breadcrumb'
 import { Phone, Mail, MapPin, Clock, Send } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'sonner'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import * as z from 'zod'
+
+const contactSchema = z.object({
+  name: z.string().min(2, 'Le nom doit contenir au moins 2 caractères'),
+  email: z.string().email('Email invalide'),
+  phone: z.string().optional(),
+  subject: z.string().min(3, 'Sujet trop court'),
+  message: z.string().min(10, 'Le message doit contenir au moins 10 caractères'),
+})
+
+type ContactFormData = z.infer<typeof contactSchema>
 
 export default function ContactPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<ContactFormData>({
+    resolver: zodResolver(contactSchema),
+  })
+
+  const onSubmit = async (data: ContactFormData) => {
     setIsSubmitting(true)
-    // Simulate form submission
-    await new Promise((r) => setTimeout(r, 1000))
-    toast.success('Message envoyé avec succès ! Nous vous répondrons dans les plus brefs délais.')
-    setIsSubmitting(false)
-    ;(e.target as HTMLFormElement).reset()
+    try {
+      // Simulate API call
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+      toast.success('Message envoyé avec succès ! Nous vous répondrons dans les plus brefs délais.')
+      reset()
+    } catch (error) {
+      toast.error('Une erreur est survenue.')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -58,28 +84,71 @@ export default function ContactPage() {
         <div className="mt-12 max-w-2xl mx-auto">
           <div className="bg-white rounded-2xl p-8 shadow-soft border border-gray-100">
             <h2 className="font-display font-bold text-2xl text-brand-primary mb-6">Envoyez-nous un message</h2>
-            <form onSubmit={handleSubmit} className="space-y-5">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div>
                   <label htmlFor="contact-name" className="block text-sm font-medium text-gray-700 mb-1">Nom complet</label>
-                  <input id="contact-name" type="text" required className="w-full rounded-xl border border-gray-300 px-4 py-3 text-sm focus:ring-2 focus:ring-brand-accent focus:border-transparent outline-none transition-all" placeholder="Votre nom" />
+                  <input 
+                    id="contact-name" 
+                    {...register('name')}
+                    className={`w-full rounded-xl border px-4 py-3 text-sm focus:ring-2 focus:ring-brand-accent outline-none transition-all ${
+                      errors.name ? 'border-red-500 focus:border-red-500' : 'border-gray-300 focus:border-transparent'
+                    }`} 
+                    placeholder="Votre nom" 
+                  />
+                  {errors.name && <span className="text-xs text-red-500 mt-1 block">{errors.name.message}</span>}
                 </div>
                 <div>
                   <label htmlFor="contact-email" className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                  <input id="contact-email" type="email" required className="w-full rounded-xl border border-gray-300 px-4 py-3 text-sm focus:ring-2 focus:ring-brand-accent focus:border-transparent outline-none transition-all" placeholder="votre@email.com" />
+                  <input 
+                    id="contact-email" 
+                    type="email" 
+                    {...register('email')}
+                    className={`w-full rounded-xl border px-4 py-3 text-sm focus:ring-2 focus:ring-brand-accent outline-none transition-all ${
+                      errors.email ? 'border-red-500 focus:border-red-500' : 'border-gray-300 focus:border-transparent'
+                    }`} 
+                    placeholder="votre@email.com" 
+                  />
+                  {errors.email && <span className="text-xs text-red-500 mt-1 block">{errors.email.message}</span>}
                 </div>
               </div>
               <div>
                 <label htmlFor="contact-phone" className="block text-sm font-medium text-gray-700 mb-1">Téléphone</label>
-                <input id="contact-phone" type="tel" className="w-full rounded-xl border border-gray-300 px-4 py-3 text-sm focus:ring-2 focus:ring-brand-accent focus:border-transparent outline-none transition-all" placeholder="+216 XX XXX XXX" />
+                <input 
+                  id="contact-phone" 
+                  type="tel" 
+                  {...register('phone')}
+                  className={`w-full rounded-xl border px-4 py-3 text-sm focus:ring-2 focus:ring-brand-accent outline-none transition-all ${
+                    errors.phone ? 'border-red-500 focus:border-red-500' : 'border-gray-300 focus:border-transparent'
+                  }`} 
+                  placeholder="+216 XX XXX XXX" 
+                />
+                {errors.phone && <span className="text-xs text-red-500 mt-1 block">{errors.phone.message}</span>}
               </div>
               <div>
                 <label htmlFor="contact-subject" className="block text-sm font-medium text-gray-700 mb-1">Sujet</label>
-                <input id="contact-subject" type="text" required className="w-full rounded-xl border border-gray-300 px-4 py-3 text-sm focus:ring-2 focus:ring-brand-accent focus:border-transparent outline-none transition-all" placeholder="Objet de votre message" />
+                <input 
+                  id="contact-subject" 
+                  {...register('subject')}
+                  className={`w-full rounded-xl border px-4 py-3 text-sm focus:ring-2 focus:ring-brand-accent outline-none transition-all ${
+                    errors.subject ? 'border-red-500 focus:border-red-500' : 'border-gray-300 focus:border-transparent'
+                  }`} 
+                  placeholder="Objet de votre message" 
+                />
+                {errors.subject && <span className="text-xs text-red-500 mt-1 block">{errors.subject.message}</span>}
               </div>
               <div>
                 <label htmlFor="contact-message" className="block text-sm font-medium text-gray-700 mb-1">Message</label>
-                <textarea id="contact-message" rows={5} required className="w-full rounded-xl border border-gray-300 px-4 py-3 text-sm focus:ring-2 focus:ring-brand-accent focus:border-transparent outline-none transition-all resize-none" placeholder="Votre message..." />
+                <textarea 
+                  id="contact-message" 
+                  rows={5} 
+                  {...register('message')}
+                  className={`w-full rounded-xl border px-4 py-3 text-sm focus:ring-2 focus:ring-brand-accent outline-none transition-all resize-none ${
+                    errors.message ? 'border-red-500 focus:border-red-500' : 'border-gray-300 focus:border-transparent'
+                  }`} 
+                  placeholder="Votre message..." 
+                />
+                {errors.message && <span className="text-xs text-red-500 mt-1 block">{errors.message.message}</span>}
               </div>
               <button
                 type="submit"

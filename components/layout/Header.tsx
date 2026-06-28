@@ -123,21 +123,23 @@ export function Header() {
               type="text" 
               placeholder="Rechercher une huile, une marque, une viscosité..." 
               className="w-full bg-brand-surface border-transparent focus:bg-white focus:border-brand-primary/30 rounded-full py-2.5 pl-5 pr-12 text-sm transition-all outline-none"
+              aria-label="Recherche"
             />
-            <button className="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-gray-400 hover:text-brand-primary">
+            <button className="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-gray-400 hover:text-brand-primary" aria-label="Lancer la recherche">
               <Search size={18} />
             </button>
           </div>
 
           {/* Icons */}
           <div className="flex items-center gap-1 sm:gap-4 shrink-0">
-            <button className="lg:hidden p-2 text-gray-600 hover:text-brand-primary">
+            <button className="lg:hidden p-2 text-gray-600 hover:text-brand-primary" aria-label="Rechercher">
               <Search size={24} />
             </button>
             
             <Link 
               href={isAuthenticated ? "/compte" : "/auth/login"} 
               className="p-2 text-gray-600 hover:text-brand-primary hidden sm:block relative group"
+              aria-label="Mon compte"
             >
               <User size={24} />
               {isAuthenticated && (
@@ -145,7 +147,7 @@ export function Header() {
               )}
             </Link>
 
-            <Link href="/compte/favoris" className="p-2 text-gray-600 hover:text-brand-primary relative">
+            <Link href="/compte/favoris" className="p-2 text-gray-600 hover:text-brand-primary relative" aria-label="Favoris">
               <Heart size={24} />
               {wishlistItems.length > 0 && (
                 <span className="absolute top-0 right-0 inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-brand-accent rounded-full">

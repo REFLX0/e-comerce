@@ -34,7 +34,7 @@ export default function CataloguePage() {
 
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ['products', filters],
-    queryFn: () => productsApi.getAll(filters as any),
+    queryFn: () => productsApi.getAll(filters as import('@/lib/types').ProductFilters),
   })
 
   return (

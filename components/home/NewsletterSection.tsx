@@ -4,22 +4,36 @@ import { useState } from 'react'
 import { newsletterApi } from '@/lib/api/newsletter'
 import { toast } from 'sonner'
 import { Mail, Send } from 'lucide-react'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import * as z from 'zod'
+
+const newsletterSchema = z.object({
+  email: z.string().email('Email invalide'),
+})
+
+type NewsletterFormData = z.infer<typeof newsletterSchema>
 
 export function NewsletterSection() {
-  const [email, setEmail] = useState('')
   const [isLoading, setIsLoading] = useState(false)
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!email) return
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<NewsletterFormData>({
+    resolver: zodResolver(newsletterSchema),
+  })
 
+  const onSubmit = async (data: NewsletterFormData) => {
     setIsLoading(true)
     try {
-      await newsletterApi.subscribe(email)
+      await newsletterApi.subscribe(data.email)
       toast.success('Merci pour votre inscription à notre newsletter !')
-      setEmail('')
-    } catch (error: any) {
-      toast.error(error.message || 'Une erreur est survenue.')
+      reset()
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Une erreur est survenue.')
     } finally {
       setIsLoading(false)
     }
@@ -42,19 +56,19 @@ export function NewsletterSection() {
           </div>
           
           <div className="w-full md:w-[400px] shrink-0">
-            <form onSubmit={handleSubmit} className="relative">
+            <form onSubmit={handleSubmit(onSubmit)} className="relative">
               <input
                 type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                {...register('email')}
                 placeholder="Votre adresse email..."
-                required
-                className="w-full bg-brand-surface border border-brand-surface-dark focus:border-brand-primary/50 rounded-full py-4 pl-6 pr-32 outline-none transition-colors"
+                className={`w-full bg-brand-surface border rounded-full py-4 pl-6 pr-32 outline-none transition-colors ${
+                  errors.email ? 'border-red-500 focus:border-red-500' : 'border-brand-surface-dark focus:border-brand-primary/50'
+                }`}
                 disabled={isLoading}
               />
               <button
                 type="submit"
-                disabled={isLoading || !email}
+                disabled={isLoading}
                 className="absolute right-2 top-2 bottom-2 bg-brand-primary hover:bg-brand-primary-light text-white rounded-full px-6 font-semibold flex items-center gap-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isLoading ? '...' : (
@@ -65,6 +79,7 @@ export function NewsletterSection() {
                 )}
               </button>
             </form>
+            {errors.email && <p className="text-xs text-red-500 mt-2 px-4 text-center md:text-left">{errors.email.message}</p>}
             <p className="text-xs text-center md:text-left text-gray-400 mt-3 px-4">
               En vous inscrivant, vous acceptez notre politique de confidentialité. Vous pouvez vous désabonner à tout moment.
             </p>

@@ -1,11 +1,13 @@
 'use client'
 
+import { useState } from 'react'
 import { useCartStore } from '@/lib/store/cart.store'
 import { formatPrice } from '@/lib/utils/format'
 import Image from 'next/image'
 
 export function OrderSummary() {
   const { items, subtotalHT, totalTTC, shippingCost } = useCartStore()
+  const [cgvAccepted, setCgvAccepted] = useState(false)
 
   return (
     <div className="bg-brand-primary rounded-2xl p-6 md:p-8 text-white sticky top-24 shadow-card">
@@ -48,7 +50,7 @@ export function OrderSummary() {
         </div>
         <div className="flex justify-between text-white/70 text-sm">
           <span>TVA</span>
-          <span>{formatPrice(totalTTC - subtotalHT)}</span>
+          <span>{formatPrice(totalTTC - subtotalHT - shippingCost)}</span>
         </div>
         <div className="flex justify-between text-white/70 text-sm">
           <span>Livraison</span>
@@ -64,22 +66,32 @@ export function OrderSummary() {
         <div className="flex justify-between items-center">
           <span className="text-lg font-bold">Total TTC</span>
           <span className="text-3xl font-display font-bold text-brand-accent">
-            {formatPrice(totalTTC + shippingCost)}
+            {formatPrice(totalTTC)}
           </span>
         </div>
+      </div>
+
+      <div className="mb-6 flex items-start gap-3">
+        <input 
+          type="checkbox" 
+          id="cgv" 
+          checked={cgvAccepted}
+          onChange={(e) => setCgvAccepted(e.target.checked)}
+          className="mt-1 w-4 h-4 rounded border-white/20 bg-white/10 text-brand-accent focus:ring-brand-accent focus:ring-offset-brand-primary"
+        />
+        <label htmlFor="cgv" className="text-xs text-white/80 leading-snug">
+          J'ai lu et j'accepte les <a href="/cgv" target="_blank" className="underline hover:text-white">Conditions Générales de Vente</a> de BestLub.
+        </label>
       </div>
 
       <button
         type="submit"
         form="checkout-form"
-        className="w-full bg-white text-brand-primary hover:bg-gray-100 font-bold py-4 rounded-full transition-colors text-lg"
+        disabled={!cgvAccepted}
+        className="w-full bg-white text-brand-primary hover:bg-gray-100 font-bold py-4 rounded-full transition-colors text-lg disabled:opacity-50 disabled:cursor-not-allowed"
       >
         Confirmer la commande
       </button>
-      
-      <p className="text-center text-xs text-white/50 mt-4">
-        En confirmant votre commande, vous acceptez nos Conditions Générales de Vente.
-      </p>
     </div>
   )
 }

@@ -5,18 +5,21 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
 import { useState } from 'react'
 import { useCartStore } from '@/lib/store/cart.store'
+import { useAuthStore } from '@/lib/store/auth.store'
 import { ordersApi } from '@/lib/api/orders'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
 import { Check } from 'lucide-react'
+import { WILAYAS_TN } from '@/lib/utils/format'
 
 const checkoutSchema = z.object({
   firstName: z.string().min(2, 'Prénom trop court'),
   lastName: z.string().min(2, 'Nom trop court'),
   email: z.string().email('Email invalide'),
-  phone: z.string().min(8, 'Numéro de téléphone invalide'),
+  phone: z.string().regex(/^[0-9]{8}$/, 'Numéro tunisien 8 chiffres'),
   address: z.string().min(5, 'Adresse trop courte'),
   city: z.string().min(2, 'Ville requise'),
+  wilaya: z.string().min(1, 'Wilaya requise'),
   postalCode: z.string().min(4, 'Code postal requis'),
   notes: z.string().optional(),
 })
@@ -27,6 +30,7 @@ export function CheckoutForm() {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
   const { items, clearCart } = useCartStore()
+  const { token } = useAuthStore()
 
   const {
     register,
@@ -54,18 +58,18 @@ export function CheckoutForm() {
           phone: data.phone,
           address: data.address,
           city: data.city,
-          wilaya: data.city, // Using city as default wilaya since it's missing from the form
+          wilaya: data.wilaya,
           postalCode: data.postalCode,
         },
         shippingMethod: 'standard',
         notes: data.notes,
-      }, '')
+      }, token || '')
 
       clearCart()
       toast.success('Commande validée avec succès !')
       router.push(`/checkout/success?orderId=${order.id}`)
-    } catch (error: any) {
-      toast.error(error.message || 'Une erreur est survenue lors de la validation')
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Une erreur est survenue lors de la validation')
     } finally {
       setIsLoading(false)
     }
@@ -124,7 +128,7 @@ export function CheckoutForm() {
               className={`w-full p-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${
                 errors.phone ? 'border-red-500 focus:ring-red-200' : 'border-gray-300 focus:border-brand-primary focus:ring-brand-primary/20'
               }`}
-              placeholder="Ex: 98 765 432"
+              placeholder="Ex: 98765432"
             />
             {errors.phone && <span className="text-xs text-red-500">{errors.phone.message}</span>}
           </div>
@@ -139,6 +143,22 @@ export function CheckoutForm() {
               placeholder="Numéro, rue, appartement..."
             />
             {errors.address && <span className="text-xs text-red-500">{errors.address.message}</span>}
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-gray-700">Gouvernorat (Wilaya) *</label>
+            <select
+              {...register('wilaya')}
+              className={`w-full p-3 rounded-lg border focus:ring-2 focus:outline-none transition-all ${
+                errors.wilaya ? 'border-red-500 focus:ring-red-200' : 'border-gray-300 focus:border-brand-primary focus:ring-brand-primary/20'
+              }`}
+            >
+              <option value="">Sélectionner...</option>
+              {WILAYAS_TN.map((w) => (
+                <option key={w} value={w}>{w}</option>
+              ))}
+            </select>
+            {errors.wilaya && <span className="text-xs text-red-500">{errors.wilaya.message}</span>}
           </div>
 
           <div className="space-y-2">

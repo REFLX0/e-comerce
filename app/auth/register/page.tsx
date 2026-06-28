@@ -47,8 +47,8 @@ export default function RegisterPage() {
       })
       toast.success('Compte créé avec succès !')
       router.push('/compte')
-    } catch (error: any) {
-      toast.error(error.message || 'Une erreur est survenue lors de la création')
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Une erreur est survenue lors de la création')
     }
   }
 
@@ -177,7 +177,7 @@ export default function RegisterPage() {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full btn-primary py-4 flex items-center justify-center gap-2 text-lg mt-6"
+            className="w-full btn-primary py-4 flex items-center justify-center gap-2 text-lg mt-6 disabled:opacity-50"
           >
             {isLoading ? 'Création...' : 'Créer mon compte'}
             {!isLoading && <ArrowRight size={20} />}

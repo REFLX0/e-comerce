@@ -37,8 +37,11 @@ export default function RootLayout({
     <html lang="fr" className={`${inter.variable} ${poppins.variable} ${jetbrainsMono.variable}`} suppressHydrationWarning>
       <body className="font-sans text-foreground bg-brand-surface min-h-screen flex flex-col" suppressHydrationWarning>
         <Providers>
+          <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-brand-primary text-white p-4 z-50 rounded-lg font-bold outline-none ring-2 ring-brand-accent">
+            Aller au contenu principal
+          </a>
           <Header />
-          <main className="flex-1 flex flex-col">
+          <main id="main-content" className="flex-1 flex flex-col focus:outline-none" tabIndex={-1}>
             {children}
           </main>
           <Footer />
