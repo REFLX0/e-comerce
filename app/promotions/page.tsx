@@ -63,9 +63,8 @@ export default function PromotionsPage() {
           {data && data.data.length === 0 && (
             <EmptyState
               title="Aucune promotion en cours"
-              description="Revenez bientôt pour découvrir nos nouvelles offres !"
-              actionLabel="Voir le catalogue"
-              actionHref="/catalogue"
+              message="Revenez bientôt pour découvrir nos nouvelles offres !"
+              action={{ label: "Voir le catalogue", href: "/catalogue" }}
             />
           )}
           {data && data.data.length > 0 && (

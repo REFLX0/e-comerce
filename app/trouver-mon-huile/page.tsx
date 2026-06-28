@@ -19,7 +19,7 @@ export default function ConfiguratorPage() {
   // Fetch options sequentially
   const { data: makes, isLoading: loadingMakes } = useQuery({
     queryKey: ['vehicle-makes'],
-    queryFn: vehiclesApi.getMakes,
+    queryFn: () => vehiclesApi.getMakes(),
   })
 
   const { data: models, isLoading: loadingModels } = useQuery({
