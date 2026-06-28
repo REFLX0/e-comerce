@@ -1,0 +1,283 @@
+import { NextResponse } from 'next/server'
+
+export async function GET() {
+  return NextResponse.json([
+    {
+      "id": "shell-rimula-r3-turbo-15w40",
+      "sku": "30029-9278",
+      "name": "Huile Moteur SHELL Rimula R3 Turbo 15W40",
+      "brand": {
+        "id": "shell",
+        "slug": "shell",
+        "name": "SHELL"
+      },
+      "category": {
+        "id": "transport-tp",
+        "name": "Transport / T.P."
+      },
+      "shortDescription": "Huile moteur multigrades pour moteurs diesel des véhicules utilitaires et poids-lourds.",
+      "description": "Huile moteur multigrades pour moteurs diesel des véhicules utilitaires et poids-lourds. Dans les essais de moteur standard de l'industrie, Shell Rimula R3 Turbo a dépassé les limites de performance et a démontré une excellente protection contre l'usure dans quatre domaines critiques: l'usure de la bague, l'usure du liner, l'usure croisée et l'usure des suiveurs de came. Shell Rimula R3 Turbo offre une meilleure protection contre l'usure par rapport aux huiles de génération précédente, par exemple, les huiles API CG-4 et CF-4.",
+      "specs": {
+        "type": "Minérale",
+        "viscosity": "15W40",
+        "apiSpec": "API CH-4",
+        "aceaSpec": "ACEA E2",
+        "approvals": ["Caterpillar ECF-1-A", "Cummins CES 20076.71", "Mack EO-M EO-M+", "MAN 271", "MB-Approval 228.1", "Volvo VDS"]
+      },
+      "images": [
+        "https://www.bestoil.tn/6193-large_default/huile-moteur-shell-rimula-r3-turbo-15w40.jpg",
+        "https://www.bestoil.tn/6193-home_default/huile-moteur-shell-rimula-r3-turbo-15w40.jpg"
+      ],
+      "variants": [
+        { "id": "v1", "productId": "shell-rimula-r3-turbo-15w40", "label": "Bidon 1L", "volume": "1L", "volumeL": 1, "priceTTC": 19.50, "priceHT": 16.50, "stock": 0, "status": "out_of_stock", "sku": "30029-9278-1L" },
+        { "id": "v2", "productId": "shell-rimula-r3-turbo-15w40", "label": "Bidon 5L", "volume": "5L", "volumeL": 5, "priceTTC": 69.00, "priceHT": 57.98, "stock": 12, "status": "in_stock", "sku": "30029-9278-5L", "isDefault": true },
+        { "id": "v3", "productId": "shell-rimula-r3-turbo-15w40", "label": "Bidon 20L", "volume": "20L", "volumeL": 20, "priceTTC": 245.00, "priceHT": 207.00, "stock": 5, "status": "in_stock", "sku": "30029-9278-20L" },
+        { "id": "v4", "productId": "shell-rimula-r3-turbo-15w40", "label": "Fût 209L", "volume": "209L", "volumeL": 209, "priceTTC": 2445.00, "priceHT": 2072.00, "stock": 2, "status": "in_stock", "sku": "30029-9278-209L" }
+      ],
+      "slug": "huile-moteur-shell-rimula-r3-turbo-15w40",
+      "rating": 4.5,
+      "reviewCount": 12,
+      "isBestSeller": true,
+      "isNew": false,
+      "isPromo": false
+    },
+    {
+      "id": "yacco-vx-1000-ll-0w40",
+      "sku": "84784-9104",
+      "name": "Huile Moteur YACCO VX 1000 LL 0W40",
+      "brand": {
+        "id": "yacco",
+        "slug": "yacco",
+        "name": "YACCO"
+      },
+      "category": {
+        "id": "automobile",
+        "name": "Automobile"
+      },
+      "shortDescription": "Huile moteur 100% synthèse longue durée pour véhicules essence et diesel récents.",
+      "description": "Huile moteur 100% synthèse longue durée pour véhicules essence et diesel récents équipés de systèmes de dépollution.",
+      "specs": {
+        "type": "100% Synthèse",
+        "viscosity": "0W40"
+      },
+      "images": [
+        "https://www.bestoil.tn/img/p/yacco-vx-1000-ll-0w40.jpg"
+      ],
+      "variants": [
+        { "id": "v1", "productId": "yacco-vx-1000-ll-0w40", "label": "Bidon 1L", "volume": "1L", "volumeL": 1, "priceTTC": 18.00, "priceHT": 15.00, "stock": 0, "status": "out_of_stock", "sku": "84784-9104-1L" },
+        { "id": "v2", "productId": "yacco-vx-1000-ll-0w40", "label": "Bidon 2L", "volume": "2L", "volumeL": 2, "priceTTC": 72.50, "priceHT": 60.41, "stock": 0, "status": "out_of_stock", "sku": "84784-9104-2L", "isDefault": true },
+        { "id": "v3", "productId": "yacco-vx-1000-ll-0w40", "label": "Bidon 5L", "volume": "5L", "volumeL": 5, "priceTTC": 165.00, "priceHT": 137.50, "stock": 0, "status": "out_of_stock", "sku": "84784-9104-5L" }
+      ],
+      "slug": "huile-moteur-yacco-vx-1000-ll-0w40",
+      "rating": 5,
+      "reviewCount": 8,
+      "isBestSeller": true,
+      "isNew": false,
+      "isPromo": false
+    },
+    {
+      "id": "yacco-lube-di-0w20-c6",
+      "sku": "30092-9417",
+      "name": "Huile Moteur YACCO LUBE DI 0W20 C6",
+      "brand": {
+        "id": "yacco",
+        "slug": "yacco",
+        "name": "YACCO"
+      },
+      "category": {
+        "id": "automobile",
+        "name": "Automobile"
+      },
+      "shortDescription": "Huile moteur 100% synthèse 0W20.",
+      "description": "Huile moteur 100% synthèse 0W20.",
+      "specs": {
+        "type": "100% Synthèse",
+        "viscosity": "0W20"
+      },
+      "images": [
+        "https://www.bestoil.tn/img/p/yacco-lube-di-0w20-c6.jpg"
+      ],
+      "variants": [
+        { "id": "v1", "productId": "yacco-lube-di-0w20-c6", "label": "Bidon 1L", "volume": "1L", "volumeL": 1, "priceTTC": 36.90, "priceHT": 30.75, "stock": 8, "status": "in_stock", "sku": "30092-9417-1L", "isDefault": true },
+        { "id": "v2", "productId": "yacco-lube-di-0w20-c6", "label": "Bidon 5L", "volume": "5L", "volumeL": 5, "priceTTC": 169.00, "priceHT": 140.83, "stock": 3, "status": "low_stock", "sku": "30092-9417-5L" }
+      ],
+      "slug": "huile-moteur-yacco-lube-di-0w20-c6",
+      "rating": 4.8,
+      "reviewCount": 5,
+      "isBestSeller": true,
+      "isNew": true,
+      "isPromo": false
+    },
+    {
+      "id": "shell-helix-hx7-10w40",
+      "sku": "30022-8909",
+      "name": "Huile Moteur SHELL Helix HX7 10W40",
+      "brand": {
+        "id": "shell",
+        "slug": "shell",
+        "name": "SHELL"
+      },
+      "category": {
+        "id": "automobile",
+        "name": "Automobile"
+      },
+      "shortDescription": "Huile moteur synthèse 10W40.",
+      "description": "Huile moteur synthèse 10W40.",
+      "specs": {
+        "type": "Synthèse",
+        "viscosity": "10W40"
+      },
+      "images": [
+        "https://www.bestoil.tn/img/p/shell-helix-hx7-10w40.jpg"
+      ],
+      "variants": [
+        { "id": "v1", "productId": "shell-helix-hx7-10w40", "label": "Bidon 1L", "volume": "1L", "volumeL": 1, "priceTTC": 22.00, "priceHT": 18.33, "stock": 15, "status": "in_stock", "sku": "30022-8909-1L" },
+        { "id": "v2", "productId": "shell-helix-hx7-10w40", "label": "Bidon 4L", "volume": "4L", "volumeL": 4, "priceTTC": 79.00, "priceHT": 65.83, "stock": 10, "status": "in_stock", "sku": "30022-8909-4L" },
+        { "id": "v3", "productId": "shell-helix-hx7-10w40", "label": "Bidon 5L", "volume": "5L", "volumeL": 5, "priceTTC": 93.00, "priceHT": 77.50, "stock": 20, "status": "in_stock", "sku": "30022-8909-5L", "isDefault": true },
+        { "id": "v4", "productId": "shell-helix-hx7-10w40", "label": "Bidon 20L", "volume": "20L", "volumeL": 20, "priceTTC": 340.00, "priceHT": 283.33, "stock": 4, "status": "in_stock", "sku": "30022-8909-20L" }
+      ],
+      "slug": "huile-moteur-shell-helix-hx7-10w40",
+      "rating": 4.6,
+      "reviewCount": 24,
+      "isBestSeller": true,
+      "isNew": false,
+      "isPromo": false
+    },
+    {
+      "id": "accor-husynn-10w40",
+      "sku": "20005-8748",
+      "name": "Huile Moteur ACCOR HUSYNN 10W40",
+      "brand": {
+        "id": "accor",
+        "slug": "accor",
+        "name": "ACCOR"
+      },
+      "category": {
+        "id": "automobile",
+        "name": "Automobile"
+      },
+      "shortDescription": "Huile moteur semi-synthèse 10W40.",
+      "description": "Huile moteur semi-synthèse 10W40.",
+      "specs": {
+        "type": "Semi-Synthèse",
+        "viscosity": "10W40"
+      },
+      "images": [
+        "https://www.bestoil.tn/img/p/accor-husynn-10w40.jpg"
+      ],
+      "variants": [
+        { "id": "v1", "productId": "accor-husynn-10w40", "label": "Bidon 1L", "volume": "1L", "volumeL": 1, "priceTTC": 24.00, "priceHT": 20.00, "stock": 8, "status": "in_stock", "sku": "20005-8748-1L" },
+        { "id": "v2", "productId": "accor-husynn-10w40", "label": "Bidon 5L", "volume": "5L", "volumeL": 5, "priceTTC": 97.00, "priceHT": 80.83, "stock": 6, "status": "in_stock", "sku": "20005-8748-5L", "isDefault": true },
+        { "id": "v3", "productId": "accor-husynn-10w40", "label": "Bidon 20L", "volume": "20L", "volumeL": 20, "priceTTC": 360.00, "priceHT": 300.00, "stock": 2, "status": "low_stock", "sku": "20005-8748-20L" }
+      ],
+      "slug": "huile-moteur-accor-husynn-10w40",
+      "rating": 4.2,
+      "reviewCount": 7,
+      "isBestSeller": true,
+      "isNew": false,
+      "isPromo": true,
+      "promoPercent": 10
+    },
+    {
+      "id": "shell-helix-hx5-15w40",
+      "sku": "30021-8908",
+      "name": "Huile Moteur SHELL Helix HX5 15W40",
+      "brand": {
+        "id": "shell",
+        "slug": "shell",
+        "name": "SHELL"
+      },
+      "category": {
+        "id": "automobile",
+        "name": "Automobile"
+      },
+      "shortDescription": "Huile moteur minérale 15W40.",
+      "description": "Huile moteur minérale 15W40.",
+      "specs": {
+        "type": "Minérale",
+        "viscosity": "15W40"
+      },
+      "images": [
+        "https://www.bestoil.tn/img/p/shell-helix-hx5-15w40.jpg"
+      ],
+      "variants": [
+        { "id": "v1", "productId": "shell-helix-hx5-15w40", "label": "Bidon 1L", "volume": "1L", "volumeL": 1, "priceTTC": 17.50, "priceHT": 14.58, "stock": 20, "status": "in_stock", "sku": "30021-8908-1L" },
+        { "id": "v2", "productId": "shell-helix-hx5-15w40", "label": "Bidon 4L", "volume": "4L", "volumeL": 4, "priceTTC": 62.00, "priceHT": 51.67, "stock": 15, "status": "in_stock", "sku": "30021-8908-4L" },
+        { "id": "v3", "productId": "shell-helix-hx5-15w40", "label": "Bidon 5L", "volume": "5L", "volumeL": 5, "priceTTC": 73.00, "priceHT": 60.83, "stock": 18, "status": "in_stock", "sku": "30021-8908-5L", "isDefault": true },
+        { "id": "v4", "productId": "shell-helix-hx5-15w40", "label": "Bidon 20L", "volume": "20L", "volumeL": 20, "priceTTC": 265.00, "priceHT": 220.83, "stock": 5, "status": "in_stock", "sku": "30021-8908-20L" }
+      ],
+      "slug": "huile-moteur-shell-helix-hx5-15w40",
+      "rating": 4.7,
+      "reviewCount": 32,
+      "isBestSeller": true,
+      "isNew": false,
+      "isPromo": false
+    },
+    {
+      "id": "yacco-mvx-1000-4t-10w50",
+      "sku": "84788-9465",
+      "name": "Huile Moteur YACCO MVX 1000 4T 10W50",
+      "brand": {
+        "id": "yacco",
+        "slug": "yacco",
+        "name": "YACCO"
+      },
+      "category": {
+        "id": "moto-quad-karting",
+        "name": "Moto / Quad / Karting"
+      },
+      "shortDescription": "Huile moteur 100% synthèse 10W50 pour motos.",
+      "description": "Huile moteur 100% synthèse 10W50 pour motos.",
+      "specs": {
+        "type": "100% Synthèse",
+        "viscosity": "10W50"
+      },
+      "images": [
+        "https://www.bestoil.tn/img/p/yacco-mvx-1000-4t-10w50.jpg"
+      ],
+      "variants": [
+        { "id": "v1", "productId": "yacco-mvx-1000-4t-10w50", "label": "Bidon 1L", "volume": "1L", "volumeL": 1, "priceTTC": 38.00, "priceHT": 31.67, "stock": 5, "status": "in_stock", "sku": "84788-9465-1L" },
+        { "id": "v2", "productId": "yacco-mvx-1000-4t-10w50", "label": "Bidon 4L", "volume": "4L", "volumeL": 4, "priceTTC": 125.00, "priceHT": 104.17, "stock": 4, "status": "in_stock", "sku": "84788-9465-4L", "isDefault": true }
+      ],
+      "slug": "huile-moteur-yacco-mvx-1000-4t-10w50",
+      "rating": 4.9,
+      "reviewCount": 18,
+      "isBestSeller": true,
+      "isNew": false,
+      "isPromo": false
+    },
+    {
+      "id": "yacco-vx-1000-le-5w30",
+      "sku": "30093-9492",
+      "name": "Huile Moteur YACCO VX 1000 LE 5W30 C2/C3",
+      "brand": {
+        "id": "yacco",
+        "slug": "yacco",
+        "name": "YACCO"
+      },
+      "category": {
+        "id": "automobile",
+        "name": "Automobile"
+      },
+      "shortDescription": "Huile moteur 100% synthèse 5W30.",
+      "description": "Huile moteur 100% synthèse 5W30.",
+      "specs": {
+        "type": "100% Synthèse",
+        "viscosity": "5W30"
+      },
+      "images": [
+        "https://www.bestoil.tn/img/p/yacco-vx-1000-le-5w30-c2c3.jpg"
+      ],
+      "variants": [
+        { "id": "v1", "productId": "yacco-vx-1000-le-5w30", "label": "Bidon 1L", "volume": "1L", "volumeL": 1, "priceTTC": 32.00, "priceHT": 26.67, "stock": 7, "status": "in_stock", "sku": "30093-9492-1L" },
+        { "id": "v2", "productId": "yacco-vx-1000-le-5w30", "label": "Bidon 5L", "volume": "5L", "volumeL": 5, "priceTTC": 137.00, "priceHT": 114.17, "stock": 5, "status": "in_stock", "sku": "30093-9492-5L", "isDefault": true }
+      ],
+      "slug": "huile-moteur-yacco-vx-1000-le-5w30-c2c3",
+      "rating": 4.7,
+      "reviewCount": 21,
+      "isBestSeller": true,
+      "isNew": false,
+      "isPromo": false
+    }
+  ])
+}
