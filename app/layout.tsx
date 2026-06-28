@@ -34,8 +34,8 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="fr" className={`${inter.variable} ${poppins.variable} ${jetbrainsMono.variable}`}>
-      <body className="font-sans text-foreground bg-brand-surface min-h-screen flex flex-col">
+    <html lang="fr" className={`${inter.variable} ${poppins.variable} ${jetbrainsMono.variable}`} suppressHydrationWarning>
+      <body className="font-sans text-foreground bg-brand-surface min-h-screen flex flex-col" suppressHydrationWarning>
         <Providers>
           <Header />
           <main className="flex-1 flex flex-col">
