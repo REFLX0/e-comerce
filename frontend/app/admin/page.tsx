@@ -11,7 +11,7 @@ import Link from 'next/link'
 
 export default function AdminDashboard() {
   
-  const { data: dashboardData, isLoading } = useQuery({
+  const { data: dashboardData, isLoading } = useQuery<any>({
     queryKey: ['admin-dashboard'],
     queryFn: () => adminApi.getDashboard(),
     enabled: true,

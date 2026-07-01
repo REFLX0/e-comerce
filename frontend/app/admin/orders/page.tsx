@@ -24,7 +24,7 @@ export default function AdminOrdersPage() {
   const [statusFilter, setStatusFilter] = useState<string>('ALL')
   const [selected, setSelected] = useState<string[]>([])
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading } = useQuery<any>({
     queryKey: ['admin-orders', statusFilter],
     queryFn: () => adminApi.getOrders({ status: statusFilter === 'ALL' ? undefined : statusFilter }),
     enabled: true,
@@ -46,7 +46,8 @@ export default function AdminOrdersPage() {
   const filtered = orders.filter((o: any) =>
     !search ||
     o.id.toLowerCase().includes(search.toLowerCase()) ||
-    o.user?.name?.toLowerCase().includes(search.toLowerCase())
+    o.user?.firstName?.toLowerCase().includes(search.toLowerCase()) ||
+    o.user?.lastName?.toLowerCase().includes(search.toLowerCase())
   )
 
   const toggleSelect = (id: string) =>
@@ -169,7 +170,7 @@ export default function AdminOrdersPage() {
                         {new Date(order.createdAt).toLocaleDateString('fr-TN')}
                       </td>
                       <td className="px-2 py-3">
-                        <p className="text-sm font-medium text-gray-800">{order.user?.name ?? order.shipFullName}</p>
+                        <p className="text-sm font-medium text-gray-800">{order.user?.firstName ? `${order.user.firstName} ${order.user.lastName}` : order.shipFullName}</p>
                       </td>
                       <td className="px-2 py-3 font-semibold text-brand-primary whitespace-nowrap">
                         {order.totalAmount.toLocaleString('fr-TN', { minimumFractionDigits: 2 })} TND

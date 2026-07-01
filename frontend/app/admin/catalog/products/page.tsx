@@ -44,7 +44,7 @@ export default function AdminProductsPage() {
   const [selected, setSelected] = useState<string[]>([])
   const [showPublished, setShowPublished] = useState<'all' | 'published' | 'unpublished'>('all')
 
-  const { data: productsData, isLoading } = useQuery({
+  const { data: productsData, isLoading } = useQuery<any>({
     queryKey: ['admin-products'],
     queryFn: () => productsApi.getAll({ limit: 50 }),
   })

@@ -11,7 +11,7 @@ import { toast } from 'sonner'
 export default function WishlistPage() {
     const queryClient = useQueryClient()
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading } = useQuery<any>({
     queryKey: ['wishlist'],
     queryFn: () => wishlistApi.getAll(),
     enabled: true,

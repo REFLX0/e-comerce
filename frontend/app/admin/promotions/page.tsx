@@ -10,7 +10,7 @@ import { toast } from 'sonner'
 export default function AdminPromotionsPage() {
     const queryClient = useQueryClient()
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading } = useQuery<any>({
     queryKey: ['admin-coupons'],
     queryFn: () => couponsApi.getAll(),
     enabled: true,

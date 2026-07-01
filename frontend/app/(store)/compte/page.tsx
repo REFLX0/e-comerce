@@ -27,7 +27,7 @@ const QUICK_LINKS = [
 export default function CompteDashboardPage() {
   const { user } = useAuthStore()
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading } = useQuery<any>({
     queryKey: ['my-orders-preview'],
     queryFn: () => ordersApi.getAll(),
     enabled: true,
@@ -41,7 +41,7 @@ export default function CompteDashboardPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-brand-primary">
-            Bonjour, {user?.name?.split(' ')[0] ?? 'cher client'} 👋
+            Bonjour, {user?.firstName ?? 'cher client'} 👋
           </h1>
           <p className="mt-1 text-sm text-gray-500">Bienvenue dans votre espace personnel KiosqueTN</p>
         </div>

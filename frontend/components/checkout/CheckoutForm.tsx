@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
 import { useState } from 'react'
 import { useCartStore } from '@/lib/store/cart.store'
-import { useAuthStore } from '@/lib/store/auth.store'
+
 import { ordersApi } from '@/lib/api/orders'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
@@ -30,7 +30,6 @@ export function CheckoutForm() {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
   const { items, clearCart } = useCartStore()
-  const { isAuthenticated } = useAuthStore()
 
   const {
     register,

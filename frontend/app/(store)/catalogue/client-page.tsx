@@ -32,7 +32,7 @@ export default function CataloguePage() {
   // Ensure page is set
   filters.page = Number(filters.page) || 1
 
-  const { data, isLoading, isError, refetch } = useQuery({
+  const { data, isLoading, isError, refetch } = useQuery<any>({
     queryKey: ['products', filters],
     queryFn: () => productsApi.getAll(filters as import('@/lib/types').ProductFilters),
   })

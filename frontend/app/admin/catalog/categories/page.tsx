@@ -72,7 +72,7 @@ function CategoryNode({ cat, depth = 0 }: { cat: Category; depth?: number }) {
 }
 
 export default function AdminCategoriesPage() {
-  const { data, isLoading } = useQuery({
+  const { data, isLoading } = useQuery<any>({
     queryKey: ['categories-tree'],
     queryFn: categoriesApi.getTree,
   })

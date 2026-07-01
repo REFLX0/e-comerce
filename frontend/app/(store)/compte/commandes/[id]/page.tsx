@@ -26,7 +26,7 @@ export default function OrderDetailsPage() {
     data: order,
     isLoading,
     isError,
-  } = useQuery({
+  } = useQuery<any>({
     queryKey: ['order', id],
     queryFn: () => ordersApi.getById(id),
     enabled: true,

@@ -236,10 +236,10 @@ function Sidebar({
         {!collapsed ? (
           <div className="flex items-center gap-3">
             <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand-accent font-bold text-sm text-black">
-              {user?.name?.[0] ?? 'A'}
+              {user?.firstName?.[0] ?? 'A'}
             </div>
             <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-medium text-white">{user?.name ?? 'Admin'}</p>
+              <p className="truncate text-sm font-medium text-white">{user?.firstName ? `${user.firstName} ${user.lastName}` : 'Admin'}</p>
               <p className="truncate text-xs text-gray-500">{user?.email}</p>
             </div>
             <button
@@ -375,7 +375,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
             {/* Avatar */}
             <div className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-accent font-bold text-sm text-black">
-              {user?.name?.[0] ?? 'A'}
+              {user?.firstName?.[0] ?? 'A'}
             </div>
           </div>
         </header>
