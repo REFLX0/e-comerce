@@ -34,4 +34,7 @@ fi
 echo '=== Launching Docker Compose ==='
 docker compose up -d --build
 
+echo '=== Cleaning up old Docker images to save space ==='
+docker image prune -f
+
 echo '=== Deployment Launched! ==='

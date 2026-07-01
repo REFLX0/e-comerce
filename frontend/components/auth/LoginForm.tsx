@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
 import { useState, useEffect } from 'react'
-import { signIn } from 'next-auth/react'
+import { signIn, getSession } from 'next-auth/react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Link } from '@/i18n/routing'
 import { ArrowRight, Mail, Lock, Eye, EyeOff, Loader2 } from 'lucide-react'
@@ -66,7 +66,12 @@ export default function LoginForm() {
         toast.success('Connexion réussie !', {
           description: 'Bienvenue sur votre espace.',
         })
-        router.push(callbackUrl)
+        const session = await getSession()
+        if ((session?.user as any)?.role === 'ADMIN' && callbackUrl === '/compte') {
+          router.push('/admin')
+        } else {
+          router.push(callbackUrl)
+        }
         router.refresh()
       }
     } catch {

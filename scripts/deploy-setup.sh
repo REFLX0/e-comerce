@@ -37,4 +37,7 @@ echo "=== Environment variables initialized (API Keys still need manual entry) =
 echo "=== Pulling Docker Images & Building ==="
 docker-compose up -d --build
 
+echo "=== Cleaning up old Docker images to save space ==="
+docker image prune -f
+
 echo "=== Done! ==="
