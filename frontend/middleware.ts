@@ -25,7 +25,7 @@ export default auth((req: NextRequest & { auth?: unknown }) => {
   const cspHeader = [
     `default-src 'self'`,
     // Scripts: nonce + strict-dynamic (production) or unsafe-eval (dev HMR)
-    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic'${isDev ? " 'unsafe-eval'" : ''}`,
+    `script-src 'self' 'unsafe-inline' 'unsafe-eval'`,
     // Styles: unsafe-inline required for Tailwind CSS-in-JS
     `style-src 'self' 'unsafe-inline' https://fonts.googleapis.com`,
     // Fonts: self + Google Fonts CDN
