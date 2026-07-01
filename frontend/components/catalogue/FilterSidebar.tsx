@@ -170,6 +170,7 @@ export function FilterSidebar() {
             </label>
           ))}
         </div>
+      </div>
       {/* Normes API */}
       <div>
         <h3 className="font-display text-brand-primary border-brand-surface-dark mb-4 border-b pb-2 text-sm uppercase tracking-widest font-bold">

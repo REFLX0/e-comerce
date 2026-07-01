@@ -29,7 +29,8 @@ const jetbrainsMono = JetBrains_Mono({
 
 import { getTranslations } from 'next-intl/server'
 
-export async function generateMetadata({ params: { locale } }: { params: { locale: string } }): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params
   const t = await getTranslations({ locale, namespace: 'Index' })
 
   return {
@@ -59,12 +60,13 @@ export async function generateMetadata({ params: { locale } }: { params: { local
 
 export default async function RootLayout({
   children,
-  params: { locale }
+  params
 }: Readonly<{
   children: React.ReactNode
-  params: { locale: string }
+  params: Promise<{ locale: string }>
 }>) {
 
+  const { locale } = await params
   const messages = await getMessages()
 
   return (
