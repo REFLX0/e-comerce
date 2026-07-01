@@ -37,7 +37,7 @@ export default function SearchPage() {
   // Ensure page is set
   filters.page = Number(filters.page) || 1
 
-  const { data, isLoading, isError, refetch } = useQuery({
+  const { data, isLoading, isError, refetch } = useQuery<any>({
     queryKey: ['products', 'search', filters],
     queryFn: () => productsApi.getAll(filters),
     enabled: !!q || Object.keys(filters).length > 1, // Don't fetch if completely empty

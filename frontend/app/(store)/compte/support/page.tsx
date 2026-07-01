@@ -23,13 +23,13 @@ export default function SupportPage() {
   const [selectedReason, setSelectedReason] = useState('')
   const [message, setMessage] = useState('')
 
-  const { data: ticketsData, isLoading: isLoadingTickets } = useQuery({
+  const { data: ticketsData, isLoading: isLoadingTickets } = useQuery<any>({
     queryKey: ['my-tickets'],
     queryFn: () => ticketsApi.getMyTickets(),
     enabled: true,
   })
 
-  const { data: ordersData } = useQuery({
+  const { data: ordersData } = useQuery<any>({
     queryKey: ['my-orders'],
     queryFn: () => ordersApi.getAll(),
     enabled: true,

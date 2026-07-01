@@ -11,7 +11,7 @@ export default function AdminCustomersPage() {
     const queryClient = useQueryClient()
   const [search, setSearch] = useState('')
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading } = useQuery<any>({
     queryKey: ['admin-users'],
     queryFn: () => adminApi.getUsers(),
     enabled: true,

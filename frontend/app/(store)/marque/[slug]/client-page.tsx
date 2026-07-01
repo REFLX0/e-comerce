@@ -24,7 +24,7 @@ export default function BrandPage({ params }: { params: Promise<{ slug: string }
   const searchParams = useSearchParams()
   const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false)
 
-  const { data: brand, isLoading: brandLoading } = useQuery({
+  const { data: brand, isLoading: brandLoading } = useQuery<any>({
     queryKey: ['brand', slug],
     queryFn: () => brandsApi.getBySlug(slug),
   })
@@ -48,7 +48,7 @@ export default function BrandPage({ params }: { params: Promise<{ slug: string }
     isLoading: productsLoading,
     isError,
     refetch,
-  } = useQuery({
+  } = useQuery<any>({
     queryKey: ['products', filters],
     queryFn: () => productsApi.getAll(filters),
   })

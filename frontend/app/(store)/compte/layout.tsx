@@ -43,8 +43,9 @@ export default function CompteLayout({ children }: { children: React.ReactNode }
     )
   }
 
-  const initials = user?.name
-    ? user.name.split(' ').map((n: string) => n[0]).join('').toUpperCase().slice(0, 2)
+  const fullName = user ? `${user.firstName} ${user.lastName}` : ''
+  const initials = fullName
+    ? fullName.split(' ').map((n: string) => n[0]).join('').toUpperCase().slice(0, 2)
     : 'U'
 
   const SidebarContent = () => (
@@ -56,7 +57,7 @@ export default function CompteLayout({ children }: { children: React.ReactNode }
             {initials}
           </div>
           <div className="min-w-0">
-            <p className="truncate font-semibold text-brand-primary">{user?.name ?? 'Mon compte'}</p>
+            <p className="truncate font-semibold text-brand-primary">{fullName || 'Mon compte'}</p>
             <p className="truncate text-xs text-gray-400">{user?.email}</p>
           </div>
         </div>

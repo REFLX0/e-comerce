@@ -1,0 +1,203 @@
+name: CI — Quality, Security & Build
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true   # Cancel previous run on new push to same branch
+
+env:
+  NODE_VERSION: '20'
+  WORKING_DIR: ./frontend
+
+jobs:
+  # ══════════════════════════════════════════════════════════════════════════
+  # Job 1: Code Quality — lint, format, types
+  # ══════════════════════════════════════════════════════════════════════════
+  quality:
+    name: Code Quality
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        working-directory: ${{ env.WORKING_DIR }}
+        run: npm ci --ignore-scripts
+
+      - name: ESLint
+        working-directory: ${{ env.WORKING_DIR }}
+        run: npm run lint
+
+      - name: Prettier (format check)
+        working-directory: ${{ env.WORKING_DIR }}
+        run: npm run format:check
+
+      - name: TypeScript (type check)
+        working-directory: ${{ env.WORKING_DIR }}
+        run: npm run typecheck
+
+  # ══════════════════════════════════════════════════════════════════════════
+  # Job 2: Security — dependency audit + secret scanning
+  # (runs in parallel with quality — no dependency)
+  # ══════════════════════════════════════════════════════════════════════════
+  security:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # Full history needed for secret scanning
+
+      - name: Setup Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        working-directory: ${{ env.WORKING_DIR }}
+        run: npm ci --ignore-scripts
+
+      # Fail on high or critical npm advisories
+      - name: npm audit (high + critical)
+        working-directory: ${{ env.WORKING_DIR }}
+        run: npm audit --audit-level=high --json | tee /tmp/audit.json || (cat /tmp/audit.json && exit 1)
+
+      # Scan for accidentally committed secrets (tokens, passwords, keys)
+      - name: TruffleHog — secret scanning
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          base: ${{ github.event.repository.default_branch }}
+          head: HEAD
+          extra_args: --only-verified
+
+      # Check that .env is not committed
+      - name: Assert .env is not tracked
+        run: |
+          if git ls-files --error-unmatch frontend/.env 2>/dev/null; then
+            echo "❌ ERROR: frontend/.env is committed to Git. Remove it and rotate all secrets."
+            exit 1
+          fi
+          echo "✅ .env is not tracked"
+
+  # ══════════════════════════════════════════════════════════════════════════
+  # Job 3: Build — depends on quality passing
+  # ══════════════════════════════════════════════════════════════════════════
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    needs: [quality]
+    timeout-minutes: 20
+
+    env:
+      # Minimal env for build (no real secrets needed for type-checking)
+      DATABASE_URL: postgresql://postgres:password@localhost:5432/bestoil_test
+      NEXTAUTH_SECRET: ci-test-secret-at-least-32-characters-long
+      NEXTAUTH_URL: http://localhost:3000
+      NEXT_PUBLIC_API_URL: http://localhost:4000/api
+      NEXT_PUBLIC_SITE_URL: http://localhost:3000
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        working-directory: ${{ env.WORKING_DIR }}
+        run: npm ci --ignore-scripts
+
+      - name: Generate Prisma client
+        working-directory: ${{ env.WORKING_DIR }}
+        run: npx prisma generate
+
+      - name: Build Next.js
+        working-directory: ${{ env.WORKING_DIR }}
+        run: npm run build
+        env:
+          NEXT_TELEMETRY_DISABLED: '1'
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: nextjs-build-${{ github.sha }}
+          path: frontend/.next
+          retention-days: 3
+
+  # ══════════════════════════════════════════════════════════════════════════
+  # Job 4: Deploy to Staging — main branch only, after build passes
+  # ══════════════════════════════════════════════════════════════════════════
+  deploy-staging:
+    name: Deploy → Staging
+    runs-on: ubuntu-latest
+    needs: [build, security]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    timeout-minutes: 15
+    environment: staging
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.STAGING_HOST }}
+          username: ${{ secrets.STAGING_USER }}
+          key: ${{ secrets.STAGING_SSH_KEY }}
+          script: |
+            cd /opt/bestoil
+            git pull origin main
+            docker compose pull frontend
+            docker compose up -d --no-deps frontend
+            echo "Waiting for health check..."
+            sleep 10
+            curl -sf http://localhost:3000/api/health | jq .status
+        continue-on-error: false
+
+      # ── Smoke test after deploy ──────────────────────────────────────────
+      - name: Health check smoke test
+        run: |
+          STATUS=$(curl -sf -o /dev/null -w "%{http_code}" \
+            "${{ vars.STAGING_URL }}/api/health" || echo "000")
+          if [ "$STATUS" != "200" ]; then
+            echo "❌ Health check failed with HTTP $STATUS"
+            exit 1
+          fi
+          echo "✅ Staging health check passed (HTTP $STATUS)"
+
+      - name: Notify on failure
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '❌ **Staging deploy failed** for commit ${{ github.sha }}. Check the [Actions log](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) for details.'
+            })

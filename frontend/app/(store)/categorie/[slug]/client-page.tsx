@@ -38,13 +38,13 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
     data: category,
     isLoading: catLoading,
     isError: catError,
-  } = useQuery({
+  } = useQuery<any>({
     queryKey: ['category', slug],
     queryFn: () => categoriesApi.getBySlug(slug),
   })
 
   // Fetch Products
-  const { data, isLoading, isError, refetch } = useQuery({
+  const { data, isLoading, isError, refetch } = useQuery<any>({
     queryKey: ['products-by-category', slug, filters],
     queryFn: () => productsApi.getByCategory(slug, filters as ProductFilters),
   })

@@ -21,7 +21,7 @@ export default function AddressesPage() {
     isDefault: false
   })
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading } = useQuery<any>({
     queryKey: ['my-addresses'],
     queryFn: () => addressesApi.getAll(),
     enabled: true,

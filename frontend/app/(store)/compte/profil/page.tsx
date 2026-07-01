@@ -8,7 +8,7 @@ import { toast } from 'sonner'
 export default function ProfilPage() {
   const { user } = useAuthStore()
   const [form, setForm] = useState({
-    name: user?.name ?? '',
+    name: user?.firstName ? `${user.firstName} ${user.lastName}` : '',
     email: user?.email ?? '',
     phone: '',
     birthday: '',
@@ -23,7 +23,8 @@ export default function ProfilPage() {
     setSaving(false)
   }
 
-  const initials = user?.name?.split(' ').map((n: string) => n[0]).join('').toUpperCase().slice(0, 2) ?? 'U'
+  const fullName = user?.firstName ? `${user.firstName} ${user.lastName}` : ''
+  const initials = fullName?.split(' ').map((n: string) => n[0]).join('').toUpperCase().slice(0, 2) || 'U'
 
   return (
     <div className="space-y-6">
@@ -38,7 +39,7 @@ export default function ProfilPage() {
           {initials}
         </div>
         <div>
-          <p className="font-semibold text-brand-primary">{user?.name}</p>
+          <p className="font-semibold text-brand-primary">{fullName}</p>
           <p className="text-sm text-gray-400">{user?.email}</p>
         </div>
       </div>

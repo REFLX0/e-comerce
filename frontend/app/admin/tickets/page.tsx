@@ -11,7 +11,7 @@ export default function AdminTicketsPage() {
     const queryClient = useQueryClient()
   const [statusFilter, setStatusFilter] = useState('ALL')
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading } = useQuery<any>({
     queryKey: ['admin-tickets', statusFilter],
     queryFn: () => ticketsApi.getAllForAdmin(statusFilter === 'ALL' ? undefined : statusFilter),
     enabled: true,
@@ -69,7 +69,7 @@ export default function AdminTicketsPage() {
                   </div>
                   <div>
                     <div className="flex items-center gap-2 mb-1">
-                      <span className="text-sm font-bold text-brand-primary">{ticket.user?.name || ticket.user?.email}</span>
+                      <span className="text-sm font-bold text-brand-primary">{ticket.user?.firstName ? `${ticket.user.firstName} ${ticket.user.lastName}` : ticket.user?.email}</span>
                       <span className="text-xs text-gray-400">({ticket.user?.email})</span>
                     </div>
                     <p className="text-sm font-semibold text-gray-800">{ticket.reason}</p>

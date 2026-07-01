@@ -64,7 +64,7 @@ export default function AdminInventoryPage() {
   const [search, setSearch] = useState('')
   const [filter, setFilter] = useState<'all' | 'critical' | 'rupture'>('all')
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading } = useQuery<any>({
     queryKey: ['admin-products-inventory'],
     queryFn: () => productsApi.getAll({ limit: 50 }),
   })
@@ -72,7 +72,7 @@ export default function AdminInventoryPage() {
   const products = data?.data ?? []
 
   // Flatten to variants
-  const items = products.flatMap((p) =>
+  const items = products.flatMap((p: any) =>
     (p.variants ?? [{ id: p.id, volume: 'Standard', price: p.price, stockQty: p.stock, skuVariant: p.sku }]).map((v: {
       id: string; volume?: string; price?: number; stockQty?: number; skuVariant?: string
     }) => ({
@@ -85,7 +85,7 @@ export default function AdminInventoryPage() {
     }))
   )
 
-  const filtered = items.filter((item) => {
+  const filtered = items.filter((item: any) => {
     const matchSearch = !search ||
       item.productName?.toLowerCase().includes(search.toLowerCase()) ||
       item.sku?.toLowerCase().includes(search.toLowerCase())
@@ -98,8 +98,8 @@ export default function AdminInventoryPage() {
 
   const summary = {
     total: items.length,
-    rupture: items.filter((i) => i.qty === 0).length,
-    critical: items.filter((i) => i.qty > 0 && i.qty <= 5).length,
+    rupture: items.filter((i: any) => i.qty === 0).length,
+    critical: items.filter((i: any) => i.qty > 0 && i.qty <= 5).length,
   }
 
   return (
@@ -198,7 +198,7 @@ export default function AdminInventoryPage() {
                   </td>
                 </tr>
               ) : (
-                filtered.map((item) => (
+                filtered.map((item: any) => (
                   <tr key={item.sku} className="border-t border-gray-50 hover:bg-gray-50/50 transition-colors">
                     <td className="py-3 pl-4 pr-2">
                       <p className="text-sm font-medium text-brand-primary">{item.productName}</p>
