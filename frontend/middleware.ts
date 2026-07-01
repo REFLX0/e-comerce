@@ -44,19 +44,19 @@ export default auth((req: NextRequest & { auth?: unknown }) => {
   const isCompteRoute = pathWithoutLocale.startsWith('/compte')
 
   if (isAdminRoute && (!isLoggedIn || role !== 'ADMIN')) {
-    const redirect = NextResponse.redirect(new URL('/fr/auth/login', nextUrl))
+    const redirect = NextResponse.redirect(new URL('/auth/login', nextUrl))
     redirect.headers.set('x-request-id', requestId)
     return redirect
   }
 
   if (isCompteRoute && !isLoggedIn) {
-    const redirect = NextResponse.redirect(new URL('/fr/auth/login', nextUrl))
+    const redirect = NextResponse.redirect(new URL('/auth/login', nextUrl))
     redirect.headers.set('x-request-id', requestId)
     return redirect
   }
 
   if (isAuthRoute && isLoggedIn) {
-    const redirect = NextResponse.redirect(new URL('/fr', nextUrl))
+    const redirect = NextResponse.redirect(new URL('/', nextUrl))
     redirect.headers.set('x-request-id', requestId)
     return redirect
   }

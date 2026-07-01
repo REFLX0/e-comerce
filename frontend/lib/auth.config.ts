@@ -1,10 +1,7 @@
 import type { NextAuthConfig } from 'next-auth'
 
 export const authConfig = {
-  pages: {
-    signIn: '/auth/login',
-    error: '/auth/error',
-  },
+  // pages config removed to prevent next-auth intercept loop
   providers: [], // Added in auth.ts to avoid Edge issues with Prisma/bcrypt
   callbacks: {
     async jwt({ token, user }) {
