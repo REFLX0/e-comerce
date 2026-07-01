@@ -25,12 +25,12 @@ const QUICK_LINKS = [
 ]
 
 export default function CompteDashboardPage() {
-  const { user, token } = useAuthStore()
+  const { user } = useAuthStore()
 
   const { data, isLoading } = useQuery({
-    queryKey: ['my-orders-preview', token],
-    queryFn: () => ordersApi.getAll(token!),
-    enabled: !!token,
+    queryKey: ['my-orders-preview'],
+    queryFn: () => ordersApi.getAll(),
+    enabled: true,
   })
 
   const orders = (data?.data ?? []).slice(0, 3)
