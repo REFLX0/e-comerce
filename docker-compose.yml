@@ -6,7 +6,7 @@ services:
     image: nginx:alpine
     container_name: kiosquetn-nginx
     ports:
-      - "8080:8080"
+      - "8082:8082"
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
     depends_on:
@@ -33,7 +33,7 @@ services:
       - DATABASE_URL=postgresql://${POSTGRES_USER:-kiosquetn}:${POSTGRES_PASSWORD:-changeme}@db:5432/${POSTGRES_DB:-kiosquetn}?schema=public
       - REDIS_HOST=redis
       - REDIS_PORT=6379
-      - FRONTEND_URL=http://localhost:8080
+      - FRONTEND_URL=http://localhost:8082
     depends_on:
       migrate:
         condition: service_completed_successfully
@@ -72,13 +72,13 @@ services:
       dockerfile: frontend/Dockerfile
       args:
         - NEXT_PUBLIC_API_URL=/api
-        - NEXT_PUBLIC_SITE_URL=http://localhost:8080
+        - NEXT_PUBLIC_SITE_URL=http://localhost:8082
     container_name: kiosquetn-frontend
     env_file: .env
     environment:
       - NODE_ENV=production
       - NEXT_PUBLIC_API_URL=/api
-      - NEXTAUTH_URL=http://localhost:8080
+      - NEXTAUTH_URL=http://localhost:8082
       - AUTH_TRUST_HOST=true
       - DATABASE_URL=postgresql://${POSTGRES_USER:-kiosquetn}:${POSTGRES_PASSWORD:-changeme}@db:5432/${POSTGRES_DB:-kiosquetn}?schema=public
     depends_on:

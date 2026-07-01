@@ -21,14 +21,14 @@ sed -i "s/CHANGE_ME_GENERATE_WITH_OPENSSL/$NEXTAUTH_SECRET/1" .env
 sed -i "s/CHANGE_ME_STRONG_DB_PASSWORD/$DB_PASSWORD/g" .env
 
 echo "=== Firewall Setup ==="
-# Attempt to open port 8080 with ufw, iptables, or firewall-cmd
+# Attempt to open port 8082 with ufw, iptables, or firewall-cmd
 if command -v ufw >/dev/null 2>&1; then
-    sudo ufw allow 8080/tcp
+    sudo ufw allow 8082/tcp
 elif command -v firewall-cmd >/dev/null 2>&1; then
-    sudo firewall-cmd --zone=public --add-port=8080/tcp --permanent || true
+    sudo firewall-cmd --zone=public --add-port=8082/tcp --permanent || true
     sudo firewall-cmd --reload || true
 else
-    sudo iptables -I INPUT -p tcp --dport 8080 -j ACCEPT || true
+    sudo iptables -I INPUT -p tcp --dport 8082 -j ACCEPT || true
 fi
 
 echo '=== Launching Docker Compose ==='
