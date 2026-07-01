@@ -1,8 +1,8 @@
 #!/bin/bash
 set -e
 
-echo "=== Opening Firewall Port 8080 ==="
-sudo firewall-cmd --zone=public --add-port=8080/tcp --permanent || true
+echo "=== Opening Firewall Port 8082 ==="
+sudo firewall-cmd --zone=public --add-port=8082/tcp --permanent || true
 sudo firewall-cmd --reload || true
 
 echo "=== Preparing Directory ==="

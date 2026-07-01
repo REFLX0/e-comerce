@@ -13,31 +13,45 @@ export function BrandsBar() {
 
   if (isLoading || !brands || brands.length === 0) return null
 
+  // Duplicate for seamless infinite scroll
+  const doubled = [...brands, ...brands]
+
   return (
-    <section className="border-brand-surface-dark overflow-hidden border-y bg-white py-10">
-      <div className="section-padding">
-        <div className="flex flex-col items-center justify-center gap-8 md:flex-row md:gap-12">
-          <p className="shrink-0 text-sm font-semibold tracking-widest text-gray-400 uppercase">
-            Nos Marques Partenaires
-          </p>
-          <div className="hide-scrollbar flex w-full items-center gap-8 overflow-x-auto md:w-auto md:gap-16">
-            {brands.map((brand) => (
-              <Link
-                key={brand.id}
-                href={`/marque/${brand.slug}`}
-                className="relative flex h-12 w-24 shrink-0 items-center justify-center opacity-50 transition-opacity hover:opacity-100"
-                title={brand.name}
-              >
-                {brand.logo ? (
-                  <Image src={brand.logo} alt={brand.name} fill className="object-contain" />
-                ) : (
-                  <span className="font-display text-brand-primary-light text-xl font-black uppercase tracking-tighter opacity-80">
-                    {brand.name}
-                  </span>
-                )}
-              </Link>
-            ))}
-          </div>
+    <section className="relative overflow-hidden border-y border-brand-border bg-white py-10">
+      {/* Fade masks on left & right edges */}
+      <div className="pointer-events-none absolute left-0 top-0 z-10 h-full w-24 bg-gradient-to-r from-white to-transparent" />
+      <div className="pointer-events-none absolute right-0 top-0 z-10 h-full w-24 bg-gradient-to-l from-white to-transparent" />
+
+      <div className="section-padding mb-6">
+        <p className="text-center text-xs font-bold tracking-[0.2em] text-gray-300 uppercase">
+          Nos Marques Partenaires
+        </p>
+      </div>
+
+      {/* Marquee track */}
+      <div className="flex w-full overflow-hidden">
+        <div className="animate-marquee flex shrink-0 items-center gap-12 px-6 md:gap-20">
+          {doubled.map((brand, idx) => (
+            <Link
+              key={`${brand.id}-${idx}`}
+              href={`/marque/${brand.slug}`}
+              title={brand.name}
+              className="relative flex h-10 w-28 shrink-0 items-center justify-center opacity-35 transition-opacity duration-300 hover:opacity-100 md:h-12 md:w-32"
+            >
+              {brand.logo ? (
+                <Image
+                  src={brand.logo}
+                  alt={brand.name}
+                  fill
+                  className="object-contain grayscale hover:grayscale-0 transition-all duration-300"
+                />
+              ) : (
+                <span className="font-display text-brand-primary text-base font-black uppercase tracking-tighter">
+                  {brand.name}
+                </span>
+              )}
+            </Link>
+          ))}
         </div>
       </div>
     </section>

@@ -32,15 +32,15 @@ async function main() {
 
   // 2. BRANDS
   const brands = await Promise.all([
-    prisma.brand.create({ data: { name: 'Yacco', slug: 'yacco', logoUrl: '/img/b/yacco.png' } }),
-    prisma.brand.create({ data: { name: 'Shell', slug: 'shell', logoUrl: '/img/b/shell.png' } }),
-    prisma.brand.create({ data: { name: 'TotalEnergies', slug: 'totalenergies', logoUrl: '/img/b/total.png' } }),
-    prisma.brand.create({ data: { name: 'Castrol', slug: 'castrol', logoUrl: '/img/b/castrol.png' } }),
-    prisma.brand.create({ data: { name: 'Liqui Moly', slug: 'liqui-moly', logoUrl: '/img/b/liquimoly.png' } }),
-    prisma.brand.create({ data: { name: 'Motul', slug: 'motul', logoUrl: '/img/b/motul.png' } }),
-    prisma.brand.create({ data: { name: 'Bosch', slug: 'bosch', logoUrl: '/img/b/bosch.png' } }),
-    prisma.brand.create({ data: { name: 'Purflux', slug: 'purflux', logoUrl: '/img/b/purflux.png' } }),
-    prisma.brand.create({ data: { name: 'Wynn\'s', slug: 'wynns', logoUrl: '/img/b/wynns.png' } }),
+    prisma.brand.create({ data: { name: 'Yacco', slug: 'yacco', logoUrl: '/img/b/yacco.svg' } }),
+    prisma.brand.create({ data: { name: 'Shell', slug: 'shell', logoUrl: '/img/b/shell.svg' } }),
+    prisma.brand.create({ data: { name: 'TotalEnergies', slug: 'totalenergies', logoUrl: '/img/b/total.svg' } }),
+    prisma.brand.create({ data: { name: 'Castrol', slug: 'castrol', logoUrl: '/img/b/castrol.svg' } }),
+    prisma.brand.create({ data: { name: 'Liqui Moly', slug: 'liqui-moly', logoUrl: '/img/b/liqui-moly.svg' } }),
+    prisma.brand.create({ data: { name: 'Motul', slug: 'motul', logoUrl: '/img/b/motul.svg' } }),
+    prisma.brand.create({ data: { name: 'Bosch', slug: 'bosch', logoUrl: '/img/b/bosch.svg' } }),
+    prisma.brand.create({ data: { name: 'Purflux', slug: 'purflux', logoUrl: '/img/b/purflux.svg' } }),
+    prisma.brand.create({ data: { name: 'Wynn\'s', slug: 'wynns', logoUrl: '/img/b/wynns.svg' } }),
   ])
   const [yacco, shell, total, castrol, liqui, motul, bosch, purflux, wynns] = brands
 
