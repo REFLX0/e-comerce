@@ -84,6 +84,8 @@ services:
     depends_on:
       backend:
         condition: service_healthy
+    extra_hosts:
+      - "84.8.254.244:host-gateway"
     restart: unless-stopped
     networks:
       - frontend-net
