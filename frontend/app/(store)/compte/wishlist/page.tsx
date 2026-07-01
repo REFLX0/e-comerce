@@ -17,7 +17,7 @@ export default function WishlistPage() {
     enabled: true,
   })
 
-  const items = data?.data ?? []
+  const items = (data as any)?.data ?? []
 
   const toggleMutation = useMutation({
     mutationFn: (productId: string) => wishlistApi.toggle(productId),

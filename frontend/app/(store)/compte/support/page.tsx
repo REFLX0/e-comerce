@@ -35,8 +35,8 @@ export default function SupportPage() {
     enabled: true,
   })
 
-  const tickets = ticketsData?.data ?? []
-  const orders = ordersData?.data ?? []
+  const tickets = (ticketsData as any)?.data ?? []
+  const orders = (ordersData as any)?.data ?? []
 
   const createMutation = useMutation({
     mutationFn: () => ticketsApi.create({

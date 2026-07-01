@@ -8,7 +8,7 @@ export const ticketsApi = {
     api.get('/tickets/my-tickets'),
 
   getAllForAdmin: (status?: string) =>
-    api.get('/tickets', { params: { status } }),
+    api.get('/tickets', { params: status ? { status } : {} }),
 
   resolve: (id: string) =>
     api.patch(`/tickets/${id}/resolve`, {}),

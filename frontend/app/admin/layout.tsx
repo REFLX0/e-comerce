@@ -282,12 +282,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }, [])
 
   useEffect(() => {
-    if (isHydrated && (!isAuthenticated || user?.role !== 'ADMIN')) {
+    if (isHydrated && (!isAuthenticated || user?.role !== 'admin')) {
       router.push('/auth/login')
     }
   }, [isHydrated, isAuthenticated, user, router])
 
-  if (!isHydrated || !isAuthenticated || user?.role !== 'ADMIN') {
+  if (!isHydrated || !isAuthenticated || user?.role !== 'admin') {
     return (
       <div className="flex h-screen items-center justify-center bg-brand-primary-dark">
         <div className="h-10 w-10 animate-spin rounded-full border-4 border-brand-accent border-t-transparent" />

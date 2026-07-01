@@ -30,7 +30,7 @@ export function CheckoutForm() {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
   const { items, clearCart } = useCartStore()
-  const { token } = useAuthStore()
+  const { isAuthenticated } = useAuthStore()
 
   const {
     register,
@@ -64,8 +64,7 @@ export function CheckoutForm() {
           },
           shippingMethod: 'standard',
           notes: data.notes,
-        },
-        token || ''
+        }
       )
 
       clearCart()

@@ -26,6 +26,19 @@ function StockBadge({ qty }: { qty: number }) {
   return <span className="rounded-full bg-green-100 px-2.5 py-1 text-xs font-bold text-green-600">{qty} en stock</span>
 }
 
+interface Product {
+  id: string
+  name: string
+  slug: string
+  sku?: string
+  brand?: string
+  category?: string
+  price?: number
+  stock?: number
+  images?: string[]
+  isPublished?: boolean
+}
+
 export default function AdminProductsPage() {
   const [search, setSearch] = useState('')
   const [selected, setSelected] = useState<string[]>([])
@@ -36,7 +49,7 @@ export default function AdminProductsPage() {
     queryFn: () => productsApi.getAll({ limit: 50 }),
   })
 
-  const products = productsData?.data ?? []
+  const products: Product[] = (productsData as any)?.data ?? []
 
   const filtered = products.filter((p) => {
     const matchSearch = !search ||

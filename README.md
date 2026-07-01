@@ -57,9 +57,9 @@ docker-compose up -d --build
 
 The app will be available at **http://localhost:8080**
 
-### 3. Run migrations & seed (first time)
+### 3. Seed the database (first time, optional)
+Migrations run automatically on startup via the `migrate` service.
 ```bash
-docker exec kiosquetn-backend npx prisma migrate deploy
 docker exec kiosquetn-backend npx prisma db seed
 ```
 

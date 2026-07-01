@@ -17,7 +17,7 @@ export default function AdminDashboard() {
     enabled: true,
   })
 
-  const stats = dashboardData?.data
+  const stats = (dashboardData as any)?.data
 
   if (isLoading) {
     return (

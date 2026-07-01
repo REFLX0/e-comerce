@@ -75,7 +75,7 @@ export function ProductTabs({ product }: Props) {
         <TabsContent value="compatibility" className="mt-0">
           {product.compatibility && product.compatibility.length > 0 ? (
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {product.compatibility.map((comp) => (
+              {product.compatibility.map((comp: any) => (
                 <div
                   key={comp.id}
                   className="bg-brand-surface flex items-start gap-3 rounded-xl p-4"

@@ -68,6 +68,9 @@ jobs:
             docker compose pull db redis || true
             docker compose up -d db redis
             
+            # Run database migrations (one-shot, waits for completion)
+            docker compose up --build migrate
+            
             # Rebuild and restart backend replicas
             docker compose up -d --build --no-deps backend
             sleep 10

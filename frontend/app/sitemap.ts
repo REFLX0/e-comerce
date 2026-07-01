@@ -1,6 +1,8 @@
 import { MetadataRoute } from 'next'
 import { db } from '@/lib/db'
 
+export const dynamic = 'force-dynamic'
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.KiosqueTN.tn'
 
@@ -10,7 +12,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     select: { slug: true, createdAt: true },
   })
 
-  const productUrls = products.map((product) => ({
+  const productUrls = products.map((product: { slug: string; createdAt: Date }) => ({
     url: `${baseUrl}/produit/${product.slug}`,
     lastModified: product.createdAt,
     changeFrequency: 'weekly' as const,

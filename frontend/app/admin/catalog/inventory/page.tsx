@@ -60,6 +60,15 @@ function QtyCell({ sku, qty }: { sku: string; qty: number }) {
   )
 }
 
+interface InventoryItem {
+  productId: string
+  productName: string
+  sku: string
+  volume?: string
+  price?: number
+  qty: number
+}
+
 export default function AdminInventoryPage() {
   const [search, setSearch] = useState('')
   const [filter, setFilter] = useState<'all' | 'critical' | 'rupture'>('all')
@@ -69,10 +78,10 @@ export default function AdminInventoryPage() {
     queryFn: () => productsApi.getAll({ limit: 50 }),
   })
 
-  const products = data?.data ?? []
+  const products = (data as any)?.data ?? []
 
   // Flatten to variants
-  const items = products.flatMap((p) =>
+  const items: InventoryItem[] = products.flatMap((p: any) =>
     (p.variants ?? [{ id: p.id, volume: 'Standard', price: p.price, stockQty: p.stock, skuVariant: p.sku }]).map((v: {
       id: string; volume?: string; price?: number; stockQty?: number; skuVariant?: string
     }) => ({
@@ -98,8 +107,8 @@ export default function AdminInventoryPage() {
 
   const summary = {
     total: items.length,
-    rupture: items.filter((i) => i.qty === 0).length,
-    critical: items.filter((i) => i.qty > 0 && i.qty <= 5).length,
+    rupture: items.filter((i: any) => i.qty === 0).length,
+    critical: items.filter((i: any) => i.qty > 0 && i.qty <= 5).length,
   }
 
   return (

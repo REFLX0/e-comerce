@@ -62,7 +62,7 @@ export function ReviewsSection({ productId, rating, reviewCount }: Props) {
     setIsSubmitting(true)
     try {
       // API call to add review
-      await reviewsApi.create(productId, { ...data, authorName: 'Client' }, isAuthenticated ? 'token' : undefined)
+      await reviewsApi.create(productId, { ...data, authorName: 'Client' })
       
       toast.success('Votre avis a été publié avec succès !')
       setShowForm(false)

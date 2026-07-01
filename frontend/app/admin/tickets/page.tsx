@@ -17,7 +17,7 @@ export default function AdminTicketsPage() {
     enabled: true,
   })
 
-  const tickets = data?.data ?? []
+  const tickets = (data as any)?.data ?? []
 
   const resolveMutation = useMutation({
     mutationFn: (id: string) => ticketsApi.resolve(id),

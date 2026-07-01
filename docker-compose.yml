@@ -1,6 +1,7 @@
 version: '3.8'
 
 services:
+  # ── Reverse Proxy ─────────────────────────────────────────────────
   nginx:
     image: nginx:alpine
     container_name: kiosquetn-nginx
@@ -9,88 +10,128 @@ services:
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
     depends_on:
-      - backend
-      - frontend
+      backend:
+        condition: service_healthy
+      frontend:
+        condition: service_started
     restart: unless-stopped
+    networks:
+      - frontend-net
+      - backend-net
 
+  # ── Backend API (NestJS) ──────────────────────────────────────────
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    # We remove container_name so Docker Compose can spin up multiple replicas
-    # We remove external port mapping so it's only accessible via NGINX
+    # No container_name — allows replicas
     deploy:
       replicas: 2
+    env_file: .env
     environment:
       - NODE_ENV=production
-      - DATABASE_URL=postgresql://kiosquetn:${POSTGRES_PASSWORD:-changeme}@db:5432/kiosquetn?schema=public
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-kiosquetn}:${POSTGRES_PASSWORD:-changeme}@db:5432/${POSTGRES_DB:-kiosquetn}?schema=public
       - REDIS_HOST=redis
       - REDIS_PORT=6379
-      - JWT_SECRET=${JWT_SECRET}
-      - CLOUDINARY_CLOUD_NAME=${CLOUDINARY_CLOUD_NAME}
-      - CLOUDINARY_API_KEY=${CLOUDINARY_API_KEY}
-      - CLOUDINARY_API_SECRET=${CLOUDINARY_API_SECRET}
-      - RESEND_API_KEY=${RESEND_API_KEY}
-      - FRONTEND_URL=http://localhost
+      - FRONTEND_URL=http://localhost:8080
     depends_on:
-      db:
-        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
       redis:
         condition: service_started
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:4000/api/health"]
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:4000/api/health"]
       interval: 30s
       timeout: 10s
       retries: 3
+      start_period: 20s
+    networks:
+      - backend-net
 
+  # ── Database Migrations (one-shot) ────────────────────────────────
+  migrate:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    env_file: .env
+    environment:
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-kiosquetn}:${POSTGRES_PASSWORD:-changeme}@db:5432/${POSTGRES_DB:-kiosquetn}?schema=public
+    command: ["npx", "prisma", "migrate", "deploy"]
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: "no"
+    networks:
+      - backend-net
+
+  # ── Frontend (Next.js) ────────────────────────────────────────────
   frontend:
     build:
-      context: ./frontend
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: frontend/Dockerfile
     container_name: kiosquetn-frontend
-    # We remove external port mapping so it's only accessible via NGINX
+    env_file: .env
     environment:
       - NODE_ENV=production
       - NEXT_PUBLIC_API_URL=/api
-      - NEXTAUTH_URL=http://localhost
-      - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
-      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
-      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
-      - DATABASE_URL=postgresql://kiosquetn:${POSTGRES_PASSWORD:-changeme}@db:5432/kiosquetn?schema=public
+      - NEXTAUTH_URL=http://localhost:8080
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-kiosquetn}:${POSTGRES_PASSWORD:-changeme}@db:5432/${POSTGRES_DB:-kiosquetn}?schema=public
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
     restart: unless-stopped
+    networks:
+      - frontend-net
 
+  # ── PostgreSQL ────────────────────────────────────────────────────
   db:
     image: postgres:16-alpine
     container_name: kiosquetn-db
+    env_file: .env
     environment:
-      POSTGRES_USER: kiosquetn
+      POSTGRES_USER: ${POSTGRES_USER:-kiosquetn}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
-      POSTGRES_DB: kiosquetn
+      POSTGRES_DB: ${POSTGRES_DB:-kiosquetn}
     ports:
-      - "5433:5432"  # Use 5433 to avoid conflict with nexus-aid's postgres on 5432
+      - "5433:5432"
     volumes:
       - kiosquetn_pgdata:/var/lib/postgresql/data
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-kiosquetn} -d ${POSTGRES_DB:-kiosquetn}"]
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - backend-net
 
+  # ── Redis ─────────────────────────────────────────────────────────
   redis:
     image: redis:7-alpine
     container_name: kiosquetn-redis
     ports:
-      - "6380:6379"  # Use 6380 to avoid conflict with nexus-aid's redis on 6379
+      - "6380:6379"
     volumes:
       - kiosquetn_redis:/data
     restart: unless-stopped
     command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - backend-net
 
+# ── Networks ──────────────────────────────────────────────────────
+networks:
+  frontend-net:
+    driver: bridge
+  backend-net:
+    driver: bridge
+
+# ── Volumes ───────────────────────────────────────────────────────
 volumes:
   kiosquetn_pgdata:
   kiosquetn_redis:
-

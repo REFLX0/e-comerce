@@ -16,7 +16,7 @@ export default function AdminPromotionsPage() {
     enabled: true,
   })
 
-  const coupons = data?.data ?? []
+  const coupons = (data as any)?.data ?? []
 
   const toggleMutation = useMutation({
     mutationFn: (id: string) => couponsApi.toggleActive(id),

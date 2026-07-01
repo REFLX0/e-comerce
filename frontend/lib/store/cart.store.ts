@@ -46,9 +46,9 @@ export const useCartStore = create<CartStore>()(
 
       addItem: (product, variant, quantity = 1) => {
         const items = get().items
-        const existing = items.find((i) => i.variantId === variant.id)
+        const existing = items.find((i: any) => i.variantId === variant.id)
         const newItems = existing
-          ? items.map((i) =>
+          ? items.map((i: any) =>
               i.variantId === variant.id ? { ...i, quantity: i.quantity + quantity } : i
             )
           : [
@@ -64,30 +64,30 @@ export const useCartStore = create<CartStore>()(
         const calc = calculateCart(newItems, get().promoDiscount)
         set({
           items: newItems,
-          itemCount: newItems.reduce((a, i) => a + i.quantity, 0),
+          itemCount: newItems.reduce((a: any, i: any) => a + i.quantity, 0),
           ...calc,
         })
       },
 
       removeItem: (variantId) => {
-        const newItems = get().items.filter((i) => i.variantId !== variantId)
+        const newItems = get().items.filter((i: any) => i.variantId !== variantId)
         const calc = calculateCart(newItems, get().promoDiscount)
         set({
           items: newItems,
-          itemCount: newItems.reduce((a, i) => a + i.quantity, 0),
+          itemCount: newItems.reduce((a: any, i: any) => a + i.quantity, 0),
           ...calc,
         })
       },
 
       updateQuantity: (variantId, quantity) => {
         if (quantity < 1) return
-        const newItems = get().items.map((i) =>
+        const newItems = get().items.map((i: any) =>
           i.variantId === variantId ? { ...i, quantity } : i
         )
         const calc = calculateCart(newItems, get().promoDiscount)
         set({
           items: newItems,
-          itemCount: newItems.reduce((a, i) => a + i.quantity, 0),
+          itemCount: newItems.reduce((a: any, i: any) => a + i.quantity, 0),
           ...calc,
         })
       },

@@ -142,7 +142,7 @@ export default function MesCommandesPage() {
     enabled: true,
   })
 
-  const orders = data?.data ?? []
+  const orders = (data as any)?.data ?? []
 
   return (
     <div className="space-y-5">

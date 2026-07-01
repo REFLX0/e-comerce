@@ -33,7 +33,7 @@ export default function CompteDashboardPage() {
     enabled: true,
   })
 
-  const orders = (data?.data ?? []).slice(0, 3)
+  const orders = ((data as any)?.data ?? []).slice(0, 3)
 
   return (
     <div className="space-y-7">

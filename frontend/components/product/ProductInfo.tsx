@@ -99,7 +99,7 @@ export function ProductInfo({ product }: Props) {
 
       {/* Out of Stock Warning for current variant if others are available */}
       {selectedVariant.status === 'out_of_stock' &&
-        product.variants.some((v) => v.status === 'in_stock') && (
+        product.variants.some((v: any) => v.status === 'in_stock') && (
           <div className="mb-6 rounded-xl border border-orange-200 bg-orange-50 p-4 text-sm font-medium text-orange-800">
             Produit disponible avec d'autres emballages.
           </div>
