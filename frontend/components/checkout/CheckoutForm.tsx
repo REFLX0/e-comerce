@@ -80,7 +80,7 @@ export function CheckoutForm() {
 
   return (
     <form id="checkout-form" onSubmit={handleSubmit(onSubmit)} className="space-y-8">
-      <div className="border-brand-surface-dark rounded-2xl border bg-white p-6 shadow-sm md:p-8">
+      <div className="border-brand-surface-dark rounded-2xl border bg-white p-6 shadow-card md:p-8 animate-fade-in-up">
         <h2 className="font-display text-brand-primary mb-6 flex items-center gap-3 border-b border-gray-100 pb-4 text-xl font-bold">
           <div className="bg-brand-primary flex h-8 w-8 items-center justify-center rounded-full text-sm text-white">
             1
@@ -229,7 +229,7 @@ export function CheckoutForm() {
         </div>
       </div>
 
-      <div className="border-brand-surface-dark rounded-2xl border bg-white p-6 shadow-sm md:p-8">
+      <div className="border-brand-surface-dark rounded-2xl border bg-white p-6 shadow-card md:p-8 animate-fade-in-up" style={{ animationDelay: '100ms' }}>
         <h2 className="font-display text-brand-primary mb-6 flex items-center gap-3 border-b border-gray-100 pb-4 text-xl font-bold">
           <div className="bg-brand-primary flex h-8 w-8 items-center justify-center rounded-full text-sm text-white">
             2

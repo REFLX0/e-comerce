@@ -3,6 +3,7 @@ import { ProductGallery } from '@/components/product/ProductGallery'
 import { ProductInfo } from '@/components/product/ProductInfo'
 import { ProductTabs } from '@/components/product/ProductTabs'
 import { RelatedProducts } from '@/components/product/RelatedProducts'
+import { StickyMobileCartWrapper } from '@/components/product/StickyMobileCartWrapper'
 import { Breadcrumb } from '@/components/common/Breadcrumb'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
@@ -52,7 +53,7 @@ export default async function ProductPage({ params }: Props) {
           ]}
         />
 
-        <div className="border-brand-surface-dark mt-6 rounded-3xl border bg-white p-6 shadow-sm md:p-10">
+        <div className="border-brand-surface-dark mt-6 rounded-3xl border bg-white p-6 shadow-card md:p-10 animate-fade-in-up">
           <div className="grid grid-cols-1 gap-10 lg:grid-cols-2 lg:gap-16">
             {/* Left Column: Gallery */}
             <div>
@@ -70,6 +71,9 @@ export default async function ProductPage({ params }: Props) {
 
         <RelatedProducts productId={product.id} />
       </div>
+
+      {/* Sticky Mobile Add to Cart */}
+      <StickyMobileCartWrapper product={product} />
     </div>
   )
 }

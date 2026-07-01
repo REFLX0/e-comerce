@@ -7,7 +7,7 @@ import { StockIndicator } from '../common/StockIndicator'
 import { PriceDisplay } from '../common/PriceDisplay'
 import { VariantSelector } from './VariantSelector'
 import { AddToCartButton } from './AddToCartButton'
-import { Share2, Truck } from 'lucide-react'
+import { Share2, Truck, ShieldCheck, RotateCcw } from 'lucide-react'
 import { toast } from 'sonner'
 import { Link } from '@/i18n/routing'
 
@@ -68,8 +68,8 @@ export function ProductInfo({ product }: Props) {
         </a>
       </div>
 
-      {/* Price */}
-      <div className="mb-6">
+      {/* Price Card */}
+      <div className="mb-6 rounded-xl bg-gradient-to-r from-gray-50 to-brand-surface p-5 shadow-sm">
         <PriceDisplay
           priceHT={selectedVariant.priceHT}
           priceTTC={selectedVariant.priceTTC}
@@ -81,7 +81,7 @@ export function ProductInfo({ product }: Props) {
       </div>
 
       {/* Stock */}
-      <div className="mb-8">
+      <div className="mb-6">
         <StockIndicator status={selectedVariant.status} stock={selectedVariant.stock} />
       </div>
 
@@ -105,14 +105,34 @@ export function ProductInfo({ product }: Props) {
           </div>
         )}
 
-      {/* Delivery Banner */}
-      <div className="mb-6 flex items-center gap-3 rounded-xl border border-green-100 bg-green-50 p-4">
-        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-green-100 text-green-600">
-          <Truck size={16} />
+      {/* Trust & Delivery Badges */}
+      <div className="mb-6 grid grid-cols-1 gap-3 sm:grid-cols-3">
+        <div className="flex items-center gap-3 rounded-xl border border-green-100 bg-green-50/60 p-3">
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-green-100 text-green-600">
+            <Truck size={16} />
+          </div>
+          <div>
+            <p className="text-xs font-semibold text-green-800">Livraison 24H</p>
+            <p className="text-[10px] text-green-600">Gratuite en Tunisie</p>
+          </div>
         </div>
-        <div>
-          <p className="text-sm font-semibold text-green-800">Livraison Gratuite 24H</p>
-          <p className="text-xs text-green-600">Sur tout le territoire tunisien</p>
+        <div className="flex items-center gap-3 rounded-xl border border-blue-100 bg-blue-50/60 p-3">
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-blue-100 text-blue-600">
+            <ShieldCheck size={16} />
+          </div>
+          <div>
+            <p className="text-xs font-semibold text-blue-800">100% Authentique</p>
+            <p className="text-[10px] text-blue-600">Produit certifié</p>
+          </div>
+        </div>
+        <div className="flex items-center gap-3 rounded-xl border border-amber-100 bg-amber-50/60 p-3">
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-amber-100 text-amber-600">
+            <RotateCcw size={16} />
+          </div>
+          <div>
+            <p className="text-xs font-semibold text-amber-800">Retour facile</p>
+            <p className="text-[10px] text-amber-600">Sous 14 jours</p>
+          </div>
         </div>
       </div>
 

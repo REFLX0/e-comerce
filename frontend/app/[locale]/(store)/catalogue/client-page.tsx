@@ -70,13 +70,21 @@ export default function CataloguePage() {
                 </SheetTrigger>
                 <SheetContent
                   side="left"
-                  className="bg-brand-surface w-full overflow-y-auto p-0 sm:max-w-sm"
+                  className="bg-brand-surface w-full flex flex-col p-0 sm:max-w-sm border-r-0"
                 >
-                  <div className="p-6">
+                  <div className="flex-1 overflow-y-auto p-6 pb-24">
                     <h2 className="font-display text-brand-primary mb-6 text-xl font-bold">
                       Filtres
                     </h2>
                     <FilterSidebar />
+                  </div>
+                  <div className="absolute bottom-0 left-0 right-0 border-t border-gray-200 bg-white/90 backdrop-blur-md p-4 shadow-overlay">
+                    <button 
+                      onClick={() => setIsMobileFiltersOpen(false)}
+                      className="btn-primary w-full shadow-md"
+                    >
+                      Afficher les résultats
+                    </button>
                   </div>
                 </SheetContent>
               </Sheet>
