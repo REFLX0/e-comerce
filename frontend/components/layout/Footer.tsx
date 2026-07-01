@@ -1,5 +1,5 @@
 import { Link } from '@/i18n/routing'
-import { Phone, Mail, MapPin, Facebook, ArrowRight } from 'lucide-react'
+import { Phone, Mail, MapPin, Share2, ArrowRight } from 'lucide-react'
 
 export default function Footer() {
   return (
@@ -40,7 +40,7 @@ export default function Footer() {
                 className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/8 text-white/60
                            hover:bg-brand-accent hover:text-brand-primary transition-all duration-300"
               >
-                <Facebook size={17} />
+                <Share2 size={17} />
               </a>
             </div>
           </div>
