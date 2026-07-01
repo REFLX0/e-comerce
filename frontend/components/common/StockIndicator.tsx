@@ -9,7 +9,7 @@ interface Props {
 export function StockIndicator({ status, stock }: Props) {
   if (status === 'in_stock') {
     return (
-      <div className="flex items-center gap-1.5 text-green-600 text-sm font-medium">
+      <div className="flex items-center gap-1.5 text-sm font-medium text-green-600">
         <CheckCircle2 size={16} />
         <span>En stock {stock !== undefined && `(${stock})`}</span>
       </div>
@@ -18,7 +18,7 @@ export function StockIndicator({ status, stock }: Props) {
 
   if (status === 'low_stock') {
     return (
-      <div className="flex items-center gap-1.5 text-orange-500 text-sm font-medium">
+      <div className="flex items-center gap-1.5 text-sm font-medium text-orange-500">
         <Clock size={16} />
         <span>Stock faible {stock !== undefined && `(${stock})`}</span>
       </div>
@@ -27,7 +27,7 @@ export function StockIndicator({ status, stock }: Props) {
 
   if (status === 'on_order') {
     return (
-      <div className="flex items-center gap-1.5 text-blue-500 text-sm font-medium">
+      <div className="flex items-center gap-1.5 text-sm font-medium text-blue-500">
         <Clock size={16} />
         <span>Sur commande</span>
       </div>
@@ -35,7 +35,7 @@ export function StockIndicator({ status, stock }: Props) {
   }
 
   return (
-    <div className="flex items-center gap-1.5 text-red-500 text-sm font-medium">
+    <div className="flex items-center gap-1.5 text-sm font-medium text-red-500">
       <XCircle size={16} />
       <span>Rupture de stock</span>
     </div>

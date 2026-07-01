@@ -1,4 +1,4 @@
-import { apiPost, apiGet, apiPut } from './client'
+import { apiPost, apiGet, apiPut, apiPatch, apiDelete } from './client'
 import type { User, Address } from '@/lib/types'
 
 interface LoginPayload {
@@ -14,36 +14,30 @@ interface RegisterPayload {
 }
 interface LoginResponse {
   user: User
-  token: string
+  
 }
 
 export const authApi = {
   login: (payload: LoginPayload) => apiPost<LoginResponse>('/auth/login', payload),
 
-  register: (payload: RegisterPayload) =>
-    apiPost<LoginResponse>('/auth/register', payload),
+  register: (payload: RegisterPayload) => apiPost<LoginResponse>('/auth/register', payload),
 
-  logout: (token: string) => apiPost<void>('/auth/logout', {}, token),
+  logout: () => apiPost<void>('/auth/logout', { refreshToken: token }),
 
-  me: (token: string) =>
-    apiGet<User>('/auth/me', undefined, {
+  me: () =>
+    apiGet<User>('/users/me', undefined, {
       headers: { Authorization: `Bearer ${token}` },
     }),
 
-  updateProfile: (payload: Partial<User>, token: string) =>
-    apiPut<User>('/auth/profile', payload, token),
+  updateProfile: (payload: Partial<User>, ) =>
+    apiPatch<User>('/users/me', payload),
 
-  changePassword: (
-    payload: { currentPassword: string; newPassword: string },
-    token: string
-  ) => apiPut<void>('/auth/password', payload, token),
+  addAddress: (address: Omit<Address, 'id'>, ) =>
+    apiPost<Address>('/users/me/addresses', address),
 
-  addAddress: (address: Omit<Address, 'id'>, token: string) =>
-    apiPost<Address>('/auth/addresses', address, token),
+  removeAddress: (id: string, ) =>
+    apiDelete<void>(`/users/me/addresses/${id}`),
 
-  updateAddress: (id: string, address: Partial<Address>, token: string) =>
-    apiPut<Address>(`/auth/addresses/${id}`, address, token),
-
-  forgotPassword: (email: string) =>
-    apiPost<void>('/auth/forgot-password', { email }),
+  forgotPassword: (email: string) => apiPost<void>('/auth/forgot-password', { email }),
 }
+

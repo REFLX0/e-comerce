@@ -10,3 +10,4 @@ export const categoriesApi = {
 
   getFeatured: () => apiGet<Category[]>('/categories/featured'),
 }
+

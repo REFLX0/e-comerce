@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { useRouter, useSearchParams } from 'next/navigation'
 import {
@@ -36,9 +36,9 @@ export function SortDropdown() {
 
   return (
     <div className="flex items-center gap-3">
-      <span className="text-sm text-gray-500 hidden sm:inline-block">Trier par :</span>
+      <span className="hidden text-sm text-gray-500 sm:inline-block">Trier par :</span>
       <Select value={currentSort} onValueChange={handleSortChange}>
-        <SelectTrigger className="w-[180px] bg-white border-brand-surface-dark focus:ring-brand-primary">
+        <SelectTrigger className="border-brand-surface-dark focus:ring-brand-primary w-[180px] bg-white">
           <SelectValue placeholder="Trier par" />
         </SelectTrigger>
         <SelectContent>

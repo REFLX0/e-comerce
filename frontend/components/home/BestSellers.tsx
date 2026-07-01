@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { useQuery } from '@tanstack/react-query'
 import { productsApi } from '@/lib/api/products'
@@ -14,9 +14,9 @@ export function BestSellers() {
   })
 
   return (
-    <section className="section-padding py-16 bg-brand-surface">
-      <SectionTitle 
-        title="Nos Meilleures Ventes" 
+    <section className="section-padding bg-brand-surface py-16">
+      <SectionTitle
+        title="Nos Meilleures Ventes"
         subtitle="Découvrez les huiles les plus populaires et les mieux notées par nos clients."
         centered
       />

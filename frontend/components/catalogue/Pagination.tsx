@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { useRouter, useSearchParams } from 'next/navigation'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
@@ -24,11 +24,7 @@ export function Pagination({ currentPage, totalPages }: Props) {
   const pages: (number | string)[] = []
   for (let i = 1; i <= totalPages; i++) {
     // Simple logic to show limited pages
-    if (
-      i === 1 ||
-      i === totalPages ||
-      (i >= currentPage - 1 && i <= currentPage + 1)
-    ) {
+    if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
       pages.push(i)
     } else if (i === currentPage - 2 || i === currentPage + 2) {
       pages.push('...')
@@ -42,11 +38,11 @@ export function Pagination({ currentPage, totalPages }: Props) {
   })
 
   return (
-    <div className="flex items-center justify-center gap-2 mt-12">
+    <div className="mt-12 flex items-center justify-center gap-2">
       <button
         onClick={() => handlePageChange(currentPage - 1)}
         disabled={currentPage === 1}
-        className="w-10 h-10 rounded-full flex items-center justify-center border border-brand-surface-dark text-gray-500 hover:bg-brand-surface disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        className="border-brand-surface-dark hover:bg-brand-surface flex h-10 w-10 items-center justify-center rounded-full border text-gray-500 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
       >
         <ChevronLeft size={20} />
       </button>
@@ -60,10 +56,10 @@ export function Pagination({ currentPage, totalPages }: Props) {
           <button
             key={page}
             onClick={() => handlePageChange(page as number)}
-            className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium transition-colors ${
+            className={`flex h-10 w-10 items-center justify-center rounded-full text-sm font-medium transition-colors ${
               currentPage === page
-                ? 'bg-brand-primary text-white border border-brand-primary'
-                : 'border border-brand-surface-dark text-gray-600 hover:bg-brand-surface'
+                ? 'bg-brand-primary border-brand-primary border text-white'
+                : 'border-brand-surface-dark hover:bg-brand-surface border text-gray-600'
             }`}
           >
             {page}
@@ -74,7 +70,7 @@ export function Pagination({ currentPage, totalPages }: Props) {
       <button
         onClick={() => handlePageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
-        className="w-10 h-10 rounded-full flex items-center justify-center border border-brand-surface-dark text-gray-500 hover:bg-brand-surface disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        className="border-brand-surface-dark hover:bg-brand-surface flex h-10 w-10 items-center justify-center rounded-full border text-gray-500 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
       >
         <ChevronRight size={20} />
       </button>

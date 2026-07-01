@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import Image from 'next/image'
 import Link from 'next/link'
@@ -20,58 +20,58 @@ export function ProductCard({ product }: Props) {
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault()
     // By default, add the first variant
-    if (product.variants.length > 0) {
-      addItem(product, product.variants[0], 1)
+    if (product.variants && product.variants.length > 0) {
+      addItem(product, product.variants[0]!, 1)
       toast.success('Produit ajouté au panier')
     }
   }
 
-  const defaultVariant = product.variants[0]
-  const oldPrice = defaultVariant?.priceHT * 1.2 // Mocking old price for demo logic if promo
+  const defaultVariant = product.variants?.[0]
+  const oldPrice = defaultVariant ? defaultVariant.priceHT * 1.2 : 0
 
   return (
-    <Link href={`/produit/${product.slug}`} className="group product-card p-4 relative block">
+    <Link href={`/produit/${product.slug}`} className="group product-card relative block p-4">
       {/* Badges */}
       <div className="absolute top-4 left-4 z-10 flex flex-col gap-2">
         {product.isPromo && (
-          <span className="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded">
+          <span className="rounded bg-red-500 px-2 py-1 text-xs font-bold text-white">
             PROMO {product.promoPercent ? `-${product.promoPercent}%` : ''}
           </span>
         )}
         {product.isNew && (
-          <span className="bg-brand-primary text-white text-xs font-bold px-2 py-1 rounded">
+          <span className="bg-brand-primary rounded px-2 py-1 text-xs font-bold text-white">
             NOUVEAU
           </span>
         )}
       </div>
 
       {/* Image */}
-      <div className="relative aspect-square bg-brand-surface rounded-xl overflow-hidden mb-4">
+      <div className="bg-brand-surface relative mb-4 aspect-square overflow-hidden rounded-xl">
         {product.images?.[0] ? (
           <Image
             src={product.images[0]}
             alt={product.name}
             fill
-            className="object-cover group-hover:scale-105 transition-transform duration-500"
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center bg-gray-100">
-            <span className="text-gray-400 text-sm">Image non disponible</span>
+          <div className="flex h-full w-full items-center justify-center bg-gray-100">
+            <span className="text-sm text-gray-400">Image non disponible</span>
           </div>
         )}
       </div>
 
       {/* Brand & Category */}
-      <div className="flex items-center justify-between mb-2">
+      <div className="mb-2 flex items-center justify-between">
         {product.brand && (
-          <span className="text-xs font-semibold uppercase text-brand-primary tracking-wider">
+          <span className="text-brand-primary text-xs font-semibold tracking-wider uppercase">
             {product.brand.name}
           </span>
         )}
       </div>
 
       {/* Title */}
-      <h3 className="font-medium text-brand-primary mb-1 line-clamp-2 min-h-[48px] group-hover:text-brand-accent transition-colors">
+      <h3 className="text-brand-primary group-hover:text-brand-accent mb-1 line-clamp-2 min-h-[48px] font-medium transition-colors">
         {product.name}
       </h3>
 
@@ -86,7 +86,7 @@ export function ProductCard({ product }: Props) {
       </div>
 
       {/* Price & Add to Cart */}
-      <div className="flex items-end justify-between mt-auto pt-4 border-t border-brand-surface-dark">
+      <div className="border-brand-surface-dark mt-auto flex items-end justify-between border-t pt-4">
         {defaultVariant ? (
           <PriceDisplay
             priceHT={defaultVariant.priceHT}
@@ -98,11 +98,11 @@ export function ProductCard({ product }: Props) {
         ) : (
           <span className="text-sm text-gray-500">Prix non disponible</span>
         )}
-        
+
         <button
           onClick={handleAddToCart}
           disabled={defaultVariant?.status === 'out_of_stock'}
-          className="w-10 h-10 rounded-full bg-brand-surface flex items-center justify-center text-brand-primary hover:bg-brand-accent hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="bg-brand-surface text-brand-primary hover:bg-brand-accent flex h-10 w-10 items-center justify-center rounded-full transition-colors hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
           title="Ajouter au panier"
         >
           <ShoppingCart size={20} />

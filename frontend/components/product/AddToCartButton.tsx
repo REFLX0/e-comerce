@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { useState } from 'react'
 import { ShoppingCart, Plus, Minus } from 'lucide-react'
@@ -24,19 +24,19 @@ export function AddToCartButton({ product, variant }: Props) {
   }
 
   return (
-    <div className="flex flex-col sm:flex-row gap-4 mb-8">
-      <div className="flex items-center border-2 border-brand-surface-dark rounded-full h-14 w-full sm:w-32 bg-white px-2 shrink-0">
+    <div className="mb-8 flex flex-col gap-4 sm:flex-row">
+      <div className="border-brand-surface-dark flex h-14 w-full shrink-0 items-center rounded-full border-2 bg-white px-2 sm:w-32">
         <button
           onClick={() => setQuantity((prev) => Math.max(1, prev - 1))}
-          className="w-10 h-10 flex items-center justify-center text-gray-500 hover:text-brand-primary"
+          className="hover:text-brand-primary flex h-10 w-10 items-center justify-center text-gray-500"
           disabled={isOutOfStock}
         >
           <Minus size={18} />
         </button>
-        <span className="flex-1 text-center font-semibold text-lg">{quantity}</span>
+        <span className="flex-1 text-center text-lg font-semibold">{quantity}</span>
         <button
           onClick={() => setQuantity((prev) => prev + 1)}
-          className="w-10 h-10 flex items-center justify-center text-gray-500 hover:text-brand-primary"
+          className="hover:text-brand-primary flex h-10 w-10 items-center justify-center text-gray-500"
           disabled={isOutOfStock}
         >
           <Plus size={18} />
@@ -46,7 +46,7 @@ export function AddToCartButton({ product, variant }: Props) {
       <button
         onClick={handleAddToCart}
         disabled={isOutOfStock}
-        className="flex-1 h-14 btn-primary flex items-center justify-center gap-3 text-lg"
+        className="btn-primary flex h-14 flex-1 items-center justify-center gap-3 text-lg"
       >
         <ShoppingCart size={22} />
         {isOutOfStock ? 'Rupture de stock' : 'Ajouter au panier'}

@@ -3,12 +3,7 @@
 export type ProductStatus = 'in_stock' | 'low_stock' | 'out_of_stock' | 'on_order'
 export type UserRole = 'customer' | 'pro' | 'admin'
 export type OrderStatus =
-  | 'pending'
-  | 'confirmed'
-  | 'processing'
-  | 'shipped'
-  | 'delivered'
-  | 'cancelled'
+  'pending' | 'confirmed' | 'processing' | 'shipped' | 'delivered' | 'cancelled'
 export type VehicleType = 'car' | 'moto' | 'truck' | 'agriculture' | 'industry' | 'marine'
 
 // ─── Core entities ────────────────────────────────────────────────────────
@@ -108,7 +103,6 @@ export interface Review {
   createdAt: string
 }
 
-
 // ─── Cart (client-side Zustand, synced with API on order) ─────────────────
 
 export interface CartItem {
@@ -202,7 +196,6 @@ export interface Order {
   createdAt: string
   updatedAt: string
 }
-
 
 // ─── API Response wrappers ────────────────────────────────────────────────
 

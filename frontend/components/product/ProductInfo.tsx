@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { useState } from 'react'
 import type { Product } from '@/lib/types'
@@ -22,11 +22,13 @@ export function ProductInfo({ product }: Props) {
 
   const handleShare = () => {
     if (navigator.share) {
-      navigator.share({
-        title: product.name,
-        text: product.shortDescription,
-        url: window.location.href,
-      }).catch(console.error)
+      navigator
+        .share({
+          title: product.name,
+          text: product.shortDescription,
+          url: window.location.href,
+        })
+        .catch(console.error)
     } else {
       navigator.clipboard.writeText(window.location.href)
       toast.success('Lien copié dans le presse-papier')
@@ -36,28 +38,32 @@ export function ProductInfo({ product }: Props) {
   const oldPrice = selectedVariant.priceHT * 1.2
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex h-full flex-col">
       {/* Brand & Reference */}
-      <div className="flex items-center justify-between mb-4">
+      <div className="mb-4 flex items-center justify-between">
         {product.brand && (
-          <Link href={`/marque/${product.brand.slug}`} className="text-sm font-semibold uppercase text-brand-accent tracking-wider hover:underline">
+          <Link
+            href={`/marque/${product.brand.slug}`}
+            className="text-brand-accent text-sm font-semibold tracking-wider uppercase hover:underline"
+          >
             {product.brand.name}
           </Link>
         )}
-        <span className="text-xs text-gray-400 font-mono">
-          Réf: {selectedVariant.sku}
-        </span>
+        <span className="font-mono text-xs text-gray-400">Réf: {selectedVariant.sku}</span>
       </div>
 
       {/* Title */}
-      <h1 className="text-3xl md:text-4xl font-display font-bold text-brand-primary mb-4 leading-tight">
+      <h1 className="font-display text-brand-primary mb-4 text-3xl leading-tight font-bold md:text-4xl">
         {product.name}
       </h1>
 
       {/* Rating & Reviews Link */}
-      <div className="flex items-center gap-4 mb-6 pb-6 border-b border-brand-surface-dark">
+      <div className="border-brand-surface-dark mb-6 flex items-center gap-4 border-b pb-6">
         <RatingStars rating={product.rating} count={product.reviewCount} size={20} />
-        <a href="#avis" className="text-sm text-brand-primary hover:text-brand-accent transition-colors underline-offset-4 hover:underline">
+        <a
+          href="#avis"
+          className="text-brand-primary hover:text-brand-accent text-sm underline-offset-4 transition-colors hover:underline"
+        >
           Voir les avis
         </a>
       </div>
@@ -70,7 +76,7 @@ export function ProductInfo({ product }: Props) {
           isPromo={product.isPromo}
           promoPercent={product.promoPercent}
           oldPriceHT={oldPrice}
-          className="scale-125 origin-left"
+          className="origin-left scale-125"
         />
       </div>
 
@@ -81,9 +87,7 @@ export function ProductInfo({ product }: Props) {
 
       {/* Short Description */}
       {product.shortDescription && (
-        <p className="text-gray-600 mb-8 leading-relaxed">
-          {product.shortDescription}
-        </p>
+        <p className="mb-8 leading-relaxed text-gray-600">{product.shortDescription}</p>
       )}
 
       {/* Variant Selector */}
@@ -94,15 +98,16 @@ export function ProductInfo({ product }: Props) {
       />
 
       {/* Out of Stock Warning for current variant if others are available */}
-      {selectedVariant.status === 'out_of_stock' && product.variants.some(v => v.status === 'in_stock') && (
-        <div className="mb-6 p-4 bg-orange-50 border border-orange-200 rounded-xl text-orange-800 text-sm font-medium">
-          Produit disponible avec d'autres emballages.
-        </div>
-      )}
+      {selectedVariant.status === 'out_of_stock' &&
+        product.variants.some((v) => v.status === 'in_stock') && (
+          <div className="mb-6 rounded-xl border border-orange-200 bg-orange-50 p-4 text-sm font-medium text-orange-800">
+            Produit disponible avec d'autres emballages.
+          </div>
+        )}
 
       {/* Delivery Banner */}
-      <div className="mb-6 flex items-center gap-3 p-4 bg-green-50 border border-green-100 rounded-xl">
-        <div className="w-8 h-8 rounded-full bg-green-100 text-green-600 flex items-center justify-center shrink-0">
+      <div className="mb-6 flex items-center gap-3 rounded-xl border border-green-100 bg-green-50 p-4">
+        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-green-100 text-green-600">
           <Truck size={16} />
         </div>
         <div>
@@ -115,10 +120,10 @@ export function ProductInfo({ product }: Props) {
       <AddToCartButton product={product} variant={selectedVariant} />
 
       {/* Quick Actions */}
-      <div className="flex items-center gap-6 border-t border-brand-surface-dark pt-6 mt-auto">
+      <div className="border-brand-surface-dark mt-auto flex items-center gap-6 border-t pt-6">
         <button
           onClick={handleShare}
-          className="flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-brand-primary transition-colors ml-auto"
+          className="hover:text-brand-primary ml-auto flex items-center gap-2 text-sm font-medium text-gray-500 transition-colors"
         >
           <Share2 size={20} />
           Partager

@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { useRouter, useSearchParams } from 'next/navigation'
 import { X } from 'lucide-react'
@@ -21,7 +21,10 @@ export function ActiveFilters() {
   const activeFilters: { key: string; label: string }[] = []
 
   if (searchParams.get('categorySlug')) {
-    activeFilters.push({ key: 'categorySlug', label: `Catégorie: ${searchParams.get('categorySlug')}` })
+    activeFilters.push({
+      key: 'categorySlug',
+      label: `Catégorie: ${searchParams.get('categorySlug')}`,
+    })
   }
   if (searchParams.get('brandSlug')) {
     activeFilters.push({ key: 'brandSlug', label: `Marque: ${searchParams.get('brandSlug')}` })
@@ -42,13 +45,13 @@ export function ActiveFilters() {
   if (activeFilters.length === 0) return null
 
   return (
-    <div className="flex flex-wrap items-center gap-2 mb-6">
-      <span className="text-sm text-gray-500 mr-2">Filtres actifs :</span>
+    <div className="mb-6 flex flex-wrap items-center gap-2">
+      <span className="mr-2 text-sm text-gray-500">Filtres actifs :</span>
       {activeFilters.map((filter) => (
         <button
           key={filter.key}
           onClick={() => removeFilter(filter.key)}
-          className="flex items-center gap-1.5 bg-brand-primary/10 text-brand-primary hover:bg-brand-primary hover:text-white px-3 py-1.5 rounded-full text-xs font-medium transition-colors"
+          className="bg-brand-primary/10 text-brand-primary hover:bg-brand-primary flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-colors hover:text-white"
         >
           {filter.label}
           <X size={14} />
@@ -56,7 +59,7 @@ export function ActiveFilters() {
       ))}
       <button
         onClick={clearAll}
-        className="text-xs text-brand-accent hover:underline font-medium ml-2"
+        className="text-brand-accent ml-2 text-xs font-medium hover:underline"
       >
         Tout effacer
       </button>

@@ -1,0 +1,333 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─────────────────────────────────────────
+//  ENUMS
+// ─────────────────────────────────────────
+
+enum Role {
+  CUSTOMER
+  ADMIN
+  PRO
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+enum CouponType {
+  PERCENT
+  FIXED
+  SHIPPING
+}
+
+enum TicketType {
+  RETURN
+  SUPPORT
+}
+
+enum TicketStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+  CLOSED
+}
+
+// ─────────────────────────────────────────
+//  AUTH (NextAuth v5 required tables)
+// ─────────────────────────────────────────
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  passwordHash  String?
+  role          Role      @default(CUSTOMER)
+  phone         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  accounts       Account[]
+  sessions       Session[]
+  addresses      Address[]
+  orders         Order[]
+  reviews        Review[]
+  wishlistItems  WishlistItem[]
+  supportTickets SupportTicket[]
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// ─────────────────────────────────────────
+//  ADDRESSES
+// ─────────────────────────────────────────
+
+model Address {
+  id        String  @id @default(cuid())
+  userId    String
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  fullName  String
+  phone     String
+  city      String
+  wilaya    String
+  isDefault Boolean @default(false)
+}
+
+// ─────────────────────────────────────────
+//  CATALOG
+// ─────────────────────────────────────────
+
+model Category {
+  id       String     @id @default(cuid())
+  nameFr   String
+  slug     String     @unique
+  imageUrl String?
+  parentId String?
+  parent   Category?  @relation("CategoryHierarchy", fields: [parentId], references: [id], onDelete: SetNull)
+  children Category[] @relation("CategoryHierarchy")
+  products Product[]
+}
+
+model Brand {
+  id       String    @id @default(cuid())
+  name     String
+  slug     String    @unique
+  logoUrl  String?
+  products Product[]
+}
+
+model Product {
+  id               String                @id @default(cuid())
+  sku              String                @unique
+  nameFr           String
+  slug             String                @unique
+  description      String                @db.Text
+  isFeatured       Boolean               @default(false)
+  isPublished      Boolean               @default(true)
+  brandId          String
+  brand            Brand                 @relation(fields: [brandId], references: [id])
+  categoryId       String
+  category         Category              @relation(fields: [categoryId], references: [id])
+  variants         ProductVariant[]
+  images           ProductImage[]
+  specs            ProductSpecs?
+  compatibilities  VehicleCompatibility[]
+  orderItems       OrderItem[]
+  reviews          Review[]
+  wishlistItems    WishlistItem[]
+  createdAt        DateTime              @default(now())
+}
+
+model ProductVariant {
+  id         String      @id @default(cuid())
+  productId  String
+  product    Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  volume     String      // e.g., "1L", "5L", "208L"
+  price      Float
+  stockQty   Int         @default(0)
+  skuVariant String      @unique
+  orderItems OrderItem[]
+}
+
+model ProductImage {
+  id        String  @id @default(cuid())
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  url       String
+  altFr     String?
+  isPrimary Boolean @default(false)
+  sortOrder Int     @default(0)
+}
+
+// Oil technical specs (viscosity, API standard, etc.)
+model ProductSpecs {
+  id            String  @id @default(cuid())
+  productId     String  @unique
+  product       Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  viscosity     String? // e.g., "5W-40"
+  apiStandard   String? // e.g., "API SN"
+  aeceaStandard String? // e.g., "ACEA C3"
+  isFullySynth  Boolean @default(false)
+  isSemiSynth   Boolean @default(false)
+  isMinerale    Boolean @default(false)
+}
+
+// ─────────────────────────────────────────
+//  "TROUVER MON HUILE" CONFIGURATOR
+// ─────────────────────────────────────────
+
+model VehicleMake {
+  id       String         @id @default(cuid())
+  name     String         @unique // e.g., "Renault"
+  slug     String         @unique
+  models   VehicleModel[]
+}
+
+model VehicleModel {
+  id             String               @id @default(cuid())
+  makeId         String
+  make           VehicleMake          @relation(fields: [makeId], references: [id], onDelete: Cascade)
+  name           String               // e.g., "Clio IV"
+  slug           String               @unique
+  compatibilities VehicleCompatibility[]
+}
+
+model VehicleCompatibility {
+  id            String       @id @default(cuid())
+  productId     String
+  product       Product      @relation(fields: [productId], references: [id], onDelete: Cascade)
+  vehicleModelId String
+  vehicleModel  VehicleModel @relation(fields: [vehicleModelId], references: [id], onDelete: Cascade)
+  engineCode    String?      // e.g., "1.5 dCi 90"
+  yearFrom      Int?
+  yearTo        Int?
+
+  @@unique([productId, vehicleModelId, engineCode])
+}
+
+// ─────────────────────────────────────────
+//  ORDERS
+// ─────────────────────────────────────────
+
+model Order {
+  id             String      @id @default(cuid())
+  userId         String?
+  user           User?       @relation(fields: [userId], references: [id])
+  status         OrderStatus @default(PENDING)
+  totalAmount    Float
+  idempotencyKey String?     @unique
+  // Shipping snapshot (denormalized for data integrity)
+  shipFullName   String
+  shipPhone      String
+  shipWilaya     String
+  shipCity       String
+  notes          String?
+  items          OrderItem[]
+  supportTickets SupportTicket[]
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+}
+
+model OrderItem {
+  id        String         @id @default(cuid())
+  orderId   String
+  order     Order          @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product        @relation(fields: [productId], references: [id])
+  variantId String
+  variant   ProductVariant @relation(fields: [variantId], references: [id])
+  quantity  Int
+  unitPrice Float          // Snapshot of price at time of purchase
+}
+
+model Review {
+  id          String   @id @default(cuid())
+  productId   String
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  userId      String?
+  user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  authorName  String
+  rating      Int
+  comment     String
+  isApproved  Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// ─────────────────────────────────────────
+//  COUPONS
+// ─────────────────────────────────────────
+
+model Coupon {
+  id          String     @id @default(cuid())
+  code        String     @unique
+  type        CouponType
+  value       Float      // Percentage (e.g. 20 = 20%) or fixed TND amount
+  minAmount   Float?     // Minimum cart total to apply coupon
+  maxUses     Int?
+  currentUses Int        @default(0)
+  expiryDate  DateTime?
+  isActive    Boolean    @default(true)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+// ─────────────────────────────────────────
+//  WISHLIST
+// ─────────────────────────────────────────
+
+model WishlistItem {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, productId])
+}
+
+// ─────────────────────────────────────────
+//  SUPPORT TICKETS
+// ─────────────────────────────────────────
+
+model SupportTicket {
+  id        String       @id @default(cuid())
+  userId    String
+  user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  orderId   String?
+  order     Order?       @relation(fields: [orderId], references: [id], onDelete: SetNull)
+  type      TicketType
+  reason    String
+  message   String?      @db.Text
+  status    TicketStatus @default(OPEN)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+}
+

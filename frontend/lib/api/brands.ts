@@ -8,3 +8,4 @@ export const brandsApi = {
 
   getBySlug: (slug: string) => apiGet<Brand>(`/brands/${slug}`),
 }
+

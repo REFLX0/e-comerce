@@ -14,6 +14,7 @@ export const reviewsApi = {
       limit,
     }),
 
-  create: (productId: string, payload: CreateReviewPayload, token?: string) =>
-    apiPost<Review>(`/products/${productId}/reviews`, payload, token),
+  create: (productId: string, payload: CreateReviewPayload, ) =>
+    apiPost<Review>(`/products/${productId}/reviews`, payload),
 }
+

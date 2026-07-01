@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { useQuery } from '@tanstack/react-query'
 import { brandsApi } from '@/lib/api/brands'
@@ -14,29 +14,26 @@ export function BrandsBar() {
   if (isLoading || !brands || brands.length === 0) return null
 
   return (
-    <section className="border-y border-brand-surface-dark bg-white py-10 overflow-hidden">
+    <section className="border-brand-surface-dark overflow-hidden border-y bg-white py-10">
       <div className="section-padding">
-        <div className="flex flex-col md:flex-row items-center gap-8 md:gap-12 justify-center">
-          <p className="text-sm font-semibold text-gray-400 uppercase tracking-widest shrink-0">
+        <div className="flex flex-col items-center justify-center gap-8 md:flex-row md:gap-12">
+          <p className="shrink-0 text-sm font-semibold tracking-widest text-gray-400 uppercase">
             Nos Marques Partenaires
           </p>
-          <div className="flex items-center gap-8 md:gap-16 overflow-x-auto hide-scrollbar w-full md:w-auto">
+          <div className="hide-scrollbar flex w-full items-center gap-8 overflow-x-auto md:w-auto md:gap-16">
             {brands.map((brand) => (
-              <Link 
-                key={brand.id} 
+              <Link
+                key={brand.id}
                 href={`/marque/${brand.slug}`}
-                className="opacity-50 hover:opacity-100 transition-opacity shrink-0 flex items-center justify-center w-24 h-12 relative"
+                className="relative flex h-12 w-24 shrink-0 items-center justify-center opacity-50 transition-opacity hover:opacity-100"
                 title={brand.name}
               >
                 {brand.logo ? (
-                  <Image 
-                    src={brand.logo} 
-                    alt={brand.name} 
-                    fill 
-                    className="object-contain"
-                  />
+                  <Image src={brand.logo} alt={brand.name} fill className="object-contain" />
                 ) : (
-                  <span className="font-display font-bold text-lg text-brand-primary">{brand.name}</span>
+                  <span className="font-display text-brand-primary text-lg font-bold">
+                    {brand.name}
+                  </span>
                 )}
               </Link>
             ))}

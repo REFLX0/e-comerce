@@ -8,7 +8,7 @@ interface Props {
 
 export function Badge({ children, variant = 'default', className = '' }: Props) {
   let variantClass = ''
-  
+
   if (variant === 'success') {
     variantClass = 'bg-green-100 text-green-800 hover:bg-green-100'
   } else if (variant === 'warning') {

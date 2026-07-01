@@ -1,16 +1,17 @@
-'use client'
+"use client";
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Search, User, ChevronDown } from 'lucide-react'
-import { MiniCart } from './MiniCart'
-import { MobileMenu } from './MobileMenu'
+import dynamic from 'next/dynamic'
+const MiniCart = dynamic(() => import('./MiniCart'), { ssr: false })
+const MobileMenu = dynamic(() => import('./MobileMenu'), { ssr: false })
 import { useAuthStore } from '@/lib/store/auth.store'
 import { useQuery } from '@tanstack/react-query'
 import { categoriesApi } from '@/lib/api/categories'
 import Image from 'next/image'
 
-export function Header() {
+export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isHoveringMenu, setIsHoveringMenu] = useState(false)
   const { isAuthenticated, user } = useAuthStore()
@@ -32,19 +33,21 @@ export function Header() {
   return (
     <header
       className={`sticky top-0 z-40 w-full transition-all duration-300 ${
-        isScrolled
-          ? 'bg-white/95 backdrop-blur-md shadow-soft'
-          : 'bg-white shadow-sm'
+        isScrolled ? 'shadow-soft bg-white/95 backdrop-blur-md' : 'bg-white shadow-sm'
       }`}
     >
       {/* Top bar */}
-      <div className="bg-brand-primary text-white text-xs py-2">
-        <div className="section-padding flex justify-between items-center">
+      <div className="bg-brand-primary py-2 text-xs text-white">
+        <div className="section-padding flex items-center justify-between">
           <p className="hidden md:block">Livraison Gratuite à partir de 100 DT</p>
-          <p className="md:hidden text-center w-full">Livraison Gratuite à partir de 100 DT</p>
-          <div className="hidden md:flex items-center gap-4">
-            <Link href="/contact" className="hover:text-brand-accent transition-colors">Contact</Link>
-            <Link href="/faq" className="hover:text-brand-accent transition-colors">FAQ</Link>
+          <p className="w-full text-center md:hidden">Livraison Gratuite à partir de 100 DT</p>
+          <div className="hidden items-center gap-4 md:flex">
+            <Link href="/contact" className="hover:text-brand-accent transition-colors">
+              Contact
+            </Link>
+            <Link href="/faq" className="hover:text-brand-accent transition-colors">
+              FAQ
+            </Link>
           </div>
         </div>
       </div>
@@ -54,46 +57,54 @@ export function Header() {
         <div className="flex items-center justify-between gap-4 md:gap-8">
           <div className="flex items-center gap-4">
             <MobileMenu />
-            <Link href="/" className="shrink-0 flex items-center">
-              <span className="font-display font-bold text-2xl tracking-tight text-brand-primary">
-                Best<span className="text-brand-accent">oil</span>
-              </span>
+            <Link href="/" className="flex shrink-0 items-center gap-2">
+              <Image src="/logo.png" alt="KiosqueTN" width={140} height={40} className="h-9 w-auto object-contain" priority />
             </Link>
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-6">
-            <Link href="/" className="text-sm font-medium hover:text-brand-primary transition-colors">
+          <nav className="hidden items-center gap-6 md:flex">
+            <Link
+              href="/"
+              className="hover:text-brand-primary text-sm font-medium transition-colors"
+            >
               Accueil
             </Link>
-            
+
             {/* Mega Menu Trigger */}
-            <div 
-              className="relative group"
+            <div
+              className="group relative"
               onMouseEnter={() => setIsHoveringMenu(true)}
               onMouseLeave={() => setIsHoveringMenu(false)}
             >
-              <Link href="/catalogue" className="flex items-center gap-1 text-sm font-medium hover:text-brand-primary transition-colors py-4">
-                Catalogue <ChevronDown size={14} className="group-hover:rotate-180 transition-transform duration-200" />
+              <Link
+                href="/catalogue"
+                className="hover:text-brand-primary flex items-center gap-1 py-4 text-sm font-medium transition-colors"
+              >
+                Catalogue{' '}
+                <ChevronDown
+                  size={14}
+                  className="transition-transform duration-200 group-hover:rotate-180"
+                />
               </Link>
 
               {/* Mega Menu Dropdown */}
               {isHoveringMenu && categories && categories.length > 0 && (
-                <div className="absolute top-full left-1/2 -translate-x-1/2 w-[800px] bg-white shadow-card-hover rounded-xl border border-gray-100 p-6 grid grid-cols-3 gap-8">
-                  {categories.slice(0, 6).map(category => (
+                <div className="shadow-card-hover absolute top-full left-1/2 grid w-[800px] -translate-x-1/2 grid-cols-3 gap-8 rounded-xl border border-gray-100 bg-white p-6">
+                  {categories.slice(0, 6).map((category) => (
                     <div key={category.id}>
-                      <Link 
+                      <Link
                         href={`/categorie/${category.slug}`}
-                        className="font-display font-semibold text-brand-primary hover:text-brand-accent mb-3 block"
+                        className="font-display text-brand-primary hover:text-brand-accent mb-3 block font-semibold"
                       >
                         {category.name}
                       </Link>
                       <ul className="space-y-2">
-                        {category.children?.slice(0, 5).map(sub => (
+                        {category.children?.slice(0, 5).map((sub) => (
                           <li key={sub.id}>
-                            <Link 
+                            <Link
                               href={`/categorie/${sub.slug}`}
-                              className="text-sm text-gray-500 hover:text-brand-primary transition-colors block"
+                              className="hover:text-brand-primary block text-sm text-gray-500 transition-colors"
                             >
                               {sub.name}
                             </Link>
@@ -106,41 +117,53 @@ export function Header() {
               )}
             </div>
 
-            <Link href="/a-propos" className="text-sm font-medium hover:text-brand-primary transition-colors">
+            <Link
+              href="/a-propos"
+              className="hover:text-brand-primary text-sm font-medium transition-colors"
+            >
               À propos
             </Link>
-            <Link href="/contact" className="text-sm font-medium hover:text-brand-primary transition-colors">
+            <Link
+              href="/contact"
+              className="hover:text-brand-primary text-sm font-medium transition-colors"
+            >
               Contact
             </Link>
           </nav>
 
           {/* Search Bar - Desktop */}
-          <div className="hidden lg:flex flex-1 max-w-md relative">
-            <input 
-              type="text" 
-              placeholder="Rechercher une huile, une marque, une viscosité..." 
-              className="w-full bg-brand-surface border-transparent focus:bg-white focus:border-brand-primary/30 rounded-full py-2.5 pl-5 pr-12 text-sm transition-all outline-none"
+          <div className="relative hidden max-w-md flex-1 lg:flex">
+            <input
+              type="text"
+              placeholder="Rechercher une huile, une marque, une viscosité..."
+              className="bg-brand-surface focus:border-brand-primary/30 w-full rounded-full border-transparent py-2.5 pr-12 pl-5 text-sm transition-all outline-none focus:bg-white"
               aria-label="Recherche"
             />
-            <button className="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-gray-400 hover:text-brand-primary" aria-label="Lancer la recherche">
+            <button
+              className="hover:text-brand-primary absolute top-1/2 right-2 -translate-y-1/2 p-2 text-gray-400"
+              aria-label="Lancer la recherche"
+            >
               <Search size={18} />
             </button>
           </div>
 
           {/* Icons */}
-          <div className="flex items-center gap-1 sm:gap-4 shrink-0">
-            <button className="lg:hidden p-2 text-gray-600 hover:text-brand-primary" aria-label="Rechercher">
+          <div className="flex shrink-0 items-center gap-1 sm:gap-4">
+            <button
+              className="hover:text-brand-primary p-2 text-gray-600 lg:hidden"
+              aria-label="Rechercher"
+            >
               <Search size={24} />
             </button>
-            
-            <Link 
-              href={isAuthenticated ? "/compte" : "/auth/login"} 
-              className="p-2 text-gray-600 hover:text-brand-primary hidden sm:block relative group"
+
+            <Link
+              href={isAuthenticated ? '/compte' : '/auth/login'}
+              className="hover:text-brand-primary group relative hidden p-2 text-gray-600 sm:block"
               aria-label="Mon compte"
             >
               <User size={24} />
               {isAuthenticated && (
-                <span className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></span>
+                <span className="absolute -right-1 -bottom-1 h-3 w-3 rounded-full border-2 border-white bg-green-500"></span>
               )}
             </Link>
 

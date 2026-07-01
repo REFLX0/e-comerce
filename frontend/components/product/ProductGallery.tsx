@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { useState } from 'react'
 import Image from 'next/image'
@@ -14,7 +14,7 @@ export function ProductGallery({ images, productName }: Props) {
 
   if (!images || images.length === 0) {
     return (
-      <div className="aspect-square bg-brand-surface rounded-2xl flex items-center justify-center border border-brand-surface-dark">
+      <div className="bg-brand-surface border-brand-surface-dark flex aspect-square items-center justify-center rounded-2xl border">
         <span className="text-gray-400">Image non disponible</span>
       </div>
     )
@@ -22,25 +22,25 @@ export function ProductGallery({ images, productName }: Props) {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="relative aspect-square bg-brand-surface rounded-2xl overflow-hidden border border-brand-surface-dark">
+      <div className="bg-brand-surface border-brand-surface-dark relative aspect-square overflow-hidden rounded-2xl border">
         <Image
-          src={images[currentIndex]}
+          src={images[currentIndex] || ''}
           alt={`${productName} - Image ${currentIndex + 1}`}
           fill
           className="object-contain p-8"
         />
-        
+
         {images.length > 1 && (
           <>
             <button
               onClick={() => setCurrentIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1))}
-              className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/80 hover:bg-white rounded-full flex items-center justify-center text-brand-primary shadow-sm transition-colors"
+              className="text-brand-primary absolute top-1/2 left-4 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 shadow-sm transition-colors hover:bg-white"
             >
               <ChevronLeft size={20} />
             </button>
             <button
               onClick={() => setCurrentIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1))}
-              className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/80 hover:bg-white rounded-full flex items-center justify-center text-brand-primary shadow-sm transition-colors"
+              className="text-brand-primary absolute top-1/2 right-4 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 shadow-sm transition-colors hover:bg-white"
             >
               <ChevronRight size={20} />
             </button>
@@ -49,13 +49,15 @@ export function ProductGallery({ images, productName }: Props) {
       </div>
 
       {images.length > 1 && (
-        <div className="flex gap-4 overflow-x-auto hide-scrollbar pb-2">
+        <div className="hide-scrollbar flex gap-4 overflow-x-auto pb-2">
           {images.map((img, idx) => (
             <button
               key={idx}
               onClick={() => setCurrentIndex(idx)}
-              className={`relative w-20 h-20 shrink-0 rounded-xl overflow-hidden border-2 transition-all ${
-                currentIndex === idx ? 'border-brand-primary' : 'border-transparent hover:border-brand-primary/50'
+              className={`relative h-20 w-20 shrink-0 overflow-hidden rounded-xl border-2 transition-all ${
+                currentIndex === idx
+                  ? 'border-brand-primary'
+                  : 'hover:border-brand-primary/50 border-transparent'
               }`}
             >
               <Image src={img} alt="" fill className="object-cover" />

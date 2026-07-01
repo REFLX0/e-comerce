@@ -1,0 +1,39 @@
+import {
+  Controller, Get, Post, Patch, Delete,
+  Param, Body, Query, UseGuards, HttpCode, HttpStatus,
+} from '@nestjs/common'
+import { ApiTags, ApiBearerAuth } from '@nestjs/swagger'
+import { JwtAuthGuard } from '../common/guards/jwt-auth.guard'
+import { RolesGuard } from '../common/guards/roles.guard'
+import { Roles } from '../common/decorators/roles.decorator'
+import { AdminService } from './admin.service'
+
+@ApiTags('admin')
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Roles('ADMIN')
+@Controller('admin')
+export class AdminController {
+  constructor(private readonly adminService: AdminService) {}
+
+  @Get('dashboard') getDashboard() { return this.adminService.getDashboardStats() }
+
+  @Get('products') getProducts(@Query('page') p?: string, @Query('limit') l?: string) {
+    return this.adminService.getProducts(p ? +p : 1, l ? +l : 20)
+  }
+  @Post('products') createProduct(@Body() body: any) { return this.adminService.createProduct(body) }
+  @Patch('products/:id') updateProduct(@Param('id') id: string, @Body() body: any) { return this.adminService.updateProduct(id, body) }
+  @Delete('products/:id') @HttpCode(HttpStatus.OK) deleteProduct(@Param('id') id: string) { return this.adminService.deleteProduct(id) }
+
+  @Get('orders') getOrders(@Query('page') p?: string, @Query('status') s?: string) {
+    return this.adminService.getOrders(p ? +p : 1, 20, s)
+  }
+  @Patch('orders/:id/status') updateOrderStatus(@Param('id') id: string, @Body('status') status: string) {
+    return this.adminService.updateOrderStatus(id, status)
+  }
+
+  @Get('users') getUsers(@Query('page') p?: string) { return this.adminService.getUsers(p ? +p : 1) }
+  @Patch('users/:id/role') updateUserRole(@Param('id') id: string, @Body('role') role: string) {
+    return this.adminService.updateUserRole(id, role)
+  }
+}

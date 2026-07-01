@@ -15,7 +15,7 @@ export function Breadcrumb({ items }: Props) {
     <nav aria-label="Breadcrumb" className="py-4">
       <ol className="flex items-center space-x-2 text-sm text-gray-500">
         <li>
-          <Link href="/" className="hover:text-brand-primary transition-colors flex items-center">
+          <Link href="/" className="hover:text-brand-primary flex items-center transition-colors">
             <Home size={16} />
             <span className="sr-only">Accueil</span>
           </Link>
@@ -24,10 +24,7 @@ export function Breadcrumb({ items }: Props) {
           <li key={index} className="flex items-center space-x-2">
             <ChevronRight size={16} className="text-gray-400" />
             {item.href ? (
-              <Link
-                href={item.href}
-                className="hover:text-brand-primary transition-colors"
-              >
+              <Link href={item.href} className="hover:text-brand-primary transition-colors">
                 {item.label}
               </Link>
             ) : (

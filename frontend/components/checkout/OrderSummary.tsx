@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { useState } from 'react'
 import { useCartStore } from '@/lib/store/cart.store'
@@ -10,32 +10,37 @@ export function OrderSummary() {
   const [cgvAccepted, setCgvAccepted] = useState(false)
 
   return (
-    <div className="bg-brand-primary rounded-2xl p-6 md:p-8 text-white sticky top-24 shadow-card">
-      <h2 className="text-xl font-display font-bold mb-6 border-b border-white/10 pb-4">
+    <div className="bg-brand-primary shadow-card sticky top-24 rounded-2xl p-6 text-white md:p-8">
+      <h2 className="font-display mb-6 border-b border-white/10 pb-4 text-xl font-bold">
         Résumé de la commande
       </h2>
 
-      <div className="space-y-4 mb-8 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
+      <div className="custom-scrollbar mb-8 max-h-[300px] space-y-4 overflow-y-auto pr-2">
         {items.map((item) => (
           <div key={item.variantId} className="flex gap-4">
-            <div className="relative w-16 h-16 bg-white rounded-lg overflow-hidden shrink-0">
+            <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-lg bg-white">
               {item.product.images?.[0] ? (
-                <Image src={item.product.images[0]} alt={item.product.name} fill className="object-cover p-1" />
+                <Image
+                  src={item.product.images[0]}
+                  alt={item.product.name}
+                  fill
+                  className="object-cover p-1"
+                />
               ) : (
-                <div className="w-full h-full bg-gray-200" />
+                <div className="h-full w-full bg-gray-200" />
               )}
-              <span className="absolute -top-2 -right-2 w-5 h-5 bg-brand-accent text-white rounded-full flex items-center justify-center text-xs font-bold z-10">
+              <span className="bg-brand-accent absolute -top-2 -right-2 z-10 flex h-5 w-5 items-center justify-center rounded-full text-xs font-bold text-white">
                 {item.quantity}
               </span>
             </div>
-            <div className="flex-1 min-w-0">
-              <h4 className="font-medium text-sm line-clamp-2 text-white/90">
+            <div className="min-w-0 flex-1">
+              <h4 className="line-clamp-2 text-sm font-medium text-white/90">
                 {item.product.name}
               </h4>
-              <p className="text-xs text-white/60 mt-1">Volume: {item.variant.volume}</p>
+              <p className="mt-1 text-xs text-white/60">Volume: {item.variant.volume}</p>
             </div>
-            <div className="text-right shrink-0">
-              <span className="font-bold text-sm">
+            <div className="shrink-0 text-right">
+              <span className="text-sm font-bold">
                 {formatPrice(item.variant.priceTTC * item.quantity)}
               </span>
             </div>
@@ -43,44 +48,48 @@ export function OrderSummary() {
         ))}
       </div>
 
-      <div className="space-y-3 mb-6 border-t border-white/10 pt-6">
-        <div className="flex justify-between text-white/70 text-sm">
+      <div className="mb-6 space-y-3 border-t border-white/10 pt-6">
+        <div className="flex justify-between text-sm text-white/70">
           <span>Sous-total HT</span>
           <span>{formatPrice(subtotalHT)}</span>
         </div>
-        <div className="flex justify-between text-white/70 text-sm">
+        <div className="flex justify-between text-sm text-white/70">
           <span>TVA</span>
           <span>{formatPrice(totalTTC - subtotalHT - shippingCost)}</span>
         </div>
-        <div className="flex justify-between text-white/70 text-sm">
+        <div className="flex justify-between text-sm text-white/70">
           <span>Livraison</span>
           {shippingCost === 0 ? (
-            <span className="text-green-400 font-medium">Gratuite</span>
+            <span className="font-medium text-green-400">Gratuite</span>
           ) : (
             <span>{formatPrice(shippingCost)}</span>
           )}
         </div>
       </div>
 
-      <div className="border-t border-white/10 pt-6 mb-8">
-        <div className="flex justify-between items-center">
+      <div className="mb-8 border-t border-white/10 pt-6">
+        <div className="flex items-center justify-between">
           <span className="text-lg font-bold">Total TTC</span>
-          <span className="text-3xl font-display font-bold text-brand-accent">
+          <span className="font-display text-brand-accent text-3xl font-bold">
             {formatPrice(totalTTC)}
           </span>
         </div>
       </div>
 
       <div className="mb-6 flex items-start gap-3">
-        <input 
-          type="checkbox" 
-          id="cgv" 
+        <input
+          type="checkbox"
+          id="cgv"
           checked={cgvAccepted}
           onChange={(e) => setCgvAccepted(e.target.checked)}
-          className="mt-1 w-4 h-4 rounded border-white/20 bg-white/10 text-brand-accent focus:ring-brand-accent focus:ring-offset-brand-primary"
+          className="text-brand-accent focus:ring-brand-accent focus:ring-offset-brand-primary mt-1 h-4 w-4 rounded border-white/20 bg-white/10"
         />
-        <label htmlFor="cgv" className="text-xs text-white/80 leading-snug">
-          J'ai lu et j'accepte les <a href="/cgv" target="_blank" className="underline hover:text-white">Conditions Générales de Vente</a> de BestLub.
+        <label htmlFor="cgv" className="text-xs leading-snug text-white/80">
+          J'ai lu et j'accepte les{' '}
+          <a href="/cgv" target="_blank" className="underline hover:text-white">
+            Conditions Générales de Vente
+          </a>{' '}
+          de BestLub.
         </label>
       </div>
 
@@ -88,7 +97,7 @@ export function OrderSummary() {
         type="submit"
         form="checkout-form"
         disabled={!cgvAccepted}
-        className="w-full bg-white text-brand-primary hover:bg-gray-100 font-bold py-4 rounded-full transition-colors text-lg disabled:opacity-50 disabled:cursor-not-allowed"
+        className="text-brand-primary w-full rounded-full bg-white py-4 text-lg font-bold transition-colors hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50"
       >
         Confirmer la commande
       </button>

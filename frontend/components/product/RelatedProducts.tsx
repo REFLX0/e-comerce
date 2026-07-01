@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { useQuery } from '@tanstack/react-query'
 import { productsApi } from '@/lib/api/products'
@@ -21,12 +21,8 @@ export function RelatedProducts({ productId }: Props) {
   return (
     <section className="mt-24">
       <SectionTitle title="Produits Similaires" />
-      
-      {isLoading ? (
-        <ProductGridSkeleton count={4} />
-      ) : (
-        <ProductGrid products={products || []} />
-      )}
+
+      {isLoading ? <ProductGridSkeleton count={4} /> : <ProductGrid products={products || []} />}
     </section>
   )
 }

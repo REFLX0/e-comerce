@@ -1,6 +1,6 @@
-@import "tailwindcss";
-@import "tw-animate-css";
-@import "shadcn/tailwind.css";
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import 'shadcn/tailwind.css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -12,20 +12,37 @@
   --font-mono: var(--font-jetbrains-mono);
   --font-heading: var(--font-poppins);
 
-  /* Custom brand colors */
-  --color-brand-primary: #1A3C5E;
-  --color-brand-primary-light: #2E5F8A;
-  --color-brand-primary-dark: #0F2440;
-  --color-brand-accent: #E8A020;
-  --color-brand-accent-hover: #D4901A;
-  --color-brand-surface: #F4F6F8;
-  --color-brand-surface-dark: #E8ECF0;
-  --color-brand-border: #D5DDE5;
+  /* ── Brand Design Tokens — Automotive Premium ──────────────────────── */
+  --color-brand-primary: #0f172a;         /* Deep Carbon / Slate-950 */
+  --color-brand-primary-light: #1e293b;   /* Slate-800 */
+  --color-brand-primary-dark: #020617;    /* Vantablack */
+  --color-brand-accent: #facc15;          /* Racing Yellow */
+  --color-brand-accent-hover: #eab308;    /* Deep Yellow */
+  --color-brand-surface: #f8fafc;         /* Slate-50 */
+  --color-brand-surface-dark: #f1f5f9;    /* Slate-100 */
+  --color-brand-border: #e2e8f0;          /* Slate-200 */
 
-  /* Shadows */
-  --shadow-card: 0 2px 12px rgba(26,60,94,0.06);
-  --shadow-card-hover: 0 8px 32px rgba(26,60,94,0.14);
-  --shadow-soft: 0 4px 20px rgba(26,60,94,0.08);
+  /* ── Semantic Color Tokens ──────────────────────────────────────────── */
+  --color-semantic-success: #16a34a;
+  --color-semantic-warning: #d97706;
+  --color-semantic-danger: #dc2626;
+  --color-semantic-info: #0ea5e9;
+
+  /* ── Typography Scale (8px baseline, 24px leading) ─────────────────── */
+  /* H1 */  --text-h1: 3rem;      --leading-h1: 3.5rem;   /* 56px */
+  /* H2 */  --text-h2: 2.25rem;   --leading-h2: 2.75rem;  /* 44px */
+  /* H3 */  --text-h3: 1.5rem;    --leading-h3: 2rem;     /* 32px */
+  /* H4 */  --text-h4: 1.25rem;   --leading-h4: 1.75rem;  /* 28px */
+  /* BL */  --text-body-lg: 1.125rem; --leading-body-lg: 1.75rem; /* 28px */
+  /* Bd */  --text-body: 1rem;    --leading-body: 1.5rem;  /* 24px - min 16px ✓ */
+  /* Cp */  --text-caption: 0.875rem; --leading-caption: 1.25rem; /* 20px */
+  /* Sm */  --text-small: 0.75rem; --leading-small: 1rem;  /* 16px */
+
+  /* ── Elevation / Shadows ────────────────────────────────────────────── */
+  --shadow-card: 0 2px 12px rgba(15,23,42,0.06);
+  --shadow-card-hover: 0 8px 32px rgba(15,23,42,0.14);
+  --shadow-soft: 0 4px 20px rgba(15,23,42,0.08);
+  --shadow-overlay: 0 20px 60px rgba(15,23,42,0.24);
 
   /* shadcn tokens */
   --color-sidebar-ring: var(--sidebar-ring);
@@ -66,7 +83,29 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
+/* ══════════════════════════════════════════════════════════════════════
+   MÜLLER-BROCKMANN GRID SYSTEM — ONE SOURCE OF TRUTH
+   All grid parameters live here. The .guides overlay reads these exact
+   same variables and lives in the SAME content box as the content, so
+   its columns ARE the content columns at every viewport width.
+   ══════════════════════════════════════════════════════════════════════ */
 :root {
+  /* ── Grid parameters ─────────────────────────────────────────────── */
+  --cols: 12;
+  --bl: 8px;               /* baseline unit */
+  --lh: 24px;              /* leading = 3 × baseline */
+  --gutter: 24px;          /* column gap  (3 × bl) ✓ */
+  --margin: 72px;          /* outer margin (9 × bl) ✓ */
+  --pad: 96px;             /* spread top/bottom pad (12 × bl) */
+  --maxw: 1280px;          /* max content width */
+
+  /* ── Grid overlay colors ─────────────────────────────────────────── */
+  --g-col: rgba(250,204,21,.07);      /* column field fill */
+  --g-edge: rgba(250,204,21,.50);     /* column edge / margin line */
+  --g-base: rgba(0,150,140,.30);      /* major baseline (every --lh) */
+  --g-base-min: rgba(0,150,140,.10);  /* minor baseline (every --bl) */
+
+  /* ── shadcn light tokens ─────────────────────────────────────────── */
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -135,6 +174,9 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
+/* ══════════════════════════════════════════════════════════════════════
+   BASE LAYER
+   ══════════════════════════════════════════════════════════════════════ */
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -144,39 +186,447 @@
   }
   html {
     @apply font-sans;
+    /* Enforce 8px baseline base font metrics */
+    font-size: 16px;
+    line-height: var(--lh); /* 24px */
+  }
+
+  /* ── Typography Scale ─────────────────────────────────────────────── */
+  h1 {
+    font-size: var(--text-h1);           /* 48px */
+    line-height: var(--leading-h1);      /* 56px = 7 × 8px ✓ */
+    font-weight: 700;
+    letter-spacing: -0.025em;
+  }
+  h2 {
+    font-size: var(--text-h2);           /* 36px */
+    line-height: var(--leading-h2);      /* 44px ≈ 5.5 × 8px */
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  h3 {
+    font-size: var(--text-h3);           /* 24px */
+    line-height: var(--leading-h3);      /* 32px = 4 × 8px ✓ */
+    font-weight: 600;
+  }
+  h4 {
+    font-size: var(--text-h4);           /* 20px */
+    line-height: var(--leading-h4);      /* 28px = 3.5 × 8px */
+    font-weight: 600;
+  }
+  p {
+    font-size: var(--text-body);         /* 16px */
+    line-height: var(--leading-body);    /* 24px = 3 × 8px ✓ */
   }
 }
 
-/* ── Custom component classes ────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════════════════════
+   MÜLLER-BROCKMANN GRID STRUCTURAL CLASSES
+   ══════════════════════════════════════════════════════════════════════ */
+
+/* Full-width spread container */
+.spread {
+  position: relative;
+  width: 100%;
+}
+
+/* Centered content wrapper — SAME BOX as the overlay */
+.wrap {
+  position: relative;
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding-top: var(--pad);
+  padding-bottom: var(--pad);
+  padding-left: var(--margin);
+  padding-right: var(--margin);
+}
+
+/* 12-column CSS grid */
+.grid-layout {
+  display: grid;
+  grid-template-columns: repeat(var(--cols), 1fr);
+  column-gap: var(--gutter);
+  row-gap: var(--lh);
+}
+
+/* Band: spans all columns and re-exposes them via subgrid so every child
+   placed with grid-column aligns to IDENTICAL lines as the parent grid. */
+.band {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: subgrid;
+  column-gap: var(--gutter);
+  row-gap: var(--lh);
+  align-items: start;
+}
+
+/* Fallback for browsers without subgrid support (Safari < 16, older Firefox) */
+@supports not (grid-template-columns: subgrid) {
+  .band {
+    grid-template-columns: repeat(var(--cols), 1fr);
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   GRID OVERLAY — lives INSIDE the .wrap so columns match exactly
+   ══════════════════════════════════════════════════════════════════════ */
+.guides {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 999;
+  opacity: 0;
+  transition: opacity 0.26s ease;
+}
+
+body.grid-on .guides {
+  opacity: 1;
+}
+
+/* Column field guides — same left/right as content */
+.guides .cols {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: grid;
+  grid-template-columns: repeat(var(--cols), 1fr);
+  column-gap: var(--gutter);
+  padding-left: var(--margin);
+  padding-right: var(--margin);
+}
+
+.guides .col {
+  background: var(--g-col);
+  box-shadow:
+    inset 1px 0 0 var(--g-edge),
+    inset -1px 0 0 var(--g-edge);
+  position: relative;
+}
+
+.guides .col span {
+  position: absolute;
+  top: 32px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-family: var(--font-mono), 'JetBrains Mono', monospace;
+  font-size: 10px;
+  line-height: 1;
+  color: var(--color-brand-accent);
+  opacity: 0.8;
+}
+
+/* Baseline grid — major (lh) and minor (bl) lines */
+.guides .rows {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background-image:
+    repeating-linear-gradient(
+      to bottom,
+      var(--g-base) 0 1px,
+      transparent 1px var(--lh)
+    ),
+    repeating-linear-gradient(
+      to bottom,
+      var(--g-base-min) 0 1px,
+      transparent 1px var(--bl)
+    );
+}
+
+/* Margin indicator lines */
+.guides .mline {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--g-edge);
+}
+.guides .mline.l { left: var(--margin); }
+.guides .mline.r { right: var(--margin); }
+
+/* Grid toggle button — fixed bottom-right */
+.grid-toggle {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--color-brand-primary);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-mono), 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 10px 14px;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+  transition: all 0.2s ease;
+  line-height: 1;
+}
+
+.grid-toggle .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #555;
+  flex-shrink: 0;
+  transition: background 0.2s;
+}
+
+body.grid-on .grid-toggle {
+  background: var(--color-brand-accent);
+  color: var(--color-brand-primary);
+}
+
+body.grid-on .grid-toggle .dot {
+  background: var(--color-brand-primary);
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   COMPONENT CLASSES
+   ══════════════════════════════════════════════════════════════════════ */
 
 @layer components {
-  .btn-primary {
-    @apply bg-brand-accent hover:bg-brand-accent-hover text-white font-semibold
-           rounded-full px-6 py-3 transition-all duration-200
-           hover:shadow-lg active:scale-[0.98]
-           disabled:opacity-50 disabled:cursor-not-allowed;
-  }
 
-  .btn-secondary {
-    @apply border-2 border-brand-primary text-brand-primary hover:bg-brand-primary hover:text-white
-           font-semibold rounded-full px-6 py-3 transition-all duration-200;
-  }
-
+  /* ── Layout helpers ─────────────────────────────────────────────── */
   .section-padding {
-    @apply px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto;
+    @apply mx-auto max-w-7xl px-4 sm:px-6 lg:px-8;
   }
 
+  /* ── Buttons ────────────────────────────────────────────────────── */
+
+  /*
+   * Primary CTA — Racing Yellow. One per view. Clear action label.
+   * Height = 48px = 6 × bl. Fully accessible focus ring.
+   */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-6
+           font-semibold text-brand-primary bg-brand-accent
+           transition-all duration-200 cursor-pointer select-none
+           hover:bg-brand-accent-hover hover:shadow-lg
+           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent/60 focus-visible:ring-offset-2
+           active:scale-[0.98]
+           disabled:cursor-not-allowed disabled:opacity-50 disabled:shadow-none;
+    height: 48px;                  /* 6 × 8px baseline */
+    min-width: 120px;
+    font-size: var(--text-body);   /* 16px */
+    line-height: var(--leading-body); /* 24px */
+  }
+
+  /*
+   * Secondary — outline. Paired alongside primary. Equal height.
+   */
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-6
+           font-semibold text-brand-primary border-2 border-brand-primary
+           bg-transparent transition-all duration-200 cursor-pointer select-none
+           hover:bg-brand-primary hover:text-white hover:shadow-md
+           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary/40 focus-visible:ring-offset-2
+           active:scale-[0.98]
+           disabled:cursor-not-allowed disabled:opacity-50;
+    height: 48px;
+    min-width: 120px;
+    font-size: var(--text-body);
+    line-height: var(--leading-body);
+  }
+
+  /*
+   * Ghost — tertiary. Text only with hover background.
+   */
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-5
+           font-medium text-brand-primary bg-transparent
+           transition-all duration-200 cursor-pointer select-none
+           hover:bg-brand-primary/8
+           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary/30 focus-visible:ring-offset-2
+           active:scale-[0.98]
+           disabled:cursor-not-allowed disabled:opacity-40;
+    height: 40px;                  /* 5 × 8px */
+    font-size: var(--text-caption);
+  }
+
+  /* ── Pricing ────────────────────────────────────────────────────── */
   .price-ht {
-    @apply font-mono font-bold text-brand-primary;
+    @apply text-brand-primary font-mono font-bold;
+    font-size: var(--text-h4);
+    line-height: var(--leading-h4);
   }
 
   .price-ttc {
-    @apply font-mono text-sm text-gray-500;
+    @apply text-brand-primary/50 font-mono;
+    font-size: var(--text-caption);
+    line-height: var(--leading-caption);
   }
 
+  /* ── Product Card ───────────────────────────────────────────────── */
+  /*
+   * The card transitions use a box-shadow and translate to avoid
+   * layout reflow (no size changes on hover). Every size is a
+   * multiple of --bl.
+   */
   .product-card {
-    @apply bg-white rounded-2xl border border-brand-surface-dark
-           shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-card-hover)]
-           hover:border-brand-primary/30 transition-all duration-300;
+    @apply border-brand-surface-dark bg-white rounded-2xl border
+           transition-all duration-300
+           hover:border-brand-primary/20
+           hover:-translate-y-0.5;
+    box-shadow: var(--shadow-card);
+  }
+
+  .product-card:hover {
+    box-shadow: var(--shadow-card-hover);
+  }
+
+  /* ── Focus ring (global accessible default) ─────────────────────── */
+  .focus-ring {
+    @apply focus-visible:outline-none focus-visible:ring-2
+           focus-visible:ring-brand-accent/60 focus-visible:ring-offset-2;
+  }
+
+  /* ── Section title ──────────────────────────────────────────────── */
+  /* Standardized heading above content sections — baseline-locked */
+  .section-header {
+    margin-bottom: calc(var(--lh) * 2); /* 48px = 6 × bl */
+  }
+
+  .section-header h2 {
+    font-size: var(--text-h2);
+    line-height: var(--leading-h2);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    @apply text-brand-primary;
+    margin-bottom: var(--lh); /* 24px = 3 × bl */
+  }
+
+  .section-header p {
+    font-size: var(--text-body-lg);
+    line-height: var(--leading-body-lg);
+    @apply text-brand-primary/60;
+  }
+
+  /* ── Badge ──────────────────────────────────────────────────────── */
+  .badge {
+    @apply inline-flex items-center gap-1 rounded-full px-3 font-medium;
+    height: 24px;                  /* 3 × bl */
+    font-size: var(--text-small);
+    line-height: 1;
+  }
+
+  .badge-accent {
+    @apply inline-flex items-center gap-1 rounded-full px-3 font-medium bg-brand-accent/15 text-brand-primary;
+    height: 24px;
+    font-size: var(--text-small);
+    line-height: 1;
+  }
+
+  .badge-success {
+    @apply inline-flex items-center gap-1 rounded-full px-3 font-medium bg-green-100 text-green-700;
+    height: 24px;
+    font-size: var(--text-small);
+    line-height: 1;
+  }
+
+  .badge-warning {
+    @apply inline-flex items-center gap-1 rounded-full px-3 font-medium bg-amber-100 text-amber-700;
+    height: 24px;
+    font-size: var(--text-small);
+    line-height: 1;
+  }
+
+  .badge-danger {
+    @apply inline-flex items-center gap-1 rounded-full px-3 font-medium bg-red-100 text-red-600;
+    height: 24px;
+    font-size: var(--text-small);
+    line-height: 1;
+  }
+
+  .badge-info {
+    @apply inline-flex items-center gap-1 rounded-full px-3 font-medium bg-sky-100 text-sky-700;
+    height: 24px;
+    font-size: var(--text-small);
+    line-height: 1;
+  }
+
+  /* ── Microinteraction helpers ───────────────────────────────────── */
+  /*
+   * Use these utility classes to add consistent micro-animations
+   * without ad-hoc Tailwind strings scattered across components.
+   */
+
+  /* Lift on hover — cards, thumbnails */
+  .hover-lift {
+    @apply transition-transform duration-200 hover:-translate-y-1;
+  }
+
+  /* Fade + scale — icons, badges */
+  .hover-pop {
+    @apply transition-transform duration-150 hover:scale-110 active:scale-95;
+  }
+
+  /* Arrow slide — CTA text arrows */
+  .hover-arrow {
+    @apply transition-all duration-200;
+  }
+  .hover-arrow:hover .arrow-icon {
+    @apply translate-x-1;
+  }
+
+  /* ── Skeleton shimmer ────────────────────────────────────────────── */
+  .skeleton {
+    @apply bg-brand-surface-dark rounded animate-pulse;
+  }
+
+  .shimmer {
+    background: linear-gradient(
+      90deg,
+      var(--color-brand-surface-dark) 25%,
+      var(--color-brand-border) 50%,
+      var(--color-brand-surface-dark) 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
   }
 }
+
+/* ══════════════════════════════════════════════════════════════════════
+   UTILITY ANIMATIONS
+   ══════════════════════════════════════════════════════════════════════ */
+
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.95); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.animate-fade-in-up { animation: fade-in-up 0.4s ease-out both; }
+.animate-fade-in    { animation: fade-in 0.3s ease-out both; }
+.animate-scale-in   { animation: scale-in 0.25s ease-out both; }
+
+/* ── Scrollbar hide utility ─────────────────────────────────────────── */
+.hide-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.hide-scrollbar::-webkit-scrollbar { display: none; }
