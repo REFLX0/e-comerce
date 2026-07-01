@@ -252,7 +252,7 @@ export async function apiPost<T>(path: string, body: unknown, ): Promise<T> {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      
     },
     body: JSON.stringify(body),
   })
@@ -264,7 +264,7 @@ export async function apiPut<T>(path: string, body: unknown, ): Promise<T> {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      
     },
     body: JSON.stringify(body),
   })
@@ -276,7 +276,7 @@ export async function apiPatch<T>(path: string, body: unknown, ): Promise<T> {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      
     },
     body: JSON.stringify(body),
   })
@@ -288,7 +288,7 @@ export async function apiDelete<T>(path: string, ): Promise<T> {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      
     },
   })
   return handleResponse<T>(res)

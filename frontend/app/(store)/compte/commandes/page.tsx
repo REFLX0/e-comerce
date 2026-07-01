@@ -137,7 +137,7 @@ function OrderCard({ order }: { order: { id: string; createdAt: string; status: 
 
 export default function MesCommandesPage() {
     const { data, isLoading } = useQuery({
-    queryKey: ['my-orders', token],
+    queryKey: ['my-orders'],
     queryFn: () => ordersApi.getAll(),
     enabled: true,
   })

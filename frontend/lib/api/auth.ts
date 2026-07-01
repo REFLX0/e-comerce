@@ -22,12 +22,10 @@ export const authApi = {
 
   register: (payload: RegisterPayload) => apiPost<LoginResponse>('/auth/register', payload),
 
-  logout: () => apiPost<void>('/auth/logout', { refreshToken: token }),
+  logout: () => apiPost<void>('/auth/logout', {}),
 
   me: () =>
-    apiGet<User>('/users/me', undefined, {
-      headers: { Authorization: `Bearer ${token}` },
-    }),
+    apiGet<User>('/users/me', undefined),
 
   updateProfile: (payload: Partial<User>, ) =>
     apiPatch<User>('/users/me', payload),
