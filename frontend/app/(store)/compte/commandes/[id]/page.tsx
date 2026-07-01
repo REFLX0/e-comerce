@@ -135,7 +135,7 @@ export default function OrderDetailsPage() {
               Articles commandés
             </h3>
             <div className="space-y-6">
-              {order.items.map((item) => (
+              {order.items.map((item: any) => (
                 <div key={item.id} className="flex items-center gap-4">
                   <div className="bg-brand-surface relative h-20 w-20 shrink-0 overflow-hidden rounded-xl">
                     {item.productImage ? (
