@@ -1,4 +1,4 @@
-import Link from 'next/link'
+import { Link } from '@/i18n/routing'
 import { Tag } from 'lucide-react'
 
 export function PromosBanner() {

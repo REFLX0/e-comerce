@@ -4,7 +4,7 @@ import { useCartStore } from '@/lib/store/cart.store'
 import { formatPrice } from '@/lib/utils/format'
 import { Trash2, Plus, Minus, ArrowRight } from 'lucide-react'
 import Image from 'next/image'
-import Link from 'next/link'
+import { Link } from '@/i18n/routing'
 
 export function CartSummary() {
   const { items, subtotalHT, totalTTC, shippingCost, updateQuantity, removeItem } = useCartStore()

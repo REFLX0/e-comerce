@@ -10,7 +10,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion'
-import Link from 'next/link'
+import { Link } from '@/i18n/routing'
 import { useState } from 'react'
 
 export default function MobileMenu() {

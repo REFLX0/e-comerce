@@ -1,7 +1,7 @@
 "use client";
 
 import Image from 'next/image'
-import Link from 'next/link'
+import { Link } from '@/i18n/routing'
 import { ShoppingCart } from 'lucide-react'
 import type { Product } from '@/lib/types'
 import { useCartStore } from '@/lib/store/cart.store'
@@ -31,22 +31,22 @@ export function ProductCard({ product }: Props) {
 
   return (
     <Link href={`/produit/${product.slug}`} className="group product-card relative block p-4">
-      {/* Badges */}
-      <div className="absolute top-4 left-4 z-10 flex flex-col gap-2">
-        {product.isPromo && (
-          <span className="rounded bg-red-500 px-2 py-1 text-xs font-bold text-white">
-            PROMO {product.promoPercent ? `-${product.promoPercent}%` : ''}
-          </span>
-        )}
-        {product.isNew && (
-          <span className="bg-brand-primary rounded px-2 py-1 text-xs font-bold text-white">
-            NOUVEAU
-          </span>
-        )}
-      </div>
-
-      {/* Image */}
+      {/* Image with Badges */}
       <div className="bg-brand-surface relative mb-4 aspect-square overflow-hidden rounded-xl">
+        {/* Badges - Now inside the image container so they never overlap text below */}
+        <div className="absolute top-3 left-3 z-10 flex flex-col gap-2">
+          {product.isPromo && (
+            <span className="rounded bg-red-500 px-2 py-1 text-xs font-bold text-white shadow-sm">
+              PROMO {product.promoPercent ? `-${product.promoPercent}%` : ''}
+            </span>
+          )}
+          {product.isNew && (
+            <span className="bg-brand-primary rounded px-2 py-1 text-xs font-bold text-white shadow-sm">
+              NOUVEAU
+            </span>
+          )}
+        </div>
+
         {product.images?.[0] ? (
           <Image
             src={product.images[0]}

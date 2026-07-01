@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react'
-import Link from 'next/link'
+import { Link } from '@/i18n/routing'
 import { Search, User, ChevronDown } from 'lucide-react'
 import dynamic from 'next/dynamic'
 const MiniCart = dynamic(() => import('./MiniCart'), { ssr: false })
@@ -10,11 +10,14 @@ import { useAuthStore } from '@/lib/store/auth.store'
 import { useQuery } from '@tanstack/react-query'
 import { categoriesApi } from '@/lib/api/categories'
 import Image from 'next/image'
+import { useTranslations } from 'next-intl'
+import { LanguageSwitcher } from './LanguageSwitcher'
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isHoveringMenu, setIsHoveringMenu] = useState(false)
   const { isAuthenticated, user } = useAuthStore()
+  const t = useTranslations('Navigation')
 
   const { data: categories } = useQuery({
     queryKey: ['categories-tree'],
@@ -43,7 +46,7 @@ export default function Header() {
           <p className="w-full text-center md:hidden">Livraison Gratuite à partir de 100 DT</p>
           <div className="hidden items-center gap-4 md:flex">
             <Link href="/contact" className="hover:text-brand-accent transition-colors">
-              Contact
+              {t('contact')}
             </Link>
             <Link href="/faq" className="hover:text-brand-accent transition-colors">
               FAQ
@@ -68,7 +71,7 @@ export default function Header() {
               href="/"
               className="hover:text-brand-primary text-sm font-medium transition-colors"
             >
-              Accueil
+              {t('home')}
             </Link>
 
             {/* Mega Menu Trigger */}
@@ -81,7 +84,7 @@ export default function Header() {
                 href="/catalogue"
                 className="hover:text-brand-primary flex items-center gap-1 py-4 text-sm font-medium transition-colors"
               >
-                Catalogue{' '}
+                {t('catalog')}
                 <ChevronDown
                   size={14}
                   className="transition-transform duration-200 group-hover:rotate-180"
@@ -95,7 +98,7 @@ export default function Header() {
                     <div key={category.id}>
                       <Link
                         href={`/categorie/${category.slug}`}
-                        className="font-display text-brand-primary hover:text-brand-accent mb-3 block font-semibold"
+                        className="font-display text-brand-primary hover:text-brand-accent mb-3 block font-semibold truncate"
                       >
                         {category.name}
                       </Link>
@@ -104,7 +107,7 @@ export default function Header() {
                           <li key={sub.id}>
                             <Link
                               href={`/categorie/${sub.slug}`}
-                              className="hover:text-brand-primary block text-sm text-gray-500 transition-colors"
+                              className="hover:text-brand-primary block text-sm text-gray-500 transition-colors truncate"
                             >
                               {sub.name}
                             </Link>
@@ -121,13 +124,13 @@ export default function Header() {
               href="/a-propos"
               className="hover:text-brand-primary text-sm font-medium transition-colors"
             >
-              À propos
+              {t('about')}
             </Link>
             <Link
               href="/contact"
               className="hover:text-brand-primary text-sm font-medium transition-colors"
             >
-              Contact
+              {t('contact')}
             </Link>
           </nav>
 
@@ -135,23 +138,26 @@ export default function Header() {
           <div className="relative hidden max-w-md flex-1 lg:flex">
             <input
               type="text"
-              placeholder="Rechercher une huile, une marque, une viscosité..."
+              placeholder={t('search') + "..."}
               className="bg-brand-surface focus:border-brand-primary/30 w-full rounded-full border-transparent py-2.5 pr-12 pl-5 text-sm transition-all outline-none focus:bg-white"
-              aria-label="Recherche"
+              aria-label={t('search')}
             />
             <button
               className="hover:text-brand-primary absolute top-1/2 right-2 -translate-y-1/2 p-2 text-gray-400"
-              aria-label="Lancer la recherche"
+              aria-label={t('search')}
             >
               <Search size={18} />
             </button>
           </div>
 
-          {/* Icons */}
+          {/* Icons & Switcher */}
           <div className="flex shrink-0 items-center gap-1 sm:gap-4">
+            
+            <LanguageSwitcher />
+
             <button
               className="hover:text-brand-primary p-2 text-gray-600 lg:hidden"
-              aria-label="Rechercher"
+              aria-label={t('search')}
             >
               <Search size={24} />
             </button>
@@ -159,7 +165,7 @@ export default function Header() {
             <Link
               href={isAuthenticated ? '/compte' : '/auth/login'}
               className="hover:text-brand-primary group relative hidden p-2 text-gray-600 sm:block"
-              aria-label="Mon compte"
+              aria-label={t('account')}
             >
               <User size={24} />
               {isAuthenticated && (

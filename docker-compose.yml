@@ -70,6 +70,9 @@ services:
     build:
       context: .
       dockerfile: frontend/Dockerfile
+      args:
+        - NEXT_PUBLIC_API_URL=/api
+        - NEXT_PUBLIC_SITE_URL=http://localhost:8080
     container_name: kiosquetn-frontend
     env_file: .env
     environment:
@@ -84,6 +87,7 @@ services:
     restart: unless-stopped
     networks:
       - frontend-net
+      - backend-net
 
   # ── PostgreSQL ────────────────────────────────────────────────────
   db:

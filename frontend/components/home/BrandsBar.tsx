@@ -3,7 +3,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { brandsApi } from '@/lib/api/brands'
 import Image from 'next/image'
-import Link from 'next/link'
+import { Link } from '@/i18n/routing'
 
 export function BrandsBar() {
   const { data: brands, isLoading } = useQuery({
@@ -31,7 +31,7 @@ export function BrandsBar() {
                 {brand.logo ? (
                   <Image src={brand.logo} alt={brand.name} fill className="object-contain" />
                 ) : (
-                  <span className="font-display text-brand-primary text-lg font-bold">
+                  <span className="font-display text-brand-primary-light text-xl font-black uppercase tracking-tighter opacity-80">
                     {brand.name}
                   </span>
                 )}

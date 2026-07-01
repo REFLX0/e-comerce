@@ -1,0 +1,15 @@
+{
+  "Navigation": {
+    "home": "Home",
+    "catalog": "Catalog",
+    "about": "About Us",
+    "contact": "Contact",
+    "search": "Search",
+    "cart": "Cart",
+    "account": "My Account"
+  },
+  "Index": {
+    "title": "KiosqueTN - Automotive Expertise",
+    "description": "The best lubricants and filters for your vehicle."
+  }
+}

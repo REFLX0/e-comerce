@@ -1,45 +1,47 @@
-import Link from 'next/link'
-import { ArrowRight } from 'lucide-react'
+import { Link } from '@/i18n/routing'
+import { ArrowRight, Car, Bike, Truck, Tractor, Factory, Anchor } from 'lucide-react'
 
 export function HeroBanner() {
   const categories = [
     {
       name: 'Automobile',
       url: '/categorie/automobile',
-      imageClass:
-        "bg-[url('https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?q=80&w=800&auto=format&fit=crop')]",
+      icon: Car,
+      bgClass: 'bg-gradient-to-br from-blue-900 to-blue-700',
     },
     {
       name: 'Moto / Quad / Karting',
       url: '/categorie/moto-quad-karting',
-      imageClass:
-        "bg-[url('https://images.unsplash.com/photo-1558981806-ec527fa84c39?q=80&w=800&auto=format&fit=crop')]",
+      icon: Bike,
+      bgClass: 'bg-gradient-to-br from-red-900 to-red-700',
     },
     {
       name: 'Transport / T.P.',
       url: '/categorie/transport-tp',
-      imageClass:
-        "bg-[url('https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?q=80&w=800&auto=format&fit=crop')]",
+      icon: Truck,
+      bgClass: 'bg-gradient-to-br from-orange-900 to-orange-700',
     },
     {
       name: 'Agriculture / Motoculture',
       url: '/categorie/agriculture-motoculture',
-      imageClass:
-        "bg-[url('https://images.unsplash.com/photo-1592982537447-6f2334208f26?q=80&w=800&auto=format&fit=crop')]",
+      icon: Tractor,
+      bgClass: 'bg-gradient-to-br from-green-900 to-green-700',
     },
     {
       name: 'Industrie et spécialités',
       url: '/categorie/industrie-specialites',
-      imageClass:
-        "bg-[url('https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=800&auto=format&fit=crop')]",
+      icon: Factory,
+      bgClass: 'bg-gradient-to-br from-purple-900 to-purple-700',
     },
     {
       name: 'Marine nautisme',
       url: '/categorie/marine-nautisme',
-      imageClass:
-        "bg-[url('https://images.unsplash.com/photo-1569263979104-865ab7cd8d13?q=80&w=800&auto=format&fit=crop')]",
+      icon: Anchor,
+      bgClass: 'bg-gradient-to-br from-cyan-900 to-cyan-700',
     },
   ]
+
+  const MainIcon = categories[0]!.icon
 
   return (
     <section className="bg-brand-surface pt-8 pb-32">
@@ -48,11 +50,14 @@ export function HeroBanner() {
           {/* Main Hero (Automobile) takes 2 columns on lg */}
           <Link
             href={categories[0]!.url}
-            className={`group relative h-80 overflow-hidden rounded-2xl lg:col-span-2 ${categories[0]!.imageClass} bg-cover bg-center`}
+            className={`group relative h-80 overflow-hidden rounded-2xl lg:col-span-2 ${categories[0]!.bgClass}`}
           >
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent transition-opacity group-hover:opacity-90"></div>
+            <div className="absolute inset-0 bg-black/20 transition-opacity group-hover:opacity-100 opacity-50"></div>
+            {/* Background Icon */}
+            <MainIcon size={240} className="absolute -bottom-10 -right-10 text-white opacity-10 transition-transform duration-500 group-hover:scale-110" />
+            
             <div className="absolute bottom-0 left-0 w-full p-8">
-              <span className="bg-brand-accent mb-3 inline-block rounded-full px-3 py-1 text-xs font-bold tracking-wider text-white uppercase">
+              <span className="bg-brand-accent mb-3 inline-block rounded-full px-3 py-1 text-xs font-bold tracking-wider text-black uppercase">
                 Top Vente
               </span>
               <h2 className="font-display group-hover:text-brand-accent mb-2 text-3xl font-bold text-white transition-colors md:text-4xl">
@@ -69,23 +74,29 @@ export function HeroBanner() {
           </Link>
 
           {/* Other Categories */}
-          {categories.slice(1).map((cat, idx) => (
-            <Link
-              key={cat.name}
-              href={cat.url}
-              className={`group relative h-80 overflow-hidden rounded-2xl ${cat.imageClass} bg-cover bg-center`}
-            >
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent transition-opacity group-hover:opacity-90"></div>
-              <div className="absolute bottom-0 left-0 w-full p-6">
-                <h3 className="font-display group-hover:text-brand-accent mb-2 text-xl leading-tight font-bold text-white transition-colors">
-                  {cat.name}
-                </h3>
-                <div className="text-brand-accent inline-flex items-center gap-2 text-sm font-medium transition-all group-hover:gap-3">
-                  Voir la gamme <ArrowRight size={16} />
+          {categories.slice(1).map((cat) => {
+            const Icon = cat.icon
+            return (
+              <Link
+                key={cat.name}
+                href={cat.url}
+                className={`group relative h-80 overflow-hidden rounded-2xl ${cat.bgClass}`}
+              >
+                <div className="absolute inset-0 bg-black/20 transition-opacity group-hover:opacity-100 opacity-50"></div>
+                {/* Background Icon */}
+                <Icon size={160} className="absolute -bottom-6 -right-6 text-white opacity-10 transition-transform duration-500 group-hover:scale-110" />
+
+                <div className="absolute bottom-0 left-0 w-full p-6">
+                  <h3 className="font-display group-hover:text-brand-accent mb-2 text-xl leading-tight font-bold text-white transition-colors">
+                    {cat.name}
+                  </h3>
+                  <div className="text-brand-accent inline-flex items-center gap-2 text-sm font-medium transition-all group-hover:gap-3">
+                    Voir la gamme <ArrowRight size={16} />
+                  </div>
                 </div>
-              </div>
-            </Link>
-          ))}
+              </Link>
+            )
+          })}
         </div>
       </div>
     </section>

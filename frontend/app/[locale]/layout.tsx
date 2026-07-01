@@ -1,8 +1,12 @@
 import type { Metadata } from 'next'
 import { Inter, Poppins, JetBrains_Mono } from 'next/font/google'
-import './globals.css'
+import '../globals.css'
 import { Providers } from '@/components/Providers'
 import { Toaster } from 'sonner'
+import { NextIntlClientProvider } from 'next-intl'
+import { getMessages } from 'next-intl/server'
+import { notFound } from 'next/navigation'
+import { routing } from '@/i18n/routing'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -23,40 +27,49 @@ const jetbrainsMono = JetBrains_Mono({
   display: 'swap',
 })
 
-export const metadata: Metadata = {
-  title: 'KiosqueTN | Lubrifiants et Huiles Moteur en Tunisie',
-  description:
-    'KiosqueTN — votre spécialiste en ligne de lubrifiants, huiles moteur, filtres et accessoires auto en Tunisie. Livraison rapide partout en Tunisie.',
-  keywords: [
-    'huile moteur',
-    'lubrifiant',
-    'Tunisie',
-    'KiosqueTN',
-    'huile synthétique',
-    'vidange',
-    'Total',
-    'Shell',
-    'Castrol',
-    'Motul',
-    'filtres auto',
-  ],
-  openGraph: {
-    title: 'KiosqueTN | Lubrifiants et Huiles Moteur en Tunisie',
-    description:
-      'KiosqueTN — votre spécialiste en ligne de lubrifiants et huiles moteur en Tunisie.',
-    type: 'website',
-    locale: 'fr_TN',
-  },
+import { getTranslations } from 'next-intl/server'
+
+export async function generateMetadata({ params: { locale } }: { params: { locale: string } }): Promise<Metadata> {
+  const t = await getTranslations({ locale, namespace: 'Index' })
+
+  return {
+    title: t('title'),
+    description: t('description'),
+    keywords: [
+      'huile moteur',
+      'lubrifiant',
+      'Tunisie',
+      'KiosqueTN',
+      'huile synthétique',
+      'vidange',
+      'Total',
+      'Shell',
+      'Castrol',
+      'Motul',
+      'filtres auto',
+    ],
+    openGraph: {
+      title: t('title'),
+      description: t('description'),
+      type: 'website',
+      locale: locale === 'fr' ? 'fr_TN' : 'en_US',
+    },
+  }
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
+  params: { locale }
 }: Readonly<{
   children: React.ReactNode
+  params: { locale: string }
 }>) {
+
+  const messages = await getMessages()
+
   return (
     <html
-      lang="fr"
+      lang={locale}
       className={`${inter.variable} ${poppins.variable} ${jetbrainsMono.variable}`}
       style={{ scrollBehavior: 'smooth' }}
       suppressHydrationWarning
@@ -65,19 +78,21 @@ export default function RootLayout({
         className="text-foreground bg-brand-surface flex min-h-screen flex-col font-sans"
         suppressHydrationWarning
       >
-        <Providers>
-          {/* Skip link for keyboard / screen reader navigation */}
-          <a
-            href="#main-content"
-            className="bg-brand-primary ring-brand-accent sr-only z-50 rounded-lg p-4 font-bold text-white ring-2 outline-none focus:not-sr-only focus:absolute focus:top-4 focus:left-4"
-          >
-            Aller au contenu principal
-          </a>
+        <NextIntlClientProvider messages={messages}>
+          <Providers>
+            {/* Skip link for keyboard / screen reader navigation */}
+            <a
+              href="#main-content"
+              className="bg-brand-primary ring-brand-accent sr-only z-50 rounded-lg p-4 font-bold text-white ring-2 outline-none focus:not-sr-only focus:absolute focus:top-4 focus:left-4"
+            >
+              Aller au contenu principal
+            </a>
 
-          {children}
+            {children}
 
-          <Toaster position="bottom-right" richColors closeButton />
-        </Providers>
+            <Toaster position="bottom-right" richColors closeButton />
+          </Providers>
+        </NextIntlClientProvider>
 
         {/* ── Müller-Brockmann Grid Toggle ─────────────────────────────────
             Press 'G' anywhere on the page (when not in a form field) to

@@ -4,7 +4,7 @@ import { useCartStore } from '@/lib/store/cart.store'
 import { formatPrice } from '@/lib/utils/format'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { ShoppingCart, Trash2, Plus, Minus } from 'lucide-react'
-import Link from 'next/link'
+import { Link } from '@/i18n/routing'
 import Image from 'next/image'
 
 export default function MiniCart() {

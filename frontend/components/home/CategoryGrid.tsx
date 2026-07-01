@@ -5,8 +5,9 @@ import { categoriesApi } from '@/lib/api/categories'
 import { CategoryGridSkeleton } from '@/components/common/Skeleton'
 import { ErrorState } from '@/components/common/ErrorState'
 import { SectionTitle } from '@/components/common/SectionTitle'
-import Link from 'next/link'
+import { Link } from '@/i18n/routing'
 import Image from 'next/image'
+import { Package } from 'lucide-react'
 
 export function CategoryGrid() {
   const { data, isLoading, isError, refetch } = useQuery({
@@ -30,19 +31,19 @@ export function CategoryGrid() {
               href={`/categorie/${category.slug}`}
               className="group product-card flex flex-col items-center p-6 text-center transition-transform hover:-translate-y-1"
             >
-              <div className="bg-brand-surface group-hover:bg-brand-primary/10 relative mb-4 flex h-16 w-16 items-center justify-center rounded-full transition-colors">
+              <div className="bg-brand-surface group-hover:bg-brand-primary/10 relative mb-4 flex h-24 w-24 items-center justify-center rounded-full transition-colors overflow-hidden border-4 border-white shadow-sm group-hover:border-brand-surface">
                 {category.image ? (
                   <Image
                     src={category.image}
                     alt={category.name}
                     fill
-                    className="rounded-full object-cover"
+                    className="object-cover"
                   />
                 ) : (
-                  <span className="text-2xl">📦</span>
+                  <Package size={32} className="text-gray-400 group-hover:text-brand-primary transition-colors" />
                 )}
               </div>
-              <h3 className="text-brand-primary group-hover:text-brand-accent font-medium transition-colors">
+              <h3 className="text-brand-primary group-hover:text-brand-accent font-medium transition-colors line-clamp-2">
                 {category.name}
               </h3>
             </Link>

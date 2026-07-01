@@ -1,4 +1,4 @@
-import Link from 'next/link'
+import { Link } from '@/i18n/routing'
 import { Phone, Mail, MapPin, Share2 } from 'lucide-react'
 
 export default function Footer() {

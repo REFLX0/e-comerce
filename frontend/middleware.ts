@@ -1,51 +1,34 @@
 import NextAuth from 'next-auth'
 import { authConfig } from '@/lib/auth.config'
 import { NextRequest, NextResponse } from 'next/server'
+import createMiddleware from 'next-intl/middleware'
+import { routing } from '@/i18n/routing'
 
 const { auth } = NextAuth(authConfig)
+const intlMiddleware = createMiddleware(routing)
 
 export default auth((req: NextRequest & { auth?: unknown }) => {
   // ── 1. Request ID — generated once per request, propagated everywhere ──
-  // Used for log correlation between frontend errors and backend logs.
-  const requestId =
-    req.headers.get('x-request-id') ?? crypto.randomUUID()
+  const requestId = req.headers.get('x-request-id') ?? crypto.randomUUID()
 
   // ── 2. Nonce — used by the CSP script-src directive ───────────────────
   const nonce = Buffer.from(crypto.randomUUID()).toString('base64')
 
   // ── 3. Content-Security-Policy ────────────────────────────────────────
-  // Hardened CSP with:
-  //   - nonce-based script execution (no 'unsafe-inline' in production)
-  //   - font-src includes Google Fonts (required for Inter/Poppins)
-  //   - img-src includes Cloudinary and Unsplash only
-  //   - connect-src restricted to known API and analytics endpoints
-  //   - frame-ancestors: none (clickjacking protection)
   const isDev = process.env.NODE_ENV === 'development'
 
   const cspHeader = [
     `default-src 'self'`,
-    // Scripts: nonce + strict-dynamic (production) or unsafe-eval (dev HMR)
-    `script-src 'self' 'unsafe-inline' 'unsafe-eval'`,
-    // Styles: unsafe-inline required for Tailwind CSS-in-JS
+    `script-src 'self' 'unsafe-inline' 'unsafe-eval' blob:`,
     `style-src 'self' 'unsafe-inline' https://fonts.googleapis.com`,
-    // Fonts: self + Google Fonts CDN
     `font-src 'self' https://fonts.gstatic.com`,
-    // Images: self, Cloudinary, Unsplash, data URIs, blobs
     `img-src 'self' blob: data: https://res.cloudinary.com https://images.unsplash.com https://www.google.com`,
-    // XHR/fetch: self + known API endpoints
     `connect-src 'self' ${process.env.NEXT_PUBLIC_API_URL ?? ''} https://api.cloudinary.com https://www.upstash.io`,
-    // No plugins
     `object-src 'none'`,
-    // No base tag hijacking
     `base-uri 'self'`,
-    // Form submissions only to self
     `form-action 'self'`,
-    // No iframing of this site
     `frame-src 'none'`,
-    // No framing by external sites (clickjacking)
     `frame-ancestors 'none'`,
-    // Force HTTPS in production
-    ...(isDev ? [] : [`upgrade-insecure-requests`]),
   ].join('; ')
 
   // ── 4. Route protection ───────────────────────────────────────────────
@@ -53,45 +36,42 @@ export default auth((req: NextRequest & { auth?: unknown }) => {
   const isLoggedIn = !!(req as { auth?: unknown }).auth
   const role = ((req as { auth?: { user?: { role?: string } } }).auth?.user as { role?: string })?.role
 
-  const isAdminRoute  = nextUrl.pathname.startsWith('/admin')
-  const isAuthRoute   = nextUrl.pathname.startsWith('/auth')
-  const isCompteRoute = nextUrl.pathname.startsWith('/compte')
+  // Remove locale prefix for auth checks
+  const pathWithoutLocale = nextUrl.pathname.replace(/^\/(fr|en)/, '') || '/'
+  
+  const isAdminRoute  = pathWithoutLocale.startsWith('/admin')
+  const isAuthRoute   = pathWithoutLocale.startsWith('/auth')
+  const isCompteRoute = pathWithoutLocale.startsWith('/compte')
 
   if (isAdminRoute && (!isLoggedIn || role !== 'ADMIN')) {
-    const redirect = NextResponse.redirect(new URL('/auth/login', nextUrl))
+    const redirect = NextResponse.redirect(new URL('/fr/auth/login', nextUrl))
     redirect.headers.set('x-request-id', requestId)
     return redirect
   }
 
   if (isCompteRoute && !isLoggedIn) {
-    const redirect = NextResponse.redirect(new URL('/auth/login', nextUrl))
+    const redirect = NextResponse.redirect(new URL('/fr/auth/login', nextUrl))
     redirect.headers.set('x-request-id', requestId)
     return redirect
   }
 
   if (isAuthRoute && isLoggedIn) {
-    const redirect = NextResponse.redirect(new URL('/', nextUrl))
+    const redirect = NextResponse.redirect(new URL('/fr', nextUrl))
     redirect.headers.set('x-request-id', requestId)
     return redirect
   }
 
-  // ── 5. Build response with all security headers ───────────────────────
-  const response = NextResponse.next({
-    request: { headers: new Headers(req.headers) },
-  })
+  // ── 5. Run next-intl middleware for localized routing ───────────────────
+  const response = intlMiddleware(req)
 
+  // ── 6. Build response with all security headers ───────────────────────
+  
   // Tracing
   response.headers.set('x-request-id', requestId)
   response.headers.set('x-nonce', nonce)
 
   // CSP
   response.headers.set('Content-Security-Policy', cspHeader)
-
-  // HSTS — 2 years, subdomains, preload
-  response.headers.set(
-    'Strict-Transport-Security',
-    'max-age=63072000; includeSubDomains; preload'
-  )
 
   // Prevent MIME sniffing
   response.headers.set('X-Content-Type-Options', 'nosniff')
@@ -108,11 +88,11 @@ export default auth((req: NextRequest & { auth?: unknown }) => {
     'camera=(), microphone=(), geolocation=(), payment=(), usb=(), bluetooth=()'
   )
 
-  // Cross-Origin isolation (required for SharedArrayBuffer, advanced features)
+  // Cross-Origin isolation
   response.headers.set('Cross-Origin-Opener-Policy', 'same-origin')
   response.headers.set('Cross-Origin-Embedder-Policy', 'require-corp')
 
-  // Remove fingerprinting header (belt-and-suspenders — next.config also sets this)
+  // Remove fingerprinting header
   response.headers.delete('x-powered-by')
 
   return response

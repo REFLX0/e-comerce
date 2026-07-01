@@ -6,7 +6,7 @@ import * as z from 'zod'
 import { useState, useEffect } from 'react'
 import { signIn } from 'next-auth/react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import Link from 'next/link'
+import { Link } from '@/i18n/routing'
 import { ArrowRight, Mail, Lock, Eye, EyeOff, Loader2 } from 'lucide-react'
 import { toast } from 'sonner'
 

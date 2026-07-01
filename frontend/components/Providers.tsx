@@ -3,6 +3,8 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { useState } from 'react'
 import { OfflineIndicator } from '@/components/OfflineIndicator'
+import { SessionProvider } from 'next-auth/react'
+import { AuthSync } from '@/components/auth/AuthSync'
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(
@@ -19,9 +21,13 @@ export function Providers({ children }: { children: React.ReactNode }) {
   )
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <OfflineIndicator />
-      {children}
-    </QueryClientProvider>
+    <SessionProvider>
+      <QueryClientProvider client={queryClient}>
+        <AuthSync />
+        <OfflineIndicator />
+        {children}
+      </QueryClientProvider>
+    </SessionProvider>
   )
 }
+

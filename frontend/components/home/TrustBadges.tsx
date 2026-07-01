@@ -13,8 +13,8 @@ const badges = [
   },
   {
     icon: Truck,
-    title: 'LIVRAISON EXPRESS',
-    desc: 'Paiement à la livraison',
+    title: 'LIVRAISON',
+    desc: 'RAPIDE & FIABLE',
   },
   {
     icon: CreditCard,
