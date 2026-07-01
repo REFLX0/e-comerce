@@ -13,14 +13,20 @@
   --font-heading: var(--font-poppins);
 
   /* ── Brand Design Tokens — Automotive Premium ──────────────────────── */
-  --color-brand-primary: #0f172a;         /* Deep Carbon / Slate-950 */
-  --color-brand-primary-light: #1e293b;   /* Slate-800 */
-  --color-brand-primary-dark: #020617;    /* Vantablack */
-  --color-brand-accent: #facc15;          /* Racing Yellow */
-  --color-brand-accent-hover: #eab308;    /* Deep Yellow */
+  --color-brand-primary: #0a0f1e;         /* Deep Midnight Navy */
+  --color-brand-primary-light: #131c35;   /* Rich Dark Blue */
+  --color-brand-primary-dark: #050810;    /* Vantablack Navy */
+  --color-brand-accent: #f5c518;          /* Premium Gold */
+  --color-brand-accent-hover: #e0b000;    /* Deep Gold */
+  --color-brand-accent-glow: rgba(245,197,24,0.35);
   --color-brand-surface: #f8fafc;         /* Slate-50 */
   --color-brand-surface-dark: #f1f5f9;    /* Slate-100 */
   --color-brand-border: #e2e8f0;          /* Slate-200 */
+
+  /* ── Glass / Dark Surface System ───────────────────────────────────── */
+  --color-glass-light: rgba(255,255,255,0.06);
+  --color-glass-medium: rgba(255,255,255,0.10);
+  --color-glass-border: rgba(255,255,255,0.12);
 
   /* ── Semantic Color Tokens ──────────────────────────────────────────── */
   --color-semantic-success: #16a34a;
@@ -39,10 +45,12 @@
   /* Sm */  --text-small: 0.75rem; --leading-small: 1rem;  /* 16px */
 
   /* ── Elevation / Shadows ────────────────────────────────────────────── */
-  --shadow-card: 0 2px 12px rgba(15,23,42,0.06);
-  --shadow-card-hover: 0 8px 32px rgba(15,23,42,0.14);
-  --shadow-soft: 0 4px 20px rgba(15,23,42,0.08);
-  --shadow-overlay: 0 20px 60px rgba(15,23,42,0.24);
+  --shadow-card: 0 2px 12px rgba(10,15,30,0.08);
+  --shadow-card-hover: 0 12px 40px rgba(10,15,30,0.18);
+  --shadow-soft: 0 4px 20px rgba(10,15,30,0.10);
+  --shadow-overlay: 0 24px 64px rgba(10,15,30,0.28);
+  --shadow-glow-accent: 0 0 32px rgba(245,197,24,0.30), 0 0 64px rgba(245,197,24,0.12);
+  --shadow-glass: 0 8px 32px rgba(0,0,0,0.16), inset 0 1px 0 rgba(255,255,255,0.10);
 
   /* shadcn tokens */
   --color-sidebar-ring: var(--sidebar-ring);
@@ -605,6 +613,33 @@ body.grid-on .grid-toggle .dot {
   100% { background-position: -200% 0; }
 }
 
+@keyframes marquee {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  33%       { transform: translateY(-12px) rotate(1deg); }
+  66%       { transform: translateY(-6px) rotate(-1deg); }
+}
+
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(245,197,24,0.2); }
+  50%       { box-shadow: 0 0 48px rgba(245,197,24,0.5), 0 0 80px rgba(245,197,24,0.15); }
+}
+
+@keyframes gradient-shift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes slide-in-left {
+  from { opacity: 0; transform: translateX(-24px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
 @keyframes fade-in-up {
   from { opacity: 0; transform: translateY(16px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -630,3 +665,9 @@ body.grid-on .grid-toggle .dot {
   -ms-overflow-style: none;
 }
 .hide-scrollbar::-webkit-scrollbar { display: none; }
+
+.animate-marquee       { animation: marquee 30s linear infinite; }
+.animate-float         { animation: float 6s ease-in-out infinite; }
+.animate-glow-pulse    { animation: glow-pulse 2.5s ease-in-out infinite; }
+.animate-gradient      { animation: gradient-shift 6s ease infinite; background-size: 200% 200%; }
+.animate-slide-in-left { animation: slide-in-left 0.35s ease-out both; }
