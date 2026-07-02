@@ -176,8 +176,8 @@ export default function AdminDashboard() {
                         {order.totalAmount?.toLocaleString('fr-TN', { minimumFractionDigits: 2 })} TND
                       </td>
                       <td className="px-5 py-4">
-                        <span className={`inline-flex rounded-full px-2.5 py-1 text-[11px] font-bold ${statusCfg.cls}`}>
-                          {statusCfg.label}
+                        <span className={`inline-flex rounded-full px-2.5 py-1 text-[11px] font-bold ${statusCfg?.cls || ''}`}>
+                          {statusCfg?.label || order.status}
                         </span>
                       </td>
                     </tr>
