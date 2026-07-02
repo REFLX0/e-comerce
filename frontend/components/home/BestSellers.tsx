@@ -14,10 +14,10 @@ export function BestSellers() {
   })
 
   return (
-    <section className="section-padding bg-brand-surface py-16">
+    <section className="section-padding bg-brand-surface py-16 md:py-20">
       <SectionTitle
-        title="Nos Meilleures Ventes"
-        subtitle="Découvrez les huiles les plus populaires et les mieux notées par nos clients."
+        title="Meilleures ventes"
+        subtitle="Les huiles et pièces qui reviennent le plus souvent dans les paniers clients."
         centered
       />
 

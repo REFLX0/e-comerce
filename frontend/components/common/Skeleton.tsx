@@ -1,6 +1,5 @@
 /**
- * Skeleton components — use .shimmer (gradient animation) for perceived speed.
- * All dimensions are multiples of the 8px baseline unit.
+ * Skeleton components use a soft shimmer for perceived speed.
  */
 
 function SkeletonBlock({
@@ -27,7 +26,7 @@ export function ProductCardSkeleton() {
       <SkeletonBlock className="mb-1" style={{ height: 20, width: '35%' }} />
       <SkeletonBlock className="mb-4" style={{ height: 12, width: '25%' }} />
       {/* CTA button */}
-      <SkeletonBlock style={{ height: 48, borderRadius: 9999 }} />
+      <SkeletonBlock style={{ height: 44, borderRadius: 8 }} />
     </div>
   )
 }
@@ -80,7 +79,7 @@ export function OrderCardSkeleton() {
     <div className="border-brand-surface-dark rounded-2xl border p-6" aria-busy="true">
       <div className="mb-4 flex items-center justify-between">
         <SkeletonBlock style={{ height: 20, width: '33%' }} />
-        <SkeletonBlock style={{ height: 24, width: 80, borderRadius: 9999 }} />
+          <SkeletonBlock style={{ height: 24, width: 80, borderRadius: 8 }} />
       </div>
       <div className="space-y-3">
         <SkeletonBlock style={{ height: 16, width: '50%' }} />
@@ -113,7 +112,7 @@ export function CategoryGridSkeleton({ count = 6 }: { count?: number }) {
     >
       {Array.from({ length: count }).map((_, i) => (
         <div key={i} className="product-card p-6 text-center" aria-busy="true">
-          <SkeletonBlock className="mx-auto mb-3" style={{ height: 64, width: 64, borderRadius: 9999 }} />
+          <SkeletonBlock className="mx-auto mb-3" style={{ height: 64, width: 64, borderRadius: 8 }} />
           <SkeletonBlock className="mx-auto" style={{ height: 16, width: '66%' }} />
         </div>
       ))}

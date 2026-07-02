@@ -1,77 +1,114 @@
 "use client"
 
-import { ArrowDown, ShieldCheck, Package, Truck, Award } from 'lucide-react'
+import Image from 'next/image'
+import { ArrowDown, Award, CheckCircle2, Gauge, Package, ShieldCheck, Truck } from 'lucide-react'
+import { Link } from '@/i18n/routing'
+
+const heroBadges = [
+  { icon: Award, label: 'Distributeur officiel' },
+  { icon: Package, label: '5000+ références' },
+  { icon: Truck, label: 'Livraison rapide' },
+  { icon: ShieldCheck, label: 'Conseil expert' },
+]
+
+const productTiles = [
+  { logo: '/img/b/motul.svg', brand: 'Motul', spec: '5W-40', tone: 'bg-orange-50' },
+  { logo: '/img/b/castrol.svg', brand: 'Castrol', spec: 'EDGE', tone: 'bg-green-50' },
+  { logo: '/img/b/liqui-moly.svg', brand: 'Liqui Moly', spec: 'Synthèse', tone: 'bg-blue-50' },
+  { logo: '/img/b/bosch.svg', brand: 'Bosch', spec: 'Filtres', tone: 'bg-red-50' },
+]
 
 export function HeroBanner() {
-  const heroBadges = [
-    { icon: Award, label: 'Distributeur Officiel' },
-    { icon: Package, label: '5000+ Produits' },
-    { icon: Truck, label: 'Livraison 24h' },
-    { icon: ShieldCheck, label: 'Livraison Gratuite' },
-  ]
-
   const scrollToFinder = () => {
     document.getElementById('oil-finder')?.scrollIntoView({ behavior: 'smooth' })
   }
 
   return (
-    <section className="relative flex flex-col items-center justify-center overflow-hidden bg-brand-primary-dark pt-24 pb-32 text-center">
-      {/* Premium Cinematic Background */}
+    <section className="relative isolate overflow-hidden bg-brand-surface pt-12 pb-24 md:pt-16 md:pb-32">
       <div
-        className="pointer-events-none absolute inset-0 opacity-40"
+        className="pointer-events-none absolute inset-0 opacity-[0.45]"
+        aria-hidden="true"
         style={{
-          background: 'radial-gradient(ellipse 80% 50% at 50% 20%, rgba(245,197,24,0.15) 0%, transparent 70%)',
+          backgroundImage:
+            'linear-gradient(rgba(23,33,43,0.045) 1px, transparent 1px), linear-gradient(90deg, rgba(23,33,43,0.045) 1px, transparent 1px)',
+          backgroundSize: '40px 40px',
         }}
       />
-      
-      {/* Mesh gradient overlay */}
-      <div className="absolute inset-0 bg-[url('/img/noise.png')] opacity-20 mix-blend-overlay" />
 
-      <div className="section-padding relative z-10 mx-auto max-w-4xl flex flex-col items-center">
-        
-        {/* Subtle top badge */}
-        <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-brand-accent backdrop-blur-md">
-          <span className="relative flex h-2 w-2">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand-accent opacity-75"></span>
-            <span className="relative inline-flex h-2 w-2 rounded-full bg-brand-accent"></span>
-          </span>
-          La Qualité Automobile
-        </div>
+      <div className="section-padding relative z-10 grid gap-10 lg:grid-cols-[minmax(0,0.95fr)_minmax(390px,0.75fr)] lg:items-center xl:gap-16">
+        <div className="max-w-xl">
+          <div className="mb-5 inline-flex items-center gap-2 rounded-lg border border-brand-border bg-brand-card/80 px-3 py-2 text-xs font-semibold uppercase tracking-normal text-brand-primary shadow-card backdrop-blur">
+            <CheckCircle2 size={14} className="text-brand-accent" />
+            La sélection automobile fiable
+          </div>
 
-        {/* Huge Hero Title */}
-        <h1 className="font-display mb-6 text-5xl font-black leading-[1.1] text-white md:text-6xl lg:text-7xl">
-          Trouvez l&apos;huile parfaite <br />
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-accent to-yellow-600">
-            pour votre véhicule
-          </span>
-        </h1>
+          <h1 className="font-display text-4xl font-black leading-[1.08] text-brand-primary sm:text-5xl lg:text-6xl">
+            KiosqueTN trouve l&apos;huile adaptée à votre moteur.
+          </h1>
 
-        <p className="mb-10 max-w-2xl text-lg text-white/60 md:text-xl">
-          Expertise, performance et longévité. Découvrez notre sélection premium de lubrifiants et pièces avec recommandation sur mesure.
-        </p>
+          <p className="mt-5 max-w-xl text-base leading-7 text-brand-muted md:text-lg">
+            Lubrifiants, filtres et pièces fiables avec recommandation par véhicule, disponibilité claire et commande rapide.
+          </p>
 
-        {/* Primary CTA */}
-        <button
-          onClick={scrollToFinder}
-          className="group relative inline-flex items-center gap-3 overflow-hidden rounded-2xl bg-brand-accent px-8 py-4 font-bold text-black transition-all hover:scale-105 hover:bg-yellow-400 active:scale-95 shadow-[0_0_40px_rgba(245,197,24,0.3)]"
-        >
-          <span className="relative z-10 flex items-center gap-2 text-lg">
-            Trouver mon huile <ArrowDown size={20} className="transition-transform group-hover:translate-y-1" />
-          </span>
-        </button>
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+            <button onClick={scrollToFinder} className="btn-accent group w-full sm:w-auto">
+              Trouver mon huile
+              <ArrowDown size={18} className="transition-transform duration-200 group-hover:translate-y-0.5" />
+            </button>
+            <Link href="/catalogue" className="btn-secondary w-full sm:w-auto">
+              Explorer le catalogue
+            </Link>
+          </div>
 
-        {/* 4 Trust Badges in Hero */}
-        <div className="mt-20 grid w-full grid-cols-2 gap-4 md:grid-cols-4 border-t border-white/10 pt-10">
-          {heroBadges.map((badge, idx) => (
-            <div key={idx} className="flex flex-col items-center justify-center gap-3 text-white/70 transition-colors hover:text-white">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/5 border border-white/10 backdrop-blur-md">
-                <badge.icon size={22} className="text-brand-accent" />
+          <div className="mt-10 grid grid-cols-2 gap-3 sm:hidden">
+            {productTiles.slice(0, 2).map((item) => (
+              <div key={item.brand} className="rounded-lg border border-brand-border bg-brand-card p-3 shadow-card">
+                <div className="mb-3 flex h-12 items-center justify-center rounded-md bg-brand-surface p-2">
+                  <Image src={item.logo} alt={item.brand} width={88} height={34} className="max-h-8 w-auto object-contain" />
+                </div>
+                <p className="text-xs font-semibold text-brand-muted">{item.brand}</p>
+                <p className="text-sm font-bold text-brand-primary">{item.spec}</p>
               </div>
-              <span className="text-sm font-medium">{badge.label}</span>
-            </div>
-          ))}
+            ))}
+          </div>
+
+          <div className="mt-12 grid grid-cols-2 gap-3">
+            {heroBadges.map((badge) => (
+              <div key={badge.label} className="flex min-h-20 items-center gap-3 rounded-lg border border-brand-border bg-brand-card/85 p-3 shadow-card backdrop-blur transition-all duration-200 hover:-translate-y-0.5 hover:shadow-card-hover">
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-brand-surface text-brand-primary">
+                  <badge.icon size={20} />
+                </div>
+                <span className="text-sm font-semibold leading-snug text-brand-primary">{badge.label}</span>
+              </div>
+            ))}
+          </div>
         </div>
 
+        <div className="pointer-events-none relative hidden lg:block" aria-hidden="true">
+          <div className="relative grid rotate-[-3deg] grid-cols-2 gap-4">
+            {productTiles.map((item, index) => (
+              <div
+                key={item.brand}
+                className={`rounded-lg border border-brand-border ${item.tone} p-4 shadow-card transition-transform duration-200 ${
+                  index % 2 === 0 ? 'translate-y-7' : ''
+                }`}
+              >
+                <div className="mb-5 flex h-20 items-center justify-center rounded-lg bg-brand-card p-4 shadow-sm">
+                  <Image src={item.logo} alt="" width={120} height={48} className="max-h-12 w-auto object-contain" />
+                </div>
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-normal text-brand-muted">{item.brand}</p>
+                    <p className="font-display text-lg font-bold text-brand-primary">{item.spec}</p>
+                  </div>
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-brand-primary text-brand-surface">
+                    <Gauge size={18} />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </section>
   )

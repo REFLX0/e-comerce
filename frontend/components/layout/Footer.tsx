@@ -3,18 +3,8 @@ import { Phone, Mail, MapPin, Share2, ArrowRight } from 'lucide-react'
 
 export default function Footer() {
   return (
-    <footer className="relative bg-brand-primary-dark overflow-hidden mt-auto">
-      {/* Background gradient texture */}
-      <div
-        className="pointer-events-none absolute inset-0 opacity-30"
-        style={{
-          background:
-            'radial-gradient(ellipse 80% 50% at 20% 0%, rgba(245,197,24,0.08) 0%, transparent 60%), radial-gradient(ellipse 60% 40% at 80% 100%, rgba(245,197,24,0.05) 0%, transparent 60%)',
-        }}
-      />
-
-      {/* Gold top accent line */}
-      <div className="h-px w-full bg-gradient-to-r from-transparent via-brand-accent/50 to-transparent" />
+    <footer className="relative mt-auto overflow-hidden bg-brand-primary-dark">
+      <div className="h-px w-full bg-brand-accent/50" />
 
       <div className="section-padding relative pt-16 pb-10">
         <div className="mb-14 grid grid-cols-1 gap-12 border-b border-white/8 pb-12 md:grid-cols-2 lg:grid-cols-4">
@@ -22,11 +12,13 @@ export default function Footer() {
           {/* Brand Column */}
           <div className="lg:col-span-1">
             <Link href="/" className="inline-block mb-6">
-              <img
-                src="/logo.png"
-                alt="KiosqueTN"
-                className="h-10 w-auto object-contain brightness-0 invert opacity-90"
-              />
+              <span className="inline-flex rounded-lg bg-white p-2">
+                <img
+                  src="/logo.png"
+                  alt="KiosqueTN"
+                  className="h-10 w-auto object-contain"
+                />
+              </span>
             </Link>
             <p className="mb-6 text-sm leading-relaxed text-white/45 max-w-xs">
               Spécialiste en lubrifiants et pièces auto pour véhicules particuliers, utilitaires et industriels depuis plus de 15 ans.
@@ -37,8 +29,8 @@ export default function Footer() {
                 target="_blank"
                 rel="noreferrer"
                 aria-label="Facebook KiosqueTN"
-                className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/8 text-white/60
-                           hover:bg-brand-accent hover:text-brand-primary transition-all duration-300"
+                className="flex h-11 w-11 items-center justify-center rounded-lg bg-white/8 text-white/60
+                           transition-all duration-200 hover:bg-brand-accent hover:text-brand-primary"
               >
                 <Share2 size={17} />
               </a>
@@ -61,7 +53,7 @@ export default function Footer() {
                 <li key={href}>
                   <Link
                     href={href}
-                    className="group flex items-center gap-2 text-white/45 hover:text-white transition-colors duration-200"
+                    className="group flex min-h-11 items-center gap-2 text-white/48 transition-colors duration-200 hover:text-white"
                   >
                     <ArrowRight size={13} className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 text-brand-accent" />
                     {label}
@@ -86,7 +78,7 @@ export default function Footer() {
                 <li key={href}>
                   <Link
                     href={href}
-                    className="group flex items-center gap-2 text-white/45 hover:text-white transition-colors duration-200"
+                    className="group flex min-h-11 items-center gap-2 text-white/48 transition-colors duration-200 hover:text-white"
                   >
                     <ArrowRight size={13} className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 text-brand-accent" />
                     {label}
@@ -114,7 +106,7 @@ export default function Footer() {
                 <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-brand-accent/10">
                   <Phone size={15} className="text-brand-accent" />
                 </div>
-                <a href="tel:+21692975959" className="text-white/45 hover:text-white transition-colors">
+                <a href="tel:+21692975959" className="flex min-h-11 items-center text-white/48 transition-colors duration-200 hover:text-white">
                   +216 92 975 959
                 </a>
               </li>
@@ -122,7 +114,7 @@ export default function Footer() {
                 <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-brand-accent/10">
                   <Mail size={15} className="text-brand-accent" />
                 </div>
-                <a href="mailto:contact@kiosquetn.tn" className="text-white/45 hover:text-white transition-colors">
+                <a href="mailto:contact@kiosquetn.tn" className="flex min-h-11 items-center text-white/48 transition-colors duration-200 hover:text-white">
                   contact@kiosquetn.tn
                 </a>
               </li>

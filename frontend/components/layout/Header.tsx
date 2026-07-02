@@ -32,21 +32,21 @@ export default function Header() {
   }, [])
 
   return (
-    <header className={`sticky top-0 z-40 w-full transition-all duration-500 ${
+    <header className={`sticky top-0 z-40 w-full border-b transition-all duration-200 ${
       isScrolled
-        ? 'bg-brand-primary/95 backdrop-blur-xl shadow-overlay border-b border-white/5'
-        : 'bg-brand-primary shadow-none'
+        ? 'border-brand-border bg-brand-card/95 shadow-card backdrop-blur-xl'
+        : 'border-brand-border/70 bg-brand-card/92 shadow-none backdrop-blur-xl'
     }`}>
 
       {/* ── Top Utility Bar ──────────────────────────────────────────────── */}
-      <div className="border-b border-white/8 bg-brand-primary-dark/60 py-2 text-xs text-white/60">
+      <div className="border-b border-white/10 bg-brand-primary py-2 text-xs text-white/72">
         <div className="section-padding flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Zap size={12} className="text-brand-accent" />
-            <p className="hidden md:block tracking-wide">
+            <p className="hidden md:block">
               Livraison Gratuite à partir de <span className="text-brand-accent font-semibold">100 DT</span>
             </p>
-            <p className="w-full text-center md:hidden tracking-wide">
+            <p className="w-full text-center md:hidden">
               Livraison Gratuite dès <span className="text-brand-accent font-semibold">100 DT</span>
             </p>
           </div>
@@ -62,7 +62,7 @@ export default function Header() {
       </div>
 
       {/* ── Main Header ──────────────────────────────────────────────────── */}
-      <div className="section-padding py-4">
+      <div className="section-padding py-3">
         <div className="flex items-center justify-between gap-4 md:gap-8">
 
           {/* Logo + Mobile Menu */}
@@ -74,7 +74,7 @@ export default function Header() {
                 alt="KiosqueTN"
                 width={140}
                 height={40}
-                className="h-9 w-auto object-contain brightness-0 invert group-hover:opacity-90 transition-opacity"
+                className="h-10 w-auto object-contain transition-opacity duration-200 group-hover:opacity-85"
                 priority
               />
             </Link>
@@ -84,7 +84,7 @@ export default function Header() {
           <nav className="hidden items-center gap-1 md:flex">
             <Link
               href="/"
-              className="px-4 py-2 text-[15px] font-medium text-white/80 hover:text-white rounded-lg hover:bg-white/8 transition-all duration-200"
+              className="rounded-lg px-3 py-2 text-sm font-medium text-brand-primary/72 transition-all duration-200 hover:bg-brand-primary/5 hover:text-brand-primary"
             >
               {t('home')}
             </Link>
@@ -92,9 +92,10 @@ export default function Header() {
             {/* Highlighted Find My Oil CTA */}
             <Link
               href="/#oil-finder"
-              className="flex items-center gap-1.5 px-4 py-2 text-[15px] font-bold text-brand-accent hover:text-yellow-400 rounded-lg hover:bg-brand-accent/10 transition-all duration-200"
+              className="flex items-center gap-1.5 rounded-lg border border-brand-accent/25 bg-brand-accent/12 px-3 py-2 text-sm font-semibold text-brand-primary transition-all duration-200 hover:bg-brand-accent/20 hover:shadow-card"
             >
-              Trouver mon huile <span className="text-sm">⭐</span>
+              <Zap size={14} />
+              Trouver mon huile
             </Link>
 
             {/* Mega Menu Trigger */}
@@ -105,7 +106,7 @@ export default function Header() {
             >
               <Link
                 href="/catalogue"
-                className="flex items-center gap-1.5 px-4 py-2 text-[15px] font-medium text-white/80 hover:text-white rounded-lg hover:bg-white/8 transition-all duration-200"
+                className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-brand-primary/72 transition-all duration-200 hover:bg-brand-primary/5 hover:text-brand-primary"
               >
                 {t('catalog')}
                 <ChevronDown
@@ -116,15 +117,15 @@ export default function Header() {
 
               {/* Mega Menu Dropdown */}
               {isHoveringMenu && categories && categories.length > 0 && (
-                <div className="animate-scale-in absolute top-full left-1/2 mt-2 w-[820px] -translate-x-1/2 rounded-2xl border border-white/10 bg-brand-primary/98 backdrop-blur-xl p-8 shadow-overlay">
+                <div className="animate-scale-in absolute top-full left-1/2 mt-3 w-[820px] -translate-x-1/2 rounded-lg border border-brand-border bg-brand-card/98 p-6 shadow-overlay backdrop-blur-xl">
                   {/* Gold accent top bar */}
-                  <div className="mb-6 h-px bg-gradient-to-r from-transparent via-brand-accent/50 to-transparent" />
-                  <div className="grid grid-cols-3 gap-8">
+                  <div className="mb-5 h-px bg-brand-border" />
+                  <div className="grid grid-cols-3 gap-6">
                     {categories.slice(0, 6).map((category) => (
                       <div key={category.id} className="group/cat">
                         <Link
                           href={`/categorie/${category.slug}`}
-                          className="font-display mb-3 block text-sm font-bold text-brand-accent hover:text-brand-accent/80 uppercase tracking-wider transition-colors"
+                          className="font-display mb-3 block text-sm font-semibold uppercase tracking-normal text-brand-primary transition-colors hover:text-brand-accent"
                         >
                           {category.name}
                         </Link>
@@ -133,7 +134,7 @@ export default function Header() {
                             <li key={sub.id}>
                               <Link
                                 href={`/categorie/${sub.slug}`}
-                                className="block text-sm text-white/50 hover:text-white transition-colors duration-150 truncate"
+                                className="block truncate text-sm text-brand-muted transition-colors duration-150 hover:text-brand-primary"
                               >
                                 {sub.name}
                               </Link>
@@ -143,10 +144,10 @@ export default function Header() {
                       </div>
                     ))}
                   </div>
-                  <div className="mt-6 h-px bg-gradient-to-r from-transparent via-white/8 to-transparent" />
+                  <div className="mt-6 h-px bg-brand-border" />
                   <div className="mt-4 flex justify-center">
-                    <Link href="/catalogue" className="text-xs font-semibold text-white/40 hover:text-brand-accent transition-colors tracking-widest uppercase">
-                      Voir tout le catalogue →
+                    <Link href="/catalogue" className="text-xs font-semibold uppercase tracking-normal text-brand-muted transition-colors hover:text-brand-primary">
+                      Voir tout le catalogue
                     </Link>
                   </div>
                 </div>
@@ -155,13 +156,13 @@ export default function Header() {
 
             <Link
               href="/a-propos"
-              className="px-4 py-2 text-[15px] font-medium text-white/80 hover:text-white rounded-lg hover:bg-white/8 transition-all duration-200"
+              className="rounded-lg px-3 py-2 text-sm font-medium text-brand-primary/72 transition-all duration-200 hover:bg-brand-primary/5 hover:text-brand-primary"
             >
               {t('about')}
             </Link>
             <Link
               href="/contact"
-              className="px-4 py-2 text-[15px] font-medium text-white/80 hover:text-white rounded-lg hover:bg-white/8 transition-all duration-200"
+              className="rounded-lg px-3 py-2 text-sm font-medium text-brand-primary/72 transition-all duration-200 hover:bg-brand-primary/5 hover:text-brand-primary"
             >
               {t('contact')}
             </Link>
@@ -175,7 +176,7 @@ export default function Header() {
             <LanguageSwitcher />
 
             <button
-              className="p-2 text-white/60 hover:text-white lg:hidden transition-colors"
+              className="flex h-11 w-11 items-center justify-center rounded-lg text-brand-primary/68 transition-colors duration-200 hover:bg-brand-primary/5 hover:text-brand-primary lg:hidden"
               aria-label={t('search')}
             >
               <Search size={22} />
@@ -183,12 +184,12 @@ export default function Header() {
 
             <Link
               href={isAuthenticated ? '/compte' : '/auth/login'}
-              className="group relative hidden p-2 text-white/60 hover:text-white sm:block transition-colors rounded-lg hover:bg-white/8"
+              className="group relative hidden h-11 w-11 items-center justify-center rounded-lg text-brand-primary/68 transition-colors duration-200 hover:bg-brand-primary/5 hover:text-brand-primary sm:flex"
               aria-label={t('account')}
             >
               <User size={22} />
               {isAuthenticated && (
-                <span className="absolute -right-0.5 -bottom-0.5 h-2.5 w-2.5 rounded-full border-2 border-brand-primary bg-green-400" />
+                <span className="absolute right-1 bottom-1 h-2.5 w-2.5 rounded-full border-2 border-brand-card bg-green-500" />
               )}
             </Link>
 

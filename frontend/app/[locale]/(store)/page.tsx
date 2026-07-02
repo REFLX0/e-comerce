@@ -1,4 +1,3 @@
-import Link from 'next/link'
 import { ArrowRight, Shield, Truck, CreditCard, Headphones, Tag, Package } from 'lucide-react'
 import { HeroBanner } from '@/components/home/HeroBanner'
 import { OilFinderWidget } from '@/features/oil-finder/components/OilFinderWidget'
@@ -6,187 +5,97 @@ import { BestSellers } from '@/components/home/BestSellers'
 import { BrandsBar } from '@/components/home/BrandsBar'
 import { CategoryGrid } from '@/components/home/CategoryGrid'
 import { PromosBanner } from '@/components/home/PromosBanner'
-import { GridGuides } from '@/components/layout/GridGuides'
 
-// ── Trust badges data ─────────────────────────────────────────────────
 const trustBadges = [
-  { icon: Shield,     title: 'Paiement',           desc: '100% Sécurisé' },
-  { icon: Tag,        title: 'Meilleur Prix',       desc: 'Garanti' },
-  { icon: Truck,      title: 'Livraison Express',   desc: 'Paiement à la livraison' },
-  { icon: CreditCard, title: 'Paiement',            desc: 'À la livraison' },
-  { icon: Package,    title: 'Commandes en gros',   desc: 'Prix dégressifs' },
-  { icon: Headphones, title: 'Service client',      desc: 'À votre écoute' },
+  { icon: Shield, title: 'Paiement', desc: '100% sécurisé' },
+  { icon: Tag, title: 'Meilleur prix', desc: 'Garanti' },
+  { icon: Truck, title: 'Livraison express', desc: 'Paiement à la livraison' },
+  { icon: CreditCard, title: 'Paiement', desc: 'À la livraison' },
+  { icon: Package, title: 'Commandes en gros', desc: 'Prix dégressifs' },
+  { icon: Headphones, title: 'Service client', desc: 'À votre écoute' },
 ]
 
 export default function Home() {
   return (
     <>
-      {/* ── Section 1: Hero ─────────────────────────────────────────────
-          Full-width photographic category cards with gradient overlays.
-          The HeroBanner is a standalone section with its own internal grid.
-          ─────────────────────────────────────────────────────────────── */}
       <HeroBanner />
 
-      {/* ── Section 2: Oil Finder — grid-aligned, -mt overlapping hero ──
-          This widget sits on the 12-column grid with an overlap that
-          creates visual tension between sections (Müller-Brockmann).
-          Uses cols 1→13 (full width) with internal padding.
-          ─────────────────────────────────────────────────────────────── */}
-      <div className="spread relative z-10 -mt-16 md:-mt-24">
-        <div className="wrap" style={{ paddingTop: 0, paddingBottom: 0 }}>
-          <div className="grid-layout">
-            {/* Oil finder spans full 12 columns */}
-            <div className="band">
-              <div style={{ gridColumn: '1 / -1' }}>
-                <OilFinderWidget />
-              </div>
-            </div>
-          </div>
-          {/* Grid overlay for this spread */}
-          <GridGuides />
-        </div>
+      <div className="section-padding relative z-10 -mt-14 md:-mt-20">
+        <OilFinderWidget />
       </div>
 
-      {/* ── Section 3: Trust Badges ─────────────────────────────────────
-          6 badges × 2 columns each = full 12-column row.
-          Border top/bottom creates a typographic rule (Swiss style).
-          ─────────────────────────────────────────────────────────────── */}
-      <section
-        className="spread border-y border-gray-100 bg-white"
-        aria-label="Nos engagements"
-      >
-        <div
-          className="wrap"
-          style={{
-            paddingTop: 'calc(var(--lh) * 3)',    /* 72px = 9 × 8px */
-            paddingBottom: 'calc(var(--lh) * 3)',
-          }}
-        >
-          <div className="grid-layout">
-            <div className="band" role="list">
-              {trustBadges.map((badge, i) => (
+      <section className="border-y border-brand-border bg-brand-card" aria-label="Nos engagements">
+        <div className="section-padding py-10 md:py-12">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+            {trustBadges.map((badge, index) => (
+              <div
+                key={badge.title + index}
+                className="group flex min-h-32 flex-col items-center justify-center rounded-lg border border-brand-border bg-brand-surface/60 p-4 text-center transition-all duration-200 hover:-translate-y-0.5 hover:border-brand-accent/35 hover:bg-brand-card hover:shadow-card"
+              >
                 <div
-                  key={badge.title + i}
-                  role="listitem"
-                  className="group flex flex-col items-center text-center"
-                  style={{ gridColumn: `${i * 2 + 1} / ${i * 2 + 3}` }}
+                  className="mb-3 flex h-12 w-12 items-center justify-center rounded-lg bg-brand-card text-brand-primary shadow-sm transition-colors duration-200 group-hover:text-brand-accent"
+                  aria-hidden="true"
                 >
-                  <div
-                    className="bg-brand-surface mb-4 flex h-16 w-16 items-center justify-center
-                               rounded-2xl transition-transform duration-300 group-hover:-translate-y-1.5"
-                    aria-hidden="true"
-                  >
-                    <badge.icon
-                      className="text-brand-primary group-hover:text-brand-accent h-8 w-8 transition-colors duration-200"
-                    />
-                  </div>
-                  <h3 className="font-display text-brand-primary mb-1 text-sm font-bold">
-                    {badge.title}
-                  </h3>
-                  <p className="text-xs text-gray-500">{badge.desc}</p>
+                  <badge.icon size={23} />
                 </div>
-              ))}
-            </div>
+                <h3 className="text-sm font-bold text-brand-primary">{badge.title}</h3>
+                <p className="mt-1 text-xs text-brand-muted">{badge.desc}</p>
+              </div>
+            ))}
           </div>
-          <GridGuides />
         </div>
       </section>
 
-      {/* ── Section 4: Brands Bar ──────────────────────────────────────
-          Logo row. Left col = label, right = scrolling logo strip.
-          ─────────────────────────────────────────────────────────────── */}
       <BrandsBar />
-
-      {/* ── Section 5: Category Grid ───────────────────────────────────
-          6-category tiles in a 12-col grid (2 cols each on desktop).
-          ─────────────────────────────────────────────────────────────── */}
       <CategoryGrid />
-
-      {/* ── Section 6: Promos CTA Banner ──────────────────────────────
-          Yellow/accent full-width banner — asymmetric composition.
-          ─────────────────────────────────────────────────────────────── */}
       <PromosBanner />
-
-      {/* ── Section 7: Best Sellers ────────────────────────────────────
-          Product grid with skeleton loading and error recovery.
-          ─────────────────────────────────────────────────────────────── */}
       <BestSellers />
 
-      {/* ── Section 8: Newsletter / Final CTA ─────────────────────────
-          A tight 2-column layout: copy on left (cols 1-7),
-          form on right (cols 8-13). Pure whitespace separation.
-          ─────────────────────────────────────────────────────────────── */}
-      <section className="spread bg-brand-primary" aria-label="Newsletter">
-        <div
-          className="wrap"
-          style={{
-            paddingTop: 'calc(var(--lh) * 5)',
-            paddingBottom: 'calc(var(--lh) * 5)',
-          }}
-        >
-          <div className="grid-layout">
-            <div className="band items-center">
-              {/* Copy — left 7 columns */}
-              <div style={{ gridColumn: '1 / 8' }}>
-                <p
-                  className="font-mono mb-3 text-xs tracking-widest text-white/50 uppercase"
-                  data-optical
-                >
-                  Restez informé
-                </p>
-                <h2
-                  className="font-display mb-4 text-3xl font-bold text-white md:text-4xl"
-                  data-optical
-                >
-                  Offres exclusives & nouveautés
-                </h2>
-                <p className="text-white/70 leading-relaxed">
-                  Recevez en avant-première nos promotions, nouveaux produits et
-                  conseils techniques directement dans votre boîte mail.
-                </p>
-              </div>
-
-              {/* Form — right 5 columns */}
-              <div style={{ gridColumn: '8 / 13' }}>
-                <form
-                  className="flex flex-col gap-4"
-                  aria-label="Inscription newsletter"
-                >
-                  <div>
-                    <label htmlFor="newsletter-email" className="sr-only">
-                      Adresse email
-                    </label>
-                    <input
-                      id="newsletter-email"
-                      type="email"
-                      placeholder="votre@email.com"
-                      autoComplete="email"
-                      className="w-full rounded-xl border border-white/20 bg-white/10 px-5
-                                 text-white placeholder:text-white/40 backdrop-blur-sm
-                                 transition-all focus:border-brand-accent focus:bg-white/15
-                                 focus:ring-2 focus:ring-brand-accent/30 focus:outline-none"
-                      style={{ height: 48 }} /* 6 × 8px baseline */
-                      aria-label="Adresse email"
-                    />
-                  </div>
-                  <button
-                    type="button"
-                    className="btn-primary w-full"
-                    aria-label="S'inscrire à la newsletter"
-                  >
-                    S&apos;inscrire gratuitement
-                    <ArrowRight size={16} aria-hidden="true" />
-                  </button>
-                  <p className="text-xs text-white/40">
-                    Pas de spam. Désinscription en un clic.
-                  </p>
-                </form>
-              </div>
+      <section className="bg-brand-primary" aria-label="Newsletter">
+        <div className="section-padding py-14 md:py-20">
+          <div className="grid gap-8 md:grid-cols-[1.1fr_0.9fr] md:items-center">
+            <div>
+              <p className="mb-3 text-xs font-semibold uppercase tracking-normal text-brand-accent">
+                Restez informé
+              </p>
+              <h2 className="font-display text-3xl font-bold leading-tight text-brand-surface md:text-4xl">
+                Offres exclusives & nouveautés
+              </h2>
+              <p className="mt-4 max-w-2xl leading-7 text-brand-surface/70">
+                Recevez en avant-première nos promotions, nouveaux produits et conseils techniques directement dans votre boîte mail.
+              </p>
             </div>
-          </div>
 
-          {/* Grid overlay for this spread */}
-          <GridGuides />
+            <form
+              className="surface-card border-white/[0.10] bg-white/[0.08] p-4 backdrop-blur md:p-5"
+              aria-label="Inscription newsletter"
+            >
+              <label htmlFor="newsletter-email" className="sr-only">
+                Adresse email
+              </label>
+              <div className="flex flex-col gap-3 sm:flex-row">
+                <input
+                  id="newsletter-email"
+                  type="email"
+                  placeholder="votre@email.com"
+                  autoComplete="email"
+                  className="min-h-12 flex-1 rounded-lg border border-white/[0.18] bg-white/[0.10] px-4 text-brand-surface placeholder:text-brand-surface/45 transition-all duration-200 focus:border-brand-accent focus:bg-white/[0.15] focus:ring-2 focus:ring-brand-accent/30"
+                  aria-label="Adresse email"
+                />
+                <button
+                  type="button"
+                  className="btn-accent shrink-0"
+                  aria-label="S'inscrire à la newsletter"
+                >
+                  S&apos;inscrire
+                  <ArrowRight size={16} aria-hidden="true" />
+                </button>
+              </div>
+              <p className="mt-3 text-xs text-brand-surface/45">
+                Pas de spam. Désinscription en un clic.
+              </p>
+            </form>
+          </div>
         </div>
       </section>
     </>

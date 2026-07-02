@@ -2,29 +2,6 @@
 
 import { useEffect, useState } from 'react'
 
-function alignOpticalText() {
-  const canvas = document.createElement('canvas')
-  const context = canvas.getContext('2d')
-  if (!context) return
-
-  document.querySelectorAll<HTMLElement>('[data-optical]').forEach((element) => {
-    element.style.marginLeft = '0px'
-
-    const styles = getComputedStyle(element)
-    let firstCharacter = (element.textContent || '').trim().charAt(0)
-    if (!firstCharacter) return
-    if (styles.textTransform === 'uppercase') firstCharacter = firstCharacter.toUpperCase()
-
-    context.font = `${styles.fontStyle} ${styles.fontWeight} ${styles.fontSize} ${styles.fontFamily}`
-    context.textAlign = 'left'
-
-    const leftBearing = context.measureText(firstCharacter).actualBoundingBoxLeft
-    if (Number.isFinite(leftBearing)) {
-      element.style.marginLeft = `${leftBearing.toFixed(2)}px`
-    }
-  })
-}
-
 export function GridOverlayControls() {
   const [isGridOn, setIsGridOn] = useState(false)
 
@@ -54,23 +31,6 @@ export function GridOverlayControls() {
 
     document.addEventListener('keydown', handleKeyDown)
     return () => document.removeEventListener('keydown', handleKeyDown)
-  }, [])
-
-  useEffect(() => {
-    alignOpticalText()
-    document.fonts?.ready.then(alignOpticalText)
-
-    let resizeTimer: ReturnType<typeof setTimeout>
-    const handleResize = () => {
-      clearTimeout(resizeTimer)
-      resizeTimer = setTimeout(alignOpticalText, 120)
-    }
-
-    window.addEventListener('resize', handleResize)
-    return () => {
-      clearTimeout(resizeTimer)
-      window.removeEventListener('resize', handleResize)
-    }
   }, [])
 
   const toggleGrid = () => {

@@ -16,22 +16,26 @@ export function CategoryGrid() {
   })
 
   return (
-    <section className="section-padding bg-white py-16">
-      <SectionTitle title="Parcourir par Catégorie" centered />
+    <section className="section-padding bg-brand-card py-16 md:py-20">
+      <SectionTitle
+        title="Parcourir par catégorie"
+        subtitle="Accédez rapidement aux familles de produits les plus demandées."
+        centered
+      />
 
       {isLoading ? (
         <CategoryGridSkeleton count={6} />
       ) : isError ? (
         <ErrorState onRetry={() => refetch()} />
       ) : data && data.length > 0 ? (
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6">
+        <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-6">
           {data.map((category) => (
             <Link
               key={category.id}
               href={`/categorie/${category.slug}`}
-              className="group product-card flex flex-col items-center p-6 text-center transition-transform hover:-translate-y-1"
+              className="group product-card flex min-h-40 flex-col items-center p-4 text-center sm:p-5"
             >
-              <div className="bg-brand-surface group-hover:bg-brand-primary/10 relative mb-4 flex h-24 w-24 items-center justify-center rounded-full transition-colors overflow-hidden border-4 border-white shadow-sm group-hover:border-brand-surface">
+              <div className="relative mb-4 flex h-20 w-full items-center justify-center overflow-hidden rounded-lg border border-brand-border bg-brand-surface transition-colors duration-200 group-hover:bg-brand-accent/10">
                 {category.image ? (
                   <Image
                     src={category.image}
@@ -40,10 +44,10 @@ export function CategoryGrid() {
                     className="object-cover"
                   />
                 ) : (
-                  <Package size={32} className="text-gray-400 group-hover:text-brand-primary transition-colors" />
+                  <Package size={30} className="text-brand-muted transition-colors duration-200 group-hover:text-brand-primary" />
                 )}
               </div>
-              <h3 className="text-brand-primary group-hover:text-brand-accent font-medium transition-colors line-clamp-2">
+              <h3 className="line-clamp-2 text-sm font-semibold text-brand-primary transition-colors duration-200 group-hover:text-brand-accent">
                 {category.name}
               </h3>
             </Link>

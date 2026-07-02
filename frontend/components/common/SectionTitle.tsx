@@ -2,18 +2,10 @@ interface Props {
   title: string
   subtitle?: string
   centered?: boolean
-  kicker?: string          /* Small label above the heading (mono caps) */
+  kicker?: string
   className?: string
 }
 
-/**
- * SectionTitle — Standardized section heading using the 8px baseline grid.
- *
- * - H2: 36px / 44px leading (baseline-locked)
- * - Optional kicker label in mono caps above H2
- * - Optional subtitle at body-lg scale
- * - Spacing: bottom margin = 2 × --lh (48px = 6 × 8px)
- */
 export function SectionTitle({
   title,
   subtitle,
@@ -26,14 +18,11 @@ export function SectionTitle({
       className={`section-header ${centered ? 'text-center' : ''} ${className}`}
     >
       {kicker && (
-        <p className="font-mono mb-3 text-xs font-semibold tracking-widest text-gray-400 uppercase">
+        <p className="mb-3 text-xs font-semibold uppercase tracking-normal text-brand-muted">
           {kicker}
         </p>
       )}
-      <h2
-        className="font-display text-brand-primary"
-        data-optical
-      >
+      <h2 className="font-display text-brand-primary">
         {title}
       </h2>
       {subtitle && (

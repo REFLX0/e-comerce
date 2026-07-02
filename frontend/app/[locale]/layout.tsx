@@ -5,7 +5,6 @@ import { Providers } from '@/components/Providers'
 import { Toaster } from 'sonner'
 import { NextIntlClientProvider } from 'next-intl'
 import { getMessages } from 'next-intl/server'
-import { GridOverlayControls } from '@/components/layout/GridOverlayControls'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -94,8 +93,6 @@ export default async function RootLayout({
             <Toaster position="bottom-right" richColors closeButton />
           </Providers>
         </NextIntlClientProvider>
-
-        <GridOverlayControls />
       </body>
     </html>
   )

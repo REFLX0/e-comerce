@@ -28,7 +28,6 @@ interface Engine { engineCode: string; yearFrom: number | null; yearTo: number |
 
 import { useVehicleStore } from '@/lib/store/vehicle.store'
 
-// ... existing code down to OilFinderWidget ...
 export function OilFinderWidget() {
   const router = useRouter()
   const { setVehicle } = useVehicleStore()
@@ -42,34 +41,69 @@ export function OilFinderWidget() {
 
   // Load makes when vehicle type selected
   useEffect(() => {
-    if (step === 2) {
+    let cancelled = false
+
+    const loadMakes = async () => {
       setLoading(true)
-      fetchJson<Make[]>(`${API}/vehicles/makes`)
-        .then(setMakes)
-        .catch(() => setMakes([]))
-        .finally(() => setLoading(false))
+      try {
+        const data = await fetchJson<Make[]>(`${API}/vehicles/makes`)
+        if (!cancelled) setMakes(data)
+      } catch {
+        if (!cancelled) setMakes([])
+      } finally {
+        if (!cancelled) setLoading(false)
+      }
+    }
+
+    if (step === 2) void loadMakes()
+    return () => {
+      cancelled = true
     }
   }, [step])
 
   // Load models when make selected
   useEffect(() => {
-    if (step === 3 && selections.make) {
+    let cancelled = false
+
+    const loadModels = async () => {
+      if (!selections.make) return
       setLoading(true)
-      fetchJson<VehicleModel[]>(`${API}/vehicles/makes/${selections.make.slug}/models`)
-        .then(setModels)
-        .catch(() => setModels([]))
-        .finally(() => setLoading(false))
+      try {
+        const data = await fetchJson<VehicleModel[]>(`${API}/vehicles/makes/${selections.make.slug}/models`)
+        if (!cancelled) setModels(data)
+      } catch {
+        if (!cancelled) setModels([])
+      } finally {
+        if (!cancelled) setLoading(false)
+      }
+    }
+
+    if (step === 3 && selections.make) void loadModels()
+    return () => {
+      cancelled = true
     }
   }, [step, selections.make])
 
   // Load engines when model selected
   useEffect(() => {
-    if (step === 4 && selections.model) {
+    let cancelled = false
+
+    const loadEngines = async () => {
+      if (!selections.model) return
       setLoading(true)
-      fetchJson<Engine[]>(`${API}/vehicles/models/${selections.model.slug}/engines`)
-        .then(setEngines)
-        .catch(() => setEngines([]))
-        .finally(() => setLoading(false))
+      try {
+        const data = await fetchJson<Engine[]>(`${API}/vehicles/models/${selections.model.slug}/engines`)
+        if (!cancelled) setEngines(data)
+      } catch {
+        if (!cancelled) setEngines([])
+      } finally {
+        if (!cancelled) setLoading(false)
+      }
+    }
+
+    if (step === 4 && selections.model) void loadEngines()
+    return () => {
+      cancelled = true
     }
   }, [step, selections.model])
 
@@ -107,28 +141,24 @@ export function OilFinderWidget() {
   }
 
   return (
-    <div id="oil-finder" className="w-full max-w-4xl mx-auto bg-white/95 backdrop-blur-md shadow-[var(--shadow-card)] rounded-3xl overflow-hidden border border-brand-surface-dark relative z-10">
-      <div className="bg-brand-primary p-6 md:p-8 text-white relative overflow-hidden">
-        <div
-          className="pointer-events-none absolute inset-0"
-          style={{ background: 'radial-gradient(ellipse 80% 50% at 100% 50%, rgba(245,197,24,0.12) 0%, transparent 70%)' }}
-        />
-        <div className="relative z-10 flex items-center gap-4">
-          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-brand-accent/20 border border-brand-accent/30">
-            <Search size={26} className="text-brand-accent" />
+    <div id="oil-finder" className="relative z-10 mx-auto w-full max-w-4xl overflow-hidden rounded-lg border border-brand-border bg-brand-card shadow-overlay">
+      <div className="relative border-b border-brand-border bg-brand-card p-5 md:p-7">
+        <div className="relative z-10 flex items-start gap-4 sm:items-center">
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg border border-brand-accent/25 bg-brand-accent/12">
+            <Search size={24} className="text-brand-primary" />
           </div>
           <div>
-            <h2 className="text-2xl md:text-3xl font-display font-bold text-brand-accent mb-1">Trouver mon huile</h2>
-            <p className="text-white/60 text-sm">Sélectionnez votre véhicule pour voir les huiles 100% compatibles.</p>
+            <h2 className="font-display mb-1 text-2xl font-bold text-brand-primary md:text-3xl">Trouver mon huile</h2>
+            <p className="text-sm leading-6 text-brand-muted">Sélectionnez votre véhicule pour voir les huiles 100% compatibles.</p>
           </div>
         </div>
       </div>
 
-      <div className="p-6 md:p-8 bg-white min-h-[300px] flex flex-col">
+      <div className="flex min-h-[300px] flex-col bg-brand-card p-5 md:p-7">
         {/* Progress bar */}
         <div className="flex gap-2 mb-8">
           {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="h-1.5 flex-1 rounded-full bg-gray-100 overflow-hidden cursor-pointer" onClick={() => i < step && resetTo(i)}>
+            <div key={i} className="h-1.5 flex-1 cursor-pointer overflow-hidden rounded-full bg-brand-surface" onClick={() => i < step && resetTo(i)}>
               <div className="h-full bg-brand-accent transition-all duration-300 ease-out" style={{ width: step >= i ? '100%' : '0%' }} />
             </div>
           ))}
@@ -136,7 +166,7 @@ export function OilFinderWidget() {
 
           {step === 1 && (
             <div key="step" className="flex-1 flex flex-col transition-all duration-300">
-              <p className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-4">Type de véhicule</p>
+              <p className="mb-4 text-sm font-semibold uppercase tracking-normal text-brand-muted">Type de véhicule</p>
               <div className="grid grid-cols-2 gap-3">
                 {VEHICLE_TYPES.map((type) => {
                   const Icon = type.icon
@@ -144,12 +174,12 @@ export function OilFinderWidget() {
                     <button
                       key={type.id}
                       onClick={() => selectType(type.id)}
-                      className="group flex items-center gap-4 p-5 rounded-2xl border-2 border-gray-100 hover:border-brand-accent hover:bg-brand-accent/5 transition-all text-left"
+                      className="group flex min-h-20 items-center gap-3 rounded-lg border border-brand-border p-4 text-left transition-all duration-200 hover:-translate-y-0.5 hover:border-brand-accent/50 hover:bg-brand-accent/10 hover:shadow-card"
                     >
-                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gray-100 group-hover:bg-brand-accent/15 transition-colors">
+                      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-brand-surface transition-colors duration-200 group-hover:bg-brand-accent/15">
                         <Icon size={26} className="text-brand-primary group-hover:text-brand-accent transition-colors" />
                       </div>
-                      <span className="font-bold text-brand-primary group-hover:text-brand-accent transition-colors">{type.label}</span>
+                      <span className="text-sm font-bold text-brand-primary transition-colors group-hover:text-brand-primary sm:text-base">{type.label}</span>
                     </button>
                   )
                 })}
@@ -161,13 +191,13 @@ export function OilFinderWidget() {
           {step === 2 && (
             <div key="step2" className="flex-1 flex flex-col transition-all duration-300">
               <div className="flex items-center gap-3 mb-6">
-                <button onClick={() => resetTo(1)} className="p-2 hover:bg-gray-100 rounded-full transition-colors"><ArrowLeft size={20} className="text-gray-500" /></button>
+                <button onClick={() => resetTo(1)} className="flex h-11 w-11 items-center justify-center rounded-lg text-brand-muted transition-colors duration-150 hover:bg-brand-surface hover:text-brand-primary" aria-label="Revenir au type de véhicule"><ArrowLeft size={20} /></button>
                 <h3 className="text-xl font-bold text-brand-primary">Sélectionnez la marque</h3>
               </div>
               {loading ? <div className="flex justify-center py-8"><Loader2 className="animate-spin text-brand-accent" size={32} /></div> : (
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
                   {makes.map(make => (
-                    <button key={make.id} onClick={() => selectMake(make)} className="p-4 text-center rounded-xl border border-gray-100 hover:border-brand-primary hover:bg-brand-surface font-medium text-gray-700 transition-all">{make.name}</button>
+                    <button key={make.id} onClick={() => selectMake(make)} className="min-h-12 rounded-lg border border-brand-border p-3 text-center font-medium text-gray-700 transition-all duration-200 hover:border-brand-accent/50 hover:bg-brand-surface hover:text-brand-primary">{make.name}</button>
                   ))}
                   {makes.length === 0 && <p className="col-span-4 text-center text-gray-400 py-4">Aucune marque disponible dans la base de données.</p>}
                 </div>
@@ -179,13 +209,13 @@ export function OilFinderWidget() {
           {step === 3 && (
             <div key="step3" className="flex-1 flex flex-col transition-all duration-300">
               <div className="flex items-center gap-3 mb-6">
-                <button onClick={() => resetTo(2)} className="p-2 hover:bg-gray-100 rounded-full transition-colors"><ArrowLeft size={20} className="text-gray-500" /></button>
+                <button onClick={() => resetTo(2)} className="flex h-11 w-11 items-center justify-center rounded-lg text-brand-muted transition-colors duration-150 hover:bg-brand-surface hover:text-brand-primary" aria-label="Revenir à la marque"><ArrowLeft size={20} /></button>
                 <h3 className="text-xl font-bold text-brand-primary">Modèle — <span className="text-brand-accent">{selections.make?.name}</span></h3>
               </div>
               {loading ? <div className="flex justify-center py-8"><Loader2 className="animate-spin text-brand-accent" size={32} /></div> : (
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
                   {models.map(model => (
-                    <button key={model.id} onClick={() => selectModel(model)} className="p-4 text-center rounded-xl border border-gray-100 hover:border-brand-primary hover:bg-brand-surface font-medium text-gray-700 transition-all">{model.name}</button>
+                    <button key={model.id} onClick={() => selectModel(model)} className="min-h-12 rounded-lg border border-brand-border p-3 text-center font-medium text-gray-700 transition-all duration-200 hover:border-brand-accent/50 hover:bg-brand-surface hover:text-brand-primary">{model.name}</button>
                   ))}
                   {models.length === 0 && <p className="col-span-4 text-center text-gray-400 py-4">Aucun modèle disponible.</p>}
                 </div>
@@ -197,14 +227,14 @@ export function OilFinderWidget() {
           {step === 4 && (
             <div key="step4" className="flex-1 flex flex-col transition-all duration-300">
               <div className="flex items-center gap-3 mb-6">
-                <button onClick={() => resetTo(3)} className="p-2 hover:bg-gray-100 rounded-full transition-colors"><ArrowLeft size={20} className="text-gray-500" /></button>
+                <button onClick={() => resetTo(3)} className="flex h-11 w-11 items-center justify-center rounded-lg text-brand-muted transition-colors duration-150 hover:bg-brand-surface hover:text-brand-primary" aria-label="Revenir au modèle"><ArrowLeft size={20} /></button>
                 <h3 className="text-xl font-bold text-brand-primary">Motorisation — <span className="text-brand-accent">{selections.model?.name}</span></h3>
               </div>
               {loading ? <div className="flex justify-center py-8"><Loader2 className="animate-spin text-brand-accent" size={32} /></div> : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8">
                   {engines.map(engine => (
                     <button key={engine.engineCode} onClick={() => setSelections(s => ({ ...s, engine: engine.engineCode }))}
-                      className={`p-4 text-left rounded-xl border-2 transition-all ${selections.engine === engine.engineCode ? 'border-brand-accent bg-brand-surface font-bold text-brand-primary' : 'border-gray-100 hover:border-gray-300 text-gray-700 font-medium'}`}>
+                      className={`min-h-12 rounded-lg border p-4 text-left transition-all duration-200 ${selections.engine === engine.engineCode ? 'border-brand-accent bg-brand-accent/10 font-bold text-brand-primary' : 'border-brand-border text-gray-700 font-medium hover:border-brand-accent/50 hover:bg-brand-surface'}`}>
                       {engine.engineCode}
                       {engine.yearFrom && <span className="text-xs text-gray-400 ml-2">({engine.yearFrom}{engine.yearTo ? `–${engine.yearTo}` : '+'})</span>}
                     </button>
@@ -217,7 +247,7 @@ export function OilFinderWidget() {
                 </div>
               )}
               <div className="mt-auto flex justify-end">
-                <Button onClick={handleSearch} size="lg" className="btn-primary flex items-center gap-2">
+                <Button onClick={handleSearch} size="lg" className="btn-primary flex w-full items-center gap-2 sm:w-auto">
                   <Search size={18} />
                   Trouver les huiles compatibles
                 </Button>

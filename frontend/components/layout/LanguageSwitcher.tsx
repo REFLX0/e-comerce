@@ -16,7 +16,7 @@ export function LanguageSwitcher() {
   return (
     <button
       onClick={toggleLanguage}
-      className="text-xs font-bold uppercase tracking-wider text-gray-500 hover:text-brand-primary transition-colors px-2"
+      className="flex h-11 min-w-11 items-center justify-center rounded-lg px-3 text-xs font-bold uppercase tracking-wider text-brand-primary/68 transition-colors duration-200 hover:bg-brand-primary/5 hover:text-brand-primary"
       aria-label="Changer de langue"
     >
       {locale === 'fr' ? 'EN' : 'FR'}

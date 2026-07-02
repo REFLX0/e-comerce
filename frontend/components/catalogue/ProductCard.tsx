@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from 'react'
+import { useSyncExternalStore } from 'react'
 import Image from 'next/image'
 import { Link } from '@/i18n/routing'
 import { ShoppingCart, Heart, Check, X } from 'lucide-react'
@@ -18,9 +18,11 @@ interface Props {
 export function ProductCard({ product }: Props) {
   const { addItem } = useCartStore()
   const { vehicle } = useVehicleStore()
-  const [mounted, setMounted] = useState(false)
-
-  useEffect(() => setMounted(true), [])
+  const mounted = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false
+  )
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault()
@@ -35,23 +37,23 @@ export function ProductCard({ product }: Props) {
   const oldPrice = defaultVariant ? defaultVariant.priceHT * 1.2 : 0
 
   return (
-    <Link href={`/produit/${product.slug}`} className="group product-card relative block overflow-hidden rounded-2xl bg-white border border-gray-100 hover:border-brand-accent/30 transition-all duration-300 hover:shadow-xl">
+    <Link href={`/produit/${product.slug}`} className="group product-card relative block overflow-hidden">
       {/* Image with Badges */}
-      <div className="bg-brand-surface relative aspect-square overflow-hidden">
+      <div className="relative aspect-square overflow-hidden bg-brand-surface">
         {/* Badges */}
         <div className="absolute top-3 left-3 z-10 flex flex-col gap-2 items-start">
           {product.isPromo && (
-            <span className="rounded-full bg-red-500 px-2.5 py-1 text-[10px] font-bold tracking-wider text-white uppercase shadow-sm">
+            <span className="rounded-md bg-red-500 px-2.5 py-1 text-[10px] font-bold tracking-normal text-white uppercase shadow-sm">
               PROMO {product.promoPercent ? `-${product.promoPercent}%` : ''}
             </span>
           )}
           {product.isNew && (
-            <span className="bg-brand-primary rounded-full px-2.5 py-1 text-[10px] font-bold tracking-wider text-white uppercase shadow-sm">
+            <span className="rounded-md bg-brand-primary px-2.5 py-1 text-[10px] font-bold tracking-normal text-white uppercase shadow-sm">
               NOUVEAU
             </span>
           )}
           {mounted && vehicle && (
-            <span className="bg-green-500 rounded-full px-2.5 py-1 text-[10px] font-bold tracking-wider text-white uppercase shadow-sm flex items-center gap-1 border border-green-400">
+            <span className="flex items-center gap-1 rounded-md border border-green-400 bg-green-500 px-2.5 py-1 text-[10px] font-bold tracking-normal text-white uppercase shadow-sm">
               <Check size={10} strokeWidth={3} /> COMPATIBLE
             </span>
           )}
@@ -59,8 +61,9 @@ export function ProductCard({ product }: Props) {
 
         {/* Wishlist Button */}
         <button 
-          className="absolute top-3 right-3 z-10 p-2 rounded-full bg-white/80 backdrop-blur text-gray-400 hover:text-red-500 hover:bg-white transition-all shadow-sm opacity-0 group-hover:opacity-100 -translate-y-2 group-hover:translate-y-0"
+          className="absolute top-3 right-3 z-10 flex h-10 w-10 translate-y-0 items-center justify-center rounded-lg border border-brand-border bg-white/88 text-gray-400 opacity-100 shadow-sm backdrop-blur transition-all duration-200 hover:bg-white hover:text-red-500 sm:-translate-y-2 sm:opacity-0 sm:group-hover:translate-y-0 sm:group-hover:opacity-100"
           onClick={(e) => { e.preventDefault(); toast.success('Ajouté à la liste de souhaits') }}
+          aria-label="Ajouter à la liste de souhaits"
         >
           <Heart size={18} />
         </button>
@@ -70,7 +73,7 @@ export function ProductCard({ product }: Props) {
             src={product.images[0]}
             alt={product.name}
             fill
-            className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+            className="object-contain p-5 transition-transform duration-200 ease-out group-hover:scale-[1.03]"
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center bg-gray-50">
@@ -80,16 +83,16 @@ export function ProductCard({ product }: Props) {
       </div>
 
       {/* Content */}
-      <div className="p-4 flex flex-col gap-2">
+      <div className="flex flex-col gap-2 p-4">
         {/* Brand */}
         {product.brand && (
-          <span className="text-brand-accent text-xs font-bold tracking-widest uppercase">
+          <span className="text-xs font-bold tracking-normal text-brand-accent uppercase">
             {product.brand.name}
           </span>
         )}
 
         {/* Title */}
-        <h3 className="text-brand-primary group-hover:text-brand-accent line-clamp-2 text-sm font-semibold leading-snug transition-colors duration-200 min-h-[40px]">
+        <h3 className="line-clamp-2 min-h-10 text-sm leading-snug font-semibold text-brand-primary transition-colors duration-200 group-hover:text-brand-accent">
           {product.name}
         </h3>
 
@@ -100,22 +103,22 @@ export function ProductCard({ product }: Props) {
         </div>
 
         {/* Specs Preview */}
-        <div className="flex items-center gap-2 text-[11px] text-gray-500 font-medium flex-wrap mt-1">
+        <div className="mt-1 flex flex-wrap items-center gap-2 text-[11px] font-medium text-gray-500">
           {defaultVariant?.volume && (
-            <span className="bg-gray-100 px-1.5 py-0.5 rounded">{defaultVariant.volume}</span>
+            <span className="rounded-md bg-brand-surface px-1.5 py-0.5">{defaultVariant.volume}</span>
           )}
           {product.specs?.viscosity && (
-            <span className="bg-gray-100 px-1.5 py-0.5 rounded">{product.specs.viscosity}</span>
+            <span className="rounded-md bg-brand-surface px-1.5 py-0.5">{product.specs.viscosity}</span>
           )}
           {product.specs?.approvals?.[0] && (
-            <span className="bg-gray-100 px-1.5 py-0.5 rounded truncate max-w-[100px]" title={product.specs.approvals[0]}>
+            <span className="max-w-[100px] truncate rounded-md bg-brand-surface px-1.5 py-0.5" title={product.specs.approvals[0]}>
               {product.specs.approvals[0]}
             </span>
           )}
         </div>
 
         {/* Price & Stock */}
-        <div className="mt-2 flex items-end justify-between border-t border-gray-100 pt-3">
+        <div className="mt-2 flex items-end justify-between border-t border-brand-border pt-3">
           <div>
             {defaultVariant ? (
               <PriceDisplay
@@ -143,7 +146,7 @@ export function ProductCard({ product }: Props) {
         <button
           onClick={handleAddToCart}
           disabled={defaultVariant?.status === 'out_of_stock'}
-          className="mt-2 w-full flex items-center justify-center gap-2 rounded-xl bg-brand-primary py-2.5 text-sm font-semibold text-white transition-all hover:bg-brand-accent hover:text-black disabled:cursor-not-allowed disabled:opacity-50"
+          className="mt-2 flex min-h-11 w-full items-center justify-center gap-2 rounded-lg bg-brand-primary py-2.5 text-sm font-semibold text-white transition-all duration-200 hover:bg-brand-accent hover:text-brand-primary disabled:cursor-not-allowed disabled:opacity-50"
         >
           <ShoppingCart size={16} />
           Ajouter au panier

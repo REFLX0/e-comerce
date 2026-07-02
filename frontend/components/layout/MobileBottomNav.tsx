@@ -26,10 +26,10 @@ export function MobileBottomNav() {
 
   return (
     <nav
-      className="fixed bottom-0 left-0 right-0 z-40 md:hidden bg-white/95 backdrop-blur-xl border-t border-gray-100 shadow-[0_-4px_24px_rgba(0,0,0,0.08)]"
+      className="fixed right-0 bottom-0 left-0 z-40 border-t border-brand-border bg-brand-card/96 shadow-[0_-10px_28px_rgba(15,23,31,0.10)] backdrop-blur-xl md:hidden"
       aria-label="Navigation mobile"
     >
-      <div className="flex items-center justify-around px-2 py-2 safe-pb">
+      <div className="safe-pb flex items-center justify-around px-2 py-2">
         {links.map((link) => {
           const isActive = link.exact
             ? pathname === link.href || pathname === `/fr${link.href}` || pathname === `/en${link.href}`
@@ -39,10 +39,10 @@ export function MobileBottomNav() {
             <Link
               key={link.href}
               href={link.href}
-              className={`relative flex flex-col items-center gap-1 px-4 py-1.5 rounded-xl transition-all duration-200 ${
+              className={`relative flex min-h-12 min-w-[68px] flex-col items-center justify-center gap-1 rounded-lg px-3 py-1.5 transition-all duration-200 ${
                 isActive
                   ? 'text-brand-primary'
-                  : 'text-gray-400 hover:text-gray-600'
+                  : 'text-brand-muted hover:bg-brand-surface hover:text-brand-primary'
               }`}
             >
               {/* Active pill indicator */}
@@ -53,7 +53,7 @@ export function MobileBottomNav() {
               <div className="relative">
                 <link.icon size={22} strokeWidth={isActive ? 2.5 : 1.8} />
                 {link.badge != null && (
-                  <span className="absolute -top-2 -right-2.5 flex h-4.5 min-w-[18px] items-center justify-center rounded-full bg-brand-accent px-1 text-[10px] font-black text-black leading-none">
+                  <span className="absolute -top-2 -right-2.5 flex h-4.5 min-w-[18px] items-center justify-center rounded-full bg-brand-accent px-1 text-[10px] leading-none font-black text-brand-primary">
                     {link.badge > 9 ? '9+' : link.badge}
                   </span>
                 )}
