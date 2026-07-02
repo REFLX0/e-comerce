@@ -9,6 +9,7 @@ import {
   ShoppingCart, Star, BarChart3
 } from 'lucide-react'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 
 const STATUS_LABELS: Record<string, { label: string; cls: string }> = {
   PENDING:   { label: 'En attente', cls: 'bg-yellow-100 text-yellow-800' },
@@ -21,6 +22,9 @@ const STATUS_LABELS: Record<string, { label: string; cls: string }> = {
 
 export default function AdminDashboard() {
   const { user } = useAuthStore()
+  const pathname = usePathname()
+  const locale = pathname?.split('/')[1] === 'en' ? 'en' : 'fr'
+  const localizedHref = (href: string) => `/${locale}${href}`
   
   const { data: dashboardData, isLoading, refetch } = useQuery<any>({
     queryKey: ['admin-dashboard'],
@@ -28,7 +32,7 @@ export default function AdminDashboard() {
     enabled: true,
   })
 
-  const stats = (dashboardData as any)?.data
+  const stats = (dashboardData as any)?.data ?? dashboardData
 
   if (isLoading) {
     return (
@@ -147,7 +151,7 @@ export default function AdminDashboard() {
               </div>
               <h2 className="font-bold text-brand-primary">Commandes récentes</h2>
             </div>
-            <Link href="/admin/orders" className="flex items-center gap-1 text-sm font-semibold text-brand-accent hover:underline">
+            <Link href={localizedHref('/admin/orders')} className="flex items-center gap-1 text-sm font-semibold text-brand-accent hover:underline">
               Voir tout <ArrowRight size={15} />
             </Link>
           </div>
@@ -209,7 +213,7 @@ export default function AdminDashboard() {
               12 produits nécessitent votre attention immédiate.
             </p>
             <Link
-              href="/admin/catalog/inventory"
+              href={localizedHref('/admin/catalog/inventory')}
               className="inline-flex items-center gap-1 text-sm font-bold text-orange-700 hover:text-orange-900 transition-colors"
             >
               Gérer l'inventaire <ArrowRight size={14} />
@@ -228,7 +232,7 @@ export default function AdminDashboard() {
               ].map((action) => (
                 <Link
                   key={action.href}
-                  href={action.href}
+                  href={localizedHref(action.href)}
                   className="flex items-center gap-3 rounded-xl p-3 hover:bg-gray-50 transition-colors group"
                 >
                   <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${action.color}`}>

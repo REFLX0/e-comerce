@@ -1,5 +1,6 @@
 "use client";
 
+import type { ReactNode } from 'react'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
@@ -9,7 +10,7 @@ import Image from 'next/image'
 import {
   LayoutDashboard, ShoppingCart, Package, Users, Tag,
   Truck, CreditCard, Star, Settings, ChevronRight,
-  Menu, X, BarChart2, FolderTree, Layers, Bell, LogOut,
+  Menu, BarChart2, FolderTree, Layers, Bell, LogOut,
   Search, ChevronDown, LifeBuoy
 } from 'lucide-react'
 
@@ -78,27 +79,36 @@ const NAV = [
   },
 ]
 
+function stripLocale(pathname: string) {
+  return pathname.replace(/^\/(fr|en)(?=\/|$)/, '') || '/'
+}
+
+function withLocale(href: string, locale: string) {
+  return href.startsWith(`/${locale}/`) || href === `/${locale}` ? href : `/${locale}${href}`
+}
+
 function NavItem({
   item,
   collapsed,
   onClose,
+  locale,
 }: {
   item: (typeof NAV)[number]
   collapsed: boolean
   onClose?: () => void
+  locale: string
 }) {
   const pathname = usePathname()
-  const [open, setOpen] = useState(false)
+  const adminPathname = stripLocale(pathname)
+  const hasActiveChild = item.children?.some((c) => adminPathname.startsWith(c.href)) ?? false
+  const [open, setOpen] = useState(hasActiveChild)
+  const childOpen = open || hasActiveChild
 
   const isActive = item.href
     ? item.exact
-      ? pathname === item.href
-      : pathname.startsWith(item.href)
-    : item.children?.some((c) => pathname.startsWith(c.href)) ?? false
-
-  useEffect(() => {
-    if (item.children?.some((c) => pathname.startsWith(c.href))) setOpen(true)
-  }, [pathname, item.children])
+      ? adminPathname === item.href
+      : adminPathname.startsWith(item.href)
+    : hasActiveChild
 
   if (item.children) {
     return (
@@ -117,19 +127,19 @@ function NavItem({
               <span className="flex-1 text-left">{item.label}</span>
               <ChevronDown
                 size={14}
-                className={`transition-transform ${open ? 'rotate-180' : ''}`}
+                className={`transition-transform ${childOpen ? 'rotate-180' : ''}`}
               />
             </>
           )}
         </button>
-        {!collapsed && open && (
+        {!collapsed && childOpen && (
           <div className="mt-1 ml-4 space-y-0.5 border-l border-white/10 pl-3">
             {item.children.map((child) => {
-              const childActive = pathname.startsWith(child.href)
+              const childActive = adminPathname.startsWith(child.href)
               return (
                 <Link
                   key={child.href}
-                  href={child.href}
+                  href={withLocale(child.href, locale)}
                   onClick={onClose}
                   className={`flex items-center gap-2 rounded-lg px-2 py-2 text-xs font-medium transition-all ${
                     childActive
@@ -150,7 +160,7 @@ function NavItem({
 
   return (
     <Link
-      href={item.href!}
+      href={withLocale(item.href!, locale)}
       onClick={onClose}
       title={collapsed ? item.label : undefined}
       className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all ${
@@ -195,7 +205,7 @@ function Sidebar({
     <div className="flex h-full flex-col bg-brand-primary-dark">
       {/* Logo */}
       <div className="flex h-16 shrink-0 items-center gap-3 border-b border-white/10 px-4">
-        <Link href="/admin" onClick={onClose} className="flex items-center gap-2">
+        <Link href={withLocale('/admin', locale)} onClick={onClose} className="flex items-center gap-2">
           <Image
             src="/logo.png"
             alt="KiosqueTN Admin"
@@ -230,6 +240,7 @@ function Sidebar({
             item={item}
             collapsed={collapsed}
             onClose={onClose}
+            locale={locale}
           />
         ))}
       </nav>
@@ -267,7 +278,7 @@ function Sidebar({
   )
 }
 
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
+export default function AdminLayout({ children }: { children: ReactNode }) {
   const { isAuthenticated, isHydrated, user, setAuth } = useAuthStore()
   const router = useRouter()
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
@@ -275,9 +286,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [isCheckingServerAuth, setIsCheckingServerAuth] = useState(true)
   const pathname = usePathname()
   const locale = pathname?.split('/')[1] === 'en' ? 'en' : 'fr'
+  const adminPathname = stripLocale(pathname)
 
   // Close mobile menu on route change
-  useEffect(() => setMobileOpen(false), [pathname])
+  useEffect(() => {
+    const timer = window.setTimeout(() => setMobileOpen(false), 0)
+    return () => window.clearTimeout(timer)
+  }, [pathname])
 
   // Close mobile drawer on Escape
   useEffect(() => {
@@ -290,12 +305,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     if (!isHydrated) return
 
     if (isAuthenticated && user?.role?.toUpperCase() === 'ADMIN') {
-      setIsCheckingServerAuth(false)
+      window.setTimeout(() => setIsCheckingServerAuth(false), 0)
       return
     }
 
     let cancelled = false
-    setIsCheckingServerAuth(true)
+    const checkingTimer = window.setTimeout(() => {
+      if (!cancelled) setIsCheckingServerAuth(true)
+    }, 0)
 
     authApi
       .me()
@@ -314,6 +331,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
     return () => {
       cancelled = true
+      window.clearTimeout(checkingTimer)
     }
   }, [isHydrated, isAuthenticated, user, setAuth, router, locale])
 
@@ -382,7 +400,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <span className="font-semibold text-brand-primary">Admin</span>
             <ChevronRight size={14} />
             <span className="capitalize">
-              {pathname.split('/').filter(Boolean).slice(1).join(' › ') || 'Tableau de bord'}
+              {adminPathname.split('/').filter(Boolean).slice(1).join(' › ') || 'Tableau de bord'}
             </span>
           </div>
 

@@ -2,14 +2,13 @@
 
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { productsApi } from '@/lib/api/products'
-import { brandsApi } from '@/lib/api/brands'
-import { categoriesApi } from '@/lib/api/categories'
+import { adminApi } from '@/lib/api/admin'
 import Link from 'next/link'
 import Image from 'next/image'
+import { usePathname } from 'next/navigation'
 import {
-  Search, Plus, Filter, Edit2, Trash2, Copy, Eye,
-  EyeOff, Upload, Download, Star, Package
+  Search, Plus, Edit2, Trash2, Copy, Eye,
+  Upload, Download, Package
 } from 'lucide-react'
 
 function PriceBadge({ price }: { price: number }) {
@@ -28,33 +27,72 @@ function StockBadge({ qty }: { qty: number }) {
 
 interface Product {
   id: string
-  name: string
+  name?: string
+  nameFr?: string
   slug: string
   sku?: string
-  brand?: string
-  category?: string
+  brand?: string | { name?: string }
+  category?: string | { nameFr?: string; name?: string }
   price?: number
   stock?: number
-  images?: string[]
+  stockQty?: number
+  variants?: Array<{ price?: number; stockQty?: number; skuVariant?: string }>
+  images?: Array<string | { url?: string; altFr?: string }>
   isPublished?: boolean
 }
 
+function productName(product: Product) {
+  return product.nameFr ?? product.name ?? 'Produit sans nom'
+}
+
+function brandName(product: Product) {
+  return typeof product.brand === 'string' ? product.brand : product.brand?.name
+}
+
+function categoryName(product: Product) {
+  if (typeof product.category === 'string') return product.category
+  return product.category?.nameFr ?? product.category?.name
+}
+
+function productSku(product: Product) {
+  return product.variants?.[0]?.skuVariant ?? product.sku
+}
+
+function productPrice(product: Product) {
+  return product.variants?.[0]?.price ?? product.price ?? 0
+}
+
+function productStock(product: Product) {
+  if (typeof product.stock === 'number') return product.stock
+  if (typeof product.stockQty === 'number') return product.stockQty
+  return product.variants?.reduce((sum, variant) => sum + (variant.stockQty ?? 0), 0) ?? 0
+}
+
+function productImage(product: Product) {
+  const first = product.images?.[0]
+  return typeof first === 'string' ? first : first?.url
+}
+
 export default function AdminProductsPage() {
+  const pathname = usePathname()
+  const locale = pathname?.split('/')[1] === 'en' ? 'en' : 'fr'
+  const localizedHref = (href: string) => `/${locale}${href}`
   const [search, setSearch] = useState('')
   const [selected, setSelected] = useState<string[]>([])
   const [showPublished, setShowPublished] = useState<'all' | 'published' | 'unpublished'>('all')
 
   const { data: productsData, isLoading } = useQuery<any>({
     queryKey: ['admin-products'],
-    queryFn: () => productsApi.getAll({ limit: 50 }),
+    queryFn: () => adminApi.getProducts({ limit: 50 }),
   })
 
   const products: Product[] = (productsData as any)?.data ?? []
 
   const filtered = products.filter((p) => {
     const matchSearch = !search ||
-      p.name?.toLowerCase().includes(search.toLowerCase()) ||
-      p.sku?.toLowerCase().includes(search.toLowerCase())
+      productName(p).toLowerCase().includes(search.toLowerCase()) ||
+      productSku(p)?.toLowerCase().includes(search.toLowerCase()) ||
+      brandName(p)?.toLowerCase().includes(search.toLowerCase())
     const matchPublished = showPublished === 'all' ? true
       : showPublished === 'published' ? p.isPublished
       : !p.isPublished
@@ -80,7 +118,7 @@ export default function AdminProductsPage() {
             <Download size={15} /> Exporter
           </button>
           <Link
-            href="/admin/catalog/products/new"
+            href={localizedHref('/admin/catalog/products/new')}
             className="flex items-center gap-2 rounded-xl bg-brand-accent px-4 py-2.5 text-sm font-semibold text-black hover:bg-brand-accent-hover transition-colors"
           >
             <Plus size={16} /> Nouveau produit
@@ -197,10 +235,10 @@ export default function AdminProductsPage() {
                     <td className="py-3 px-2">
                       <div className="flex items-center gap-3">
                         <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-xl bg-gray-50">
-                          {product.images?.[0] ? (
+                          {productImage(product) ? (
                             <Image
-                              src={product.images[0]}
-                              alt={product.name}
+                              src={productImage(product)!}
+                              alt={productName(product)}
                               fill
                               className="object-cover"
                             />
@@ -209,20 +247,20 @@ export default function AdminProductsPage() {
                           )}
                         </div>
                         <div className="min-w-0">
-                          <p className="truncate text-sm font-medium text-brand-primary max-w-xs">{product.name}</p>
-                          <p className="text-xs text-gray-400">{product.brand}</p>
+                          <p className="truncate text-sm font-medium text-brand-primary max-w-xs">{productName(product)}</p>
+                          <p className="text-xs text-gray-400">{brandName(product) ?? 'Marque non définie'}</p>
                         </div>
                       </div>
                     </td>
                     <td className="px-2 py-3">
-                      <span className="font-mono text-xs text-gray-500">{product.sku ?? '—'}</span>
+                      <span className="font-mono text-xs text-gray-500">{productSku(product) ?? '—'}</span>
                     </td>
-                    <td className="px-2 py-3 text-xs text-gray-500">{product.category ?? '—'}</td>
+                    <td className="px-2 py-3 text-xs text-gray-500">{categoryName(product) ?? '—'}</td>
                     <td className="px-2 py-3">
-                      <PriceBadge price={product.price ?? 0} />
+                      <PriceBadge price={productPrice(product)} />
                     </td>
                     <td className="px-2 py-3">
-                      <StockBadge qty={product.stock ?? 0} />
+                      <StockBadge qty={productStock(product)} />
                     </td>
                     <td className="px-2 py-3">
                       {product.isPublished
@@ -232,7 +270,7 @@ export default function AdminProductsPage() {
                     </td>
                     <td className="py-3 pl-2 pr-4">
                       <div className="flex gap-1">
-                        <Link href={`/produit/${product.slug}`} target="_blank" className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-brand-primary transition-colors" title="Voir sur le site">
+                        <Link href={localizedHref(`/produit/${product.slug}`)} target="_blank" className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-brand-primary transition-colors" title="Voir sur le site">
                           <Eye size={15} />
                         </Link>
                         <button className="rounded-lg p-1.5 text-gray-400 hover:bg-blue-50 hover:text-blue-600 transition-colors" title="Modifier">
@@ -266,18 +304,18 @@ export default function AdminProductsPage() {
           filtered.map((product) => (
             <div key={product.id} className="flex items-center gap-3 rounded-2xl border border-gray-100 bg-white p-4 shadow-sm">
               <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-xl bg-gray-50">
-                {product.images?.[0] ? (
-                  <Image src={product.images[0]} alt={product.name} fill className="object-cover" />
+                {productImage(product) ? (
+                  <Image src={productImage(product)!} alt={productName(product)} fill className="object-cover" />
                 ) : (
                   <Package size={24} className="absolute inset-0 m-auto text-gray-300" />
                 )}
               </div>
               <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-semibold text-brand-primary">{product.name}</p>
-                <p className="text-xs text-gray-400">{product.brand}</p>
+                <p className="truncate text-sm font-semibold text-brand-primary">{productName(product)}</p>
+                <p className="text-xs text-gray-400">{brandName(product) ?? 'Marque non définie'}</p>
                 <div className="mt-1.5 flex items-center gap-2">
-                  <PriceBadge price={product.price ?? 0} />
-                  <StockBadge qty={product.stock ?? 0} />
+                  <PriceBadge price={productPrice(product)} />
+                  <StockBadge qty={productStock(product)} />
                 </div>
               </div>
               <div className="flex flex-col gap-1">
