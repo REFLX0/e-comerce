@@ -107,7 +107,7 @@ export default function Footer() {
                   <MapPin size={15} className="text-brand-accent" />
                 </div>
                 <span className="text-white/45 leading-relaxed">
-                  Route Manzel Chaker Km 1, Rue Kerbala, 3072 Sfax — Tunisie
+                  Kélibia
                 </span>
               </li>
               <li className="flex items-center gap-3">
@@ -130,10 +130,26 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Bottom bar */}
-        <div className="flex flex-col items-center justify-between gap-4 text-xs text-white/20 md:flex-row">
-          <p>© {new Date().getFullYear()} KiosqueTN. Tous droits réservés.</p>
-          <p className="text-white/12">Fait avec ♥ en Tunisie</p>
+        {/* Bottom bar with Trust Badges */}
+        <div className="flex flex-col items-center justify-between gap-6 md:flex-row">
+          
+          <div className="flex gap-4 items-center opacity-60">
+            {/* Payment Trust Signals */}
+            <div className="flex items-center gap-2 bg-white/5 rounded px-2 py-1 border border-white/10">
+               <span className="text-white text-xs font-bold tracking-wider">SECURE PAY</span>
+            </div>
+            <div className="flex items-center gap-2 bg-white/5 rounded px-2 py-1 border border-white/10">
+               <span className="text-white text-xs font-bold tracking-wider">VISA</span>
+            </div>
+            <div className="flex items-center gap-2 bg-white/5 rounded px-2 py-1 border border-white/10">
+               <span className="text-white text-xs font-bold tracking-wider">MASTERCARD</span>
+            </div>
+          </div>
+
+          <div className="flex flex-col items-center gap-2 text-xs text-white/20 md:items-end">
+            <p>© {new Date().getFullYear()} KiosqueTN. Tous droits réservés.</p>
+            <p className="text-white/12">Made By Mohamed Harbi & Mohamed Aziz Jlassi </p>
+          </div>
         </div>
       </div>
     </footer>

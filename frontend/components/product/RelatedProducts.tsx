@@ -20,7 +20,7 @@ export function RelatedProducts({ productId }: Props) {
 
   return (
     <section className="mt-24">
-      <SectionTitle title="Produits Similaires" />
+      <SectionTitle title="Fréquemment achetés ensemble" />
 
       {isLoading ? <ProductGridSkeleton count={4} /> : <ProductGrid products={products || []} />}
     </section>

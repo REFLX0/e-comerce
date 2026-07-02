@@ -235,6 +235,40 @@ export function FilterSidebar() {
         </div>
       </div>
 
+      {/* Approbations OEM */}
+      <div>
+        <h3 className="font-display text-brand-primary border-brand-surface-dark mb-4 border-b pb-2 text-sm uppercase tracking-widest font-bold">
+          Approbations OEM
+        </h3>
+        <div className="custom-scrollbar flex max-h-[150px] flex-col gap-3 overflow-y-auto pr-2">
+          {[
+            'VW 504.00/507.00', 'VW 502.00/505.00', 'MB-Approval 229.51', 
+            'MB-Approval 229.3', 'BMW Longlife-04', 'BMW Longlife-01',
+            'Porsche C30', 'Porsche A40', 'Renault RN0700/RN0710',
+            'Renault RN17', 'PSA B71 2290', 'Ford WSS-M2C913-D'
+          ].map((oem) => (
+            <label key={oem} className="group flex cursor-pointer items-center gap-3">
+              <div className={`flex h-5 w-5 shrink-0 items-center justify-center rounded border transition-colors ${searchParams.get('oem') === oem ? 'border-brand-primary bg-brand-primary' : 'border-gray-300 bg-white group-hover:border-brand-primary/50'}`}>
+                {searchParams.get('oem') === oem && (
+                  <svg className="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                  </svg>
+                )}
+              </div>
+              <input
+                type="checkbox"
+                className="sr-only"
+                checked={searchParams.get('oem') === oem}
+                onChange={() => updateFilters('oem', searchParams.get('oem') === oem ? null : oem)}
+              />
+              <span className={`text-sm transition-colors ${searchParams.get('oem') === oem ? 'text-brand-primary font-medium' : 'text-gray-600 group-hover:text-brand-primary'}`}>
+                {oem}
+              </span>
+            </label>
+          ))}
+        </div>
+      </div>
+
       {/* Emballage */}
       <div>
         <h3 className="font-display text-brand-primary border-brand-surface-dark mb-4 border-b pb-2 text-sm uppercase tracking-widest font-bold">

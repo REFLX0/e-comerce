@@ -105,13 +105,16 @@ export default function CataloguePage() {
               <Pagination currentPage={data.page} totalPages={data.totalPages} />
             </>
           ) : (
-            <EmptyState
-              message="Aucun produit ne correspond à vos critères de recherche. Essayez de modifier vos filtres."
-              action={{
-                label: 'Effacer les filtres',
-                onClick: () => (window.location.href = '/catalogue'),
-              }}
-            />
+            <div className="bg-white rounded-2xl border border-gray-100 p-8 shadow-sm">
+              <EmptyState
+                title="Oups ! Aucun produit trouvé"
+                message="Nous n'avons pas trouvé de produits correspondant à vos critères de recherche. Essayez de modifier vos filtres ou de rechercher un autre modèle."
+                action={{
+                  label: 'Effacer tous les filtres',
+                  onClick: () => (window.location.href = '/catalogue'),
+                }}
+              />
+            </div>
           )}
         </div>
       </div>

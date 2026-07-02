@@ -51,21 +51,48 @@ export function ProductTabs({ product }: Props) {
 
         <TabsContent value="specs" className="mt-0">
           {product.specs ? (
-            <div className="grid grid-cols-1 gap-x-12 gap-y-4 md:grid-cols-2">
-              {Object.entries(product.specs).map(([key, value]) => {
-                if (!value) return null
-                const label = key
-                  .replace(/([A-Z])/g, ' $1')
-                  .replace(/^./, (str) => str.toUpperCase())
-                return (
-                  <div key={key} className="flex border-b border-gray-100 py-3">
-                    <span className="w-1/3 font-medium text-gray-500">{label}</span>
-                    <span className="text-brand-primary w-2/3 font-semibold">
-                      {Array.isArray(value) ? value.join(', ') : value}
-                    </span>
-                  </div>
-                )
-              })}
+            <div className="flex flex-col gap-10">
+              <div className="grid grid-cols-1 gap-x-12 gap-y-4 md:grid-cols-2">
+                {Object.entries(product.specs).map(([key, value]) => {
+                  if (!value) return null
+                  const label = key
+                    .replace(/([A-Z])/g, ' $1')
+                    .replace(/^./, (str) => str.toUpperCase())
+                  return (
+                    <div key={key} className="flex border-b border-gray-100 py-3">
+                      <span className="w-1/3 font-medium text-gray-500">{label}</span>
+                      <span className="text-brand-primary w-2/3 font-semibold">
+                        {Array.isArray(value) ? value.join(', ') : value}
+                      </span>
+                    </div>
+                  )
+                })}
+              </div>
+
+              {/* Documents & PDFs */}
+              <div className="border-t border-gray-100 pt-8">
+                <h4 className="font-display text-brand-primary mb-6 text-lg font-bold">Documents techniques</h4>
+                <div className="flex flex-col gap-4 sm:flex-row">
+                  <a href="#" onClick={(e) => e.preventDefault()} className="group flex flex-1 items-center gap-4 rounded-2xl border border-gray-200 p-5 hover:border-brand-accent transition-all hover:shadow-md">
+                     <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-red-50 text-red-500 group-hover:bg-red-500 group-hover:text-white transition-colors">
+                       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
+                     </div>
+                     <div>
+                       <p className="text-sm font-bold text-brand-primary group-hover:text-brand-accent transition-colors">Fiche technique (TDS)</p>
+                       <p className="text-xs text-gray-500">PDF • 1.2 MB</p>
+                     </div>
+                  </a>
+                  <a href="#" onClick={(e) => e.preventDefault()} className="group flex flex-1 items-center gap-4 rounded-2xl border border-gray-200 p-5 hover:border-brand-accent transition-all hover:shadow-md">
+                     <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 text-blue-500 group-hover:bg-blue-500 group-hover:text-white transition-colors">
+                       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
+                     </div>
+                     <div>
+                       <p className="text-sm font-bold text-brand-primary group-hover:text-brand-accent transition-colors">Fiche de sécurité (FDS)</p>
+                       <p className="text-xs text-gray-500">PDF • 0.8 MB</p>
+                     </div>
+                  </a>
+                </div>
+              </div>
             </div>
           ) : (
             <p className="text-gray-500">Aucune spécification disponible.</p>

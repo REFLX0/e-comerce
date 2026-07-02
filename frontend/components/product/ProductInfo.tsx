@@ -7,7 +7,9 @@ import { StockIndicator } from '../common/StockIndicator'
 import { PriceDisplay } from '../common/PriceDisplay'
 import { VariantSelector } from './VariantSelector'
 import { AddToCartButton } from './AddToCartButton'
-import { Share2, Truck, ShieldCheck, RotateCcw } from 'lucide-react'
+import { useVehicleStore } from '@/lib/store/vehicle.store'
+import { Check, Share2, Truck, ShieldCheck, RotateCcw } from 'lucide-react'
+import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { Link } from '@/i18n/routing'
 
@@ -17,6 +19,10 @@ interface Props {
 
 export function ProductInfo({ product }: Props) {
   const [selectedVariant, setSelectedVariant] = useState(product.variants[0])
+  const { vehicle } = useVehicleStore()
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => setMounted(true), [])
 
   if (!selectedVariant) return null
 
@@ -56,6 +62,19 @@ export function ProductInfo({ product }: Props) {
       <h1 className="font-display text-brand-primary mb-4 text-3xl leading-tight font-bold md:text-4xl">
         {product.name}
       </h1>
+
+      {/* Compatibility Banner */}
+      {mounted && vehicle && (
+        <div className="mb-6 rounded-xl border-2 border-green-500 bg-green-50 p-4 flex items-center gap-4 animate-fade-in">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-green-500 text-white shadow-sm">
+            <Check size={20} strokeWidth={3} />
+          </div>
+          <div>
+            <p className="text-sm font-bold text-green-900">100% Compatible avec votre véhicule</p>
+            <p className="text-xs text-green-700 mt-0.5">{vehicle.makeName} {vehicle.modelName} {vehicle.engineCode}</p>
+          </div>
+        </div>
+      )}
 
       {/* Rating & Reviews Link */}
       <div className="border-brand-surface-dark mb-6 flex items-center gap-4 border-b pb-6">

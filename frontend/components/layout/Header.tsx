@@ -6,6 +6,7 @@ import { Search, User, ChevronDown, Zap } from 'lucide-react'
 import dynamic from 'next/dynamic'
 const MiniCart = dynamic(() => import('./MiniCart'), { ssr: false })
 const MobileMenu = dynamic(() => import('./MobileMenu'), { ssr: false })
+import { GlobalSearch } from './GlobalSearch'
 import { useAuthStore } from '@/lib/store/auth.store'
 import { useQuery } from '@tanstack/react-query'
 import { categoriesApi } from '@/lib/api/categories'
@@ -83,9 +84,17 @@ export default function Header() {
           <nav className="hidden items-center gap-1 md:flex">
             <Link
               href="/"
-              className="px-4 py-2 text-sm font-medium text-white/80 hover:text-white rounded-lg hover:bg-white/8 transition-all duration-200"
+              className="px-4 py-2 text-[15px] font-medium text-white/80 hover:text-white rounded-lg hover:bg-white/8 transition-all duration-200"
             >
               {t('home')}
+            </Link>
+
+            {/* Highlighted Find My Oil CTA */}
+            <Link
+              href="/#oil-finder"
+              className="flex items-center gap-1.5 px-4 py-2 text-[15px] font-bold text-brand-accent hover:text-yellow-400 rounded-lg hover:bg-brand-accent/10 transition-all duration-200"
+            >
+              Trouver mon huile <span className="text-sm">⭐</span>
             </Link>
 
             {/* Mega Menu Trigger */}
@@ -96,7 +105,7 @@ export default function Header() {
             >
               <Link
                 href="/catalogue"
-                className="flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-white/80 hover:text-white rounded-lg hover:bg-white/8 transition-all duration-200"
+                className="flex items-center gap-1.5 px-4 py-2 text-[15px] font-medium text-white/80 hover:text-white rounded-lg hover:bg-white/8 transition-all duration-200"
               >
                 {t('catalog')}
                 <ChevronDown
@@ -146,35 +155,20 @@ export default function Header() {
 
             <Link
               href="/a-propos"
-              className="px-4 py-2 text-sm font-medium text-white/80 hover:text-white rounded-lg hover:bg-white/8 transition-all duration-200"
+              className="px-4 py-2 text-[15px] font-medium text-white/80 hover:text-white rounded-lg hover:bg-white/8 transition-all duration-200"
             >
               {t('about')}
             </Link>
             <Link
               href="/contact"
-              className="px-4 py-2 text-sm font-medium text-white/80 hover:text-white rounded-lg hover:bg-white/8 transition-all duration-200"
+              className="px-4 py-2 text-[15px] font-medium text-white/80 hover:text-white rounded-lg hover:bg-white/8 transition-all duration-200"
             >
               {t('contact')}
             </Link>
           </nav>
 
           {/* Search Bar — Desktop */}
-          <div className="relative hidden max-w-sm flex-1 lg:flex">
-            <input
-              type="text"
-              placeholder={t('search') + "…"}
-              className="w-full rounded-xl border border-white/10 bg-white/6 px-5 pr-12 py-2.5 text-sm text-white placeholder:text-white/30
-                         transition-all duration-200 outline-none
-                         focus:border-brand-accent/50 focus:bg-white/10 focus:ring-2 focus:ring-brand-accent/20"
-              aria-label={t('search')}
-            />
-            <button
-              className="absolute top-1/2 right-3 -translate-y-1/2 p-1 text-white/40 hover:text-brand-accent transition-colors"
-              aria-label={t('search')}
-            >
-              <Search size={17} />
-            </button>
-          </div>
+          <GlobalSearch />
 
           {/* Icons */}
           <div className="flex shrink-0 items-center gap-1 sm:gap-2">

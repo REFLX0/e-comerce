@@ -65,6 +65,16 @@ export default function MobileMenu() {
             Accueil
           </Link>
 
+          {/* Find My Oil — hero CTA */}
+          <Link
+            href="/#oil-finder"
+            className="flex items-center gap-3 rounded-xl bg-brand-accent/10 border border-brand-accent/20 px-4 py-3 text-sm font-bold text-brand-accent hover:bg-brand-accent/20 transition-all duration-150"
+            onClick={() => setOpen(false)}
+          >
+            <Search size={17} className="text-brand-accent" />
+            ⭐ Trouver mon huile
+          </Link>
+
           {/* Catalogue section */}
           <div className="mt-2 mb-1 px-4">
             <p className="text-[10px] font-bold tracking-[0.15em] text-white/25 uppercase">Catalogue</p>

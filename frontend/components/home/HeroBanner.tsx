@@ -1,147 +1,77 @@
-import { Link } from '@/i18n/routing'
-import { ArrowRight, Car, Bike, Truck, Tractor, Factory, Anchor } from 'lucide-react'
-
-const categories = [
-  {
-    name: 'Automobile',
-    url: '/categorie/automobile',
-    icon: Car,
-    gradient: 'from-[#0a1628] via-[#0d2044] to-[#1a3060]',
-    accentColor: 'rgba(59,130,246,0.4)',
-    tag: '⭐ Top Vente',
-  },
-  {
-    name: 'Moto / Quad',
-    url: '/categorie/moto-quad-karting',
-    icon: Bike,
-    gradient: 'from-[#1a0a0a] via-[#3d0f0f] to-[#5c1515]',
-    accentColor: 'rgba(239,68,68,0.35)',
-    tag: null,
-  },
-  {
-    name: 'Transport / T.P.',
-    url: '/categorie/transport-tp',
-    icon: Truck,
-    gradient: 'from-[#1a0f00] via-[#3d2000] to-[#5c3300]',
-    accentColor: 'rgba(249,115,22,0.35)',
-    tag: null,
-  },
-  {
-    name: 'Agriculture',
-    url: '/categorie/agriculture-motoculture',
-    icon: Tractor,
-    gradient: 'from-[#051a08] via-[#0d3d14] to-[#15601e]',
-    accentColor: 'rgba(34,197,94,0.30)',
-    tag: null,
-  },
-  {
-    name: 'Industrie',
-    url: '/categorie/industrie-specialites',
-    icon: Factory,
-    gradient: 'from-[#100a1a] via-[#2a1240] to-[#3d1a5c]',
-    accentColor: 'rgba(168,85,247,0.35)',
-    tag: null,
-  },
-  {
-    name: 'Marine',
-    url: '/categorie/marine-nautisme',
-    icon: Anchor,
-    gradient: 'from-[#001a1a] via-[#003d3d] to-[#005c5c]',
-    accentColor: 'rgba(6,182,212,0.35)',
-    tag: null,
-  },
-]
+import { ArrowDown, CheckCircle2, ShieldCheck, Package, Truck, Award } from 'lucide-react'
 
 export function HeroBanner() {
-  const MainIcon = categories[0]!.icon
+  const heroBadges = [
+    { icon: Award, label: 'Distributeur Officiel' },
+    { icon: Package, label: '5000+ Produits' },
+    { icon: Truck, label: 'Livraison 24h' },
+    { icon: ShieldCheck, label: 'Livraison Gratuite' },
+  ]
+
+  const scrollToFinder = () => {
+    document.getElementById('oil-finder')?.scrollIntoView({ behavior: 'smooth' })
+  }
 
   return (
-    <section className="relative bg-brand-primary-dark pt-8 pb-32 overflow-hidden">
-      {/* Animated background texture */}
+    <section className="relative flex flex-col items-center justify-center overflow-hidden bg-brand-primary-dark pt-24 pb-32 text-center">
+      {/* Premium Cinematic Background */}
       <div
-        className="pointer-events-none absolute inset-0"
+        className="pointer-events-none absolute inset-0 opacity-40"
         style={{
-          background:
-            'radial-gradient(ellipse 70% 60% at 50% -20%, rgba(245,197,24,0.07) 0%, transparent 60%)',
+          background: 'radial-gradient(ellipse 80% 50% at 50% 20%, rgba(245,197,24,0.15) 0%, transparent 70%)',
         }}
       />
+      
+      {/* Mesh gradient overlay */}
+      <div className="absolute inset-0 bg-[url('/img/noise.png')] opacity-20 mix-blend-overlay" />
 
-      <div className="section-padding relative">
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-
-          {/* ── Main Hero Card (Automobile) — 2 columns on lg ─────────── */}
-          <Link
-            href={categories[0]!.url}
-            className={`group relative h-80 overflow-hidden rounded-2xl lg:col-span-2 bg-gradient-to-br ${categories[0]!.gradient}`}
-            style={{ boxShadow: `0 24px 60px ${categories[0]!.accentColor}` }}
-          >
-            {/* Ambient glow */}
-            <div
-              className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700"
-              style={{ background: `radial-gradient(circle at 70% 60%, ${categories[0]!.accentColor} 0%, transparent 65%)` }}
-            />
-            {/* Background icon */}
-            <MainIcon
-              size={280}
-              className="absolute -bottom-12 -right-12 text-white opacity-[0.07] transition-transform duration-700 group-hover:scale-105 group-hover:opacity-[0.10]"
-            />
-            {/* Mesh overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-
-            <div className="absolute bottom-0 left-0 w-full p-8">
-              {categories[0]!.tag && (
-                <span className="mb-3 inline-flex items-center gap-1.5 rounded-full bg-brand-accent px-3 py-1 text-xs font-bold tracking-wider text-brand-primary uppercase">
-                  {categories[0]!.tag}
-                </span>
-              )}
-              <h2 className="font-display mb-2 text-4xl font-black text-white transition-colors duration-300 group-hover:text-brand-accent md:text-5xl">
-                {categories[0]!.name}
-              </h2>
-              <p className="mb-5 hidden max-w-md text-sm leading-relaxed text-white/60 sm:block">
-                Huiles moteur, boîte de vitesses et liquides de refroidissement pour votre véhicule.
-              </p>
-              <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-5 py-2.5 text-sm font-semibold text-white backdrop-blur-sm transition-all duration-300 group-hover:bg-brand-accent group-hover:text-brand-primary group-hover:gap-3">
-                Découvrir la gamme <ArrowRight size={16} />
-              </div>
-            </div>
-          </Link>
-
-          {/* ── Secondary Cards ───────────────────────────────────────── */}
-          {categories.slice(1).map((cat) => {
-            const Icon = cat.icon
-            return (
-              <Link
-                key={cat.name}
-                href={cat.url}
-                className={`group relative h-80 overflow-hidden rounded-2xl bg-gradient-to-br ${cat.gradient}`}
-                style={{ boxShadow: `0 16px 40px ${cat.accentColor}` }}
-              >
-                {/* Ambient glow on hover */}
-                <div
-                  className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                  style={{ background: `radial-gradient(circle at 60% 60%, ${cat.accentColor} 0%, transparent 65%)` }}
-                />
-                {/* Background icon */}
-                <Icon
-                  size={170}
-                  className="absolute -bottom-6 -right-6 text-white opacity-[0.08] transition-transform duration-500 group-hover:scale-110 group-hover:opacity-[0.12]"
-                />
-                {/* Gradient overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
-
-                <div className="absolute bottom-0 left-0 w-full p-6">
-                  <h3 className="font-display mb-2 text-xl font-bold text-white transition-colors duration-300 group-hover:text-brand-accent leading-tight">
-                    {cat.name}
-                  </h3>
-                  <div className="inline-flex items-center gap-1.5 text-sm font-medium text-white/60 transition-all duration-300 group-hover:text-brand-accent group-hover:gap-2.5">
-                    Voir la gamme <ArrowRight size={15} />
-                  </div>
-                </div>
-              </Link>
-            )
-          })}
+      <div className="section-padding relative z-10 mx-auto max-w-4xl flex flex-col items-center">
+        
+        {/* Subtle top badge */}
+        <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-brand-accent backdrop-blur-md">
+          <span className="relative flex h-2 w-2">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand-accent opacity-75"></span>
+            <span className="relative inline-flex h-2 w-2 rounded-full bg-brand-accent"></span>
+          </span>
+          La Qualité Automobile
         </div>
+
+        {/* Huge Hero Title */}
+        <h1 className="font-display mb-6 text-5xl font-black leading-[1.1] text-white md:text-6xl lg:text-7xl">
+          Trouvez l&apos;huile parfaite <br />
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-accent to-yellow-600">
+            pour votre véhicule
+          </span>
+        </h1>
+
+        <p className="mb-10 max-w-2xl text-lg text-white/60 md:text-xl">
+          Expertise, performance et longévité. Découvrez notre sélection premium de lubrifiants et pièces avec recommandation sur mesure.
+        </p>
+
+        {/* Primary CTA */}
+        <button
+          onClick={scrollToFinder}
+          className="group relative inline-flex items-center gap-3 overflow-hidden rounded-2xl bg-brand-accent px-8 py-4 font-bold text-black transition-all hover:scale-105 hover:bg-yellow-400 active:scale-95 shadow-[0_0_40px_rgba(245,197,24,0.3)]"
+        >
+          <span className="relative z-10 flex items-center gap-2 text-lg">
+            Trouver mon huile <ArrowDown size={20} className="transition-transform group-hover:translate-y-1" />
+          </span>
+        </button>
+
+        {/* 4 Trust Badges in Hero */}
+        <div className="mt-20 grid w-full grid-cols-2 gap-4 md:grid-cols-4 border-t border-white/10 pt-10">
+          {heroBadges.map((badge, idx) => (
+            <div key={idx} className="flex flex-col items-center justify-center gap-3 text-white/70 transition-colors hover:text-white">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/5 border border-white/10 backdrop-blur-md">
+                <badge.icon size={22} className="text-brand-accent" />
+              </div>
+              <span className="text-sm font-medium">{badge.label}</span>
+            </div>
+          ))}
+        </div>
+
       </div>
     </section>
   )
 }
+

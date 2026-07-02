@@ -26,8 +26,12 @@ interface Make { id: string; name: string; slug: string }
 interface VehicleModel { id: string; name: string; slug: string }
 interface Engine { engineCode: string; yearFrom: number | null; yearTo: number | null }
 
+import { useVehicleStore } from '@/lib/store/vehicle.store'
+
+// ... existing code down to OilFinderWidget ...
 export function OilFinderWidget() {
   const router = useRouter()
+  const { setVehicle } = useVehicleStore()
   const [step, setStep] = useState(1)
   const [selections, setSelections] = useState({ type: '' as VehicleType | '', make: null as Make | null, model: null as VehicleModel | null, engine: '' })
 
@@ -74,12 +78,26 @@ export function OilFinderWidget() {
   const selectModel = (model: VehicleModel) => { setSelections(s => ({ ...s, model })); setStep(4) }
 
   const handleSearch = () => {
+    if (selections.make && selections.model) {
+      setVehicle({
+        type: selections.type,
+        makeId: selections.make.id,
+        makeName: selections.make.name,
+        makeSlug: selections.make.slug,
+        modelId: selections.model.id,
+        modelName: selections.model.name,
+        modelSlug: selections.model.slug,
+        engineCode: selections.engine,
+      })
+    }
+    
     const params = new URLSearchParams()
     if (selections.make) params.set('make', selections.make.slug)
     if (selections.model) params.set('model', selections.model.slug)
     if (selections.engine) params.set('engine', selections.engine)
     router.push(`/catalogue?${params.toString()}`)
   }
+
 
   const resetTo = (targetStep: number) => {
     setStep(targetStep)
@@ -89,11 +107,20 @@ export function OilFinderWidget() {
   }
 
   return (
-    <div className="w-full max-w-4xl mx-auto bg-white/95 backdrop-blur-md shadow-[var(--shadow-card)] rounded-3xl overflow-hidden border border-brand-surface-dark relative z-10">
+    <div id="oil-finder" className="w-full max-w-4xl mx-auto bg-white/95 backdrop-blur-md shadow-[var(--shadow-card)] rounded-3xl overflow-hidden border border-brand-surface-dark relative z-10">
       <div className="bg-brand-primary p-6 md:p-8 text-white relative overflow-hidden">
-        <div className="relative z-10">
-          <h2 className="text-2xl md:text-3xl font-display font-bold text-brand-accent mb-2">Trouver mon huile</h2>
-          <p className="text-gray-300">Sélectionnez votre véhicule pour voir les huiles compatibles.</p>
+        <div
+          className="pointer-events-none absolute inset-0"
+          style={{ background: 'radial-gradient(ellipse 80% 50% at 100% 50%, rgba(245,197,24,0.12) 0%, transparent 70%)' }}
+        />
+        <div className="relative z-10 flex items-center gap-4">
+          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-brand-accent/20 border border-brand-accent/30">
+            <Search size={26} className="text-brand-accent" />
+          </div>
+          <div>
+            <h2 className="text-2xl md:text-3xl font-display font-bold text-brand-accent mb-1">Trouver mon huile</h2>
+            <p className="text-white/60 text-sm">Sélectionnez votre véhicule pour voir les huiles 100% compatibles.</p>
+          </div>
         </div>
       </div>
 
@@ -109,15 +136,24 @@ export function OilFinderWidget() {
 
           {step === 1 && (
             <div key="step" className="flex-1 flex flex-col transition-all duration-300">
-              {VEHICLE_TYPES.map((type) => {
-                const Icon = type.icon
-                return (
-                  <button key={type.id} onClick={() => selectType(type.id)} className="flex flex-col items-center justify-center p-6 rounded-2xl border-2 border-gray-100 hover:border-brand-accent hover:bg-brand-surface/50 transition-all group">
-                    <Icon size={40} className="mb-4 text-brand-primary group-hover:text-brand-accent transition-colors" />
-                    <span className="font-semibold text-brand-primary">{type.label}</span>
-                  </button>
-                )
-              })}
+              <p className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-4">Type de véhicule</p>
+              <div className="grid grid-cols-2 gap-3">
+                {VEHICLE_TYPES.map((type) => {
+                  const Icon = type.icon
+                  return (
+                    <button
+                      key={type.id}
+                      onClick={() => selectType(type.id)}
+                      className="group flex items-center gap-4 p-5 rounded-2xl border-2 border-gray-100 hover:border-brand-accent hover:bg-brand-accent/5 transition-all text-left"
+                    >
+                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gray-100 group-hover:bg-brand-accent/15 transition-colors">
+                        <Icon size={26} className="text-brand-primary group-hover:text-brand-accent transition-colors" />
+                      </div>
+                      <span className="font-bold text-brand-primary group-hover:text-brand-accent transition-colors">{type.label}</span>
+                    </button>
+                  )
+                })}
+              </div>
             </div>
           )}
 
