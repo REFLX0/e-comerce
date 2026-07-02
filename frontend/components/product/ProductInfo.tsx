@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import type { Product } from '@/lib/types'
 import { RatingStars } from '../common/RatingStars'
 import { StockIndicator } from '../common/StockIndicator'
@@ -9,7 +9,6 @@ import { VariantSelector } from './VariantSelector'
 import { AddToCartButton } from './AddToCartButton'
 import { useVehicleStore } from '@/lib/store/vehicle.store'
 import { Check, Share2, Truck, ShieldCheck, RotateCcw } from 'lucide-react'
-import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { Link } from '@/i18n/routing'
 
