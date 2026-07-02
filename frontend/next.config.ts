@@ -50,7 +50,10 @@ const nextConfig: NextConfig = {
   // Belt-and-suspenders: these are also set in middleware, but setting here
   // ensures they're present even if middleware matcher doesn't run.
   async headers() {
-    return [
+    const headers: Array<{
+      source: string
+      headers: Array<{ key: string; value: string }>
+    }> = [
       {
         source: '/(.*)',
         headers: [
@@ -80,16 +83,6 @@ const nextConfig: NextConfig = {
           },
         ],
       },
-      // ── Cache control for static assets ─────────────────────────────────
-      {
-        source: '/_next/static/(.*)',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=31536000, immutable',
-          },
-        ],
-      },
       // ── Health check — no cache ──────────────────────────────────────────
       {
         source: '/api/health',
@@ -101,6 +94,20 @@ const nextConfig: NextConfig = {
         ],
       },
     ]
+
+    if (process.env.NODE_ENV === 'production') {
+      headers.splice(1, 0, {
+        source: '/_next/static/(.*)',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      })
+    }
+
+    return headers
   },
 
   // ── Redirects ────────────────────────────────────────────────────────────
@@ -118,4 +125,3 @@ const nextConfig: NextConfig = {
 }
 
 export default withNextIntl(nextConfig)
-

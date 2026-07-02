@@ -13,7 +13,7 @@ export function PromosBanner() {
             <h2 className="font-display mb-2 text-2xl font-bold md:text-3xl">
               Offres Spéciales du Mois
             </h2>
-            <p className="max-w-xl text-white/72">
+            <p className="max-w-xl text-white/75">
               Profitez de réductions allant jusqu'à -30% sur une sélection d'huiles synthétiques
               haut de gamme.
             </p>

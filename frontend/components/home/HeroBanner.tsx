@@ -74,7 +74,7 @@ export function HeroBanner() {
 
           <div className="mt-12 grid grid-cols-2 gap-3">
             {heroBadges.map((badge) => (
-              <div key={badge.label} className="flex min-h-20 items-center gap-3 rounded-lg border border-brand-border bg-brand-card/85 p-3 shadow-card backdrop-blur transition-all duration-200 hover:-translate-y-0.5 hover:shadow-card-hover">
+              <div key={badge.label} className="flex min-h-20 items-center gap-3 rounded-lg border border-brand-border bg-brand-card/90 p-3 shadow-card backdrop-blur transition-all duration-200 hover:-translate-y-0.5 hover:shadow-card-hover">
                 <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-brand-surface text-brand-primary">
                   <badge.icon size={20} />
                 </div>

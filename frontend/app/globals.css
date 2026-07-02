@@ -478,7 +478,7 @@ body.grid-on .grid-toggle .dot {
            font-semibold text-brand-surface bg-brand-primary
            transition-all duration-200 cursor-pointer select-none
            hover:bg-brand-primary-light hover:shadow-card
-           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent/45 focus-visible:ring-offset-2
+           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent/40 focus-visible:ring-offset-2
            active:scale-[0.98]
            disabled:cursor-not-allowed disabled:opacity-50 disabled:shadow-none;
     min-height: 44px;
@@ -518,7 +518,7 @@ body.grid-on .grid-toggle .dot {
            font-semibold text-brand-primary bg-brand-accent
            transition-all duration-200 cursor-pointer select-none
            hover:bg-brand-accent-hover hover:shadow-card
-           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent/45 focus-visible:ring-offset-2
+           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent/40 focus-visible:ring-offset-2
            active:scale-[0.98]
            disabled:cursor-not-allowed disabled:opacity-50 disabled:shadow-none;
     min-height: 44px;
@@ -556,7 +556,7 @@ body.grid-on .grid-toggle .dot {
   /* ── Focus ring (global accessible default) ─────────────────────── */
   .focus-ring {
     @apply focus-visible:outline-none focus-visible:ring-2
-           focus-visible:ring-brand-accent/45 focus-visible:ring-offset-2;
+           focus-visible:ring-brand-accent/40 focus-visible:ring-offset-2;
   }
 
   /* ── Section title ──────────────────────────────────────────────── */

@@ -61,7 +61,7 @@ export function ProductCard({ product }: Props) {
 
         {/* Wishlist Button */}
         <button 
-          className="absolute top-3 right-3 z-10 flex h-10 w-10 translate-y-0 items-center justify-center rounded-lg border border-brand-border bg-white/88 text-gray-400 opacity-100 shadow-sm backdrop-blur transition-all duration-200 hover:bg-white hover:text-red-500 sm:-translate-y-2 sm:opacity-0 sm:group-hover:translate-y-0 sm:group-hover:opacity-100"
+          className="absolute top-3 right-3 z-10 flex h-10 w-10 translate-y-0 items-center justify-center rounded-lg border border-brand-border bg-white/90 text-gray-400 opacity-100 shadow-sm backdrop-blur transition-all duration-200 hover:bg-white hover:text-red-500 sm:-translate-y-2 sm:opacity-0 sm:group-hover:translate-y-0 sm:group-hover:opacity-100"
           onClick={(e) => { e.preventDefault(); toast.success('Ajouté à la liste de souhaits') }}
           aria-label="Ajouter à la liste de souhaits"
         >

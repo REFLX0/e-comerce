@@ -79,7 +79,7 @@ export default function Home() {
                   type="email"
                   placeholder="votre@email.com"
                   autoComplete="email"
-                  className="min-h-12 flex-1 rounded-lg border border-white/[0.18] bg-white/[0.10] px-4 text-brand-surface placeholder:text-brand-surface/45 transition-all duration-200 focus:border-brand-accent focus:bg-white/[0.15] focus:ring-2 focus:ring-brand-accent/30"
+                  className="min-h-12 flex-1 rounded-lg border border-white/[0.18] bg-white/[0.10] px-4 text-brand-surface placeholder:text-brand-surface/50 transition-all duration-200 focus:border-brand-accent focus:bg-white/[0.15] focus:ring-2 focus:ring-brand-accent/30"
                   aria-label="Adresse email"
                 />
                 <button
@@ -91,7 +91,7 @@ export default function Home() {
                   <ArrowRight size={16} aria-hidden="true" />
                 </button>
               </div>
-              <p className="mt-3 text-xs text-brand-surface/45">
+              <p className="mt-3 text-xs text-brand-surface/50">
                 Pas de spam. Désinscription en un clic.
               </p>
             </form>

@@ -34,14 +34,14 @@ export default function Header() {
   }, [])
 
   return (
-    <header className={`sticky top-0 z-40 w-full border-b transition-all duration-200 ${
+    <header className={`sticky top-0 z-40 w-full border-b bg-brand-card transition-all duration-200 ${
       isScrolled
-        ? 'border-brand-border bg-brand-card/95 shadow-card backdrop-blur-xl'
-        : 'border-brand-border/70 bg-brand-card/92 shadow-none backdrop-blur-xl'
+        ? 'border-brand-border shadow-card'
+        : 'border-brand-border/70 shadow-none'
     }`}>
 
       {/* ── Top Utility Bar ──────────────────────────────────────────────── */}
-      <div className="border-b border-white/10 bg-brand-primary py-2 text-xs text-white/72">
+      <div className="border-b border-white/10 bg-brand-primary py-2 text-xs text-white/75">
         <div className="section-padding flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Zap size={12} className="text-brand-accent" />
@@ -86,7 +86,7 @@ export default function Header() {
           <nav className="hidden items-center gap-1 md:flex">
             <Link
               href="/"
-              className="rounded-lg px-3 py-2 text-sm font-medium text-brand-primary/72 transition-all duration-200 hover:bg-brand-primary/5 hover:text-brand-primary"
+              className="rounded-lg px-3 py-2 text-sm font-medium text-brand-primary/70 transition-all duration-200 hover:bg-brand-primary/5 hover:text-brand-primary"
             >
               {t('home')}
             </Link>
@@ -94,7 +94,7 @@ export default function Header() {
             {/* Highlighted Find My Oil CTA */}
             <Link
               href="/#oil-finder"
-              className="flex items-center gap-1.5 rounded-lg border border-brand-accent/25 bg-brand-accent/12 px-3 py-2 text-sm font-semibold text-brand-primary transition-all duration-200 hover:bg-brand-accent/20 hover:shadow-card"
+              className="flex items-center gap-1.5 rounded-lg border border-brand-accent/25 bg-brand-accent/10 px-3 py-2 text-sm font-semibold text-brand-primary transition-all duration-200 hover:bg-brand-accent/20 hover:shadow-card"
             >
               <Zap size={14} />
               Trouver mon huile
@@ -108,7 +108,7 @@ export default function Header() {
             >
               <Link
                 href="/catalogue"
-                className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-brand-primary/72 transition-all duration-200 hover:bg-brand-primary/5 hover:text-brand-primary"
+                className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-brand-primary/70 transition-all duration-200 hover:bg-brand-primary/5 hover:text-brand-primary"
               >
                 {t('catalog')}
                 <ChevronDown
@@ -158,13 +158,13 @@ export default function Header() {
 
             <Link
               href="/a-propos"
-              className="rounded-lg px-3 py-2 text-sm font-medium text-brand-primary/72 transition-all duration-200 hover:bg-brand-primary/5 hover:text-brand-primary"
+              className="rounded-lg px-3 py-2 text-sm font-medium text-brand-primary/70 transition-all duration-200 hover:bg-brand-primary/5 hover:text-brand-primary"
             >
               {t('about')}
             </Link>
             <Link
               href="/contact"
-              className="rounded-lg px-3 py-2 text-sm font-medium text-brand-primary/72 transition-all duration-200 hover:bg-brand-primary/5 hover:text-brand-primary"
+              className="rounded-lg px-3 py-2 text-sm font-medium text-brand-primary/70 transition-all duration-200 hover:bg-brand-primary/5 hover:text-brand-primary"
             >
               {t('contact')}
             </Link>
@@ -178,7 +178,7 @@ export default function Header() {
             <LanguageSwitcher />
 
             <button
-              className="flex h-11 w-11 items-center justify-center rounded-lg text-brand-primary/68 transition-colors duration-200 hover:bg-brand-primary/5 hover:text-brand-primary lg:hidden"
+              className="flex h-11 w-11 items-center justify-center rounded-lg text-brand-primary/70 transition-colors duration-200 hover:bg-brand-primary/5 hover:text-brand-primary lg:hidden"
               aria-label={t('search')}
             >
               <Search size={22} />
@@ -186,7 +186,7 @@ export default function Header() {
 
             <Link
               href={hasMounted && isAuthenticated ? '/compte' : '/auth/login'}
-              className="group relative hidden h-11 w-11 items-center justify-center rounded-lg text-brand-primary/68 transition-colors duration-200 hover:bg-brand-primary/5 hover:text-brand-primary sm:flex"
+              className="group relative hidden h-11 w-11 items-center justify-center rounded-lg text-brand-primary/70 transition-colors duration-200 hover:bg-brand-primary/5 hover:text-brand-primary sm:flex"
               aria-label={t('account')}
             >
               <User size={22} />

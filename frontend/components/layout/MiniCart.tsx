@@ -20,7 +20,7 @@ export default function MiniCart() {
       <SheetTrigger
         render={
           <button
-            className="relative flex h-11 w-11 items-center justify-center rounded-lg text-brand-primary/68 transition-colors duration-200 hover:bg-brand-primary/5 hover:text-brand-primary"
+            className="relative flex h-11 w-11 items-center justify-center rounded-lg text-brand-primary/70 transition-colors duration-200 hover:bg-brand-primary/5 hover:text-brand-primary"
             aria-label="Ouvrir le panier"
           />
         }

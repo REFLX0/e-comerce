@@ -68,7 +68,7 @@ export default function MobileMenu() {
           {/* Find My Oil — hero CTA */}
           <Link
             href="/#oil-finder"
-            className="flex min-h-11 items-center gap-3 rounded-lg border border-brand-accent/25 bg-brand-accent/12 px-4 py-3 text-sm font-semibold text-brand-primary transition-all duration-150 hover:bg-brand-accent/20"
+            className="flex min-h-11 items-center gap-3 rounded-lg border border-brand-accent/25 bg-brand-accent/10 px-4 py-3 text-sm font-semibold text-brand-primary transition-all duration-150 hover:bg-brand-accent/20"
             onClick={() => setOpen(false)}
           >
             <Search size={17} className="text-brand-accent" />
@@ -129,7 +129,7 @@ export default function MobileMenu() {
           <div className="mt-4 space-y-0.5 border-t border-brand-border pt-4">
             <Link
               href="/a-propos"
-              className="flex min-h-11 items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-brand-primary/68 transition-all duration-150 hover:bg-brand-surface hover:text-brand-primary"
+              className="flex min-h-11 items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-brand-primary/70 transition-all duration-150 hover:bg-brand-surface hover:text-brand-primary"
               onClick={() => setOpen(false)}
             >
               <Info size={17} className="text-brand-muted" />
@@ -137,7 +137,7 @@ export default function MobileMenu() {
             </Link>
             <Link
               href="/contact"
-              className="flex min-h-11 items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-brand-primary/68 transition-all duration-150 hover:bg-brand-surface hover:text-brand-primary"
+              className="flex min-h-11 items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-brand-primary/70 transition-all duration-150 hover:bg-brand-surface hover:text-brand-primary"
               onClick={() => setOpen(false)}
             >
               <Phone size={17} className="text-brand-muted" />

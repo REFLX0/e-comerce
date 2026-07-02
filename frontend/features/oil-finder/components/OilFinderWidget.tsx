@@ -144,7 +144,7 @@ export function OilFinderWidget() {
     <div id="oil-finder" className="relative z-10 mx-auto w-full max-w-4xl overflow-hidden rounded-lg border border-brand-border bg-brand-card shadow-overlay">
       <div className="relative border-b border-brand-border bg-brand-card p-5 md:p-7">
         <div className="relative z-10 flex items-start gap-4 sm:items-center">
-          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg border border-brand-accent/25 bg-brand-accent/12">
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg border border-brand-accent/25 bg-brand-accent/10">
             <Search size={24} className="text-brand-primary" />
           </div>
           <div>
