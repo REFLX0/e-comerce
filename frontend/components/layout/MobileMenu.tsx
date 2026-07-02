@@ -2,7 +2,7 @@
 
 import { useQuery } from '@tanstack/react-query'
 import { categoriesApi } from '@/lib/api/categories'
-import { Menu, X, ChevronRight, Home, BookOpen, Info, Phone, Tag } from 'lucide-react'
+import { Menu, X, ChevronRight, Home, BookOpen, Info, Phone, Tag, Search } from 'lucide-react'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import {
   Accordion,
