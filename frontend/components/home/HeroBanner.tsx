@@ -1,4 +1,6 @@
-import { ArrowDown, CheckCircle2, ShieldCheck, Package, Truck, Award } from 'lucide-react'
+"use client"
+
+import { ArrowDown, ShieldCheck, Package, Truck, Award } from 'lucide-react'
 
 export function HeroBanner() {
   const heroBadges = [
@@ -74,4 +76,3 @@ export function HeroBanner() {
     </section>
   )
 }
-

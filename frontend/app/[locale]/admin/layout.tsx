@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { useAuthStore } from '@/lib/store/auth.store'
+import { authApi } from '@/lib/api/auth'
 import Image from 'next/image'
 import {
   LayoutDashboard, ShoppingCart, Package, Users, Tag,
@@ -182,10 +183,12 @@ function Sidebar({
 }) {
   const { user, logout } = useAuthStore()
   const router = useRouter()
+  const pathname = usePathname()
+  const locale = pathname?.split('/')[1] === 'en' ? 'en' : 'fr'
 
   const handleLogout = () => {
     logout()
-    router.push('/auth/login')
+    router.push(`/${locale}/auth/login`)
   }
 
   return (
@@ -265,11 +268,13 @@ function Sidebar({
 }
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated, isHydrated, user } = useAuthStore()
+  const { isAuthenticated, isHydrated, user, setAuth } = useAuthStore()
   const router = useRouter()
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [isCheckingServerAuth, setIsCheckingServerAuth] = useState(true)
   const pathname = usePathname()
+  const locale = pathname?.split('/')[1] === 'en' ? 'en' : 'fr'
 
   // Close mobile menu on route change
   useEffect(() => setMobileOpen(false), [pathname])
@@ -282,12 +287,37 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }, [])
 
   useEffect(() => {
-    if (isHydrated && (!isAuthenticated || user?.role?.toUpperCase() !== 'ADMIN')) {
-      router.push('/auth/login')
-    }
-  }, [isHydrated, isAuthenticated, user, router])
+    if (!isHydrated) return
 
-  if (!isHydrated || !isAuthenticated || user?.role?.toUpperCase() !== 'ADMIN') {
+    if (isAuthenticated && user?.role?.toUpperCase() === 'ADMIN') {
+      setIsCheckingServerAuth(false)
+      return
+    }
+
+    let cancelled = false
+    setIsCheckingServerAuth(true)
+
+    authApi
+      .me()
+      .then((serverUser) => {
+        if (cancelled) return
+        if (serverUser?.role?.toUpperCase() === 'ADMIN') {
+          setAuth(serverUser)
+          setIsCheckingServerAuth(false)
+          return
+        }
+        router.push(`/${locale}/auth/login?callbackUrl=/${locale}/admin&reason=admin`)
+      })
+      .catch(() => {
+        if (!cancelled) router.push(`/${locale}/auth/login?callbackUrl=/${locale}/admin`)
+      })
+
+    return () => {
+      cancelled = true
+    }
+  }, [isHydrated, isAuthenticated, user, setAuth, router, locale])
+
+  if (!isHydrated || isCheckingServerAuth || user?.role?.toUpperCase() !== 'ADMIN') {
     return (
       <div className="flex h-screen items-center justify-center bg-brand-primary-dark">
         <div className="h-10 w-10 animate-spin rounded-full border-4 border-brand-accent border-t-transparent" />

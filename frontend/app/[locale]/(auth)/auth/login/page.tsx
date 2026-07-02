@@ -1,5 +1,6 @@
 import { Suspense } from 'react'
 import LoginFormWrapper from '@/components/auth/LoginFormWrapper'
+import { LoginSkeleton } from '@/components/auth/LoginSkeleton'
 
 export const metadata = {
   title: 'Connexion | KiosqueTN',
@@ -8,7 +9,8 @@ export const metadata = {
 
 export default function LoginPage() {
   return (
-    <LoginFormWrapper />
+    <Suspense fallback={<LoginSkeleton />}>
+      <LoginFormWrapper />
+    </Suspense>
   )
 }
-

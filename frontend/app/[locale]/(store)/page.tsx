@@ -6,6 +6,7 @@ import { BestSellers } from '@/components/home/BestSellers'
 import { BrandsBar } from '@/components/home/BrandsBar'
 import { CategoryGrid } from '@/components/home/CategoryGrid'
 import { PromosBanner } from '@/components/home/PromosBanner'
+import { GridGuides } from '@/components/layout/GridGuides'
 
 // ── Trust badges data ─────────────────────────────────────────────────
 const trustBadges = [
@@ -42,12 +43,7 @@ export default function Home() {
             </div>
           </div>
           {/* Grid overlay for this spread */}
-          <div className="guides" aria-hidden="true">
-            <div className="cols" />
-            <div className="rows" />
-            <div className="mline l" />
-            <div className="mline r" />
-          </div>
+          <GridGuides />
         </div>
       </div>
 
@@ -92,12 +88,7 @@ export default function Home() {
               ))}
             </div>
           </div>
-          <div className="guides" aria-hidden="true">
-            <div className="cols" />
-            <div className="rows" />
-            <div className="mline l" />
-            <div className="mline r" />
-          </div>
+          <GridGuides />
         </div>
       </section>
 
@@ -195,12 +186,7 @@ export default function Home() {
           </div>
 
           {/* Grid overlay for this spread */}
-          <div className="guides" aria-hidden="true">
-            <div className="cols" />
-            <div className="rows" />
-            <div className="mline l" />
-            <div className="mline r" />
-          </div>
+          <GridGuides />
         </div>
       </section>
     </>

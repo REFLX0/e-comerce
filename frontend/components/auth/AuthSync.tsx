@@ -6,17 +6,19 @@ import { useAuthStore } from '@/lib/store/auth.store'
 
 export function AuthSync() {
   const { data: session, status } = useSession()
-  const { setAuth, logout } = useAuthStore()
+  const setAuth = useAuthStore((state) => state.setAuth)
+  const currentUser = useAuthStore((state) => state.user)
 
   useEffect(() => {
     if (status === 'authenticated' && session?.user) {
-      // Synchronize the NextAuth user session to the Zustand store
-      setAuth(session.user as any)
-    } else if (status === 'unauthenticated') {
-      // Clear store if session is gone
-      logout()
+      const sessionEmail = session.user.email
+      if (!currentUser || currentUser.email === sessionEmail) {
+        // Synchronize the NextAuth user session to the Zustand store.
+        // Do not overwrite an active backend login for a different account.
+        setAuth(session.user as any)
+      }
     }
-  }, [session, status, setAuth, logout])
+  }, [session, status, setAuth, currentUser])
 
   return null
 }

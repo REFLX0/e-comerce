@@ -4,11 +4,12 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
 import { useState, useEffect } from 'react'
-import { signIn, getSession } from 'next-auth/react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { signIn } from 'next-auth/react'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { Link } from '@/i18n/routing'
 import { ArrowRight, Mail, Lock, Eye, EyeOff, Loader2 } from 'lucide-react'
 import { toast } from 'sonner'
+import { useAuthStore } from '@/lib/store/auth.store'
 
 const loginSchema = z.object({
   email: z.string().email('Adresse email invalide'),
@@ -19,11 +20,14 @@ type LoginFormData = z.infer<typeof loginSchema>
 
 export default function LoginForm() {
   const router = useRouter()
+  const pathname = usePathname()
   const searchParams = useSearchParams()
+  const currentLocale = pathname?.split('/')[1] === 'en' ? 'en' : 'fr'
   const urlError = searchParams.get('error')
-  const callbackUrl = searchParams.get('callbackUrl') || '/compte'
+  const callbackUrl = searchParams.get('callbackUrl') || `/${currentLocale}/compte`
   const [isLoading, setIsLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
+  const login = useAuthStore((state) => state.login)
 
   useEffect(() => {
     if (urlError === 'CredentialsSignin') {
@@ -52,31 +56,27 @@ export default function LoginForm() {
   const onSubmit = async (data: LoginFormData) => {
     setIsLoading(true)
     try {
-      const res = await signIn('credentials', {
-        email: data.email,
-        password: data.password,
-        redirect: false,
+      await login(data)
+
+      toast.success('Connexion réussie !', {
+        description: 'Bienvenue sur votre espace.',
       })
 
-      if (res?.error) {
-        toast.error('Email ou mot de passe incorrect', {
-          description: 'Vérifiez vos identifiants et réessayez.',
-        })
-      } else if (res?.ok) {
-        toast.success('Connexion réussie !', {
-          description: 'Bienvenue sur votre espace.',
-        })
-        const session = await getSession()
-        if ((session?.user as any)?.role === 'ADMIN' && callbackUrl === '/compte') {
-          router.push('/admin')
-        } else {
-          router.push(callbackUrl)
-        }
-        router.refresh()
+      const user = useAuthStore.getState().user
+      const adminPath = `/${currentLocale}/admin`
+      const accountPath = `/${currentLocale}/compte`
+      if (
+        user?.role?.toUpperCase() === 'ADMIN' &&
+        (callbackUrl === '/compte' || callbackUrl === accountPath || callbackUrl.includes('/auth/login'))
+      ) {
+        router.push(adminPath)
+      } else {
+        router.push(callbackUrl)
       }
+      router.refresh()
     } catch {
-      toast.error('Erreur inattendue', {
-        description: 'Impossible de vous connecter pour l\'instant. Réessayez dans un instant.',
+      toast.error('Email ou mot de passe incorrect', {
+        description: 'Vérifiez vos identifiants et réessayez.',
       })
     } finally {
       setIsLoading(false)

@@ -3,11 +3,27 @@ import { authConfig } from '@/lib/auth.config'
 import { NextRequest, NextResponse } from 'next/server'
 import createMiddleware from 'next-intl/middleware'
 import { routing } from '@/i18n/routing'
+import { jwtVerify } from 'jose'
 
 const { auth } = NextAuth(authConfig)
 const intlMiddleware = createMiddleware(routing)
+const SUPPORTED_LOCALES = ['fr', 'en'] as const
+const DEFAULT_LOCALE = 'fr'
 
-export default auth((req: NextRequest & { auth?: unknown }) => {
+async function getBackendAuth(req: NextRequest) {
+  const token = req.cookies.get('access_token')?.value
+  if (!token) return null
+
+  try {
+    const secret = new TextEncoder().encode(process.env.JWT_SECRET || 'fallback-dev-secret')
+    const { payload } = await jwtVerify(token, secret)
+    return { role: typeof payload.role === 'string' ? payload.role : undefined }
+  } catch {
+    return null
+  }
+}
+
+export default auth(async (req: NextRequest & { auth?: unknown }) => {
   // ── 1. Request ID — generated once per request, propagated everywhere ──
   const requestId = req.headers.get('x-request-id') ?? crypto.randomUUID()
 
@@ -33,30 +49,36 @@ export default auth((req: NextRequest & { auth?: unknown }) => {
 
   // ── 4. Route protection ───────────────────────────────────────────────
   const { nextUrl } = req
-  const isLoggedIn = !!(req as { auth?: unknown }).auth
-  const role = ((req as { auth?: { user?: { role?: string } } }).auth?.user as { role?: string })?.role
+  const backendAuth = await getBackendAuth(req)
+  const isLoggedIn = !!(req as { auth?: unknown }).auth || !!backendAuth
+  const nextAuthRole = ((req as { auth?: { user?: { role?: string } } }).auth?.user as { role?: string })?.role
+  const isAdmin = [backendAuth?.role, nextAuthRole].some((authRole) => authRole?.toUpperCase() === 'ADMIN')
+
+  const pathnameParts = nextUrl.pathname.split('/')
+  const locale = SUPPORTED_LOCALES.includes(pathnameParts[1] as (typeof SUPPORTED_LOCALES)[number])
+    ? pathnameParts[1]
+    : DEFAULT_LOCALE
+  const withLocale = (path: string) => `/${locale}${path}`
 
   // Remove locale prefix for auth checks
   const pathWithoutLocale = nextUrl.pathname.replace(/^\/(fr|en)/, '') || '/'
   
   const isAdminRoute  = pathWithoutLocale.startsWith('/admin')
-  const isAuthRoute   = pathWithoutLocale.startsWith('/auth')
   const isCompteRoute = pathWithoutLocale.startsWith('/compte')
 
-  if (isAdminRoute && (!isLoggedIn || role !== 'ADMIN')) {
-    const redirect = NextResponse.redirect(new URL('/auth/login', nextUrl))
+  if (isAdminRoute && (!isLoggedIn || !isAdmin)) {
+    const loginUrl = new URL(withLocale('/auth/login'), nextUrl)
+    loginUrl.searchParams.set('callbackUrl', withLocale('/admin'))
+    if (isLoggedIn) loginUrl.searchParams.set('reason', 'admin')
+    const redirect = NextResponse.redirect(loginUrl)
     redirect.headers.set('x-request-id', requestId)
     return redirect
   }
 
   if (isCompteRoute && !isLoggedIn) {
-    const redirect = NextResponse.redirect(new URL('/auth/login', nextUrl))
-    redirect.headers.set('x-request-id', requestId)
-    return redirect
-  }
-
-  if (isAuthRoute && isLoggedIn) {
-    const redirect = NextResponse.redirect(new URL('/', nextUrl))
+    const loginUrl = new URL(withLocale('/auth/login'), nextUrl)
+    loginUrl.searchParams.set('callbackUrl', withLocale('/compte'))
+    const redirect = NextResponse.redirect(loginUrl)
     redirect.headers.set('x-request-id', requestId)
     return redirect
   }
@@ -108,6 +130,6 @@ export const config = {
      *   - Public assets (.png, .jpg, .svg, .ico, .webp)
      *   - The health check endpoint (must be unrestricted)
      */
-    '/((?!_next/static|_next/image|favicon\\.ico|api/health|.*\\.(?:png|jpg|jpeg|gif|svg|ico|webp|woff2?)$).*)',
+    '/((?!api(?:/|$)|_next/static|_next/image|favicon\\.ico|.*\\.(?:png|jpg|jpeg|gif|svg|ico|webp|woff2?)$).*)',
   ],
 }

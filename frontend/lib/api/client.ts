@@ -154,6 +154,22 @@ interface ApiClientRequest extends RequestInit {
   params?: Record<string, string | number | boolean>
 }
 
+function getApiBaseUrl(baseUrl: string): string {
+  if (/^https?:\/\//i.test(baseUrl)) return baseUrl.replace(/\/$/, '')
+
+  const origin =
+    typeof window !== 'undefined'
+      ? window.location.origin
+      : process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
+
+  return `${origin.replace(/\/$/, '')}/${baseUrl.replace(/^\/|\/$/g, '')}`
+}
+
+function buildApiUrl(baseUrl: string, path: string): URL {
+  const base = getApiBaseUrl(baseUrl)
+  return new URL(`${base}/${path.replace(/^\//, '')}`)
+}
+
 export function createApiClient(opts: ApiClientOptions) {
   const {
     baseUrl,
@@ -165,7 +181,7 @@ export function createApiClient(opts: ApiClientOptions) {
 
   async function request<T>(path: string, init: ApiClientRequest = {}): Promise<T> {
     const { params, headers: extra, ...rest } = init
-    const url = new URL(path, baseUrl)
+    const url = buildApiUrl(baseUrl, path)
     if (params) {
       for (const [k, v] of Object.entries(params)) url.searchParams.set(k, String(v))
     }
@@ -175,6 +191,7 @@ export function createApiClient(opts: ApiClientOptions) {
         url.toString(),
         {
           ...rest,
+          credentials: 'include',
           headers: {
             'Content-Type': 'application/json',
             ...defaultHeaders,
@@ -242,6 +259,7 @@ export async function apiGet<T>(
   }
   const res = await fetchWithTimeout(url.toString(), {
     ...options,
+    credentials: 'include',
     headers: { 'Content-Type': 'application/json', ...options?.headers },
   })
   return handleResponse<T>(res)
@@ -250,6 +268,7 @@ export async function apiGet<T>(
 export async function apiPost<T>(path: string, body: unknown, ): Promise<T> {
   const res = await fetchWithTimeout(`${BASE_URL}${path}`, {
     method: 'POST',
+    credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
       
@@ -262,6 +281,7 @@ export async function apiPost<T>(path: string, body: unknown, ): Promise<T> {
 export async function apiPut<T>(path: string, body: unknown, ): Promise<T> {
   const res = await fetchWithTimeout(`${BASE_URL}${path}`, {
     method: 'PUT',
+    credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
       
@@ -274,6 +294,7 @@ export async function apiPut<T>(path: string, body: unknown, ): Promise<T> {
 export async function apiPatch<T>(path: string, body: unknown, ): Promise<T> {
   const res = await fetchWithTimeout(`${BASE_URL}${path}`, {
     method: 'PATCH',
+    credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
       
@@ -286,6 +307,7 @@ export async function apiPatch<T>(path: string, body: unknown, ): Promise<T> {
 export async function apiDelete<T>(path: string, ): Promise<T> {
   const res = await fetchWithTimeout(`${BASE_URL}${path}`, {
     method: 'DELETE',
+    credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
       
@@ -293,5 +315,3 @@ export async function apiDelete<T>(path: string, ): Promise<T> {
   })
   return handleResponse<T>(res)
 }
-
-

@@ -5,8 +5,7 @@ import { Providers } from '@/components/Providers'
 import { Toaster } from 'sonner'
 import { NextIntlClientProvider } from 'next-intl'
 import { getMessages } from 'next-intl/server'
-import { notFound } from 'next/navigation'
-import { routing } from '@/i18n/routing'
+import { GridOverlayControls } from '@/components/layout/GridOverlayControls'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -96,99 +95,7 @@ export default async function RootLayout({
           </Providers>
         </NextIntlClientProvider>
 
-        {/* ── Müller-Brockmann Grid Toggle ─────────────────────────────────
-            Press 'G' anywhere on the page (when not in a form field) to
-            toggle the 12-column / 8px baseline overlay. The overlay lives
-            inside each .wrap — same content box — so columns match exactly.
-            ───────────────────────────────────────────────────────────────── */}
-        <button
-          id="gridToggle"
-          className="grid-toggle"
-          aria-pressed="false"
-          aria-label="Afficher/Masquer la grille de mise en page"
-          title="G — Afficher/Masquer la grille"
-        >
-          <span className="dot" aria-hidden="true" />
-          <span className="lbl">Show grid</span>
-        </button>
-
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-(function(){
-  var btn=document.getElementById('gridToggle');
-  function setGrid(on){
-    document.body.classList.toggle('grid-on',on);
-    localStorage.setItem('grid-on',on?'1':'0');
-    if(btn){
-      btn.setAttribute('aria-pressed',on?'true':'false');
-      var l=btn.querySelector('.lbl');if(l)l.textContent=on?'Hide grid':'Show grid';
-    }
-  }
-  /* Restore from localStorage (survives page reloads during dev) */
-  var saved=localStorage.getItem('grid-on');
-  if(saved==='1') setGrid(true);
-
-  if(btn) btn.addEventListener('click',function(){setGrid(!document.body.classList.contains('grid-on'));});
-
-  document.addEventListener('keydown',function(e){
-    var tag=document.activeElement?document.activeElement.tagName:'';
-    if((e.key==='g'||e.key==='G')&&!e.metaKey&&!e.ctrlKey&&!e.altKey&&
-       tag!=='INPUT'&&tag!=='TEXTAREA'&&tag!=='SELECT'){
-      setGrid(!document.body.classList.contains('grid-on'));
-    }
-  });
-
-  /* Populate overlay column numbers in every .guides on the page */
-  function populateGuides(){
-    document.querySelectorAll('.guides .cols').forEach(function(h){
-      if(h.children.length>0) return; /* already populated */
-      var n=parseInt(getComputedStyle(document.documentElement)
-        .getPropertyValue('--cols').trim()||'12',10);
-      for(var i=1;i<=n;i++){
-        var c=document.createElement('div');c.className='col';
-        var s=document.createElement('span');s.textContent=i;
-        c.appendChild(s);h.appendChild(c);
-      }
-    });
-  }
-  if(document.readyState==='loading'){
-    document.addEventListener('DOMContentLoaded',populateGuides);
-  } else {
-    populateGuides();
-  }
-
-  /* ── OPTICAL ALIGNMENT ──────────────────────────────────────────────
-     Large display type carries a left side-bearing: the glyph ink is
-     inset from the layout box. This measures the real side-bearing at
-     runtime (after the webfont loads) and nudges each [data-optical]
-     element so its INK lands on the column line, not just its box.
-     ──────────────────────────────────────────────────────────────────── */
-  (function(){
-    var cvs=document.createElement('canvas'),ctx=cvs.getContext('2d');
-    var sel='[data-optical]';
-    function alignInk(){
-      document.querySelectorAll(sel).forEach(function(el){
-        el.style.marginLeft='0px';
-        var cs=getComputedStyle(el);
-        var ch=(el.textContent||'').trim().charAt(0);if(!ch)return;
-        if(cs.textTransform==='uppercase')ch=ch.toUpperCase();
-        ctx.font=cs.fontStyle+' '+cs.fontWeight+' '+cs.fontSize+' '+cs.fontFamily;
-        ctx.textAlign='left';
-        var abl=ctx.measureText(ch).actualBoundingBoxLeft;
-        if(isFinite(abl))el.style.marginLeft=abl.toFixed(2)+'px';
-      });
-    }
-    if(document.fonts&&document.fonts.ready){
-      document.fonts.ready.then(alignInk);
-    }
-    alignInk();
-    var t;window.addEventListener('resize',function(){clearTimeout(t);t=setTimeout(alignInk,120);});
-  })();
-})();
-`,
-          }}
-        />
+        <GridOverlayControls />
       </body>
     </html>
   )

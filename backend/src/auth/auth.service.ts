@@ -37,7 +37,7 @@ export class AuthService {
       },
     })
 
-    return this.generateTokens(user.id, user.email, user.role)
+    return this.generateTokens(user)
   }
 
   async login(dto: LoginDto) {
@@ -47,7 +47,7 @@ export class AuthService {
     const valid = await bcrypt.compare(dto.password, user.passwordHash)
     if (!valid) throw new UnauthorizedException('Invalid credentials')
 
-    return this.generateTokens(user.id, user.email, user.role)
+    return this.generateTokens(user)
   }
 
   async refresh(refreshToken: string) {
@@ -59,7 +59,7 @@ export class AuthService {
 
     // Rotate: delete old, issue new
     await this.redis.del(`refresh:${refreshToken}`)
-    return this.generateTokens(user.id, user.email, user.role)
+    return this.generateTokens(user)
   }
 
   async logout(refreshToken: string) {
@@ -67,8 +67,15 @@ export class AuthService {
     return { message: 'Logged out successfully' }
   }
 
-  private async generateTokens(userId: string, email: string, role: string) {
-    const payload = { sub: userId, email, role }
+  private async generateTokens(user: {
+    id: string
+    email: string
+    name: string | null
+    phone: string | null
+    role: string
+    createdAt: Date
+  }) {
+    const payload = { sub: user.id, email: user.email, role: user.role }
 
     const accessToken = this.jwtService.sign(payload, {
       secret: this.config.get('JWT_SECRET'),
@@ -77,9 +84,25 @@ export class AuthService {
 
     const refreshToken = uuidv4()
     const refreshTtl = 60 * 60 * 24 * 7 // 7 days
-    await this.redis.setex(`refresh:${refreshToken}`, refreshTtl, userId)
+    await this.redis.setex(`refresh:${refreshToken}`, refreshTtl, user.id)
 
-    return { accessToken, refreshToken, userId }
+    const [firstName = '', ...lastNameParts] = (user.name ?? '').trim().split(/\s+/).filter(Boolean)
+
+    return {
+      accessToken,
+      refreshToken,
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name ?? '',
+        firstName,
+        lastName: lastNameParts.join(' '),
+        phone: user.phone ?? undefined,
+        role: user.role,
+        addresses: [],
+        createdAt: user.createdAt.toISOString(),
+      },
+    }
   }
 
   async forgotPassword(email: string) {

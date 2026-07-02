@@ -2,6 +2,8 @@ import type { NextAuthConfig } from 'next-auth'
 
 export const authConfig = {
   // pages config removed to prevent next-auth intercept loop
+  secret: process.env.AUTH_SECRET ?? process.env.NEXTAUTH_SECRET,
+  trustHost: process.env.AUTH_TRUST_HOST === 'true' || process.env.NODE_ENV === 'development',
   providers: [], // Added in auth.ts to avoid Edge issues with Prisma/bcrypt
   callbacks: {
     async jwt({ token, user }) {
