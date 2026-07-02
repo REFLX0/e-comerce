@@ -1,5 +1,6 @@
 "use client";
 
+import { useHasMounted } from '@/lib/hooks/useHasMounted'
 import { Home, Search, ShoppingCart, User } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -14,14 +15,16 @@ export function MobileBottomNav() {
   const pathname = usePathname()
   const { items } = useCartStore()
   const { isAuthenticated } = useAuthStore()
+  const hasMounted = useHasMounted()
 
-  const totalItems = items.reduce((sum, item) => sum + item.quantity, 0)
+  const totalItems = hasMounted ? items.reduce((sum, item) => sum + item.quantity, 0) : 0
+  const accountHref = hasMounted && isAuthenticated ? '/compte' : '/auth/login'
 
   const links = [
     { href: '/', icon: Home, label: 'Accueil', exact: true },
     { href: '/catalogue', icon: Search, label: 'Catalogue', exact: false },
     { href: '/panier', icon: ShoppingCart, label: 'Panier', exact: false, badge: totalItems > 0 ? totalItems : null },
-    { href: isAuthenticated ? '/compte' : '/auth/login', icon: User, label: 'Compte', exact: false },
+    { href: accountHref, icon: User, label: 'Compte', exact: false },
   ]
 
   return (

@@ -6,9 +6,14 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/co
 import { ShoppingCart, Trash2, Plus, Minus } from 'lucide-react'
 import { Link } from '@/i18n/routing'
 import Image from 'next/image'
+import { useHasMounted } from '@/lib/hooks/useHasMounted'
 
 export default function MiniCart() {
   const { items, itemCount, totalTTC, updateQuantity, removeItem } = useCartStore()
+  const hasMounted = useHasMounted()
+  const visibleItems = hasMounted ? items : []
+  const visibleItemCount = hasMounted ? itemCount : 0
+  const visibleTotalTTC = hasMounted ? totalTTC : 0
 
   return (
     <Sheet>
@@ -21,28 +26,28 @@ export default function MiniCart() {
         }
       >
         <ShoppingCart size={24} />
-        {itemCount > 0 && (
+        {visibleItemCount > 0 && (
           <span className="absolute top-1 right-1 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-brand-accent px-1 text-xs font-bold text-brand-primary">
-            {itemCount}
+            {visibleItemCount}
           </span>
         )}
       </SheetTrigger>
       <SheetContent className="flex h-full w-full flex-col bg-brand-card sm:max-w-md">
         <SheetHeader>
           <SheetTitle className="font-display text-brand-primary text-xl font-semibold">
-            Mon Panier ({itemCount})
+            Mon Panier ({visibleItemCount})
           </SheetTitle>
         </SheetHeader>
 
         <div className="flex-1 overflow-y-auto py-6">
-          {items.length === 0 ? (
+          {visibleItems.length === 0 ? (
             <div className="flex h-full flex-col items-center justify-center text-gray-500">
               <ShoppingCart size={48} className="mb-4 text-gray-300" />
               <p>Votre panier est vide</p>
             </div>
           ) : (
             <div className="space-y-6">
-              {items.map((item) => (
+              {visibleItems.map((item) => (
                 <div key={item.variantId} className="flex gap-4">
                   <div className="bg-brand-surface relative h-20 w-20 shrink-0 overflow-hidden rounded-lg border border-brand-border">
                     {item.product.images?.[0] ? (
@@ -101,11 +106,11 @@ export default function MiniCart() {
           )}
         </div>
 
-        {items.length > 0 && (
+        {visibleItems.length > 0 && (
           <div className="mt-auto border-t border-brand-border pt-6">
             <div className="mb-4 flex items-center justify-between">
               <span className="text-gray-600">Total TTC</span>
-              <span className="text-brand-primary text-xl font-bold">{formatPrice(totalTTC)}</span>
+              <span className="text-brand-primary text-xl font-bold">{formatPrice(visibleTotalTTC)}</span>
             </div>
             <div className="grid grid-cols-2 gap-3">
               <Link href="/panier" className="btn-secondary py-2 text-center">

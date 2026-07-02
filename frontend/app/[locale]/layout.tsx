@@ -71,6 +71,7 @@ export default async function RootLayout({
     <html
       lang={locale}
       className={`${inter.variable} ${poppins.variable} ${jetbrainsMono.variable}`}
+      data-scroll-behavior="smooth"
       style={{ scrollBehavior: 'smooth' }}
       suppressHydrationWarning
     >

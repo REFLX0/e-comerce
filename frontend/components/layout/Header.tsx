@@ -13,11 +13,13 @@ import { categoriesApi } from '@/lib/api/categories'
 import Image from 'next/image'
 import { useTranslations } from 'next-intl'
 import { LanguageSwitcher } from './LanguageSwitcher'
+import { useHasMounted } from '@/lib/hooks/useHasMounted'
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isHoveringMenu, setIsHoveringMenu] = useState(false)
-  const { isAuthenticated, user } = useAuthStore()
+  const { isAuthenticated } = useAuthStore()
+  const hasMounted = useHasMounted()
   const t = useTranslations('Navigation')
 
   const { data: categories } = useQuery({
@@ -183,12 +185,12 @@ export default function Header() {
             </button>
 
             <Link
-              href={isAuthenticated ? '/compte' : '/auth/login'}
+              href={hasMounted && isAuthenticated ? '/compte' : '/auth/login'}
               className="group relative hidden h-11 w-11 items-center justify-center rounded-lg text-brand-primary/68 transition-colors duration-200 hover:bg-brand-primary/5 hover:text-brand-primary sm:flex"
               aria-label={t('account')}
             >
               <User size={22} />
-              {isAuthenticated && (
+              {hasMounted && isAuthenticated && (
                 <span className="absolute right-1 bottom-1 h-2.5 w-2.5 rounded-full border-2 border-brand-card bg-green-500" />
               )}
             </Link>
