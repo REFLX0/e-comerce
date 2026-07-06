@@ -38,7 +38,7 @@ export function SortDropdown() {
     <div className="flex items-center gap-3">
       <span className="hidden text-sm text-gray-500 sm:inline-block">Trier par :</span>
       <Select value={currentSort} onValueChange={handleSortChange}>
-        <SelectTrigger className="border-brand-surface-dark focus:ring-brand-primary w-[180px] bg-white">
+        <SelectTrigger className="border-gray-200 focus:ring-[#E10600] w-[180px] bg-white text-[#111]">
           <SelectValue placeholder="Trier par" />
         </SelectTrigger>
         <SelectContent>

@@ -11,6 +11,7 @@ import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
 import { Check } from 'lucide-react'
 import { WILAYAS_TN } from '@/lib/utils/format'
+import { FormInput, FormSelect, FormTextarea } from '@/components/common/FormInput'
 
 const checkoutSchema = z.object({
   firstName: z.string().min(2, 'Prénom trop court'),
@@ -89,141 +90,89 @@ export function CheckoutForm() {
         </h2>
 
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700">Prénom *</label>
-            <input
-              {...register('firstName')}
-              className={`w-full rounded-lg border p-3 transition-all focus:ring-2 focus:outline-none ${
-                errors.firstName
-                  ? 'border-red-500 focus:ring-red-200'
-                  : 'focus:border-brand-primary focus:ring-brand-primary/20 border-gray-300'
-              }`}
-              placeholder="Votre prénom"
-            />
-            {errors.firstName && (
-              <span className="text-xs text-red-500">{errors.firstName.message}</span>
-            )}
-          </div>
+          <FormInput
+            id="firstName"
+            label="Prénom"
+            required
+            placeholder="Votre prénom"
+            error={errors.firstName?.message}
+            {...register('firstName')}
+          />
 
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700">Nom *</label>
-            <input
-              {...register('lastName')}
-              className={`w-full rounded-lg border p-3 transition-all focus:ring-2 focus:outline-none ${
-                errors.lastName
-                  ? 'border-red-500 focus:ring-red-200'
-                  : 'focus:border-brand-primary focus:ring-brand-primary/20 border-gray-300'
-              }`}
-              placeholder="Votre nom"
-            />
-            {errors.lastName && (
-              <span className="text-xs text-red-500">{errors.lastName.message}</span>
-            )}
-          </div>
+          <FormInput
+            id="lastName"
+            label="Nom"
+            required
+            placeholder="Votre nom"
+            error={errors.lastName?.message}
+            {...register('lastName')}
+          />
 
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700">Email *</label>
-            <input
-              {...register('email')}
-              type="email"
-              className={`w-full rounded-lg border p-3 transition-all focus:ring-2 focus:outline-none ${
-                errors.email
-                  ? 'border-red-500 focus:ring-red-200'
-                  : 'focus:border-brand-primary focus:ring-brand-primary/20 border-gray-300'
-              }`}
-              placeholder="votre@email.com"
-            />
-            {errors.email && <span className="text-xs text-red-500">{errors.email.message}</span>}
-          </div>
+          <FormInput
+            id="email"
+            label="Email"
+            required
+            type="email"
+            placeholder="votre@email.com"
+            error={errors.email?.message}
+            {...register('email')}
+          />
 
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700">Téléphone *</label>
-            <input
-              {...register('phone')}
-              className={`w-full rounded-lg border p-3 transition-all focus:ring-2 focus:outline-none ${
-                errors.phone
-                  ? 'border-red-500 focus:ring-red-200'
-                  : 'focus:border-brand-primary focus:ring-brand-primary/20 border-gray-300'
-              }`}
-              placeholder="Ex: 98765432"
-            />
-            {errors.phone && <span className="text-xs text-red-500">{errors.phone.message}</span>}
-          </div>
+          <FormInput
+            id="phone"
+            label="Téléphone"
+            required
+            placeholder="Ex: 98765432"
+            error={errors.phone?.message}
+            {...register('phone')}
+          />
 
-          <div className="space-y-2 md:col-span-2">
-            <label className="text-sm font-medium text-gray-700">Adresse de livraison *</label>
-            <input
-              {...register('address')}
-              className={`w-full rounded-lg border p-3 transition-all focus:ring-2 focus:outline-none ${
-                errors.address
-                  ? 'border-red-500 focus:ring-red-200'
-                  : 'focus:border-brand-primary focus:ring-brand-primary/20 border-gray-300'
-              }`}
+          <div className="md:col-span-2">
+            <FormInput
+              id="address"
+              label="Adresse de livraison"
+              required
               placeholder="Numéro, rue, appartement..."
+              error={errors.address?.message}
+              {...register('address')}
             />
-            {errors.address && (
-              <span className="text-xs text-red-500">{errors.address.message}</span>
-            )}
           </div>
 
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700">Gouvernorat (Wilaya) *</label>
-            <select
-              {...register('wilaya')}
-              className={`w-full rounded-lg border p-3 transition-all focus:ring-2 focus:outline-none ${
-                errors.wilaya
-                  ? 'border-red-500 focus:ring-red-200'
-                  : 'focus:border-brand-primary focus:ring-brand-primary/20 border-gray-300'
-              }`}
-            >
-              <option value="">Sélectionner...</option>
-              {WILAYAS_TN.map((w) => (
-                <option key={w} value={w}>
-                  {w}
-                </option>
-              ))}
-            </select>
-            {errors.wilaya && <span className="text-xs text-red-500">{errors.wilaya.message}</span>}
-          </div>
+          <FormSelect
+            id="wilaya"
+            label="Gouvernorat (Wilaya)"
+            required
+            placeholder="Sélectionner..."
+            options={WILAYAS_TN.map((w) => ({ value: w, label: w }))}
+            error={errors.wilaya?.message}
+            {...register('wilaya')}
+          />
 
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700">Ville *</label>
-            <input
-              {...register('city')}
-              className={`w-full rounded-lg border p-3 transition-all focus:ring-2 focus:outline-none ${
-                errors.city
-                  ? 'border-red-500 focus:ring-red-200'
-                  : 'focus:border-brand-primary focus:ring-brand-primary/20 border-gray-300'
-              }`}
-              placeholder="Votre ville"
-            />
-            {errors.city && <span className="text-xs text-red-500">{errors.city.message}</span>}
-          </div>
+          <FormInput
+            id="city"
+            label="Ville"
+            required
+            placeholder="Votre ville"
+            error={errors.city?.message}
+            {...register('city')}
+          />
 
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700">Code Postal *</label>
-            <input
-              {...register('postalCode')}
-              className={`w-full rounded-lg border p-3 transition-all focus:ring-2 focus:outline-none ${
-                errors.postalCode
-                  ? 'border-red-500 focus:ring-red-200'
-                  : 'focus:border-brand-primary focus:ring-brand-primary/20 border-gray-300'
-              }`}
-              placeholder="Ex: 1000"
-            />
-            {errors.postalCode && (
-              <span className="text-xs text-red-500">{errors.postalCode.message}</span>
-            )}
-          </div>
+          <FormInput
+            id="postalCode"
+            label="Code Postal"
+            required
+            placeholder="Ex: 1000"
+            error={errors.postalCode?.message}
+            {...register('postalCode')}
+          />
 
-          <div className="space-y-2 md:col-span-2">
-            <label className="text-sm font-medium text-gray-700">
-              Notes de livraison (Optionnel)
-            </label>
-            <textarea
-              {...register('notes')}
-              className="focus:border-brand-primary focus:ring-brand-primary/20 h-24 w-full resize-none rounded-lg border border-gray-300 p-3 transition-all focus:ring-2 focus:outline-none"
+          <div className="md:col-span-2">
+            <FormTextarea
+              id="notes"
+              label="Notes de livraison (Optionnel)"
               placeholder="Instructions particulières pour le livreur..."
+              error={errors.notes?.message}
+              {...register('notes')}
             />
           </div>
         </div>

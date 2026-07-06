@@ -112,14 +112,16 @@ const nextConfig: NextConfig = {
 
   // ── Redirects ────────────────────────────────────────────────────────────
   async redirects() {
+    return []
+  },
+
+  // ── Rewrites (Proxy for local dev) ───────────────────────────────────────
+  async rewrites() {
     return [
-      // Ensure www → non-www in production (adjust to your DNS setup)
-      // {
-      //   source: '/(.*)',
-      //   has: [{ type: 'host', value: 'www.KiosqueTN.tn' }],
-      //   destination: 'https://KiosqueTN.tn/:path*',
-      //   permanent: true,
-      // },
+      {
+        source: '/api/:path*',
+        destination: 'http://localhost:8082/api/:path*',
+      },
     ]
   },
 }

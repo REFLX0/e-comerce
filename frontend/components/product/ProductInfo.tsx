@@ -11,6 +11,8 @@ import { useVehicleStore } from '@/lib/store/vehicle.store'
 import { Check, Share2, Truck, ShieldCheck, RotateCcw } from 'lucide-react'
 import { toast } from 'sonner'
 import { Link } from '@/i18n/routing'
+import { TrustBadges } from '../common/TrustBadges'
+import { ShareDropdown } from './ShareDropdown'
 
 interface Props {
   product: Product
@@ -24,21 +26,6 @@ export function ProductInfo({ product }: Props) {
   useEffect(() => setMounted(true), [])
 
   if (!selectedVariant) return null
-
-  const handleShare = () => {
-    if (navigator.share) {
-      navigator
-        .share({
-          title: product.name,
-          text: product.shortDescription,
-          url: window.location.href,
-        })
-        .catch(console.error)
-    } else {
-      navigator.clipboard.writeText(window.location.href)
-      toast.success('Lien copié dans le presse-papier')
-    }
-  }
 
   const oldPrice = selectedVariant.priceHT * 1.2
 
@@ -124,48 +111,18 @@ export function ProductInfo({ product }: Props) {
         )}
 
       {/* Trust & Delivery Badges */}
-      <div className="mb-6 grid grid-cols-1 gap-3 sm:grid-cols-3">
-        <div className="flex items-center gap-3 rounded-xl border border-green-100 bg-green-50/60 p-3">
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-green-100 text-green-600">
-            <Truck size={16} />
-          </div>
-          <div>
-            <p className="text-xs font-semibold text-green-800">Livraison 24H</p>
-            <p className="text-[10px] text-green-600">Gratuite en Tunisie</p>
-          </div>
-        </div>
-        <div className="flex items-center gap-3 rounded-xl border border-blue-100 bg-blue-50/60 p-3">
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-blue-100 text-blue-600">
-            <ShieldCheck size={16} />
-          </div>
-          <div>
-            <p className="text-xs font-semibold text-blue-800">100% Authentique</p>
-            <p className="text-[10px] text-blue-600">Produit certifié</p>
-          </div>
-        </div>
-        <div className="flex items-center gap-3 rounded-xl border border-amber-100 bg-amber-50/60 p-3">
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-amber-100 text-amber-600">
-            <RotateCcw size={16} />
-          </div>
-          <div>
-            <p className="text-xs font-semibold text-amber-800">Retour facile</p>
-            <p className="text-[10px] text-amber-600">Sous 14 jours</p>
-          </div>
-        </div>
-      </div>
+      <TrustBadges variant="inline" className="mb-6" />
 
       {/* Add to Cart */}
       <AddToCartButton product={product} variant={selectedVariant} />
 
       {/* Quick Actions */}
       <div className="border-brand-surface-dark mt-auto flex items-center gap-6 border-t pt-6">
-        <button
-          onClick={handleShare}
-          className="hover:text-brand-primary ml-auto flex items-center gap-2 text-sm font-medium text-gray-500 transition-colors"
-        >
-          <Share2 size={20} />
-          Partager
-        </button>
+        <ShareDropdown
+          productName={product.name}
+          productDescription={product.shortDescription || ''}
+          className="ml-auto"
+        />
       </div>
     </div>
   )

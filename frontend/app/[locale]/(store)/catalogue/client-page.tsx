@@ -51,7 +51,7 @@ export default function CataloguePage() {
         <div className="min-w-0 flex-1">
           <div className="mb-6 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
             <div>
-              <h1 className="font-display text-brand-primary text-2xl font-bold md:text-3xl">
+              <h1 className="font-display text-[#111] text-2xl font-bold md:text-3xl">
                 Catalogue de Produits
               </h1>
               <p className="mt-1 text-gray-500">{data?.total || 0} produits trouvés</p>
@@ -70,10 +70,10 @@ export default function CataloguePage() {
                 </SheetTrigger>
                 <SheetContent
                   side="left"
-                  className="bg-brand-surface w-full flex flex-col p-0 sm:max-w-sm border-r-0"
+                  className="bg-white w-full flex flex-col p-0 sm:max-w-sm border-r-0"
                 >
                   <div className="flex-1 overflow-y-auto p-6 pb-24">
-                    <h2 className="font-display text-brand-primary mb-6 text-xl font-bold">
+                    <h2 className="font-display text-[#111] mb-6 text-xl font-bold">
                       Filtres
                     </h2>
                     <FilterSidebar />

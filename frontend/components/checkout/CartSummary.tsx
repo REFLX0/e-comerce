@@ -5,6 +5,7 @@ import { formatPrice } from '@/lib/utils/format'
 import { Trash2, Plus, Minus, ArrowRight } from 'lucide-react'
 import Image from 'next/image'
 import { Link } from '@/i18n/routing'
+import { FreeShippingProgress } from './FreeShippingProgress'
 
 export function CartSummary() {
   const { items, subtotalHT, totalTTC, shippingCost, updateQuantity, removeItem } = useCartStore()
@@ -75,15 +76,23 @@ export function CartSummary() {
                 <div className="mt-4 flex items-center justify-between">
                   <div className="border-brand-surface-dark flex h-10 items-center rounded-full border-2 bg-white px-1">
                     <button
-                      onClick={() => updateQuantity(item.variantId, item.quantity - 1)}
-                      className="hover:text-brand-primary flex h-8 w-8 items-center justify-center text-gray-500"
+                      onClick={() => {
+                        if (item.quantity > 1) updateQuantity(item.variantId, item.quantity - 1)
+                      }}
+                      disabled={item.quantity <= 1}
+                      className="hover:text-brand-primary flex h-8 w-8 items-center justify-center text-gray-500 disabled:cursor-not-allowed disabled:opacity-30"
+                      aria-label="Diminuer la quantité"
                     >
                       <Minus size={16} />
                     </button>
                     <span className="w-10 text-center text-sm font-semibold">{item.quantity}</span>
                     <button
-                      onClick={() => updateQuantity(item.variantId, item.quantity + 1)}
-                      className="hover:text-brand-primary flex h-8 w-8 items-center justify-center text-gray-500"
+                      onClick={() => {
+                        if (item.quantity < item.variant.stock) updateQuantity(item.variantId, item.quantity + 1)
+                      }}
+                      disabled={item.quantity >= item.variant.stock}
+                      className="hover:text-brand-primary flex h-8 w-8 items-center justify-center text-gray-500 disabled:cursor-not-allowed disabled:opacity-30"
+                      aria-label="Augmenter la quantité"
                     >
                       <Plus size={16} />
                     </button>
@@ -126,11 +135,7 @@ export function CartSummary() {
               )}
             </div>
 
-            {shippingCost > 0 && (
-              <div className="bg-brand-primary/5 text-brand-primary rounded-lg p-3 text-xs">
-                Plus que {formatPrice(100 - subtotalHT)} pour profiter de la livraison gratuite !
-              </div>
-            )}
+            <FreeShippingProgress subtotal={subtotalHT} className="py-2" />
 
             <div className="flex items-center justify-between border-t border-gray-100 pt-4">
               <span className="text-brand-primary font-bold">Total TTC</span>

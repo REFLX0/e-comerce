@@ -67,7 +67,7 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
         {/* Main Content */}
         <div className="min-w-0 flex-1">
           {catLoading ? (
-            <div className="bg-brand-surface-dark mb-6 h-10 w-1/3 animate-pulse rounded" />
+            <div className="bg-gray-100 mb-6 h-10 w-1/3 animate-pulse rounded" />
           ) : catError ? (
             <div className="mb-6 text-red-500">
               Impossible de charger les informations de la catégorie.
@@ -75,7 +75,7 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
           ) : (
             category && (
               <div className="mb-6">
-                <h1 className="font-display text-brand-primary text-2xl font-bold md:text-3xl">
+                <h1 className="font-display text-[#111] text-2xl font-bold md:text-3xl">
                   {category.name}
                 </h1>
                 {category.description && (
@@ -101,10 +101,10 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
                 </SheetTrigger>
                 <SheetContent
                   side="left"
-                  className="bg-brand-surface w-full overflow-y-auto p-0 sm:max-w-sm"
+                  className="bg-white w-full overflow-y-auto p-0 sm:max-w-sm"
                 >
                   <div className="p-6">
-                    <h2 className="font-display text-brand-primary mb-6 text-xl font-bold">
+                    <h2 className="font-display text-[#111] mb-6 text-xl font-bold">
                       Filtres
                     </h2>
                     <FilterSidebar />

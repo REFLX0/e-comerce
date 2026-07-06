@@ -45,11 +45,11 @@ async function main() {
   const [yacco, shell, total, castrol, liqui, motul, bosch, purflux, wynns] = brands
 
   // 3. CATEGORIES
-  const cAuto = await prisma.category.create({ data: { nameFr: 'Automobile', slug: 'automobile', imageUrl: 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?q=80&w=800' } })
-  const cMoto = await prisma.category.create({ data: { nameFr: 'Moto', slug: 'moto', imageUrl: 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?q=80&w=800' } })
-  const cHeavy = await prisma.category.create({ data: { nameFr: 'Poids Lourd & Agricole', slug: 'poids-lourd-agricole', imageUrl: 'https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?q=80&w=800' } })
-  const cFilters = await prisma.category.create({ data: { nameFr: 'Filtres', slug: 'filtres', imageUrl: 'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?q=80&w=800' } })
-  const cAdditives = await prisma.category.create({ data: { nameFr: 'Additifs & Entretien', slug: 'additifs', imageUrl: 'https://images.unsplash.com/photo-1621245131495-21d3f9479b15?q=80&w=800' } })
+  const cAuto = await prisma.category.create({ data: { nameFr: 'Automobile', slug: 'automobile', imageUrl: '/img/product.jpg' } })
+  const cMoto = await prisma.category.create({ data: { nameFr: 'Moto', slug: 'moto', imageUrl: '/img/product.jpg' } })
+  const cHeavy = await prisma.category.create({ data: { nameFr: 'Poids Lourd & Agricole', slug: 'poids-lourd-agricole', imageUrl: '/img/product.jpg' } })
+  const cFilters = await prisma.category.create({ data: { nameFr: 'Filtres', slug: 'filtres', imageUrl: '/img/product.jpg' } })
+  const cAdditives = await prisma.category.create({ data: { nameFr: 'Additifs & Entretien', slug: 'additifs', imageUrl: '/img/product.jpg' } })
   
   // Subcategories
   const cAutoSynth = await prisma.category.create({ data: { nameFr: '100% Synthèse', slug: 'auto-synthese', parentId: cAuto.id } })
@@ -78,7 +78,7 @@ async function main() {
       categoryId: cAutoSynth.id,
       isFeatured: true,
       desc: 'Huile 100% synthèse de toute dernière technologie pour les moteurs essence et diesel récents.',
-      img: 'https://images.unsplash.com/photo-1621245131495-21d3f9479b15?q=80&w=800',
+      img: '/img/product.jpg',
       specs: { viscosity: '0W-20', apiStandard: 'API SP', aeceaStandard: 'ACEA C6', isFullySynth: true },
       compat: [{ vehicleModelId: clio.id, engineCode: '1.5 dCi' }, { vehicleModelId: p208.id, engineCode: '1.2 PureTech' }],
       variants: [{ vol: '1L', price: 22.5, stock: 50 }, { vol: '5L', price: 95.0, stock: 30 }]
@@ -91,7 +91,7 @@ async function main() {
       categoryId: cAutoSynth.id,
       isFeatured: true,
       desc: 'Huile moteur entièrement synthétique formulée avec la technologie PurePlus de Shell.',
-      img: 'https://images.unsplash.com/photo-1625298816538-349f8fc322dc?q=80&w=800',
+      img: '/img/product.jpg',
       specs: { viscosity: '5W-40', apiStandard: 'API SN PLUS', aeceaStandard: 'ACEA A3/B4', isFullySynth: true },
       compat: [{ vehicleModelId: golf.id, engineCode: '2.0 TDI' }, { vehicleModelId: megane.id, engineCode: '1.6 dCi' }],
       variants: [{ vol: '1L', price: 18.0, stock: 100 }, { vol: '5L', price: 75.0, stock: 60 }]
@@ -104,7 +104,7 @@ async function main() {
       categoryId: cAutoSemi.id,
       isFeatured: false,
       desc: 'Huile moteur semi-synthétique performante conçue pour s\'adapter à tous les usages.',
-      img: 'https://images.unsplash.com/photo-1579294218335-b248a39a7b97?q=80&w=800',
+      img: '/img/product.jpg',
       specs: { viscosity: '10W-40', apiStandard: 'API SN', aeceaStandard: 'ACEA A3/B4', isSemiSynth: true },
       compat: [{ vehicleModelId: clio.id, engineCode: '1.2 16V' }, { vehicleModelId: polo.id, engineCode: '1.4 MPI' }],
       variants: [{ vol: '1L', price: 12.0, stock: 120 }, { vol: '4L', price: 42.0, stock: 80 }]
@@ -117,7 +117,7 @@ async function main() {
       categoryId: cAutoSynth.id,
       isFeatured: true,
       desc: 'Le fluide Titanium fortifie l\'huile pour résister à la pression et maximiser les performances.',
-      img: 'https://images.unsplash.com/photo-1610665971510-73f1d32a9263?q=80&w=800',
+      img: '/img/product.jpg',
       specs: { viscosity: '5W-30', apiStandard: 'API SN', aeceaStandard: 'ACEA C3', isFullySynth: true },
       compat: [{ vehicleModelId: golf.id, engineCode: '1.6 TDI' }, { vehicleModelId: polo.id, engineCode: '1.2 TSI' }],
       variants: [{ vol: '1L', price: 20.0, stock: 40 }, { vol: '5L', price: 88.0, stock: 25 }]
@@ -130,7 +130,7 @@ async function main() {
       categoryId: cMoto.id,
       isFeatured: true,
       desc: 'Huile moto 4T haute performance 100% synthèse utilisant la technologie ESTER Core.',
-      img: 'https://images.unsplash.com/photo-1558981852-426c6c22a060?q=80&w=800',
+      img: '/img/product.jpg',
       specs: { viscosity: '10W-40', isFullySynth: true },
       compat: [],
       variants: [{ vol: '1L', price: 25.0, stock: 15 }, { vol: '4L', price: 95.0, stock: 10 }]
@@ -143,7 +143,7 @@ async function main() {
       categoryId: cAdditives.id,
       isFeatured: true,
       desc: 'Additif haute technologie de protection contre l\'usure.',
-      img: 'https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?q=80&w=800',
+      img: '/img/product.jpg',
       specs: {},
       compat: [],
       variants: [{ vol: '300ml', price: 28.5, stock: 200 }]
@@ -156,7 +156,7 @@ async function main() {
       categoryId: cFilters.id,
       isFeatured: false,
       desc: 'Filtre à huile haute qualité pour protéger votre moteur.',
-      img: 'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?q=80&w=800',
+      img: '/img/product.jpg',
       specs: {},
       compat: [{ vehicleModelId: golf.id, engineCode: '1.6 TDI' }, { vehicleModelId: polo.id, engineCode: '1.6 TDI' }],
       variants: [{ vol: 'Pièce', price: 15.0, stock: 300 }]
@@ -213,7 +213,7 @@ async function main() {
           ]
         },
         images: {
-          create: [{ url: 'https://images.unsplash.com/photo-1579294218335-b248a39a7b97?q=80&w=800', isPrimary: true }]
+          create: [{ url: '/img/product.jpg', isPrimary: true }]
         }
       }
     })

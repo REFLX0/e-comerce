@@ -4,9 +4,15 @@ import { useQuery } from '@tanstack/react-query'
 import { categoriesApi } from '@/lib/api/categories'
 import { brandsApi } from '@/lib/api/brands'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { Slider } from '@/components/ui/slider'
-
 import { FilterSidebarSkeleton } from '../common/Skeleton'
+import { FilterCheckbox } from './FilterCheckbox'
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
+} from '@/components/ui/accordion'
+import { RotateCcw } from 'lucide-react'
 
 export function FilterSidebar() {
   const router = useRouter()
@@ -34,6 +40,10 @@ export function FilterSidebar() {
     router.push(`/catalogue?${params.toString()}`)
   }
 
+  const clearAllFilters = () => {
+    router.push('/catalogue')
+  }
+
   const currentCategory = searchParams.get('categorySlug') || ''
   const currentBrand = searchParams.get('brandSlug') || ''
   const inStockOnly = searchParams.get('inStockOnly') === 'true'
@@ -43,299 +53,276 @@ export function FilterSidebar() {
     return <FilterSidebarSkeleton />
   }
 
+  // Count active filters (excluding page)
+  const activeFiltersCount = Array.from(searchParams.keys()).filter((k) => k !== 'page' && k !== 'search').length
+
   return (
-    <div className="border-brand-surface-dark w-full space-y-8 rounded-2xl border bg-white/80 backdrop-blur-xl p-6 shadow-card hover:shadow-card-hover transition-shadow duration-300">
-      {/* Categories */}
-      <div>
-        <h3 className="font-display text-brand-primary border-brand-surface-dark mb-4 border-b pb-2 text-sm uppercase tracking-widest font-bold">
-          Catégories
-        </h3>
-        <ul className="custom-scrollbar max-h-[250px] space-y-2 overflow-y-auto pr-2">
-          <li>
-            <button
-              onClick={() => updateFilters('categorySlug', null)}
-              className={`hover:text-brand-accent hover:translate-x-1 flex w-full text-left text-sm transition-all ${!currentCategory ? 'text-brand-primary font-bold' : 'text-gray-500'}`}
-            >
-              Toutes les catégories
-            </button>
-          </li>
-          {categories?.map((cat) => (
-            <li key={cat.id}>
-              <button
-                onClick={() => updateFilters('categorySlug', cat.slug)}
-                className={`hover:text-brand-accent hover:translate-x-1 flex w-full justify-between text-left text-sm transition-all ${currentCategory === cat.slug ? 'text-brand-primary font-bold' : 'text-gray-500'}`}
-              >
-                <span className="truncate">{cat.name}</span>
-                <span className="bg-brand-surface text-brand-primary ml-2 rounded-md px-1.5 py-0.5 text-[10px] font-semibold opacity-70">
-                  {cat.productCount}
-                </span>
-              </button>
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      {/* Brands */}
-      <div>
-        <h3 className="font-display text-brand-primary border-brand-surface-dark mb-4 border-b pb-2 text-sm uppercase tracking-widest font-bold">
-          Marques
-        </h3>
-        <ul className="custom-scrollbar max-h-[250px] space-y-2 overflow-y-auto pr-2">
-          <li>
-            <button
-              onClick={() => updateFilters('brandSlug', null)}
-              className={`hover:text-brand-accent hover:translate-x-1 flex w-full text-left text-sm transition-all ${!currentBrand ? 'text-brand-primary font-bold' : 'text-gray-500'}`}
-            >
-              Toutes les marques
-            </button>
-          </li>
-          {brands?.map((brand) => (
-            <li key={brand.id}>
-              <button
-                onClick={() => updateFilters('brandSlug', brand.slug)}
-                className={`hover:text-brand-accent hover:translate-x-1 flex w-full justify-between text-left text-sm transition-all ${currentBrand === brand.slug ? 'text-brand-primary font-bold' : 'text-gray-500'}`}
-              >
-                <span className="truncate">{brand.name}</span>
-                <span className="bg-brand-surface text-brand-primary ml-2 rounded-md px-1.5 py-0.5 text-[10px] font-semibold opacity-70">
-                  {brand.productCount}
-                </span>
-              </button>
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      {/* Viscosity */}
-      <div>
-        <h3 className="font-display text-brand-primary border-brand-surface-dark mb-4 border-b pb-2 text-sm uppercase tracking-widest font-bold">
-          Viscosité
-        </h3>
-        <div className="custom-scrollbar grid max-h-[150px] grid-cols-2 gap-2 overflow-y-auto pr-2 lg:grid-cols-3">
-          {[
-            '0W20', '0W30', '0W40', '5W20', '5W30', '5W40',
-            '10W40', '10W60', '15W40', '15W50', '20W50',
-            '75W80', '75W90', '80W90', '85W140', 'ATF',
-            'CVT', 'DCT', 'DOT 4', 'DOT 5.1', 'LHM',
-            'SAE 30', 'ISO VG 46', 'ISO VG 68',
-          ].map((visc) => (
-            <button
-              key={visc}
-              onClick={() =>
-                updateFilters('viscosity', searchParams.get('viscosity') === visc ? null : visc)
-              }
-              className={`truncate rounded-lg border px-1 py-1.5 text-center text-[10px] font-medium transition-all duration-200 active:scale-95 ${
-                searchParams.get('viscosity') === visc
-                  ? 'bg-brand-primary border-brand-primary text-brand-accent shadow-md'
-                  : 'hover:border-brand-primary/40 border-gray-100 bg-gray-50 text-gray-600 hover:bg-white hover:shadow-sm'
-              }`}
-            >
-              {visc}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Type d'huile */}
-      <div>
-        <h3 className="font-display text-brand-primary border-brand-surface-dark mb-4 border-b pb-2 text-sm uppercase tracking-widest font-bold">
-          Type d'huile
-        </h3>
-        <div className="flex flex-col gap-3">
-          {[
-            '100% Synthèse',
-            'Minérale',
-            'Semi-Synthèse',
-            'Synthèse',
-            'Technologie de Synthèse',
-          ].map((type) => (
-            <label key={type} className="group flex cursor-pointer items-center gap-3">
-              <div className={`flex h-5 w-5 shrink-0 items-center justify-center rounded border transition-colors ${searchParams.get('type') === type ? 'border-brand-primary bg-brand-primary' : 'border-gray-300 bg-white group-hover:border-brand-primary/50'}`}>
-                {searchParams.get('type') === type && (
-                  <svg className="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                  </svg>
-                )}
-              </div>
-              <input
-                type="checkbox"
-                className="sr-only"
-                checked={searchParams.get('type') === type}
-                onChange={() =>
-                  updateFilters('type', searchParams.get('type') === type ? null : type)
-                }
-              />
-              <span className={`text-sm transition-colors ${searchParams.get('type') === type ? 'text-brand-primary font-medium' : 'text-gray-600 group-hover:text-brand-primary'}`}>
-                {type}
-              </span>
-            </label>
-          ))}
-        </div>
-      </div>
-      {/* Normes API */}
-      <div>
-        <h3 className="font-display text-brand-primary border-brand-surface-dark mb-4 border-b pb-2 text-sm uppercase tracking-widest font-bold">
-          Normes API
-        </h3>
-        <div className="custom-scrollbar flex max-h-[120px] flex-col gap-3 overflow-y-auto pr-2">
-          {[
-            'API SL', 'API SM', 'API SN', 'API SP',
-            'API CF', 'API CI-4', 'API CJ-4', 'API CK-4',
-          ].map((norm) => (
-            <label key={norm} className="group flex cursor-pointer items-center gap-3">
-              <div className={`flex h-5 w-5 shrink-0 items-center justify-center rounded border transition-colors ${searchParams.get('api') === norm ? 'border-brand-primary bg-brand-primary' : 'border-gray-300 bg-white group-hover:border-brand-primary/50'}`}>
-                {searchParams.get('api') === norm && (
-                  <svg className="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                  </svg>
-                )}
-              </div>
-              <input
-                type="checkbox"
-                className="sr-only"
-                checked={searchParams.get('api') === norm}
-                onChange={() => updateFilters('api', searchParams.get('api') === norm ? null : norm)}
-              />
-              <span className={`text-sm transition-colors ${searchParams.get('api') === norm ? 'text-brand-primary font-medium' : 'text-gray-600 group-hover:text-brand-primary'}`}>
-                {norm}
-              </span>
-            </label>
-          ))}
-        </div>
-      </div>
-
-      {/* Normes ACEA */}
-      <div>
-        <h3 className="font-display text-brand-primary border-brand-surface-dark mb-4 border-b pb-2 text-sm uppercase tracking-widest font-bold">
-          Normes ACEA
-        </h3>
-        <div className="custom-scrollbar flex max-h-[120px] flex-col gap-3 overflow-y-auto pr-2">
-          {[
-            'ACEA A3/B4', 'ACEA C2', 'ACEA C3', 'ACEA C4', 'ACEA C5',
-            'ACEA E4', 'ACEA E6', 'ACEA E7', 'ACEA E9',
-          ].map((norm) => (
-            <label key={norm} className="group flex cursor-pointer items-center gap-3">
-              <div className={`flex h-5 w-5 shrink-0 items-center justify-center rounded border transition-colors ${searchParams.get('acea') === norm ? 'border-brand-primary bg-brand-primary' : 'border-gray-300 bg-white group-hover:border-brand-primary/50'}`}>
-                {searchParams.get('acea') === norm && (
-                  <svg className="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                  </svg>
-                )}
-              </div>
-              <input
-                type="checkbox"
-                className="sr-only"
-                checked={searchParams.get('acea') === norm}
-                onChange={() => updateFilters('acea', searchParams.get('acea') === norm ? null : norm)}
-              />
-              <span className={`text-sm transition-colors ${searchParams.get('acea') === norm ? 'text-brand-primary font-medium' : 'text-gray-600 group-hover:text-brand-primary'}`}>
-                {norm}
-              </span>
-            </label>
-          ))}
-        </div>
-      </div>
-
-      {/* Approbations OEM */}
-      <div>
-        <h3 className="font-display text-brand-primary border-brand-surface-dark mb-4 border-b pb-2 text-sm uppercase tracking-widest font-bold">
-          Approbations OEM
-        </h3>
-        <div className="custom-scrollbar flex max-h-[150px] flex-col gap-3 overflow-y-auto pr-2">
-          {[
-            'VW 504.00/507.00', 'VW 502.00/505.00', 'MB-Approval 229.51', 
-            'MB-Approval 229.3', 'BMW Longlife-04', 'BMW Longlife-01',
-            'Porsche C30', 'Porsche A40', 'Renault RN0700/RN0710',
-            'Renault RN17', 'PSA B71 2290', 'Ford WSS-M2C913-D'
-          ].map((oem) => (
-            <label key={oem} className="group flex cursor-pointer items-center gap-3">
-              <div className={`flex h-5 w-5 shrink-0 items-center justify-center rounded border transition-colors ${searchParams.get('oem') === oem ? 'border-brand-primary bg-brand-primary' : 'border-gray-300 bg-white group-hover:border-brand-primary/50'}`}>
-                {searchParams.get('oem') === oem && (
-                  <svg className="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                  </svg>
-                )}
-              </div>
-              <input
-                type="checkbox"
-                className="sr-only"
-                checked={searchParams.get('oem') === oem}
-                onChange={() => updateFilters('oem', searchParams.get('oem') === oem ? null : oem)}
-              />
-              <span className={`text-sm transition-colors ${searchParams.get('oem') === oem ? 'text-brand-primary font-medium' : 'text-gray-600 group-hover:text-brand-primary'}`}>
-                {oem}
-              </span>
-            </label>
-          ))}
-        </div>
-      </div>
-
-      {/* Emballage */}
-      <div>
-        <h3 className="font-display text-brand-primary border-brand-surface-dark mb-4 border-b pb-2 text-sm uppercase tracking-widest font-bold">
-          Emballage
-        </h3>
-        <div className="grid grid-cols-3 gap-2">
-          {['1L', '2L', '4L', '5L', '20L', '60L', '209L'].map((vol) => (
-            <button
-              key={vol}
-              onClick={() => updateFilters('volume', searchParams.get('volume') === vol ? null : vol)}
-              className={`rounded-lg border px-2 py-1.5 text-center text-[10px] font-medium transition-all duration-200 active:scale-95 ${
-                searchParams.get('volume') === vol
-                  ? 'bg-brand-primary border-brand-primary text-brand-accent shadow-md'
-                  : 'hover:border-brand-primary/40 border-gray-100 bg-gray-50 text-gray-600 hover:bg-white hover:shadow-sm'
-              }`}
-            >
-              {vol}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Options */}
-      <div>
-        <h3 className="font-display text-brand-primary border-brand-surface-dark mb-4 border-b pb-2 text-sm uppercase tracking-widest font-bold">
-          Options
-        </h3>
-        <div className="space-y-4">
-          <label className="group flex cursor-pointer items-center gap-3">
-            <div className={`flex h-5 w-5 shrink-0 items-center justify-center rounded border transition-colors ${inStockOnly ? 'border-brand-primary bg-brand-primary' : 'border-gray-300 bg-white group-hover:border-brand-primary/50'}`}>
-              {inStockOnly && (
-                <svg className="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                </svg>
-              )}
-            </div>
-            <input
-              type="checkbox"
-              className="sr-only"
-              checked={inStockOnly}
-              onChange={(e) => updateFilters('inStockOnly', e.target.checked ? 'true' : null)}
-            />
-            <span className={`text-sm transition-colors ${inStockOnly ? 'text-brand-primary font-medium' : 'text-gray-600 group-hover:text-brand-primary'}`}>
-              En stock uniquement
+    <div className="w-full rounded-2xl border border-gray-200 bg-white shadow-sm">
+      <div className="flex items-center justify-between border-b border-gray-100 p-4">
+        <h2 className="font-display text-lg font-bold text-[#111]">Filtres</h2>
+        {activeFiltersCount > 0 && (
+          <button
+            onClick={clearAllFilters}
+            className="flex items-center gap-1.5 text-xs font-medium text-gray-500 hover:text-[#E10600] transition-colors"
+          >
+            <RotateCcw size={12} />
+            Effacer
+            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-gray-100 text-[10px] font-bold text-[#111]">
+              {activeFiltersCount}
             </span>
-          </label>
-          
-          <label className="group flex cursor-pointer items-center gap-3">
-            <div className={`flex h-5 w-5 shrink-0 items-center justify-center rounded border transition-colors ${isPromo ? 'border-brand-accent bg-brand-accent' : 'border-gray-300 bg-white group-hover:border-brand-accent/50'}`}>
-              {isPromo && (
-                <svg className="h-3 w-3 text-brand-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                </svg>
-              )}
-            </div>
-            <input
-              type="checkbox"
-              className="sr-only"
-              checked={isPromo}
-              onChange={(e) => updateFilters('isPromo', e.target.checked ? 'true' : null)}
-            />
-            <span className={`text-sm transition-colors ${isPromo ? 'text-brand-primary font-medium' : 'text-gray-600 group-hover:text-brand-primary'}`}>
-              En promotion
-            </span>
-          </label>
-        </div>
+          </button>
+        )}
       </div>
+
+      <Accordion defaultValue={['categories', 'brands']} className="w-full px-4">
+        {/* Categories */}
+        <AccordionItem value="categories">
+          <AccordionTrigger className="font-display text-[#111] uppercase tracking-wider text-sm font-bold">
+            Catégories
+          </AccordionTrigger>
+          <AccordionContent>
+            <ul className="custom-scrollbar max-h-[250px] space-y-2 overflow-y-auto pr-2 mt-1">
+              <li>
+                <button
+                  onClick={() => updateFilters('categorySlug', null)}
+                  className={`hover:text-[#E10600] hover:translate-x-1 flex w-full text-left text-sm transition-all ${
+                    !currentCategory ? 'text-[#111] font-bold' : 'text-gray-500'
+                  }`}
+                >
+                  Toutes les catégories
+                </button>
+              </li>
+              {categories?.map((cat) => (
+                <li key={cat.id}>
+                  <button
+                    onClick={() => updateFilters('categorySlug', cat.slug)}
+                    className={`hover:text-[#E10600] hover:translate-x-1 flex w-full justify-between text-left text-sm transition-all ${
+                      currentCategory === cat.slug ? 'text-[#111] font-bold' : 'text-gray-500'
+                    }`}
+                  >
+                    <span className="truncate">{cat.name}</span>
+                    <span className="bg-gray-100 text-[#111] ml-2 rounded-md px-1.5 py-0.5 text-[10px] font-semibold opacity-70">
+                      {cat.productCount}
+                    </span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </AccordionContent>
+        </AccordionItem>
+
+        {/* Brands */}
+        <AccordionItem value="brands">
+          <AccordionTrigger className="font-display text-[#111] uppercase tracking-wider text-sm font-bold">
+            Marques
+          </AccordionTrigger>
+          <AccordionContent>
+            <ul className="custom-scrollbar max-h-[250px] space-y-2 overflow-y-auto pr-2 mt-1">
+              <li>
+                <button
+                  onClick={() => updateFilters('brandSlug', null)}
+                  className={`hover:text-[#E10600] hover:translate-x-1 flex w-full text-left text-sm transition-all ${
+                    !currentBrand ? 'text-[#111] font-bold' : 'text-gray-500'
+                  }`}
+                >
+                  Toutes les marques
+                </button>
+              </li>
+              {brands?.map((brand) => (
+                <li key={brand.id}>
+                  <button
+                    onClick={() => updateFilters('brandSlug', brand.slug)}
+                    className={`hover:text-[#E10600] hover:translate-x-1 flex w-full justify-between text-left text-sm transition-all ${
+                      currentBrand === brand.slug ? 'text-[#111] font-bold' : 'text-gray-500'
+                    }`}
+                  >
+                    <span className="truncate">{brand.name}</span>
+                    <span className="bg-gray-100 text-[#111] ml-2 rounded-md px-1.5 py-0.5 text-[10px] font-semibold opacity-70">
+                      {brand.productCount}
+                    </span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </AccordionContent>
+        </AccordionItem>
+
+        {/* Viscosity */}
+        <AccordionItem value="viscosity">
+          <AccordionTrigger className="font-display text-[#111] uppercase tracking-wider text-sm font-bold">
+            Viscosité
+          </AccordionTrigger>
+          <AccordionContent>
+            <div className="custom-scrollbar grid max-h-[200px] grid-cols-3 gap-2 overflow-y-auto pr-2 mt-1">
+              {[
+                '0W20', '0W30', '0W40', '5W20', '5W30', '5W40',
+                '10W40', '10W60', '15W40', '15W50', '20W50',
+                '75W80', '75W90', '80W90', '85W140', 'ATF',
+                'CVT', 'DCT', 'DOT 4', 'DOT 5.1', 'LHM',
+                'SAE 30', 'ISO VG 46', 'ISO VG 68',
+              ].map((visc) => {
+                const isActive = searchParams.get('viscosity') === visc
+                return (
+                  <button
+                    key={visc}
+                    onClick={() => updateFilters('viscosity', isActive ? null : visc)}
+                    className={`truncate rounded-lg border px-1 py-1.5 text-center text-[10px] font-medium transition-all duration-200 active:scale-95 ${
+                      isActive
+                        ? 'bg-[#E10600] border-[#E10600] text-white shadow-sm'
+                        : 'hover:border-gray-400 border-gray-200 bg-gray-50 text-[#111] hover:bg-white hover:shadow-sm'
+                    }`}
+                  >
+                    {visc}
+                  </button>
+                )
+              })}
+            </div>
+          </AccordionContent>
+        </AccordionItem>
+
+        {/* Type d'huile */}
+        <AccordionItem value="type">
+          <AccordionTrigger className="font-display text-[#111] uppercase tracking-wider text-sm font-bold">
+            Type d'huile
+          </AccordionTrigger>
+          <AccordionContent>
+            <div className="flex flex-col gap-3 mt-1">
+              {[
+                '100% Synthèse',
+                'Minérale',
+                'Semi-Synthèse',
+                'Synthèse',
+                'Technologie de Synthèse',
+              ].map((type) => (
+                <FilterCheckbox
+                  key={type}
+                  label={type}
+                  checked={searchParams.get('type') === type}
+                  onChange={(checked) => updateFilters('type', checked ? type : null)}
+                />
+              ))}
+            </div>
+          </AccordionContent>
+        </AccordionItem>
+
+        {/* Normes API */}
+        <AccordionItem value="api">
+          <AccordionTrigger className="font-display text-[#111] uppercase tracking-wider text-sm font-bold">
+            Normes API
+          </AccordionTrigger>
+          <AccordionContent>
+            <div className="custom-scrollbar flex max-h-[150px] flex-col gap-3 overflow-y-auto pr-2 mt-1">
+              {[
+                'API SL', 'API SM', 'API SN', 'API SP',
+                'API CF', 'API CI-4', 'API CJ-4', 'API CK-4',
+              ].map((norm) => (
+                <FilterCheckbox
+                  key={norm}
+                  label={norm}
+                  checked={searchParams.get('api') === norm}
+                  onChange={(checked) => updateFilters('api', checked ? norm : null)}
+                />
+              ))}
+            </div>
+          </AccordionContent>
+        </AccordionItem>
+
+        {/* Normes ACEA */}
+        <AccordionItem value="acea">
+          <AccordionTrigger className="font-display text-[#111] uppercase tracking-wider text-sm font-bold">
+            Normes ACEA
+          </AccordionTrigger>
+          <AccordionContent>
+            <div className="custom-scrollbar flex max-h-[150px] flex-col gap-3 overflow-y-auto pr-2 mt-1">
+              {[
+                'ACEA A3/B4', 'ACEA C2', 'ACEA C3', 'ACEA C4', 'ACEA C5',
+                'ACEA E4', 'ACEA E6', 'ACEA E7', 'ACEA E9',
+              ].map((norm) => (
+                <FilterCheckbox
+                  key={norm}
+                  label={norm}
+                  checked={searchParams.get('acea') === norm}
+                  onChange={(checked) => updateFilters('acea', checked ? norm : null)}
+                />
+              ))}
+            </div>
+          </AccordionContent>
+        </AccordionItem>
+
+        {/* Approbations OEM */}
+        <AccordionItem value="oem">
+          <AccordionTrigger className="font-display text-[#111] uppercase tracking-wider text-sm font-bold">
+            Approbations OEM
+          </AccordionTrigger>
+          <AccordionContent>
+            <div className="custom-scrollbar flex max-h-[150px] flex-col gap-3 overflow-y-auto pr-2 mt-1">
+              {[
+                'VW 504.00/507.00', 'VW 502.00/505.00', 'MB-Approval 229.51', 
+                'MB-Approval 229.3', 'BMW Longlife-04', 'BMW Longlife-01',
+                'Porsche C30', 'Porsche A40', 'Renault RN0700/RN0710',
+                'Renault RN17', 'PSA B71 2290', 'Ford WSS-M2C913-D'
+              ].map((oem) => (
+                <FilterCheckbox
+                  key={oem}
+                  label={oem}
+                  checked={searchParams.get('oem') === oem}
+                  onChange={(checked) => updateFilters('oem', checked ? oem : null)}
+                />
+              ))}
+            </div>
+          </AccordionContent>
+        </AccordionItem>
+
+        {/* Emballage */}
+        <AccordionItem value="volume">
+          <AccordionTrigger className="font-display text-[#111] uppercase tracking-wider text-sm font-bold">
+            Emballage
+          </AccordionTrigger>
+          <AccordionContent>
+            <div className="grid grid-cols-3 gap-2 mt-1">
+              {['1L', '2L', '4L', '5L', '20L', '60L', '209L'].map((vol) => {
+                const isActive = searchParams.get('volume') === vol
+                return (
+                  <button
+                    key={vol}
+                    onClick={() => updateFilters('volume', isActive ? null : vol)}
+                    className={`rounded-lg border px-2 py-1.5 text-center text-[10px] font-medium transition-all duration-200 active:scale-95 ${
+                      isActive
+                        ? 'bg-[#E10600] border-[#E10600] text-white shadow-sm'
+                        : 'hover:border-gray-400 border-gray-200 bg-gray-50 text-[#111] hover:bg-white hover:shadow-sm'
+                    }`}
+                  >
+                    {vol}
+                  </button>
+                )
+              })}
+            </div>
+          </AccordionContent>
+        </AccordionItem>
+
+        {/* Options */}
+        <AccordionItem value="options" className="border-none">
+          <AccordionTrigger className="font-display text-[#111] uppercase tracking-wider text-sm font-bold">
+            Options
+          </AccordionTrigger>
+          <AccordionContent>
+            <div className="space-y-4 mt-1 pb-4">
+              <FilterCheckbox
+                label="En stock uniquement"
+                checked={inStockOnly}
+                onChange={(checked) => updateFilters('inStockOnly', checked ? 'true' : null)}
+              />
+              
+              <FilterCheckbox
+                label="En promotion"
+                checked={isPromo}
+                onChange={(checked) => updateFilters('isPromo', checked ? 'true' : null)}
+                accentColor="accent"
+              />
+            </div>
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
     </div>
   )
 }

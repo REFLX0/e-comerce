@@ -51,7 +51,7 @@ export function ActiveFilters() {
         <button
           key={filter.key}
           onClick={() => removeFilter(filter.key)}
-          className="bg-brand-primary/10 text-brand-primary hover:bg-brand-primary flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-colors hover:text-white"
+          className="bg-gray-100 text-[#111] hover:bg-[#E10600] flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-colors hover:text-white"
         >
           {filter.label}
           <X size={14} />
@@ -59,7 +59,7 @@ export function ActiveFilters() {
       ))}
       <button
         onClick={clearAll}
-        className="text-brand-accent ml-2 text-xs font-medium hover:underline"
+        className="text-[#E10600] ml-2 text-xs font-medium hover:underline"
       >
         Tout effacer
       </button>

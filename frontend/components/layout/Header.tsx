@@ -1,13 +1,15 @@
 "use client";
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Link } from '@/i18n/routing'
-import { Search, User, ChevronDown, Zap } from 'lucide-react'
+import { Search, User, ShoppingBag, ChevronDown, Menu, X } from 'lucide-react'
 import dynamic from 'next/dynamic'
 const MiniCart = dynamic(() => import('./MiniCart'), { ssr: false })
 const MobileMenu = dynamic(() => import('./MobileMenu'), { ssr: false })
 import { GlobalSearch } from './GlobalSearch'
+import { MobileSearchSheet } from './MobileSearchSheet'
 import { useAuthStore } from '@/lib/store/auth.store'
+import { useCartStore } from '@/lib/store/cart.store'
 import { useQuery } from '@tanstack/react-query'
 import { categoriesApi } from '@/lib/api/categories'
 import Image from 'next/image'
@@ -15,12 +17,33 @@ import { useTranslations } from 'next-intl'
 import { LanguageSwitcher } from './LanguageSwitcher'
 import { useHasMounted } from '@/lib/hooks/useHasMounted'
 
+const NAV_CATEGORIES = [
+  { label: 'Engine Oil', slug: 'automobile' },
+  { label: 'Car Care', slug: 'additifs' },
+  { label: 'Filters', slug: 'filtres' },
+  { label: 'Brake System', slug: 'automobile' },
+  { label: 'Batteries', slug: 'automobile' },
+  { label: 'Accessories', slug: 'automobile' },
+  { label: 'Performance Parts', slug: 'automobile' },
+  { label: 'Deals', slug: 'automobile' },
+]
+
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
-  const [isHoveringMenu, setIsHoveringMenu] = useState(false)
+  const [megaOpen, setMegaOpen] = useState(false)
   const { isAuthenticated } = useAuthStore()
+  const cartStore = useCartStore()
   const hasMounted = useHasMounted()
   const t = useTranslations('Navigation')
+  const menuTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+
+  const handleMenuEnter = () => {
+    if (menuTimeoutRef.current) clearTimeout(menuTimeoutRef.current)
+    setMegaOpen(true)
+  }
+  const handleMenuLeave = () => {
+    menuTimeoutRef.current = setTimeout(() => setMegaOpen(false), 200)
+  }
 
   const { data: categories } = useQuery({
     queryKey: ['categories-tree'],
@@ -28,177 +51,133 @@ export default function Header() {
   })
 
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 20)
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
+    const onScroll = () => setIsScrolled(window.scrollY > 40)
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  return (
-    <header className={`sticky top-0 z-40 w-full border-b bg-brand-card transition-all duration-200 ${
-      isScrolled
-        ? 'border-brand-border shadow-card'
-        : 'border-brand-border/70 shadow-none'
-    }`}>
+  const cartCount = hasMounted ? cartStore.items.reduce((s, i) => s + i.quantity, 0) : 0
 
-      {/* ── Top Utility Bar ──────────────────────────────────────────────── */}
-      <div className="border-b border-white/10 bg-brand-primary py-2 text-xs text-white/75">
-        <div className="section-padding flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Zap size={12} className="text-brand-accent" />
-            <p className="hidden md:block">
-              Livraison Gratuite à partir de <span className="text-brand-accent font-semibold">100 DT</span>
-            </p>
-            <p className="w-full text-center md:hidden">
-              Livraison Gratuite dès <span className="text-brand-accent font-semibold">100 DT</span>
-            </p>
-          </div>
-          <div className="hidden items-center gap-6 md:flex">
-            <Link href="/contact" className="hover:text-brand-accent transition-colors duration-200">
-              {t('contact')}
-            </Link>
-            <Link href="/faq" className="hover:text-brand-accent transition-colors duration-200">
-              FAQ
-            </Link>
-          </div>
-        </div>
+  return (
+    <header className="sticky top-0 z-50 w-full">
+
+      {/* ── Announcement Bar (hides on scroll) ────────────────────── */}
+      <div className={`overflow-hidden bg-[#0B0B0C] text-center text-xs font-medium tracking-wide text-white/70 transition-all duration-300 ${
+        isScrolled ? 'max-h-0 py-0' : 'max-h-12 py-2'
+      }`}>
+        <p>Free shipping on orders over <span className="font-bold text-white">100 DT</span> — Authentic products guaranteed</p>
       </div>
 
-      {/* ── Main Header ──────────────────────────────────────────────────── */}
-      <div className="section-padding py-3">
-        <div className="flex items-center justify-between gap-4 md:gap-8">
+      {/* ── Main Bar ──────────────────────────────────────────────── */}
+      <div className={`border-b border-gray-100 bg-white transition-all duration-300 ${
+        isScrolled ? 'py-2' : 'py-3'
+      }`}>
+        <div className="section-padding flex items-center gap-4 md:gap-8">
+          {/* Mobile menu */}
+          <MobileMenu />
 
-          {/* Logo + Mobile Menu */}
-          <div className="flex items-center gap-3">
-            <MobileMenu />
-            <Link href="/" className="flex shrink-0 items-center gap-2 group">
-              <Image
-                src="/logo.png"
-                alt="KiosqueTN"
-                width={140}
-                height={40}
-                className="h-10 w-auto object-contain transition-opacity duration-200 group-hover:opacity-85"
-                priority
-              />
-            </Link>
+          {/* Logo */}
+          <Link href="/" className="flex shrink-0 items-center group">
+            <Image
+              src="/logo.png"
+              alt="KiosqueTN"
+              width={140}
+              height={40}
+              className="h-9 w-auto object-contain"
+              priority
+            />
+          </Link>
+
+          {/* Search — Desktop */}
+          <div className="hidden flex-1 md:block">
+            <GlobalSearch />
           </div>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden items-center gap-1 md:flex">
-            <Link
-              href="/"
-              className="rounded-lg px-3 py-2 text-sm font-medium text-brand-primary/70 transition-all duration-200 hover:bg-brand-primary/5 hover:text-brand-primary"
-            >
-              {t('home')}
-            </Link>
-
-            {/* Highlighted Find My Oil CTA */}
-            <Link
-              href="/#oil-finder"
-              className="flex items-center gap-1.5 rounded-lg border border-brand-accent/25 bg-brand-accent/10 px-3 py-2 text-sm font-semibold text-brand-primary transition-all duration-200 hover:bg-brand-accent/20 hover:shadow-card"
-            >
-              <Zap size={14} />
-              Trouver mon huile
-            </Link>
-
-            {/* Mega Menu Trigger */}
-            <div
-              className="group relative"
-              onMouseEnter={() => setIsHoveringMenu(true)}
-              onMouseLeave={() => setIsHoveringMenu(false)}
-            >
-              <Link
-                href="/catalogue"
-                className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-brand-primary/70 transition-all duration-200 hover:bg-brand-primary/5 hover:text-brand-primary"
-              >
-                {t('catalog')}
-                <ChevronDown
-                  size={14}
-                  className={`transition-transform duration-300 ${isHoveringMenu ? 'rotate-180 text-brand-accent' : ''}`}
-                />
-              </Link>
-
-              {/* Mega Menu Dropdown */}
-              {isHoveringMenu && categories && categories.length > 0 && (
-                <div className="animate-scale-in absolute top-full left-1/2 mt-3 w-[820px] -translate-x-1/2 rounded-lg border border-brand-border bg-brand-card/98 p-6 shadow-overlay backdrop-blur-xl">
-                  {/* Gold accent top bar */}
-                  <div className="mb-5 h-px bg-brand-border" />
-                  <div className="grid grid-cols-3 gap-6">
-                    {categories.slice(0, 6).map((category) => (
-                      <div key={category.id} className="group/cat">
-                        <Link
-                          href={`/categorie/${category.slug}`}
-                          className="font-display mb-3 block text-sm font-semibold uppercase tracking-normal text-brand-primary transition-colors hover:text-brand-accent"
-                        >
-                          {category.name}
-                        </Link>
-                        <ul className="space-y-1.5">
-                          {category.children?.slice(0, 5).map((sub) => (
-                            <li key={sub.id}>
-                              <Link
-                                href={`/categorie/${sub.slug}`}
-                                className="block truncate text-sm text-brand-muted transition-colors duration-150 hover:text-brand-primary"
-                              >
-                                {sub.name}
-                              </Link>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    ))}
-                  </div>
-                  <div className="mt-6 h-px bg-brand-border" />
-                  <div className="mt-4 flex justify-center">
-                    <Link href="/catalogue" className="text-xs font-semibold uppercase tracking-normal text-brand-muted transition-colors hover:text-brand-primary">
-                      Voir tout le catalogue
-                    </Link>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            <Link
-              href="/a-propos"
-              className="rounded-lg px-3 py-2 text-sm font-medium text-brand-primary/70 transition-all duration-200 hover:bg-brand-primary/5 hover:text-brand-primary"
-            >
-              {t('about')}
-            </Link>
-            <Link
-              href="/contact"
-              className="rounded-lg px-3 py-2 text-sm font-medium text-brand-primary/70 transition-all duration-200 hover:bg-brand-primary/5 hover:text-brand-primary"
-            >
-              {t('contact')}
-            </Link>
-          </nav>
-
-          {/* Search Bar — Desktop */}
-          <GlobalSearch />
-
-          {/* Icons */}
-          <div className="flex shrink-0 items-center gap-1 sm:gap-2">
+          {/* Right icons */}
+          <div className="ml-auto flex shrink-0 items-center gap-1">
             <LanguageSwitcher />
-
-            <button
-              className="flex h-11 w-11 items-center justify-center rounded-lg text-brand-primary/70 transition-colors duration-200 hover:bg-brand-primary/5 hover:text-brand-primary lg:hidden"
-              aria-label={t('search')}
-            >
-              <Search size={22} />
-            </button>
+            <MobileSearchSheet />
 
             <Link
               href={hasMounted && isAuthenticated ? '/compte' : '/auth/login'}
-              className="group relative hidden h-11 w-11 items-center justify-center rounded-lg text-brand-primary/70 transition-colors duration-200 hover:bg-brand-primary/5 hover:text-brand-primary sm:flex"
+              className="hidden h-10 w-10 items-center justify-center rounded-lg text-[#111] transition-colors hover:bg-gray-100 sm:flex"
               aria-label={t('account')}
             >
-              <User size={22} />
-              {hasMounted && isAuthenticated && (
-                <span className="absolute right-1 bottom-1 h-2.5 w-2.5 rounded-full border-2 border-brand-card bg-green-500" />
-              )}
+              <User size={20} strokeWidth={1.8} />
             </Link>
 
             <MiniCart />
           </div>
         </div>
       </div>
+
+      {/* ── Red Category Nav ──────────────────────────────────────── */}
+      <nav className="hidden bg-[#E10600] md:block">
+        <div className="section-padding flex min-h-[48px] items-stretch">
+          {/* All Categories trigger */}
+          <div
+            className="relative"
+            onMouseEnter={handleMenuEnter}
+            onMouseLeave={handleMenuLeave}
+          >
+            <button className="flex h-full items-center gap-2 bg-black/15 px-5 text-[13px] font-bold uppercase tracking-wider text-white transition-colors hover:bg-black/25">
+              <Menu size={16} />
+              All Categories
+              <ChevronDown size={14} className={`transition-transform duration-200 ${megaOpen ? 'rotate-180' : ''}`} />
+            </button>
+
+            {/* Mega dropdown */}
+            {megaOpen && categories && categories.length > 0 && (
+              <div
+                className="absolute left-0 top-full z-50 w-[640px] rounded-b-lg border border-gray-100 bg-white p-6 shadow-2xl"
+                onMouseEnter={handleMenuEnter}
+                onMouseLeave={handleMenuLeave}
+              >
+                <div className="grid grid-cols-3 gap-6">
+                  {categories.slice(0, 9).map((cat) => (
+                    <div key={cat.id}>
+                      <Link
+                        href={`/categorie/${cat.slug}`}
+                        className="mb-2 block text-sm font-bold uppercase tracking-wide text-[#111] hover:text-[#E10600]"
+                      >
+                        {cat.name}
+                      </Link>
+                      <ul className="space-y-1">
+                        {cat.children?.slice(0, 4).map((sub) => (
+                          <li key={sub.id}>
+                            <Link
+                              href={`/categorie/${sub.slug}`}
+                              className="block text-sm text-gray-500 hover:text-[#E10600]"
+                            >
+                              {sub.name}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-5 border-t border-gray-100 pt-4">
+                  <Link href="/catalogue" className="text-xs font-bold uppercase tracking-wider text-gray-400 hover:text-[#E10600]">
+                    View full catalogue →
+                  </Link>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Category links */}
+          {NAV_CATEGORIES.map((cat) => (
+            <Link
+              key={cat.label}
+              href={`/categorie/${cat.slug}`}
+              className="flex items-center px-4 text-[13px] font-semibold text-white/90 transition-colors hover:bg-black/15 hover:text-white"
+            >
+              {cat.label}
+            </Link>
+          ))}
+        </div>
+      </nav>
     </header>
   )
 }

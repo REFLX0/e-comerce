@@ -2,7 +2,7 @@
 
 import { useHasMounted } from '@/lib/hooks/useHasMounted'
 import { Home, Search, ShoppingCart, User } from 'lucide-react'
-import Link from 'next/link'
+import { Link } from '@/i18n/routing'
 import { usePathname } from 'next/navigation'
 import { useCartStore } from '@/lib/store/cart.store'
 import { useAuthStore } from '@/lib/store/auth.store'
@@ -41,8 +41,8 @@ export function MobileBottomNav() {
           return (
             <Link
               key={link.href}
-              href={link.href}
-              className={`relative flex min-h-12 min-w-[68px] flex-col items-center justify-center gap-1 rounded-lg px-3 py-1.5 transition-all duration-200 ${
+              href={link.href as any}
+              className={`relative flex min-h-12 min-w-[68px] flex-col items-center justify-center gap-1 rounded-lg px-3 py-1.5 transition-all duration-200 active:scale-95 ${
                 isActive
                   ? 'text-brand-primary'
                   : 'text-brand-muted hover:bg-brand-surface hover:text-brand-primary'

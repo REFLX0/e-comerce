@@ -43,7 +43,7 @@ export default function MiniCart() {
           {visibleItems.length === 0 ? (
             <div className="flex h-full flex-col items-center justify-center text-gray-500">
               <ShoppingCart size={48} className="mb-4 text-gray-300" />
-              <p>Votre panier est vide</p>
+              <p>Votre panier est empty</p>
             </div>
           ) : (
             <div className="space-y-6">
@@ -71,16 +71,22 @@ export default function MiniCart() {
                     <div className="mt-2 flex items-center justify-between">
                       <div className="flex items-center rounded-lg border border-brand-border bg-brand-surface">
                         <button
-                          onClick={() => updateQuantity(item.variantId, item.quantity - 1)}
-                          className="flex h-10 w-10 items-center justify-center text-gray-600 transition-colors duration-150 hover:bg-brand-surface-dark"
+                          onClick={() => {
+                            if (item.quantity > 1) updateQuantity(item.variantId, item.quantity - 1)
+                          }}
+                          disabled={item.quantity <= 1}
+                          className="flex h-10 w-10 items-center justify-center text-gray-600 transition-colors duration-150 hover:bg-brand-surface-dark disabled:cursor-not-allowed disabled:opacity-30"
                           aria-label="Diminuer la quantité"
                         >
                           <Minus size={14} />
                         </button>
                         <span className="w-8 text-center text-sm font-medium">{item.quantity}</span>
                         <button
-                          onClick={() => updateQuantity(item.variantId, item.quantity + 1)}
-                          className="flex h-10 w-10 items-center justify-center text-gray-600 transition-colors duration-150 hover:bg-brand-surface-dark"
+                          onClick={() => {
+                            if (item.quantity < item.variant.stock) updateQuantity(item.variantId, item.quantity + 1)
+                          }}
+                          disabled={item.quantity >= item.variant.stock}
+                          className="flex h-10 w-10 items-center justify-center text-gray-600 transition-colors duration-150 hover:bg-brand-surface-dark disabled:cursor-not-allowed disabled:opacity-30"
                           aria-label="Augmenter la quantité"
                         >
                           <Plus size={14} />
