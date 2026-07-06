@@ -6,7 +6,7 @@ import { useAuthStore } from '@/lib/store/auth.store'
 import { useState } from 'react'
 import {
   Package, Clock, CheckCircle2, Truck, XCircle,
-  ArrowRight, RefreshCw, Printer, ChevronDown, ChevronUp, ShoppingBag
+  ArrowRight, RefreshCw, Printer, ChevronDown, ChevronUp, ShoppingBag, Eye
 } from 'lucide-react'
 import Link from 'next/link'
 
@@ -69,7 +69,7 @@ function OrderCard({ order }: { order: { id: string; createdAt: string; status: 
       {/* Header */}
       <div className="flex flex-col gap-3 border-b border-gray-50 bg-gray-50 p-4 sm:flex-row sm:items-center">
         <div className="flex-1 min-w-0">
-          <p className="font-mono text-xs text-gray-400">#{order.id.slice(-8).toUpperCase()}</p>
+          <Link href={`/compte/commandes/${order.id}`} className="font-mono text-xs text-gray-400 hover:text-brand-primary transition-colors">#{order.id.slice(-8).toUpperCase()}</Link>
           <p className="text-sm font-semibold text-brand-primary">
             {order.items?.length ?? 0} article(s) · {((order.totalAmount ?? 0)).toLocaleString('fr-TN', { minimumFractionDigits: 2 })} TND
           </p>
@@ -114,6 +114,9 @@ function OrderCard({ order }: { order: { id: string; createdAt: string; status: 
 
       {/* Actions */}
       <div className="flex flex-wrap gap-2 p-4 border-t border-gray-50">
+        <Link href={`/compte/commandes/${order.id}`} className="flex items-center gap-1.5 rounded-xl border border-brand-accent px-3 py-2 text-xs font-medium text-brand-primary hover:bg-brand-accent/10 transition-colors">
+          <Eye size={13} /> Détails
+        </Link>
         <button className="flex items-center gap-1.5 rounded-xl border border-gray-200 px-3 py-2 text-xs font-medium text-gray-600 hover:bg-gray-50 transition-colors">
           <Printer size={13} /> Facture
         </button>
