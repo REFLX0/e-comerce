@@ -67,20 +67,21 @@ export default function OrderDetailsPage() {
         <h1 className="font-display text-brand-primary text-2xl font-bold">Commande #{order.id}</h1>
         <span
           className={`ml-auto rounded-full px-3 py-1 text-sm font-bold ${
-            order.status === 'delivered'
+            order.status === 'DELIVERED'
               ? 'bg-green-100 text-green-700'
-              : order.status === 'processing'
+              : order.status === 'SHIPPED'
                 ? 'bg-blue-100 text-blue-700'
-                : order.status === 'cancelled'
+                : order.status === 'CANCELLED'
                   ? 'bg-red-100 text-red-700'
                   : 'bg-yellow-100 text-yellow-700'
           }`}
         >
-          {order.status === 'pending' && 'En attente'}
-          {order.status === 'processing' && 'En cours'}
-          {order.status === 'shipped' && 'Expédiée'}
-          {order.status === 'delivered' && 'Livrée'}
-          {order.status === 'cancelled' && 'Annulée'}
+          {order.status === 'PENDING' && 'En attente'}
+          {order.status === 'PROCESSING' && 'En cours'}
+          {order.status === 'CONFIRMED' && 'Confirmée'}
+          {order.status === 'SHIPPED' && 'Expédiée'}
+          {order.status === 'DELIVERED' && 'Livrée'}
+          {order.status === 'CANCELLED' && 'Annulée'}
         </span>
       </div>
 
@@ -138,10 +139,10 @@ export default function OrderDetailsPage() {
               {order.items.map((item: any) => (
                 <div key={item.id} className="flex items-center gap-4">
                   <div className="bg-brand-surface relative h-20 w-20 shrink-0 overflow-hidden rounded-xl">
-                    {item.productImage ? (
+                    {item.product?.images?.[0] ? (
                       <Image
-                        src={item.productImage}
-                        alt={item.productName}
+                        src={item.product.images[0]}
+                        alt={item.product.nameFr}
                         fill
                         className="object-cover p-2"
                       />
@@ -151,14 +152,14 @@ export default function OrderDetailsPage() {
                   </div>
                   <div className="min-w-0 flex-1">
                     <h4 className="text-brand-primary line-clamp-1 font-bold">
-                      {item.productName}
+                      {item.product?.nameFr ?? 'Produit'}
                     </h4>
-                    <p className="mt-1 text-sm text-gray-500">Volume: {item.variantVolume}</p>
+                    <p className="mt-1 text-sm text-gray-500">Volume: {item.variant?.volume ?? '-'}</p>
                     <p className="mt-1 text-sm text-gray-500">Quantité: {item.quantity}</p>
                   </div>
                   <div className="text-right">
                     <div className="text-brand-primary font-bold">
-                      {formatPrice(item.subtotalHT)}
+                      {formatPrice(item.unitPrice * item.quantity)}
                     </div>
                   </div>
                 </div>
@@ -174,31 +175,9 @@ export default function OrderDetailsPage() {
             </h3>
             <div className="mb-6 space-y-3">
               <div className="flex justify-between text-sm text-gray-600">
-                <span>Sous-total HT</span>
-                <span>{formatPrice(order.subtotalHT)}</span>
+                <span>Total</span>
+                <span>{formatPrice(order.totalAmount)}</span>
               </div>
-              <div className="flex justify-between text-sm text-gray-600">
-                <span>TVA</span>
-                <span>{formatPrice(order.tva)}</span>
-              </div>
-              <div className="flex justify-between text-sm text-gray-600">
-                <span>Frais de livraison</span>
-                <span>
-                  {order.shippingCost === 0 ? 'Gratuit' : formatPrice(order.shippingCost)}
-                </span>
-              </div>
-              {order.promoDiscount > 0 && (
-                <div className="flex justify-between text-sm font-medium text-green-600">
-                  <span>Remise ({order.promoCode})</span>
-                  <span>-{formatPrice(order.promoDiscount)}</span>
-                </div>
-              )}
-            </div>
-            <div className="border-brand-surface-dark flex items-center justify-between border-t pt-4">
-              <span className="text-brand-primary font-bold">Total TTC</span>
-              <span className="font-display text-brand-accent text-2xl font-bold">
-                {formatPrice(order.totalTTC)}
-              </span>
             </div>
           </div>
 
@@ -207,13 +186,11 @@ export default function OrderDetailsPage() {
               <MapPin className="mt-1 text-gray-400" size={20} />
               <div>
                 <h3 className="text-brand-primary mb-1 font-bold">Adresse de livraison</h3>
-                <p className="text-sm text-gray-600">{order.shippingAddress.fullName}</p>
-                <p className="text-sm text-gray-600">{order.shippingAddress.address}</p>
+                <p className="text-sm text-gray-600">{order.shipFullName}</p>
                 <p className="text-sm text-gray-600">
-                  {order.shippingAddress.city}, {order.shippingAddress.wilaya}{' '}
-                  {order.shippingAddress.postalCode}
+                  {order.shipCity}, {order.shipWilaya}
                 </p>
-                <p className="mt-2 text-sm text-gray-600">{order.shippingAddress.phone}</p>
+                <p className="mt-2 text-sm text-gray-600">{order.shipPhone}</p>
               </div>
             </div>
 
@@ -221,9 +198,7 @@ export default function OrderDetailsPage() {
               <CreditCard className="mt-1 text-gray-400" size={20} />
               <div>
                 <h3 className="text-brand-primary mb-1 font-bold">Mode de paiement</h3>
-                <p className="text-sm text-gray-600">
-                  {order.paymentMethod === 'cod' ? 'Paiement à la livraison' : order.paymentMethod}
-                </p>
+                <p className="text-sm text-gray-600">Paiement à la livraison</p>
               </div>
             </div>
           </div>

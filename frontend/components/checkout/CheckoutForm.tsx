@@ -54,15 +54,12 @@ export function CheckoutForm() {
             variantId: item.variantId,
             quantity: item.quantity,
           })),
-          shippingAddress: {
+          shipping: {
             fullName: `${data.firstName} ${data.lastName}`,
             phone: data.phone,
-            address: data.address,
-            city: data.city,
             wilaya: data.wilaya,
-            postalCode: data.postalCode,
+            city: data.city,
           },
-          shippingMethod: 'standard',
           notes: data.notes,
         }
       )

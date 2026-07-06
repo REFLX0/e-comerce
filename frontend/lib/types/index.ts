@@ -178,22 +178,16 @@ export interface OrderTimelineEvent {
 
 export interface Order {
   id: string
-  orderNumber: string
-  userId: string
-  status: OrderStatus
+  userId: string | null
+  status: string
+  totalAmount: number
   items: OrderItem[]
-  subtotalHT: number
-  tva: number
-  totalTTC: number
-  shippingCost: number
-  shippingAddress: Address
-  paymentMethod: string
-  promoCode?: string
-  promoDiscount: number
-  notes?: string
-  trackingNumber?: string
-  estimatedDelivery?: string
-  timeline: OrderTimelineEvent[]
+  shipFullName: string
+  shipPhone: string
+  shipWilaya: string
+  shipCity: string
+  notes?: string | null
+  idempotencyKey?: string
   createdAt: string
   updatedAt: string
 }

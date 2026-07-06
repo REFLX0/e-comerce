@@ -1,10 +1,16 @@
 import { apiGet, apiPost } from './client'
-import type { Order, PaginatedResponse, Address } from '@/lib/types'
+import type { Order, PaginatedResponse } from '@/lib/types'
+
+export interface ShippingDto {
+  fullName: string
+  phone: string
+  wilaya: string
+  city: string
+}
 
 interface CreateOrderPayload {
   items: { variantId: string; quantity: number }[]
-  shippingAddress: Omit<Address, 'id'>
-  shippingMethod: string
+  shipping: ShippingDto
   promoCode?: string
   notes?: string
 }
