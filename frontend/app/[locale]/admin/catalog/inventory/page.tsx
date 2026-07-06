@@ -3,6 +3,8 @@
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { productsApi } from '@/lib/api/products'
+import { adminApi } from '@/lib/api/admin'
+import { toast } from 'sonner'
 import { Search, AlertTriangle, TrendingDown, Package, Edit2, Download } from 'lucide-react'
 
 function StockBar({ qty, max = 200 }: { qty: number; max?: number }) {
@@ -28,13 +30,27 @@ function StatusTag({ qty }: { qty: number }) {
 }
 
 // Inline editable qty cell
-function QtyCell({ sku, qty }: { sku: string; qty: number }) {
+function QtyCell({ productId, qty }: { productId: string; qty: number }) {
   const [editing, setEditing] = useState(false)
   const [val, setVal] = useState(qty)
+  const [saving, setSaving] = useState(false)
 
   return editing ? (
     <form
-      onSubmit={(e) => { e.preventDefault(); setEditing(false); /* TODO: API call */ }}
+      onSubmit={async (e) => {
+        e.preventDefault()
+        if (val === qty) { setEditing(false); return }
+        setSaving(true)
+        try {
+          await adminApi.updateProduct(productId, { stock: val })
+          setEditing(false)
+        } catch {
+          setVal(qty)
+          toast.error('Erreur lors de la mise à jour du stock')
+        } finally {
+          setSaving(false)
+        }
+      }}
       className="flex items-center gap-1"
     >
       <input
@@ -44,9 +60,10 @@ function QtyCell({ sku, qty }: { sku: string; qty: number }) {
         className="w-16 rounded-lg border border-brand-accent bg-white px-2 py-1 text-sm font-semibold text-brand-primary outline-none text-center"
         autoFocus
         min={0}
+        disabled={saving}
       />
-      <button type="submit" className="rounded-lg bg-green-50 px-2 py-1 text-xs font-semibold text-green-700 hover:bg-green-100">✓</button>
-      <button type="button" onClick={() => { setVal(qty); setEditing(false) }} className="text-xs text-gray-400 hover:text-gray-600">✕</button>
+      <button type="submit" disabled={saving} className="rounded-lg bg-green-50 px-2 py-1 text-xs font-semibold text-green-700 hover:bg-green-100">{saving ? '...' : '✓'}</button>
+      <button type="button" onClick={() => { setVal(qty); setEditing(false) }} disabled={saving} className="text-xs text-gray-400 hover:text-gray-600">✕</button>
     </form>
   ) : (
     <button
@@ -220,7 +237,7 @@ export default function AdminInventoryPage() {
                     <td className="px-2 py-3">
                       <div className="max-w-xs space-y-1">
                         <StockBar qty={item.qty} />
-                        <QtyCell sku={item.sku} qty={item.qty} />
+                        <QtyCell productId={item.productId} qty={item.qty} />
                       </div>
                     </td>
                     <td className="py-3 pl-2 pr-4">

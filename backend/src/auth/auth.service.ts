@@ -34,6 +34,7 @@ export class AuthService {
         email: dto.email,
         passwordHash: hash,
         phone: dto.phone,
+        role: 'CUSTOMER',
       },
     })
 

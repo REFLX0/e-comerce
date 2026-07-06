@@ -1,11 +1,12 @@
 "use client";
 
 import { useState } from 'react'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { adminApi } from '@/lib/api/admin'
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
+import { toast } from 'sonner'
 import {
   Search, Plus, Edit2, Trash2, Copy, Eye,
   Upload, Download, Package
@@ -77,9 +78,11 @@ export default function AdminProductsPage() {
   const pathname = usePathname()
   const locale = pathname?.split('/')[1] === 'en' ? 'en' : 'fr'
   const localizedHref = (href: string) => `/${locale}${href}`
+  const queryClient = useQueryClient()
   const [search, setSearch] = useState('')
   const [selected, setSelected] = useState<string[]>([])
   const [showPublished, setShowPublished] = useState<'all' | 'published' | 'unpublished'>('all')
+  const [confirmDelete, setConfirmDelete] = useState<string | null>(null)
 
   const { data: productsData, isLoading } = useQuery<any>({
     queryKey: ['admin-products'],
@@ -87,6 +90,16 @@ export default function AdminProductsPage() {
   })
 
   const products: Product[] = (productsData as any)?.data ?? []
+
+  const deleteMutation = useMutation({
+    mutationFn: (id: string) => adminApi.deleteProduct(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-products'] })
+      toast.success('Produit dépublié')
+      setConfirmDelete(null)
+    },
+    onError: () => toast.error('Erreur lors de la suppression'),
+  })
 
   const filtered = products.filter((p) => {
     const matchSearch = !search ||
@@ -135,7 +148,7 @@ export default function AdminProductsPage() {
               { label: 'Publier', action: 'publish' },
               { label: 'Dépublier', action: 'unpublish' },
               { label: 'Dupliquer', action: 'duplicate' },
-              { label: 'Supprimer', action: 'delete' },
+              { label: 'Dépublier', action: 'delete' },
             ].map((a) => (
               <button
                 key={a.action}
@@ -279,7 +292,7 @@ export default function AdminProductsPage() {
                         <button className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-700 transition-colors" title="Dupliquer">
                           <Copy size={15} />
                         </button>
-                        <button className="rounded-lg p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-500 transition-colors" title="Supprimer">
+                        <button onClick={() => setConfirmDelete(product.id)} className="rounded-lg p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-500 transition-colors" title="Dépublier">
                           <Trash2 size={15} />
                         </button>
                       </div>
@@ -291,6 +304,24 @@ export default function AdminProductsPage() {
           </table>
         </div>
       </div>
+
+      {/* Delete confirmation dialog */}
+      {confirmDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+          <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-xl max-w-sm w-full mx-4">
+            <h3 className="text-lg font-bold text-brand-primary mb-2">Confirmer la dépublication</h3>
+            <p className="text-sm text-gray-500 mb-6">Le produit sera masqué de la boutique. Vous pourrez le republier à tout moment.</p>
+            <div className="flex justify-end gap-3">
+              <button onClick={() => setConfirmDelete(null)} className="rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">
+                Annuler
+              </button>
+              <button onClick={() => deleteMutation.mutate(confirmDelete)} disabled={deleteMutation.isPending} className="rounded-xl bg-red-500 px-4 py-2 text-sm font-semibold text-white hover:bg-red-600 transition-colors disabled:opacity-50">
+                {deleteMutation.isPending ? 'Dépublication...' : 'Dépublier'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Cards - Mobile */}
       <div className="md:hidden space-y-3">
@@ -322,7 +353,7 @@ export default function AdminProductsPage() {
                 <button className="rounded-lg p-2 text-gray-400 hover:bg-blue-50 hover:text-blue-600 transition-colors">
                   <Edit2 size={16} />
                 </button>
-                <button className="rounded-lg p-2 text-gray-400 hover:bg-red-50 hover:text-red-500 transition-colors">
+                <button className="rounded-lg p-2 text-gray-400 hover:bg-red-50 hover:text-red-500 transition-colors" title="Dépublier">
                   <Trash2 size={16} />
                 </button>
               </div>

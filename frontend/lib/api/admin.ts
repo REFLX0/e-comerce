@@ -7,6 +7,15 @@ export const adminApi = {
   getProducts: (params?: { page?: number; limit?: number }) =>
     api.get('/admin/products', { params }),
 
+  createProduct: (body: any) =>
+    api.post('/admin/products', body),
+
+  updateProduct: (id: string, body: any) =>
+    api.patch(`/admin/products/${id}`, body),
+
+  deleteProduct: (id: string) =>
+    api.delete(`/admin/products/${id}`),
+
   getOrders: (params?: { page?: number; status?: string }) =>
     api.get('/admin/orders', { params }),
 

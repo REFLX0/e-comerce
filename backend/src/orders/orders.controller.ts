@@ -3,6 +3,7 @@ import { ApiTags, ApiBearerAuth } from '@nestjs/swagger'
 import { OrdersService } from './orders.service'
 import { CreateOrderDto } from './dto/create-order.dto'
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard'
+import { OptionalJwtAuthGuard } from '../common/guards/optional-jwt-auth.guard'
 import { CurrentUser } from '../common/decorators/current-user.decorator'
 
 @ApiTags('orders')
@@ -11,6 +12,8 @@ export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
 
   // COD order — can be placed by guests (no auth required)
+  // OptionalJwtAuthGuard extracts userId from cookie/header if present
+  @UseGuards(OptionalJwtAuthGuard)
   @Post()
   @HttpCode(HttpStatus.CREATED)
   create(

@@ -60,7 +60,7 @@ function OrderTimeline({ step }: { step: number }) {
   )
 }
 
-function OrderCard({ order }: { order: { id: string; createdAt: string; status: string; totalTTC?: number; items: Array<{ id: string; quantity?: number; productName?: string }> } }) {
+function OrderCard({ order }: { order: { id: string; createdAt: string; status: string; totalAmount?: number; items: Array<{ id: string; quantity?: number; product?: { nameFr?: string }; variant?: { volume?: string } }> } }) {
   const [expanded, setExpanded] = useState(false)
   const s = STATUS_CONFIG[order.status as keyof typeof STATUS_CONFIG] ?? STATUS_CONFIG.PENDING
 
@@ -71,7 +71,7 @@ function OrderCard({ order }: { order: { id: string; createdAt: string; status: 
         <div className="flex-1 min-w-0">
           <p className="font-mono text-xs text-gray-400">#{order.id.slice(-8).toUpperCase()}</p>
           <p className="text-sm font-semibold text-brand-primary">
-            {order.items?.length ?? 0} article(s) · {((order.totalTTC ?? 0)).toLocaleString('fr-TN', { minimumFractionDigits: 2 })} TND
+            {order.items?.length ?? 0} article(s) · {((order.totalAmount ?? 0)).toLocaleString('fr-TN', { minimumFractionDigits: 2 })} TND
           </p>
           <p className="text-xs text-gray-400">
             {order.createdAt ? new Date(order.createdAt).toLocaleDateString('fr-TN', { day: 'numeric', month: 'long', year: 'numeric' }) : '—'}
@@ -104,7 +104,7 @@ function OrderCard({ order }: { order: { id: string; createdAt: string; status: 
                 <Package size={18} className="text-gray-400" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="truncate text-sm font-medium text-brand-primary">{item.productName ?? 'Produit'}</p>
+                <p className="truncate text-sm font-medium text-brand-primary">{item.product?.nameFr ?? 'Produit'}</p>
                 <p className="text-xs text-gray-400">Qté: {item.quantity ?? 1}</p>
               </div>
             </div>
@@ -142,7 +142,7 @@ export default function MesCommandesPage() {
     enabled: true,
   })
 
-  const orders = (data as any)?.data ?? []
+  const orders = Array.isArray(data) ? data : (data as any)?.data ?? []
 
   return (
     <div className="space-y-5">
@@ -166,7 +166,7 @@ export default function MesCommandesPage() {
         </div>
       ) : (
         <div className="space-y-4">
-          {orders.map((order: { id: string; createdAt: string; status: string; totalTTC?: number; items: Array<{ id: string; quantity?: number; productName?: string }> }) => (
+          {orders.map((order: { id: string; createdAt: string; status: string; totalAmount?: number; items: Array<{ id: string; quantity?: number; product?: { nameFr?: string } }> }) => (
             <OrderCard key={order.id} order={order} />
           ))}
         </div>
