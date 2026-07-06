@@ -27,9 +27,12 @@ interface VehicleModel { id: string; name: string; slug: string }
 interface Engine { engineCode: string; yearFrom: number | null; yearTo: number | null }
 
 import { useVehicleStore } from '@/lib/store/vehicle.store'
+import { usePathname } from 'next/navigation'
 
 export function OilFinderWidget() {
   const router = useRouter()
+  const pathname = usePathname()
+  const locale = pathname?.split('/')[1] === 'en' ? 'en' : 'fr'
   const { setVehicle } = useVehicleStore()
   const [step, setStep] = useState(1)
   const [selections, setSelections] = useState({ type: '' as VehicleType | '', make: null as Make | null, model: null as VehicleModel | null, engine: '' })
@@ -129,7 +132,7 @@ export function OilFinderWidget() {
     if (selections.make) params.set('make', selections.make.slug)
     if (selections.model) params.set('model', selections.model.slug)
     if (selections.engine) params.set('engine', selections.engine)
-    router.push(`/catalogue?${params.toString()}`)
+    router.push(`/${locale}/catalogue?${params.toString()}`)
   }
 
 

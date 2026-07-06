@@ -33,19 +33,7 @@ export const productsApi = {
 
   search: (query: string, limit = 10) => apiGet<Product[]>('/products/search', { q: query, limit }),
 
-  getCompatible: (
-    vehicleType: string,
-    make: string,
-    model: string,
-    year: number,
-    engine?: string
-  ) =>
-    apiGet<Product[]>('/vehicles/compatible', {
-      vehicleType,
-      make,
-      model,
-      year,
-      engine,
-    }),
+  getCompatible: (make: string, model: string, engine?: string) =>
+    apiGet<Product[]>('/vehicles/compatible', { make, model, engine }),
 }
 
