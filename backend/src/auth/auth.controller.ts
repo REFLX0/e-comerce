@@ -5,6 +5,7 @@ import { Throttle } from '@nestjs/throttler'
 import { AuthService } from './auth.service'
 import { RegisterDto } from './dto/register.dto'
 import { LoginDto } from './dto/login.dto'
+import { ResetPasswordDto } from './dto/reset-password.dto'
 
 @ApiTags('auth')
 @Controller('auth')
@@ -58,5 +59,11 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   forgotPassword(@Body('email') email: string) {
     return this.authService.forgotPassword(email)
+  }
+
+  @Post('reset-password')
+  @HttpCode(HttpStatus.OK)
+  resetPassword(@Body() dto: ResetPasswordDto) {
+    return this.authService.resetPassword(dto.token, dto.password)
   }
 }

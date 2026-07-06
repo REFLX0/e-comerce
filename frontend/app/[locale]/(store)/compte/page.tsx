@@ -33,7 +33,7 @@ export default function CompteDashboardPage() {
     enabled: true,
   })
 
-  const orders = ((data as any)?.data ?? []).slice(0, 3)
+  const orders = (Array.isArray(data) ? data : (data as any)?.data ?? []).slice(0, 3)
 
   return (
     <div className="space-y-7">
@@ -89,7 +89,7 @@ export default function CompteDashboardPage() {
           </div>
         ) : (
           <div className="space-y-3">
-            {orders.map((order: { id: string; createdAt: string; status: string; totalTTC: number; items: unknown[] }) => {
+            {orders.map((order: { id: string; createdAt: string; status: string; totalAmount: number; items: unknown[] }) => {
               const s = STATUS_CONFIG[order.status as keyof typeof STATUS_CONFIG] ?? STATUS_CONFIG.PENDING
               return (
                 <div key={order.id} className="flex flex-col gap-3 rounded-2xl border border-gray-100 p-4 sm:flex-row sm:items-center">
@@ -99,7 +99,7 @@ export default function CompteDashboardPage() {
                   <div className="flex-1 min-w-0">
                     <p className="font-mono text-xs text-gray-400">#{order.id.slice(-8).toUpperCase()}</p>
                     <p className="text-sm font-semibold text-brand-primary">
-                      {order.items?.length ?? 0} article(s) · {(order.totalTTC ?? 0).toLocaleString('fr-TN', { minimumFractionDigits: 2 })} TND
+                      {order.items?.length ?? 0} article(s) · {(order.totalAmount ?? 0).toLocaleString('fr-TN', { minimumFractionDigits: 2 })} TND
                     </p>
                   </div>
                   <span className={`self-start rounded-full px-3 py-1 text-xs font-semibold sm:self-auto ${s.cls}`}>

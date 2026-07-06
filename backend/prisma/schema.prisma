@@ -51,23 +51,25 @@ enum TicketStatus {
 // ─────────────────────────────────────────
 
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String    @unique
-  emailVerified DateTime?
-  image         String?
-  passwordHash  String?
-  role          Role      @default(CUSTOMER)
-  phone         String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  accounts       Account[]
-  sessions       Session[]
-  addresses      Address[]
-  orders         Order[]
-  reviews        Review[]
-  wishlistItems  WishlistItem[]
-  supportTickets SupportTicket[]
+  id                   String     @id @default(cuid())
+  name                 String?
+  email                String     @unique
+  emailVerified        DateTime?
+  image                String?
+  passwordHash         String?
+  role                 Role       @default(CUSTOMER)
+  phone                String?
+  resetPasswordToken   String?    @unique
+  resetPasswordExpires DateTime?
+  createdAt            DateTime   @default(now())
+  updatedAt            DateTime   @updatedAt
+  accounts              Account[]
+  sessions              Session[]
+  addresses             Address[]
+  orders                Order[]
+  reviews               Review[]
+  wishlistItems         WishlistItem[]
+  supportTickets        SupportTicket[]
 }
 
 model Account {

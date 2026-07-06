@@ -30,6 +30,13 @@ export class AdminService {
   }
 
   // ─── Products ──────────────────────────────────────────────────────────────
+  async getProduct(id: string) {
+    return this.prisma.product.findUnique({
+      where: { id },
+      include: { brand: true, category: true, variants: true, images: { orderBy: { sortOrder: 'asc' } } },
+    })
+  }
+
   async getProducts(page = 1, limit = 20) {
     const skip = (page - 1) * limit
     const [data, total] = await Promise.all([
@@ -118,6 +125,29 @@ export class AdminService {
   }
 
   // ─── Users ────────────────────────────────────────────────────────────────
+  async getUser(id: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { id },
+      select: {
+        id: true, name: true, email: true, role: true, phone: true, createdAt: true,
+        orders: {
+          orderBy: { createdAt: 'desc' },
+          include: {
+            items: {
+              include: {
+                product: { select: { nameFr: true, images: { take: 1, select: { url: true } } } },
+                variant: { select: { volume: true } },
+              },
+            },
+          },
+        },
+      },
+    })
+    if (!user) return null
+    const ltv = user.orders.reduce((sum, o) => sum + o.totalAmount, 0)
+    return { ...user, ordersCount: user.orders.length, ltv }
+  }
+
   async getUsers(page = 1, limit = 20) {
     const skip = (page - 1) * limit
     const [data, total] = await Promise.all([

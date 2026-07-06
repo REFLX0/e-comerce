@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { couponsApi } from '@/lib/api/coupons'
 import { useAuthStore } from '@/lib/store/auth.store'
-import { Plus, Percent, Banknote, Gift, Trash2, ToggleLeft, ToggleRight } from 'lucide-react'
+import { Plus, Percent, Banknote, Gift, Trash2, ToggleLeft, ToggleRight, Edit2 } from 'lucide-react'
 import { toast } from 'sonner'
 
 export default function AdminPromotionsPage() {
@@ -16,6 +16,15 @@ export default function AdminPromotionsPage() {
   const [newMinAmount, setNewMinAmount] = useState('')
   const [newMaxUses, setNewMaxUses] = useState('')
   const [newExpiryDate, setNewExpiryDate] = useState('')
+
+  const [editingCoupon, setEditingCoupon] = useState<any>(null)
+  const [editCode, setEditCode] = useState('')
+  const [editType, setEditType] = useState<'PERCENT' | 'FIXED' | 'FREE_SHIPPING'>('PERCENT')
+  const [editValue, setEditValue] = useState('')
+  const [editMinAmount, setEditMinAmount] = useState('')
+  const [editMaxUses, setEditMaxUses] = useState('')
+  const [editExpiryDate, setEditExpiryDate] = useState('')
+  const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null)
 
   const { data, isLoading } = useQuery<any>({
     queryKey: ['admin-coupons'],
@@ -51,6 +60,16 @@ export default function AdminPromotionsPage() {
       toast.success('Coupon supprimé')
     },
     onError: () => toast.error('Erreur lors de la suppression'),
+  })
+
+  const updateMutation = useMutation({
+    mutationFn: ({ id, data }: { id: string; data: any }) => couponsApi.update(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-coupons'] })
+      toast.success('Coupon mis à jour')
+      setEditingCoupon(null)
+    },
+    onError: () => toast.error('Erreur lors de la mise à jour'),
   })
 
   const handleCreate = (e: React.FormEvent) => {
@@ -128,6 +147,69 @@ export default function AdminPromotionsPage() {
         </div>
       )}
 
+      {/* Edit modal */}
+      {editingCoupon && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+          <form onSubmit={(e) => { e.preventDefault(); updateMutation.mutate({ id: editingCoupon.id, data: { code: editCode.toUpperCase(), type: editType, value: parseFloat(editValue), minAmount: editMinAmount ? parseFloat(editMinAmount) : undefined, maxUses: editMaxUses ? parseInt(editMaxUses, 10) : undefined, expiryDate: editExpiryDate || undefined } }) }} className="rounded-2xl border border-gray-100 bg-white p-6 shadow-xl max-w-md w-full mx-4 space-y-4">
+            <h3 className="text-lg font-bold text-brand-primary">Modifier le coupon</h3>
+            <div className="space-y-1.5">
+              <label className="text-sm font-semibold text-gray-700">Code</label>
+              <input type="text" value={editCode} onChange={e => setEditCode(e.target.value)} className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-brand-accent transition-all font-mono uppercase" required />
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-1.5">
+                <label className="text-sm font-semibold text-gray-700">Type</label>
+                <select value={editType} onChange={e => setEditType(e.target.value as any)} className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-brand-accent transition-all">
+                  <option value="PERCENT">Pourcentage</option>
+                  <option value="FIXED">Montant fixe</option>
+                  <option value="FREE_SHIPPING">Livraison gratuite</option>
+                </select>
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-sm font-semibold text-gray-700">Valeur</label>
+                <input type="number" value={editValue} onChange={e => setEditValue(e.target.value)} min={0} step={editType === 'PERCENT' ? '1' : '0.01'} className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-brand-accent transition-all" required />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-1.5">
+                <label className="text-sm font-semibold text-gray-700">Montant min.</label>
+                <input type="number" value={editMinAmount} onChange={e => setEditMinAmount(e.target.value)} min={0} step="0.01" className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-brand-accent transition-all" />
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-sm font-semibold text-gray-700">Utilisations max.</label>
+                <input type="number" value={editMaxUses} onChange={e => setEditMaxUses(e.target.value)} min={1} className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-brand-accent transition-all" />
+              </div>
+            </div>
+            <div className="space-y-1.5">
+              <label className="text-sm font-semibold text-gray-700">Date d'expiration</label>
+              <input type="date" value={editExpiryDate} onChange={e => setEditExpiryDate(e.target.value)} className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-brand-accent transition-all" />
+            </div>
+            <div className="flex justify-end gap-3 pt-2">
+              <button type="button" onClick={() => setEditingCoupon(null)} className="rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">Annuler</button>
+              <button type="submit" disabled={updateMutation.isPending} className="rounded-xl bg-brand-accent px-4 py-2 text-sm font-semibold text-black hover:bg-brand-accent-hover transition-colors disabled:opacity-50">
+                {updateMutation.isPending ? 'Enregistrement...' : 'Enregistrer'}
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      {/* Delete confirmation */}
+      {deleteConfirm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+          <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-xl max-w-sm w-full mx-4">
+            <h3 className="text-lg font-bold text-brand-primary mb-2">Confirmer la suppression</h3>
+            <p className="text-sm text-gray-500 mb-6">Voulez-vous vraiment supprimer ce coupon ? Cette action est irréversible.</p>
+            <div className="flex justify-end gap-3">
+              <button onClick={() => setDeleteConfirm(null)} className="rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">Annuler</button>
+              <button onClick={() => { deleteMutation.mutate(deleteConfirm); setDeleteConfirm(null) }} disabled={deleteMutation.isPending} className="rounded-xl bg-red-500 px-4 py-2 text-sm font-semibold text-white hover:bg-red-600 transition-colors disabled:opacity-50">
+                {deleteMutation.isPending ? 'Suppression...' : 'Supprimer'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Coupon list */}
       <div className="space-y-3">
         {isLoading ? (
@@ -173,6 +255,21 @@ export default function AdminPromotionsPage() {
                   {/* Actions */}
                   <div className="flex gap-2">
                     <button
+                      onClick={() => {
+                        setEditingCoupon(c)
+                        setEditCode(c.code)
+                        setEditType(c.type)
+                        setEditValue(String(c.value))
+                        setEditMinAmount(c.minAmount ? String(c.minAmount) : '')
+                        setEditMaxUses(c.maxUses ? String(c.maxUses) : '')
+                        setEditExpiryDate(c.expiryDate ? c.expiryDate.split('T')[0] : '')
+                      }}
+                      className="rounded-xl p-2 text-gray-400 hover:bg-blue-50 hover:text-blue-600 transition-colors"
+                      title="Modifier"
+                    >
+                      <Edit2 size={16} />
+                    </button>
+                    <button
                       onClick={() => toggleMutation.mutate(c.id)}
                       className={`rounded-xl p-2 transition-colors ${c.isActive ? 'text-green-600 hover:bg-green-50' : 'text-gray-400 hover:bg-gray-100'}`}
                       title={c.isActive ? 'Désactiver' : 'Activer'}
@@ -180,7 +277,7 @@ export default function AdminPromotionsPage() {
                       {c.isActive ? <ToggleRight size={22} /> : <ToggleLeft size={22} />}
                     </button>
                     <button
-                      onClick={() => deleteMutation.mutate(c.id)}
+                      onClick={() => setDeleteConfirm(c.id)}
                       className="rounded-xl p-2 text-gray-400 hover:bg-red-50 hover:text-red-500 transition-colors"
                       title="Supprimer"
                     >

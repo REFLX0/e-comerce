@@ -4,12 +4,17 @@ import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { adminApi } from '@/lib/api/admin'
 import { useAuthStore } from '@/lib/store/auth.store'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { Search, Mail, Phone, ShoppingBag, UserX, UserCheck } from 'lucide-react'
 import { toast } from 'sonner'
 
 export default function AdminCustomersPage() {
     const queryClient = useQueryClient()
   const [search, setSearch] = useState('')
+  const pathname = usePathname()
+  const locale = pathname?.split('/')[1] === 'en' ? 'en' : 'fr'
+  const localizedHref = (slug: string) => `/${locale}${slug}`
 
   const { data, isLoading } = useQuery<any>({
     queryKey: ['admin-users'],
@@ -57,6 +62,37 @@ export default function AdminCustomersPage() {
         />
       </div>
 
+      {/* Mobile cards */}
+      <div className="md:hidden space-y-3">
+        {isLoading ? (
+          <div className="rounded-2xl border border-gray-100 bg-white p-6 text-center text-sm text-gray-400">Chargement...</div>
+        ) : filtered.length === 0 ? (
+          <div className="rounded-2xl border-2 border-dashed border-gray-200 p-6 text-center text-sm text-gray-400">Aucun client trouvé</div>
+        ) : (
+          filtered.map((c: any) => (
+            <Link key={c.id} href={localizedHref(`/admin/customers/${c.id}`)} className="block rounded-2xl border border-gray-100 bg-white p-4 shadow-sm hover:shadow transition-shadow">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-primary font-bold text-sm text-white">
+                  {c.name ? c.name[0].toUpperCase() : 'U'}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-semibold text-brand-primary truncate">{c.name ?? 'Utilisateur'}</p>
+                  <p className="text-xs text-gray-400 truncate">{c.email}</p>
+                </div>
+              </div>
+              <div className="flex items-center justify-between text-xs">
+                <span className="flex items-center gap-1 text-gray-500">
+                  <ShoppingBag size={12} /> {c.ordersCount ?? 0} commandes
+                </span>
+                <span className="font-semibold text-brand-primary">
+                  {(c.ltv ?? 0).toLocaleString('fr-TN', { minimumFractionDigits: 2 })} TND
+                </span>
+              </div>
+            </Link>
+          ))
+        )}
+      </div>
+
       {/* Desktop table */}
       <div className="hidden md:block rounded-2xl border border-gray-100 bg-white shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
@@ -80,7 +116,7 @@ export default function AdminCustomersPage() {
                 filtered.map((c: any) => (
                   <tr key={c.id} className="border-t border-gray-50 hover:bg-gray-50/50 transition-colors">
                     <td className="py-3 pl-4 pr-2">
-                      <div className="flex items-center gap-3">
+                      <Link href={localizedHref(`/admin/customers/${c.id}`)} className="flex items-center gap-3">
                         <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand-primary font-bold text-sm text-white">
                           {c.name ? c.name[0].toUpperCase() : 'U'}
                         </div>
@@ -88,7 +124,7 @@ export default function AdminCustomersPage() {
                           <p className="text-sm font-medium text-brand-primary">{c.name ?? 'Utilisateur'}</p>
                           <p className="text-xs text-gray-400">{c.email}</p>
                         </div>
-                      </div>
+                      </Link>
                     </td>
                     <td className="px-2 py-3">
                       <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${

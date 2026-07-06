@@ -7,6 +7,9 @@ export const adminApi = {
   getProducts: (params?: { page?: number; limit?: number }) =>
     api.get('/admin/products', { params }),
 
+  getProduct: (id: string) =>
+    api.get(`/admin/products/${id}`),
+
   createProduct: (body: any) =>
     api.post('/admin/products', body),
 
@@ -24,6 +27,9 @@ export const adminApi = {
 
   getUsers: (params?: { page?: number }) =>
     api.get('/admin/users', { params }),
+
+  getUser: (id: string) =>
+    api.get(`/admin/users/${id}`),
 
   updateUserRole: (id: string, role: string) =>
     api.patch(`/admin/users/${id}/role`, { role }),

@@ -286,9 +286,9 @@ export default function AdminProductsPage() {
                         <Link href={localizedHref(`/produit/${product.slug}`)} target="_blank" className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-brand-primary transition-colors" title="Voir sur le site">
                           <Eye size={15} />
                         </Link>
-                        <button className="rounded-lg p-1.5 text-gray-400 hover:bg-blue-50 hover:text-blue-600 transition-colors" title="Modifier">
+                        <Link href={localizedHref(`/admin/catalog/products/${product.id}/edit`)} className="rounded-lg p-1.5 text-gray-400 hover:bg-blue-50 hover:text-blue-600 transition-colors" title="Modifier">
                           <Edit2 size={15} />
-                        </button>
+                        </Link>
                         <button className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-700 transition-colors" title="Dupliquer">
                           <Copy size={15} />
                         </button>
@@ -350,9 +350,9 @@ export default function AdminProductsPage() {
                 </div>
               </div>
               <div className="flex flex-col gap-1">
-                <button className="rounded-lg p-2 text-gray-400 hover:bg-blue-50 hover:text-blue-600 transition-colors">
+                <Link href={localizedHref(`/admin/catalog/products/${product.id}/edit`)} className="rounded-lg p-2 text-gray-400 hover:bg-blue-50 hover:text-blue-600 transition-colors">
                   <Edit2 size={16} />
-                </button>
+                </Link>
                 <button className="rounded-lg p-2 text-gray-400 hover:bg-red-50 hover:text-red-500 transition-colors" title="Dépublier">
                   <Trash2 size={16} />
                 </button>

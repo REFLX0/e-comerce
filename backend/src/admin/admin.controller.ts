@@ -22,6 +22,9 @@ export class AdminController {
   @Get('products') getProducts(@Query('page') p?: string, @Query('limit') l?: string) {
     return this.adminService.getProducts(p ? +p : 1, l ? +l : 20)
   }
+  @Get('products/:id') getProduct(@Param('id') id: string) {
+    return this.adminService.getProduct(id)
+  }
   @Post('products') async createProduct(@Body() dto: CreateProductDto) {
     try {
       return await this.adminService.createProduct(dto)
@@ -43,6 +46,7 @@ export class AdminController {
   }
 
   @Get('users') getUsers(@Query('page') p?: string) { return this.adminService.getUsers(p ? +p : 1) }
+  @Get('users/:id') getUser(@Param('id') id: string) { return this.adminService.getUser(id) }
   @Patch('users/:id/role') updateUserRole(@Param('id') id: string, @Body('role') role: string) {
     return this.adminService.updateUserRole(id, role)
   }

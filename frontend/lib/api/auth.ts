@@ -37,5 +37,7 @@ export const authApi = {
     apiDelete<void>(`/users/me/addresses/${id}`),
 
   forgotPassword: (email: string) => apiPost<void>('/auth/forgot-password', { email }),
+
+  resetPassword: (token: string, password: string) => apiPost<void>('/auth/reset-password', { token, password }),
 }
 
