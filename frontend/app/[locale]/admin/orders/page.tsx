@@ -30,8 +30,8 @@ export default function AdminOrdersPage() {
     enabled: true,
   })
 
-  const ordersResponse = (data as any)?.data ?? data ?? {}
-  const orders = ordersResponse.data ?? []
+  const r = (data as any)?.data ?? data ?? {}
+  const orders = Array.isArray(r) ? r : r.data ?? []
 
   const updateMutation = useMutation({
     mutationFn: ({ id, status }: { id: string; status: string }) => adminApi.updateOrderStatus(id, status),
@@ -64,7 +64,7 @@ export default function AdminOrdersPage() {
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold text-brand-primary">Commandes</h1>
-          <p className="text-sm text-gray-500">{ordersResponse.total ?? 0} commandes trouvées</p>
+          <p className="text-sm text-gray-500">{Array.isArray(r) ? r.length : (r.total ?? 0)} commandes trouvées</p>
         </div>
         <div className="flex gap-2">
           <button className="flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">

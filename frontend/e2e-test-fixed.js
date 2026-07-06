@@ -3,7 +3,7 @@ const assert = require('assert');
 
 const BASE = 'http://localhost:8082/en';
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'admin@kiosquetn.tn';
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin123';
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'newpass456';
 const TEST_CATEGORY_ID = process.env.TEST_CATEGORY_ID || 'cmr8l280q000bn06zqu4cw69h';
 const TEST_BRAND_ID = process.env.TEST_BRAND_ID || 'cmr8l27zc0002n06zslci5g3v';
 

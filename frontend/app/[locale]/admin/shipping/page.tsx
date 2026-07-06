@@ -44,8 +44,8 @@ export default function AdminShippingPage() {
     queryFn: () => adminApi.getOrders({ page: 1 }),
   })
 
-  const ordersResponse = (data as any)?.data ?? data ?? {}
-  const orders: ShippingOrder[] = useMemo(() => ordersResponse.data ?? [], [ordersResponse.data])
+  const r = (data as any)?.data ?? data ?? {}
+  const orders: ShippingOrder[] = useMemo(() => Array.isArray(r) ? r : r.data ?? [], [r])
 
   const shippingOrders = useMemo(
     () => orders.filter((order) => ['CONFIRMED', 'SHIPPED', 'DELIVERED'].includes(order.status)),

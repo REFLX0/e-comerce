@@ -22,8 +22,8 @@ export default function AdminCustomersPage() {
     enabled: true,
   })
 
-  const usersResponse = (data as any)?.data ?? data ?? {}
-  const users = usersResponse.data ?? []
+  const r = (data as any)?.data ?? data ?? {}
+  const users = Array.isArray(r) ? r : r.data ?? []
 
   // Reusing the Role update mutation for blocking (setting role to BLOCKED if we had it, but for now we just toggle PRO/CUSTOMER as an example or we can skip if the schema doesn't support blocking yet)
   const roleMutation = useMutation({
@@ -46,7 +46,7 @@ export default function AdminCustomersPage() {
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold text-brand-primary">Clients</h1>
-          <p className="text-sm text-gray-500">{usersResponse.total ?? 0} clients enregistrés</p>
+          <p className="text-sm text-gray-500">{Array.isArray(r) ? r.length : (r.total ?? 0)} clients enregistrés</p>
         </div>
       </div>
 
