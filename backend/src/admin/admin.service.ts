@@ -1,6 +1,7 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, BadRequestException } from '@nestjs/common'
 import { PrismaService } from '../prisma/prisma.service'
 import { Prisma } from '@prisma/client'
+import { CreateProductDto } from './dto/create-product.dto'
 
 @Injectable()
 export class AdminService {
@@ -42,12 +43,51 @@ export class AdminService {
     return { data, total, page, totalPages: Math.ceil(total / limit) }
   }
 
-  async createProduct(data: Prisma.ProductCreateInput) {
+  async createProduct(dto: CreateProductDto) {
+    const { price, brandId, categoryId, stock, ...rest } = dto
+    const data: Prisma.ProductCreateInput = {
+      ...rest,
+      brand: { connect: { id: brandId } },
+      category: { connect: { id: categoryId } },
+      isPublished: dto.isPublished ?? true,
+      isFeatured: dto.isFeatured ?? false,
+    }
+    // Create a default variant when price is provided
+    if (price !== undefined) {
+      data.variants = {
+        create: {
+          volume: 'default',
+          price,
+          stockQty: stock ?? 0,
+          skuVariant: `${dto.sku}-default`,
+        },
+      }
+    }
     return this.prisma.product.create({ data, include: { brand: true, category: true, variants: true } })
   }
 
-  async updateProduct(id: string, data: Prisma.ProductUpdateInput) {
-    return this.prisma.product.update({ where: { id }, data })
+  async updateProduct(id: string, data: any) {
+    const { price, stock, ...productData } = data
+    const updateData: any = { ...productData }
+
+    // If price or stock is provided, update the first variant
+    const variantUpdate: any = {}
+    if (price !== undefined) variantUpdate.price = price
+    if (stock !== undefined) variantUpdate.stockQty = stock
+
+    if (Object.keys(variantUpdate).length > 0) {
+      const existing = await this.prisma.product.findUnique({
+        where: { id },
+        select: { variants: { take: 1, select: { id: true } } },
+      })
+      if (existing?.variants.length) {
+        updateData.variants = {
+          update: { where: { id: existing.variants[0].id }, data: variantUpdate },
+        }
+      }
+    }
+
+    return this.prisma.product.update({ where: { id }, data: updateData })
   }
 
   async deleteProduct(id: string) {
@@ -58,7 +98,10 @@ export class AdminService {
   async getOrders(page = 1, limit = 20, status?: string) {
     const skip = (page - 1) * limit
     const where: any = {}
-    if (status) where.status = status
+    const VALID_STATUSES = ['PENDING', 'CONFIRMED', 'SHIPPED', 'DELIVERED', 'CANCELLED']
+    if (status && VALID_STATUSES.includes(status.toUpperCase())) {
+      where.status = status.toUpperCase()
+    }
     const [data, total] = await Promise.all([
       this.prisma.order.findMany({
         where, skip, take: limit,

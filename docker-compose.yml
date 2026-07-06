@@ -77,6 +77,7 @@ services:
     env_file: .env
     environment:
       - NODE_ENV=production
+      - API_URL=http://nginx:8082/api
       - NEXT_PUBLIC_API_URL=/api
       - NEXTAUTH_URL=${NEXTAUTH_URL:-http://84.8.254.244:8082}
       - AUTH_TRUST_HOST=true

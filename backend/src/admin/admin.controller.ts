@@ -1,12 +1,13 @@
 import {
   Controller, Get, Post, Patch, Delete,
-  Param, Body, Query, UseGuards, HttpCode, HttpStatus,
+  Param, Body, Query, UseGuards, HttpCode, HttpStatus, BadRequestException,
 } from '@nestjs/common'
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger'
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard'
 import { RolesGuard } from '../common/guards/roles.guard'
 import { Roles } from '../common/decorators/roles.decorator'
 import { AdminService } from './admin.service'
+import { CreateProductDto } from './dto/create-product.dto'
 
 @ApiTags('admin')
 @ApiBearerAuth()
@@ -21,7 +22,16 @@ export class AdminController {
   @Get('products') getProducts(@Query('page') p?: string, @Query('limit') l?: string) {
     return this.adminService.getProducts(p ? +p : 1, l ? +l : 20)
   }
-  @Post('products') createProduct(@Body() body: any) { return this.adminService.createProduct(body) }
+  @Post('products') async createProduct(@Body() dto: CreateProductDto) {
+    try {
+      return await this.adminService.createProduct(dto)
+    } catch (err: any) {
+      if (err?.code === 'P2002' || err?.code === 'P2003' || err?.code === 'P2025') {
+        throw new BadRequestException('Validation failed: the provided brand, category, or unique fields are invalid or already in use.')
+      }
+      throw err
+    }
+  }
   @Patch('products/:id') updateProduct(@Param('id') id: string, @Body() body: any) { return this.adminService.updateProduct(id, body) }
   @Delete('products/:id') @HttpCode(HttpStatus.OK) deleteProduct(@Param('id') id: string) { return this.adminService.deleteProduct(id) }
 

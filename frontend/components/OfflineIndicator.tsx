@@ -23,7 +23,7 @@ export function OfflineIndicator() {
       const timeout = setTimeout(() => controller.abort(), 5000)
 
       const response = await fetch(HEALTH_CHECK_URL, {
-        method: 'HEAD',
+        method: 'GET',
         cache: 'no-store',
         signal: controller.signal,
       })

@@ -1,7 +1,8 @@
-import { Controller, Get } from '@nestjs/common'
+import { Controller, Get, Head, HttpCode, HttpStatus, Res } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
-import { HealthCheck, HealthCheckService, PrismaHealthIndicator } from '@nestjs/terminus'
+import { HealthCheck, HealthCheckService } from '@nestjs/terminus'
 import { PrismaService } from '../prisma/prisma.service'
+import type { Response } from 'express'
 
 @ApiTags('health')
 @Controller('health')
@@ -24,5 +25,10 @@ export class HealthController {
         }
       },
     ])
+  }
+
+  @Head()
+  headCheck(@Res() res: Response) {
+    res.status(200).end()
   }
 }

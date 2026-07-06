@@ -19,7 +19,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'www.KiosqueTN.tn',
+        hostname: 'www.kiosquetn.tn',
       },
       {
         protocol: 'https',
@@ -115,12 +115,19 @@ const nextConfig: NextConfig = {
     return []
   },
 
-  // ── Rewrites (Proxy for local dev) ───────────────────────────────────────
+  // ── Rewrites (Proxy backend API calls to nginx) ──────────────────────────
   async rewrites() {
     return [
+      // NextAuth routes (handled by app/api/auth/[...nextauth]/route.ts)
+      // Must come BEFORE the catch-all /api/ rewrite to prevent proxy loop.
+      {
+        source: '/api/auth/:path*',
+        destination: '/api/auth/:path*',
+      },
+      // Everything else under /api/ proxies to the backend through nginx
       {
         source: '/api/:path*',
-        destination: 'http://localhost:8082/api/:path*',
+        destination: 'http://nginx:8082/api/:path*',
       },
     ]
   },

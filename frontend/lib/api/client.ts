@@ -16,7 +16,10 @@ import {
   backendApiBreaker,
 } from './circuit-breaker'
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || '/api'
+const BASE_URL =
+  typeof window === 'undefined'
+    ? process.env.API_URL || process.env.NEXT_PUBLIC_API_URL || '/api'
+    : process.env.NEXT_PUBLIC_API_URL || '/api'
 const DEFAULT_TIMEOUT_MS = 8_000
 
 // ── Error types ────────────────────────────────────────────────────────────
