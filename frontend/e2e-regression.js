@@ -34,11 +34,13 @@ async function login(page, email, password) {
   // ----------------------------------------------------
   await record('6a. Register new customer on storefront', async () => {
     await page.goto(`${BASE}/auth/register`, { waitUntil: 'load', timeout: 20000 });
-    await page.fill('input[name="firstName"]', 'Test');
-    await page.fill('input[name="lastName"]', 'User');
-    await page.fill('input[type="email"]', TEST_EMAIL);
-    await page.fill('input[type="tel"]', '50123456');
-    await page.fill('input[type="password"]', TEST_PASSWORD);
+    await page.waitForSelector('#reg-firstName', { timeout: 5000 });
+    await page.fill('#reg-firstName', 'Test');
+    await page.fill('#reg-lastName', 'User');
+    await page.fill('#reg-email', TEST_EMAIL);
+    await page.fill('#reg-phone', '50123456');
+    await page.fill('#reg-password', TEST_PASSWORD);
+    await page.fill('#reg-confirmPassword', TEST_PASSWORD);
     await page.click('button[type="submit"]');
     await page.waitForTimeout(3000);
     const url = page.url();
@@ -362,6 +364,46 @@ async function login(page, email, password) {
     const body = await page.locator('body').innerText();
     // Just verify the page loads without error
     assert.ok(!body.includes('introuvable') && !body.includes('error'), 'Admin orders page shows error');
+  });
+
+  // ----------------------------------------------------
+  // Admin <-> Customer route isolation tests
+  // ----------------------------------------------------
+  await record('8a. Admin redirected away from /compte to /admin', async () => {
+    await login(page, ADMIN_EMAIL, ADMIN_PASSWORD);
+    await page.goto(`${BASE}/compte`, { waitUntil: 'load', timeout: 20000 });
+    await page.waitForTimeout(3000);
+    const url = page.url();
+    assert.ok(url.includes('/admin'), `Admin on /compte was not redirected to /admin: ${url}`);
+  });
+
+  await record('8b. Logged-in customer blocked from /admin', async () => {
+    // Re-login as test customer first
+    await login(page, TEST_EMAIL, TEST_PASSWORD);
+    await page.goto(`${BASE}/admin`, { waitUntil: 'load', timeout: 20000 });
+    await page.waitForTimeout(3000);
+    const url = page.url();
+    // Should be redirected to login (not on /admin)
+    assert.ok(!url.includes('/admin'), `Customer was not blocked from /admin: ${url}`);
+  });
+
+  // ----------------------------------------------------
+  // Admin <-> Customer route isolation
+  // ----------------------------------------------------
+  await record('8a. Admin redirected away from /compte to /admin', async () => {
+    await login(page, ADMIN_EMAIL, ADMIN_PASSWORD);
+    await page.goto(`${BASE}/compte`, { waitUntil: 'load', timeout: 15000 });
+    await page.waitForTimeout(3000);
+    const url = page.url();
+    assert.ok(url.includes('/admin'), `Admin on /compte was not redirected to /admin: ${url}`);
+  });
+
+  await record('8b. Logged-in customer blocked from /admin', async () => {
+    await login(page, TEST_EMAIL, TEST_PASSWORD);
+    await page.goto(`${BASE}/admin`, { waitUntil: 'load', timeout: 15000 });
+    await page.waitForTimeout(3000);
+    const url = page.url();
+    assert.ok(!url.includes('/admin'), `Customer was not blocked from /admin: ${url}`);
   });
 
   // ----------------------------------------------------

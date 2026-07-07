@@ -17,7 +17,7 @@ import { useHasMounted } from '@/lib/hooks/useHasMounted'
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
-  const { isAuthenticated } = useAuthStore()
+  const { isAuthenticated, user } = useAuthStore()
   const hasMounted = useHasMounted()
   const t = useTranslations('Navigation')
 
@@ -68,9 +68,10 @@ export default function Header() {
             <MobileSearchSheet />
 
             <Link
-              href={hasMounted && isAuthenticated ? '/compte' : '/auth/login'}
+              href={hasMounted && isAuthenticated ? (user?.role?.toUpperCase() === 'ADMIN' ? '/admin' : '/compte') : '/auth/login'}
               className="hidden h-10 w-10 items-center justify-center rounded-lg text-[#111] transition-colors hover:bg-gray-100 sm:flex"
               aria-label={t('account')}
+              title={user?.role?.toUpperCase() === 'ADMIN' ? 'Admin' : t('account')}
             >
               <User size={20} strokeWidth={1.8} />
             </Link>

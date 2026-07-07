@@ -30,8 +30,10 @@ export default function CompteLayout({ children }: { children: React.ReactNode }
   useEffect(() => setMobileOpen(false), [pathname])
 
   useEffect(() => {
-    if (isHydrated && !isAuthenticated) router.push('/auth/login')
-  }, [isHydrated, isAuthenticated, router])
+    if (!isHydrated) return
+    if (!isAuthenticated) router.push('/auth/login')
+    else if (user?.role?.toUpperCase() === 'ADMIN') router.push('/admin')
+  }, [isHydrated, isAuthenticated, user, router])
 
   const handleLogout = () => { logout(); router.push('/') }
 

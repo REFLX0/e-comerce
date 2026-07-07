@@ -16,15 +16,17 @@ const VEHICLE_TYPES = [
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? '/api'
 
-async function fetchJson<T>(url: string): Promise<T> {
-  const res = await fetch(url)
-  if (!res.ok) throw new Error('API error')
+async function fetchJson<T>(url: string, signal?: AbortSignal): Promise<T> {
+  const res = await fetch(url, { signal })
+  if (!res.ok) throw new Error(`API error: ${res.status}`)
   return res.json() as Promise<T>
 }
 
 interface Make { id: string; name: string; slug: string }
 interface VehicleModel { id: string; name: string; slug: string }
 interface Engine { engineCode: string; yearFrom: number | null; yearTo: number | null }
+
+type FetchState = 'idle' | 'loading' | 'error'
 
 import { useVehicleStore } from '@/lib/store/vehicle.store'
 import { usePathname } from 'next/navigation'
@@ -40,79 +42,103 @@ export function OilFinderWidget() {
   const [makes, setMakes] = useState<Make[]>([])
   const [models, setModels] = useState<VehicleModel[]>([])
   const [engines, setEngines] = useState<Engine[]>([])
-  const [loading, setLoading] = useState(false)
+  const [makesState, setMakesState] = useState<FetchState>('idle')
+  const [modelsState, setModelsState] = useState<FetchState>('idle')
+  const [enginesState, setEnginesState] = useState<FetchState>('idle')
+  const [makesRetry, setMakesRetry] = useState(0)
+  const [modelsRetry, setModelsRetry] = useState(0)
+  const [enginesRetry, setEnginesRetry] = useState(0)
 
-  // Load makes when vehicle type selected
+  // Load makes when vehicle type selected — filtered by the chosen vehicle type
   useEffect(() => {
-    let cancelled = false
+    if (step !== 2 || !selections.type) return
+    const controller = new AbortController()
 
     const loadMakes = async () => {
-      setLoading(true)
+      setMakesState('loading')
       try {
-        const data = await fetchJson<Make[]>(`${API}/vehicles/makes`)
-        if (!cancelled) setMakes(data)
-      } catch {
-        if (!cancelled) setMakes([])
-      } finally {
-        if (!cancelled) setLoading(false)
+        const data = await fetchJson<Make[]>(
+          `${API}/vehicles/makes?type=${encodeURIComponent(selections.type)}`,
+          controller.signal
+        )
+        setMakes(data)
+        setMakesState('idle')
+      } catch (err) {
+        if (controller.signal.aborted) return
+        setMakes([])
+        setMakesState('error')
       }
     }
 
-    if (step === 2) void loadMakes()
-    return () => {
-      cancelled = true
-    }
-  }, [step])
+    void loadMakes()
+    return () => controller.abort()
+  }, [step, selections.type, makesRetry])
 
-  // Load models when make selected
+  // Load models when make selected — also scoped by vehicle type in case slugs overlap across types
   useEffect(() => {
-    let cancelled = false
+    if (step !== 3 || !selections.make || !selections.type) return
+    const controller = new AbortController()
 
     const loadModels = async () => {
-      if (!selections.make) return
-      setLoading(true)
+      setModelsState('loading')
       try {
-        const data = await fetchJson<VehicleModel[]>(`${API}/vehicles/makes/${selections.make.slug}/models`)
-        if (!cancelled) setModels(data)
+        const data = await fetchJson<VehicleModel[]>(
+          `${API}/vehicles/makes/${selections.make!.slug}/models?type=${encodeURIComponent(selections.type)}`,
+          controller.signal
+        )
+        setModels(data)
+        setModelsState('idle')
       } catch {
-        if (!cancelled) setModels([])
-      } finally {
-        if (!cancelled) setLoading(false)
+        if (controller.signal.aborted) return
+        setModels([])
+        setModelsState('error')
       }
     }
 
-    if (step === 3 && selections.make) void loadModels()
-    return () => {
-      cancelled = true
-    }
-  }, [step, selections.make])
+    void loadModels()
+    return () => controller.abort()
+  }, [step, selections.make, selections.type, modelsRetry])
 
   // Load engines when model selected
   useEffect(() => {
-    let cancelled = false
+    if (step !== 4 || !selections.model) return
+    const controller = new AbortController()
 
     const loadEngines = async () => {
-      if (!selections.model) return
-      setLoading(true)
+      setEnginesState('loading')
       try {
-        const data = await fetchJson<Engine[]>(`${API}/vehicles/models/${selections.model.slug}/engines`)
-        if (!cancelled) setEngines(data)
+        const data = await fetchJson<Engine[]>(
+          `${API}/vehicles/models/${selections.model!.slug}/engines`,
+          controller.signal
+        )
+        setEngines(data)
+        setEnginesState('idle')
       } catch {
-        if (!cancelled) setEngines([])
-      } finally {
-        if (!cancelled) setLoading(false)
+        if (controller.signal.aborted) return
+        setEngines([])
+        setEnginesState('error')
       }
     }
 
-    if (step === 4 && selections.model) void loadEngines()
-    return () => {
-      cancelled = true
-    }
-  }, [step, selections.model])
+    void loadEngines()
+    return () => controller.abort()
+  }, [step, selections.model, enginesRetry])
 
-  const selectType = (type: VehicleType) => { setSelections(s => ({ ...s, type })); setStep(2) }
-  const selectMake = (make: Make) => { setSelections(s => ({ ...s, make })); setStep(3) }
-  const selectModel = (model: VehicleModel) => { setSelections(s => ({ ...s, model })); setStep(4) }
+  const selectType = (type: VehicleType) => {
+    setSelections({ type, make: null, model: null, engine: '' })
+    setMakes([]); setModels([]); setEngines([])
+    setStep(2)
+  }
+  const selectMake = (make: Make) => {
+    setSelections(s => ({ ...s, make, model: null, engine: '' }))
+    setModels([]); setEngines([])
+    setStep(3)
+  }
+  const selectModel = (model: VehicleModel) => {
+    setSelections(s => ({ ...s, model, engine: '' }))
+    setEngines([])
+    setStep(4)
+  }
 
   const handleSearch = () => {
     if (selections.make && selections.model) {
@@ -138,9 +164,9 @@ export function OilFinderWidget() {
 
   const resetTo = (targetStep: number) => {
     setStep(targetStep)
-    if (targetStep <= 1) setSelections({ type: '', make: null, model: null, engine: '' })
-    if (targetStep <= 2) setSelections(s => ({ ...s, make: null, model: null, engine: '' }))
-    if (targetStep <= 3) setSelections(s => ({ ...s, model: null, engine: '' }))
+    if (targetStep <= 1) { setSelections({ type: '', make: null, model: null, engine: '' }); setMakes([]); setModels([]); setEngines([]) }
+    if (targetStep <= 2) { setSelections(s => ({ ...s, make: null, model: null, engine: '' })); setModels([]); setEngines([]) }
+    if (targetStep <= 3) { setSelections(s => ({ ...s, model: null, engine: '' })); setEngines([]) }
   }
 
   return (
@@ -197,7 +223,14 @@ export function OilFinderWidget() {
                 <button onClick={() => resetTo(1)} className="flex h-11 w-11 items-center justify-center rounded-lg text-brand-muted transition-colors duration-150 hover:bg-brand-surface hover:text-brand-primary" aria-label="Revenir au type de véhicule"><ArrowLeft size={20} /></button>
                 <h3 className="text-xl font-bold text-brand-primary">Sélectionnez la marque</h3>
               </div>
-              {loading ? <div className="flex justify-center py-8"><Loader2 className="animate-spin text-brand-accent" size={32} /></div> : (
+              {makesState === 'loading' ? (
+                <div className="flex justify-center py-8"><Loader2 className="animate-spin text-brand-accent" size={32} /></div>
+              ) : makesState === 'error' ? (
+                <div className="flex flex-col items-center gap-3 py-8">
+                  <p className="text-center text-sm text-red-500">Impossible de charger les marques. Vérifiez votre connexion.</p>
+                  <Button onClick={() => setMakesRetry(n => n + 1)} variant="outline" size="sm">Réessayer</Button>
+                </div>
+              ) : (
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
                   {makes.map(make => (
                     <button key={make.id} onClick={() => selectMake(make)} className="min-h-12 rounded-lg border border-brand-border p-3 text-center font-medium text-gray-700 transition-all duration-200 hover:border-brand-accent/50 hover:bg-brand-surface hover:text-brand-primary">{make.name}</button>
@@ -215,7 +248,14 @@ export function OilFinderWidget() {
                 <button onClick={() => resetTo(2)} className="flex h-11 w-11 items-center justify-center rounded-lg text-brand-muted transition-colors duration-150 hover:bg-brand-surface hover:text-brand-primary" aria-label="Revenir à la marque"><ArrowLeft size={20} /></button>
                 <h3 className="text-xl font-bold text-brand-primary">Modèle — <span className="text-brand-accent">{selections.make?.name}</span></h3>
               </div>
-              {loading ? <div className="flex justify-center py-8"><Loader2 className="animate-spin text-brand-accent" size={32} /></div> : (
+              {modelsState === 'loading' ? (
+                <div className="flex justify-center py-8"><Loader2 className="animate-spin text-brand-accent" size={32} /></div>
+              ) : modelsState === 'error' ? (
+                <div className="flex flex-col items-center gap-3 py-8">
+                  <p className="text-center text-sm text-red-500">Impossible de charger les modèles. Vérifiez votre connexion.</p>
+                  <Button onClick={() => setModelsRetry(n => n + 1)} variant="outline" size="sm">Réessayer</Button>
+                </div>
+              ) : (
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
                   {models.map(model => (
                     <button key={model.id} onClick={() => selectModel(model)} className="min-h-12 rounded-lg border border-brand-border p-3 text-center font-medium text-gray-700 transition-all duration-200 hover:border-brand-accent/50 hover:bg-brand-surface hover:text-brand-primary">{model.name}</button>
@@ -233,7 +273,14 @@ export function OilFinderWidget() {
                 <button onClick={() => resetTo(3)} className="flex h-11 w-11 items-center justify-center rounded-lg text-brand-muted transition-colors duration-150 hover:bg-brand-surface hover:text-brand-primary" aria-label="Revenir au modèle"><ArrowLeft size={20} /></button>
                 <h3 className="text-xl font-bold text-brand-primary">Motorisation — <span className="text-brand-accent">{selections.model?.name}</span></h3>
               </div>
-              {loading ? <div className="flex justify-center py-8"><Loader2 className="animate-spin text-brand-accent" size={32} /></div> : (
+              {enginesState === 'loading' ? (
+                <div className="flex justify-center py-8"><Loader2 className="animate-spin text-brand-accent" size={32} /></div>
+              ) : enginesState === 'error' ? (
+                <div className="flex flex-col items-center gap-3 py-8 mb-8">
+                  <p className="text-center text-sm text-red-500">Impossible de charger les motorisations. Vérifiez votre connexion.</p>
+                  <Button onClick={() => setEnginesRetry(n => n + 1)} variant="outline" size="sm">Réessayer</Button>
+                </div>
+              ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8">
                   {engines.map(engine => (
                     <button key={engine.engineCode} onClick={() => setSelections(s => ({ ...s, engine: engine.engineCode }))}

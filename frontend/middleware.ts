@@ -75,12 +75,20 @@ export default auth(async (req: NextRequest & { auth?: unknown }) => {
     return redirect
   }
 
-  if (isCompteRoute && !isLoggedIn) {
-    const loginUrl = new URL(withLocale('/auth/login'), nextUrl)
-    loginUrl.searchParams.set('callbackUrl', withLocale('/compte'))
-    const redirect = NextResponse.redirect(loginUrl)
-    redirect.headers.set('x-request-id', requestId)
-    return redirect
+  if (isCompteRoute) {
+    if (!isLoggedIn) {
+      const loginUrl = new URL(withLocale('/auth/login'), nextUrl)
+      loginUrl.searchParams.set('callbackUrl', withLocale('/compte'))
+      const redirect = NextResponse.redirect(loginUrl)
+      redirect.headers.set('x-request-id', requestId)
+      return redirect
+    }
+    if (isAdmin) {
+      const adminUrl = new URL(withLocale('/admin'), nextUrl)
+      const redirect = NextResponse.redirect(adminUrl)
+      redirect.headers.set('x-request-id', requestId)
+      return redirect
+    }
   }
 
   // ── 5. Run next-intl middleware for localized routing ───────────────────
