@@ -117,7 +117,7 @@ export function EngineSpecFinder({ onClose }: EngineSpecFinderProps) {
   }
 
   return (
-    <div id="oil-finder" className="relative z-10 mx-auto w-full max-w-4xl overflow-hidden rounded-2xl border border-white/10 bg-brand-card/60 backdrop-blur-xl shadow-2xl ring-1 ring-white/5">
+    <div className="relative z-10 mx-auto w-full max-w-4xl overflow-hidden rounded-2xl border border-white/10 bg-brand-card/60 backdrop-blur-xl shadow-2xl ring-1 ring-white/5">
       {/* Header */}
       <div className="relative border-b border-white/10 bg-black/40 p-6 md:p-8">
         <div className="relative z-10 flex items-start gap-5 sm:items-center">
