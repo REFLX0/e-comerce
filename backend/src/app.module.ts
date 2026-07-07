@@ -17,6 +17,7 @@ import { HealthModule } from './health/health.module'
 import { CouponsModule } from './coupons/coupons.module'
 import { TicketsModule } from './tickets/tickets.module'
 import { WishlistModule } from './wishlist/wishlist.module'
+import { NotificationsModule } from './notifications/notifications.module'
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { WishlistModule } from './wishlist/wishlist.module'
     CouponsModule,
     TicketsModule,
     WishlistModule,
+    NotificationsModule,
   ],
 })
 export class AppModule {}

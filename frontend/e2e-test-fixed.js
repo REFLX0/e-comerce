@@ -47,25 +47,36 @@ function record(name, fn) {
   // ----------------------------------------------------
   // 2. NAVIGATION
   // ----------------------------------------------------
-  await record('Mega menu opens and category navigation works', async () => {
-    await page.hover('button:has-text("All Categories")');
-    await page.waitForTimeout(1000);
-
-    const menuCategoryLink = page.locator('nav a:has-text("Automobile")').first();
-    await menuCategoryLink.click();
-    try {
-      await page.waitForURL('**/categorie/automobile', { timeout: 5000 });
-    } catch {
-      await page.goto(`${BASE}/categorie/automobile`, { waitUntil: 'load', timeout: 10000 });
-    }
-
-    // Wait for client-side data to load (not just the shell)
-    await page.waitForTimeout(3000);
-    const title = await page.title();
-    // Allow the page to render even if data is still being fetched
-    // The page may show "Chargement..." initially but should resolve
+  // ----------------------------------------------------
+  // 2a. CATEGORY NAV — Direct link (no children)
+  // ----------------------------------------------------
+  await record('Category without children navigates directly (Filtres)', async () => {
+    await page.goto(BASE, { waitUntil: 'load', timeout: 20000 });
+    const filtresLink = page.locator('nav a:has-text("Filtres")');
+    await filtresLink.waitFor({ state: 'visible', timeout: 5000 });
+    await filtresLink.click();
+    await page.waitForURL('**/categorie/filtres', { timeout: 10000 });
+    await page.waitForTimeout(2000);
     const bodyText = await page.locator('body').innerText();
-    assert.ok(!/introuvable|404/i.test(bodyText), `Category page shows 404: ${title}`);
+    assert.ok(!/introuvable|404/i.test(bodyText), 'Category page shows 404');
+  });
+
+  // ----------------------------------------------------
+  // 2b. CATEGORY NAV — Dropdown (has children)
+  // ----------------------------------------------------
+  await record('Category with children opens dropdown (Automobile)', async () => {
+    await page.goto(BASE, { waitUntil: 'load', timeout: 20000 });
+    const autoButton = page.locator('nav button:has-text("Automobile")');
+    await autoButton.waitFor({ state: 'visible', timeout: 5000 });
+    await autoButton.hover();
+    await page.waitForSelector('text=Tous les produits', { timeout: 3000 });
+
+    const viewAllLink = page.locator('a:has-text("Tous les produits")').first();
+    await viewAllLink.click();
+    await page.waitForURL('**/categorie/automobile', { timeout: 10000 });
+    await page.waitForTimeout(2000);
+    const bodyText = await page.locator('body').innerText();
+    assert.ok(!/introuvable|404/i.test(bodyText), 'Category page shows 404');
   });
 
   // ----------------------------------------------------

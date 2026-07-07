@@ -79,7 +79,7 @@ export default function LoginForm() {
     <div className="section-padding bg-brand-surface flex min-h-[80vh] items-center justify-center py-16">
       <div className="shadow-card border-brand-surface-dark w-full max-w-md rounded-3xl border bg-white p-8">
         <div className="mb-2 text-center">
-          <Link href={`/${currentLocale}`} className="inline-flex items-center gap-1 text-sm text-gray-400 hover:text-brand-primary transition-colors mb-4">
+           <Link href="/" className="inline-flex items-center gap-1 text-sm text-gray-400 hover:text-brand-primary transition-colors mb-4">
             <ArrowRight size={14} className="rotate-180" /> Retour au site
           </Link>
           <h1 className="font-display text-brand-primary mb-2 text-3xl font-bold">

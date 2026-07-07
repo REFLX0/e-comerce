@@ -6,11 +6,12 @@ import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { useAuthStore } from '@/lib/store/auth.store'
 import { authApi } from '@/lib/api/auth'
+import { NotificationDropdown } from '@/components/admin/NotificationDropdown'
 import Image from 'next/image'
 import {
   LayoutDashboard, ShoppingCart, Package, Users, Tag,
   Truck, CreditCard, Star, Settings, ChevronRight,
-  Menu, BarChart2, FolderTree, Layers, Bell, LogOut,
+  Menu, BarChart2, FolderTree, Layers, LogOut,
   Search, ChevronDown, LifeBuoy
 } from 'lucide-react'
 
@@ -416,10 +417,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
             </div>
 
             {/* Notifications */}
-            <button className="relative rounded-xl p-2 text-gray-500 hover:bg-gray-100 transition-colors">
-              <Bell size={20} />
-              <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-red-500 ring-2 ring-white" />
-            </button>
+            <NotificationDropdown />
 
             {/* Avatar */}
             <div className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-accent font-bold text-sm text-black">

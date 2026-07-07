@@ -44,24 +44,28 @@ function parseCsv(content: string): CsvRow[] {
   if (lines.length === 0) return []
 
   let startIndex = 0
-  const first = parseCsvLine(lines[0])
-  // Skip header if it matches known header pattern
-  if (first.length >= 4 && ['make', 'model', 'engine', 'product_sku'].includes(first[0].toLowerCase().replace(/^\uFEFF/, ''))) {
-    startIndex = 1
+  const headerLine = lines[0]
+  if (headerLine) {
+    const first = parseCsvLine(headerLine)
+    if (first.length >= 4 && ['make', 'model', 'engine', 'product_sku'].includes(first[0]?.toLowerCase().replace(/^\uFEFF/, '') ?? '')) {
+      startIndex = 1
+    }
   }
 
   const rows: CsvRow[] = []
   for (let i = startIndex; i < lines.length; i++) {
-    const cols = parseCsvLine(lines[i])
+    const line = lines[i]
+    if (!line) continue
+    const cols = parseCsvLine(line)
     if (cols.length < 4) {
-      console.warn(`  [SKIP] Line ${i + 1}: expected 4 columns, got ${cols.length} — "${lines[i].trim()}"`)
+      console.warn(`  [SKIP] Line ${i + 1}: expected 4 columns, got ${cols.length} — "${line.trim()}"`)
       continue
     }
     rows.push({
-      make: cols[0].replace(/^\uFEFF/, '').trim(),
-      model: cols[1].trim(),
-      engine: cols[2].trim(),
-      sku: cols[3].trim(),
+      make: (cols[0] ?? '').replace(/^\uFEFF/, '').trim(),
+      model: (cols[1] ?? '').trim(),
+      engine: (cols[2] ?? '').trim(),
+      sku: (cols[3] ?? '').trim(),
     })
   }
   return rows
@@ -107,7 +111,8 @@ async function main() {
 
   for (let i = 0; i < rows.length; i++) {
     const row = rows[i]
-    const lineNum = i + 2 // +2 because 1-indexed and header
+    if (!row) continue
+    const lineNum = i + 2
     const prefix = `[${lineNum}] ${row.make} / ${row.model} / ${row.engine} → ${row.sku}`
 
     try {

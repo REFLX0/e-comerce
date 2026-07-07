@@ -283,6 +283,20 @@ model Review {
 }
 
 // ─────────────────────────────────────────
+//  NOTIFICATIONS (Admin)
+// ─────────────────────────────────────────
+
+model Notification {
+  id        String   @id @default(cuid())
+  type      String   // "new_order" | "low_stock" | "new_review" | "new_ticket"
+  title     String
+  message   String?
+  link      String?  // relative admin URL e.g. "/admin/orders/xxx"
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+// ─────────────────────────────────────────
 //  COUPONS
 // ─────────────────────────────────────────
 

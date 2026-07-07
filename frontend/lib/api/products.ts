@@ -31,7 +31,7 @@ export const productsApi = {
       { ...filters, brandSlug } as Record<string, string | number | boolean | undefined>
     ),
 
-  search: (query: string, limit = 10) => apiGet<Product[]>('/products/search', { q: query, limit }),
+  search: (query: string, limit = 10) => apiGet<Product[]>('/search/products', { q: query, limit }),
 
   getCompatible: (make: string, model: string, engine?: string) =>
     apiGet<Product[]>('/vehicles/compatible', { make, model, engine }),

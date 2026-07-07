@@ -52,8 +52,10 @@ export class AdminService {
 
   async createProduct(dto: CreateProductDto) {
     const { price, brandId, categoryId, stock, ...rest } = dto
+    const sku = dto.sku || `SKU-${dto.slug || dto.nameFr}-${Date.now()}`
     const data: Prisma.ProductCreateInput = {
       ...rest,
+      sku,
       brand: { connect: { id: brandId } },
       category: { connect: { id: categoryId } },
       isPublished: dto.isPublished ?? true,
@@ -66,7 +68,7 @@ export class AdminService {
           volume: 'default',
           price,
           stockQty: stock ?? 0,
-          skuVariant: `${dto.sku}-default`,
+          skuVariant: `${sku}-default`,
         },
       }
     }

@@ -13,6 +13,7 @@
 
 import {
   CircuitBreaker,
+  HttpClientError,
   backendApiBreaker,
 } from './circuit-breaker'
 
@@ -206,6 +207,9 @@ export function createApiClient(opts: ApiClientOptions) {
         const requestId = res.headers.get('x-request-id') ?? undefined
         if (!res.ok) {
           const data = await res.json().catch(() => null)
+          if (res.status >= 400 && res.status < 500) {
+            throw new HttpClientError(res.status, `API ${res.status} on ${path}`)
+          }
           throw new ApiError(res.status, `API ${res.status} on ${path}`, undefined, requestId)
         }
         return res.json() as Promise<T>
@@ -227,8 +231,15 @@ export function createApiClient(opts: ApiClientOptions) {
 }
 
 // ── Default resilient backend client ──────────────────────────────────────
+function resolveBackendUrl(): string {
+  if (typeof window === 'undefined' && typeof process !== 'undefined') {
+    return process.env.API_URL || process.env.NEXT_PUBLIC_API_URL || 'http://nginx:8082/api'
+  }
+  return process.env.NEXT_PUBLIC_API_URL || '/api'
+}
+
 export const backendClient = createApiClient({
-  baseUrl: process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000/api',
+  baseUrl: resolveBackendUrl(),
   timeoutMs: DEFAULT_TIMEOUT_MS,
   retries: 2,
   breaker: backendApiBreaker,

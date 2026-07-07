@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from 'react'
-import { Search, Loader2, X } from 'lucide-react'
+import { Search, Loader2, X, Sparkles } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useQuery } from '@tanstack/react-query'
 import { productsApi } from '@/lib/api/products'
@@ -15,14 +15,19 @@ export function GlobalSearch() {
   const router = useRouter()
   const searchRef = useRef<HTMLDivElement>(null)
   
-  // Debounce search query to avoid spamming the API
   const debouncedQuery = useDebounce(query, 300)
 
   const { data: results, isFetching } = useQuery({
     queryKey: ['search', debouncedQuery],
     queryFn: () => productsApi.search(debouncedQuery, 5),
     enabled: debouncedQuery.length > 2,
-    staleTime: 1000 * 60 * 5, // 5 minutes
+    staleTime: 1000 * 60 * 5,
+  })
+
+  const { data: fallbackProducts } = useQuery({
+    queryKey: ['search-fallback'],
+    queryFn: () => productsApi.getBestSellers(3),
+    staleTime: 1000 * 60 * 5,
   })
 
   // Close dropdown on click outside
@@ -134,9 +139,44 @@ export function GlobalSearch() {
                 </button>
               </div>
             ) : (
-              <div className="py-8 px-4 text-center">
-                <p className="text-gray-900 font-medium text-sm mb-1">Aucun résultat trouvé</p>
-                <p className="text-gray-500 text-xs">Essayez d'autres mots clés pour "{query}"</p>
+              <div>
+                <div className="py-6 px-4 text-center border-b border-brand-border/50">
+                  <p className="text-gray-900 font-medium text-sm mb-1">Aucun résultat pour "{query}"</p>
+                  <p className="text-gray-500 text-xs">Essayez d'autres mots clés</p>
+                </div>
+                {fallbackProducts && fallbackProducts.length > 0 && (
+                  <div className="p-2">
+                    <span className="flex items-center gap-1.5 text-xs font-semibold text-brand-primary/60 uppercase tracking-wider px-3 py-2">
+                      <Sparkles size={12} /> Produits populaires
+                    </span>
+                    {fallbackProducts.map((product) => (
+                      <Link
+                        key={product.id}
+                        href={`/produit/${product.slug}`}
+                        onClick={() => setIsOpen(false)}
+                        className="group/item flex items-center gap-3 rounded-lg p-2 transition-colors duration-150 hover:bg-brand-surface"
+                      >
+                        <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-md bg-brand-surface">
+                          {product.images?.[0] ? (
+                            <Image src={product.images[0]} alt={product.name} fill className="object-cover" />
+                          ) : (
+                            <div className="h-full w-full bg-gray-200" />
+                          )}
+                        </div>
+                        <div className="flex flex-col min-w-0">
+                          <span className="text-sm font-semibold text-brand-primary truncate group-hover/item:text-brand-accent transition-colors">
+                            {product.name}
+                          </span>
+                          {product.brand && (
+                            <span className="text-xs text-gray-500 uppercase tracking-widest font-medium">
+                              {product.brand.name}
+                            </span>
+                          )}
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
           </div>

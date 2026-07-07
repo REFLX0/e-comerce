@@ -21,6 +21,17 @@ export class CircuitBreakerOpenError extends Error {
   }
 }
 
+/** Error type for 4xx client errors — should NOT trip the circuit breaker */
+export class HttpClientError extends Error {
+  constructor(
+    public status: number,
+    message: string,
+  ) {
+    super(message)
+    this.name = 'HttpClientError'
+  }
+}
+
 type State = 'CLOSED' | 'OPEN' | 'HALF_OPEN'
 
 interface CircuitBreakerOptions {
@@ -52,7 +63,6 @@ export class CircuitBreaker {
       const elapsed = Date.now() - (this.lastFailureTime ?? 0)
       if (elapsed >= this.recoveryTimeMs) {
         this.state = 'HALF_OPEN'
-        // Fall through to attempt the request
       } else {
         throw new CircuitBreakerOpenError(this.name)
       }
@@ -63,6 +73,10 @@ export class CircuitBreaker {
       this.onSuccess()
       return result
     } catch (err) {
+      // 4xx client errors (validation, auth) should NOT open the breaker
+      if (err && typeof err === 'object' && 'status' in err && typeof (err as any).status === 'number' && (err as any).status >= 400 && (err as any).status < 500) {
+        throw err
+      }
       this.onFailure()
       throw err
     }
@@ -115,8 +129,8 @@ export class CircuitBreaker {
 
 export const backendApiBreaker = new CircuitBreaker({
   name: 'backend-api',
-  failureThreshold: 5,
-  recoveryTimeMs: 30_000,
+  failureThreshold: 10,
+  recoveryTimeMs: 15_000,
 })
 
 export const cloudinaryBreaker = new CircuitBreaker({

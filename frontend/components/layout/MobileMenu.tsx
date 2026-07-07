@@ -2,24 +2,28 @@
 
 import { useQuery } from '@tanstack/react-query'
 import { categoriesApi } from '@/lib/api/categories'
-import { Menu, X, ChevronRight, Home, BookOpen, Info, Phone, Tag, Search } from 'lucide-react'
+import { Menu, X, ChevronRight, ChevronDown, ChevronUp, Home, BookOpen, Info, Phone, Tag, Search } from 'lucide-react'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@/components/ui/accordion'
 import { Link } from '@/i18n/routing'
 import { useState } from 'react'
 import Image from 'next/image'
 
 export default function MobileMenu() {
   const [open, setOpen] = useState(false)
+  const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set())
   const { data: categories } = useQuery({
     queryKey: ['categories-tree'],
     queryFn: categoriesApi.getTree,
   })
+
+  const toggleCategory = (id: string) => {
+    setExpandedCategories(prev => {
+      const next = new Set(prev)
+      if (next.has(id)) next.delete(id)
+      else next.add(id)
+      return next
+    })
+  }
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -81,39 +85,66 @@ export default function MobileMenu() {
           </div>
 
           {categories && categories.length > 0 ? (
-            <Accordion className="w-full space-y-0.5">
-              {categories.map((category) => (
-                <AccordionItem key={category.id} value={category.id} className="border-0">
-                  <AccordionTrigger className="flex min-h-11 w-full items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-brand-primary/76 transition-all duration-150 hover:bg-brand-surface hover:text-brand-primary hover:no-underline [&[data-state=open]]:bg-brand-surface [&[data-state=open]]:text-brand-primary">
-                    <Tag size={17} className="shrink-0 text-brand-accent" />
-                    {category.name}
-                  </AccordionTrigger>
-                  <AccordionContent>
-                    <div className="ml-4 mt-1 mb-2 flex flex-col space-y-0.5 border-l-2 border-brand-accent/25 pl-4">
-                      <Link
-                        href={`/categorie/${category.slug}`}
-                        className="flex min-h-11 items-center gap-2 rounded-lg px-3 py-2 text-sm text-brand-muted transition-all duration-150 hover:bg-brand-surface hover:text-brand-primary"
-                        onClick={() => setOpen(false)}
-                      >
-                        <ChevronRight size={13} />
-                        Tous les produits
-                      </Link>
-                      {category.children?.map((sub) => (
+            <div className="flex flex-col gap-0.5">
+              {categories.map((category) => {
+                const hasChildren = category.children && category.children.length > 0
+                const isExpanded = expandedCategories.has(category.id)
+                return hasChildren ? (
+                  <div key={category.id} className="flex flex-col">
+                    <button
+                      onClick={() => toggleCategory(category.id)}
+                      className="flex min-h-11 w-full items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-brand-primary/76 transition-all duration-150 hover:bg-brand-surface hover:text-brand-primary"
+                    >
+                      <Tag size={17} className="shrink-0 text-brand-accent" />
+                      <span className="flex-1 text-left">{category.name}</span>
+                      {isExpanded ? (
+                        <ChevronUp size={14} className="shrink-0 text-brand-muted transition-transform duration-150" />
+                      ) : (
+                        <ChevronDown size={14} className="shrink-0 text-brand-muted transition-transform duration-150" />
+                      )}
+                    </button>
+                    <div
+                      className={`overflow-hidden transition-all duration-200 ease-in-out ${
+                        isExpanded ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+                      }`}
+                    >
+                      <div className="ml-4 mb-1 flex flex-col gap-0.5 border-l-2 border-brand-accent/25 pl-4">
                         <Link
-                          key={sub.id}
-                          href={`/categorie/${sub.slug}`}
+                          href={`/categorie/${category.slug}`}
                           className="flex min-h-11 items-center gap-2 rounded-lg px-3 py-2 text-sm text-brand-muted transition-all duration-150 hover:bg-brand-surface hover:text-brand-primary"
                           onClick={() => setOpen(false)}
                         >
                           <ChevronRight size={13} />
-                          {sub.name}
+                          Tous les produits
                         </Link>
-                      ))}
+                        {category.children?.map((sub) => (
+                          <Link
+                            key={sub.id}
+                            href={`/categorie/${sub.slug}`}
+                            className="flex min-h-11 items-center gap-2 rounded-lg px-3 py-2 text-sm text-brand-muted transition-all duration-150 hover:bg-brand-surface hover:text-brand-primary"
+                            onClick={() => setOpen(false)}
+                          >
+                            <ChevronRight size={13} />
+                            {sub.name}
+                          </Link>
+                        ))}
+                      </div>
                     </div>
-                  </AccordionContent>
-                </AccordionItem>
-              ))}
-            </Accordion>
+                  </div>
+                ) : (
+                  <Link
+                    key={category.id}
+                    href={`/categorie/${category.slug}`}
+                    className="flex min-h-11 w-full items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-brand-primary/76 transition-all duration-150 hover:bg-brand-surface hover:text-brand-primary"
+                    onClick={() => setOpen(false)}
+                  >
+                    <Tag size={17} className="shrink-0 text-brand-accent" />
+                    <span className="flex-1">{category.name}</span>
+                    <ChevronRight size={14} className="shrink-0 text-brand-muted" />
+                  </Link>
+                )
+              })}
+            </div>
           ) : (
             <Link
               href="/catalogue"

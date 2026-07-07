@@ -16,6 +16,7 @@ export default function NewProductPage() {
 
   const [nameFr, setNameFr] = useState('')
   const [slug, setSlug] = useState('')
+  const [sku, setSku] = useState('')
   const [description, setDescription] = useState('')
   const [brandId, setBrandId] = useState('')
   const [categoryId, setCategoryId] = useState('')
@@ -23,8 +24,8 @@ export default function NewProductPage() {
   const [stock, setStock] = useState('')
   const [isPublished, setIsPublished] = useState(true)
 
-  const { data: brandsData } = useQuery<any>({ queryKey: ['admin-brands'], queryFn: () => adminApi.getProducts() })
-  const { data: categoriesData } = useQuery<any>({ queryKey: ['admin-categories'], queryFn: () => adminApi.getProducts() })
+  const { data: brandsData } = useQuery<any>({ queryKey: ['brands'], queryFn: () => fetch('/api/brands').then(r => r.json()) })
+  const { data: categoriesData } = useQuery<any>({ queryKey: ['categories'], queryFn: () => fetch('/api/categories').then(r => r.json()) })
 
   const createMutation = useMutation({
     mutationFn: (body: any) => adminApi.createProduct(body),
@@ -37,12 +38,12 @@ export default function NewProductPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    if (!nameFr || !slug || !brandId || !categoryId) {
+    if (!nameFr || !slug || !sku || !brandId || !categoryId) {
       toast.error('Veuillez remplir tous les champs obligatoires')
       return
     }
     createMutation.mutate({
-      nameFr, slug, description,
+      nameFr, slug, sku, description,
       brandId, categoryId,
       price: price ? parseFloat(price) : undefined,
       stock: stock ? parseInt(stock, 10) : undefined,
@@ -75,17 +76,31 @@ export default function NewProductPage() {
             <input type="text" value={slug} onChange={e => setSlug(e.target.value)} className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-brand-accent transition-all" placeholder="huile-moteur-15w40" required />
           </div>
           <div className="space-y-1.5">
+            <label className="text-sm font-semibold text-gray-700">SKU *</label>
+            <input type="text" value={sku} onChange={e => setSku(e.target.value)} className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-brand-accent transition-all" placeholder="HUILE-15W40-001" required />
+          </div>
+          <div className="space-y-1.5">
             <label className="text-sm font-semibold text-gray-700">Description *</label>
             <textarea value={description} onChange={e => setDescription(e.target.value)} rows={3} className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-brand-accent transition-all resize-none" placeholder="Description du produit..." required />
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1.5">
               <label className="text-sm font-semibold text-gray-700">Marque *</label>
-              <input type="text" value={brandId} onChange={e => setBrandId(e.target.value)} className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-brand-accent transition-all" placeholder="ID de la marque" required />
+              <select value={brandId} onChange={e => setBrandId(e.target.value)} className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-brand-accent transition-all" required>
+                <option value="">Sélectionner une marque</option>
+                {Array.isArray(brandsData) && brandsData.map((b: any) => (
+                  <option key={b.id} value={b.id}>{b.name || b.nameFr}</option>
+                ))}
+              </select>
             </div>
             <div className="space-y-1.5">
               <label className="text-sm font-semibold text-gray-700">Catégorie *</label>
-              <input type="text" value={categoryId} onChange={e => setCategoryId(e.target.value)} className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-brand-accent transition-all" placeholder="ID de la catégorie" required />
+              <select value={categoryId} onChange={e => setCategoryId(e.target.value)} className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-brand-accent transition-all" required>
+                <option value="">Sélectionner une catégorie</option>
+                {Array.isArray(categoriesData) && categoriesData.map((c: any) => (
+                  <option key={c.id} value={c.id}>{c.nameFr || c.name}</option>
+                ))}
+              </select>
             </div>
           </div>
           <div className="grid grid-cols-2 gap-4">

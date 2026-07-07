@@ -39,7 +39,14 @@ export class ProductsService {
     const where: Prisma.ProductWhereInput = { isPublished: true }
 
     if (filters.search) {
-      where.nameFr = { contains: filters.search, mode: 'insensitive' }
+      where.OR = [
+        { nameFr: { contains: filters.search, mode: 'insensitive' } },
+        { description: { contains: filters.search, mode: 'insensitive' } },
+        { sku: { contains: filters.search, mode: 'insensitive' } },
+        { brand: { name: { contains: filters.search, mode: 'insensitive' } } },
+        { category: { nameFr: { contains: filters.search, mode: 'insensitive' } } },
+        { specs: { viscosity: { contains: filters.search, mode: 'insensitive' } } },
+      ]
     }
     if (filters.categorySlug) {
       where.category = { slug: filters.categorySlug }

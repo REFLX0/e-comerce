@@ -1,11 +1,15 @@
 import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common'
 import { PrismaService } from '../prisma/prisma.service'
+import { NotificationsService } from '../notifications/notifications.service'
 import { CreateOrderDto } from './dto/create-order.dto'
 import { v4 as uuidv4 } from 'uuid'
 
 @Injectable()
 export class OrdersService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly notifications: NotificationsService,
+  ) {}
 
   async create(dto: CreateOrderDto, userId?: string) {
     // Idempotency: prevent duplicate orders on double-submit
@@ -74,6 +78,14 @@ export class OrdersService {
 
       return created
     })
+
+    // Notify admins about new order
+    await this.notifications.create({
+      type: 'new_order',
+      title: `Nouvelle commande #${order.id.slice(0, 8)}`,
+      message: `${totalAmount.toFixed(2)} TND — ${dto.shipping.fullName}`,
+      link: `/admin/orders`,
+    }).catch(() => {})
 
     return order
   }
