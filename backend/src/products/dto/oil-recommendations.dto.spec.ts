@@ -4,9 +4,9 @@ import { plainToInstance } from 'class-transformer'
 import { OilRecommendationsDto } from './oil-recommendations.dto'
 
 describe('OilRecommendationsDto', () => {
-  it('accepts lowercase type and fuelType (as frontend sends) and transforms to uppercase', async () => {
+  it('accepts lowercase vehicleType and fuelType (as frontend sends) and transforms to uppercase', async () => {
     const dto = plainToInstance(OilRecommendationsDto, {
-      type: 'car',
+      vehicleType: 'automobile',
       cylinders: 4,
       power: 90,
       fuelType: 'essence',
@@ -15,13 +15,13 @@ describe('OilRecommendationsDto', () => {
     const errors = await validate(dto)
 
     expect(errors).toHaveLength(0)
-    expect(dto.type).toBe('CAR')
+    expect(dto.vehicleType).toBe('AUTOMOBILE')
     expect(dto.fuelType).toBe('ESSENCE')
   })
 
-  it('rejects garbage type value', async () => {
+  it('rejects garbage vehicleType value', async () => {
     const dto = plainToInstance(OilRecommendationsDto, {
-      type: 'spaceship',
+      vehicleType: 'spaceship',
       cylinders: 4,
       power: 90,
       fuelType: 'essence',
@@ -30,12 +30,12 @@ describe('OilRecommendationsDto', () => {
     const errors = await validate(dto)
 
     expect(errors.length).toBeGreaterThan(0)
-    expect(errors[0].property).toBe('type')
+    expect(errors[0].property).toBe('vehicleType')
   })
 
   it('rejects garbage fuelType value', async () => {
     const dto = plainToInstance(OilRecommendationsDto, {
-      type: 'car',
+      vehicleType: 'automobile',
       cylinders: 4,
       power: 90,
       fuelType: 'hydrogen',
@@ -49,7 +49,7 @@ describe('OilRecommendationsDto', () => {
 
   it('accepts uppercase values directly (internal API call)', async () => {
     const dto = plainToInstance(OilRecommendationsDto, {
-      type: 'CAR',
+      vehicleType: 'AUTOMOBILE',
       cylinders: 4,
       power: 90,
       fuelType: 'ESSENCE',

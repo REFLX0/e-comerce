@@ -5,7 +5,7 @@ import { VehicleType, FuelType } from '@prisma/client'
 export class OilRecommendationsDto {
   @Transform(({ value }) => (value as string)?.toUpperCase())
   @IsEnum(VehicleType)
-  type: VehicleType
+  vehicleType: VehicleType
 
   @IsOptional()
   @IsString()

@@ -6,20 +6,20 @@ import { Button } from '@/components/ui/button'
 import { useRouter, usePathname } from 'next/navigation'
 import type { FuelType } from '@/lib/types'
 
-type VehicleType = 'car' | 'moto' | 'truck' | 'agri'
+type VehicleType = 'automobile' | 'moto' | 'poids_lourd' | 'agricole'
 
 const VEHICLE_TYPES = [
-  { id: 'car' as const, icon: Car, label: 'Automobile' },
+  { id: 'automobile' as const, icon: Car, label: 'Automobile' },
   { id: 'moto' as const, icon: Bike, label: 'Moto' },
-  { id: 'truck' as const, icon: Truck, label: 'Poids Lourd' },
-  { id: 'agri' as const, icon: Tractor, label: 'Agricole' },
+  { id: 'poids_lourd' as const, icon: Truck, label: 'Poids Lourd' },
+  { id: 'agricole' as const, icon: Tractor, label: 'Agricole' },
 ]
 
 const CYLINDER_OPTIONS: Record<VehicleType, number[]> = {
-  car: [3, 4, 6, 8],
+  automobile: [3, 4, 6, 8],
   moto: [1, 2, 3, 4, 6],
-  truck: [4, 6, 8],
-  agri: [3, 4, 6],
+  poids_lourd: [4, 6, 8],
+  agricole: [3, 4, 6],
 }
 
 const FUEL_OPTIONS: { id: FuelType; label: string }[] = [
@@ -128,7 +128,7 @@ export function EngineSpecFinder({ onClose }: EngineSpecFinderProps) {
   const handleSearch = () => {
     if (!canSubmit) return
     const params = new URLSearchParams()
-    params.set('type', vehicleType)
+    params.set('vehicleType', vehicleType)
     params.set('cylinders', String(cylinders))
     params.set('power', String(power))
     params.set('fuelType', fuelType)

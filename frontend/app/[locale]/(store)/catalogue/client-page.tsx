@@ -28,7 +28,7 @@ export default function CataloguePage() {
   const vehicleEngine = searchParams.get('engine')
   const isVehicleSearch = !!(vehicleMake && vehicleModel)
 
-  const specType = searchParams.get('type')
+  const specType = searchParams.get('vehicleType')
   const specCylinders = searchParams.get('cylinders')
   const specPower = searchParams.get('power')
   const specFuelType = searchParams.get('fuelType')
@@ -38,7 +38,7 @@ export default function CataloguePage() {
 
   const filters: Record<string, string | number | boolean | undefined> = {}
   searchParams.forEach((value, key) => {
-    if (['make', 'model', 'engine', 'type', 'cylinders', 'power', 'fuelType'].includes(key)) return
+    if (['make', 'model', 'engine', 'vehicleType', 'cylinders', 'power', 'fuelType'].includes(key)) return
     if (value === 'true') filters[key] = true
     else if (value === 'false') filters[key] = false
     else if (!isNaN(Number(value)) && key.includes('price')) filters[key] = Number(value)
@@ -50,7 +50,7 @@ export default function CataloguePage() {
     queryKey: isVehicleSearch
       ? ['compatible-products', vehicleMake, vehicleModel, vehicleEngine]
       : isSpecSearch
-        ? ['oil-recommendations', specType, specCylinders, specPower, specFuelType, specType === searchParams.get('type') ? searchParams.get('make') : undefined]
+        ? ['oil-recommendations', specType, specCylinders, specPower, specFuelType, searchParams.get('make') || undefined]
         : ['products', filters],
     queryFn: () => {
       if (isVehicleSearch) {
@@ -58,7 +58,7 @@ export default function CataloguePage() {
       }
       if (isSpecSearch) {
         return productsApi.getOilRecommendations({
-          type: specType!,
+          vehicleType: specType!,
           cylinders: Number(specCylinders),
           power: Number(specPower),
           fuelType: specFuelType as any,

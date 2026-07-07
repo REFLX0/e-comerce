@@ -166,7 +166,7 @@ export class ProductsService {
     }
 
     const specsWhere: Prisma.ProductSpecsWhereInput = {
-      vehicleTypes: { has: dto.type },
+      vehicleTypes: { has: dto.vehicleType },
       fuelTypes: { has: dto.fuelType },
     }
 

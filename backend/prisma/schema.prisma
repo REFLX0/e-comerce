@@ -47,10 +47,10 @@ enum TicketStatus {
 }
 
 enum VehicleType {
-  CAR
+  AUTOMOBILE
   MOTO
-  TRUCK
-  AGRI
+  POIDS_LOURD
+  AGRICOLE
 }
 
 enum FuelType {
@@ -233,7 +233,7 @@ model VehicleModel {
   id             String               @id @default(cuid())
   makeId         String
   make           VehicleMake          @relation(fields: [makeId], references: [id], onDelete: Cascade)
-  vehicleType    VehicleType @default(CAR)
+  vehicleType    VehicleType @default(AUTOMOBILE)
   name           String               // e.g., "Clio IV"
   slug           String               @unique
   compatibilities VehicleCompatibility[]

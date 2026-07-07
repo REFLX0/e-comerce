@@ -4,7 +4,7 @@ export type ProductStatus = 'in_stock' | 'low_stock' | 'out_of_stock' | 'on_orde
 export type UserRole = 'customer' | 'pro' | 'admin'
 export type OrderStatus =
   'pending' | 'confirmed' | 'processing' | 'shipped' | 'delivered' | 'cancelled'
-export type VehicleType = 'car' | 'moto' | 'truck' | 'agriculture' | 'industry' | 'marine'
+export type VehicleType = 'automobile' | 'moto' | 'poids_lourd' | 'agricole'
 export type FuelType = 'essence' | 'diesel'
 
 // ─── Core entities ────────────────────────────────────────────────────────

@@ -36,7 +36,7 @@ export const productsApi = {
   getCompatible: (make: string, model: string, engine?: string) =>
     apiGet<Product[]>('/vehicles/compatible', { make, model, engine }),
 
-  getOilRecommendations: (params: { type: string; cylinders: number; power: number; fuelType: FuelType; make?: string }) =>
+  getOilRecommendations: (params: { vehicleType: string; cylinders: number; power: number; fuelType: FuelType; make?: string }) =>
     apiGet<{ data: Product[]; total: number }>('/products/oil-recommendations', params),
 }
 
