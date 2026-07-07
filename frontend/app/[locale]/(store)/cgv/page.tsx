@@ -1,8 +1,8 @@
 import { Breadcrumb } from '@/components/common/Breadcrumb'
 
 export const metadata = {
-  title: 'Conditions Générales de Vente | BestLub Tunisie',
-  description: 'Consultez les conditions générales de vente de BestLub Tunisie.',
+  title: 'Conditions Générales de Vente | KiosqueTN',
+  description: 'Consultez les conditions générales de vente de KiosqueTN.',
 }
 
 export default function CgvPage() {
@@ -25,7 +25,7 @@ export default function CgvPage() {
             <h2 className="text-brand-primary font-display">Article 1 – Objet</h2>
             <p>
               Les présentes conditions générales de vente (CGV) régissent l&apos;ensemble des
-              transactions effectuées sur le site BestLub.tn. Toute commande implique
+              transactions effectuées sur le site KiosqueTN.tn. Toute commande implique
               l&apos;acceptation sans réserve des présentes CGV.
             </p>
           </section>
@@ -34,7 +34,7 @@ export default function CgvPage() {
             <h2 className="text-brand-primary font-display">Article 2 – Produits</h2>
             <p>
               Les produits proposés à la vente sont décrits avec la plus grande exactitude possible.
-              Les photographies des produits ne sont pas contractuelles. BestLub s&apos;engage à
+              Les photographies des produits ne sont pas contractuelles. KiosqueTN s&apos;engage à
               proposer uniquement des produits 100% authentiques et certifiés par les marques
               partenaires.
             </p>
@@ -43,7 +43,7 @@ export default function CgvPage() {
           <section>
             <h2 className="text-brand-primary font-display">Article 3 – Prix</h2>
             <p>
-              Les prix sont indiqués en Dinar Tunisien (DT) toutes taxes comprises (TTC). BestLub se
+              Les prix sont indiqués en Dinar Tunisien (DT) toutes taxes comprises (TTC). KiosqueTN se
               réserve le droit de modifier ses prix à tout moment, mais les produits seront facturés
               sur la base des tarifs en vigueur au moment de la validation de la commande.
             </p>
@@ -52,9 +52,9 @@ export default function CgvPage() {
           <section>
             <h2 className="text-brand-primary font-display">Article 4 – Commandes</h2>
             <p>
-              Le client passe commande sur le site internet bestlub.tn. La validation de la commande
+              Le client passe commande sur le site internet kiosquetn.tn. La validation de la commande
               implique l&apos;acceptation des présentes CGV et constitue un contrat de vente.
-              BestLub confirmera la commande par email.
+              KiosqueTN confirmera la commande par email.
             </p>
           </section>
 
@@ -89,7 +89,7 @@ export default function CgvPage() {
             <h2 className="text-brand-primary font-display">Article 8 – Réclamations</h2>
             <p>
               Pour toute réclamation, le client peut contacter le service client par email à
-              contact@bestlub.tn ou par téléphone au +216 71 123 456.
+              contact@kiosquetn.tn ou par téléphone au +216 71 123 456.
             </p>
           </section>
         </div>

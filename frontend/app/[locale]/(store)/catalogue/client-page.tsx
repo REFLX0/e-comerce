@@ -206,7 +206,7 @@ export default function CataloguePage() {
                     Vous ne trouvez pas votre véhicule&nbsp;? Essayez la recherche par caractéristiques moteur.
                   </p>
                   <Link
-                    href={`/${locale}/#engine-spec-finder`}
+                    href={`/${locale}/#oil-finder`}
                     className="inline-flex items-center gap-2 rounded-lg border border-brand-accent/30 bg-brand-accent/5 px-5 py-2.5 text-sm font-semibold text-brand-accent transition-colors hover:bg-brand-accent/10"
                   >
                     <Search size={16} />

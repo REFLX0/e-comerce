@@ -1,8 +1,8 @@
 import { Breadcrumb } from '@/components/common/Breadcrumb'
 
 export const metadata = {
-  title: 'Mentions Légales | BestLub Tunisie',
-  description: 'Mentions légales du site BestLub.tn.',
+  title: 'Mentions Légales | KiosqueTN',
+  description: 'Mentions légales du site KiosqueTN.tn.',
 }
 
 export default function MentionsLegalesPage() {
@@ -11,7 +11,7 @@ export default function MentionsLegalesPage() {
       <section className="from-brand-primary to-brand-primary-dark bg-gradient-to-br py-16 text-white">
         <div className="section-padding text-center">
           <h1 className="font-display mb-4 text-4xl font-bold md:text-5xl">Mentions Légales</h1>
-          <p className="text-white/70">Informations légales relatives au site BestLub.tn</p>
+          <p className="text-white/70">Informations légales relatives au site KiosqueTN.tn</p>
         </div>
       </section>
 
@@ -22,7 +22,7 @@ export default function MentionsLegalesPage() {
           <section>
             <h2 className="text-brand-primary font-display">Éditeur du site</h2>
             <p>
-              <strong>BestLub Tunisie</strong>
+              <strong>KiosqueTN</strong>
               <br />
               Forme juridique : SARL
               <br />
@@ -30,7 +30,7 @@ export default function MentionsLegalesPage() {
               <br />
               Téléphone : +216 71 123 456
               <br />
-              Email : contact@bestlub.tn
+              Email : contact@kiosquetn.tn
               <br />
               Registre du commerce : [Numéro RC]
               <br />
@@ -41,7 +41,7 @@ export default function MentionsLegalesPage() {
           <section>
             <h2 className="text-brand-primary font-display">Directeur de la publication</h2>
             <p>
-              Le directeur de la publication est le représentant légal de la société BestLub
+              Le directeur de la publication est le représentant légal de la société KiosqueTN
               Tunisie.
             </p>
           </section>
@@ -65,21 +65,21 @@ export default function MentionsLegalesPage() {
               etc.) est protégé par les lois relatives à la propriété intellectuelle. Toute
               reproduction, représentation, modification ou exploitation de tout ou partie du
               contenu de ce site, par quelque procédé que ce soit, sans autorisation préalable
-              écrite de BestLub, est strictement interdite.
+              écrite de KiosqueTN, est strictement interdite.
             </p>
           </section>
 
           <section>
             <h2 className="text-brand-primary font-display">Données personnelles</h2>
             <p>
-              BestLub s&apos;engage à protéger la vie privée de ses utilisateurs. Les données
+              KiosqueTN s&apos;engage à protéger la vie privée de ses utilisateurs. Les données
               personnelles collectées sur ce site sont traitées conformément à la législation
               tunisienne en vigueur relative à la protection des données personnelles. Elles ne sont
               en aucun cas cédées à des tiers.
             </p>
             <p>
               Vous disposez d&apos;un droit d&apos;accès, de rectification et de suppression de vos
-              données personnelles. Pour exercer ce droit, contactez-nous à : contact@bestlub.tn.
+              données personnelles. Pour exercer ce droit, contactez-nous à : contact@kiosquetn.tn.
             </p>
           </section>
 
@@ -95,7 +95,7 @@ export default function MentionsLegalesPage() {
           <section>
             <h2 className="text-brand-primary font-display">Limitation de responsabilité</h2>
             <p>
-              BestLub s&apos;efforce de fournir des informations aussi précises que possible.
+              KiosqueTN s&apos;efforce de fournir des informations aussi précises que possible.
               Toutefois, la société ne pourra être tenue responsable des omissions, inexactitudes ou
               carences dans la mise à jour du contenu du site.
             </p>

@@ -89,7 +89,7 @@ export function OrderSummary() {
           <a href="/cgv" target="_blank" className="underline hover:text-white">
             Conditions Générales de Vente
           </a>{' '}
-          de BestLub.
+          de KiosqueTN.
         </label>
       </div>
 

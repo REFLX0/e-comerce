@@ -63,7 +63,7 @@ const faqs = [
       },
       {
         q: 'Comment contacter le service client ?',
-        a: 'Vous pouvez nous joindre par téléphone au +216 71 123 456, par email à contact@bestlub.tn, ou via le formulaire de contact sur notre site.',
+        a: 'Vous pouvez nous joindre par téléphone au +216 71 123 456, par email à contact@kiosquetn.tn, ou via le formulaire de contact sur notre site.',
       },
     ],
   },

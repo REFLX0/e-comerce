@@ -107,7 +107,9 @@ async function readCsv(filePath: string): Promise<CsvRow[]> {
     }
     const row: any = {}
     for (let i = 0; i < headers.length; i++) {
-      row[headers[i]] = values[i]
+      const h = headers[i]
+      if (h === undefined) continue
+      row[h] = values[i]
     }
     rows.push(row as CsvRow)
   }
@@ -135,12 +137,12 @@ function findMatchingProduct(products: Array<{ id: string; nameFr: string; brand
   }
 
   // Try matching by viscosity keyword in name
-  const viscosityMatch = csvProduct.match(/(\d+W[-\s]?\d+)/i)
-  if (viscosityMatch) {
-    const viscosity = viscosityMatch[1].replace(/\s+/g, '').toUpperCase()
-    for (const p of candidates) {
-      if (normalizeName(p.nameFr).includes(viscosity.toLowerCase())) return p.id
-    }
+    const viscosityMatch = csvProduct.match(/(\d+W[-\s]?\d+)/i)
+    const viscosity = viscosityMatch?.[1]?.replace(/\s+/g, '').toUpperCase()
+    if (viscosity) {
+      for (const p of candidates) {
+        if (normalizeName(p.nameFr).includes(viscosity.toLowerCase())) return p.id
+      }
   }
 
   return null

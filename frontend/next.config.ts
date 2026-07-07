@@ -23,6 +23,10 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
+        hostname: 'www.KiosqueTN.tn',
+      },
+      {
+        protocol: 'https',
         hostname: 'images.unsplash.com',
       },
       {
@@ -124,10 +128,10 @@ const nextConfig: NextConfig = {
         source: '/api/auth/:path*',
         destination: '/api/auth/:path*',
       },
-      // Everything else under /api/ proxies to the backend through nginx
+      // Everything else under /api/ proxies to the backend
       {
         source: '/api/:path*',
-        destination: 'http://nginx:8082/api/:path*',
+        destination: 'http://localhost:8082/api/:path*',
       },
     ]
   },

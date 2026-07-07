@@ -1,10 +1,11 @@
 'use client'
 
 import { useState } from 'react'
-import { Car, Bike, Truck, Tractor, Search, ArrowLeft, Fuel, Gauge } from 'lucide-react'
+import { Car, Bike, Truck, Tractor, Search, ArrowLeft, Fuel, Gauge, CheckCircle2, ChevronRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useRouter, usePathname } from 'next/navigation'
 import type { FuelType } from '@/lib/types'
+import { motion, AnimatePresence } from 'framer-motion'
 
 type VehicleType = 'automobile' | 'moto' | 'poids_lourd' | 'agricole'
 
@@ -29,14 +30,6 @@ const FUEL_OPTIONS: { id: FuelType; label: string }[] = [
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? '/api'
 
-interface Make {
-  id: string
-  name: string
-  slug: string
-}
-
-type FetchState = 'idle' | 'loading' | 'error'
-
 interface EngineSpecFinderProps {
   onClose?: () => void
 }
@@ -45,80 +38,45 @@ export function EngineSpecFinder({ onClose }: EngineSpecFinderProps) {
   const router = useRouter()
   const pathname = usePathname()
   const locale = pathname?.split('/')[1] === 'en' ? 'en' : 'fr'
+  
   const [step, setStep] = useState(1)
+  const [direction, setDirection] = useState(1) // 1 for forward, -1 for backward
   const [vehicleType, setVehicleType] = useState<VehicleType | ''>('')
-  const [selectedMake, setSelectedMake] = useState<Make | null>(null)
   const [cylinders, setCylinders] = useState<number | ''>('')
   const [power, setPower] = useState<number | ''>('')
   const [fuelType, setFuelType] = useState<FuelType | ''>('')
 
-  const [makes, setMakes] = useState<Make[]>([])
-  const [makesState, setMakesState] = useState<FetchState>('idle')
-  const [makesRetry, setMakesRetry] = useState(0)
-
-  const [showBrandStep, setShowBrandStep] = useState(true)
-
   const cylinderChoices = vehicleType ? CYLINDER_OPTIONS[vehicleType] : []
-
   const canSubmit = vehicleType && fuelType && cylinders !== '' && power !== ''
+
+  const navigateToStep = (newStep: number) => {
+    setDirection(newStep > step ? 1 : -1)
+    setStep(newStep)
+  }
 
   const selectType = (type: VehicleType) => {
     setVehicleType(type)
-    setSelectedMake(null)
-    setMakes([])
     setCylinders('')
     setPower('')
     setFuelType('')
-    setStep(2)
-    if (showBrandStep) fetchMakes(type)
-  }
-
-  const fetchMakes = async (type: VehicleType) => {
-    setMakesState('loading')
-    try {
-      const res = await fetch(`${API}/vehicles/makes?type=${encodeURIComponent(type)}`)
-      if (!res.ok) throw new Error('Failed to fetch makes')
-      const data = await res.json()
-      setMakes(data)
-      setMakesState('idle')
-    } catch {
-      setMakes([])
-      setMakesState('error')
-    }
-  }
-
-  const skipBrand = () => {
-    setSelectedMake(null)
-    setStep(3)
-  }
-
-  const selectMake = (make: Make) => {
-    setSelectedMake(make)
-    setStep(3)
+    navigateToStep(2)
   }
 
   const selectCylinders = (value: number) => {
     setCylinders(value)
-    if (step === 3) setStep(4)
+    if (step === 2) navigateToStep(3)
   }
 
   const resetTo = (targetStep: number) => {
-    setStep(targetStep)
+    if (targetStep >= step) return
+    navigateToStep(targetStep)
     if (targetStep <= 1) {
       setVehicleType('')
-      setSelectedMake(null)
       setCylinders('')
       setPower('')
       setFuelType('')
-      setMakes([])
     }
     if (targetStep <= 2) {
-      setSelectedMake(null)
-      setCylinders('')
-      setPower('')
-      setFuelType('')
-    }
-    if (targetStep <= 3) {
       setCylinders('')
       setPower('')
       setFuelType('')
@@ -132,186 +90,239 @@ export function EngineSpecFinder({ onClose }: EngineSpecFinderProps) {
     params.set('cylinders', String(cylinders))
     params.set('power', String(power))
     params.set('fuelType', fuelType)
-    if (selectedMake) params.set('make', selectedMake.slug)
     if (onClose) onClose()
     router.push(`/${locale}/catalogue?${params.toString()}`)
   }
 
   const typeIcon = VEHICLE_TYPES.find(t => t.id === vehicleType)
 
+  const variants = {
+    initial: (direction: number) => ({
+      opacity: 0,
+      x: direction > 0 ? 30 : -30,
+      scale: 0.98,
+    }),
+    animate: {
+      opacity: 1,
+      x: 0,
+      scale: 1,
+      transition: { duration: 0.4 }
+    },
+    exit: (direction: number) => ({
+      opacity: 0,
+      x: direction < 0 ? 30 : -30,
+      scale: 0.98,
+      transition: { duration: 0.3 }
+    }),
+  }
+
   return (
-    <div id="oil-finder" className="relative z-10 mx-auto w-full max-w-4xl overflow-hidden rounded-lg border border-brand-border bg-brand-card shadow-overlay">
-      <div className="relative border-b border-brand-border bg-brand-card p-5 md:p-7">
-        <div className="relative z-10 flex items-start gap-4 sm:items-center">
-          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg border border-brand-accent/25 bg-brand-accent/10">
-            <Search size={24} className="text-brand-primary" />
+    <div id="oil-finder" className="relative z-10 mx-auto w-full max-w-4xl overflow-hidden rounded-2xl border border-white/10 bg-brand-card/60 backdrop-blur-xl shadow-2xl ring-1 ring-white/5">
+      {/* Header */}
+      <div className="relative border-b border-white/10 bg-black/40 p-6 md:p-8">
+        <div className="relative z-10 flex items-start gap-5 sm:items-center">
+          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-brand-accent/20 to-brand-accent/5 ring-1 ring-brand-accent/30 shadow-[0_0_20px_rgba(var(--brand-accent-rgb),0.2)]">
+            <Search size={26} className="text-brand-accent" />
           </div>
           <div>
-            <h2 className="font-display mb-1 text-2xl font-bold text-brand-primary md:text-3xl">Recherche par caractéristiques</h2>
-            <p className="text-sm leading-6 text-brand-muted">Sélectionnez les caractéristiques de votre moteur pour voir les huiles recommandées.</p>
+            <h2 className="mb-1.5 text-2xl font-bold tracking-tight text-white md:text-3xl">Trouver mon huile idéale</h2>
+            <p className="text-sm leading-relaxed text-gray-400">Renseignez les caractéristiques de votre moteur pour obtenir nos meilleures recommandations.</p>
           </div>
         </div>
       </div>
 
-      <div className="flex min-h-[300px] flex-col bg-brand-card p-5 md:p-7">
-        <div className="mb-8 flex gap-2">
-          {[1, 2, 3, 4].map(i => (
-            <div
-              key={i}
-              className="h-1.5 flex-1 cursor-pointer overflow-hidden rounded-full bg-brand-surface"
-              onClick={() => i < step && resetTo(i)}
+      <div className="flex min-h-[380px] flex-col bg-brand-card/40 p-6 md:p-8">
+        {/* Progress Summary Breadcrumbs */}
+        <div className="mb-8 flex items-center justify-center sm:justify-start">
+          <div className="flex items-center gap-2 rounded-full border border-white/10 bg-black/50 px-4 py-2 text-xs font-medium text-gray-400 shadow-inner">
+            <button 
+              onClick={() => resetTo(1)} 
+              className={`transition-colors ${step >= 1 ? 'text-brand-accent hover:text-brand-accent/80' : 'text-gray-600 cursor-default'}`}
+              disabled={step === 1}
             >
-              <div
-                className="h-full bg-brand-accent transition-all duration-300 ease-out"
-                style={{ width: step >= i ? '100%' : '0%' }}
-              />
-            </div>
-          ))}
+              1. Type
+            </button>
+            <ChevronRight size={14} className="text-gray-600" />
+            <button 
+              onClick={() => resetTo(2)}
+              className={`transition-colors ${step >= 2 ? 'text-brand-accent hover:text-brand-accent/80' : 'text-gray-600 cursor-default'}`}
+              disabled={step <= 2}
+            >
+              2. Cylindres
+            </button>
+            <ChevronRight size={14} className="text-gray-600" />
+            <span className={`${step >= 3 ? 'text-white' : 'text-gray-600'}`}>3. Puissance</span>
+          </div>
         </div>
 
-        {step === 1 && (
-          <div className="flex flex-1 flex-col transition-all duration-300">
-            <p className="mb-4 text-sm font-semibold uppercase tracking-normal text-brand-muted">Type de véhicule</p>
-            <div className="grid grid-cols-2 gap-3">
-              {VEHICLE_TYPES.map(type => {
-                const Icon = type.icon
-                return (
-                  <button
-                    key={type.id}
-                    onClick={() => selectType(type.id)}
-                    className="group flex min-h-20 items-center gap-3 rounded-lg border border-brand-border p-4 text-left transition-all duration-200 hover:-translate-y-0.5 hover:border-brand-accent/50 hover:bg-brand-accent/10 hover:shadow-card"
-                  >
-                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-brand-surface transition-colors duration-200 group-hover:bg-brand-accent/15">
-                      <Icon size={26} className="text-brand-primary transition-colors group-hover:text-brand-accent" />
-                    </div>
-                    <span className="text-sm font-bold text-brand-primary transition-colors group-hover:text-brand-primary sm:text-base">{type.label}</span>
-                  </button>
-                )
-              })}
-            </div>
-          </div>
-        )}
+        <div className="relative flex-1">
+          <AnimatePresence mode="wait" custom={direction}>
+            {step === 1 && (
+              <motion.div
+                key="step1"
+                custom={direction}
+                variants={variants}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                className="flex flex-1 flex-col"
+              >
+                <div className="mb-8 text-center sm:text-left">
+                  <h3 className="text-xl font-semibold text-white">Quel est votre type de véhicule ?</h3>
+                </div>
+                <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+                  {VEHICLE_TYPES.map(type => {
+                    const Icon = type.icon
+                    const isSelected = vehicleType === type.id
+                    return (
+                      <button
+                        key={type.id}
+                        onClick={() => selectType(type.id)}
+                        className={`group relative flex flex-col items-center gap-4 rounded-xl border p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl ${
+                          isSelected 
+                            ? 'border-brand-accent bg-brand-accent/10 shadow-[0_0_30px_rgba(var(--brand-accent-rgb),0.15)]' 
+                            : 'border-white/10 bg-black/40 hover:border-brand-accent/40 hover:bg-brand-accent/5'
+                        }`}
+                      >
+                        {isSelected && (
+                          <div className="absolute right-3 top-3">
+                            <CheckCircle2 size={18} className="text-brand-accent" />
+                          </div>
+                        )}
+                        <div className={`flex h-16 w-16 items-center justify-center rounded-full transition-transform duration-300 group-hover:scale-110 ${
+                          isSelected ? 'bg-brand-accent/20 text-brand-accent' : 'bg-white/5 text-gray-400 group-hover:text-brand-accent'
+                        }`}>
+                          <Icon size={32} />
+                        </div>
+                        <span className={`text-sm font-semibold tracking-wide transition-colors ${
+                          isSelected ? 'text-white' : 'text-gray-400 group-hover:text-white'
+                        }`}>
+                          {type.label}
+                        </span>
+                      </button>
+                    )
+                  })}
+                </div>
+              </motion.div>
+            )}
 
-        {step === 2 && showBrandStep && (
-          <div className="flex flex-1 flex-col transition-all duration-300">
-            <div className="mb-6 flex items-center gap-3">
-              <button onClick={() => resetTo(1)} className="flex h-11 w-11 items-center justify-center rounded-lg text-brand-muted transition-colors duration-150 hover:bg-brand-surface hover:text-brand-primary" aria-label="Revenir au type de véhicule"><ArrowLeft size={20} /></button>
-              <h3 className="text-xl font-bold text-brand-primary">Marque <span className="text-sm font-normal text-brand-muted">(optionnelle)</span></h3>
-            </div>
-            {makesState === 'loading' ? (
-              <div className="flex justify-center py-8"><div className="h-8 w-8 animate-spin rounded-full border-2 border-brand-accent border-t-transparent" /></div>
-            ) : makesState === 'error' ? (
-              <div className="flex flex-col items-center gap-3 py-8">
-                <p className="text-center text-sm text-red-500">Impossible de charger les marques.</p>
-                <Button onClick={() => { setMakesRetry(n => n + 1); fetchMakes(vehicleType as VehicleType) }} variant="outline" size="sm">Réessayer</Button>
-                <Button onClick={skipBrand} variant="link" size="sm" className="text-brand-muted">Ignorer la marque</Button>
-              </div>
-            ) : (
-              <>
-                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
-                  {makes.map(make => (
+            {step === 2 && (
+              <motion.div
+                key="step2"
+                custom={direction}
+                variants={variants}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                className="flex flex-1 flex-col"
+              >
+                <div className="mb-8 flex items-center gap-4">
+                  <button onClick={() => resetTo(1)} className="group flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-black/40 text-gray-400 transition-all hover:border-brand-accent/50 hover:text-brand-accent">
+                    <ArrowLeft size={18} className="transition-transform group-hover:-translate-x-0.5" />
+                  </button>
+                  <div>
+                    <h3 className="text-xl font-semibold text-white">Combien de cylindres ?</h3>
+                    {typeIcon && <p className="text-sm text-gray-400 mt-1">Pour {typeIcon.label.toLowerCase()}</p>}
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+                  {cylinderChoices.map(cyl => (
                     <button
-                      key={make.id}
-                      onClick={() => selectMake(make)}
-                      className="min-h-12 rounded-lg border border-brand-border p-3 text-center font-medium text-gray-700 transition-all duration-200 hover:border-brand-accent/50 hover:bg-brand-surface hover:text-brand-primary"
+                      key={cyl}
+                      onClick={() => selectCylinders(cyl)}
+                      className={`group flex min-h-24 items-center justify-center rounded-xl border text-2xl font-bold transition-all duration-300 hover:-translate-y-1 hover:shadow-xl ${
+                        cylinders === cyl
+                          ? 'border-brand-accent bg-brand-accent/10 text-white shadow-[0_0_30px_rgba(var(--brand-accent-rgb),0.15)]'
+                          : 'border-white/10 bg-black/40 text-gray-400 hover:border-brand-accent/40 hover:text-white'
+                      }`}
                     >
-                      {make.name}
+                      {cyl} <span className="ml-1 text-sm font-medium text-gray-500 group-hover:text-brand-accent/60 transition-colors">cyl.</span>
                     </button>
                   ))}
                 </div>
-                <div className="mt-4 flex justify-center">
-                  <Button onClick={skipBrand} variant="link" size="sm" className="text-brand-muted">Je ne sais pas / Passer</Button>
-                </div>
-              </>
+              </motion.div>
             )}
-          </div>
-        )}
 
-        {step === 3 && (
-          <div className="flex flex-1 flex-col transition-all duration-300">
-            <div className="mb-6 flex items-center gap-3">
-              <button onClick={() => resetTo(showBrandStep ? 2 : 1)} className="flex h-11 w-11 items-center justify-center rounded-lg text-brand-muted transition-colors duration-150 hover:bg-brand-surface hover:text-brand-primary" aria-label="Revenir"><ArrowLeft size={20} /></button>
-              <h3 className="text-xl font-bold text-brand-primary">
-                Cylindres
-                {typeIcon && <span className="ml-2 text-sm font-normal text-brand-muted">{typeIcon.label}</span>}
-              </h3>
-            </div>
-            <div className="grid grid-cols-3 gap-3 sm:grid-cols-4">
-              {cylinderChoices.map(cyl => (
-                <button
-                  key={cyl}
-                  onClick={() => selectCylinders(cyl)}
-                  className={`flex min-h-16 items-center justify-center gap-2 rounded-lg border p-4 text-lg font-bold transition-all duration-200 ${
-                    cylinders === cyl
-                      ? 'border-brand-accent bg-brand-accent/10 text-brand-primary'
-                      : 'border-brand-border text-gray-700 hover:border-brand-accent/50 hover:bg-brand-surface'
-                  }`}
-                >
-                  <span>{cyl}</span>
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {step === 4 && (
-          <div className="flex flex-1 flex-col transition-all duration-300">
-            <div className="mb-6 flex items-center gap-3">
-              <button onClick={() => resetTo(3)} className="flex h-11 w-11 items-center justify-center rounded-lg text-brand-muted transition-colors duration-150 hover:bg-brand-surface hover:text-brand-primary" aria-label="Revenir aux cylindres"><ArrowLeft size={20} /></button>
-              <h3 className="text-xl font-bold text-brand-primary">Puissance et carburant</h3>
-            </div>
-
-            <div className="mb-6">
-              <label className="mb-2 flex items-center gap-2 text-sm font-semibold text-brand-muted">
-                <Gauge size={16} />
-                Puissance (CV)
-              </label>
-              <input
-                type="number"
-                min={0}
-                max={2000}
-                value={power}
-                onChange={e => setPower(e.target.value ? Number(e.target.value) : '')}
-                placeholder="ex: 90"
-                className="w-full rounded-lg border border-brand-border bg-white p-3 text-gray-900 placeholder-gray-400 transition-colors focus:border-brand-accent focus:outline-none focus:ring-1 focus:ring-brand-accent"
-              />
-            </div>
-
-            <div className="mb-6">
-              <label className="mb-2 flex items-center gap-2 text-sm font-semibold text-brand-muted">
-                <Fuel size={16} />
-                Carburant
-              </label>
-              <div className="grid grid-cols-2 gap-3">
-                {FUEL_OPTIONS.map(fuel => (
-                  <button
-                    key={fuel.id}
-                    onClick={() => setFuelType(fuel.id)}
-                    className={`flex min-h-14 items-center justify-center gap-2 rounded-lg border p-3 text-base font-semibold transition-all duration-200 ${
-                      fuelType === fuel.id
-                        ? 'border-brand-accent bg-brand-accent/10 text-brand-primary'
-                        : 'border-brand-border text-gray-700 hover:border-brand-accent/50 hover:bg-brand-surface'
-                    }`}
-                  >
-                    {fuel.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className="mt-auto flex justify-end">
-              <Button
-                onClick={handleSearch}
-                size="lg"
-                disabled={!canSubmit}
-                className="btn-primary flex w-full items-center gap-2 sm:w-auto"
+            {step === 3 && (
+              <motion.div
+                key="step3"
+                custom={direction}
+                variants={variants}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                className="flex flex-1 flex-col"
               >
-                <Search size={18} />
-                Voir les huiles recommandées
-              </Button>
-            </div>
-          </div>
-        )}
+                <div className="mb-8 flex items-center gap-4">
+                  <button onClick={() => resetTo(2)} className="group flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-black/40 text-gray-400 transition-all hover:border-brand-accent/50 hover:text-brand-accent">
+                    <ArrowLeft size={18} className="transition-transform group-hover:-translate-x-0.5" />
+                  </button>
+                  <h3 className="text-xl font-semibold text-white">Dernières précisions</h3>
+                </div>
+
+                <div className="grid gap-8 sm:grid-cols-2">
+                  <div>
+                    <label className="mb-3 flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-gray-400">
+                      <Gauge size={16} className="text-brand-accent" />
+                      Puissance (CV)
+                    </label>
+                    <div className="relative">
+                      <input
+                        type="number"
+                        min={0}
+                        max={2000}
+                        value={power}
+                        onChange={e => setPower(e.target.value ? Number(e.target.value) : '')}
+                        placeholder="Ex: 110"
+                        className="w-full rounded-xl border border-white/10 bg-black/40 px-5 py-4 text-xl font-medium text-white placeholder-gray-600 transition-all focus:border-brand-accent focus:bg-black/60 focus:outline-none focus:ring-1 focus:ring-brand-accent"
+                      />
+                      <div className="absolute right-5 top-1/2 -translate-y-1/2 text-sm font-bold text-gray-500">CV</div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="mb-3 flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-gray-400">
+                      <Fuel size={16} className="text-brand-accent" />
+                      Carburant
+                    </label>
+                    <div className="grid grid-cols-2 gap-3">
+                      {FUEL_OPTIONS.map(fuel => (
+                        <button
+                          key={fuel.id}
+                          onClick={() => setFuelType(fuel.id)}
+                          className={`flex min-h-[60px] items-center justify-center gap-2 rounded-xl border p-3 text-sm font-bold transition-all duration-200 ${
+                            fuelType === fuel.id
+                              ? 'border-brand-accent bg-brand-accent/10 text-white shadow-[0_0_20px_rgba(var(--brand-accent-rgb),0.1)]'
+                              : 'border-white/10 bg-black/40 text-gray-400 hover:border-brand-accent/40 hover:text-white'
+                          }`}
+                        >
+                          {fuel.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-10 flex justify-end">
+                  <Button
+                    onClick={handleSearch}
+                    size="lg"
+                    disabled={!canSubmit}
+                    className="group relative overflow-hidden rounded-xl bg-brand-accent px-8 text-black transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:hover:scale-100"
+                  >
+                    <div className="relative z-10 flex items-center gap-2 font-bold">
+                      <Search size={18} />
+                      Voir les huiles recommandées
+                    </div>
+                    {/* Hover glare effect */}
+                    <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent transition-transform duration-700 ease-in-out group-hover:translate-x-full" />
+                  </Button>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
       </div>
     </div>
   )

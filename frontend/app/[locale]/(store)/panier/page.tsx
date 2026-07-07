@@ -3,7 +3,7 @@ import { Breadcrumb } from '@/components/common/Breadcrumb'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Votre Panier | BestLub',
+  title: 'Votre Panier | KiosqueTN',
   description: 'Consultez et modifiez les articles de votre panier.',
 }
 

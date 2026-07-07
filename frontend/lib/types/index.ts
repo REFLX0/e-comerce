@@ -64,6 +64,26 @@ export interface ProductSpec {
   maxPower?: number
 }
 
+export interface VehicleMake {
+  id: string
+  name: string
+  slug: string
+}
+
+export interface VehicleModel {
+  id: string
+  makeId: string
+  vehicleType: VehicleType
+  name: string
+  slug: string
+}
+
+export interface VehicleEngine {
+  engineCode: string
+  yearFrom: number | null
+  yearTo: number | null
+}
+
 export interface VehicleCompatibility {
   id: string
   productId: string

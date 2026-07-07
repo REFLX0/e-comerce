@@ -2,9 +2,9 @@ import { Breadcrumb } from '@/components/common/Breadcrumb'
 import { Shield, Award, Truck, Users, MapPin, Clock } from 'lucide-react'
 
 export const metadata = {
-  title: 'À propos | BestLub Tunisie',
+  title: 'À propos | KiosqueTN',
   description:
-    'Découvrez BestLub, le spécialiste de la vente de lubrifiants et huiles moteur en Tunisie.',
+    'Découvrez KiosqueTN, le spécialiste de la vente de lubrifiants et huiles moteur en Tunisie.',
 }
 
 export default function AProposPage() {
@@ -14,7 +14,7 @@ export default function AProposPage() {
       <section className="from-brand-primary to-brand-primary-dark bg-gradient-to-br py-16 text-white md:py-24">
         <div className="section-padding text-center">
           <h1 className="font-display mb-4 text-4xl font-bold md:text-5xl lg:text-6xl">
-            À propos de <span className="text-brand-accent">BestLub</span>
+            À propos de <span className="text-brand-accent">KiosqueTN</span>
           </h1>
           <p className="mx-auto max-w-2xl text-lg text-white/80 md:text-xl">
             Le partenaire de confiance pour tous vos besoins en lubrifiants et huiles moteur en
@@ -33,7 +33,7 @@ export default function AProposPage() {
           </h2>
           <div className="prose prose-lg space-y-4 text-gray-600">
             <p>
-              Fondée en Tunisie, <strong>BestLub</strong> s&apos;est imposée comme le leader de la
+              Fondée en Tunisie, <strong>KiosqueTN</strong> s&apos;est imposée comme le leader de la
               distribution de lubrifiants et d&apos;huiles moteur de qualité supérieure. Notre
               mission est simple : rendre accessibles les meilleurs produits de lubrification à tous
               les automobilistes et professionnels tunisiens.
