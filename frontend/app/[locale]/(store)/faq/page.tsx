@@ -46,7 +46,7 @@ const faqs = [
       },
       {
         q: 'Comment choisir la bonne huile pour mon véhicule ?',
-        a: 'Utilisez notre outil "Trouver mon huile" qui vous recommandera le lubrifiant adapté à votre véhicule en fonction de la marque, du modèle et du moteur.',
+        a: 'Utilisez notre outil "Trouver mon huile" : indiquez le type de véhicule, le nombre de cylindres, la puissance (CV) et le carburant pour obtenir des recommandations adaptées.',
       },
       {
         q: 'Proposez-vous des tarifs professionnels ?',

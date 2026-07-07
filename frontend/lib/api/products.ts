@@ -1,5 +1,5 @@
 import { apiGet } from './client'
-import type { Product, PaginatedResponse, ProductFilters } from '@/lib/types'
+import type { Product, PaginatedResponse, ProductFilters, FuelType } from '@/lib/types'
 
 export const productsApi = {
   getAll: (filters?: ProductFilters) =>
@@ -35,5 +35,8 @@ export const productsApi = {
 
   getCompatible: (make: string, model: string, engine?: string) =>
     apiGet<Product[]>('/vehicles/compatible', { make, model, engine }),
+
+  getOilRecommendations: (params: { type: string; cylinders: number; power: number; fuelType: FuelType; make?: string }) =>
+    apiGet<{ data: Product[]; total: number }>('/products/oil-recommendations', params),
 }
 

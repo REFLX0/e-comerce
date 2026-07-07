@@ -46,6 +46,18 @@ enum TicketStatus {
   CLOSED
 }
 
+enum VehicleType {
+  CAR
+  MOTO
+  TRUCK
+  AGRI
+}
+
+enum FuelType {
+  ESSENCE
+  DIESEL
+}
+
 // ─────────────────────────────────────────
 //  AUTH (NextAuth v5 required tables)
 // ─────────────────────────────────────────
@@ -189,15 +201,21 @@ model ProductImage {
 
 // Oil technical specs (viscosity, API standard, etc.)
 model ProductSpecs {
-  id            String  @id @default(cuid())
-  productId     String  @unique
-  product       Product @relation(fields: [productId], references: [id], onDelete: Cascade)
-  viscosity     String? // e.g., "5W-40"
-  apiStandard   String? // e.g., "API SN"
-  aeceaStandard String? // e.g., "ACEA C3"
-  isFullySynth  Boolean @default(false)
-  isSemiSynth   Boolean @default(false)
-  isMinerale    Boolean @default(false)
+  id            String      @id @default(cuid())
+  productId     String      @unique
+  product       Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  viscosity     String?     // e.g., "5W-40"
+  apiStandard   String?     // e.g., "API SN"
+  aeceaStandard String?     // e.g., "ACEA C3"
+  isFullySynth  Boolean     @default(false)
+  isSemiSynth   Boolean     @default(false)
+  isMinerale    Boolean     @default(false)
+  vehicleTypes  VehicleType[]
+  fuelTypes     FuelType[]
+  minCylinders  Int?
+  maxCylinders  Int?
+  minPower      Float?
+  maxPower      Float?
 }
 
 // ─────────────────────────────────────────
@@ -215,6 +233,7 @@ model VehicleModel {
   id             String               @id @default(cuid())
   makeId         String
   make           VehicleMake          @relation(fields: [makeId], references: [id], onDelete: Cascade)
+  vehicleType    VehicleType @default(CAR)
   name           String               // e.g., "Clio IV"
   slug           String               @unique
   compatibilities VehicleCompatibility[]

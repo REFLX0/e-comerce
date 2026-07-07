@@ -5,6 +5,7 @@ export type UserRole = 'customer' | 'pro' | 'admin'
 export type OrderStatus =
   'pending' | 'confirmed' | 'processing' | 'shipped' | 'delivered' | 'cancelled'
 export type VehicleType = 'car' | 'moto' | 'truck' | 'agriculture' | 'industry' | 'marine'
+export type FuelType = 'essence' | 'diesel'
 
 // ─── Core entities ────────────────────────────────────────────────────────
 
@@ -55,6 +56,12 @@ export interface ProductSpec {
   application?: string
   type?: string
   baseOil?: string
+  vehicleTypes?: VehicleType[]
+  fuelTypes?: FuelType[]
+  minCylinders?: number
+  maxCylinders?: number
+  minPower?: number
+  maxPower?: number
 }
 
 export interface VehicleCompatibility {

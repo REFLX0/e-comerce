@@ -12,9 +12,10 @@ import { ProductGridSkeleton } from '@/components/common/Skeleton'
 import { ErrorState } from '@/components/common/ErrorState'
 import { EmptyState } from '@/components/common/EmptyState'
 import { useSearchParams, usePathname } from 'next/navigation'
-import { Filter, Car } from 'lucide-react'
+import { Filter, Car, Search } from 'lucide-react'
 import { useState, useMemo } from 'react'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
+import Link from 'next/link'
 
 export default function CataloguePage() {
   const searchParams = useSearchParams()
@@ -27,70 +28,116 @@ export default function CataloguePage() {
   const vehicleEngine = searchParams.get('engine')
   const isVehicleSearch = !!(vehicleMake && vehicleModel)
 
-  // Construct filters object from URLSearchParams (skip vehicle params)
+  const specType = searchParams.get('type')
+  const specCylinders = searchParams.get('cylinders')
+  const specPower = searchParams.get('power')
+  const specFuelType = searchParams.get('fuelType')
+  const isSpecSearch = !!(specType && specCylinders && specPower && specFuelType)
+
+  const isSearchMode = isVehicleSearch || isSpecSearch
+
   const filters: Record<string, string | number | boolean | undefined> = {}
   searchParams.forEach((value, key) => {
-    if (['make', 'model', 'engine'].includes(key)) return
+    if (['make', 'model', 'engine', 'type', 'cylinders', 'power', 'fuelType'].includes(key)) return
     if (value === 'true') filters[key] = true
     else if (value === 'false') filters[key] = false
     else if (!isNaN(Number(value)) && key.includes('price')) filters[key] = Number(value)
     else filters[key] = value
   })
-
-  // Ensure page is set
   filters.page = Number(filters.page) || 1
 
   const { data, isLoading, isError, refetch } = useQuery<any>({
-    queryKey: isVehicleSearch ? ['compatible-products', vehicleMake, vehicleModel, vehicleEngine] : ['products', filters],
-    queryFn: () => isVehicleSearch
-      ? productsApi.getCompatible(vehicleMake!, vehicleModel!, vehicleEngine || undefined)
-      : productsApi.getAll(filters as import('@/lib/types').ProductFilters),
+    queryKey: isVehicleSearch
+      ? ['compatible-products', vehicleMake, vehicleModel, vehicleEngine]
+      : isSpecSearch
+        ? ['oil-recommendations', specType, specCylinders, specPower, specFuelType, specType === searchParams.get('type') ? searchParams.get('make') : undefined]
+        : ['products', filters],
+    queryFn: () => {
+      if (isVehicleSearch) {
+        return productsApi.getCompatible(vehicleMake!, vehicleModel!, vehicleEngine || undefined)
+      }
+      if (isSpecSearch) {
+        return productsApi.getOilRecommendations({
+          type: specType!,
+          cylinders: Number(specCylinders),
+          power: Number(specPower),
+          fuelType: specFuelType as any,
+          make: searchParams.get('make') || undefined,
+        })
+      }
+      return productsApi.getAll(filters as any)
+    },
   })
 
-  // Normalize data: flat array for compatible, paginated wrapper for normal
   const products = useMemo(() => {
     if (!data) return []
     if (isVehicleSearch) return Array.isArray(data) ? data : []
+    if (isSpecSearch) return data?.data ?? []
     return data.data ?? []
-  }, [data, isVehicleSearch])
+  }, [data, isVehicleSearch, isSpecSearch])
 
   const productCount = useMemo(() => {
     if (!data) return 0
     if (isVehicleSearch) return Array.isArray(data) ? data.length : 0
+    if (isSpecSearch) return data?.total ?? 0
     return data.total ?? 0
-  }, [data, isVehicleSearch])
+  }, [data, isVehicleSearch, isSpecSearch])
 
   const pageTitle = isVehicleSearch
     ? `Huiles compatibles ${vehicleMake} ${vehicleModel}${vehicleEngine ? ' ' + vehicleEngine : ''}`
-    : 'Catalogue de Produits'
+    : isSpecSearch
+      ? `Huiles ${specFuelType === 'diesel' ? 'Diesel' : 'Essence'} — ${specCylinders} cyl., ${specPower} CV`
+      : 'Catalogue de Produits'
 
   const breadcrumbItems = isVehicleSearch
     ? [
         { label: 'Catalogue', href: '/catalogue' },
         { label: `${vehicleMake} ${vehicleModel}` },
       ]
-    : [{ label: 'Catalogue' }]
+    : isSpecSearch
+      ? [
+          { label: 'Catalogue', href: '/catalogue' },
+          { label: 'Par caractéristiques' },
+        ]
+      : [{ label: 'Catalogue' }]
+
+  const emptyTitle = isVehicleSearch
+    ? "Aucune huile trouvée pour ce véhicule"
+    : isSpecSearch
+      ? "Aucune huile ne correspond à ces caractéristiques"
+      : "Oups ! Aucun produit trouvé"
+
+  const emptyMessage = isVehicleSearch
+    ? "Nous n'avons pas encore référencé d'huile compatible pour ce véhicule dans notre base."
+    : isSpecSearch
+      ? "Le catalogue n'a pas encore été renseigné pour ces caractéristiques. Revenez bientôt, les données produit sont en cours d'ajout."
+      : "Nous n'avons pas trouvé de produits correspondant à vos critères de recherche."
+
+  const emptyAction = isVehicleSearch
+    ? undefined
+    : {
+        label: isSpecSearch ? 'Rechercher par véhicule' : 'Effacer tous les filtres',
+        onClick: () => { window.location.href = `/${locale}/catalogue` },
+      }
 
   return (
     <div className="section-padding py-8">
       <Breadcrumb items={breadcrumbItems} />
 
       <div className="mt-6 flex flex-col gap-8 md:flex-row">
-        {/* Desktop Sidebar — hide in vehicle mode */}
-        {!isVehicleSearch && (
+        {!isSearchMode && (
           <aside className="hidden w-64 shrink-0 lg:block">
             <FilterSidebar />
           </aside>
         )}
 
-        {/* Main Content */}
         <div className="min-w-0 flex-1">
           <div className="mb-6 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
             <div>
-              {isVehicleSearch && (
-                <div className="flex items-center gap-2 text-sm text-brand-accent mb-2">
-                  <Car size={16} />
-                  <span>Recherche par véhicule</span>
+              {isSearchMode && (
+                <div className="mb-2 flex items-center gap-2 text-sm text-brand-accent">
+                  {isVehicleSearch ? <Car size={16} /> : <Search size={16} />}
+                  <span>{isVehicleSearch ? 'Recherche par véhicule' : 'Recherche par caractéristiques'}</span>
                 </div>
               )}
               <h1 className="font-display text-[#111] text-2xl font-bold md:text-3xl">
@@ -99,7 +146,7 @@ export default function CataloguePage() {
               <p className="mt-1 text-gray-500">{productCount} produit{productCount !== 1 ? 's' : ''} trouvé{productCount !== 1 ? 's' : ''}</p>
             </div>
 
-            {!isVehicleSearch && (
+            {!isSearchMode && (
               <div className="flex w-full items-center gap-3 sm:w-auto">
                 <Sheet open={isMobileFiltersOpen} onOpenChange={setIsMobileFiltersOpen}>
                   <SheetTrigger
@@ -135,7 +182,7 @@ export default function CataloguePage() {
             )}
           </div>
 
-          {!isVehicleSearch && <ActiveFilters />}
+          {!isSearchMode && <ActiveFilters />}
 
           {isLoading ? (
             <ProductGridSkeleton count={12} />
@@ -144,21 +191,29 @@ export default function CataloguePage() {
           ) : products.length > 0 ? (
             <>
               <ProductGrid products={products} />
-              {!isVehicleSearch && <Pagination currentPage={data.page} totalPages={data.totalPages} />}
+              {!isSearchMode && <Pagination currentPage={data.page} totalPages={data.totalPages} />}
             </>
           ) : (
-            <div className="bg-white rounded-2xl border border-gray-100 p-8 shadow-sm">
+            <div className="rounded-2xl border border-gray-100 bg-white p-8 shadow-sm">
               <EmptyState
-                title={isVehicleSearch ? "Aucune huile trouvée pour ce véhicule" : "Oups ! Aucun produit trouvé"}
-                message={isVehicleSearch
-                  ? "Nous n'avons pas encore référencé d'huile compatible pour ce véhicule. Essayez un autre modèle ou parcourez notre catalogue complet."
-                  : "Nous n'avons pas trouvé de produits correspondant à vos critères de recherche. Essayez de modifier vos filtres ou de rechercher un autre modèle."
-                }
-                action={{
-                  label: isVehicleSearch ? 'Voir tout le catalogue' : 'Effacer tous les filtres',
-                  onClick: () => (window.location.href = `/${locale}/catalogue`),
-                }}
+                title={emptyTitle}
+                message={emptyMessage}
+                action={emptyAction}
               />
+              {isVehicleSearch && (
+                <div className="mt-6 border-t border-gray-100 pt-6 text-center">
+                  <p className="mb-3 text-sm text-gray-500">
+                    Vous ne trouvez pas votre véhicule&nbsp;? Essayez la recherche par caractéristiques moteur.
+                  </p>
+                  <Link
+                    href={`/${locale}/#engine-spec-finder`}
+                    className="inline-flex items-center gap-2 rounded-lg border border-brand-accent/30 bg-brand-accent/5 px-5 py-2.5 text-sm font-semibold text-brand-accent transition-colors hover:bg-brand-accent/10"
+                  >
+                    <Search size={16} />
+                    Rechercher par caractéristiques
+                  </Link>
+                </div>
+              )}
             </div>
           )}
         </div>

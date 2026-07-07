@@ -1,6 +1,7 @@
 import { Controller, Get, Param, Query, NotFoundException } from '@nestjs/common'
 import { ApiTags, ApiQuery } from '@nestjs/swagger'
 import { ProductsService } from './products.service'
+import { OilRecommendationsDto } from './dto/oil-recommendations.dto'
 
 @ApiTags('products')
 @Controller('products')
@@ -23,6 +24,11 @@ export class ProductsController {
       page: query.page ? +query.page : 1,
       limit: query.limit ? +query.limit : 24,
     })
+  }
+
+  @Get('oil-recommendations')
+  oilRecommendations(@Query() dto: OilRecommendationsDto) {
+    return this.productsService.findOilRecommendations(dto)
   }
 
   @Get('best-sellers')

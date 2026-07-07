@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common'
 import { PrismaService } from '../prisma/prisma.service'
 import { Prisma } from '@prisma/client'
+import { OilRecommendationsDto } from './dto/oil-recommendations.dto'
+import { calcSpecificity } from '../specificity'
 
 export interface ProductFilters {
   categorySlug?: string
@@ -128,6 +130,67 @@ export class ProductsService {
       take: limit,
     })
     return related.map(this.serialize)
+  }
+
+  async findOilRecommendations(dto: OilRecommendationsDto) {
+    const andConditions: Prisma.ProductSpecsScalarWhereWithAggregatesInput[] = []
+
+    if (dto.cylinders > 0) {
+      andConditions.push({
+        OR: [
+          { minCylinders: null },
+          { minCylinders: { lte: dto.cylinders } },
+        ],
+      })
+      andConditions.push({
+        OR: [
+          { maxCylinders: null },
+          { maxCylinders: { gte: dto.cylinders } },
+        ],
+      })
+    }
+
+    if (dto.power > 0) {
+      andConditions.push({
+        OR: [
+          { minPower: null },
+          { minPower: { lte: dto.power } },
+        ],
+      })
+      andConditions.push({
+        OR: [
+          { maxPower: null },
+          { maxPower: { gte: dto.power } },
+        ],
+      })
+    }
+
+    const specsWhere: Prisma.ProductSpecsWhereInput = {
+      vehicleTypes: { has: dto.type },
+      fuelTypes: { has: dto.fuelType },
+    }
+
+    if (andConditions.length > 0) {
+      specsWhere.AND = andConditions
+    }
+
+    const products = await this.prisma.product.findMany({
+      where: {
+        isPublished: true,
+        specs: specsWhere,
+      },
+      include: this.buildInclude(),
+    })
+
+    const scored = products.map(p => ({
+      product: p,
+      specificity: calcSpecificity(p.specs),
+    }))
+
+    scored.sort((a, b) => b.specificity - a.specificity)
+
+    const data = scored.map(s => this.serialize(s.product))
+    return { data, total: data.length }
   }
 
   private buildOrderBy(sortBy?: string): Prisma.ProductOrderByWithRelationInput {
