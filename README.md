@@ -6,7 +6,7 @@
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 ```
 ┌─────────────────────────────────────────────────────┐
@@ -23,7 +23,7 @@
 └─────────────────────────────────────────────────────┘
 ```
 
-## 🚀 Tech Stack
+## Tech Stack
 
 | Layer | Technology |
 |---|---|
@@ -36,7 +36,7 @@
 
 ---
 
-## ⚙️ Local Development
+## Local Development
 
 ### Prerequisites
 - Docker Desktop
@@ -65,7 +65,7 @@ docker exec kiosquetn-backend npx prisma db seed
 
 ---
 
-## 🔑 Required Environment Variables
+## Required Environment Variables
 
 See [`.env.production.example`](.env.production.example) for the full reference.
 
@@ -79,7 +79,7 @@ See [`.env.production.example`](.env.production.example) for the full reference.
 
 ---
 
-## 🚢 Production Deployment (Oracle VM)
+## Production Deployment (Oracle VM)
 
 ### GitHub Actions Secrets required
 
@@ -118,7 +118,7 @@ After that, every `git push` to `main` auto-deploys via GitHub Actions.
 
 ---
 
-## 📋 Available Scripts
+## Available Scripts
 
 ```bash
 # Local dev (without Docker)
@@ -139,7 +139,7 @@ docker-compose logs -f frontend
 
 ---
 
-## 🛡️ Security
+## Security
 
 - JWT stored in **HttpOnly cookies** (XSS-proof)
 - NGINX **rate limiting** on all API routes (10r/s general, 5r/min auth)
@@ -150,7 +150,7 @@ docker-compose logs -f frontend
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 e-comerce/
@@ -165,3 +165,145 @@ e-comerce/
 │   └── deploy.yml     # CI/CD pipeline
 └── docker-compose.yml # Full stack orchestration
 ```
+
+---
+
+## Audit & Known Issues
+
+### Dead Code
+
+| File | Issue |
+|---|---|
+| `backend/src/app.controller.ts` | Not imported in any NestJS module — completely inactive |
+| `backend/src/app.service.ts` | Only referenced by dead AppController — completely inactive |
+| `backend/prisma/import-vehicle-compat.ts` | Standalone one-shot import script (legacy) |
+| `backend/prisma/import-lubricant-data.ts` | Standalone one-shot import script; TS errors break frontend build because prisma/ is copied into the frontend Docker image |
+| `backend/prisma/seed-test-db.ts` | Standalone test seed script (not the official seed) |
+| `backend/src/products/dto/oil-recommendations.dto.spec.ts` | Test file for a removed feature |
+| `backend/src/app.controller.spec.ts` | Test for dead controller |
+| `backend/src/specificity.spec.ts` | Unclear purpose |
+| `frontend/tests/example.spec.ts` | Default Playwright example — not a real test |
+| `scripts/fix-frontend.sh` | One-shot fix script |
+| `scripts/fix-frontend2.sh` | One-shot fix script |
+| `scripts/fix-commandes.sh` | One-shot fix script |
+| `scripts/fix-api.sh` | One-shot fix script |
+| `scripts/fix-types.js` | One-shot fix script |
+| `scripts/fix-tokens.js` | One-shot fix script |
+| `scripts/deploy-setup.sh` | One-shot script |
+| `scripts/deploy-setup-vm.sh` | One-shot script |
+| `scripts/deploy-frontend.sh` | One-shot script |
+| `scripts/download-logos.js` | One-shot utility |
+| `scripts/generate-logos.js` | One-shot utility |
+
+### Console.log Leaks in Production Code
+
+| File | Line | Code | Severity |
+|---|---|---|---|
+| `backend/src/auth/auth.service.ts` | 132 | `console.log([DEV] Password reset link for ${email}: ${resetUrl})` | **High** — leaks reset tokens in production logs |
+| `backend/src/auth/auth.service.ts` | 135 | `console.log(Email send failed for ${email}: ...)` | Medium — should use proper logger |
+| `backend/src/main.ts` | 50 | `console.log(Backend running on ...)` | Low — acceptable startup log |
+| `backend/src/app.controller.ts` | 15 | `console.log(Received contact message: ...)` | Low — dead code anyway |
+
+### Broken Navigation Links
+
+These routes are linked in the UI but have no matching page file:
+
+| File | Broken Path |
+|---|---|
+| `frontend/components/layout/Footer.tsx:94` | `/compte/favoris` (only `/compte/wishlist` exists) |
+| `frontend/app/[locale]/(store)/compte/layout.tsx:18` | `/compte/avis` |
+| `frontend/app/[locale]/(store)/compte/layout.tsx:21` | `/compte/notifications` |
+| `frontend/app/[locale]/admin/layout.tsx:64` | `/admin/payments` |
+| `frontend/app/[locale]/admin/layout.tsx:69` | `/admin/reviews` |
+
+Clicking any of these links navigates to a 404 page.
+
+### Unused Dependencies
+
+| Package | Location | Notes |
+|---|---|---|
+| `bullmq` | `backend/package.json` | Never imported anywhere — background jobs were planned but not implemented |
+| `isomorphic-dompurify` | `frontend/package.json` | Never imported — was likely intended for review HTML sanitization |
+| `next-sitemap` | `frontend/package.json` | Not imported; no config file; no npm script usage. A manual `app/sitemap.ts` exists instead |
+| `dotenv` | `frontend/package.json` | Only appears in commented-out lines in `playwright.config.ts` |
+
+### Unused Stores
+
+| Store | Notes |
+|---|---|
+| `frontend/lib/store/vehicle.store.ts` | Zustand persist store for selected vehicle — created but never consumed by any component |
+| `frontend/lib/store/settings.store.ts` | Created but may not be consumed |
+
+### Missing Error Boundaries
+
+No React error boundaries (`ErrorBoundary` component) are used anywhere in the frontend. A runtime crash in any component will either:
+- Blank the whole page (client components)
+- Show Next.js default error overlay (dev) or generic error screen (prod)
+
+### Hardcoded Values
+
+- `backend/src/main.ts` — CORS origin `http://localhost:3000` is hardcoded (should read from env)
+- `frontend/lib/api/*.ts` — Base URLs may be hardcoded in multiple API client files
+- Admin layout `admin/layout.tsx` — Locale detection splits `pathname` manually instead of using next-intl
+
+### Accessibility Gaps
+
+- No `aria-label` or `role` attributes on icon-only admin sidebar links (when collapsed)
+- No focus trap in mobile drawer overlays
+- Search input in admin has no associated `label` element
+- Color contrast may be insufficient in several places (gray-400 text on dark backgrounds)
+
+### No Unit Tests
+
+- 5 test files exist but are either dead (backend) or example boilerplate (frontend Playwright)
+- No meaningful unit tests for API controllers, services, or frontend components
+- No integration or E2E tests for critical flows (auth, checkout, oil finder)
+
+### Stale Prisma Client
+
+The `@prisma/client` in the frontend is from an earlier schema generation and does not match the current backend schema. When the `prisma/` directory is copied into the frontend Docker image, Next.js type-checks it and may fail on enum/type mismatches unless workarounds are applied.
+
+### Missing Environment Validation
+
+- No runtime validation that all required env vars are present at startup
+- Missing env vars cause cryptic runtime errors instead of clear startup messages
+- No `.env.example` for every required variable with documentation
+
+### TODO / FIXME Comments
+
+None found anywhere in the codebase — the codebase is clean of these annotations.
+
+---
+
+## Devis (Proposal) vs Current Site
+
+The devis describes a basic MVP e-commerce site for oils and lubricants. The current repository is significantly more advanced.
+
+### What the devis covers
+- E-commerce storefront
+- Product catalog
+- Product pages
+- Cart and checkout
+- Simple admin area
+- SEO basics
+- Training and short support period
+- Cash on delivery
+
+### What the site already has beyond the devis
+- Vehicle-based oil finder for compatible products
+- Customer account area with orders, wishlist, profile, addresses, security, and support tickets
+- Admin dashboard with orders, catalog management, promotions, shipping, analytics, and settings
+- Review and review moderation system
+- Coupon and promotion management
+- Docker and GitHub Actions deployment pipeline
+- Product catalogue with filters, sorting, pagination, and search
+
+### What is in the devis but not fully visible in the site
+- The exact commercial packaging of the offer
+- The timeline and milestone payment structure
+- The guarantee of support and training as a business agreement
+- The final legal and commercial document wording
+
+### Main conclusion
+
+The devis is valid as a basic launch proposal, but it underestimates the real scope of the website. If the proposal should match the site, it needs to mention the oil finder, customer account area, wishlist, coupons, reviews, support, shipping tools, analytics, and deployment setup.
