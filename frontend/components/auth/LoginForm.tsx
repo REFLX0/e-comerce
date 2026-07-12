@@ -61,11 +61,10 @@ export default function LoginForm() {
         user?.role?.toUpperCase() === 'ADMIN' &&
         (callbackUrl === '/compte' || callbackUrl === accountPath || callbackUrl.includes('/auth/login'))
       ) {
-        router.push(adminPath)
+        window.location.href = adminPath
       } else {
-        router.push(callbackUrl)
+        window.location.href = callbackUrl
       }
-      router.refresh()
     } catch {
       toast.error('Email ou mot de passe incorrect', {
         description: 'Vérifiez vos identifiants et réessayez.',
