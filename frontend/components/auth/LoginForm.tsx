@@ -128,7 +128,7 @@ export default function LoginForm() {
 
           <div className="flex justify-end">
             <Link
-              href="/auth/forgot-password"
+              href="/auth/mot-de-passe-oublie"
               className="text-brand-primary hover:text-brand-accent text-sm font-medium transition-colors"
             >
               Mot de passe oublié ?
