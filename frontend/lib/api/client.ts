@@ -19,7 +19,7 @@ import {
 
 const BASE_URL =
   typeof window === 'undefined'
-    ? process.env.API_URL || process.env.NEXT_PUBLIC_API_URL || '/api'
+    ? process.env.API_URL || process.env.NEXT_PUBLIC_API_URL || 'http://nginx:8082/api'
     : process.env.NEXT_PUBLIC_API_URL || '/api'
 const DEFAULT_TIMEOUT_MS = 8_000
 
@@ -232,7 +232,7 @@ export function createApiClient(opts: ApiClientOptions) {
 
 // ── Default resilient backend client ──────────────────────────────────────
 function resolveBackendUrl(): string {
-  if (typeof window === 'undefined' && typeof process !== 'undefined') {
+  if (typeof window === 'undefined') {
     return process.env.API_URL || process.env.NEXT_PUBLIC_API_URL || 'http://nginx:8082/api'
   }
   return process.env.NEXT_PUBLIC_API_URL || '/api'

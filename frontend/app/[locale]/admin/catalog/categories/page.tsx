@@ -104,11 +104,11 @@ function ModalForm({
   onClose,
 }: {
   title: string
-  initial?: { nameFr: string; slug: string }
-  onSave: (data: { nameFr: string; slug: string }) => void
+  initial?: { name: string; slug: string }
+  onSave: (data: { name: string; slug: string }) => void
   onClose: () => void
 }) {
-  const [nameFr, setNameFr] = useState(initial?.nameFr ?? '')
+  const [name, setName] = useState(initial?.name ?? '')
   const [slug, setSlug] = useState(initial?.slug ?? '')
   const [saving, setSaving] = useState(false)
 
@@ -129,8 +129,8 @@ function ModalForm({
             <label className="mb-1.5 block text-xs font-semibold text-gray-500 uppercase tracking-wider">Nom</label>
             <input
               type="text"
-              value={nameFr}
-              onChange={(e) => { setNameFr(e.target.value); if (!initial) setSlug(generateSlug(e.target.value)) }}
+              value={name}
+              onChange={(e) => { setName(e.target.value); if (!initial) setSlug(generateSlug(e.target.value)) }}
               className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm outline-none focus:border-brand-accent focus:ring-2 focus:ring-brand-accent/20"
               placeholder="Nom de la catégorie"
               autoFocus
@@ -151,8 +151,8 @@ function ModalForm({
               Annuler
             </button>
             <button
-              onClick={async () => { setSaving(true); await onSave({ nameFr, slug }); setSaving(false) }}
-              disabled={!nameFr || !slug || saving}
+              onClick={async () => { setSaving(true); await onSave({ name, slug }); setSaving(false) }}
+              disabled={!name || !slug || saving}
               className="flex-1 rounded-xl bg-brand-accent py-2.5 text-sm font-semibold text-black hover:bg-brand-accent-hover transition-colors disabled:opacity-50"
             >
               {saving ? <Loader2 size={16} className="mx-auto animate-spin" /> : 'Enregistrer'}
@@ -207,12 +207,12 @@ export default function AdminCategoriesPage() {
   })
 
   const saveMutation = useMutation({
-    mutationFn: (data: { nameFr: string; slug: string; parentId?: string }) => categoriesApi.create(data),
+    mutationFn: (data: { name: string; slug: string; parentId?: string }) => categoriesApi.create({ ...data, nameFr: data.name }),
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['categories-tree'] }); setModal(null) },
   })
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, data }: { id: string; data: { nameFr: string; slug: string } }) => categoriesApi.update(id, data),
+    mutationFn: ({ id, data }: { id: string; data: { name: string; slug: string } }) => categoriesApi.update(id, { ...data, nameFr: data.name }),
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['categories-tree'] }); setModal(null) },
   })
 
@@ -257,7 +257,7 @@ export default function AdminCategoriesPage() {
       <div className="rounded-2xl border border-gray-100 bg-white shadow-sm overflow-hidden">
         <div className="border-b border-gray-50 bg-gray-50 px-4 py-3">
           <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
-            Arborescence des catégories — glisser-déposer pour réorganiser
+            Arborescence des catégories — glisser-déposer pour réorganiser les catégories parentes
           </p>
         </div>
 
@@ -288,7 +288,7 @@ export default function AdminCategoriesPage() {
                         expanded={expandedIds.has(cat.id)}
                       />
                       {expandedIds.has(cat.id) && cat.children && cat.children.length > 0 && (
-                        <div className="ml-0 mt-0.5 space-y-0.5 border-l-2 border-gray-100 ml-9">
+                        <div className="mt-0.5 space-y-0.5 border-l-2 border-gray-100 ml-9">
                           {cat.children.map((child) => (
                             <SortableCategoryRow
                               key={child.id}
@@ -315,14 +315,14 @@ export default function AdminCategoriesPage() {
       <div className="rounded-xl border border-blue-100 bg-blue-50 p-4 text-sm text-blue-700">
         <p className="font-semibold mb-1">Astuce</p>
         <p className="text-xs leading-relaxed text-blue-600">
-          Faites glisser les catégories pour les réorganiser. Cliquez sur <strong>+</strong> pour ajouter des sous-catégories. Les catégories vides n'apparaissent pas dans le catalogue client.
+          Faites glisser les catégories parentes pour les réorganiser. Cliquez sur <strong>+</strong> pour ajouter des sous-catégories. Les catégories vides n'apparaissent pas dans le catalogue client.
         </p>
       </div>
 
       {modal && (
         <ModalForm
           title={modal.type === 'create' ? 'Nouvelle catégorie' : 'Modifier la catégorie'}
-          initial={modal.cat ? { nameFr: modal.cat.name, slug: modal.cat.slug } : undefined}
+          initial={modal.cat ? { name: modal.cat.name, slug: modal.cat.slug } : undefined}
           onSave={(data) => {
             if (modal.type === 'create') saveMutation.mutate({ ...data, parentId: modal.parentId })
             else if (modal.cat) updateMutation.mutate({ id: modal.cat.id, data })

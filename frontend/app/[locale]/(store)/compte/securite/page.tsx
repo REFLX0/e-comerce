@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { ShieldCheck, Lock, Smartphone, Monitor, LogOut, Eye, EyeOff, Save } from 'lucide-react'
 import { toast } from 'sonner'
+import { useTranslations } from 'next-intl'
 
 const MOCK_SESSIONS = [
   { id: '1', device: 'Chrome · Windows', location: 'Tunis, Tunisie', date: "Aujourd'hui 13:42", current: true },
@@ -10,6 +11,8 @@ const MOCK_SESSIONS = [
 ]
 
 export default function SecuritePage() {
+  const t = useTranslations('Security')
+
   const [showOld, setShowOld] = useState(false)
   const [showNew, setShowNew] = useState(false)
   const [form, setForm] = useState({ oldPassword: '', newPassword: '', confirmPassword: '' })
@@ -18,12 +21,12 @@ export default function SecuritePage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (form.newPassword !== form.confirmPassword) {
-      toast.error('Les mots de passe ne correspondent pas.')
+      toast.error(t('passwordsMismatch'))
       return
     }
     setSaving(true)
     await new Promise((r) => setTimeout(r, 800))
-    toast.success('Mot de passe modifié avec succès !')
+    toast.success(t('success'))
     setForm({ oldPassword: '', newPassword: '', confirmPassword: '' })
     setSaving(false)
   }
@@ -31,21 +34,21 @@ export default function SecuritePage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-bold text-brand-primary">Sécurité</h1>
-        <p className="text-sm text-gray-500">Gérez votre mot de passe et vos sessions actives</p>
+        <h1 className="text-2xl font-bold text-brand-primary">{t('title')}</h1>
+        <p className="text-sm text-gray-500">{t('subtitle')}</p>
       </div>
 
       {/* Change password */}
       <div>
         <h2 className="mb-4 flex items-center gap-2 font-semibold text-brand-primary">
           <Lock size={18} className="text-brand-accent" />
-          Changer de mot de passe
+          {t('changePassword')}
         </h2>
         <form onSubmit={handleSubmit} className="max-w-sm space-y-4">
           {[
-            { id: 'old', label: 'Mot de passe actuel', key: 'oldPassword' as const, show: showOld, toggle: () => setShowOld((p) => !p) },
-            { id: 'new', label: 'Nouveau mot de passe', key: 'newPassword' as const, show: showNew, toggle: () => setShowNew((p) => !p) },
-            { id: 'confirm', label: 'Confirmer le nouveau mot de passe', key: 'confirmPassword' as const, show: showNew, toggle: () => setShowNew((p) => !p) },
+            { id: 'old', label: t('oldPassword'), key: 'oldPassword' as const, show: showOld, toggle: () => setShowOld((p) => !p) },
+            { id: 'new', label: t('newPassword'), key: 'newPassword' as const, show: showNew, toggle: () => setShowNew((p) => !p) },
+            { id: 'confirm', label: t('confirmPassword'), key: 'confirmPassword' as const, show: showNew, toggle: () => setShowNew((p) => !p) },
           ].map((field) => (
             <div key={field.id}>
               <label htmlFor={field.id} className="mb-1.5 block text-sm font-medium text-gray-700">{field.label}</label>
@@ -71,7 +74,7 @@ export default function SecuritePage() {
             className="flex items-center gap-2 rounded-xl bg-brand-primary px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand-primary-light transition-colors disabled:opacity-60"
           >
             <Save size={15} />
-            {saving ? 'Enregistrement…' : 'Mettre à jour le mot de passe'}
+            {saving ? t('saving') : t('updatePassword')}
           </button>
         </form>
       </div>
@@ -82,7 +85,7 @@ export default function SecuritePage() {
       <div>
         <h2 className="mb-4 flex items-center gap-2 font-semibold text-brand-primary">
           <Monitor size={18} className="text-brand-accent" />
-          Sessions actives
+          {t('activeSessions')}
         </h2>
         <div className="space-y-3">
           {MOCK_SESSIONS.map((session) => (
@@ -105,11 +108,11 @@ export default function SecuritePage() {
               </div>
               {session.current ? (
                 <span className="self-start rounded-full bg-green-100 px-3 py-1 text-xs font-bold text-green-700 sm:self-auto">
-                  Session actuelle
+                  {t('currentSession')}
                 </span>
               ) : (
                 <button className="self-start flex items-center gap-1.5 rounded-xl border border-red-200 px-3 py-1.5 text-xs font-medium text-red-500 hover:bg-red-50 transition-colors sm:self-auto">
-                  <LogOut size={12} /> Déconnecter
+                  <LogOut size={12} /> {t('disconnect')}
                 </button>
               )}
             </div>

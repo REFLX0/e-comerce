@@ -7,17 +7,12 @@ import { ordersApi } from '@/lib/api/orders'
 import { useAuthStore } from '@/lib/store/auth.store'
 import { LifeBuoy, PackageSearch, Plus } from 'lucide-react'
 import { toast } from 'sonner'
-
-const RETURN_REASONS = [
-  'Produit défectueux',
-  'Produit non conforme à la description',
-  'Mauvaise livraison',
-  'Commande incomplète',
-  'Autre',
-]
+import { useTranslations } from 'next-intl'
 
 export default function SupportPage() {
-    const queryClient = useQueryClient()
+  const t = useTranslations('Support')
+  const RETURN_REASONS = t.raw('reasons') as string[]
+  const queryClient = useQueryClient()
   const [tab, setTab] = useState<'tickets' | 'new-return'>('tickets')
   const [selectedOrder, setSelectedOrder] = useState('')
   const [selectedReason, setSelectedReason] = useState('')
@@ -47,36 +42,36 @@ export default function SupportPage() {
     }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['my-tickets'] })
-      toast.success('Demande envoyée avec succès !')
+      toast.success(t('success'))
       setTab('tickets')
       setSelectedOrder('')
       setSelectedReason('')
       setMessage('')
     },
-    onError: () => toast.error("Erreur lors de l'envoi de la demande"),
+    onError: () => toast.error(t('error')),
   })
 
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="text-2xl font-bold text-brand-primary">Support & Retours</h1>
-        <p className="text-sm text-gray-500">Gérez vos demandes de retour et de support</p>
+        <h1 className="text-2xl font-bold text-brand-primary">{t('title')}</h1>
+        <p className="text-sm text-gray-500">{t('subtitle')}</p>
       </div>
 
       {/* Tabs */}
       <div className="flex gap-1 rounded-xl border border-gray-200 bg-gray-50 p-1 w-fit">
         {[
-          { key: 'tickets', label: 'Mes tickets' },
-          { key: 'new-return', label: 'Demander un retour' },
-        ].map((t) => (
+          { key: 'tickets', label: t('myTickets') },
+          { key: 'new-return', label: t('newReturn') },
+        ].map((tabItem) => (
           <button
-            key={t.key}
-            onClick={() => setTab(t.key as typeof tab)}
+            key={tabItem.key}
+            onClick={() => setTab(tabItem.key as typeof tab)}
             className={`rounded-lg px-4 py-2 text-sm font-semibold transition-all ${
-              tab === t.key ? 'bg-white shadow-sm text-brand-primary' : 'text-gray-500 hover:text-gray-700'
+              tab === tabItem.key ? 'bg-white shadow-sm text-brand-primary' : 'text-gray-500 hover:text-gray-700'
             }`}
           >
-            {t.label}
+            {tabItem.label}
           </button>
         ))}
       </div>
@@ -84,11 +79,11 @@ export default function SupportPage() {
       {tab === 'tickets' ? (
         <div className="space-y-3">
           {isLoadingTickets ? (
-            <div className="py-12 text-center text-gray-400">Chargement...</div>
+            <div className="py-12 text-center text-gray-400">{t('loading')}</div>
           ) : tickets.length === 0 ? (
             <div className="py-12 text-center">
               <LifeBuoy size={40} className="mx-auto mb-3 text-gray-200" />
-              <p className="text-sm text-gray-400">Aucun ticket ouvert</p>
+              <p className="text-sm text-gray-400">{t('noTickets')}</p>
             </div>
           ) : (
             tickets.map((ticket: any) => (
@@ -102,15 +97,15 @@ export default function SupportPage() {
                     <p className="text-sm font-medium text-brand-primary">{ticket.reason}</p>
                     {ticket.order && (
                       <p className="text-xs text-gray-400">
-                        Commande #{ticket.order.id.slice(-8).toUpperCase()}
+                        {t('order')} #{ticket.order.id.slice(-8).toUpperCase()}
                       </p>
                     )}
-                    <p className="mt-1 text-xs text-gray-400">Ouvert le {new Date(ticket.createdAt).toLocaleDateString('fr-TN')}</p>
+                    <p className="mt-1 text-xs text-gray-400">{t('openedOn')} {new Date(ticket.createdAt).toLocaleDateString('fr-TN')}</p>
                   </div>
                   <span className={`self-start rounded-full px-3 py-1 text-xs font-bold sm:self-auto ${
                     ticket.status === 'RESOLVED' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'
                   }`}>
-                    {ticket.status === 'RESOLVED' ? '✓ Résolu' : '⏳ En cours'}
+                    {ticket.status === 'RESOLVED' ? `✓ ${t('resolved')}` : `⏳ ${t('inProgress')}`}
                   </span>
                 </div>
               </div>
@@ -120,24 +115,24 @@ export default function SupportPage() {
             onClick={() => setTab('new-return')}
             className="flex w-full items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-gray-200 py-4 text-sm font-medium text-gray-400 hover:border-brand-accent hover:text-brand-accent transition-all"
           >
-            <Plus size={16} /> Ouvrir un ticket de support
+            <Plus size={16} /> {t('openTicket')}
           </button>
         </div>
       ) : (
         <div className="space-y-4 max-w-lg">
           <div className="rounded-xl border border-blue-100 bg-blue-50 p-4 text-sm text-blue-700">
-            <p className="font-semibold">Politique de retour</p>
-            <p className="mt-1 text-xs text-blue-600">Les retours sont acceptés dans les 14 jours suivant la réception. Le produit doit être dans son emballage d'origine.</p>
+            <p className="font-semibold">{t('returnPolicy')}</p>
+            <p className="mt-1 text-xs text-blue-600">{t('returnPolicyDesc')}</p>
           </div>
 
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-gray-700">Commande concernée</label>
+            <label className="mb-1.5 block text-sm font-medium text-gray-700">{t('concernedOrder')}</label>
             <select
               value={selectedOrder}
               onChange={(e) => setSelectedOrder(e.target.value)}
               className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-3 text-sm outline-none focus:border-brand-accent focus:bg-white transition-all"
             >
-              <option value="">Sélectionner une commande…</option>
+              <option value="">{t('selectOrder')}</option>
               {orders.map((o: any) => (
                 <option key={o.id} value={o.id}>
                   {o.id.slice(-8).toUpperCase()} — {new Date(o.createdAt).toLocaleDateString('fr-TN')} · {o.totalAmount} TND
@@ -147,24 +142,24 @@ export default function SupportPage() {
           </div>
 
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-gray-700">Motif du retour</label>
+            <label className="mb-1.5 block text-sm font-medium text-gray-700">{t('returnReason')}</label>
             <select
               value={selectedReason}
               onChange={(e) => setSelectedReason(e.target.value)}
               className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-3 text-sm outline-none focus:border-brand-accent focus:bg-white transition-all"
             >
-              <option value="">Sélectionner un motif…</option>
+              <option value="">{t('selectReason')}</option>
               {RETURN_REASONS.map((r) => <option key={r} value={r}>{r}</option>)}
             </select>
           </div>
 
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-gray-700">Description (optionnel)</label>
+            <label className="mb-1.5 block text-sm font-medium text-gray-700">{t('description')}</label>
             <textarea
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               rows={4}
-              placeholder="Décrivez le problème en détail..."
+              placeholder={t('descriptionPlaceholder')}
               className="w-full resize-none rounded-xl border border-gray-200 bg-gray-50 px-3 py-3 text-sm outline-none focus:border-brand-accent focus:bg-white transition-all"
             />
           </div>
@@ -175,7 +170,7 @@ export default function SupportPage() {
             className="flex w-full items-center justify-center gap-2 rounded-xl bg-brand-primary py-3 text-sm font-semibold text-white hover:bg-brand-primary-light transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <PackageSearch size={16} />
-            {createMutation.isPending ? 'Envoi en cours...' : 'Soumettre la demande de retour'}
+            {createMutation.isPending ? t('sending') : t('submitReturn')}
           </button>
         </div>
       )}

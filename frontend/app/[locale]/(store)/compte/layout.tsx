@@ -19,10 +19,8 @@ export default function CompteLayout({ children }: { children: React.ReactNode }
     { href: '/compte/wishlist',  icon: Heart,            label: t('myWishlist') },
     { href: '/compte/profil',    icon: User,             label: t('myProfile') },
     { href: '/compte/adresses',  icon: MapPin,           label: t('myAddresses') },
-    { href: '/compte/avis',      icon: Star,             label: t('myReviews') },
     { href: '/compte/support',   icon: LifeBuoy,         label: t('support') },
     { href: '/compte/securite',  icon: ShieldCheck,      label: t('security') },
-    { href: '/compte/notifications', icon: Bell,         label: t('notifications') },
   ]
 
   const { isAuthenticated, logout, isHydrated, user } = useAuthStore()
@@ -98,7 +96,7 @@ export default function CompteLayout({ children }: { children: React.ReactNode }
           className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-red-500 hover:bg-red-50 transition-colors"
         >
           <LogOut size={18} />
-          Déconnexion
+          {t('logout')}
         </button>
       </div>
     </div>

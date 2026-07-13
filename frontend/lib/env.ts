@@ -46,15 +46,21 @@ const envSchema = z.object({
     .url('NEXTAUTH_URL must be a valid URL'),
 
   // ── Google OAuth (REQUIRED if using Google sign-in) ──────────────────
-  GOOGLE_CLIENT_ID: z.string().min(1).optional(),
-  GOOGLE_CLIENT_SECRET: z.string().min(1).optional(),
+  GOOGLE_CLIENT_ID: z.string().optional(),
+  GOOGLE_CLIENT_SECRET: z.string().optional(),
 
   // ── Public site config ───────────────────────────────────────────────
+  API_URL: z
+    .string()
+    .min(1)
+    .optional()
+    .default('http://nginx:8082/api'),
+
   NEXT_PUBLIC_API_URL: z
     .string()
-    .url('NEXT_PUBLIC_API_URL must be a valid URL')
+    .min(1)
     .optional()
-    .default('http://localhost:4000/api'),
+    .default('/api'),
 
   NEXT_PUBLIC_SITE_URL: z
     .string()

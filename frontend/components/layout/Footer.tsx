@@ -95,7 +95,7 @@ export default function Footer() {
               {[
                 { href: '/compte', label: tFooter('dashboard') },
                 { href: '/compte/commandes', label: tFooter('myOrders') },
-                { href: '/compte/favoris', label: tFooter('wishlist') },
+                { href: '/compte/wishlist', label: tFooter('wishlist') },
                 { href: '/auth/login', label: tFooter('signIn') },
               ].map(({ href, label }) => (
                 <li key={href}>

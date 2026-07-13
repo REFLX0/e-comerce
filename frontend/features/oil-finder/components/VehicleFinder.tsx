@@ -17,72 +17,74 @@ interface VehicleFinderProps {
 
 const STEP_LABELS = ['Marque', 'Modèle', 'Motorisation']
 
-const BRAND_DOMAINS: Record<string, string> = {
-  'peugeot': 'peugeot.fr',
-  'renault': 'renault.fr',
-  'volkswagen': 'volkswagen.com',
-  'mercedes-benz': 'mercedes-benz.com',
-  'bmw': 'bmw.com',
-  'audi': 'audi.com',
-  'toyota': 'toyota.com',
-  'ford': 'ford.com',
-  'fiat': 'fiat.com',
-  'hyundai': 'hyundai.com',
-  'kia': 'kia.com',
-  'nissan': 'nissan.com',
-  'honda': 'honda.com',
-  'mazda': 'mazda.com',
-  'citroen': 'citroen.com',
-  'citröen': 'citroen.com',
-  'citroën': 'citroen.com',
-  'opel': 'opel.com',
-  'skoda': 'skoda-auto.com',
-  'škoda': 'skoda-auto.com',
-  'seat': 'seat.com',
-  'dacia': 'dacia.com',
-  'jeep': 'jeep.com',
-  'land rover': 'landrover.com',
-  'land-rover': 'landrover.com',
-  'volvo': 'volvo.com',
-  'subaru': 'subaru.com',
-  'suzuki': 'suzuki.com',
-  'mitsubishi': 'mitsubishi-motors.com',
-  'porsche': 'porsche.com',
-  'lexus': 'lexus.com',
-  'alfa-romeo': 'alfaromeo.com',
-  'alfa romeo': 'alfaromeo.com',
-  'chevrolet': 'chevrolet.com',
-  'mini': 'mini.com',
-  'tesla': 'tesla.com',
-  'jaguar': 'jaguar.com',
-  'aston martin': 'astonmartin.com',
-  'aston-martin': 'astonmartin.com',
-  'ferrari': 'ferrari.com',
-  'lamborghini': 'lamborghini.com',
-  'maserati': 'maserati.com',
-  'bentley': 'bentleymotors.com',
-  'rolls-royce': 'rolls-roycemotorcars.com',
-  'rolls royce': 'rolls-roycemotorcars.com',
-  'mclaren': 'mclaren.com',
-  'bugatti': 'bugatti.com',
-  'cadillac': 'cadillac.com',
-  'lincoln': 'lincoln.com',
-  'chrysler': 'chrysler.com',
-  'dodge': 'dodge.com',
-  'ram': 'ramtrucks.com',
-  'gmc': 'gmc.com',
-  'infiniti': 'infiniti.com',
-  'smart': 'smart.com',
-  'vauxhall': 'vauxhall.co.uk',
-  'abarth': 'abarth.com',
-  'lancia': 'lancia.com',
-  'mg': 'mg.co.uk',
+// Slug → local path for downloaded logos.
+// If a brand is not in this map, the first-letter fallback is shown.
+const LOGO_PATHS: Record<string, string> = {
+  'audi': '/img/car-brands/audi.svg',
+  'bentley': '/img/car-brands/bentley.png',
+  'bmw': '/img/car-brands/bmw.svg',
+  'cadillac': '/img/car-brands/cadillac.png',
+  'chevrolet': '/img/car-brands/chevrolet.png',
+  'chrysler': '/img/car-brands/chrysler.png',
+  'dodge': '/img/car-brands/dodge.png',
+  'fiat': '/img/car-brands/fiat.png',
+  'ford': '/img/car-brands/ford.svg',
+  'gmc': '/img/car-brands/gmc.png',
+  'honda': '/img/car-brands/honda.svg',
+  'hyundai': '/img/car-brands/hyundai.svg',
+  'iveco': '/img/car-brands/iveco.png',
+  'jeep': '/img/car-brands/jeep.png',
+  'kia': '/img/car-brands/kia.png',
+  'lamborghini': '/img/car-brands/lamborghini.png',
+  'lexus': '/img/car-brands/lexus.png',
+  'lincoln': '/img/car-brands/lincoln.png',
+  'maserati': '/img/car-brands/maserati.png',
+  'mazda': '/img/car-brands/mazda.png',
+  'mclaren': '/img/car-brands/mclaren.png',
+  'mercedes-benz': '/img/car-brands/mercedes-benz.svg',
+  'mercedes-benz-vans': '/img/car-brands/mercedes-benz-vans.svg',
+  'mitsubishi': '/img/car-brands/mitsubishi.png',
+  'nissan': '/img/car-brands/nissan.png',
+  'peugeot': '/img/car-brands/peugeot.png',
+  'porsche': '/img/car-brands/porsche.png',
+  'ram': '/img/car-brands/ram.png',
+  'renault': '/img/car-brands/renault.svg',
+  'renault-commercial': '/img/car-brands/renault-commercial.svg',
+  'smart': '/img/car-brands/smart.png',
+  'subaru': '/img/car-brands/subaru.png',
+  'suzuki': '/img/car-brands/suzuki.png',
+  'tata': '/img/car-brands/tata.svg',
+  'tesla': '/img/car-brands/tesla.svg',
+  'toyota': '/img/car-brands/toyota.svg',
+  'volkswagen': '/img/car-brands/volkswagen.svg',
+  'volvo': '/img/car-brands/volvo.png',
 }
 
-function getBrandLogoUrl(make: { name: string; slug: string }): string | null {
-  const key = (s: string) => s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-  const domain = BRAND_DOMAINS[make.slug.toLowerCase()] || BRAND_DOMAINS[make.name.toLowerCase()] || BRAND_DOMAINS[key(make.slug)] || BRAND_DOMAINS[key(make.name)]
-  return domain ? `https://logo.clearbit.com/${domain}` : null
+function BrandLogo({ make: { slug, name } }: { make: { slug: string; name: string } }) {
+  const localPath = LOGO_PATHS[slug]
+
+  if (!localPath) {
+    return <span className="text-xl font-bold text-neutral-400">{name.charAt(0).toUpperCase()}</span>
+  }
+
+  const [loaded, setLoaded] = useState(false)
+
+  return (
+    <>
+      {!loaded && (
+        <span className="text-xl font-bold text-neutral-400">
+          {name.charAt(0).toUpperCase()}
+        </span>
+      )}
+      <img
+        src={localPath}
+        alt={name}
+        className={`h-8 w-8 object-contain opacity-90 ${loaded ? '' : 'hidden'}`}
+        onLoad={() => setLoaded(true)}
+        onError={() => setLoaded(false)}
+      />
+    </>
+  )
 }
 
 export function VehicleFinder({ onClose }: VehicleFinderProps) {
@@ -310,8 +312,7 @@ export function VehicleFinder({ onClose }: VehicleFinderProps) {
                   <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 md:grid-cols-5 max-h-[280px] overflow-y-auto pr-2 custom-scrollbar">
                     {filteredMakes.map((make) => {
                       const isSelected = selectedMake?.id === make.id
-                      const logoUrl = getBrandLogoUrl(make)
-                      
+
                       return (
                         <button
                           key={make.id}
@@ -328,13 +329,7 @@ export function VehicleFinder({ onClose }: VehicleFinderProps) {
                             flex h-12 w-12 items-center justify-center rounded-lg transition-colors
                             ${isSelected ? 'bg-white/[0.04]' : 'bg-transparent'}
                           `}>
-                            {logoUrl ? (
-                              <img src={logoUrl} alt={make.name} className="h-8 w-8 object-contain opacity-90" />
-                            ) : (
-                              <span className="text-xl font-bold text-neutral-400">
-                                {make.name.charAt(0).toUpperCase()}
-                              </span>
-                            )}
+                            <BrandLogo make={make} />
                           </div>
                           <span className={`text-sm font-medium ${isSelected ? 'text-white' : 'text-neutral-400'}`}>
                             {make.name}

@@ -85,7 +85,7 @@ export class CircuitBreaker {
   private onSuccess() {
     this.failures = 0
     if (this.state === 'HALF_OPEN') {
-      console.info(`[CircuitBreaker] "${this.name}" recovered — state: CLOSED`)
+      if (process.env.NODE_ENV !== 'production') console.info(`[CircuitBreaker] "${this.name}" recovered — state: CLOSED`)
     }
     this.state = 'CLOSED'
   }
@@ -95,7 +95,7 @@ export class CircuitBreaker {
     this.lastFailureTime = Date.now()
 
     if (this.state === 'HALF_OPEN' || this.failures >= this.failureThreshold) {
-      console.warn(
+      if (process.env.NODE_ENV !== 'production') console.warn(
         `[CircuitBreaker] "${this.name}" opened after ${this.failures} failure(s)`
       )
       this.state = 'OPEN'

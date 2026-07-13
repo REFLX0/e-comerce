@@ -9,19 +9,21 @@ import { toast } from 'sonner'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
-
-const contactSchema = z.object({
-  name: z.string().min(2, 'Le nom doit contenir au moins 2 caractères'),
-  email: z.string().email('Email invalide'),
-  phone: z.string().optional(),
-  subject: z.string().min(3, 'Sujet trop court'),
-  message: z.string().min(10, 'Le message doit contenir au moins 10 caractères'),
-  isProfessional: z.boolean().optional(),
-})
-
-type ContactFormData = z.infer<typeof contactSchema>
+import { useTranslations } from 'next-intl'
 
 export default function ContactPage() {
+  const t = useTranslations('Contact')
+
+  const contactSchema = z.object({
+    name: z.string().min(2, t('errors.nameMin')),
+    email: z.string().email(t('errors.emailInvalid')),
+    phone: z.string().optional(),
+    subject: z.string().min(3, t('errors.subjectMin')),
+    message: z.string().min(10, t('errors.messageMin')),
+    isProfessional: z.boolean().optional(),
+  })
+
+  type ContactFormData = z.infer<typeof contactSchema>
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const {
@@ -36,12 +38,11 @@ export default function ContactPage() {
   const onSubmit = async (data: ContactFormData) => {
     setIsSubmitting(true)
     try {
-      // Simulate API call
       await apiPost('/contact', data)
-      toast.success('Message envoyé avec succès ! Nous vous répondrons dans les plus brefs délais.')
+      toast.success(t('success'))
       reset()
     } catch (error) {
-      toast.error('Une erreur est survenue.')
+      toast.error(t('error'))
     } finally {
       setIsSubmitting(false)
     }
@@ -53,38 +54,38 @@ export default function ContactPage() {
       <section className="from-brand-primary to-brand-primary-dark bg-gradient-to-br py-16 text-white md:py-24">
         <div className="section-padding text-center">
           <h1 className="font-display mb-4 text-4xl font-bold md:text-5xl lg:text-6xl">
-            Nous Contacter
+            {t('title')}
           </h1>
           <p className="mx-auto max-w-2xl text-lg text-white/80">
-            Une question ? Besoin d&apos;un conseil ? Notre équipe est à votre écoute.
+            {t('subtitle')}
           </p>
         </div>
       </section>
 
       <div className="section-padding py-12">
-        <Breadcrumb items={[{ label: 'Contact' }]} />
+        <Breadcrumb items={[{ label: t('title') }]} />
 
         {/* Contact cards */}
         <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
           {[
             {
               icon: Phone,
-              title: 'Téléphone',
+              title: t('phone'),
               info: '+216 92 975 959',
-              sub: 'Lun-Ven 8h-18h | Sam 8h-14h',
+              sub: t('phoneSub'),
             },
-            { icon: Mail, title: 'Email', info: 'contact@kiosquetn.tn', sub: 'Réponse sous 24h' },
+            { icon: Mail, title: t('email'), info: 'contact@kiosquetn.tn', sub: t('emailSub') },
             {
               icon: MapPin,
-              title: 'Adresse',
-              info: 'Route Manzel Chaker Km 1',
-              sub: 'Rue Kerbala, 3072 Sfax',
+              title: t('address'),
+              info: t('address1'),
+              sub: t('address2'),
             },
             {
               icon: Clock,
-              title: 'Horaires',
-              info: 'Lun-Ven: 8h-18h',
-              sub: 'Sam: 8h-14h | Dim: Fermé',
+              title: t('hours'),
+              info: t('hours1'),
+              sub: t('hours2'),
             },
           ].map((c) => (
             <div
@@ -105,7 +106,7 @@ export default function ContactPage() {
         <div className="mx-auto mt-12 max-w-2xl">
           <div className="shadow-soft rounded-2xl border border-gray-100 bg-white p-8">
             <h2 className="font-display text-brand-primary mb-6 text-2xl font-bold">
-              Envoyez-nous un message
+              {t('formTitle')}
             </h2>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
               <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
@@ -114,7 +115,7 @@ export default function ContactPage() {
                     htmlFor="contact-name"
                     className="mb-1 block text-sm font-medium text-gray-700"
                   >
-                    Nom complet
+                    {t('fullName')}
                   </label>
                   <input
                     id="contact-name"
@@ -124,7 +125,7 @@ export default function ContactPage() {
                         ? 'border-red-500 focus:border-red-500'
                         : 'border-gray-300 focus:border-transparent'
                     }`}
-                    placeholder="Votre nom"
+                    placeholder={t('fullNamePlaceholder')}
                   />
                   {errors.name && (
                     <span className="mt-1 block text-xs text-red-500">{errors.name.message}</span>
@@ -135,7 +136,7 @@ export default function ContactPage() {
                     htmlFor="contact-email"
                     className="mb-1 block text-sm font-medium text-gray-700"
                   >
-                    Email
+                    {t('emailLabel')}
                   </label>
                   <input
                     id="contact-email"
@@ -146,7 +147,7 @@ export default function ContactPage() {
                         ? 'border-red-500 focus:border-red-500'
                         : 'border-gray-300 focus:border-transparent'
                     }`}
-                    placeholder="votre@email.com"
+                    placeholder={t('emailPlaceholder')}
                   />
                   {errors.email && (
                     <span className="mt-1 block text-xs text-red-500">{errors.email.message}</span>
@@ -158,7 +159,7 @@ export default function ContactPage() {
                   htmlFor="contact-phone"
                   className="mb-1 block text-sm font-medium text-gray-700"
                 >
-                  Téléphone
+                  {t('phoneLabel')}
                 </label>
                 <input
                   id="contact-phone"
@@ -169,7 +170,7 @@ export default function ContactPage() {
                       ? 'border-red-500 focus:border-red-500'
                       : 'border-gray-300 focus:border-transparent'
                   }`}
-                  placeholder="+216 XX XXX XXX"
+                  placeholder={t('phonePlaceholder')}
                 />
                 {errors.phone && (
                   <span className="mt-1 block text-xs text-red-500">{errors.phone.message}</span>
@@ -180,7 +181,7 @@ export default function ContactPage() {
                   htmlFor="contact-subject"
                   className="mb-1 block text-sm font-medium text-gray-700"
                 >
-                  Sujet
+                  {t('subject')}
                 </label>
                 <input
                   id="contact-subject"
@@ -190,7 +191,7 @@ export default function ContactPage() {
                       ? 'border-red-500 focus:border-red-500'
                       : 'border-gray-300 focus:border-transparent'
                   }`}
-                  placeholder="Objet de votre message"
+                  placeholder={t('subjectPlaceholder')}
                 />
                 {errors.subject && (
                   <span className="mt-1 block text-xs text-red-500">{errors.subject.message}</span>
@@ -201,7 +202,7 @@ export default function ContactPage() {
                   htmlFor="contact-message"
                   className="mb-1 block text-sm font-medium text-gray-700"
                 >
-                  Message
+                  {t('message')}
                 </label>
                 <textarea
                   id="contact-message"
@@ -212,7 +213,7 @@ export default function ContactPage() {
                       ? 'border-red-500 focus:border-red-500'
                       : 'border-gray-300 focus:border-transparent'
                   }`}
-                  placeholder="Votre message..."
+                  placeholder={t('messagePlaceholder')}
                 />
                 {errors.message && (
                   <span className="mt-1 block text-xs text-red-500">{errors.message.message}</span>
@@ -226,7 +227,7 @@ export default function ContactPage() {
                     {...register('isProfessional')}
                     className="text-brand-primary focus:ring-brand-primary h-4 w-4 cursor-pointer rounded border-gray-300"
                   />
-                  <span className="text-sm text-gray-700">Je suis un professionnel</span>
+                  <span className="text-sm text-gray-700">{t('isPro')}</span>
                 </label>
               </div>
 
@@ -236,7 +237,7 @@ export default function ContactPage() {
                 className="bg-brand-accent hover:bg-brand-accent/90 flex w-full items-center justify-center gap-2 rounded-xl py-3 font-semibold text-white transition-colors disabled:opacity-50"
               >
                 <Send size={18} />
-                {isSubmitting ? 'Envoi en cours...' : 'Envoyer le message'}
+                {isSubmitting ? t('sending') : t('send')}
               </button>
             </form>
           </div>

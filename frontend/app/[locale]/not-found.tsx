@@ -2,8 +2,11 @@
 
 import Link from 'next/link'
 import { Home, ArrowLeft, Search } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 
 export default function NotFound() {
+  const t = useTranslations('NotFound')
+
   return (
     <main className="bg-brand-surface flex min-h-screen flex-col items-center justify-center px-4">
       {/* Background decorative elements */}
@@ -60,13 +63,12 @@ export default function NotFound() {
 
         {/* Copy */}
         <h1 className="font-display text-brand-primary mb-4 text-3xl font-bold tracking-tight sm:text-4xl">
-          Cette page s&apos;est évaporée
+          {t('title')}
         </h1>
         <p className="mx-auto mb-2 max-w-md text-base leading-relaxed text-gray-500">
-          La page que vous cherchez n&apos;existe pas ou a été déplacée.
-          Retournez à l&apos;accueil pour trouver ce dont vous avez besoin.
+          {t('subtitle')}
         </p>
-        <p className="mb-10 text-sm text-gray-400">Code d&apos;erreur: 404 — Page introuvable</p>
+        <p className="mb-10 text-sm text-gray-400">{t('errorCode')}</p>
 
         {/* Actions */}
         <div className="flex flex-col items-center justify-center gap-3 sm:flex-row">
@@ -75,35 +77,35 @@ export default function NotFound() {
             className="bg-brand-primary hover:bg-brand-primary-light inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-white transition-all duration-200 hover:shadow-lg active:scale-[0.98]"
           >
             <Home size={16} />
-            Retour à l&apos;accueil
+            {t('goHome')}
           </Link>
           <Link
             href="/catalogue"
             className="border-brand-primary/20 text-brand-primary hover:bg-brand-primary/5 inline-flex items-center gap-2 rounded-full border px-6 py-3 text-sm font-semibold transition-all duration-200 active:scale-[0.98]"
           >
             <Search size={16} />
-            Voir le catalogue
+            {t('viewCatalog')}
           </Link>
         </div>
 
         {/* Quick links */}
         <div className="border-brand-border mt-12 border-t pt-8">
           <p className="mb-4 text-xs font-medium tracking-widest text-gray-400 uppercase">
-            Liens utiles
+            {t('usefulLinks')}
           </p>
           <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
             {[
-              { label: 'Catalogue', href: '/catalogue' },
-              { label: 'Contact', href: '/contact' },
-              { label: 'FAQ', href: '/faq' },
-              { label: 'Mon compte', href: '/compte' },
+              { labelKey: 'catalog', href: '/catalogue' },
+              { labelKey: 'contact', href: '/contact' },
+              { labelKey: 'faq', href: '/faq' },
+              { labelKey: 'account', href: '/compte' },
             ].map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
                 className="text-brand-primary/60 hover:text-brand-primary text-sm transition-colors duration-150"
               >
-                {link.label}
+                {t(`links.${link.labelKey}`)}
               </Link>
             ))}
           </div>
@@ -116,7 +118,7 @@ export default function NotFound() {
           type="button"
         >
           <ArrowLeft size={14} />
-          Revenir en arrière
+          {t('goBack')}
         </button>
       </div>
     </main>

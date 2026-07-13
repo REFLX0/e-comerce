@@ -383,7 +383,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={15} />
               <input
                 type="search"
-                placeholder="Rechercher…"
+                placeholder={t('quickSearch')}
                 className="w-56 rounded-xl border border-gray-200 bg-gray-50 py-2 pr-4 pl-9 text-sm outline-none focus:border-brand-accent focus:bg-white transition-all"
               />
             </div>
