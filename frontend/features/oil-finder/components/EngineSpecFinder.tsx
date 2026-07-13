@@ -1,8 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Car, Bike, Truck, Tractor, Search, ArrowLeft, Fuel, Gauge, CheckCircle2, ChevronRight, Zap } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { Car, Bike, Truck, Tractor, Search, ArrowLeft, Fuel, Gauge, Check, ChevronRight, Zap } from 'lucide-react'
 import { useRouter, usePathname } from 'next/navigation'
 import type { FuelType } from '@/lib/types'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -10,54 +9,10 @@ import { motion, AnimatePresence } from 'framer-motion'
 type VehicleType = 'automobile' | 'moto' | 'poids_lourd' | 'agricole'
 
 const VEHICLE_TYPES = [
-  {
-    id: 'automobile' as const,
-    icon: Car,
-    label: 'Automobile',
-    sub: 'Voiture de tourisme',
-    accentColor: '#3b82f6',
-    bgSelected: 'linear-gradient(145deg, rgba(59,130,246,0.18) 0%, rgba(59,130,246,0.06) 100%)',
-    borderSelected: '1px solid rgba(59,130,246,0.45)',
-    iconBg: 'rgba(59,130,246,0.18)',
-    iconBorder: '1px solid rgba(59,130,246,0.4)',
-    glowColor: 'rgba(59,130,246,0.25)',
-  },
-  {
-    id: 'moto' as const,
-    icon: Bike,
-    label: 'Moto',
-    sub: '2 roues & scooters',
-    accentColor: '#a855f7',
-    bgSelected: 'linear-gradient(145deg, rgba(168,85,247,0.18) 0%, rgba(168,85,247,0.06) 100%)',
-    borderSelected: '1px solid rgba(168,85,247,0.45)',
-    iconBg: 'rgba(168,85,247,0.18)',
-    iconBorder: '1px solid rgba(168,85,247,0.4)',
-    glowColor: 'rgba(168,85,247,0.25)',
-  },
-  {
-    id: 'poids_lourd' as const,
-    icon: Truck,
-    label: 'Poids Lourd',
-    sub: 'Camions & utilitaires',
-    accentColor: '#f97316',
-    bgSelected: 'linear-gradient(145deg, rgba(249,115,22,0.18) 0%, rgba(249,115,22,0.06) 100%)',
-    borderSelected: '1px solid rgba(249,115,22,0.45)',
-    iconBg: 'rgba(249,115,22,0.18)',
-    iconBorder: '1px solid rgba(249,115,22,0.4)',
-    glowColor: 'rgba(249,115,22,0.25)',
-  },
-  {
-    id: 'agricole' as const,
-    icon: Tractor,
-    label: 'Agricole',
-    sub: 'Tracteurs & engins',
-    accentColor: '#22c55e',
-    bgSelected: 'linear-gradient(145deg, rgba(34,197,94,0.18) 0%, rgba(34,197,94,0.06) 100%)',
-    borderSelected: '1px solid rgba(34,197,94,0.45)',
-    iconBg: 'rgba(34,197,94,0.18)',
-    iconBorder: '1px solid rgba(34,197,94,0.4)',
-    glowColor: 'rgba(34,197,94,0.25)',
-  },
+  { id: 'automobile' as const, icon: Car, label: 'Automobile', sub: 'Voiture de tourisme' },
+  { id: 'moto' as const, icon: Bike, label: 'Moto', sub: '2 roues & scooters' },
+  { id: 'poids_lourd' as const, icon: Truck, label: 'Poids Lourd', sub: 'Camions & utilitaires' },
+  { id: 'agricole' as const, icon: Tractor, label: 'Agricole', sub: 'Tracteurs & engins' },
 ]
 
 const CYLINDER_OPTIONS: Record<VehicleType, number[]> = {
@@ -67,9 +22,9 @@ const CYLINDER_OPTIONS: Record<VehicleType, number[]> = {
   agricole: [3, 4, 6],
 }
 
-const FUEL_OPTIONS: { id: FuelType; label: string; icon: string; desc: string }[] = [
-  { id: 'essence', label: 'Essence', icon: '⛽', desc: 'Moteur à essence' },
-  { id: 'diesel', label: 'Diesel', icon: '🛢️', desc: 'Moteur diesel' },
+const FUEL_OPTIONS: { id: FuelType; label: string; desc: string }[] = [
+  { id: 'essence', label: 'Essence', desc: 'Moteur à essence' },
+  { id: 'diesel', label: 'Diesel', desc: 'Moteur diesel' },
 ]
 
 interface EngineSpecFinderProps {
@@ -141,133 +96,61 @@ export function EngineSpecFinder({ onClose }: EngineSpecFinderProps) {
   const variants = {
     initial: (direction: number) => ({
       opacity: 0,
-      x: direction > 0 ? 40 : -40,
-      scale: 0.97,
+      x: direction > 0 ? 30 : -30,
     }),
     animate: {
       opacity: 1,
       x: 0,
-      scale: 1,
-      transition: { duration: 0.35, ease: 'easeOut' as const }
+      transition: { duration: 0.25, ease: 'easeOut' as const }
     },
     exit: (direction: number) => ({
       opacity: 0,
-      x: direction < 0 ? 40 : -40,
-      scale: 0.97,
-      transition: { duration: 0.25, ease: 'easeIn' as const }
+      x: direction < 0 ? 30 : -30,
+      transition: { duration: 0.2, ease: 'easeIn' as const }
     }),
   }
 
+  const STEPS = ['Type', 'Cylindres', 'Puissance']
+
   return (
     <div
-      className="relative mx-auto w-full max-w-4xl overflow-hidden rounded-3xl"
-      style={{
-        background: 'linear-gradient(145deg, rgba(20,20,25,0.95) 0%, rgba(12,12,16,0.98) 100%)',
-        border: '1px solid rgba(255,255,255,0.07)',
-        boxShadow: '0 32px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.03) inset',
-      }}
+      className="relative mx-auto w-full max-w-4xl overflow-hidden rounded-2xl bg-neutral-950"
+      style={{ border: '1px solid rgba(255,255,255,0.08)' }}
     >
-      {/* Ambient top glow */}
-      <div
-        className="absolute top-0 left-1/2 -translate-x-1/2 w-2/3 h-px"
-        style={{ background: 'linear-gradient(90deg, transparent, rgba(225,6,0,0.5), transparent)' }}
-      />
-
       {/* Header */}
-      <div
-        className="relative border-b p-6 md:p-8"
-        style={{ borderColor: 'rgba(255,255,255,0.06)' }}
-      >
-        {/* Background decoration */}
-        <div
-          className="absolute inset-0 opacity-30"
-          style={{
-            background: 'radial-gradient(ellipse at 0% 0%, rgba(225,6,0,0.15) 0%, transparent 60%)',
-          }}
-        />
-
-        <div className="relative z-10 flex items-center gap-5">
-          <div
-            className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl"
-            style={{
-              background: 'linear-gradient(135deg, rgba(225,6,0,0.2) 0%, rgba(225,6,0,0.05) 100%)',
-              border: '1px solid rgba(225,6,0,0.25)',
-              boxShadow: '0 0 30px rgba(225,6,0,0.15)',
-            }}
-          >
-            <Search size={24} className="text-[#E10600]" />
-          </div>
+      <div className="border-b border-white/[0.06] px-6 py-5 md:px-8">
+        <div className="flex items-center justify-between">
           <div>
-            <h2
-              className="text-2xl font-bold tracking-tight text-white md:text-3xl"
-              style={{ fontFamily: 'Inter, system-ui, sans-serif' }}
-            >
-              Trouver mon huile idéale
+            <h2 className="text-lg font-semibold text-white">
+              Trouver mon huile
             </h2>
-            <p className="mt-1 text-sm text-gray-500">
-              Renseignez les caractéristiques de votre moteur pour obtenir les meilleures recommandations.
+            <p className="mt-0.5 text-sm text-neutral-500">
+              Renseignez les caractéristiques de votre moteur
             </p>
           </div>
-        </div>
 
-        {/* Step progress bar */}
-        <div className="relative z-10 mt-5">
-          <div className="flex items-center gap-0">
-            {[1, 2, 3].map((s, i) => {
-              const labels = ['Type', 'Cylindres', 'Puissance']
+          {/* Step indicator — minimal dots */}
+          <div className="hidden sm:flex items-center gap-1.5">
+            {STEPS.map((label, i) => {
+              const s = i + 1
               const isCompleted = s < step
               const isActive = s === step
-              const canClick = s < step
               return (
-                <div key={s} className="flex items-center flex-1">
+                <div key={s} className="flex items-center gap-1.5">
                   <button
-                    onClick={() => canClick && resetTo(s)}
-                    disabled={!canClick && !isActive}
-                    className="flex items-center gap-2 group"
-                    style={{ cursor: canClick ? 'pointer' : 'default' }}
+                    onClick={() => s < step && resetTo(s)}
+                    className={`
+                      flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium transition-colors
+                      ${isCompleted ? 'bg-red-600/10 text-red-500 cursor-pointer hover:bg-red-600/20' : ''}
+                      ${isActive ? 'bg-white/[0.06] text-white' : ''}
+                      ${!isCompleted && !isActive ? 'text-neutral-600' : ''}
+                    `}
+                    disabled={!isCompleted}
                   >
-                    <div
-                      className="flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold transition-all duration-300"
-                      style={{
-                        background: isCompleted
-                          ? 'linear-gradient(135deg, #E10600, #b80500)'
-                          : isActive
-                          ? 'rgba(225,6,0,0.15)'
-                          : 'rgba(255,255,255,0.05)',
-                        border: isCompleted
-                          ? '1px solid #E10600'
-                          : isActive
-                          ? '1px solid rgba(225,6,0,0.6)'
-                          : '1px solid rgba(255,255,255,0.1)',
-                        color: isCompleted ? '#fff' : isActive ? '#E10600' : 'rgba(255,255,255,0.3)',
-                        boxShadow: isCompleted ? '0 0 12px rgba(225,6,0,0.3)' : 'none',
-                      }}
-                    >
-                      {isCompleted ? <CheckCircle2 size={14} /> : s}
-                    </div>
-                    <span
-                      className="text-xs font-medium transition-colors"
-                      style={{
-                        color: isCompleted
-                          ? '#E10600'
-                          : isActive
-                          ? '#fff'
-                          : 'rgba(255,255,255,0.25)',
-                      }}
-                    >
-                      {labels[i]}
-                    </span>
+                    {isCompleted ? <Check size={11} strokeWidth={3} /> : null}
+                    {label}
                   </button>
-                  {i < 2 && (
-                    <div
-                      className="flex-1 mx-3 h-px transition-all duration-500"
-                      style={{
-                        background: isCompleted
-                          ? 'linear-gradient(90deg, #E10600, rgba(225,6,0,0.3))'
-                          : 'rgba(255,255,255,0.07)',
-                      }}
-                    />
-                  )}
+                  {i < 2 && <ChevronRight size={12} className="text-neutral-700" />}
                 </div>
               )
             })}
@@ -276,301 +159,211 @@ export function EngineSpecFinder({ onClose }: EngineSpecFinderProps) {
       </div>
 
       {/* Content */}
-      <div className="flex min-h-[360px] flex-col p-6 md:p-8">
-        <div className="relative flex-1">
-          <AnimatePresence mode="wait" custom={direction}>
-            {/* STEP 1: Vehicle Type */}
-            {step === 1 && (
-              <motion.div
-                key="step1"
-                custom={direction}
-                variants={variants}
-                initial="initial"
-                animate="animate"
-                exit="exit"
-                className="flex flex-1 flex-col"
-              >
-                <div className="mb-7">
-                  <h3 className="text-xl font-semibold text-white">Quel est votre type de véhicule ?</h3>
-                  <p className="mt-1 text-sm text-gray-500">Sélectionnez la catégorie correspondant à votre véhicule</p>
-                </div>
-                <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-                  {VEHICLE_TYPES.map(type => {
-                    const Icon = type.icon
-                    const isSelected = vehicleType === type.id
-                    return (
-                      <button
-                        key={type.id}
-                        onClick={() => selectType(type.id)}
-                        className="group relative flex flex-col items-center gap-4 rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1.5"
-                        style={{
-                          background: isSelected ? type.bgSelected : 'rgba(255,255,255,0.03)',
-                          border: isSelected ? type.borderSelected : '1px solid rgba(255,255,255,0.07)',
-                          boxShadow: isSelected
-                            ? `0 0 40px ${type.glowColor}, 0 8px 24px rgba(0,0,0,0.3)`
-                            : '0 2px 8px rgba(0,0,0,0.2)',
-                        }}
-                      >
-                        {isSelected && (
-                          <div className="absolute right-3 top-3">
-                            <CheckCircle2 size={16} style={{ color: type.accentColor }} />
-                          </div>
-                        )}
-                        <div
-                          className="flex h-16 w-16 items-center justify-center rounded-2xl transition-all duration-300 group-hover:scale-110"
-                          style={{
-                            background: isSelected ? type.iconBg : 'rgba(255,255,255,0.05)',
-                            border: isSelected ? type.iconBorder : '1px solid rgba(255,255,255,0.06)',
-                            color: isSelected ? type.accentColor : 'rgba(255,255,255,0.35)',
-                            boxShadow: isSelected ? `0 0 20px ${type.glowColor}` : 'none',
-                          }}
-                        >
-                          <Icon size={30} />
-                        </div>
-                        <div className="text-center">
-                          <span
-                            className="block text-sm font-bold tracking-wide transition-colors"
-                            style={{ color: isSelected ? '#fff' : 'rgba(255,255,255,0.5)' }}
-                          >
-                            {type.label}
-                          </span>
-                          <span
-                            className="mt-0.5 block text-[10px] transition-colors"
-                            style={{ color: isSelected ? 'rgba(255,255,255,0.5)' : 'rgba(255,255,255,0.2)' }}
-                          >
-                            {type.sub}
-                          </span>
-                        </div>
-                      </button>
-                    )
-                  })}
-                </div>
-              </motion.div>
-            )}
-
-            {/* STEP 2: Cylinders */}
-            {step === 2 && (
-              <motion.div
-                key="step2"
-                custom={direction}
-                variants={variants}
-                initial="initial"
-                animate="animate"
-                exit="exit"
-                className="flex flex-1 flex-col"
-              >
-                <div className="mb-7 flex items-center gap-4">
-                  <button
-                    onClick={() => resetTo(1)}
-                    className="group flex h-10 w-10 items-center justify-center rounded-full transition-all duration-200"
-                    style={{
-                      background: 'rgba(255,255,255,0.04)',
-                      border: '1px solid rgba(255,255,255,0.08)',
-                      color: 'rgba(255,255,255,0.4)',
-                    }}
-                    onMouseEnter={e => {
-                      (e.currentTarget as HTMLElement).style.borderColor = 'rgba(225,6,0,0.5)'
-                      ;(e.currentTarget as HTMLElement).style.color = '#E10600'
-                    }}
-                    onMouseLeave={e => {
-                      (e.currentTarget as HTMLElement).style.borderColor = 'rgba(255,255,255,0.08)'
-                      ;(e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,0.4)'
-                    }}
-                  >
-                    <ArrowLeft size={18} className="transition-transform group-hover:-translate-x-0.5" />
-                  </button>
-                  <div>
-                    <h3 className="text-xl font-semibold text-white">Combien de cylindres ?</h3>
-                    {selectedVehicleConfig && (
-                      <p className="mt-1 flex items-center gap-1.5 text-sm text-gray-500">
-                        <CheckCircle2 size={12} className="text-green-500" />
-                        {selectedVehicleConfig.label}
-                      </p>
-                    )}
-                  </div>
-                </div>
-                
-                <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-                  {cylinderChoices.map(cyl => {
-                    const isSelected = cylinders === cyl
-                    return (
-                      <button
-                        key={cyl}
-                        onClick={() => selectCylinders(cyl)}
-                        className="group relative flex min-h-28 flex-col items-center justify-center gap-1.5 rounded-2xl transition-all duration-300 hover:-translate-y-1"
-                        style={{
-                          background: isSelected
-                            ? 'linear-gradient(135deg, rgba(225,6,0,0.18) 0%, rgba(225,6,0,0.06) 100%)'
-                            : 'rgba(255,255,255,0.03)',
-                          border: isSelected
-                            ? '1px solid rgba(225,6,0,0.5)'
-                            : '1px solid rgba(255,255,255,0.07)',
-                          boxShadow: isSelected
-                            ? '0 0 30px rgba(225,6,0,0.2), 0 8px 24px rgba(0,0,0,0.3)'
-                            : '0 2px 8px rgba(0,0,0,0.2)',
-                        }}
-                      >
-                        <span
-                          className="text-3xl font-black tabular-nums transition-colors"
-                          style={{ color: isSelected ? '#fff' : 'rgba(255,255,255,0.4)' }}
-                        >
-                          {cyl}
-                        </span>
-                        <span
-                          className="text-xs font-semibold uppercase tracking-widest transition-colors"
-                          style={{ color: isSelected ? 'rgba(225,6,0,0.9)' : 'rgba(255,255,255,0.2)' }}
-                        >
-                          cyl.
-                        </span>
-                        {isSelected && (
-                          <div className="absolute right-3 top-3">
-                            <CheckCircle2 size={15} className="text-[#E10600]" />
-                          </div>
-                        )}
-                      </button>
-                    )
-                  })}
-                </div>
-              </motion.div>
-            )}
-
-            {/* STEP 3: Power & Fuel */}
-            {step === 3 && (
-              <motion.div
-                key="step3"
-                custom={direction}
-                variants={variants}
-                initial="initial"
-                animate="animate"
-                exit="exit"
-                className="flex flex-1 flex-col"
-              >
-                <div className="mb-7 flex items-center gap-4">
-                  <button
-                    onClick={() => resetTo(2)}
-                    className="group flex h-10 w-10 items-center justify-center rounded-full transition-all duration-200"
-                    style={{
-                      background: 'rgba(255,255,255,0.04)',
-                      border: '1px solid rgba(255,255,255,0.08)',
-                      color: 'rgba(255,255,255,0.4)',
-                    }}
-                    onMouseEnter={e => {
-                      (e.currentTarget as HTMLElement).style.borderColor = 'rgba(225,6,0,0.5)'
-                      ;(e.currentTarget as HTMLElement).style.color = '#E10600'
-                    }}
-                    onMouseLeave={e => {
-                      (e.currentTarget as HTMLElement).style.borderColor = 'rgba(255,255,255,0.08)'
-                      ;(e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,0.4)'
-                    }}
-                  >
-                    <ArrowLeft size={18} className="transition-transform group-hover:-translate-x-0.5" />
-                  </button>
-                  <div>
-                    <h3 className="text-xl font-semibold text-white">Dernières précisions</h3>
-                    {selectedVehicleConfig && (
-                      <p className="mt-1 flex items-center gap-1.5 text-sm text-gray-500">
-                        <CheckCircle2 size={12} className="text-green-500" />
-                        {selectedVehicleConfig.label} — {cylinders} cyl.
-                      </p>
-                    )}
-                  </div>
-                </div>
-
-                <div className="grid gap-6 sm:grid-cols-2">
-                  {/* Power input */}
-                  <div>
-                    <label className="mb-3 flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-gray-500">
-                      <Gauge size={14} className="text-[#E10600]" />
-                      Puissance (CV)
-                    </label>
-                    <div className="relative">
-                      <input
-                        type="number"
-                        min={0}
-                        max={2000}
-                        value={power}
-                        onChange={e => setPower(e.target.value ? Number(e.target.value) : '')}
-                        placeholder="Ex: 110"
-                        className="w-full rounded-2xl px-5 py-4 text-xl font-bold text-white placeholder-gray-700 outline-none transition-all duration-200"
-                        style={{
-                          background: 'rgba(255,255,255,0.04)',
-                          border: power !== '' ? '1px solid rgba(225,6,0,0.5)' : '1px solid rgba(255,255,255,0.07)',
-                          boxShadow: power !== '' ? '0 0 20px rgba(225,6,0,0.1)' : 'none',
-                        }}
-                      />
+      <div className="flex min-h-[320px] flex-col px-6 py-6 md:px-8">
+        <AnimatePresence mode="wait" custom={direction}>
+          {/* STEP 1: Vehicle Type */}
+          {step === 1 && (
+            <motion.div
+              key="step1"
+              custom={direction}
+              variants={variants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+            >
+              <p className="mb-5 text-sm font-medium text-neutral-400">
+                Quel type de véhicule ?
+              </p>
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                {VEHICLE_TYPES.map(type => {
+                  const Icon = type.icon
+                  const isSelected = vehicleType === type.id
+                  return (
+                    <button
+                      key={type.id}
+                      onClick={() => selectType(type.id)}
+                      className={`
+                        group relative flex flex-col items-center gap-3 rounded-xl p-5 transition-all duration-200
+                        ${isSelected
+                          ? 'bg-white/[0.08] ring-1 ring-white/20'
+                          : 'bg-white/[0.03] ring-1 ring-white/[0.06] hover:bg-white/[0.06] hover:ring-white/10'
+                        }
+                      `}
+                    >
                       <div
-                        className="absolute right-5 top-1/2 -translate-y-1/2 text-sm font-bold"
-                        style={{ color: 'rgba(255,255,255,0.2)' }}
+                        className={`
+                          flex h-12 w-12 items-center justify-center rounded-lg transition-colors
+                          ${isSelected ? 'bg-red-600/15 text-red-500' : 'bg-white/[0.04] text-neutral-500 group-hover:text-neutral-300'}
+                        `}
                       >
-                        CV
+                        <Icon size={24} />
                       </div>
-                    </div>
-                  </div>
+                      <div className="text-center">
+                        <span className={`block text-sm font-semibold ${isSelected ? 'text-white' : 'text-neutral-400'}`}>
+                          {type.label}
+                        </span>
+                        <span className="mt-0.5 block text-[10px] text-neutral-600">
+                          {type.sub}
+                        </span>
+                      </div>
+                    </button>
+                  )
+                })}
+              </div>
+            </motion.div>
+          )}
 
-                  {/* Fuel type */}
-                  <div>
-                    <label className="mb-3 flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-gray-500">
-                      <Fuel size={14} className="text-[#E10600]" />
-                      Carburant
-                    </label>
-                    <div className="grid grid-cols-2 gap-3">
-                      {FUEL_OPTIONS.map(fuel => {
-                        const isSelected = fuelType === fuel.id
-                        return (
-                          <button
-                            key={fuel.id}
-                            onClick={() => setFuelType(fuel.id)}
-                            className="flex min-h-[80px] flex-col items-center justify-center gap-1.5 rounded-2xl transition-all duration-300 hover:-translate-y-0.5"
-                            style={{
-                              background: isSelected
-                                ? 'linear-gradient(135deg, rgba(225,6,0,0.18) 0%, rgba(225,6,0,0.06) 100%)'
-                                : 'rgba(255,255,255,0.03)',
-                              border: isSelected
-                                ? '1px solid rgba(225,6,0,0.5)'
-                                : '1px solid rgba(255,255,255,0.07)',
-                              boxShadow: isSelected ? '0 0 20px rgba(225,6,0,0.15)' : 'none',
-                            }}
-                          >
-                            <span className="text-2xl">{fuel.icon}</span>
-                            <span
-                              className="text-sm font-bold transition-colors"
-                              style={{ color: isSelected ? '#fff' : 'rgba(255,255,255,0.4)' }}
-                            >
-                              {fuel.label}
-                            </span>
-                          </button>
-                        )
-                      })}
+          {/* STEP 2: Cylinders */}
+          {step === 2 && (
+            <motion.div
+              key="step2"
+              custom={direction}
+              variants={variants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+            >
+              <div className="mb-5 flex items-center gap-3">
+                <button
+                  onClick={() => resetTo(1)}
+                  className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/[0.04] text-neutral-500 ring-1 ring-white/[0.06] transition-colors hover:bg-white/[0.08] hover:text-white"
+                >
+                  <ArrowLeft size={16} />
+                </button>
+                <div>
+                  <p className="text-sm font-medium text-neutral-400">
+                    Combien de cylindres ?
+                  </p>
+                  {selectedVehicleConfig && (
+                    <p className="text-xs text-neutral-600">{selectedVehicleConfig.label}</p>
+                  )}
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                {cylinderChoices.map(cyl => {
+                  const isSelected = cylinders === cyl
+                  return (
+                    <button
+                      key={cyl}
+                      onClick={() => selectCylinders(cyl)}
+                      className={`
+                        relative flex min-h-[90px] flex-col items-center justify-center gap-1 rounded-xl transition-all duration-200
+                        ${isSelected
+                          ? 'bg-white/[0.08] ring-1 ring-red-500/40'
+                          : 'bg-white/[0.03] ring-1 ring-white/[0.06] hover:bg-white/[0.06]'
+                        }
+                      `}
+                    >
+                      <span className={`text-2xl font-bold tabular-nums ${isSelected ? 'text-white' : 'text-neutral-500'}`}>
+                        {cyl}
+                      </span>
+                      <span className={`text-[10px] font-semibold uppercase tracking-wider ${isSelected ? 'text-red-500' : 'text-neutral-700'}`}>
+                        cylindres
+                      </span>
+                    </button>
+                  )
+                })}
+              </div>
+            </motion.div>
+          )}
+
+          {/* STEP 3: Power & Fuel */}
+          {step === 3 && (
+            <motion.div
+              key="step3"
+              custom={direction}
+              variants={variants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+            >
+              <div className="mb-5 flex items-center gap-3">
+                <button
+                  onClick={() => resetTo(2)}
+                  className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/[0.04] text-neutral-500 ring-1 ring-white/[0.06] transition-colors hover:bg-white/[0.08] hover:text-white"
+                >
+                  <ArrowLeft size={16} />
+                </button>
+                <div>
+                  <p className="text-sm font-medium text-neutral-400">
+                    Dernières précisions
+                  </p>
+                  {selectedVehicleConfig && (
+                    <p className="text-xs text-neutral-600">
+                      {selectedVehicleConfig.label} — {cylinders} cyl.
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              <div className="grid gap-5 sm:grid-cols-2">
+                {/* Power input */}
+                <div>
+                  <label className="mb-2 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-neutral-500">
+                    <Gauge size={13} />
+                    Puissance (CV)
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="number"
+                      min={0}
+                      max={2000}
+                      value={power}
+                      onChange={e => setPower(e.target.value ? Number(e.target.value) : '')}
+                      placeholder="Ex: 110"
+                      className="w-full rounded-xl bg-white/[0.04] px-4 py-3.5 text-lg font-semibold text-white placeholder-neutral-700 outline-none ring-1 ring-white/[0.06] transition-all focus:ring-red-500/40"
+                    />
+                    <div className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-bold text-neutral-600">
+                      CV
                     </div>
                   </div>
                 </div>
 
-                <div className="mt-8 flex justify-end">
-                  <button
-                    onClick={handleSearch}
-                    disabled={!canSubmit}
-                    className="group relative flex items-center gap-3 overflow-hidden rounded-2xl px-8 py-4 text-sm font-bold transition-all duration-300 hover:-translate-y-0.5 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:translate-y-0"
-                    style={{
-                      background: canSubmit
-                        ? 'linear-gradient(135deg, #E10600 0%, #b80500 100%)'
-                        : 'rgba(255,255,255,0.06)',
-                      color: '#fff',
-                      boxShadow: canSubmit
-                        ? '0 8px 32px rgba(225,6,0,0.4), 0 2px 8px rgba(0,0,0,0.3)'
-                        : 'none',
-                    }}
-                  >
-                    {/* Shimmer effect */}
-                    <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-700 ease-in-out group-hover:translate-x-full" />
-                    <Search size={18} />
-                    <span>Voir les huiles recommandées</span>
-                    <Zap size={15} className="opacity-80" />
-                  </button>
+                {/* Fuel type */}
+                <div>
+                  <label className="mb-2 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-neutral-500">
+                    <Fuel size={13} />
+                    Carburant
+                  </label>
+                  <div className="grid grid-cols-2 gap-3">
+                    {FUEL_OPTIONS.map(fuel => {
+                      const isSelected = fuelType === fuel.id
+                      return (
+                        <button
+                          key={fuel.id}
+                          onClick={() => setFuelType(fuel.id)}
+                          className={`
+                            flex flex-col items-center justify-center gap-1 rounded-xl py-4 transition-all duration-200
+                            ${isSelected
+                              ? 'bg-white/[0.08] ring-1 ring-red-500/40'
+                              : 'bg-white/[0.03] ring-1 ring-white/[0.06] hover:bg-white/[0.06]'
+                            }
+                          `}
+                        >
+                          <span className={`text-sm font-semibold ${isSelected ? 'text-white' : 'text-neutral-500'}`}>
+                            {fuel.label}
+                          </span>
+                        </button>
+                      )
+                    })}
+                  </div>
                 </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
+              </div>
+
+              <div className="mt-6 flex justify-end">
+                <button
+                  onClick={handleSearch}
+                  disabled={!canSubmit}
+                  className="flex items-center gap-2.5 rounded-xl bg-[#E10600] px-6 py-3 text-sm font-semibold text-white transition-all duration-200 hover:bg-[#c80500] disabled:opacity-30 disabled:cursor-not-allowed"
+                >
+                  <Search size={16} />
+                  Voir les huiles recommandées
+                </button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   )

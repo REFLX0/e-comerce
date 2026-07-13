@@ -15,45 +15,20 @@ export default async function Home() {
       {/* 2. Oil finder — dark block */}
       <section
         className="relative overflow-hidden py-14 md:py-20"
-        style={{
-          background: 'radial-gradient(ellipse at 50% 0%, rgba(225,6,0,0.08) 0%, #080808 50%, #050505 100%)',
-        }}
+        style={{ background: '#080808' }}
       >
-        {/* Decorative grid lines */}
-        <div
-          className="pointer-events-none absolute inset-0"
-          style={{
-            backgroundImage: 'linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px)',
-            backgroundSize: '60px 60px',
-          }}
-        />
-        {/* Top red glow */}
-        <div
-          className="pointer-events-none absolute left-1/2 top-0 h-64 w-96 -translate-x-1/2 -translate-y-1/2 rounded-full"
-          style={{
-            background: 'radial-gradient(ellipse, rgba(225,6,0,0.12) 0%, transparent 70%)',
-          }}
-        />
+        {/* Subtle top accent line */}
+        <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-red-600/30 to-transparent" />
 
         {/* Section heading */}
         <div className="relative z-10 mb-10 text-center px-4">
-          <div
-            className="mb-4 inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-widest"
-            style={{
-              background: 'rgba(225,6,0,0.1)',
-              border: '1px solid rgba(225,6,0,0.25)',
-              color: '#E10600',
-            }}
-          >
-            <span>🔍</span> {t('findYourOil')}
-          </div>
-          <h2
-            className="text-3xl font-black tracking-tight text-white md:text-4xl"
-            style={{ textShadow: '0 0 60px rgba(225,6,0,0.2)' }}
-          >
+          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.25em] text-red-600/80">
+            {t('findYourOil')}
+          </p>
+          <h2 className="text-3xl font-bold tracking-tight text-white md:text-4xl">
             {t('rightLubricant')}
           </h2>
-          <p className="mt-3 text-sm text-gray-500 max-w-md mx-auto">
+          <p className="mt-3 text-sm text-neutral-500 max-w-md mx-auto">
             Deux méthodes pour trouver l&apos;huile parfaitement adaptée à votre véhicule
           </p>
         </div>
