@@ -27,17 +27,8 @@ const nextConfig: NextConfig = {
       { protocol: 'https', hostname: 'lh3.googleusercontent.com' },
       // Wikimedia Commons — brand logos
       { protocol: 'https', hostname: 'upload.wikimedia.org' },
-      // Manufacturer product image CDNs
-      { protocol: 'https', hostname: 'www.castrol.com' },
-      { protocol: 'https', hostname: 'www.shell.com' },
-      { protocol: 'https', hostname: 'lubricants.totalenergies.com' },
-      { protocol: 'https', hostname: 'www.totalenergies.com' },
-      { protocol: 'https', hostname: 'www.motul.com' },
-      { protocol: 'https', hostname: 'www.liqui-moly.com' },
-      { protocol: 'https', hostname: 'www.yacco.fr' },
-      { protocol: 'https', hostname: 'www.boschspareparts.com.au' },
-      { protocol: 'https', hostname: 'www.purflux.com' },
-      { protocol: 'https', hostname: 'www.mann-hummel.com' },
+      // Manufacturer product image CDNs (Reliable ones)
+      { protocol: 'https', hostname: 'cdn.autodoc.de' },
       // Generic product stock photos
       { protocol: 'https', hostname: 'cdn.shopify.com' },
     ],

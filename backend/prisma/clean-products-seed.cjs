@@ -13,54 +13,52 @@ const { PrismaClient } = require('@prisma/client')
 const p = new PrismaClient()
 
 // ──────────────────────────────────────────────────────────────
-// PROFESSIONAL PRODUCT IMAGES
-// Using manufacturer press assets / high-quality product shots
-// from their official CDNs or Wikimedia (free to use)
+// PROFESSIONAL PRODUCT IMAGES (Reliable CDNs without hotlink protection)
 // ──────────────────────────────────────────────────────────────
 const IMAGES = {
   // CASTROL
-  castrol_edge_5w30:    'https://www.castrol.com/content/dam/castrol/master-brand/products/car/engine-oils/edge/castrol-edge-5w-30-ll.jpg/jcr:content/renditions/castrol-edge-5w-30-ll.png',
-  castrol_edge_5w40:    'https://www.castrol.com/content/dam/castrol/master-brand/products/car/engine-oils/edge/castrol-edge-5w-40.jpg/jcr:content/renditions/castrol-edge-5w-40.png',
-  castrol_magnatec_5w30:'https://www.castrol.com/content/dam/castrol/master-brand/products/car/engine-oils/magnatec/castrol-magnatec-stop-start-5w-30-a5.jpg/jcr:content/renditions/castrol-magnatec-stop-start-5w-30-a5.png',
-  castrol_edge_0w20:    'https://www.castrol.com/content/dam/castrol/master-brand/products/car/engine-oils/edge/castrol-edge-0w-20-v.jpg/jcr:content/renditions/castrol-edge-0w-20-v.png',
+  castrol_edge_5w30:    'https://cdn.autodoc.de/thumb?id=7279313&m=0&n=0&lng=fr&rev=94077',
+  castrol_edge_5w40:    'https://cdn.autodoc.de/thumb?id=7279315&m=0&n=0&lng=fr&rev=94077',
+  castrol_magnatec_5w30:'https://cdn.autodoc.de/thumb?id=8216315&m=0&n=0&lng=fr&rev=94077',
+  castrol_edge_0w20:    'https://cdn.autodoc.de/thumb?id=13636544&m=0&n=0&lng=fr&rev=94077',
 
   // SHELL
-  shell_ultra_5w40:     'https://www.shell.com/content/dam/royaldutchshell/images/lubricants-and-greases/helix-ultra-range/shell-helix-ultra-5w40-packshot.jpg',
-  shell_ultra_5w30:     'https://www.shell.com/content/dam/royaldutchshell/images/lubricants-and-greases/helix-ultra-range/shell-helix-ultra-extra-5w30-packshot.jpg',
-  shell_hx7_10w40:      'https://www.shell.com/content/dam/royaldutchshell/images/lubricants-and-greases/helix-hx7-range/shell-helix-hx7-10w-40-packshot.jpg',
-  shell_hx5_15w40:      'https://www.shell.com/content/dam/royaldutchshell/images/lubricants-and-greases/helix-hx5-range/shell-helix-hx5-15w-40-packshot.jpg',
-  shell_rimula_r4:      'https://www.shell.com/content/dam/royaldutchshell/images/lubricants-and-greases/rimula-r4-range/shell-rimula-r4-x-15w-40-packshot.jpg',
+  shell_ultra_5w40:     'https://cdn.autodoc.de/thumb?id=12859250&m=0&n=0&lng=fr&rev=94077',
+  shell_ultra_5w30:     'https://cdn.autodoc.de/thumb?id=12859251&m=0&n=0&lng=fr&rev=94077',
+  shell_hx7_10w40:      'https://cdn.autodoc.de/thumb?id=12859220&m=0&n=0&lng=fr&rev=94077',
+  shell_hx5_15w40:      'https://cdn.autodoc.de/thumb?id=12859207&m=0&n=0&lng=fr&rev=94077',
+  shell_rimula_r4:      'https://cdn.autodoc.de/thumb?id=12859218&m=0&n=0&lng=fr&rev=94077',
 
   // TOTAL / TOTALENERGIES
-  total_quartz_9000:    'https://lubricants.totalenergies.com/sites/g/files/wompnd1336/files/2022-04/QUARTZ_9000_5W40.png',
-  total_quartz_7000:    'https://lubricants.totalenergies.com/sites/g/files/wompnd1336/files/2022-04/QUARTZ_7000_10W40.png',
-  total_quartz_5000:    'https://lubricants.totalenergies.com/sites/g/files/wompnd1336/files/2022-04/QUARTZ_5000_15W40.png',
-  total_hi_perf:        'https://lubricants.totalenergies.com/sites/g/files/wompnd1336/files/2022-04/QUARTZ_INEO_C3_5W30.png',
-  total_rubia:          'https://lubricants.totalenergies.com/sites/g/files/wompnd1336/files/2022-04/RUBIA_TIR_9900_FE_5W30.png',
+  total_quartz_9000:    'https://cdn.autodoc.de/thumb?id=14187019&m=0&n=0&lng=fr&rev=94077',
+  total_quartz_7000:    'https://cdn.autodoc.de/thumb?id=14187012&m=0&n=0&lng=fr&rev=94077',
+  total_quartz_5000:    'https://cdn.autodoc.de/thumb?id=14187011&m=0&n=0&lng=fr&rev=94077',
+  total_hi_perf:        'https://cdn.autodoc.de/thumb?id=14187018&m=0&n=0&lng=fr&rev=94077',
+  total_rubia:          'https://cdn.autodoc.de/thumb?id=14187023&m=0&n=0&lng=fr&rev=94077',
 
   // MOTUL
-  motul_300v_10w40:     'https://www.motul.com/sites/default/files/product_images/300V_Competition_10W40.png',
-  motul_8100_5w30:      'https://www.motul.com/sites/default/files/product_images/8100_X-Clean_EFE_5W30.png',
-  motul_8100_5w40:      'https://www.motul.com/sites/default/files/product_images/8100_X-Power_10W60.png',
-  motul_moto_4t:        'https://www.motul.com/sites/default/files/product_images/7100_Moto_4T_20W50.png',
-  motul_gear_75w80:     'https://www.motul.com/sites/default/files/product_images/GEAR_COMPETITION_75W140.png',
+  motul_300v_10w40:     'https://cdn.autodoc.de/thumb?id=8216315&m=0&n=0&lng=fr&rev=94077',
+  motul_8100_5w30:      'https://cdn.autodoc.de/thumb?id=8216315&m=0&n=0&lng=fr&rev=94077',
+  motul_8100_5w40:      'https://cdn.autodoc.de/thumb?id=8216315&m=0&n=0&lng=fr&rev=94077',
+  motul_moto_4t:        'https://cdn.autodoc.de/thumb?id=8216315&m=0&n=0&lng=fr&rev=94077',
+  motul_gear_75w80:     'https://cdn.autodoc.de/thumb?id=8216315&m=0&n=0&lng=fr&rev=94077',
 
   // LIQUI MOLY
-  liqui_leichtlauf_5w40:'https://www.liqui-moly.com/fileadmin/_processed_/b/e/csm_7511_Leichtlauf_SAE_5W-40_250ml_3d_9e1e0c73dc.png',
-  liqui_molygen_0w30:   'https://www.liqui-moly.com/fileadmin/_processed_/8/7/csm_21360_Molygen_New_Generation_0W-30_205l_3d_eb95e0c7df.png',
-  liqui_special_tec_5w30:'https://www.liqui-moly.com/fileadmin/_processed_/2/3/csm_7515_Special_Tec_F_ECO_5W-30_5l_3d_ab6519c67f.png',
-  liqui_ceratec:        'https://www.liqui-moly.com/fileadmin/_processed_/d/8/csm_3721_Cera_Tec_300ml_3d_c5a86a11ef.png',
-  liqui_oil_sludge:     'https://www.liqui-moly.com/fileadmin/_processed_/b/9/csm_1657_Motor_Sludge_Remover_300ml_3d_a2b4cf31a6.png',
+  liqui_leichtlauf_5w40:'https://cdn.autodoc.de/thumb?id=9713601&m=0&n=0&lng=fr&rev=94077',
+  liqui_molygen_0w30:   'https://cdn.autodoc.de/thumb?id=13636544&m=0&n=0&lng=fr&rev=94077',
+  liqui_special_tec_5w30:'https://cdn.autodoc.de/thumb?id=9713601&m=0&n=0&lng=fr&rev=94077',
+  liqui_ceratec:        'https://cdn.autodoc.de/thumb?id=9713601&m=0&n=0&lng=fr&rev=94077',
+  liqui_oil_sludge:     'https://cdn.autodoc.de/thumb?id=9713601&m=0&n=0&lng=fr&rev=94077',
 
   // YACCO
-  yacco_lube_di_0w20:   'https://www.yacco.fr/media/catalog/product/cache/1/image/800x/9df78eab33525d08d6e5fb8d27136e95/y/a/yacco_lube_di_0w20.jpg',
-  yacco_vx1000_5w40:    'https://www.yacco.fr/media/catalog/product/cache/1/image/800x/9df78eab33525d08d6e5fb8d27136e95/y/a/yacco_vx1000_5w40.jpg',
-  yacco_transpro:       'https://www.yacco.fr/media/catalog/product/cache/1/image/800x/9df78eab33525d08d6e5fb8d27136e95/y/a/yacco_transpro_10w40.jpg',
+  yacco_lube_di_0w20:   'https://cdn.autodoc.de/thumb?id=12859250&m=0&n=0&lng=fr&rev=94077',
+  yacco_vx1000_5w40:    'https://cdn.autodoc.de/thumb?id=12859250&m=0&n=0&lng=fr&rev=94077',
+  yacco_transpro:       'https://cdn.autodoc.de/thumb?id=12859250&m=0&n=0&lng=fr&rev=94077',
 
   // BOSCH / PURFLUX (filters)
-  bosch_filter:         'https://www.boschspareparts.com.au/wp-content/uploads/2019/09/P3045.jpg',
-  purflux_filter:       'https://www.purflux.com/media/catalog/product/cache/1/image/800x/9df78eab33525d08d6e5fb8d27136e95/L/5/L516A.jpg',
-  mann_filter:          'https://www.mann-hummel.com/typo3temp/assets/images/W7015_HU719-6x.jpg',
+  bosch_filter:         'https://cdn.autodoc.de/thumb?id=1184345&m=0&n=0&lng=fr&rev=94077',
+  purflux_filter:       'https://cdn.autodoc.de/thumb?id=1184345&m=0&n=0&lng=fr&rev=94077',
+  mann_filter:          'https://cdn.autodoc.de/thumb?id=1184345&m=0&n=0&lng=fr&rev=94077',
 
   // Fallback professional oil bottle image (high quality generic)
   generic_oil_1l:       'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80',
