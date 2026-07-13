@@ -17,34 +17,36 @@ const nextConfig: NextConfig = {
   // ── Images ──────────────────────────────────────────────────────────────
   images: {
     remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'www.kiosquetn.tn',
-      },
-      {
-        protocol: 'https',
-        hostname: 'www.KiosqueTN.tn',
-      },
-      {
-        protocol: 'https',
-        hostname: 'images.unsplash.com',
-      },
-      {
-        // Cloudinary — required for product images
-        protocol: 'https',
-        hostname: 'res.cloudinary.com',
-      },
-      {
-        // Google profile pictures (OAuth)
-        protocol: 'https',
-        hostname: 'lh3.googleusercontent.com',
-      },
+      { protocol: 'https', hostname: 'www.kiosquetn.tn' },
+      { protocol: 'https', hostname: 'www.KiosqueTN.tn' },
+      // Unsplash (fallback product photos)
+      { protocol: 'https', hostname: 'images.unsplash.com' },
+      // Cloudinary — uploaded product images
+      { protocol: 'https', hostname: 'res.cloudinary.com' },
+      // Google OAuth profile pictures
+      { protocol: 'https', hostname: 'lh3.googleusercontent.com' },
+      // Wikimedia Commons — brand logos
+      { protocol: 'https', hostname: 'upload.wikimedia.org' },
+      // Manufacturer product image CDNs
+      { protocol: 'https', hostname: 'www.castrol.com' },
+      { protocol: 'https', hostname: 'www.shell.com' },
+      { protocol: 'https', hostname: 'lubricants.totalenergies.com' },
+      { protocol: 'https', hostname: 'www.totalenergies.com' },
+      { protocol: 'https', hostname: 'www.motul.com' },
+      { protocol: 'https', hostname: 'www.liqui-moly.com' },
+      { protocol: 'https', hostname: 'www.yacco.fr' },
+      { protocol: 'https', hostname: 'www.boschspareparts.com.au' },
+      { protocol: 'https', hostname: 'www.purflux.com' },
+      { protocol: 'https', hostname: 'www.mann-hummel.com' },
+      // Generic product stock photos
+      { protocol: 'https', hostname: 'cdn.shopify.com' },
     ],
     // Optimize image quality vs size tradeoff
     formats: ['image/avif', 'image/webp'],
     // Minimum cache TTL for images (1 week)
     minimumCacheTTL: 60 * 60 * 24 * 7,
   },
+
 
   // ── Performance ─────────────────────────────────────────────────────────
   // Prevent Prisma from being bundled into the client/edge bundle
