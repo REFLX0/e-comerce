@@ -36,16 +36,23 @@ function SortableCategoryRow({
   onToggle: (id: string) => void
   expanded: boolean
 }) {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: cat.id })
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ 
+    id: cat.id,
+    disabled: depth > 0
+  })
   const style = { transform: CSS.Transform.toString(transform), transition }
   const hasChildren = (cat.children?.length ?? 0) > 0
 
   return (
     <div ref={setNodeRef} style={style} className={`rounded-xl transition-colors ${isDragging ? 'z-50 opacity-70 shadow-lg ring-2 ring-brand-accent' : ''}`}>
       <div className={`group flex items-center gap-2 rounded-xl px-3 py-2.5 hover:bg-gray-50 transition-colors ${depth > 0 ? 'ml-8' : ''}`}>
-        <button {...attributes} {...listeners} className="cursor-grab text-gray-300 hover:text-gray-600 transition-colors touch-none">
-          <GripVertical size={14} />
-        </button>
+        {depth === 0 ? (
+          <button {...attributes} {...listeners} className="cursor-grab text-gray-300 hover:text-gray-600 transition-colors touch-none">
+            <GripVertical size={14} />
+          </button>
+        ) : (
+          <div className="w-3.5" />
+        )}
 
         {hasChildren ? (
           <button onClick={() => onToggle(cat.id)} className="text-gray-400 hover:text-gray-700 transition-colors">

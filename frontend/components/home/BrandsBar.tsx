@@ -7,8 +7,8 @@ import { Link } from '@/i18n/routing'
 
 export function BrandsBar() {
   const { data: brands, isLoading } = useQuery({
-    queryKey: ['featured-brands'],
-    queryFn: brandsApi.getFeatured,
+    queryKey: ['all-brands'],
+    queryFn: brandsApi.getAll,
   })
 
   if (isLoading || !brands || brands.length === 0) return null
