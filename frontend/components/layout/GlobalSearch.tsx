@@ -8,12 +8,14 @@ import { productsApi } from '@/lib/api/products'
 import { Link } from '@/i18n/routing'
 import Image from 'next/image'
 import { useDebounce } from '@/lib/hooks/useDebounce'
+import { useTranslations } from 'next-intl'
 
 export function GlobalSearch() {
   const [query, setQuery] = useState('')
   const [isOpen, setIsOpen] = useState(false)
   const router = useRouter()
   const searchRef = useRef<HTMLDivElement>(null)
+  const t = useTranslations('Search')
   
   const debouncedQuery = useDebounce(query, 300)
 
@@ -65,11 +67,11 @@ export function GlobalSearch() {
             setIsOpen(true)
           }}
           onFocus={() => setIsOpen(true)}
-          placeholder="Rechercher un produit, marque..."
+          placeholder={t('placeholder')}
           className="w-full rounded-lg border border-brand-border bg-brand-surface px-4 py-2.5 pr-12 text-sm text-brand-primary placeholder:text-brand-muted
                      transition-all duration-200 outline-none
                      focus:border-brand-accent/60 focus:bg-brand-card focus:ring-2 focus:ring-brand-accent/20"
-          aria-label="Rechercher"
+          aria-label={t('ariaLabel')}
         />
         <div className="absolute top-1/2 right-3 -translate-y-1/2 flex items-center gap-1">
           {query && (
@@ -84,7 +86,7 @@ export function GlobalSearch() {
           <button
             type="submit"
             className="flex h-8 w-8 items-center justify-center rounded-md text-brand-muted transition-colors duration-150 hover:bg-brand-primary/5 hover:text-brand-primary"
-            aria-label="Rechercher"
+            aria-label={t('ariaLabel')}
           >
             {isFetching ? <Loader2 size={17} className="animate-spin text-brand-accent" /> : <Search size={17} />}
           </button>
@@ -102,7 +104,7 @@ export function GlobalSearch() {
             ) : results && results.length > 0 ? (
               <div className="flex flex-col">
                 <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider px-3 py-2">
-                  Produits suggérés
+                  {t('suggestedProducts')}
                 </span>
                 {results.map((product) => (
                   <Link
@@ -135,19 +137,19 @@ export function GlobalSearch() {
                   onClick={handleSearch}
                   className="mt-2 min-h-11 w-full rounded-lg bg-brand-surface py-2 text-center text-sm font-bold text-brand-primary transition-colors duration-150 hover:bg-brand-surface-dark"
                 >
-                  Voir tous les résultats
+                  {t('viewAllResults')}
                 </button>
               </div>
             ) : (
               <div>
                 <div className="py-6 px-4 text-center border-b border-brand-border/50">
-                  <p className="text-gray-900 font-medium text-sm mb-1">Aucun résultat pour "{query}"</p>
-                  <p className="text-gray-500 text-xs">Essayez d'autres mots clés</p>
+                  <p className="text-gray-900 font-medium text-sm mb-1">{t('noResultsFor', { query })}</p>
+                  <p className="text-gray-500 text-xs">{t('tryOtherKeywords')}</p>
                 </div>
                 {fallbackProducts && fallbackProducts.length > 0 && (
                   <div className="p-2">
                     <span className="flex items-center gap-1.5 text-xs font-semibold text-brand-primary/60 uppercase tracking-wider px-3 py-2">
-                      <Sparkles size={12} /> Produits populaires
+                      <Sparkles size={12} /> {t('popularProducts')}
                     </span>
                     {fallbackProducts.map((product) => (
                       <Link

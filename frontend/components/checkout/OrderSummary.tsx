@@ -4,15 +4,18 @@ import { useState } from 'react'
 import { useCartStore } from '@/lib/store/cart.store'
 import { formatPrice } from '@/lib/utils/format'
 import Image from 'next/image'
+import { useTranslations } from 'next-intl'
 
 export function OrderSummary() {
+  const t = useTranslations('Checkout')
+  const tCart = useTranslations('Cart')
   const { items, subtotalHT, totalTTC, shippingCost } = useCartStore()
   const [cgvAccepted, setCgvAccepted] = useState(false)
 
   return (
     <div className="bg-brand-primary shadow-card sticky top-24 rounded-2xl p-6 text-white md:p-8">
       <h2 className="font-display mb-6 border-b border-white/10 pb-4 text-xl font-bold">
-        Résumé de la commande
+        {t('orderSummary')}
       </h2>
 
       <div className="custom-scrollbar mb-8 max-h-[300px] space-y-4 overflow-y-auto pr-2">
@@ -50,17 +53,17 @@ export function OrderSummary() {
 
       <div className="mb-6 space-y-3 border-t border-white/10 pt-6">
         <div className="flex justify-between text-sm text-white/70">
-          <span>Sous-total HT</span>
+          <span>{t('subtotalHT')}</span>
           <span>{formatPrice(subtotalHT)}</span>
         </div>
         <div className="flex justify-between text-sm text-white/70">
-          <span>TVA</span>
+          <span>{t('vat')}</span>
           <span>{formatPrice(totalTTC - subtotalHT - shippingCost)}</span>
         </div>
         <div className="flex justify-between text-sm text-white/70">
-          <span>Livraison</span>
+          <span>{t('delivery')}</span>
           {shippingCost === 0 ? (
-            <span className="font-medium text-green-400">Gratuite</span>
+            <span className="font-medium text-green-400">{tCart('free')}</span>
           ) : (
             <span>{formatPrice(shippingCost)}</span>
           )}
@@ -87,7 +90,7 @@ export function OrderSummary() {
         <label htmlFor="cgv" className="text-xs leading-snug text-white/80">
           J'ai lu et j'accepte les{' '}
           <a href="/cgv" target="_blank" className="underline hover:text-white">
-            Conditions Générales de Vente
+            {t('cgv')}
           </a>{' '}
           de KiosqueTN.
         </label>
@@ -99,7 +102,7 @@ export function OrderSummary() {
         disabled={!cgvAccepted}
         className="text-brand-primary w-full rounded-full bg-white py-4 text-lg font-bold transition-colors hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50"
       >
-        Confirmer la commande
+        {t('confirmOrder')}
       </button>
     </div>
   )

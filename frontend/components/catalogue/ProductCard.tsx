@@ -17,6 +17,7 @@ interface Props {
 }
 
 export function ProductCard({ product }: Props) {
+  const t = useTranslations('ProductCard')
   const { addItem } = useCartStore()
   const { vehicle } = useVehicleStore()
   const mounted = useSyncExternalStore(
@@ -45,17 +46,17 @@ export function ProductCard({ product }: Props) {
         <div className="absolute top-3 left-3 z-10 flex flex-col gap-2 items-start">
           {product.isPromo && (
             <span className="rounded-md bg-red-500 px-2.5 py-1 text-[10px] font-bold tracking-normal text-white uppercase shadow-sm">
-              PROMO {product.promoPercent ? `-${product.promoPercent}%` : ''}
+              {t('promo')} {product.promoPercent ? `-${product.promoPercent}%` : ''}
             </span>
           )}
           {product.isNew && (
             <span className="rounded-md bg-[#E10600] px-2.5 py-1 text-[10px] font-bold tracking-normal text-white uppercase shadow-sm">
-              NOUVEAU
+              {t('new')}
             </span>
           )}
           {mounted && vehicle && (
             <span className="flex items-center gap-1 rounded-md border border-green-400 bg-green-500 px-2.5 py-1 text-[10px] font-bold tracking-normal text-white uppercase shadow-sm">
-              <Check size={10} strokeWidth={3} /> COMPATIBLE
+              <Check size={10} strokeWidth={3} /> {t('compatible')}
             </span>
           )}
         </div>
@@ -64,12 +65,12 @@ export function ProductCard({ product }: Props) {
         <button 
           className="absolute top-3 right-3 z-10 flex h-10 w-10 translate-y-0 items-center justify-center rounded-full border border-gray-200 bg-white/90 text-gray-400 opacity-100 shadow-sm backdrop-blur transition-all duration-200 hover:bg-white hover:text-[#E10600] hover:border-[#E10600]/20 sm:-translate-y-2 sm:opacity-0 sm:group-hover:translate-y-0 sm:group-hover:opacity-100"
           onClick={(e) => { e.preventDefault(); toast.success('Ajouté à la liste de souhaits') }}
-          aria-label="Ajouter à la liste de souhaits"
-        >
-          <Heart size={18} />
-        </button>
+           aria-label={t('addToWishlist')}
+         >
+           <Heart size={18} />
+         </button>
 
-        <Link href={`/produit/${product.slug}`} className="absolute inset-0 z-0">
+         <Link href={`/produit/${product.slug}`} className="absolute inset-0 z-0">
           {product.images?.[0] ? (
             <Image
               src={product.images[0]}
@@ -79,7 +80,7 @@ export function ProductCard({ product }: Props) {
             />
           ) : (
             <div className="flex h-full w-full items-center justify-center bg-gray-50">
-              <span className="text-xs text-gray-400">Image non disponible</span>
+              <span className="text-xs text-gray-400">{t('imageNotAvailable')}</span>
             </div>
           )}
         </Link>
@@ -132,14 +133,14 @@ export function ProductCard({ product }: Props) {
                 oldPriceHT={oldPrice}
               />
             ) : (
-              <span className="text-sm text-gray-500">Prix N/D</span>
+              <span className="text-sm text-gray-500">{t('priceNa')}</span>
             )}
             
             <div className="mt-1 flex items-center gap-1 text-[11px] font-medium">
               {defaultVariant?.status !== 'out_of_stock' ? (
-                <span className="flex items-center gap-1 text-green-600"><Check size={12} /> En stock</span>
+                <span className="flex items-center gap-1 text-green-600"><Check size={12} /> {t('inStock')}</span>
               ) : (
-                <span className="flex items-center gap-1 text-red-500"><X size={12} /> Rupture</span>
+                <span className="flex items-center gap-1 text-red-500"><X size={12} /> {t('outOfStock')}</span>
               )}
             </div>
           </div>
@@ -151,15 +152,15 @@ export function ProductCard({ product }: Props) {
             onClick={handleAddToCart}
             disabled={defaultVariant?.status === 'out_of_stock'}
             className="flex min-h-11 flex-1 items-center justify-center gap-2 rounded bg-[#E10600] py-2.5 text-xs font-bold uppercase tracking-wider text-white transition-all duration-200 hover:bg-[#b80500] disabled:cursor-not-allowed disabled:opacity-50"
-            aria-label="Ajouter au panier"
+            aria-label={t('addToCart')}
           >
-            Add to Cart
+            {t('addToCart')}
           </button>
           
           <button 
             className="flex h-11 w-11 items-center justify-center rounded border border-gray-200 bg-gray-50 text-gray-400 transition-all duration-200 hover:border-[#E10600] hover:text-[#E10600] focus:outline-none"
             onClick={(e) => { e.preventDefault(); toast.success('Ajouté à la liste de souhaits') }}
-            aria-label="Ajouter à la liste de souhaits"
+            aria-label={t('addToWishlist')}
           >
             <Heart size={18} />
           </button>

@@ -5,6 +5,7 @@ import { Phone, Mail, MapPin, ArrowRight, Send } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'sonner'
 import Image from 'next/image'
+import { useTranslations } from 'next-intl'
 
 const Facebook = ({ size = 20 }: { size?: number }) => (
   <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -20,11 +21,14 @@ const Instagram = ({ size = 20 }: { size?: number }) => (
 
 export default function Footer() {
   const [email, setEmail] = useState('')
+  const tFooter = useTranslations('Footer')
+  const tLayout = useTranslations('Layout')
+  const tHome = useTranslations('Home')
 
   const handleNewsletter = (e: React.FormEvent) => {
     e.preventDefault()
-    if (!email.includes('@')) return toast.error('Please enter a valid email')
-    toast.success('Subscribed!')
+    if (!email.includes('@')) return toast.error(tHome('validEmail'))
+    toast.success(tHome('thankYou'))
     setEmail('')
   }
 
@@ -39,7 +43,7 @@ export default function Footer() {
               <Image src="/logo.png" alt="KiosqueTN" width={120} height={36} className="h-8 w-auto brightness-0 invert" />
             </Link>
             <p className="mb-6 max-w-xs text-sm leading-relaxed text-white/40">
-              Specialist in lubricants and auto parts for passenger, commercial and industrial vehicles since 15+ years.
+              {tFooter('description')}
             </p>
             {/* Newsletter inline */}
             <form onSubmit={handleNewsletter} className="flex gap-0">
@@ -47,13 +51,13 @@ export default function Footer() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="your@email.com"
+                placeholder={tFooter('newsletterPlaceholder')}
                 className="h-10 flex-1 border border-white/10 bg-white/5 px-3 text-sm text-white placeholder:text-white/25 focus:border-[#E10600] focus:outline-none"
               />
               <button
                 type="submit"
                 className="flex h-10 w-10 shrink-0 items-center justify-center bg-[#E10600] text-white transition-colors hover:bg-[#b80500]"
-                aria-label="Subscribe"
+                aria-label={tFooter('subscribe')}
               >
                 <Send size={14} />
               </button>
@@ -63,15 +67,15 @@ export default function Footer() {
           {/* Information */}
           <div>
             <h3 className="mb-5 text-xs font-bold uppercase tracking-[0.15em] text-white/30">
-              Information
+              {tFooter('information')}
             </h3>
             <ul className="space-y-2.5 text-sm">
               {[
-                { href: '/a-propos', label: 'About Us' },
-                { href: '/cgv', label: 'Terms & Conditions' },
-                { href: '/mentions-legales', label: 'Legal Notice' },
-                { href: '/faq', label: 'FAQ' },
-                { href: '/contact', label: 'Contact Us' },
+                { href: '/a-propos', label: tFooter('aboutUs') },
+                { href: '/cgv', label: tFooter('terms') },
+                { href: '/mentions-legales', label: tFooter('legalNotice') },
+                { href: '/faq', label: tFooter('faq') },
+                { href: '/contact', label: tFooter('contactUs') },
               ].map(({ href, label }) => (
                 <li key={href}>
                   <Link href={href} className="text-white/40 transition-colors hover:text-white">
@@ -85,14 +89,14 @@ export default function Footer() {
           {/* Account */}
           <div>
             <h3 className="mb-5 text-xs font-bold uppercase tracking-[0.15em] text-white/30">
-              My Account
+              {tFooter('myAccount')}
             </h3>
             <ul className="space-y-2.5 text-sm">
               {[
-                { href: '/compte', label: 'Dashboard' },
-                { href: '/compte/commandes', label: 'My Orders' },
-                { href: '/compte/favoris', label: 'Wishlist' },
-                { href: '/auth/login', label: 'Sign In' },
+                { href: '/compte', label: tFooter('dashboard') },
+                { href: '/compte/commandes', label: tFooter('myOrders') },
+                { href: '/compte/favoris', label: tFooter('wishlist') },
+                { href: '/auth/login', label: tFooter('signIn') },
               ].map(({ href, label }) => (
                 <li key={href}>
                   <Link href={href} className="text-white/40 transition-colors hover:text-white">
@@ -106,7 +110,7 @@ export default function Footer() {
           {/* Contact */}
           <div>
             <h3 className="mb-5 text-xs font-bold uppercase tracking-[0.15em] text-white/30">
-              Contact
+              {tFooter('contact')}
             </h3>
             <ul className="space-y-4 text-sm">
               <li className="flex items-start gap-3">
@@ -137,8 +141,8 @@ export default function Footer() {
 
         {/* Bottom */}
         <div className="flex flex-col items-center justify-between gap-4 text-xs text-white/20 sm:flex-row">
-          <p>&copy; {new Date().getFullYear()} KiosqueTN. All rights reserved.</p>
-          <p>Made by Mohamed Harbi & Mohamed Aziz Jlassi</p>
+          <p>&copy; {new Date().getFullYear()} KiosqueTN. {tLayout('allRightsReserved')}</p>
+          <p>{tLayout('madeBy')}</p>
         </div>
       </div>
     </footer>

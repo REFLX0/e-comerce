@@ -234,7 +234,7 @@ async function main() {
       isFeatured: true,
       desc: 'Huile 100% synthèse de toute dernière technologie pour les moteurs essence et diesel récents.',
       img: '/img/product.jpg',
-      specs: { viscosity: '0W-20', apiStandard: 'API SP', aeceaStandard: 'ACEA C6', isFullySynth: true },
+      specs: { viscosity: '0W-20', apiStandard: 'API SP', aeceaStandard: 'ACEA C6', isFullySynth: true, vehicleTypes: ['AUTOMOBILE'], fuelTypes: ['ESSENCE', 'DIESEL'], minCylinders: 3, maxCylinders: 6, minPower: 90, maxPower: 300 },
       compat: [{ vehicleModelId: clio.id, engineCode: '1.5 dCi' }, { vehicleModelId: p208.id, engineCode: '1.2 PureTech' }],
       variants: [{ vol: '1L', price: 22.5, stock: 50 }, { vol: '5L', price: 95.0, stock: 30 }]
     },
@@ -247,7 +247,7 @@ async function main() {
       isFeatured: true,
       desc: 'Huile moteur entièrement synthétique formulée avec la technologie PurePlus de Shell.',
       img: '/img/product.jpg',
-      specs: { viscosity: '5W-40', apiStandard: 'API SN PLUS', aeceaStandard: 'ACEA A3/B4', isFullySynth: true },
+      specs: { viscosity: '5W-40', apiStandard: 'API SN PLUS', aeceaStandard: 'ACEA A3/B4', isFullySynth: true, vehicleTypes: ['AUTOMOBILE', 'POIDS_LOURD'], fuelTypes: ['DIESEL', 'ESSENCE'], minCylinders: 4, maxCylinders: 8 },
       compat: [{ vehicleModelId: golf.id, engineCode: '2.0 TDI' }, { vehicleModelId: megane.id, engineCode: '1.6 dCi' }],
       variants: [{ vol: '1L', price: 18.0, stock: 100 }, { vol: '5L', price: 75.0, stock: 60 }]
     },
@@ -260,7 +260,7 @@ async function main() {
       isFeatured: false,
       desc: 'Huile moteur semi-synthétique performante conçue pour s\'adapter à tous les usages.',
       img: '/img/product.jpg',
-      specs: { viscosity: '10W-40', apiStandard: 'API SN', aeceaStandard: 'ACEA A3/B4', isSemiSynth: true },
+      specs: { viscosity: '10W-40', apiStandard: 'API SN', aeceaStandard: 'ACEA A3/B4', isSemiSynth: true, vehicleTypes: ['AUTOMOBILE'], fuelTypes: ['ESSENCE', 'DIESEL'] },
       compat: [{ vehicleModelId: clio.id, engineCode: '1.2 16V' }, { vehicleModelId: polo.id, engineCode: '1.4 MPI' }],
       variants: [{ vol: '1L', price: 12.0, stock: 120 }, { vol: '4L', price: 42.0, stock: 80 }]
     },

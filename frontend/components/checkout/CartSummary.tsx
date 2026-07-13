@@ -6,8 +6,11 @@ import { Trash2, Plus, Minus, ArrowRight } from 'lucide-react'
 import Image from 'next/image'
 import { Link } from '@/i18n/routing'
 import { FreeShippingProgress } from './FreeShippingProgress'
+import { useTranslations } from 'next-intl'
 
 export function CartSummary() {
+  const t = useTranslations('Checkout')
+  const tCart = useTranslations('Cart')
   const { items, subtotalHT, totalTTC, shippingCost, updateQuantity, removeItem } = useCartStore()
 
   if (items.length === 0) {
@@ -17,7 +20,7 @@ export function CartSummary() {
           <Trash2 size={48} />
         </div>
         <h2 className="font-display text-brand-primary mb-4 text-2xl font-bold">
-          Votre panier est vide
+          {t('emptyCart')}
         </h2>
         <p className="mx-auto mb-8 max-w-md text-gray-500">
           Découvrez notre catalogue et trouvez l'huile idéale pour votre moteur.
@@ -34,7 +37,7 @@ export function CartSummary() {
       {/* Cart Items */}
       <div className="border-brand-surface-dark flex-1 rounded-2xl border bg-white p-6 shadow-sm">
         <h2 className="font-display text-brand-primary mb-6 border-b border-gray-100 pb-4 text-xl font-bold">
-          Détail de votre panier ({items.length} produit{items.length > 1 ? 's' : ''})
+          {t('cartDetail')} ({items.length} produit{items.length > 1 ? 's' : ''})
         </h2>
 
         <div className="space-y-6">
@@ -115,21 +118,21 @@ export function CartSummary() {
       {/* Summary Side */}
       <div className="w-full shrink-0 lg:w-[380px]">
         <div className="border-brand-surface-dark sticky top-24 rounded-2xl border bg-white p-6 shadow-sm">
-          <h3 className="font-display text-brand-primary mb-6 text-lg font-bold">Récapitulatif</h3>
+          <h3 className="font-display text-brand-primary mb-6 text-lg font-bold">{t('summary')}</h3>
 
           <div className="mb-6 space-y-4">
             <div className="flex justify-between text-sm text-gray-600">
-              <span>Total HT</span>
+              <span>{t('totalHT')}</span>
               <span>{formatPrice(subtotalHT)}</span>
             </div>
             <div className="flex justify-between text-sm text-gray-600">
-              <span>TVA (19%)</span>
+              <span>{t('vat')}</span>
               <span>{formatPrice(totalTTC - subtotalHT - shippingCost)}</span>
             </div>
             <div className="flex justify-between text-sm text-gray-600">
-              <span>Frais de livraison</span>
+              <span>{t('shipping')}</span>
               {shippingCost === 0 ? (
-                <span className="font-medium text-green-500">Gratuite</span>
+                <span className="font-medium text-green-500">{tCart('free')}</span>
               ) : (
                 <span>{formatPrice(shippingCost)}</span>
               )}
@@ -149,7 +152,7 @@ export function CartSummary() {
             href="/checkout"
             className="btn-primary flex w-full items-center justify-center gap-2 py-4 text-lg"
           >
-            Valider la commande
+            {t('placeOrder')}
             <ArrowRight size={20} />
           </Link>
 

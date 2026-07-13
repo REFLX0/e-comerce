@@ -28,6 +28,13 @@ enum OrderStatus {
   CANCELLED
 }
 
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
+
 enum CouponType {
   PERCENT
   FIXED
@@ -271,6 +278,7 @@ model Order {
   notes          String?
   items          OrderItem[]
   supportTickets SupportTicket[]
+  payments       Payment[]
   createdAt      DateTime    @default(now())
   updatedAt      DateTime    @updatedAt
 }
@@ -366,3 +374,30 @@ model SupportTicket {
   updatedAt DateTime     @updatedAt
 }
 
+// ─────────────────────────────────────────
+//  PAYMENTS
+// ─────────────────────────────────────────
+
+model Payment {
+  id            String        @id @default(cuid())
+  orderId       String
+  order         Order         @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  method        String        @default("COD") // "COD", "CREDIT_CARD", etc.
+  amount        Float
+  status        PaymentStatus @default(PENDING)
+  transactionId String?       // Optional: ID from a payment gateway
+  notes         String?       @db.Text
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+}
+
+// ─────────────────────────────────────────
+//  SETTINGS
+// ─────────────────────────────────────────
+
+model Setting {
+  id        String   @id @default(cuid())
+  key       String   @unique // e.g., "SITE_NAME", "CONTACT_EMAIL", "COD_ENABLED"
+  value     String   @db.Text // Stored as JSON strings to support booleans, numbers, etc.
+  updatedAt DateTime @updatedAt
+}

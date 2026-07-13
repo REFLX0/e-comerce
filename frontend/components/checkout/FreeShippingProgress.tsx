@@ -3,6 +3,7 @@
 import { formatPrice } from '@/lib/utils/format'
 import { Truck } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { useTranslations } from 'next-intl'
 
 interface FreeShippingProgressProps {
   subtotal: number
@@ -15,6 +16,7 @@ export function FreeShippingProgress({
   threshold = 100,
   className,
 }: FreeShippingProgressProps) {
+  const t = useTranslations('Cart')
   const percentage = Math.min((subtotal / threshold) * 100, 100)
   const remaining = threshold - subtotal
   const isFree = subtotal >= threshold
@@ -33,15 +35,16 @@ export function FreeShippingProgress({
           </div>
           <span className={cn('font-medium', isFree ? 'text-green-600' : 'text-brand-primary')}>
             {isFree ? (
-              'Livraison gratuite !'
+              t('freeShipping')
             ) : (
               <>
-                Plus que <span className="font-bold text-brand-accent">{formatPrice(remaining)}</span>
+                {t.rich('freeShippingProgress', {
+                  amount: () => <span className="font-bold text-brand-accent">{formatPrice(remaining)}</span>
+                })}
               </>
             )}
           </span>
         </div>
-        {!isFree && <span className="text-xs text-brand-muted">pour la livraison gratuite</span>}
       </div>
 
       <div className="h-2 w-full overflow-hidden rounded-full bg-brand-surface">

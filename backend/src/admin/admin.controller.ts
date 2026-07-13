@@ -50,4 +50,21 @@ export class AdminController {
   @Patch('users/:id/role') updateUserRole(@Param('id') id: string, @Body('role') role: string) {
     return this.adminService.updateUserRole(id, role)
   }
+
+  @Get('reviews') getReviews(@Query('page') p?: string, @Query('limit') l?: string) {
+    return this.adminService.getReviews(p ? +p : 1, l ? +l : 20)
+  }
+  @Patch('reviews/:id/status') updateReviewStatus(@Param('id') id: string, @Body('isApproved') isApproved: boolean) {
+    return this.adminService.updateReviewStatus(id, isApproved)
+  }
+  @Delete('reviews/:id') deleteReview(@Param('id') id: string) {
+    return this.adminService.deleteReview(id)
+  }
+
+  @Get('payments') getPayments(@Query('page') p?: string, @Query('limit') l?: string) {
+    return this.adminService.getPayments(p ? +p : 1, l ? +l : 20)
+  }
+  @Patch('payments/:id/status') updatePaymentStatus(@Param('id') id: string, @Body('status') status: string) {
+    return this.adminService.updatePaymentStatus(id, status)
+  }
 }

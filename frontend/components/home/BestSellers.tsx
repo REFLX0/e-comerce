@@ -12,6 +12,7 @@ import { toast } from 'sonner'
 import { useTranslations } from 'next-intl'
 
 function BestSellerCard({ product }: { product: Product }) {
+  const t = useTranslations('Home')
   const { addItem } = useCartStore()
   const v = product.variants?.[0]
 

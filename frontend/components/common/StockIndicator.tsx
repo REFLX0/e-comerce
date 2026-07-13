@@ -31,7 +31,7 @@ export function StockIndicator({ status, stock }: Props) {
     return (
       <div className="flex items-center gap-1.5 text-sm font-medium text-blue-500">
         <Clock size={16} />
-        <span>Sur commande</span>
+        <span>{t('onOrder')}</span>
       </div>
     )
   }
@@ -39,7 +39,7 @@ export function StockIndicator({ status, stock }: Props) {
   return (
     <div className="flex items-center gap-1.5 text-sm font-medium text-red-500">
       <XCircle size={16} />
-      <span>Rupture de stock</span>
+      <span>{t('outOfStock')}</span>
     </div>
   )
 }

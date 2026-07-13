@@ -7,6 +7,7 @@ import { useQuery } from '@tanstack/react-query'
 import { categoriesApi } from '@/lib/api/categories'
 import { productsApi } from '@/lib/api/products'
 import Image from 'next/image'
+import { useTranslations } from 'next-intl'
 
 export function CategoryNav() {
   const { data: categories } = useQuery({
@@ -22,6 +23,7 @@ export function CategoryNav() {
 
   const [activeIndex, setActiveIndex] = useState<number | null>(null)
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const t = useTranslations('Navigation')
 
   const handleEnter = useCallback((index: number) => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current)
@@ -87,7 +89,7 @@ export function CategoryNav() {
                           className="group flex items-center gap-2 rounded-md px-3 py-2 text-sm font-semibold text-brand-primary transition-colors hover:bg-brand-surface"
                         >
                           <ChevronRight size={14} className="text-brand-accent" />
-                          Tous les produits
+                          {t('allProducts')}
                         </Link>
                         {category.children?.map((sub) => (
                           <Link
@@ -107,7 +109,7 @@ export function CategoryNav() {
                       <div className="hidden w-48 shrink-0 border-l border-gray-100 p-5 sm:block">
                         <span className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-widest text-gray-400">
                           <Sparkles size={11} className="text-amber-500" />
-                          Meilleures ventes
+                          {t('bestSellers')}
                         </span>
                         <div className="mt-3 flex flex-col gap-3">
                           {bestSellers.slice(0, 2).map((product) => (
@@ -149,7 +151,7 @@ export function CategoryNav() {
           onClick={() => setActiveIndex(null)}
           className="ml-auto flex items-center px-4 text-[12px] font-bold uppercase tracking-wider text-white/70 transition-colors hover:bg-black/15 hover:text-white"
         >
-          Tout le catalogue →
+          {t('fullCatalog')}
         </Link>
       </div>
     </nav>

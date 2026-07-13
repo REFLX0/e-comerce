@@ -20,6 +20,7 @@ export default function Header() {
   const { isAuthenticated, user } = useAuthStore()
   const hasMounted = useHasMounted()
   const t = useTranslations('Navigation')
+  const tLayout = useTranslations('Layout')
 
   useEffect(() => {
     const onScroll = () => setIsScrolled(window.scrollY > 40)
@@ -34,7 +35,7 @@ export default function Header() {
       <div className={`overflow-hidden bg-[#0B0B0C] text-center text-xs font-medium tracking-wide text-white/70 transition-all duration-300 ${
         isScrolled ? 'max-h-0 py-0' : 'max-h-12 py-2'
       }`}>
-        <p>Free shipping on orders over <span className="font-bold text-white">100 DT</span> — Authentic products guaranteed</p>
+        <p>{tLayout.rich('freeShipping', { bold: (chunks) => <span className="font-bold text-white">{chunks}</span> })}</p>
       </div>
 
       {/* ── Main Bar ──────────────────────────────────────────────── */}

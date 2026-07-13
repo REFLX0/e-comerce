@@ -151,7 +151,7 @@
     "volume": "Volume : {volume}",
     "free": "Gratuite",
     "freeShipping": "Livraison gratuite !",
-    "freeShippingProgress": "Encore {amount} pour la livraison gratuite",
+    "freeShippingProgress": "Encore <amount>{remaining}</amount> pour la livraison gratuite",
     "openCart": "Ouvrir le panier"
   },
   "Checkout": {

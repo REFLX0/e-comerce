@@ -41,7 +41,7 @@ export class OrdersService {
       return sum + variant.price * item.quantity
     }, 0)
 
-    // Atomic: create order + decrement stock in one transaction
+    // Atomic: create order + decrement stock + create payment in one transaction
     const order = await this.prisma.$transaction(async (tx) => {
       const created = await tx.order.create({
         data: {
@@ -75,6 +75,16 @@ export class OrdersService {
           data: { stockQty: { decrement: item.quantity } },
         })
       }
+
+      // Create a Payment record linked to this order
+      await tx.payment.create({
+        data: {
+          orderId: created.id,
+          method: dto.paymentMethod ?? 'COD',
+          amount: totalAmount,
+          status: 'PENDING',
+        },
+      })
 
       return created
     })

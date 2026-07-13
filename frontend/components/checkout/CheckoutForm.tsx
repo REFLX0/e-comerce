@@ -10,6 +10,7 @@ import { ordersApi } from '@/lib/api/orders'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
 import { Check } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { WILAYAS_TN } from '@/lib/utils/format'
 import { FormInput, FormSelect, FormTextarea } from '@/components/common/FormInput'
 
@@ -28,6 +29,7 @@ const checkoutSchema = z.object({
 type CheckoutFormData = z.infer<typeof checkoutSchema>
 
 export function CheckoutForm() {
+  const t = useTranslations('Checkout')
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
   const { items, clearCart } = useCartStore()
@@ -42,7 +44,7 @@ export function CheckoutForm() {
 
   const onSubmit = async (data: CheckoutFormData) => {
     if (items.length === 0) {
-      toast.error('Votre panier est vide')
+      toast.error(t('emptyCart'))
       return
     }
 
@@ -83,7 +85,7 @@ export function CheckoutForm() {
           <div className="bg-brand-primary flex h-8 w-8 items-center justify-center rounded-full text-sm text-white">
             1
           </div>
-          Informations de Livraison
+          {t('shippingInfo')}
         </h2>
 
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
@@ -180,7 +182,7 @@ export function CheckoutForm() {
           <div className="bg-brand-primary flex h-8 w-8 items-center justify-center rounded-full text-sm text-white">
             2
           </div>
-          Paiement
+          {t('payment')}
         </h2>
 
         <div className="border-brand-primary bg-brand-primary/5 flex items-start gap-4 rounded-xl border-2 p-4">
@@ -190,7 +192,7 @@ export function CheckoutForm() {
             </div>
           </div>
           <div>
-            <h3 className="text-brand-primary font-bold">Paiement à la livraison</h3>
+            <h3 className="text-brand-primary font-bold">{t('cod')}</h3>
             <p className="mt-1 text-sm text-gray-600">
               Payez en espèces lorsque vous recevez votre commande. C'est simple, rapide et 100%
               sécurisé.

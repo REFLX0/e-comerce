@@ -34,19 +34,9 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   return {
     title: t('title'),
     description: t('description'),
-    keywords: [
-      'huile moteur',
-      'lubrifiant',
-      'Tunisie',
-      'KiosqueTN',
-      'huile synthétique',
-      'vidange',
-      'Total',
-      'Shell',
-      'Castrol',
-      'Motul',
-      'filtres auto',
-    ],
+    keywords: locale === 'fr'
+      ? ['huile moteur', 'lubrifiant', 'Tunisie', 'KiosqueTN', 'huile synthétique', 'vidange', 'Total', 'Shell', 'Castrol', 'Motul', 'filtres auto']
+      : ['engine oil', 'lubricant', 'Tunisia', 'KiosqueTN', 'synthetic oil', 'oil change', 'Total', 'Shell', 'Castrol', 'Motul', 'auto filters'],
     openGraph: {
       title: t('title'),
       description: t('description'),
@@ -66,6 +56,7 @@ export default async function RootLayout({
 
   const { locale } = await params
   const messages = await getMessages()
+  const tLayout = await getTranslations({ locale, namespace: 'Layout' })
 
   return (
     <html
@@ -81,12 +72,11 @@ export default async function RootLayout({
       >
         <NextIntlClientProvider messages={messages}>
           <Providers>
-            {/* Skip link for keyboard / screen reader navigation */}
             <a
               href="#main-content"
               className="bg-brand-primary ring-brand-accent sr-only z-50 rounded-lg p-4 font-bold text-white ring-2 outline-none focus:not-sr-only focus:absolute focus:top-4 focus:left-4"
             >
-              Aller au contenu principal
+              {tLayout('skipToContent')}
             </a>
 
             {children}

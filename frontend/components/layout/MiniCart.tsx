@@ -7,6 +7,7 @@ import { ShoppingCart, Trash2, Plus, Minus } from 'lucide-react'
 import { Link } from '@/i18n/routing'
 import Image from 'next/image'
 import { useHasMounted } from '@/lib/hooks/useHasMounted'
+import { useTranslations } from 'next-intl'
 
 export default function MiniCart() {
   const { items, itemCount, totalTTC, updateQuantity, removeItem } = useCartStore()
@@ -14,6 +15,7 @@ export default function MiniCart() {
   const visibleItems = hasMounted ? items : []
   const visibleItemCount = hasMounted ? itemCount : 0
   const visibleTotalTTC = hasMounted ? totalTTC : 0
+  const t = useTranslations('Cart')
 
   return (
     <Sheet>
@@ -21,7 +23,7 @@ export default function MiniCart() {
         render={
           <button
             className="relative flex h-11 w-11 items-center justify-center rounded-lg text-brand-primary/70 transition-colors duration-200 hover:bg-brand-primary/5 hover:text-brand-primary"
-            aria-label="Ouvrir le panier"
+            aria-label={t('openCart')}
           />
         }
       >
@@ -35,7 +37,7 @@ export default function MiniCart() {
       <SheetContent className="flex h-full w-full flex-col bg-brand-card sm:max-w-md">
         <SheetHeader>
           <SheetTitle className="font-display text-brand-primary text-xl font-semibold">
-            Mon Panier ({visibleItemCount})
+            {t('myCart', { count: visibleItemCount })}
           </SheetTitle>
         </SheetHeader>
 
@@ -43,7 +45,7 @@ export default function MiniCart() {
           {visibleItems.length === 0 ? (
             <div className="flex h-full flex-col items-center justify-center text-gray-500">
               <ShoppingCart size={48} className="mb-4 text-gray-300" />
-              <p>Votre panier est empty</p>
+              <p>{t('empty')}</p>
             </div>
           ) : (
             <div className="space-y-6">
@@ -66,7 +68,7 @@ export default function MiniCart() {
                       <h4 className="text-brand-primary line-clamp-2 text-sm font-medium">
                         {item.product.name}
                       </h4>
-                      <p className="mt-1 text-xs text-gray-500">Volume: {item.variant.volume}</p>
+                      <p className="mt-1 text-xs text-gray-500">{t('volume', { volume: item.variant.volume })}</p>
                     </div>
                     <div className="mt-2 flex items-center justify-between">
                       <div className="flex items-center rounded-lg border border-brand-border bg-brand-surface">
@@ -76,7 +78,7 @@ export default function MiniCart() {
                           }}
                           disabled={item.quantity <= 1}
                           className="flex h-10 w-10 items-center justify-center text-gray-600 transition-colors duration-150 hover:bg-brand-surface-dark disabled:cursor-not-allowed disabled:opacity-30"
-                          aria-label="Diminuer la quantité"
+                          aria-label={t('decreaseQty')}
                         >
                           <Minus size={14} />
                         </button>
@@ -87,7 +89,7 @@ export default function MiniCart() {
                           }}
                           disabled={item.quantity >= item.variant.stock}
                           className="flex h-10 w-10 items-center justify-center text-gray-600 transition-colors duration-150 hover:bg-brand-surface-dark disabled:cursor-not-allowed disabled:opacity-30"
-                          aria-label="Augmenter la quantité"
+                          aria-label={t('increaseQty')}
                         >
                           <Plus size={14} />
                         </button>
@@ -99,7 +101,7 @@ export default function MiniCart() {
                         <button
                           onClick={() => removeItem(item.variantId)}
                           className="flex h-10 w-10 items-center justify-center rounded-lg text-gray-400 transition-colors duration-150 hover:bg-red-50 hover:text-red-500"
-                          aria-label="Retirer du panier"
+                          aria-label={t('remove')}
                         >
                           <Trash2 size={16} />
                         </button>
@@ -115,15 +117,15 @@ export default function MiniCart() {
         {visibleItems.length > 0 && (
           <div className="mt-auto border-t border-brand-border pt-6">
             <div className="mb-4 flex items-center justify-between">
-              <span className="text-gray-600">Total TTC</span>
+              <span className="text-gray-600">{t('totalTTC')}</span>
               <span className="text-brand-primary text-xl font-bold">{formatPrice(visibleTotalTTC)}</span>
             </div>
             <div className="grid grid-cols-2 gap-3">
               <Link href="/panier" className="btn-secondary py-2 text-center">
-                Voir le panier
+                {t('viewCart')}
               </Link>
               <Link href="/checkout" className="btn-primary py-2 text-center">
-                Commander
+                {t('checkout')}
               </Link>
             </div>
           </div>

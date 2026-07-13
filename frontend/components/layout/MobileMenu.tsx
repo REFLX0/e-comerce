@@ -7,10 +7,13 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/co
 import { Link } from '@/i18n/routing'
 import { useState } from 'react'
 import Image from 'next/image'
+import { useTranslations } from 'next-intl'
 
 export default function MobileMenu() {
   const [open, setOpen] = useState(false)
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set())
+  const tNav = useTranslations('Navigation')
+  const tLayout = useTranslations('Layout')
   const { data: categories } = useQuery({
     queryKey: ['categories-tree'],
     queryFn: categoriesApi.getTree,
@@ -33,7 +36,7 @@ export default function MobileMenu() {
         }
       >
         <Menu size={20} />
-        <span className="sr-only">Ouvrir le menu</span>
+        <span className="sr-only">{tLayout('openMenu')}</span>
       </SheetTrigger>
 
       <SheetContent
@@ -52,7 +55,7 @@ export default function MobileMenu() {
                 className="h-9 w-auto object-contain"
               />
             </Link>
-            <SheetTitle className="sr-only">Menu</SheetTitle>
+            <SheetTitle className="sr-only">{tLayout('menu')}</SheetTitle>
           </div>
         </SheetHeader>
 
@@ -66,7 +69,7 @@ export default function MobileMenu() {
             onClick={() => setOpen(false)}
           >
             <Home size={17} className="text-brand-accent" />
-            Accueil
+            {tNav('home')}
           </Link>
 
           {/* Find My Oil — hero CTA */}
@@ -76,12 +79,12 @@ export default function MobileMenu() {
             onClick={() => setOpen(false)}
           >
             <Search size={17} className="text-brand-accent" />
-            Trouver mon huile
+            {tNav('findMyOil')}
           </Link>
 
           {/* Catalogue section */}
           <div className="mt-2 mb-1 px-4">
-            <p className="text-[10px] font-bold tracking-normal text-brand-muted uppercase">Catalogue</p>
+            <p className="text-[10px] font-bold tracking-normal text-brand-muted uppercase">{tNav('catalog')}</p>
           </div>
 
           {categories && categories.length > 0 ? (
@@ -115,7 +118,7 @@ export default function MobileMenu() {
                           onClick={() => setOpen(false)}
                         >
                           <ChevronRight size={13} />
-                          Tous les produits
+                          {tNav('allProducts')}
                         </Link>
                         {category.children?.map((sub) => (
                           <Link
@@ -152,7 +155,7 @@ export default function MobileMenu() {
               onClick={() => setOpen(false)}
             >
               <BookOpen size={17} className="text-brand-accent" />
-              Voir tout le catalogue
+              {tNav('viewAllCatalog')}
             </Link>
           )}
 
@@ -164,7 +167,7 @@ export default function MobileMenu() {
               onClick={() => setOpen(false)}
             >
               <Info size={17} className="text-brand-muted" />
-              À propos
+              {tNav('about')}
             </Link>
             <Link
               href="/contact"
@@ -172,7 +175,7 @@ export default function MobileMenu() {
               onClick={() => setOpen(false)}
             >
               <Phone size={17} className="text-brand-muted" />
-              Contact
+              {tNav('contact')}
             </Link>
           </div>
 

@@ -6,6 +6,7 @@ import { Link } from '@/i18n/routing'
 import { usePathname } from 'next/navigation'
 import { useCartStore } from '@/lib/store/cart.store'
 import { useAuthStore } from '@/lib/store/auth.store'
+import { useTranslations } from 'next-intl'
 
 /**
  * Sticky mobile bottom navigation bar — only visible on small screens.
@@ -16,15 +17,16 @@ export function MobileBottomNav() {
   const { items } = useCartStore()
   const { isAuthenticated } = useAuthStore()
   const hasMounted = useHasMounted()
+  const t = useTranslations('Layout')
 
   const totalItems = hasMounted ? items.reduce((sum, item) => sum + item.quantity, 0) : 0
   const accountHref = hasMounted && isAuthenticated ? '/compte' : '/auth/login'
 
   const links = [
-    { href: '/', icon: Home, label: 'Accueil', exact: true },
-    { href: '/catalogue', icon: Search, label: 'Catalogue', exact: false },
-    { href: '/panier', icon: ShoppingCart, label: 'Panier', exact: false, badge: totalItems > 0 ? totalItems : null },
-    { href: accountHref, icon: User, label: 'Compte', exact: false },
+    { href: '/', icon: Home, label: t('home'), exact: true },
+    { href: '/catalogue', icon: Search, label: t('catalog'), exact: false },
+    { href: '/panier', icon: ShoppingCart, label: t('cart'), exact: false, badge: totalItems > 0 ? totalItems : null },
+    { href: accountHref, icon: User, label: t('account'), exact: false },
   ]
 
   return (

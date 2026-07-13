@@ -18,6 +18,7 @@ import { CouponsModule } from './coupons/coupons.module'
 import { TicketsModule } from './tickets/tickets.module'
 import { WishlistModule } from './wishlist/wishlist.module'
 import { NotificationsModule } from './notifications/notifications.module'
+import { SettingsModule } from './settings/settings.module'
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { NotificationsModule } from './notifications/notifications.module'
     TicketsModule,
     WishlistModule,
     NotificationsModule,
+    SettingsModule,
   ],
 })
 export class AppModule {}

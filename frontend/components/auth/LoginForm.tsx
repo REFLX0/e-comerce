@@ -9,6 +9,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { Link } from '@/i18n/routing'
 import { ArrowRight, Mail, Lock, Loader2 } from 'lucide-react'
 import { toast } from 'sonner'
+import { useTranslations } from 'next-intl'
 import { useAuthStore } from '@/lib/store/auth.store'
 import { FormInput } from '@/components/common/FormInput'
 
@@ -20,6 +21,7 @@ const loginSchema = z.object({
 type LoginFormData = z.infer<typeof loginSchema>
 
 export default function LoginForm() {
+  const t = useTranslations('Auth')
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -50,7 +52,7 @@ export default function LoginForm() {
     try {
       await login(data)
 
-      toast.success('Connexion réussie !', {
+      toast.success(t('loginSuccess'), {
         description: 'Bienvenue sur votre espace.',
       })
 
@@ -82,9 +84,9 @@ export default function LoginForm() {
             <ArrowRight size={14} className="rotate-180" /> Retour au site
           </Link>
           <h1 className="font-display text-brand-primary mb-2 text-3xl font-bold">
-            Bon retour
+            {t('welcomeBack')}
           </h1>
-          <p className="text-gray-500">Connectez-vous pour accéder à votre espace</p>
+          <p className="text-gray-500">{t('loginSubtitle')}</p>
         </div>
 
         <button
@@ -94,7 +96,7 @@ export default function LoginForm() {
           className="mb-6 flex w-full items-center justify-center gap-3 rounded-xl border border-gray-200 bg-white p-4 font-medium transition-all hover:bg-gray-50 hover:shadow-sm active:scale-[0.99] disabled:opacity-50"
         >
           <img src="https://www.google.com/favicon.ico" alt="" aria-hidden="true" className="h-5 w-5" />
-          Continuer avec Google
+          {t('googleLogin')}
         </button>
 
         <div className="relative mb-6 flex items-center">
@@ -107,7 +109,7 @@ export default function LoginForm() {
           <FormInput
             id="email"
             type="email"
-            label="Adresse e-mail"
+            label={t('email')}
             placeholder="votre@email.com"
             autoComplete="email"
             icon={<Mail size={18} />}
@@ -118,7 +120,7 @@ export default function LoginForm() {
           <FormInput
             id="password"
             type="password"
-            label="Mot de passe"
+            label={t('password')}
             placeholder="••••••••"
             autoComplete="current-password"
             icon={<Lock size={18} />}
@@ -131,7 +133,7 @@ export default function LoginForm() {
               href="/auth/mot-de-passe-oublie"
               className="text-brand-primary hover:text-brand-accent text-sm font-medium transition-colors"
             >
-              Mot de passe oublié ?
+              {t('forgotPassword')}
             </Link>
           </div>
 
@@ -143,7 +145,7 @@ export default function LoginForm() {
             {isLoading ? (
               <><Loader2 size={18} className="animate-spin" /> Connexion en cours...</>
             ) : (
-              <>Se connecter <ArrowRight size={18} /></>
+              <>{t('login')} <ArrowRight size={18} /></>
             )}
           </button>
         </form>
@@ -151,7 +153,7 @@ export default function LoginForm() {
         <p className="mt-8 text-center text-sm text-gray-500">
           Pas encore de compte ?{' '}
           <Link href="/auth/register" className="text-brand-primary hover:text-brand-accent font-bold transition-colors">
-            Créer un compte
+            {t('createAccount')}
           </Link>
         </p>
       </div>

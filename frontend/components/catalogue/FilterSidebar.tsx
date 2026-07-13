@@ -13,8 +13,10 @@ import {
   AccordionContent,
 } from '@/components/ui/accordion'
 import { RotateCcw } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 
 export function FilterSidebar() {
+  const t = useTranslations('Catalogue')
   const router = useRouter()
   const searchParams = useSearchParams()
 
@@ -59,14 +61,14 @@ export function FilterSidebar() {
   return (
     <div className="w-full rounded-2xl border border-gray-200 bg-white shadow-sm">
       <div className="flex items-center justify-between border-b border-gray-100 p-4">
-        <h2 className="font-display text-lg font-bold text-[#111]">Filtres</h2>
+        <h2 className="font-display text-lg font-bold text-[#111]">{t('filters')}</h2>
         {activeFiltersCount > 0 && (
           <button
             onClick={clearAllFilters}
             className="flex items-center gap-1.5 text-xs font-medium text-gray-500 hover:text-[#E10600] transition-colors"
           >
             <RotateCcw size={12} />
-            Effacer
+            {t('clear')}
             <span className="flex h-5 w-5 items-center justify-center rounded-full bg-gray-100 text-[10px] font-bold text-[#111]">
               {activeFiltersCount}
             </span>
@@ -78,7 +80,7 @@ export function FilterSidebar() {
         {/* Categories */}
         <AccordionItem value="categories">
           <AccordionTrigger className="font-display text-[#111] uppercase tracking-wider text-sm font-bold">
-            Catégories
+            {t('categories')}
           </AccordionTrigger>
           <AccordionContent>
             <ul className="custom-scrollbar max-h-[250px] space-y-2 overflow-y-auto pr-2 mt-1">
@@ -114,7 +116,7 @@ export function FilterSidebar() {
         {/* Brands */}
         <AccordionItem value="brands">
           <AccordionTrigger className="font-display text-[#111] uppercase tracking-wider text-sm font-bold">
-            Marques
+            {t('brands')}
           </AccordionTrigger>
           <AccordionContent>
             <ul className="custom-scrollbar max-h-[250px] space-y-2 overflow-y-auto pr-2 mt-1">
@@ -150,7 +152,7 @@ export function FilterSidebar() {
         {/* Viscosity */}
         <AccordionItem value="viscosity">
           <AccordionTrigger className="font-display text-[#111] uppercase tracking-wider text-sm font-bold">
-            Viscosité
+            {t('viscosity')}
           </AccordionTrigger>
           <AccordionContent>
             <div className="custom-scrollbar grid max-h-[200px] grid-cols-3 gap-2 overflow-y-auto pr-2 mt-1">
@@ -183,7 +185,7 @@ export function FilterSidebar() {
         {/* Type d'huile */}
         <AccordionItem value="type">
           <AccordionTrigger className="font-display text-[#111] uppercase tracking-wider text-sm font-bold">
-            Type d'huile
+            {t('oilType')}
           </AccordionTrigger>
           <AccordionContent>
             <div className="flex flex-col gap-3 mt-1">
@@ -208,7 +210,7 @@ export function FilterSidebar() {
         {/* Normes API */}
         <AccordionItem value="api">
           <AccordionTrigger className="font-display text-[#111] uppercase tracking-wider text-sm font-bold">
-            Normes API
+            {t('apiStandards')}
           </AccordionTrigger>
           <AccordionContent>
             <div className="custom-scrollbar flex max-h-[150px] flex-col gap-3 overflow-y-auto pr-2 mt-1">
@@ -230,7 +232,7 @@ export function FilterSidebar() {
         {/* Normes ACEA */}
         <AccordionItem value="acea">
           <AccordionTrigger className="font-display text-[#111] uppercase tracking-wider text-sm font-bold">
-            Normes ACEA
+            {t('aceaStandards')}
           </AccordionTrigger>
           <AccordionContent>
             <div className="custom-scrollbar flex max-h-[150px] flex-col gap-3 overflow-y-auto pr-2 mt-1">
@@ -252,7 +254,7 @@ export function FilterSidebar() {
         {/* Approbations OEM */}
         <AccordionItem value="oem">
           <AccordionTrigger className="font-display text-[#111] uppercase tracking-wider text-sm font-bold">
-            Approbations OEM
+            {t('oemApprovals')}
           </AccordionTrigger>
           <AccordionContent>
             <div className="custom-scrollbar flex max-h-[150px] flex-col gap-3 overflow-y-auto pr-2 mt-1">
@@ -276,7 +278,7 @@ export function FilterSidebar() {
         {/* Emballage */}
         <AccordionItem value="volume">
           <AccordionTrigger className="font-display text-[#111] uppercase tracking-wider text-sm font-bold">
-            Emballage
+            {t('packaging')}
           </AccordionTrigger>
           <AccordionContent>
             <div className="grid grid-cols-3 gap-2 mt-1">
@@ -303,18 +305,18 @@ export function FilterSidebar() {
         {/* Options */}
         <AccordionItem value="options" className="border-none">
           <AccordionTrigger className="font-display text-[#111] uppercase tracking-wider text-sm font-bold">
-            Options
+            {t('options')}
           </AccordionTrigger>
           <AccordionContent>
             <div className="space-y-4 mt-1 pb-4">
               <FilterCheckbox
-                label="En stock uniquement"
+                label={t('inStockOnly')}
                 checked={inStockOnly}
                 onChange={(checked) => updateFilters('inStockOnly', checked ? 'true' : null)}
               />
               
               <FilterCheckbox
-                label="En promotion"
+                label={t('onSale')}
                 checked={isPromo}
                 onChange={(checked) => updateFilters('isPromo', checked ? 'true' : null)}
                 accentColor="accent"

@@ -185,4 +185,51 @@ export class AdminService {
   async updateUserRole(id: string, role: string) {
     return this.prisma.user.update({ where: { id }, data: { role: role as any } })
   }
+
+  // ─── Reviews ──────────────────────────────────────────────────────────────
+  async getReviews(page = 1, limit = 20) {
+    const skip = (page - 1) * limit
+    const [data, total] = await Promise.all([
+      this.prisma.review.findMany({
+        include: { product: { select: { nameFr: true, images: { take: 1, select: { url: true } } } }, user: { select: { name: true, email: true } } },
+        orderBy: { createdAt: 'desc' }, skip, take: limit,
+      }),
+      this.prisma.review.count(),
+    ])
+    return { data, total, page, totalPages: Math.ceil(total / limit) }
+  }
+
+  async updateReviewStatus(id: string, isApproved: boolean) {
+    return this.prisma.review.update({ where: { id }, data: { isApproved } })
+  }
+
+  async deleteReview(id: string) {
+    return this.prisma.review.delete({ where: { id } })
+  }
+
+  // ─── Payments ─────────────────────────────────────────────────────────────
+  async getPayments(page = 1, limit = 20) {
+    const skip = (page - 1) * limit
+    const [data, total] = await Promise.all([
+      this.prisma.payment.findMany({
+        include: {
+          order: {
+            include: {
+              user: { select: { name: true, email: true } },
+              items: { take: 1, include: { product: { select: { nameFr: true } } } },
+            },
+          },
+        },
+        orderBy: { createdAt: 'desc' },
+        skip,
+        take: limit,
+      }),
+      this.prisma.payment.count(),
+    ])
+    return { data, total, page, totalPages: Math.ceil(total / limit) }
+  }
+
+  async updatePaymentStatus(id: string, status: string) {
+    return this.prisma.payment.update({ where: { id }, data: { status: status as any } })
+  }
 }

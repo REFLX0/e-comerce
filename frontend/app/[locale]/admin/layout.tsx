@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { useAuthStore } from '@/lib/store/auth.store'
+import { useTranslations } from 'next-intl'
 import { authApi } from '@/lib/api/auth'
 import { NotificationDropdown } from '@/components/admin/NotificationDropdown'
 import Image from 'next/image'
@@ -15,70 +16,14 @@ import {
   Search, ChevronDown, LifeBuoy
 } from 'lucide-react'
 
-// ── Navigation definition ──────────────────────────────────────────────────
-const NAV = [
-  {
-    label: 'Tableau de bord',
-    icon: LayoutDashboard,
-    href: '/admin',
-    exact: true,
-  },
-  {
-    label: 'Commandes',
-    icon: ShoppingCart,
-    href: '/admin/orders',
-    badge: 'new',
-  },
-  {
-    label: 'Catalogue',
-    icon: Package,
-    children: [
-      { label: 'Produits', href: '/admin/catalog/products', icon: Layers },
-      { label: 'Catégories', href: '/admin/catalog/categories', icon: FolderTree },
-      { label: 'Inventaire', href: '/admin/catalog/inventory', icon: Package },
-    ],
-  },
-  {
-    label: 'Clients',
-    icon: Users,
-    href: '/admin/customers',
-  },
-  {
-    label: 'Promotions',
-    icon: Tag,
-    href: '/admin/promotions',
-  },
-  {
-    label: 'Support & Retours',
-    icon: LifeBuoy,
-    href: '/admin/tickets',
-  },
-  {
-    label: 'Livraison',
-    icon: Truck,
-    href: '/admin/shipping',
-  },
-  {
-    label: 'Paiements',
-    icon: CreditCard,
-    href: '/admin/payments',
-  },
-  {
-    label: 'Avis',
-    icon: Star,
-    href: '/admin/reviews',
-  },
-  {
-    label: 'Analytique',
-    icon: BarChart2,
-    href: '/admin/analytics',
-  },
-  {
-    label: 'Paramètres',
-    icon: Settings,
-    href: '/admin/settings',
-  },
-]
+type NavItemShape = {
+  label: string
+  icon: React.ComponentType<{ size?: number; className?: string }>
+  href?: string
+  exact?: boolean
+  badge?: string
+  children?: Array<{ label: string; icon: React.ComponentType<{ size?: number; className?: string }>; href: string }>
+}
 
 function stripLocale(pathname: string) {
   return pathname.replace(/^\/(fr|en)(?=\/|$)/, '') || '/'
@@ -94,7 +39,7 @@ function NavItem({
   onClose,
   locale,
 }: {
-  item: (typeof NAV)[number]
+  item: NavItemShape
   collapsed: boolean
   onClose?: () => void
   locale: string
@@ -188,10 +133,13 @@ function NavItem({
 function Sidebar({
   collapsed,
   onClose,
+  nav,
 }: {
   collapsed: boolean
   onClose?: () => void
+  nav: NavItemShape[]
 }) {
+  const t = useTranslations('Admin')
   const { user, logout } = useAuthStore()
   const router = useRouter()
   const pathname = usePathname()
@@ -216,7 +164,7 @@ function Sidebar({
           />
           {!collapsed && (
             <span className="rounded bg-brand-accent px-1.5 py-0.5 text-[10px] font-bold text-black">
-              ADMIN
+              {t('adminLabel')}
             </span>
           )}
         </Link>
@@ -227,7 +175,7 @@ function Sidebar({
         <div className="px-3 pt-4 pb-2">
           <div className="flex items-center gap-2 rounded-xl bg-white/5 px-3 py-2 text-sm text-gray-400">
             <Search size={14} />
-            <span className="text-xs">Recherche rapide…</span>
+            <span className="text-xs">{t('quickSearch')}</span>
             <span className="ml-auto rounded border border-white/10 px-1 text-[10px]">⌘K</span>
           </div>
         </div>
@@ -235,7 +183,7 @@ function Sidebar({
 
       {/* Nav */}
       <nav className="flex-1 overflow-y-auto px-3 py-2 space-y-0.5">
-        {NAV.map((item) => (
+        {nav.map((item) => (
           <NavItem
             key={item.label}
             item={item}
@@ -260,7 +208,7 @@ function Sidebar({
             <button
               onClick={handleLogout}
               className="rounded-lg p-1.5 text-gray-500 hover:text-red-400 transition-colors"
-              title="Déconnexion"
+              title={t('logout')}
             >
               <LogOut size={16} />
             </button>
@@ -269,7 +217,7 @@ function Sidebar({
           <button
             onClick={handleLogout}
             className="flex w-full items-center justify-center rounded-xl p-2.5 text-gray-500 hover:text-red-400 transition-colors"
-            title="Déconnexion"
+            title={t('logout')}
           >
             <LogOut size={18} />
           </button>
@@ -280,6 +228,30 @@ function Sidebar({
 }
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
+  const t = useTranslations('Admin')
+
+  const NAV: NavItemShape[] = [
+    { label: t('dashboard'), icon: LayoutDashboard, href: '/admin', exact: true },
+    { label: t('orders'), icon: ShoppingCart, href: '/admin/orders', badge: 'new' },
+    {
+      label: t('catalog'),
+      icon: Package,
+      children: [
+        { label: t('products'), href: '/admin/catalog/products', icon: Layers },
+        { label: t('categories'), href: '/admin/catalog/categories', icon: FolderTree },
+        { label: t('inventory'), href: '/admin/catalog/inventory', icon: Package },
+      ],
+    },
+    { label: t('customers'), icon: Users, href: '/admin/customers' },
+    { label: t('promotions'), icon: Tag, href: '/admin/promotions' },
+    { label: t('supportTickets'), icon: LifeBuoy, href: '/admin/tickets' },
+    { label: t('shipping'), icon: Truck, href: '/admin/shipping' },
+    { label: t('payments'), icon: CreditCard, href: '/admin/payments' },
+    { label: t('reviews'), icon: Star, href: '/admin/reviews' },
+    { label: t('analytics'), icon: BarChart2, href: '/admin/analytics' },
+    { label: t('settings'), icon: Settings, href: '/admin/settings' },
+  ]
+
   const { isAuthenticated, isHydrated, user, setAuth } = useAuthStore()
   const router = useRouter()
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
@@ -352,7 +324,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
           sidebarCollapsed ? 'w-16' : 'w-64'
         }`}
       >
-        <Sidebar collapsed={sidebarCollapsed} />
+        <Sidebar collapsed={sidebarCollapsed} nav={NAV} />
         {/* Collapse toggle */}
         <button
           onClick={() => setSidebarCollapsed((p) => !p)}
@@ -378,7 +350,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
             className="absolute inset-y-0 left-0 w-72 shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
-            <Sidebar collapsed={false} onClose={() => setMobileOpen(false)} />
+            <Sidebar collapsed={false} onClose={() => setMobileOpen(false)} nav={NAV} />
           </div>
         </div>
       )}
@@ -391,17 +363,17 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
           <button
             onClick={() => setMobileOpen(true)}
             className="rounded-lg p-2 text-gray-600 hover:bg-gray-100 lg:hidden"
-            aria-label="Ouvrir le menu"
+            aria-label={t('openMenu')}
           >
             <Menu size={20} />
           </button>
 
           {/* Breadcrumb */}
           <div className="hidden sm:flex items-center gap-2 text-sm text-gray-500">
-            <span className="font-semibold text-brand-primary">Admin</span>
+            <span className="font-semibold text-brand-primary">{t('admin')}</span>
             <ChevronRight size={14} />
             <span className="capitalize">
-              {adminPathname.split('/').filter(Boolean).slice(1).join(' › ') || 'Tableau de bord'}
+              {adminPathname.split('/').filter(Boolean).slice(1).join(' › ') || t('dashboard')}
             </span>
           </div>
 

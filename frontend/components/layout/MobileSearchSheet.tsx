@@ -17,6 +17,7 @@ export function MobileSearchSheet() {
   const [isOpen, setIsOpen] = useState(false)
   const router = useRouter()
   const t = useTranslations('Navigation')
+  const tSearch = useTranslations('Search')
   
   const debouncedQuery = useDebounce(query, 300)
 
@@ -50,7 +51,7 @@ export function MobileSearchSheet() {
       
       <SheetContent side="top" className="h-full max-h-[80vh] w-full p-0 flex flex-col sm:max-w-none rounded-b-2xl">
         <div className="p-4 border-b border-brand-border">
-          <SheetTitle className="sr-only">Rechercher</SheetTitle>
+          <SheetTitle className="sr-only">{tSearch('ariaLabel')}</SheetTitle>
           <form onSubmit={handleSearch} className="relative mt-2">
             <FormInput
               id="mobile-search"
@@ -58,7 +59,7 @@ export function MobileSearchSheet() {
               autoFocus
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Rechercher un produit, marque..."
+              placeholder={tSearch('placeholder')}
               icon={<Search size={18} />}
             />
             {isFetching && (
@@ -74,7 +75,7 @@ export function MobileSearchSheet() {
             results && results.length > 0 ? (
               <div className="flex flex-col gap-2">
                 <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
-                  Résultats suggérés
+                  {tSearch('suggestedResults')}
                 </span>
                 {results.map((product) => (
                   <Link
@@ -107,19 +108,19 @@ export function MobileSearchSheet() {
                   onClick={handleSearch}
                   className="btn-secondary mt-4 w-full"
                 >
-                  Voir tous les résultats
+                  {tSearch('viewAllResults')}
                 </button>
               </div>
             ) : !isFetching ? (
               <div className="py-12 px-4 text-center">
-                <p className="text-brand-primary font-bold text-lg mb-2">Aucun résultat</p>
-                <p className="text-brand-muted text-sm">Essayez d'autres mots clés pour "{query}"</p>
+                <p className="text-brand-primary font-bold text-lg mb-2">{tSearch('noResult')}</p>
+                <p className="text-brand-muted text-sm">{tSearch('tryOtherKeywords')}</p>
               </div>
             ) : null
           ) : (
             <div className="py-8 text-center">
               <Search size={48} className="mx-auto mb-4 text-brand-border" />
-              <p className="text-brand-muted text-sm">Saisissez au moins 3 caractères pour lancer la recherche</p>
+              <p className="text-brand-muted text-sm">{tSearch('minChars')}</p>
             </div>
           )}
         </div>

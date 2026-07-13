@@ -4,24 +4,27 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { useAuthStore } from '@/lib/store/auth.store'
+import { useTranslations } from 'next-intl'
 import {
   LayoutDashboard, Package, Heart, MapPin, ShieldCheck,
   Star, Bell, LifeBuoy, LogOut, User, ChevronRight, Menu, X
 } from 'lucide-react'
 
-const NAV_ITEMS = [
-  { href: '/compte',           icon: LayoutDashboard, label: 'Tableau de bord',     exact: true },
-  { href: '/compte/commandes', icon: Package,          label: 'Mes Commandes' },
-  { href: '/compte/wishlist',  icon: Heart,            label: 'Ma Liste de souhaits' },
-  { href: '/compte/profil',    icon: User,             label: 'Mon Profil' },
-  { href: '/compte/adresses',  icon: MapPin,           label: 'Mes Adresses' },
-  { href: '/compte/avis',      icon: Star,             label: 'Mes Avis' },
-  { href: '/compte/support',   icon: LifeBuoy,         label: 'Support & Retours' },
-  { href: '/compte/securite',  icon: ShieldCheck,      label: 'Sécurité' },
-  { href: '/compte/notifications', icon: Bell,         label: 'Notifications' },
-]
-
 export default function CompteLayout({ children }: { children: React.ReactNode }) {
+  const t = useTranslations('Account')
+
+  const NAV_ITEMS = [
+    { href: '/compte',           icon: LayoutDashboard, label: t('dashboard'),     exact: true },
+    { href: '/compte/commandes', icon: Package,          label: t('myOrders') },
+    { href: '/compte/wishlist',  icon: Heart,            label: t('myWishlist') },
+    { href: '/compte/profil',    icon: User,             label: t('myProfile') },
+    { href: '/compte/adresses',  icon: MapPin,           label: t('myAddresses') },
+    { href: '/compte/avis',      icon: Star,             label: t('myReviews') },
+    { href: '/compte/support',   icon: LifeBuoy,         label: t('support') },
+    { href: '/compte/securite',  icon: ShieldCheck,      label: t('security') },
+    { href: '/compte/notifications', icon: Bell,         label: t('notifications') },
+  ]
+
   const { isAuthenticated, logout, isHydrated, user } = useAuthStore()
   const router = useRouter()
   const pathname = usePathname()
@@ -59,7 +62,7 @@ export default function CompteLayout({ children }: { children: React.ReactNode }
             {initials}
           </div>
           <div className="min-w-0">
-            <p className="truncate font-semibold text-brand-primary">{fullName || 'Mon compte'}</p>
+            <p className="truncate font-semibold text-brand-primary">{fullName || t('myAccount')}</p>
             <p className="truncate text-xs text-gray-400">{user?.email}</p>
           </div>
         </div>
@@ -113,7 +116,7 @@ export default function CompteLayout({ children }: { children: React.ReactNode }
           <Menu size={20} />
         </button>
         <p className="text-sm font-semibold text-brand-primary">
-          {NAV_ITEMS.find((i) => (i.exact ? pathname === i.href : pathname.startsWith(i.href)))?.label ?? 'Mon compte'}
+          {NAV_ITEMS.find((i) => (i.exact ? pathname === i.href : pathname.startsWith(i.href)))?.label ?? t('myAccount')}
         </p>
       </div>
 
@@ -126,7 +129,7 @@ export default function CompteLayout({ children }: { children: React.ReactNode }
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between p-4 border-b border-gray-100">
-              <p className="font-semibold text-brand-primary">Mon espace</p>
+              <p className="font-semibold text-brand-primary">{t('mySpace')}</p>
               <button onClick={() => setMobileOpen(false)} className="rounded-xl p-2 hover:bg-gray-100 transition-colors">
                 <X size={18} />
               </button>

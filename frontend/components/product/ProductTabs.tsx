@@ -12,6 +12,7 @@ interface Props {
 }
 
 export function ProductTabs({ product }: Props) {
+  const t = useTranslations('Product')
   return (
     <div className="border-brand-surface-dark mt-16 rounded-2xl border bg-white p-6 shadow-sm md:p-10">
       <Tabs defaultValue="description" className="w-full">
