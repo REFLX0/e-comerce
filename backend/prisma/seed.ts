@@ -339,7 +339,7 @@ async function main() {
         images: {
           create: [{ url: p.img, isPrimary: true }]
         },
-        specs: Object.keys(p.specs).length ? { create: p.specs } : undefined,
+        specs: Object.keys(p.specs).length ? { create: p.specs as any } : undefined,
         compatibilities: p.compat.length ? {
           create: p.compat.map(c => ({
             vehicleModelId: c.vehicleModelId,
