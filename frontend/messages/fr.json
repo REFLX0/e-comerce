@@ -3,6 +3,12 @@
     "title": "KiosqueTN — Huile Moteur & Lubrifiants en Tunisie",
     "description": "KiosqueTN, le spécialiste de la vente de lubrifiants et huiles moteur en Tunisie. Livraison rapide, produits authentiques Total, Shell, Castrol, Motul."
   },
+  "Nav": {
+    "home": "Accueil",
+    "catalog": "Catalogue",
+    "about": "À Propos",
+    "contact": "Contact"
+  },
   "Navigation": {
     "home": "Accueil",
     "catalog": "Catalogue",

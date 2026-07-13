@@ -3,6 +3,12 @@
     "title": "KiosqueTN — Engine Oil & Lubricants in Tunisia",
     "description": "KiosqueTN, the specialist for lubricants and engine oil in Tunisia. Fast delivery, authentic products from Total, Shell, Castrol, Motul."
   },
+  "Nav": {
+    "home": "Home",
+    "catalog": "Catalog",
+    "about": "About Us",
+    "contact": "Contact"
+  },
   "Navigation": {
     "home": "Home",
     "catalog": "Catalog",
