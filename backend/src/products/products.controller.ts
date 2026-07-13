@@ -23,6 +23,10 @@ export class ProductsController {
       sortBy: query.sortBy,
       page: query.page ? +query.page : 1,
       limit: query.limit ? +query.limit : 24,
+      type: query.type,
+      api: query.api,
+      acea: query.acea,
+      volume: query.volume,
     })
   }
 

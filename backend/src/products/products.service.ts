@@ -17,6 +17,10 @@ export interface ProductFilters {
   sortBy?: string
   page?: number
   limit?: number
+  type?: string
+  api?: string
+  acea?: string
+  volume?: string
 }
 
 @Injectable()
@@ -62,29 +66,64 @@ export class ProductsService {
     if (filters.viscosity) {
       where.specs = { viscosity: filters.viscosity }
     }
+    const variantSome: Prisma.ProductVariantWhereInput = {}
+    const specsInput: Prisma.ProductSpecsWhereInput = {}
     if (filters.priceMin !== undefined || filters.priceMax !== undefined) {
-      where.variants = {
-        some: {
-          price: {
-            ...(filters.priceMin !== undefined ? { gte: filters.priceMin } : {}),
-            ...(filters.priceMax !== undefined ? { lte: filters.priceMax } : {}),
-          },
-        },
+      variantSome.price = {
+        ...(filters.priceMin !== undefined ? { gte: filters.priceMin } : {}),
+        ...(filters.priceMax !== undefined ? { lte: filters.priceMax } : {}),
       }
     }
+    if (filters.inStockOnly) {
+      variantSome.stockQty = { gt: 0 }
+    }
+    if (filters.volume) {
+      variantSome.volume = filters.volume
+    }
+    if (filters.type) {
+      switch (filters.type) {
+        case '100% Synthèse': specsInput.isFullySynth = true; break
+        case 'Semi-Synthèse': specsInput.isSemiSynth = true; break
+        case 'Minérale': specsInput.isMinerale = true; break
+      }
+    }
+    if (filters.api) specsInput.apiStandard = filters.api
+    if (filters.acea) specsInput.aeceaStandard = filters.acea
+    if (Object.keys(variantSome).length > 0) where.variants = { some: variantSome }
+    if (Object.keys(specsInput).length > 0) {
+      where.specs = { ...(where.specs as any || {}), ...specsInput }
+    }
 
-    const orderBy = this.buildOrderBy(filters.sortBy)
+    const needsManualSort = filters.sortBy === 'price_asc' || filters.sortBy === 'price_desc'
 
-    const [data, total] = await Promise.all([
-      this.prisma.product.findMany({
+    let data: any[]
+    let total: number
+
+    if (needsManualSort) {
+      const all = await this.prisma.product.findMany({
         where,
         include: this.buildInclude(),
-        orderBy,
-        skip,
-        take: limit,
-      }),
-      this.prisma.product.count({ where }),
-    ])
+      })
+      total = all.length
+      all.sort((a, b) => {
+        const pa = a.variants?.[0]?.price ?? 0
+        const pb = b.variants?.[0]?.price ?? 0
+        return filters.sortBy === 'price_asc' ? pa - pb : pb - pa
+      })
+      data = all.slice(skip, skip + limit)
+    } else {
+      const orderBy = this.buildOrderBy(filters.sortBy)
+      ;[data, total] = await Promise.all([
+        this.prisma.product.findMany({
+          where,
+          include: this.buildInclude(),
+          orderBy,
+          skip,
+          take: limit,
+        }),
+        this.prisma.product.count({ where }),
+      ])
+    }
 
     return { data: data.map(this.serialize), total, page, limit, totalPages: Math.ceil(total / limit) }
   }
