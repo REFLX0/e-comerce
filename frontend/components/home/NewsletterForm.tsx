@@ -3,8 +3,10 @@
 import { useState } from 'react'
 import { ArrowRight } from 'lucide-react'
 import { toast } from 'sonner'
+import { useTranslations } from 'next-intl'
 
 export function NewsletterForm() {
+  const t = useTranslations('Home')
   const [email, setEmail] = useState('')
   const [isLoading, setIsLoading] = useState(false)
 
@@ -12,7 +14,7 @@ export function NewsletterForm() {
     e.preventDefault()
     
     if (!email || !email.includes('@')) {
-      toast.error('Veuillez entrer une adresse e-mail valide.')
+      toast.error(t('validEmail'))
       return
     }
 
@@ -21,7 +23,7 @@ export function NewsletterForm() {
     // Simulate API call
     await new Promise((resolve) => setTimeout(resolve, 800))
     
-    toast.success('Merci de votre inscription ! Vous recevrez bientôt nos actualités.')
+    toast.success(t('thankYou'))
     setEmail('')
     setIsLoading(false)
   }
@@ -41,7 +43,7 @@ export function NewsletterForm() {
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="votre@email.com"
+          placeholder={t('newsletterPlaceholder')}
           autoComplete="email"
           disabled={isLoading}
           className="min-h-12 flex-1 rounded-lg border border-white/[0.18] bg-white/[0.10] px-4 text-brand-surface placeholder:text-brand-surface/50 transition-all duration-200 focus:border-brand-accent focus:bg-white/[0.15] focus:ring-2 focus:ring-brand-accent/30 disabled:opacity-50"
@@ -53,12 +55,12 @@ export function NewsletterForm() {
           className="btn-accent shrink-0 disabled:opacity-70 disabled:cursor-wait"
           aria-label="S'inscrire à la newsletter"
         >
-          {isLoading ? 'Inscription...' : 'S\'inscrire'}
+          {isLoading ? 'Inscription...' : t('subscribe')}
           <ArrowRight size={16} aria-hidden="true" />
         </button>
       </div>
       <p className="mt-3 text-xs text-brand-surface/50">
-        Pas de spam. Désinscription en un clic.
+        {t('noSpam')}
       </p>
     </form>
   )

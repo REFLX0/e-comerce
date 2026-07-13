@@ -1,6 +1,7 @@
 "use client";
 
 import { useSyncExternalStore } from 'react'
+import { useTranslations } from 'next-intl'
 import Image from 'next/image'
 import { Link } from '@/i18n/routing'
 import { ShoppingCart, Heart, Check, X } from 'lucide-react'

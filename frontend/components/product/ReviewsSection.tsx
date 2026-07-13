@@ -1,6 +1,7 @@
 "use client";
 
 import { useQuery } from '@tanstack/react-query'
+import { useTranslations } from 'next-intl'
 import { reviewsApi } from '@/lib/api/reviews'
 import { RatingStars } from '../common/RatingStars'
 import { formatDate } from '@/lib/utils/format'
@@ -29,6 +30,7 @@ interface Props {
 }
 
 export function ReviewsSection({ productId, rating, reviewCount }: Props) {
+  const t = useTranslations('Product')
   const [showForm, setShowForm] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated)
@@ -79,12 +81,12 @@ export function ReviewsSection({ productId, rating, reviewCount }: Props) {
     <div className="grid grid-cols-1 gap-12 lg:grid-cols-3">
       {/* Summary */}
       <div className="lg:col-span-1">
-        <h3 className="font-display text-brand-primary mb-6 text-xl font-bold">Avis Clients</h3>
+        <h3 className="font-display text-brand-primary mb-6 text-xl font-bold">{t('clientReviews')}</h3>
         <div className="mb-8 flex items-center gap-4">
           <div className="text-brand-primary text-5xl font-bold">{rating.toFixed(1)}</div>
           <div>
             <RatingStars rating={rating} count={reviewCount} size={20} />
-            <p className="mt-1 text-sm text-gray-500">Basé sur {reviewCount} avis</p>
+            <p className="mt-1 text-sm text-gray-500">{t('basedOn', { count: reviewCount })}</p>
           </div>
         </div>
 
@@ -92,7 +94,7 @@ export function ReviewsSection({ productId, rating, reviewCount }: Props) {
         <div className="mb-8 space-y-3">
           {[5, 4, 3, 2, 1].map((stars) => (
             <div key={stars} className="flex items-center gap-3 text-sm">
-              <span className="w-12 text-gray-500">{stars} étoiles</span>
+              <span className="w-12 text-gray-500">{t('stars', { count: stars })}</span>
               <div className="bg-brand-surface h-2 flex-1 overflow-hidden rounded-full">
                 <div
                   className="h-full rounded-full bg-yellow-400"
@@ -114,14 +116,14 @@ export function ReviewsSection({ productId, rating, reviewCount }: Props) {
             }}
             className="btn-secondary w-full"
           >
-            Rédiger un avis
+            {t('writeReview')}
           </button>
         ) : (
           <div className="bg-brand-surface border-brand-surface-dark mt-6 rounded-2xl border p-6">
-            <h4 className="text-brand-primary mb-4 font-bold">Votre avis</h4>
+            <h4 className="text-brand-primary mb-4 font-bold">{t('yourReview')}</h4>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               <div>
-                <label className="mb-2 block text-sm font-medium text-gray-700">Note</label>
+                <label className="mb-2 block text-sm font-medium text-gray-700">{t('rating')}</label>
                 <div className="flex gap-2">
                   {[1, 2, 3, 4, 5].map((star) => (
                     <button
@@ -150,7 +152,7 @@ export function ReviewsSection({ productId, rating, reviewCount }: Props) {
                   htmlFor="review-comment"
                   className="mb-2 block text-sm font-medium text-gray-700"
                 >
-                  Commentaire
+                  {t('comment')}
                 </label>
                 <textarea
                   id="review-comment"
@@ -177,14 +179,14 @@ export function ReviewsSection({ productId, rating, reviewCount }: Props) {
                   }}
                   className="btn-secondary flex-1 py-2 text-sm"
                 >
-                  Annuler
+                  {t('cancel')}
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
                   className="btn-primary flex-1 py-2 text-sm disabled:opacity-50"
                 >
-                  {isSubmitting ? 'Envoi...' : 'Publier'}
+                  {isSubmitting ? t('sending') : t('publish')}
                 </button>
               </div>
             </form>
@@ -217,7 +219,7 @@ export function ReviewsSection({ productId, rating, reviewCount }: Props) {
           ))
         ) : (
           <p className="text-gray-500 italic">
-            Aucun avis pour ce produit pour le moment. Soyez le premier à donner votre avis !
+            {t('noReviews')}
           </p>
         )}
       </div>

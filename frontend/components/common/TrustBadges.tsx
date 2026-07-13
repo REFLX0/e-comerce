@@ -1,11 +1,5 @@
+import { useTranslations } from 'next-intl'
 import { Truck, ShieldCheck, RotateCcw, CreditCard } from 'lucide-react'
-
-const badges = [
-  { icon: ShieldCheck, label: '100% Authentic' },
-  { icon: Truck,       label: 'Fast Delivery' },
-  { icon: RotateCcw,   label: 'Easy Returns' },
-  { icon: CreditCard,  label: 'Secure Payment' },
-]
 
 interface TrustBadgesProps {
   variant?: 'grid' | 'inline'
@@ -13,6 +7,14 @@ interface TrustBadgesProps {
 }
 
 export function TrustBadges({ variant = 'grid', className }: TrustBadgesProps) {
+  const t = useTranslations('Common')
+
+  const badges = [
+    { icon: ShieldCheck, label: t('authentic') },
+    { icon: Truck,       label: t('fastDelivery') },
+    { icon: RotateCcw,   label: t('easyReturns') },
+    { icon: CreditCard,  label: t('securePayment') },
+  ]
   return (
     <div className={`grid grid-cols-2 gap-px bg-gray-100 sm:grid-cols-4 ${className ?? ''}`}>
       {badges.map((b) => (

@@ -3,6 +3,7 @@
 import Image from 'next/image'
 import { ShieldCheck, Zap, Clock, ArrowRight } from 'lucide-react'
 import { Link } from '@/i18n/routing'
+import { useTranslations } from 'next-intl'
 
 const features = [
   { icon: ShieldCheck, label: 'BETTER ENGINE', sub: 'PROTECTION' },
@@ -11,6 +12,7 @@ const features = [
 ]
 
 export function HeroBanner() {
+  const t = useTranslations('Home')
   return (
     <section className="relative isolate overflow-hidden bg-[#0B0B0C]">
       <div className="section-padding relative z-10 grid min-h-[560px] items-center gap-8 py-16 lg:grid-cols-[1.1fr_0.9fr] lg:py-0">
@@ -21,13 +23,11 @@ export function HeroBanner() {
             className="text-5xl font-bold uppercase tracking-tight text-white sm:text-6xl lg:text-7xl xl:text-[5.5rem]"
             style={{ lineHeight: 1.05, fontFamily: 'var(--font-inter), Inter, system-ui, sans-serif' }}
           >
-            High Performance
-            <br />
-            <span className="italic">Engine Oils</span>
+            {t('highPerformance')}
           </h1>
 
           <p className="mt-5 text-sm font-bold uppercase tracking-[0.2em] text-[#E10600] sm:text-base">
-            Maximum Protection. Maximum Performance.
+            {t('maxProtection')}
           </p>
 
           {/* Feature icons */}
@@ -49,7 +49,7 @@ export function HeroBanner() {
               href="/catalogue"
               className="group inline-flex h-14 items-center gap-3 bg-[#E10600] px-10 text-sm font-bold uppercase tracking-widest text-white transition-all duration-200 hover:bg-[#b80500] hover:shadow-[0_8px_30px_rgba(225,6,0,0.35)]"
             >
-              Shop Now
+              {t('shopNow')}
               <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" />
             </Link>
           </div>

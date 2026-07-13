@@ -1,6 +1,7 @@
 "use client";
 
 import { useQuery } from '@tanstack/react-query'
+import { useTranslations } from 'next-intl'
 import { productsApi } from '@/lib/api/products'
 import { ProductGrid } from '@/components/catalogue/ProductGrid'
 import { SectionTitle } from '@/components/common/SectionTitle'
@@ -11,6 +12,7 @@ interface Props {
 }
 
 export function RelatedProducts({ productId }: Props) {
+  const t = useTranslations('Product')
   const { data: products, isLoading } = useQuery({
     queryKey: ['related-products', productId],
     queryFn: () => productsApi.getRelated(productId),
@@ -20,7 +22,7 @@ export function RelatedProducts({ productId }: Props) {
 
   return (
     <section className="mt-24">
-      <SectionTitle title="Fréquemment achetés ensemble" />
+      <SectionTitle title={t('frequentlyBought')} />
 
       {isLoading ? <ProductGridSkeleton count={4} /> : <ProductGrid products={products || []} />}
     </section>

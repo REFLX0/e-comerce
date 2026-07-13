@@ -9,6 +9,7 @@ import { ArrowRight, ChevronLeft, ChevronRight, ShoppingBag } from 'lucide-react
 import type { Product } from '@/lib/types'
 import { useCartStore } from '@/lib/store/cart.store'
 import { toast } from 'sonner'
+import { useTranslations } from 'next-intl'
 
 function BestSellerCard({ product }: { product: Product }) {
   const { addItem } = useCartStore()
@@ -18,7 +19,7 @@ function BestSellerCard({ product }: { product: Product }) {
     e.preventDefault()
     if (v) {
       addItem(product, v, 1)
-      toast.success('Added to cart')
+      toast.success(t('addedToCart'))
     }
   }
 
@@ -77,6 +78,7 @@ function BestSellerCard({ product }: { product: Product }) {
 }
 
 export function BestSellers() {
+  const t = useTranslations('Home')
   const scrollRef = useRef<HTMLDivElement>(null)
 
   const { data: products, isLoading } = useQuery({
@@ -112,14 +114,14 @@ export function BestSellers() {
         {/* Header */}
         <div className="mb-8 flex items-end justify-between">
           <h2 className="text-3xl font-bold uppercase tracking-tight text-white md:text-4xl">
-            Best Sellers
+            {t('bestSellers')}
           </h2>
           <div className="flex items-center gap-3">
             <Link
               href="/catalogue?sort=popular"
               className="hidden items-center gap-1 text-sm font-bold text-[#E10600] transition-colors hover:text-[#ff2d1a] sm:inline-flex"
             >
-              View All <ArrowRight size={14} />
+              {t('viewAll')} <ArrowRight size={14} />
             </Link>
             <div className="hidden gap-2 sm:flex">
               <button

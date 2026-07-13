@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react'
+import { useTranslations } from 'next-intl'
 import { ShoppingCart } from 'lucide-react'
 import type { Product, ProductVariant } from '@/lib/types'
 import { useCartStore } from '@/lib/store/cart.store'
@@ -13,6 +14,7 @@ interface Props {
 }
 
 export function StickyMobileCart({ product, variant }: Props) {
+  const t = useTranslations('ProductCard')
   const [isVisible, setIsVisible] = useState(false)
   const { addItem } = useCartStore()
 
@@ -61,7 +63,7 @@ export function StickyMobileCart({ product, variant }: Props) {
         >
           <ShoppingCart size={18} />
           <span className="hidden sm:inline">
-            {isOutOfStock ? 'Rupture' : 'Ajouter'}
+            {isOutOfStock ? t('outOfStock') : t('addToCart')}
           </span>
         </button>
       </div>

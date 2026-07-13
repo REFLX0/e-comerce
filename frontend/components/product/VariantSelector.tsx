@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from 'next-intl'
 import type { ProductVariant } from '@/lib/types'
 
 interface Props {
@@ -9,11 +10,12 @@ interface Props {
 }
 
 export function VariantSelector({ variants, selectedVariant, onChange }: Props) {
+  const t = useTranslations('Product')
   if (!variants || variants.length === 0) return null
 
   return (
     <div className="mb-6">
-      <h3 className="text-brand-primary mb-3 text-sm font-semibold">Volume</h3>
+      <h3 className="text-brand-primary mb-3 text-sm font-semibold">{t('volume')}</h3>
       <div className="flex flex-wrap gap-3">
         {variants.map((variant) => {
           const isSelected = selectedVariant.id === variant.id

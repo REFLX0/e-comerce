@@ -133,8 +133,8 @@ export function VehicleFinder({ onClose }: VehicleFinderProps) {
 
   const variants = {
     initial: (d: number) => ({ opacity: 0, x: d > 0 ? 40 : -40, scale: 0.97 }),
-    animate: { opacity: 1, x: 0, scale: 1, transition: { duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] } },
-    exit: (d: number) => ({ opacity: 0, x: d < 0 ? 40 : -40, scale: 0.97, transition: { duration: 0.25, ease: [0.25, 0.46, 0.45, 0.94] } }),
+    animate: { opacity: 1, x: 0, scale: 1, transition: { duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] as [number, number, number, number] } },
+    exit: (d: number) => ({ opacity: 0, x: d < 0 ? 40 : -40, scale: 0.97, transition: { duration: 0.25, ease: [0.25, 0.46, 0.45, 0.94] as [number, number, number, number] } }),
   }
 
   const renderSearchButton = (disabled = false) => (

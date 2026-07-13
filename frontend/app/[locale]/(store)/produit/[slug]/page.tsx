@@ -7,6 +7,7 @@ import { StickyMobileCartWrapper } from '@/components/product/StickyMobileCartWr
 import { Breadcrumb } from '@/components/common/Breadcrumb'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
+import { getTranslations } from 'next-intl/server'
 
 interface Props {
   params: Promise<{ slug: string }>
@@ -21,13 +22,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description: product.shortDescription || product.description?.substring(0, 160),
     }
   } catch (error) {
+    const t = await getTranslations('Product')
     return {
-      title: 'Produit introuvable | KiosqueTN',
+      title: `${t('notFound')} | KiosqueTN`,
     }
   }
 }
 
 export default async function ProductPage({ params }: Props) {
+  const tNav = await getTranslations('Nav')
   let product;
   try {
     const { slug } = await params
@@ -45,7 +48,7 @@ export default async function ProductPage({ params }: Props) {
       <div className="section-padding py-8">
         <Breadcrumb
           items={[
-            { label: 'Catalogue', href: '/catalogue' },
+            { label: tNav('catalog'), href: '/catalogue' },
             ...(product.category
               ? [{ label: product.category.name, href: `/categorie/${product.category.slug}` }]
               : []),

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from 'react'
+import { useTranslations } from 'next-intl'
 import { ShoppingCart, Plus, Minus } from 'lucide-react'
 import type { Product, ProductVariant } from '@/lib/types'
 import { useCartStore } from '@/lib/store/cart.store'
@@ -12,6 +13,7 @@ interface Props {
 }
 
 export function AddToCartButton({ product, variant }: Props) {
+  const t = useTranslations('Product')
   const [quantity, setQuantity] = useState(1)
   const { addItem } = useCartStore()
 
@@ -49,7 +51,7 @@ export function AddToCartButton({ product, variant }: Props) {
         className="btn-primary flex h-14 flex-1 items-center justify-center gap-3 text-lg"
       >
         <ShoppingCart size={22} />
-        {isOutOfStock ? 'Rupture de stock' : 'Ajouter au panier'}
+        {isOutOfStock ? t('outOfStock') : t('addToCart')}
       </button>
     </div>
   )

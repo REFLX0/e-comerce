@@ -5,8 +5,10 @@ import { categoriesApi } from '@/lib/api/categories'
 import { Link } from '@/i18n/routing'
 import Image from 'next/image'
 import { ArrowRight } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 
 export function CategoryGrid() {
+  const t = useTranslations('Home')
   const { data: categories, isLoading } = useQuery({
     queryKey: ['categories-all'],
     queryFn: categoriesApi.getAll,
@@ -35,13 +37,13 @@ export function CategoryGrid() {
         {/* Section header */}
         <div className="mb-10 flex items-end justify-between">
           <h2 className="text-3xl font-bold uppercase tracking-tight text-[#111] md:text-4xl">
-            Shop by Category
+            {t('shopByCategory')}
           </h2>
           <Link
             href="/catalogue"
             className="hidden items-center gap-1 text-sm font-bold text-[#E10600] transition-colors hover:text-[#b80500] sm:inline-flex"
           >
-            View All <ArrowRight size={14} />
+            {t('viewAll')} <ArrowRight size={14} />
           </Link>
         </div>
 
@@ -76,7 +78,7 @@ export function CategoryGrid() {
                   {cat.name}
                 </h3>
                 <span className="mt-1 inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-white/70 transition-colors group-hover:text-[#E10600]">
-                  Explore <ArrowRight size={12} />
+                  {t('explore')} <ArrowRight size={12} />
                 </span>
               </div>
 

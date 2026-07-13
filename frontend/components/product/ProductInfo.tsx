@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react'
+import { useTranslations } from 'next-intl'
 import type { Product } from '@/lib/types'
 import { RatingStars } from '../common/RatingStars'
 import { StockIndicator } from '../common/StockIndicator'
@@ -19,6 +20,7 @@ interface Props {
 }
 
 export function ProductInfo({ product }: Props) {
+  const t = useTranslations('Product')
   const [selectedVariant, setSelectedVariant] = useState(product.variants[0])
   const { vehicle } = useVehicleStore()
   const [mounted, setMounted] = useState(false)
@@ -41,7 +43,7 @@ export function ProductInfo({ product }: Props) {
             {product.brand.name}
           </Link>
         )}
-        <span className="font-mono text-xs text-gray-400">Réf: {selectedVariant.sku}</span>
+        <span className="font-mono text-xs text-gray-400">{t('ref')} {selectedVariant.sku}</span>
       </div>
 
       {/* Title */}
@@ -56,7 +58,7 @@ export function ProductInfo({ product }: Props) {
             <Check size={20} strokeWidth={3} />
           </div>
           <div>
-            <p className="text-sm font-bold text-green-900">100% Compatible avec votre véhicule</p>
+            <p className="text-sm font-bold text-green-900">{t('compatibleVehicle')}</p>
             <p className="text-xs text-green-700 mt-0.5">{vehicle.makeName} {vehicle.modelName} {vehicle.engineCode}</p>
           </div>
         </div>
@@ -69,7 +71,7 @@ export function ProductInfo({ product }: Props) {
           href="#avis"
           className="text-brand-primary hover:text-brand-accent text-sm underline-offset-4 transition-colors hover:underline"
         >
-          Voir les avis
+          {t('seeReviews')}
         </a>
       </div>
 
@@ -106,7 +108,7 @@ export function ProductInfo({ product }: Props) {
       {selectedVariant.status === 'out_of_stock' &&
         product.variants.some((v: any) => v.status === 'in_stock') && (
           <div className="mb-6 rounded-xl border border-orange-200 bg-orange-50 p-4 text-sm font-medium text-orange-800">
-            Produit disponible avec d'autres emballages.
+            {t('otherPackaging')}
           </div>
         )}
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from 'react'
+import { useTranslations } from 'next-intl'
 import Image from 'next/image'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 
@@ -10,12 +11,13 @@ interface Props {
 }
 
 export function ProductGallery({ images, productName }: Props) {
+  const t = useTranslations('Product')
   const [currentIndex, setCurrentIndex] = useState(0)
 
   if (!images || images.length === 0) {
     return (
       <div className="bg-brand-surface border-brand-surface-dark flex aspect-square items-center justify-center rounded-2xl border">
-        <span className="text-gray-400">Image non disponible</span>
+        <span className="text-gray-400">{t('imageNotAvailable')}</span>
       </div>
     )
   }

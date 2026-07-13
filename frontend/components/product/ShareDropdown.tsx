@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from 'react'
+import { useTranslations } from 'next-intl'
 import { Share2, Link2, Mail, Check } from 'lucide-react'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
@@ -24,13 +25,14 @@ interface ShareDropdownProps {
 }
 
 export function ShareDropdown({ productName, productDescription, className }: ShareDropdownProps) {
+  const t = useTranslations('Product')
   const [isOpen, setIsOpen] = useState(false)
   const [copied, setCopied] = useState(false)
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(window.location.href)
     setCopied(true)
-    toast.success('Lien copié dans le presse-papier')
+    toast.success(t('linkCopied'))
     setTimeout(() => setCopied(false), 2000)
     setIsOpen(false)
   }
@@ -68,7 +70,7 @@ export function ShareDropdown({ productName, productDescription, className }: Sh
         )}
       >
         <Share2 size={20} />
-        Partager
+        {t('share')}
       </button>
 
       {isOpen && (
@@ -105,7 +107,7 @@ export function ShareDropdown({ productName, productDescription, className }: Sh
               className="flex items-center gap-3 px-4 py-3 text-sm text-brand-primary font-medium hover:bg-gray-50 transition-colors"
             >
               {copied ? <Check size={16} className="text-green-500" /> : <Link2 size={16} />}
-              {copied ? 'Copié !' : 'Copier le lien'}
+              {copied ? t('copied') : t('copyLink')}
             </button>
           </div>
         </>

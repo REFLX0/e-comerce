@@ -3,8 +3,10 @@ import { BestSellers } from '@/components/home/BestSellers'
 import { CategoryGrid } from '@/components/home/CategoryGrid'
 import { TrustBadges } from '@/components/common/TrustBadges'
 import { OilFinderTabs } from '@/features/oil-finder/components/OilFinderTabs'
+import { getTranslations } from 'next-intl/server'
 
-export default function Home() {
+export default async function Home() {
+  const t = await getTranslations('Home')
   return (
     <>
       {/* 1. Hero — dark block */}
@@ -43,13 +45,13 @@ export default function Home() {
               color: '#E10600',
             }}
           >
-            <span>🔍</span> Trouvez votre huile
+            <span>🔍</span> {t('findYourOil')}
           </div>
           <h2
             className="text-3xl font-black tracking-tight text-white md:text-4xl"
             style={{ textShadow: '0 0 60px rgba(225,6,0,0.2)' }}
           >
-            Le bon lubrifiant pour votre moteur
+            {t('rightLubricant')}
           </h2>
           <p className="mt-3 text-sm text-gray-500 max-w-md mx-auto">
             Deux méthodes pour trouver l&apos;huile parfaitement adaptée à votre véhicule
