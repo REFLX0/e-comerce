@@ -29,7 +29,7 @@ const BRAND_COLORS = [
 ]
 
 function getBrandColor(index: number) {
-  return BRAND_COLORS[index % BRAND_COLORS.length]
+  return BRAND_COLORS[index % BRAND_COLORS.length]!
 }
 
 export function VehicleFinder({ onClose }: VehicleFinderProps) {
