@@ -1,5 +1,6 @@
-import { Injectable, BadRequestException } from '@nestjs/common'
+import { Injectable, NotFoundException } from '@nestjs/common'
 import { PrismaService } from '../prisma/prisma.service'
+// Force TS reload
 import { Prisma } from '@prisma/client'
 import { CreateProductDto } from './dto/create-product.dto'
 

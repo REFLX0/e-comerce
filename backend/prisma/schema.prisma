@@ -145,14 +145,15 @@ model Address {
 // ─────────────────────────────────────────
 
 model Category {
-  id       String     @id @default(cuid())
-  nameFr   String
-  slug     String     @unique
-  imageUrl String?
-  parentId String?
-  parent   Category?  @relation("CategoryHierarchy", fields: [parentId], references: [id], onDelete: SetNull)
-  children Category[] @relation("CategoryHierarchy")
-  products Product[]
+  id        String     @id @default(cuid())
+  nameFr    String
+  slug      String     @unique
+  imageUrl  String?
+  sortOrder Int        @default(0)
+  parentId  String?
+  parent    Category?  @relation("CategoryHierarchy", fields: [parentId], references: [id], onDelete: SetNull)
+  children  Category[] @relation("CategoryHierarchy")
+  products  Product[]
 }
 
 model Brand {

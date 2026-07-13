@@ -5,7 +5,7 @@ import { Car, Bike, Truck, Tractor, Search, ArrowLeft, Fuel, Gauge, CheckCircle2
 import { Button } from '@/components/ui/button'
 import { useRouter, usePathname } from 'next/navigation'
 import type { FuelType } from '@/lib/types'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence, Variants } from 'framer-motion'
 
 type VehicleType = 'automobile' | 'moto' | 'poids_lourd' | 'agricole'
 
@@ -138,7 +138,7 @@ export function EngineSpecFinder({ onClose }: EngineSpecFinderProps) {
 
   const selectedVehicleConfig = VEHICLE_TYPES.find(t => t.id === vehicleType)
 
-  const variants = {
+  const variants: Variants = {
     initial: (direction: number) => ({
       opacity: 0,
       x: direction > 0 ? 40 : -40,
@@ -148,13 +148,13 @@ export function EngineSpecFinder({ onClose }: EngineSpecFinderProps) {
       opacity: 1,
       x: 0,
       scale: 1,
-      transition: { duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }
+      transition: { duration: 0.35, ease: 'easeOut' }
     },
     exit: (direction: number) => ({
       opacity: 0,
       x: direction < 0 ? 40 : -40,
       scale: 0.97,
-      transition: { duration: 0.25, ease: [0.25, 0.46, 0.45, 0.94] }
+      transition: { duration: 0.25, ease: 'easeIn' }
     }),
   }
 
