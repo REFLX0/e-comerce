@@ -190,7 +190,10 @@
     "free": "Free",
     "freeShipping": "Free shipping!",
     "freeShippingProgress": "Add <amount>{remaining}</amount> more for free shipping",
-    "openCart": "Open cart"
+    "openCart": "Open cart",
+    "title": "Cart",
+    "metaTitle": "Your Cart",
+    "metaDescription": "View and edit the items in your cart."
   },
   "Checkout": {
     "shippingInfo": "Shipping Information",

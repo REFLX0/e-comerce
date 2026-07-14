@@ -190,7 +190,10 @@
     "free": "Gratuite",
     "freeShipping": "Livraison gratuite !",
     "freeShippingProgress": "Encore <amount>{remaining}</amount> pour la livraison gratuite",
-    "openCart": "Ouvrir le panier"
+    "openCart": "Ouvrir le panier",
+    "title": "Panier",
+    "metaTitle": "Votre Panier",
+    "metaDescription": "Consultez et modifiez les articles de votre panier."
   },
   "Checkout": {
     "shippingInfo": "Informations de Livraison",
