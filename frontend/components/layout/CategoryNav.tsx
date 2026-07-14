@@ -2,12 +2,50 @@
 
 import { useState, useRef, useCallback } from 'react'
 import { Link } from '@/i18n/routing'
-import { ChevronDown, ChevronRight, Sparkles } from 'lucide-react'
+import {
+  ChevronDown,
+  ChevronRight,
+  Sparkles,
+  Gauge,
+  Car,
+  Droplets,
+  Shell,
+  Filter,
+  Cable,
+  Thermometer,
+  Disc3,
+  Tractor,
+  FlaskConical,
+  Bike,
+  Package,
+} from 'lucide-react'
 import { useQuery } from '@tanstack/react-query'
 import { categoriesApi } from '@/lib/api/categories'
 import { productsApi } from '@/lib/api/products'
 import Image from 'next/image'
 import { useTranslations } from 'next-intl'
+
+const TOP_SLUGS = new Set([
+  'huiles-moteur',
+  'automobile',
+  'hydraulique',
+  'graisses',
+  'filtres',
+])
+
+const CATEGORY_ICONS: Record<string, React.ReactNode> = {
+  'huiles-moteur': <Gauge size={16} />,
+  'automobile': <Car size={16} />,
+  'hydraulique': <Droplets size={16} />,
+  'graisses': <Shell size={16} />,
+  'filtres': <Filter size={16} />,
+  'transmission': <Cable size={16} />,
+  'refroidissement': <Thermometer size={16} />,
+  'frein': <Disc3 size={16} />,
+  'poids-lourd-agricole': <Tractor size={16} />,
+  'additifs': <FlaskConical size={16} />,
+  'moto': <Bike size={16} />,
+}
 
 export function CategoryNav() {
   const { data: categories } = useQuery({
@@ -21,51 +59,66 @@ export function CategoryNav() {
     staleTime: 1000 * 60 * 5,
   })
 
-  const [activeIndex, setActiveIndex] = useState<number | null>(null)
+  const [activeDropdown, setActiveDropdown] = useState<string | null>(null)
+  const [moreOpen, setMoreOpen] = useState(false)
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
   const t = useTranslations('Navigation')
 
-  const handleEnter = useCallback((index: number) => {
+  const handleEnter = useCallback((slug: string) => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current)
-    setActiveIndex(index)
+    setActiveDropdown(slug)
   }, [])
 
   const handleLeave = useCallback(() => {
-    timeoutRef.current = setTimeout(() => setActiveIndex(null), 200)
+    timeoutRef.current = setTimeout(() => setActiveDropdown(null), 200)
+  }, [])
+
+  const handleMoreEnter = useCallback(() => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current)
+    setMoreOpen(true)
+  }, [])
+
+  const handleMoreLeave = useCallback(() => {
+    timeoutRef.current = setTimeout(() => setMoreOpen(false), 200)
   }, [])
 
   if (!categories || categories.length === 0) return null
 
+  const topCats = categories.filter((c) => TOP_SLUGS.has(c.slug))
+  const moreCats = categories.filter((c) => !TOP_SLUGS.has(c.slug))
+
   return (
-    <nav className="hidden bg-gray-50 border-b border-gray-100 md:block">
-      <div className="section-padding flex items-center justify-center gap-2 min-h-[48px]">
-        {categories.map((category, index) => {
+    <nav className="hidden border-b border-gray-100 bg-white md:block">
+      <div className="section-padding flex h-12 items-center justify-center gap-1">
+        {topCats.map((category) => {
           const hasChildren = category.children && category.children.length > 0
-          const isActive = activeIndex === index
+          const isActive = activeDropdown === category.slug
 
           return (
             <div
               key={category.id}
               className="relative"
-              onMouseEnter={() => handleEnter(index)}
+              onMouseEnter={() => handleEnter(category.slug)}
               onMouseLeave={handleLeave}
             >
               {hasChildren ? (
                 <button
-                  className={`flex h-full items-center gap-1.5 px-3 text-[14px] text-brand-primary transition-colors hover:text-brand-accent ${
+                  className={`flex h-12 items-center gap-1.5 whitespace-nowrap px-3 text-sm font-semibold tracking-wide text-brand-primary transition-colors duration-150 hover:text-brand-accent ${
                     isActive ? 'text-brand-accent' : ''
                   }`}
                 >
                   {category.name}
                   <ChevronDown
-                    size={14}
+                    size={13}
                     className={`transition-transform duration-150 ${isActive ? 'rotate-180' : ''}`}
                   />
                 </button>
               ) : (
                 <Link
                   href={`/catalogue?categorySlug=${category.slug}`}
-                  className="flex h-full items-center px-3 text-[14px] text-brand-primary transition-colors hover:text-brand-accent"
+                  className={`flex h-12 items-center whitespace-nowrap px-3 text-sm font-semibold tracking-wide text-brand-primary transition-colors duration-150 hover:text-brand-accent ${
+                    isActive ? 'text-brand-accent' : ''
+                  }`}
                 >
                   {category.name}
                 </Link>
@@ -73,8 +126,8 @@ export function CategoryNav() {
 
               {hasChildren && isActive && (
                 <div
-                  className="absolute left-0 top-full z-50 w-[480px] origin-top-right animate-in fade-in slide-in-from-top-1 duration-150 rounded-b-lg border border-gray-100 bg-white shadow-2xl"
-                  onMouseEnter={() => handleEnter(index)}
+                  className="absolute left-0 top-full z-50 w-[480px] origin-top-right animate-in fade-in slide-in-from-top-1.5 duration-150 rounded-b-xl border border-gray-100 bg-white shadow-xl"
+                  onMouseEnter={() => handleEnter(category.slug)}
                   onMouseLeave={handleLeave}
                 >
                   <div className="flex">
@@ -85,7 +138,7 @@ export function CategoryNav() {
                       <div className="mt-3 flex flex-col gap-0.5">
                         <Link
                           href={`/categorie/${category.slug}`}
-                          onClick={() => setActiveIndex(null)}
+                          onClick={() => { setActiveDropdown(null); setMoreOpen(false) }}
                           className="group flex items-center gap-2 rounded-md px-3 py-2 text-sm font-semibold text-brand-primary transition-colors hover:bg-brand-surface"
                         >
                           <ChevronRight size={14} className="text-brand-accent" />
@@ -95,7 +148,7 @@ export function CategoryNav() {
                           <Link
                             key={sub.id}
                             href={`/categorie/${sub.slug}`}
-                            onClick={() => setActiveIndex(null)}
+                            onClick={() => { setActiveDropdown(null); setMoreOpen(false) }}
                             className="group flex items-center gap-2 rounded-md px-3 py-2 text-sm text-brand-primary/76 transition-colors hover:bg-brand-surface hover:text-brand-primary"
                           >
                             <ChevronRight size={14} className="text-brand-accent/60" />
@@ -116,7 +169,7 @@ export function CategoryNav() {
                             <Link
                               key={product.id}
                               href={`/produit/${product.slug}`}
-                              onClick={() => setActiveIndex(null)}
+                              onClick={() => { setActiveDropdown(null); setMoreOpen(false) }}
                               className="group flex items-start gap-2.5 rounded-md p-1.5 transition-colors hover:bg-brand-surface"
                             >
                               <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded bg-brand-surface">
@@ -146,13 +199,63 @@ export function CategoryNav() {
           )
         })}
 
-        <Link
-          href="/catalogue"
-          onClick={() => setActiveIndex(null)}
-          className="ml-auto flex items-center px-4 text-[12px] font-bold uppercase tracking-wider text-brand-primary transition-colors hover:text-brand-accent"
+        {/* More dropdown */}
+        <div
+          className="relative"
+          onMouseEnter={handleMoreEnter}
+          onMouseLeave={handleMoreLeave}
         >
-          {t('fullCatalog')}
-        </Link>
+          <button
+            aria-expanded={moreOpen}
+            className={`flex h-12 items-center gap-1.5 whitespace-nowrap px-3 text-sm font-semibold tracking-wide transition-colors duration-150 ${
+              moreOpen
+                ? 'text-brand-accent'
+                : 'text-brand-primary/60 hover:text-brand-primary'
+            }`}
+          >
+            <Package size={15} />
+            Plus
+            <ChevronDown
+              size={13}
+              className={`transition-transform duration-150 ${moreOpen ? 'rotate-180' : ''}`}
+            />
+          </button>
+
+          {moreOpen && (
+            <div
+              className="absolute right-0 top-full z-50 w-72 origin-top-right animate-in fade-in slide-in-from-top-1.5 duration-150 rounded-xl border border-gray-100 bg-white shadow-lg"
+              onMouseEnter={handleMoreEnter}
+              onMouseLeave={handleMoreLeave}
+            >
+              <div className="p-2">
+                {moreCats.map((cat) => (
+                  <Link
+                    key={cat.id}
+                    href={`/catalogue?categorySlug=${cat.slug}`}
+                    onClick={() => { setActiveDropdown(null); setMoreOpen(false) }}
+                    className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-brand-primary transition-colors duration-100 hover:bg-[#F5F6F8]"
+                  >
+                    <span className="flex h-8 w-8 items-center justify-center rounded-md bg-brand-surface text-brand-accent">
+                      {CATEGORY_ICONS[cat.slug] || <Package size={15} />}
+                    </span>
+                    <span className="flex-1">{cat.name}</span>
+                    <ChevronRight size={14} className="text-gray-300" />
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div className="ml-auto flex items-center">
+          <Link
+            href="/catalogue"
+            onClick={() => { setActiveDropdown(null); setMoreOpen(false) }}
+            className="flex h-9 items-center whitespace-nowrap rounded-lg bg-brand-primary px-5 text-xs font-bold uppercase tracking-wider text-white transition-all duration-150 hover:bg-brand-primary-light"
+          >
+            {t('fullCatalog')}
+          </Link>
+        </div>
       </div>
     </nav>
   )
