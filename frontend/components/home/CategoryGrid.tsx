@@ -1,12 +1,53 @@
 "use client";
 
-import { useState, useCallback } from 'react'
+import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { categoriesApi } from '@/lib/api/categories'
 import { Link } from '@/i18n/routing'
 import Image from 'next/image'
-import { ArrowRight } from 'lucide-react'
+import {
+  ArrowRight,
+  Droplets,
+  Car,
+  Gauge,
+  CircleDot,
+  Thermometer,
+  Disc3,
+  Bike,
+  Tractor,
+  Filter,
+  Package,
+  FlaskConical,
+} from 'lucide-react'
 import { useTranslations } from 'next-intl'
+
+const CATEGORY_ICONS: Record<string, React.ReactNode> = {
+  'huiles-moteur': <Droplets size={36} />,
+  automobile: <Car size={36} />,
+  transmission: <Gauge size={36} />,
+  hydraulique: <CircleDot size={36} />,
+  graisses: <Disc3 size={36} />,
+  refroidissement: <Thermometer size={36} />,
+  frein: <CircleDot size={36} />,
+  moto: <Bike size={36} />,
+  'poids-lourd-agricole': <Tractor size={36} />,
+  filtres: <Filter size={36} />,
+  additifs: <FlaskConical size={36} />,
+}
+
+const CATEGORY_COLORS: Record<string, string> = {
+  'huiles-moteur': 'from-amber-500/20 to-amber-700/20',
+  automobile: 'from-blue-500/20 to-blue-700/20',
+  transmission: 'from-cyan-500/20 to-cyan-700/20',
+  hydraulique: 'from-sky-500/20 to-sky-700/20',
+  graisses: 'from-yellow-500/20 to-yellow-700/20',
+  refroidissement: 'from-teal-500/20 to-teal-700/20',
+  frein: 'from-red-500/20 to-red-700/20',
+  moto: 'from-orange-500/20 to-orange-700/20',
+  'poids-lourd-agricole': 'from-green-500/20 to-green-700/20',
+  filtres: 'from-purple-500/20 to-purple-700/20',
+  additifs: 'from-pink-500/20 to-pink-700/20',
+}
 
 export function CategoryGrid() {
   const t = useTranslations('Home')
@@ -82,13 +123,18 @@ export function CategoryGrid() {
   )
 }
 
-function CategoryCardImage({ cat }: { cat: { image?: string | null; name: string } }) {
+function CategoryCardImage({ cat }: { cat: { image?: string | null; name: string; slug: string } }) {
   const [imgError, setImgError] = useState(false)
 
   if (!cat.image || imgError) {
     return (
-      <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-gray-200 to-gray-100">
-        <span className="text-3xl font-bold uppercase text-gray-300">{cat.name.charAt(0)}</span>
+      <div className={`flex h-full w-full items-center justify-center bg-gradient-to-br ${CATEGORY_COLORS[cat.slug] || 'from-gray-200 to-gray-100'}`}>
+        <div className="flex flex-col items-center gap-2">
+          <div className="text-gray-400">
+            {CATEGORY_ICONS[cat.slug] || <Package size={36} />}
+          </div>
+          <span className="text-lg font-bold uppercase text-gray-400">{cat.name.charAt(0)}</span>
+        </div>
       </div>
     )
   }
