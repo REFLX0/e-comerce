@@ -39,8 +39,13 @@ export default function Footer() {
 
           {/* Brand + Newsletter */}
           <div className="sm:col-span-2 lg:col-span-1">
-            <Link href="/" className="mb-5 inline-block">
-              <Image src="/logo.png" alt="KiosqueTN" width={120} height={36} className="h-8 w-auto brightness-0 invert" />
+            <Link href="/" className="mb-5 inline-flex items-center gap-2">
+              <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-white/10 text-lg font-black text-white">
+                K
+              </span>
+              <span className="text-xl font-bold tracking-tight text-white">
+                KiosqueTN
+              </span>
             </Link>
             <p className="mb-6 max-w-xs text-sm leading-relaxed text-white/40">
               {tFooter('description')}

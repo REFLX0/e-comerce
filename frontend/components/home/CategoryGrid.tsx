@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useCallback } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { categoriesApi } from '@/lib/api/categories'
 import { Link } from '@/i18n/routing'
@@ -56,18 +57,7 @@ export function CategoryGrid() {
               className="group relative aspect-[3/4] overflow-hidden rounded-lg bg-gray-100"
             >
               {/* Image */}
-              {cat.image ? (
-                <Image
-                  src={cat.image}
-                  alt={cat.name}
-                  fill
-                  className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
-                />
-              ) : (
-                <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-gray-200 to-gray-100">
-                  <span className="text-3xl font-bold uppercase text-gray-300">{cat.name.charAt(0)}</span>
-                </div>
-              )}
+              <CategoryCardImage cat={cat} />
 
               {/* Gradient overlay */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
@@ -89,5 +79,27 @@ export function CategoryGrid() {
         </div>
       </div>
     </section>
+  )
+}
+
+function CategoryCardImage({ cat }: { cat: { image?: string | null; name: string } }) {
+  const [imgError, setImgError] = useState(false)
+
+  if (!cat.image || imgError) {
+    return (
+      <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-gray-200 to-gray-100">
+        <span className="text-3xl font-bold uppercase text-gray-300">{cat.name.charAt(0)}</span>
+      </div>
+    )
+  }
+
+  return (
+    <Image
+      src={cat.image}
+      alt={cat.name}
+      fill
+      className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
+      onError={() => setImgError(true)}
+    />
   )
 }
