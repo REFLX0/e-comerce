@@ -22,7 +22,7 @@ const QUICK_LINKS = [
   { href: '/compte/commandes', icon: Package,  labelKey: 'myOrders',    descKey: 'myOrdersDesc' },
   { href: '/compte/wishlist',  icon: Heart,    labelKey: 'myWishlist',  descKey: 'myWishlistDesc' },
   { href: '/compte/adresses',  icon: MapPin,   labelKey: 'myAddresses', descKey: 'myAddressesDesc' },
-  { href: '/compte/avis',      icon: Star,     labelKey: 'myReviews',   descKey: 'myReviewsDesc' },
+  { href: '/compte/profil',    icon: Star,     labelKey: 'myProfile',   descKey: 'myProfileDesc' },
 ]
 
 export default function CompteDashboardPage() {

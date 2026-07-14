@@ -11,16 +11,17 @@ import { Breadcrumb } from '@/components/common/Breadcrumb'
 import { ProductGridSkeleton } from '@/components/common/Skeleton'
 import { ErrorState } from '@/components/common/ErrorState'
 import { EmptyState } from '@/components/common/EmptyState'
-import { useSearchParams, usePathname } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import { Filter, Car, Search } from 'lucide-react'
 import { useState, useMemo } from 'react'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import Link from 'next/link'
+import { useLocale, useTranslations } from 'next-intl'
 
 export default function CataloguePage() {
+  const t = useTranslations('Catalogue')
+  const locale = useLocale()
   const searchParams = useSearchParams()
-  const pathname = usePathname()
-  const locale = pathname?.split('/')[1] === 'en' ? 'en' : 'fr'
   const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false)
 
   const vehicleMake = searchParams.get('make')
@@ -75,7 +76,7 @@ export default function CataloguePage() {
     if (isVehicleSearch) list = Array.isArray(data) ? data : []
     else if (isSpecSearch) list = data?.data ?? []
     else list = data.data ?? []
-    
+
     if (isSearchMode && searchParams.get('sortBy')) {
        const sort = searchParams.get('sortBy')
        list = [...list].sort((a, b) => {
@@ -87,7 +88,7 @@ export default function CataloguePage() {
        })
     }
     return list
-  }, [data, isVehicleSearch, isSpecSearch, searchParams])
+  }, [data, isVehicleSearch, isSpecSearch, isSearchMode, searchParams])
 
   const productCount = useMemo(() => {
     if (!data) return 0
@@ -96,40 +97,46 @@ export default function CataloguePage() {
     return data.total ?? 0
   }, [data, isVehicleSearch, isSpecSearch])
 
+  const vehicleLabel = `${vehicleMake ?? ''} ${vehicleModel ?? ''}${vehicleEngine ? ' ' + vehicleEngine : ''}`.trim()
+
   const pageTitle = isVehicleSearch
-    ? `Huiles compatibles ${vehicleMake} ${vehicleModel}${vehicleEngine ? ' ' + vehicleEngine : ''}`
+    ? t('compatibleOilsTitle', { vehicle: vehicleLabel })
     : isSpecSearch
-      ? `Huiles ${specFuelType === 'diesel' ? 'Diesel' : 'Essence'} — ${specCylinders} cyl., ${specPower} CV`
-      : 'Catalogue de Produits'
+      ? t('specOilsTitle', {
+          fuel: t(specFuelType === 'diesel' ? 'diesel' : 'petrol'),
+          cylinders: specCylinders ?? '',
+          power: specPower ?? '',
+        })
+      : t('catalogTitle')
 
   const breadcrumbItems = isVehicleSearch
     ? [
-        { label: 'Catalogue', href: '/catalogue' },
-        { label: `${vehicleMake} ${vehicleModel}` },
+        { label: t('catalogTitle'), href: '/catalogue' },
+        { label: vehicleLabel },
       ]
     : isSpecSearch
       ? [
-          { label: 'Catalogue', href: '/catalogue' },
-          { label: 'Par caractéristiques' },
+          { label: t('catalogTitle'), href: '/catalogue' },
+          { label: t('bySpecs') },
         ]
-      : [{ label: 'Catalogue' }]
+      : [{ label: t('catalogTitle') }]
 
   const emptyTitle = isVehicleSearch
-    ? "Aucune huile trouvée pour ce véhicule"
+    ? t('emptyVehicleTitle')
     : isSpecSearch
-      ? "Aucune huile ne correspond à ces caractéristiques"
-      : "Oups ! Aucun produit trouvé"
+      ? t('emptySpecTitle')
+      : t('emptyDefaultTitle')
 
   const emptyMessage = isVehicleSearch
-    ? "Nous n'avons pas encore référencé d'huile compatible pour ce véhicule dans notre base."
+    ? t('emptyVehicleMessage')
     : isSpecSearch
-      ? "Le catalogue n'a pas encore été renseigné pour ces caractéristiques. Revenez bientôt, les données produit sont en cours d'ajout."
-      : "Nous n'avons pas trouvé de produits correspondant à vos critères de recherche."
+      ? t('emptySpecMessage')
+      : t('emptyDefaultMessage')
 
   const emptyAction = isVehicleSearch
     ? undefined
     : {
-        label: isSpecSearch ? 'Rechercher par véhicule' : 'Effacer tous les filtres',
+        label: isSpecSearch ? t('searchByVehicleAction') : t('clearAllFilters'),
         onClick: () => { window.location.href = `/${locale}/catalogue` },
       }
 
@@ -150,13 +157,13 @@ export default function CataloguePage() {
               {isSearchMode && (
                 <div className="mb-2 flex items-center gap-2 text-sm text-brand-accent">
                   {isVehicleSearch ? <Car size={16} /> : <Search size={16} />}
-                  <span>{isVehicleSearch ? 'Recherche par véhicule' : 'Recherche par caractéristiques'}</span>
+                  <span>{isVehicleSearch ? t('searchByVehicle') : t('searchBySpecs')}</span>
                 </div>
               )}
-              <h1 className="font-display text-[#111] text-2xl font-bold md:text-3xl">
+              <h1 className="font-display text-brand-primary text-2xl font-bold md:text-3xl">
                 {pageTitle}
               </h1>
-              <p className="mt-1 text-gray-500">{productCount} produit{productCount !== 1 ? 's' : ''} trouvé{productCount !== 1 ? 's' : ''}</p>
+              <p className="mt-1 text-gray-500">{t('productsFound', { count: productCount })}</p>
             </div>
 
             <div className="flex w-full items-center justify-end gap-3 sm:w-auto">
@@ -168,24 +175,24 @@ export default function CataloguePage() {
                     }
                   >
                     <Filter size={18} />
-                    Filtres
+                    {t('filters')}
                   </SheetTrigger>
                   <SheetContent
                     side="left"
                     className="bg-white w-full flex flex-col p-0 sm:max-w-sm border-r-0"
                   >
                     <div className="flex-1 overflow-y-auto p-6 pb-24">
-                      <h2 className="font-display text-[#111] mb-6 text-xl font-bold">
-                        Filtres
+                      <h2 className="font-display text-brand-primary mb-6 text-xl font-bold">
+                        {t('filters')}
                       </h2>
                       <FilterSidebar />
                     </div>
                     <div className="absolute bottom-0 left-0 right-0 border-t border-gray-200 bg-white/90 backdrop-blur-md p-4 shadow-overlay">
-                      <button 
+                      <button
                         onClick={() => setIsMobileFiltersOpen(false)}
                         className="btn-primary w-full shadow-md"
                       >
-                        Afficher les résultats
+                        {t('showResults')}
                       </button>
                     </div>
                   </SheetContent>
@@ -205,7 +212,7 @@ export default function CataloguePage() {
             <>
               <ProductGrid products={products} />
               {!isSearchMode ? (
-                <Pagination currentPage={data.page} totalPages={data.totalPages} />
+                <Pagination currentPage={data?.page ?? 1} totalPages={data?.totalPages ?? 1} />
               ) : (
                 <Pagination currentPage={1} totalPages={1} />
               )}
@@ -220,14 +227,14 @@ export default function CataloguePage() {
               {isVehicleSearch && (
                 <div className="mt-6 border-t border-gray-100 pt-6 text-center">
                   <p className="mb-3 text-sm text-gray-500">
-                    Vous ne trouvez pas votre véhicule&nbsp;? Essayez la recherche par caractéristiques moteur.
+                    {t('vehicleNotFoundHint')}
                   </p>
                   <Link
                     href={`/${locale}/#oil-finder`}
                     className="inline-flex items-center gap-2 rounded-lg border border-brand-accent/30 bg-brand-accent/5 px-5 py-2.5 text-sm font-semibold text-brand-accent transition-colors hover:bg-brand-accent/10"
                   >
                     <Search size={16} />
-                    Rechercher par caractéristiques
+                    {t('searchBySpecs')}
                   </Link>
                 </div>
               )}

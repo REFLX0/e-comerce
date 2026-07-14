@@ -58,15 +58,15 @@ export function FilterSidebar() {
   return (
     <div className="w-full rounded-2xl border border-gray-200 bg-white shadow-sm">
       <div className="flex items-center justify-between border-b border-gray-100 p-4">
-        <h2 className="font-display text-lg font-bold text-[#111]">{t('filters')}</h2>
+        <h2 className="font-display text-lg font-bold text-brand-primary">{t('filters')}</h2>
         {activeFiltersCount > 0 && (
           <button
             onClick={clearAllFilters}
-            className="flex items-center gap-1.5 text-xs font-medium text-gray-500 hover:text-[#E10600] transition-colors"
+            className="flex items-center gap-1.5 text-xs font-medium text-gray-500 hover:text-brand-accent transition-colors"
           >
             <RotateCcw size={12} />
             {t('clear')}
-            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-gray-100 text-[10px] font-bold text-[#111]">
+            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-gray-100 text-[10px] font-bold text-brand-primary">
               {activeFiltersCount}
             </span>
           </button>
@@ -77,14 +77,14 @@ export function FilterSidebar() {
         {/* Brands Dropdown */}
         <div className="mb-8">
           <label className="mb-3 block font-display text-sm font-bold text-brand-primary">
-            Filtré par Marque
+            {t('filterByBrand')}
           </label>
           <select
             className="w-full rounded-md border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-700 outline-none focus:border-brand-primary"
             value={currentBrand || ''}
             onChange={(e) => updateFilters('brandSlug', e.target.value || null)}
           >
-            <option value="">Sélectionner une marque</option>
+            <option value="">{t('selectBrand')}</option>
             {facets?.brands?.map((brand) => (
               <option key={brand.id} value={brand.slug}>
                 {brand.name}
@@ -97,7 +97,7 @@ export function FilterSidebar() {
         {facets?.volumes && facets.volumes.length > 0 && (
           <div className="mb-8">
             <h3 className="mb-4 font-display text-sm font-bold text-brand-primary">
-              Filtré par
+              {t('volumes')}
             </h3>
             <ul className="space-y-3">
               {facets.volumes.map((v) => {
@@ -133,7 +133,7 @@ export function FilterSidebar() {
                   !currentCategory ? 'text-brand-primary font-bold' : 'text-gray-600'
                 }`}
               >
-                Toutes les catégories
+                {t('allCategories')}
               </button>
             </li>
             {categories?.map((cat) => (
@@ -202,7 +202,7 @@ export function FilterSidebar() {
 
         {/* Normes API */}
         <AccordionItem value="api">
-          <AccordionTrigger className="font-display text-[#111] uppercase tracking-wider text-sm font-bold">
+          <AccordionTrigger className="font-display text-brand-primary uppercase tracking-wider text-sm font-bold">
             {t('apiStandards')}
           </AccordionTrigger>
           <AccordionContent>
@@ -224,7 +224,7 @@ export function FilterSidebar() {
 
         {/* Normes ACEA */}
         <AccordionItem value="acea">
-          <AccordionTrigger className="font-display text-[#111] uppercase tracking-wider text-sm font-bold">
+          <AccordionTrigger className="font-display text-brand-primary uppercase tracking-wider text-sm font-bold">
             {t('aceaStandards')}
           </AccordionTrigger>
           <AccordionContent>
@@ -246,7 +246,7 @@ export function FilterSidebar() {
 
         {/* Approbations OEM */}
         <AccordionItem value="oem">
-          <AccordionTrigger className="font-display text-[#111] uppercase tracking-wider text-sm font-bold">
+          <AccordionTrigger className="font-display text-brand-primary uppercase tracking-wider text-sm font-bold">
             {t('oemApprovals')}
           </AccordionTrigger>
           <AccordionContent>
@@ -270,7 +270,7 @@ export function FilterSidebar() {
 
         {/* Emballage */}
         <AccordionItem value="volume">
-          <AccordionTrigger className="font-display text-[#111] uppercase tracking-wider text-sm font-bold">
+          <AccordionTrigger className="font-display text-brand-primary uppercase tracking-wider text-sm font-bold">
             {t('packaging')}
           </AccordionTrigger>
           <AccordionContent>
@@ -283,8 +283,8 @@ export function FilterSidebar() {
                     onClick={() => updateFilters('volume', isActive ? null : vol)}
                     className={`rounded-lg border px-2 py-1.5 text-center text-[10px] font-medium transition-all duration-200 active:scale-95 ${
                       isActive
-                        ? 'bg-[#E10600] border-[#E10600] text-white shadow-sm'
-                        : 'hover:border-gray-400 border-gray-200 bg-gray-50 text-[#111] hover:bg-white hover:shadow-sm'
+                        ? 'bg-brand-accent border-brand-accent text-white shadow-sm'
+                        : 'hover:border-gray-400 border-gray-200 bg-gray-50 text-brand-primary hover:bg-white hover:shadow-sm'
                     }`}
                   >
                     {vol}
@@ -297,7 +297,7 @@ export function FilterSidebar() {
 
         {/* Options */}
         <AccordionItem value="options" className="border-none">
-          <AccordionTrigger className="font-display text-[#111] uppercase tracking-wider text-sm font-bold">
+          <AccordionTrigger className="font-display text-brand-primary uppercase tracking-wider text-sm font-bold">
             {t('options')}
           </AccordionTrigger>
           <AccordionContent>

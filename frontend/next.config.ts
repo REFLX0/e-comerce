@@ -18,7 +18,6 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: 'www.kiosquetn.tn' },
-      { protocol: 'https', hostname: 'www.KiosqueTN.tn' },
       // Unsplash (fallback product photos)
       { protocol: 'https', hostname: 'images.unsplash.com' },
       // Cloudinary — uploaded product images
