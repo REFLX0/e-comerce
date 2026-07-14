@@ -37,8 +37,8 @@ export function CategoryNav() {
   if (!categories || categories.length === 0) return null
 
   return (
-    <nav className="hidden bg-[#E10600] md:block">
-      <div className="section-padding flex min-h-[48px] items-stretch">
+    <nav className="hidden bg-gray-50 border-b border-gray-100 md:block">
+      <div className="section-padding flex items-center justify-center gap-2 min-h-[48px]">
         {categories.map((category, index) => {
           const hasChildren = category.children && category.children.length > 0
           const isActive = activeIndex === index
@@ -52,20 +52,20 @@ export function CategoryNav() {
             >
               {hasChildren ? (
                 <button
-                  className={`flex h-full items-center gap-1.5 px-4 text-[13px] font-semibold uppercase tracking-wider text-white/90 transition-colors hover:bg-black/15 hover:text-white ${
-                    isActive ? 'bg-black/15 text-white' : ''
+                  className={`flex h-full items-center gap-1.5 px-3 text-[14px] text-gray-600 transition-colors hover:text-brand-primary ${
+                    isActive ? 'text-brand-primary' : ''
                   }`}
                 >
                   {category.name}
                   <ChevronDown
-                    size={12}
+                    size={14}
                     className={`transition-transform duration-150 ${isActive ? 'rotate-180' : ''}`}
                   />
                 </button>
               ) : (
                 <Link
-                  href={`/categorie/${category.slug}`}
-                  className="flex h-full items-center px-4 text-[13px] font-semibold uppercase tracking-wider text-white/90 transition-colors hover:bg-black/15 hover:text-white"
+                  href={`/catalogue?categorySlug=${category.slug}`}
+                  className="flex h-full items-center px-3 text-[14px] text-gray-600 transition-colors hover:text-brand-primary"
                 >
                   {category.name}
                 </Link>

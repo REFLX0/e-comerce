@@ -12,14 +12,19 @@
   --font-mono: var(--font-jetbrains-mono);
   --font-heading: var(--font-inter);
 
-  /* ── Brand Design Tokens (LIGHT MODE) ──────────────────────────────── */
-  --color-brand-primary: #111111;          /* Dark text on light bg */
-  --color-brand-primary-light: #333333;    /* Slightly lighter text */
-  --color-brand-primary-dark: #000000;     /* Deepest text */
-  --color-brand-accent: #E10600;           /* Electric Red — AGENTS.md */
-  --color-brand-accent-light: #ff2d1a;
-  --color-brand-accent-hover: #b80500;
-  --color-brand-accent-glow: rgba(225, 6, 0, 0.15);
+  /* ── Brand Design Tokens (Tomobile Style) ──────────────────────────── */
+  --color-brand-primary: #16254c;          /* Navy Blue */
+  --color-brand-primary-light: #1f356b;    /* Lighter Navy */
+  --color-brand-primary-dark: #0d162d;     /* Dark Navy */
+  
+  --color-brand-accent: #f99d27;           /* Orange Accent */
+  --color-brand-accent-light: #fbaf4c;
+  --color-brand-accent-hover: #e08819;
+  --color-brand-accent-glow: rgba(249, 157, 39, 0.15);
+  
+  --color-brand-promo: #93c5fd;            /* Light Blue for promo/badges (blue-300) */
+  --color-brand-promo-dark: #60a5fa;       /* Darker Light Blue (blue-400) */
+  
   --color-brand-teal: #0f766e;
   --color-brand-surface: #f5f5f5;          /* Light gray surface */
   --color-brand-surface-dark: #e5e5e5;     /* Slightly darker surface */

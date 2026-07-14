@@ -160,15 +160,60 @@ export class ProductsService {
     return products.map(this.serialize)
   }
 
-  async findRelated(productId: string, limit = 6) {
-    const product = await this.prisma.product.findUnique({ where: { id: productId } })
+  async findRelated(id: string, limit = 6) {
+    const product = await this.prisma.product.findUnique({ where: { id }, select: { categoryId: true, brandId: true } })
     if (!product) return []
     const related = await this.prisma.product.findMany({
-      where: { categoryId: product.categoryId, id: { not: productId }, isPublished: true },
+      where: {
+        isPublished: true,
+        id: { not: id },
+        OR: [
+          { categoryId: product.categoryId },
+          { brandId: product.brandId }
+        ]
+      },
       include: this.buildInclude(),
       take: limit,
+      orderBy: { createdAt: 'desc' },
     })
     return related.map(this.serialize)
+  }
+
+  async getFacets(filters: ProductFilters) {
+    const where: Prisma.ProductWhereInput = { isPublished: true }
+    if (filters.categorySlug) where.category = { slug: filters.categorySlug }
+    if (filters.search) {
+      where.OR = [
+        { nameFr: { contains: filters.search, mode: 'insensitive' } },
+        { brand: { name: { contains: filters.search, mode: 'insensitive' } } },
+      ]
+    }
+
+    const variantGroups = await this.prisma.productVariant.groupBy({
+      by: ['volume'],
+      where: {
+        product: where
+      },
+      _count: { volume: true }
+    })
+
+    const volumes = variantGroups
+      .filter(v => v.volume)
+      .map(v => ({
+        volume: v.volume,
+        count: v._count.volume
+      }))
+      .sort((a, b) => {
+        const numA = parseFloat(a.volume!) || 0
+        const numB = parseFloat(b.volume!) || 0
+        return numA - numB
+      })
+
+    const brands = await this.prisma.brand.findMany({
+      orderBy: { name: 'asc' }
+    })
+
+    return { volumes, brands }
   }
 
   async findOilRecommendations(dto: OilRecommendationsDto) {

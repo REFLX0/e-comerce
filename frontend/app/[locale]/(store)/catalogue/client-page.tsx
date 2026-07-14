@@ -71,10 +71,23 @@ export default function CataloguePage() {
 
   const products = useMemo(() => {
     if (!data) return []
-    if (isVehicleSearch) return Array.isArray(data) ? data : []
-    if (isSpecSearch) return data?.data ?? []
-    return data.data ?? []
-  }, [data, isVehicleSearch, isSpecSearch])
+    let list = []
+    if (isVehicleSearch) list = Array.isArray(data) ? data : []
+    else if (isSpecSearch) list = data?.data ?? []
+    else list = data.data ?? []
+    
+    if (isSearchMode && searchParams.get('sortBy')) {
+       const sort = searchParams.get('sortBy')
+       list = [...list].sort((a, b) => {
+         const pA = a.variants?.[0]?.priceHT || 0
+         const pB = b.variants?.[0]?.priceHT || 0
+         if (sort === 'price_asc') return pA - pB
+         if (sort === 'price_desc') return pB - pA
+         return 0
+       })
+    }
+    return list
+  }, [data, isVehicleSearch, isSpecSearch, searchParams])
 
   const productCount = useMemo(() => {
     if (!data) return 0
@@ -146,8 +159,8 @@ export default function CataloguePage() {
               <p className="mt-1 text-gray-500">{productCount} produit{productCount !== 1 ? 's' : ''} trouvé{productCount !== 1 ? 's' : ''}</p>
             </div>
 
-            {!isSearchMode && (
-              <div className="flex w-full items-center gap-3 sm:w-auto">
+            <div className="flex w-full items-center justify-end gap-3 sm:w-auto">
+              {!isSearchMode && (
                 <Sheet open={isMobileFiltersOpen} onOpenChange={setIsMobileFiltersOpen}>
                   <SheetTrigger
                     render={
@@ -177,9 +190,9 @@ export default function CataloguePage() {
                     </div>
                   </SheetContent>
                 </Sheet>
-                <SortDropdown />
-              </div>
-            )}
+              )}
+              <SortDropdown />
+            </div>
           </div>
 
           {!isSearchMode && <ActiveFilters />}
@@ -191,7 +204,11 @@ export default function CataloguePage() {
           ) : products.length > 0 ? (
             <>
               <ProductGrid products={products} />
-              {!isSearchMode && <Pagination currentPage={data.page} totalPages={data.totalPages} />}
+              {!isSearchMode ? (
+                <Pagination currentPage={data.page} totalPages={data.totalPages} />
+              ) : (
+                <Pagination currentPage={1} totalPages={1} />
+              )}
             </>
           ) : (
             <div className="rounded-2xl border border-gray-100 bg-white p-8 shadow-sm">

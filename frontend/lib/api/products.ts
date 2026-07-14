@@ -8,6 +8,12 @@ export const productsApi = {
       filters as Record<string, string | number | boolean | undefined>
     ),
 
+  getFacets: (filters?: Partial<ProductFilters>) =>
+    apiGet<{ volumes: { volume: string; count: number }[]; brands: { id: string; name: string; slug: string }[] }>(
+      '/products/facets',
+      filters as Record<string, string | number | boolean | undefined>
+    ),
+
   getBySlug: (slug: string) => apiGet<Product>(`/products/${slug}`),
 
   getBestSellers: (limit = 8) => apiGet<Product[]>('/products/best-sellers', { limit }),

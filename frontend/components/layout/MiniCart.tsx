@@ -22,14 +22,15 @@ export default function MiniCart() {
       <SheetTrigger
         render={
           <button
-            className="relative flex h-11 w-11 items-center justify-center rounded-lg text-brand-primary/70 transition-colors duration-200 hover:bg-brand-primary/5 hover:text-brand-primary"
+            className="relative flex h-10 items-center justify-center gap-2 rounded-lg bg-brand-primary px-4 text-sm font-bold text-white transition-colors duration-200 hover:bg-brand-primary-light"
             aria-label={t('openCart')}
           />
         }
       >
-        <ShoppingCart size={24} />
+        <span className="hidden sm:inline">Panier / {formatPrice(visibleTotalTTC)}</span>
+        <ShoppingCart size={18} />
         {visibleItemCount > 0 && (
-          <span className="absolute top-1 right-1 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-brand-accent px-1 text-xs font-bold text-brand-primary">
+          <span className="absolute -top-1.5 -right-1.5 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-brand-accent px-1 text-xs font-bold text-white shadow-sm">
             {visibleItemCount}
           </span>
         )}

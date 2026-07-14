@@ -45,6 +45,14 @@ export class ProductsController {
     return this.productsService.findNew(limit ? +limit : 8)
   }
 
+  @Get('facets')
+  getFacets(@Query() query: Record<string, string>) {
+    return this.productsService.getFacets({
+      categorySlug: query.categorySlug,
+      search: query.search || query.q,
+    })
+  }
+
   @Get(':slug')
   async findOne(@Param('slug') slug: string) {
     const product = await this.productsService.findBySlug(slug)

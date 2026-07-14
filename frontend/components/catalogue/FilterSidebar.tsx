@@ -6,28 +6,26 @@ import { brandsApi } from '@/lib/api/brands'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { FilterSidebarSkeleton } from '../common/Skeleton'
 import { FilterCheckbox } from './FilterCheckbox'
-import {
-  Accordion,
-  AccordionItem,
-  AccordionTrigger,
-  AccordionContent,
-} from '@/components/ui/accordion'
 import { RotateCcw } from 'lucide-react'
 import { useTranslations } from 'next-intl'
+import { productsApi } from '@/lib/api/products'
 
 export function FilterSidebar() {
   const t = useTranslations('Catalogue')
   const router = useRouter()
   const searchParams = useSearchParams()
 
+  const currentCategory = searchParams.get('categorySlug') || ''
+  const currentBrand = searchParams.get('brandSlug') || ''
+
   const { data: categories, isLoading: catLoading } = useQuery({
     queryKey: ['categories'],
     queryFn: categoriesApi.getAll,
   })
 
-  const { data: brands, isLoading: brandsLoading } = useQuery({
-    queryKey: ['brands'],
-    queryFn: brandsApi.getAll,
+  const { data: facets, isLoading: facetsLoading } = useQuery({
+    queryKey: ['facets', currentCategory, searchParams.get('search')],
+    queryFn: () => productsApi.getFacets({ categorySlug: currentCategory, search: searchParams.get('search') || undefined }),
   })
 
   const updateFilters = (key: string, value: string | null) => {
@@ -46,12 +44,10 @@ export function FilterSidebar() {
     router.push('/catalogue')
   }
 
-  const currentCategory = searchParams.get('categorySlug') || ''
-  const currentBrand = searchParams.get('brandSlug') || ''
   const inStockOnly = searchParams.get('inStockOnly') === 'true'
   const isPromo = searchParams.get('isPromo') === 'true'
 
-  if (catLoading || brandsLoading) {
+  if (catLoading || facetsLoading) {
     return <FilterSidebarSkeleton />
   }
 
@@ -76,150 +72,137 @@ export function FilterSidebar() {
         )}
       </div>
 
-      <Accordion defaultValue={['categories', 'brands']} className="w-full px-4">
-        {/* Categories */}
-        <AccordionItem value="categories">
-          <AccordionTrigger className="font-display text-[#111] uppercase tracking-wider text-sm font-bold">
-            {t('categories')}
-          </AccordionTrigger>
-          <AccordionContent>
-            <ul className="custom-scrollbar max-h-[250px] space-y-2 overflow-y-auto pr-2 mt-1">
-              <li>
-                <button
-                  onClick={() => updateFilters('categorySlug', null)}
-                  className={`hover:text-[#E10600] hover:translate-x-1 flex w-full text-left text-sm transition-all ${
-                    !currentCategory ? 'text-[#111] font-bold' : 'text-gray-500'
-                  }`}
-                >
-                  Toutes les catégories
-                </button>
-              </li>
-              {categories?.map((cat) => (
-                <li key={cat.id}>
-                  <button
-                    onClick={() => updateFilters('categorySlug', cat.slug)}
-                    className={`hover:text-[#E10600] hover:translate-x-1 flex w-full justify-between text-left text-sm transition-all ${
-                      currentCategory === cat.slug ? 'text-[#111] font-bold' : 'text-gray-500'
-                    }`}
-                  >
-                    <span className="truncate">{cat.name}</span>
-                    <span className="bg-gray-100 text-[#111] ml-2 rounded-md px-1.5 py-0.5 text-[10px] font-semibold opacity-70">
-                      {cat.productCount}
-                    </span>
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </AccordionContent>
-        </AccordionItem>
+      <div className="w-full px-4 py-4">
+        {/* Brands Dropdown */}
+        <div className="mb-8">
+          <label className="mb-3 block font-display text-sm font-bold text-brand-primary">
+            Filtré par Marque
+          </label>
+          <select
+            className="w-full rounded-md border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-700 outline-none focus:border-brand-primary"
+            value={currentBrand || ''}
+            onChange={(e) => updateFilters('brandSlug', e.target.value || null)}
+          >
+            <option value="">Sélectionner une marque</option>
+            {facets?.brands?.map((brand) => (
+              <option key={brand.id} value={brand.slug}>
+                {brand.name}
+              </option>
+            ))}
+          </select>
+        </div>
 
-        {/* Brands */}
-        <AccordionItem value="brands">
-          <AccordionTrigger className="font-display text-[#111] uppercase tracking-wider text-sm font-bold">
-            {t('brands')}
-          </AccordionTrigger>
-          <AccordionContent>
-            <ul className="custom-scrollbar max-h-[250px] space-y-2 overflow-y-auto pr-2 mt-1">
-              <li>
-                <button
-                  onClick={() => updateFilters('brandSlug', null)}
-                  className={`hover:text-[#E10600] hover:translate-x-1 flex w-full text-left text-sm transition-all ${
-                    !currentBrand ? 'text-[#111] font-bold' : 'text-gray-500'
-                  }`}
-                >
-                  Toutes les marques
-                </button>
-              </li>
-              {brands?.map((brand) => (
-                <li key={brand.id}>
-                  <button
-                    onClick={() => updateFilters('brandSlug', brand.slug)}
-                    className={`hover:text-[#E10600] hover:translate-x-1 flex w-full justify-between text-left text-sm transition-all ${
-                      currentBrand === brand.slug ? 'text-[#111] font-bold' : 'text-gray-500'
-                    }`}
-                  >
-                    <span className="truncate">{brand.name}</span>
-                    <span className="bg-gray-100 text-[#111] ml-2 rounded-md px-1.5 py-0.5 text-[10px] font-semibold opacity-70">
-                      {brand.productCount}
-                    </span>
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </AccordionContent>
-        </AccordionItem>
-
-        {/* Viscosity */}
-        <AccordionItem value="viscosity">
-          <AccordionTrigger className="font-display text-[#111] uppercase tracking-wider text-sm font-bold">
-            {t('viscosity')}
-          </AccordionTrigger>
-          <AccordionContent>
-            <div className="custom-scrollbar grid max-h-[200px] grid-cols-3 gap-2 overflow-y-auto pr-2 mt-1">
-              {[
-                '0W20', '0W30', '0W40', '5W20', '5W30', '5W40',
-                '10W40', '10W60', '15W40', '15W50', '20W50',
-                '75W80', '75W90', '80W90', '85W140', 'ATF',
-                'CVT', 'DCT', 'DOT 4', 'DOT 5.1', 'LHM',
-                'SAE 30', 'ISO VG 46', 'ISO VG 68',
-              ].map((visc) => {
-                const isActive = searchParams.get('viscosity') === visc
+        {/* Volumes */}
+        {facets?.volumes && facets.volumes.length > 0 && (
+          <div className="mb-8">
+            <h3 className="mb-4 font-display text-sm font-bold text-brand-primary">
+              Filtré par
+            </h3>
+            <ul className="space-y-3">
+              {facets.volumes.map((v) => {
+                const isActive = searchParams.get('volume') === v.volume
                 return (
-                  <button
-                    key={visc}
-                    onClick={() => updateFilters('viscosity', isActive ? null : visc)}
-                    className={`truncate rounded-lg border px-1 py-1.5 text-center text-[10px] font-medium transition-all duration-200 active:scale-95 ${
-                      isActive
-                        ? 'bg-[#E10600] border-[#E10600] text-white shadow-sm'
-                        : 'hover:border-gray-400 border-gray-200 bg-gray-50 text-[#111] hover:bg-white hover:shadow-sm'
-                    }`}
-                  >
-                    {visc}
-                  </button>
+                  <li key={v.volume}>
+                    <button
+                      onClick={() => updateFilters('volume', isActive ? null : v.volume)}
+                      className={`flex w-full items-center justify-between text-sm transition-colors hover:text-brand-accent ${
+                        isActive ? 'font-bold text-brand-primary' : 'text-gray-600'
+                      }`}
+                    >
+                      <span>{v.volume}</span>
+                      <span className="text-gray-400">({v.count})</span>
+                    </button>
+                  </li>
                 )
               })}
-            </div>
-          </AccordionContent>
-        </AccordionItem>
+            </ul>
+          </div>
+        )}
+
+        {/* Categories */}
+        <div className="mb-8">
+          <h3 className="mb-4 font-display text-sm font-bold text-brand-primary">
+            {t('categories')}
+          </h3>
+          <ul className="space-y-3">
+            <li>
+              <button
+                onClick={() => updateFilters('categorySlug', null)}
+                className={`flex w-full text-left text-sm transition-all hover:text-brand-accent ${
+                  !currentCategory ? 'text-brand-primary font-bold' : 'text-gray-600'
+                }`}
+              >
+                Toutes les catégories
+              </button>
+            </li>
+            {categories?.map((cat) => (
+              <li key={cat.id}>
+                <button
+                  onClick={() => updateFilters('categorySlug', cat.slug)}
+                  className={`flex w-full justify-between text-left text-sm transition-all hover:text-brand-accent ${
+                    currentCategory === cat.slug ? 'text-brand-primary font-bold' : 'text-gray-600'
+                  }`}
+                >
+                  <span className="truncate">{cat.name}</span>
+                  <span className="text-gray-400">({cat.productCount})</span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* Viscosity */}
+        <div className="mb-8">
+          <h3 className="mb-4 font-display text-sm font-bold text-brand-primary">
+            {t('viscosity')}
+          </h3>
+          <div className="custom-scrollbar grid max-h-[200px] grid-cols-3 gap-2 overflow-y-auto pr-2 mt-1">
+            {[
+              '0W20', '0W30', '0W40', '5W20', '5W30', '5W40',
+              '10W40', '10W60', '15W40', '15W50', '20W50',
+              '75W80', '75W90', '80W90', '85W140', 'ATF',
+              'CVT', 'DCT', 'DOT 4', 'DOT 5.1', 'LHM',
+              'SAE 30', 'ISO VG 46', 'ISO VG 68',
+            ].map((visc) => {
+              const isActive = searchParams.get('viscosity') === visc
+              return (
+                <button
+                  key={visc}
+                  onClick={() => updateFilters('viscosity', isActive ? null : visc)}
+                  className={`truncate rounded-lg border px-1 py-1.5 text-center text-[10px] font-medium transition-all duration-200 active:scale-95 ${
+                    isActive
+                      ? 'bg-brand-primary border-brand-primary text-white shadow-sm'
+                      : 'hover:border-gray-400 border-gray-200 bg-gray-50 text-brand-primary hover:bg-white hover:shadow-sm'
+                  }`}
+                >
+                  {visc}
+                </button>
+              )
+            })}
+          </div>
+        </div>
 
         {/* Type d'huile */}
-        <AccordionItem value="type">
-          <AccordionTrigger className="font-display text-[#111] uppercase tracking-wider text-sm font-bold">
+        <div className="mb-8">
+          <h3 className="mb-4 font-display text-sm font-bold text-brand-primary">
             {t('oilType')}
-          </AccordionTrigger>
-          <AccordionContent>
-            <div className="flex flex-col gap-3 mt-1">
-              {[
-                '100% Synthèse',
-                'Minérale',
-                'Semi-Synthèse',
-                'Synthèse',
-                'Technologie de Synthèse',
-              ].map((type) => (
-                <FilterCheckbox
-                  key={type}
-                  label={type}
-                  checked={searchParams.get('type') === type}
-                  onChange={(checked) => updateFilters('type', checked ? type : null)}
-                />
-              ))}
-            </div>
-          </AccordionContent>
-        </AccordionItem>
+          </h3>
+          <div className="flex flex-col gap-3">
+            {['100% Synthèse', 'Minérale', 'Semi-Synthèse', 'Synthèse', 'Technologie de Synthèse'].map((type) => (
+              <FilterCheckbox
+                key={type}
+                label={type}
+                checked={searchParams.get('type') === type}
+                onChange={(checked) => updateFilters('type', checked ? type : null)}
+              />
+            ))}
+          </div>
+        </div>
 
         {/* Normes API */}
-        <AccordionItem value="api">
-          <AccordionTrigger className="font-display text-[#111] uppercase tracking-wider text-sm font-bold">
+        <div className="mb-8">
+          <h3 className="mb-4 font-display text-sm font-bold text-brand-primary">
             {t('apiStandards')}
-          </AccordionTrigger>
-          <AccordionContent>
-            <div className="custom-scrollbar flex max-h-[150px] flex-col gap-3 overflow-y-auto pr-2 mt-1">
-              {[
-                'API SL', 'API SM', 'API SN', 'API SP',
-                'API CF', 'API CI-4', 'API CJ-4', 'API CK-4',
-              ].map((norm) => (
-                <FilterCheckbox
-                  key={norm}
                   label={norm}
                   checked={searchParams.get('api') === norm}
                   onChange={(checked) => updateFilters('api', checked ? norm : null)}

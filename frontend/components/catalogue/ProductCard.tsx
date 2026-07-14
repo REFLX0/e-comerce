@@ -39,9 +39,9 @@ export function ProductCard({ product }: Props) {
   const oldPrice = defaultVariant ? defaultVariant.priceHT * 1.2 : 0
 
   return (
-    <div className="group relative flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:border-[#E10600]/30 hover:shadow-lg">
+    <div className="group relative flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:border-brand-accent/30 hover:shadow-lg">
       {/* Image with Badges */}
-      <div className="relative aspect-square overflow-hidden bg-gray-50 p-2">
+      <div className="relative aspect-square overflow-hidden bg-white p-2">
         {/* Badges */}
         <div className="absolute top-3 left-3 z-10 flex flex-col gap-2 items-start">
           {product.isPromo && (
@@ -50,7 +50,7 @@ export function ProductCard({ product }: Props) {
             </span>
           )}
           {product.isNew && (
-            <span className="rounded-md bg-[#E10600] px-2.5 py-1 text-[10px] font-bold tracking-normal text-white uppercase shadow-sm">
+            <span className="rounded-md bg-brand-accent px-2.5 py-1 text-[10px] font-bold tracking-normal text-white uppercase shadow-sm">
               {t('new')}
             </span>
           )}
@@ -63,7 +63,7 @@ export function ProductCard({ product }: Props) {
 
         {/* Wishlist Button */}
         <button 
-          className="absolute top-3 right-3 z-10 flex h-10 w-10 translate-y-0 items-center justify-center rounded-full border border-gray-200 bg-white/90 text-gray-400 opacity-100 shadow-sm backdrop-blur transition-all duration-200 hover:bg-white hover:text-[#E10600] hover:border-[#E10600]/20 sm:-translate-y-2 sm:opacity-0 sm:group-hover:translate-y-0 sm:group-hover:opacity-100"
+          className="absolute top-3 right-3 z-10 flex h-10 w-10 translate-y-0 items-center justify-center rounded-full border border-gray-200 bg-white/90 text-gray-400 opacity-100 shadow-sm backdrop-blur transition-all duration-200 hover:bg-white hover:text-brand-accent hover:border-brand-accent/20 sm:-translate-y-2 sm:opacity-0 sm:group-hover:translate-y-0 sm:group-hover:opacity-100"
           onClick={(e) => { e.preventDefault(); toast.success('Ajouté à la liste de souhaits') }}
            aria-label={t('addToWishlist')}
          >
@@ -76,7 +76,7 @@ export function ProductCard({ product }: Props) {
               src={product.images[0]}
               alt={product.name}
               fill
-              className="object-contain p-5 transition-transform duration-200 ease-out group-hover:scale-[1.03]"
+              className="object-contain p-2 transition-transform duration-200 ease-out group-hover:scale-[1.03]"
             />
           ) : (
             <div className="flex h-full w-full items-center justify-center bg-gray-50">
@@ -91,11 +91,11 @@ export function ProductCard({ product }: Props) {
         {/* Brand & Title */}
         <Link href={`/produit/${product.slug}`} className="flex flex-col gap-1 focus:outline-none">
           {product.brand && (
-            <span className="text-xs font-black tracking-wider text-[#E10600] uppercase">
+            <span className="text-xs font-black tracking-wider text-brand-primary uppercase">
               {product.brand.name}
             </span>
           )}
-          <h3 className="line-clamp-2 min-h-10 text-sm leading-snug font-bold text-[#111] transition-colors duration-200 group-hover:text-[#E10600]">
+          <h3 className="line-clamp-2 min-h-10 text-sm leading-snug font-bold text-gray-800 transition-colors duration-200 group-hover:text-brand-accent">
             {product.name}
           </h3>
         </Link>
@@ -151,14 +151,14 @@ export function ProductCard({ product }: Props) {
           <button
             onClick={handleAddToCart}
             disabled={defaultVariant?.status === 'out_of_stock'}
-            className="flex min-h-11 flex-1 items-center justify-center gap-2 rounded bg-[#E10600] py-2.5 text-xs font-bold uppercase tracking-wider text-white transition-all duration-200 hover:bg-[#b80500] disabled:cursor-not-allowed disabled:opacity-50"
+            className="flex min-h-11 flex-1 items-center justify-center gap-2 rounded bg-brand-primary py-2.5 text-xs font-bold uppercase tracking-wider text-white transition-all duration-200 hover:bg-brand-accent disabled:cursor-not-allowed disabled:opacity-50"
             aria-label={t('addToCart')}
           >
             {t('addToCart')}
           </button>
           
           <button 
-            className="flex h-11 w-11 items-center justify-center rounded border border-gray-200 bg-gray-50 text-gray-400 transition-all duration-200 hover:border-[#E10600] hover:text-[#E10600] focus:outline-none"
+            className="flex h-11 w-11 items-center justify-center rounded border border-gray-200 bg-gray-50 text-gray-400 transition-all duration-200 hover:border-brand-accent hover:text-brand-accent focus:outline-none"
             onClick={(e) => { e.preventDefault(); toast.success('Ajouté à la liste de souhaits') }}
             aria-label={t('addToWishlist')}
           >
