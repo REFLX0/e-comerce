@@ -131,7 +131,10 @@
     "inStock": "In stock",
     "outOfStock": "Out of stock",
     "addToCart": "Add to cart",
-    "addToWishlist": "Add to wishlist"
+    "addToWishlist": "Add to wishlist",
+    "addedToCart": "Product added to cart",
+    "addedToWishlist": "Added to wishlist",
+    "stockLimit": "Maximum available stock reached"
   },
   "Catalogue": {
     "filters": "Filters",
