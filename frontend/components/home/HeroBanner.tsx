@@ -25,7 +25,7 @@ export function HeroBanner() {
           </h1>
 
           <p className="mt-5 max-w-md text-sm leading-relaxed text-gray-600">
-            Découvrez notre gamme complète de lubrifiants haute performance pour tous types de moteurs. Qualité professionnelle, prix compétitifs.
+            {t('heroDescription')}
           </p>
 
           {/* CTA */}
@@ -41,7 +41,7 @@ export function HeroBanner() {
               href="#oil-finder"
               className="text-sm font-medium text-gray-500 transition-colors hover:text-brand-accent"
             >
-              Trouver mon huile →
+              {t('findMyOil')} →
             </Link>
           </div>
         </div>

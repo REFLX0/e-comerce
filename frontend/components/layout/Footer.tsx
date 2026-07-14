@@ -33,7 +33,7 @@ export default function Footer() {
   }
 
   return (
-    <footer className="bg-[#0B0B0C]">
+    <footer className="bg-brand-primary-dark">
       <div className="section-padding pt-16 pb-10">
         <div className="mb-14 grid grid-cols-1 gap-10 border-b border-white/8 pb-14 sm:grid-cols-2 lg:grid-cols-4">
 
@@ -52,11 +52,11 @@ export default function Footer() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder={tFooter('newsletterPlaceholder')}
-                className="h-10 flex-1 border border-white/10 bg-white/5 px-3 text-sm text-white placeholder:text-white/25 focus:border-[#E10600] focus:outline-none"
+                className="h-10 flex-1 border border-white/10 bg-white/5 px-3 text-sm text-white placeholder:text-white/25 focus:border-brand-accent focus:outline-none"
               />
               <button
                 type="submit"
-                className="flex h-10 w-10 shrink-0 items-center justify-center bg-[#E10600] text-white transition-colors hover:bg-[#b80500]"
+                className="flex h-10 w-10 shrink-0 items-center justify-center bg-brand-accent text-brand-primary-dark transition-colors hover:bg-brand-accent-hover"
                 aria-label={tFooter('subscribe')}
               >
                 <Send size={14} />
@@ -114,25 +114,25 @@ export default function Footer() {
             </h3>
             <ul className="space-y-4 text-sm">
               <li className="flex items-start gap-3">
-                <MapPin size={16} className="mt-0.5 shrink-0 text-[#E10600]" />
+                <MapPin size={16} className="mt-0.5 shrink-0 text-brand-accent" />
                 <span className="text-white/40">Kélibia, Tunisia</span>
               </li>
               <li className="flex items-center gap-3">
-                <Phone size={16} className="shrink-0 text-[#E10600]" />
+                <Phone size={16} className="shrink-0 text-brand-accent" />
                 <a href="tel:+21692975959" className="text-white/40 hover:text-white">+216 92 975 959</a>
               </li>
               <li className="flex items-center gap-3">
-                <Mail size={16} className="shrink-0 text-[#E10600]" />
+                <Mail size={16} className="shrink-0 text-brand-accent" />
                 <a href="mailto:contact@kiosquetn.tn" className="text-white/40 hover:text-white">contact@kiosquetn.tn</a>
               </li>
             </ul>
 
             {/* Social */}
             <div className="mt-6 flex gap-3">
-              <a href="https://www.facebook.com/KiosqueTN/" target="_blank" rel="noreferrer" aria-label="Facebook" className="flex h-9 w-9 items-center justify-center rounded border border-white/10 text-white/40 transition-all hover:border-[#E10600] hover:text-[#E10600]">
+              <a href="https://www.facebook.com/KiosqueTN/" target="_blank" rel="noreferrer" aria-label="Facebook" className="flex h-9 w-9 items-center justify-center rounded border border-white/10 text-white/40 transition-all hover:border-brand-accent hover:text-brand-accent">
                 <Facebook size={16} />
               </a>
-              <a href="#" aria-label="Instagram" className="flex h-9 w-9 items-center justify-center rounded border border-white/10 text-white/40 transition-all hover:border-[#E10600] hover:text-[#E10600]">
+              <a href="#" aria-label="Instagram" className="flex h-9 w-9 items-center justify-center rounded border border-white/10 text-white/40 transition-all hover:border-brand-accent hover:text-brand-accent">
                 <Instagram size={16} />
               </a>
             </div>

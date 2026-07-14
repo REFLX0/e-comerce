@@ -18,6 +18,7 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: 'www.kiosquetn.tn' },
+      { protocol: 'https', hostname: 'www.KiosqueTN.tn' },
       // Unsplash (fallback product photos)
       { protocol: 'https', hostname: 'images.unsplash.com' },
       // Cloudinary — uploaded product images
@@ -28,6 +29,8 @@ const nextConfig: NextConfig = {
       { protocol: 'https', hostname: 'upload.wikimedia.org' },
       // Manufacturer product image CDNs (Reliable ones)
       { protocol: 'https', hostname: 'cdn.autodoc.de' },
+      // Amazon product images
+      { protocol: 'https', hostname: 'm.media-amazon.com' },
       // Generic product stock photos
       { protocol: 'https', hostname: 'cdn.shopify.com' },
     ],
@@ -121,11 +124,10 @@ const nextConfig: NextConfig = {
         destination: '/api/auth/:path*',
       },
       // Everything else under /api/ proxies to the backend.
-      // API_PROXY_URL lets Docker point at the nginx service (http://nginx:8082)
-      // while local dev falls back to localhost.
+      // Override with API_PROXY_ORIGIN (e.g. http://nginx:8082 inside Docker).
       {
         source: '/api/:path*',
-        destination: `${process.env.API_PROXY_URL || 'http://localhost:8082'}/api/:path*`,
+        destination: `${process.env.API_PROXY_ORIGIN || 'http://localhost:8082'}/api/:path*`,
       },
     ]
   },

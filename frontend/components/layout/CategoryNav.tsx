@@ -52,8 +52,8 @@ export function CategoryNav() {
             >
               {hasChildren ? (
                 <button
-                  className={`flex h-full items-center gap-1.5 px-3 text-[14px] text-gray-600 transition-colors hover:text-brand-primary ${
-                    isActive ? 'text-brand-primary' : ''
+                  className={`flex h-full items-center gap-1.5 px-3 text-[14px] text-brand-primary transition-colors hover:text-brand-accent ${
+                    isActive ? 'text-brand-accent' : ''
                   }`}
                 >
                   {category.name}
@@ -65,7 +65,7 @@ export function CategoryNav() {
               ) : (
                 <Link
                   href={`/catalogue?categorySlug=${category.slug}`}
-                  className="flex h-full items-center px-3 text-[14px] text-gray-600 transition-colors hover:text-brand-primary"
+                  className="flex h-full items-center px-3 text-[14px] text-brand-primary transition-colors hover:text-brand-accent"
                 >
                   {category.name}
                 </Link>
@@ -149,7 +149,7 @@ export function CategoryNav() {
         <Link
           href="/catalogue"
           onClick={() => setActiveIndex(null)}
-          className="ml-auto flex items-center px-4 text-[12px] font-bold uppercase tracking-wider text-white/70 transition-colors hover:bg-black/15 hover:text-white"
+          className="ml-auto flex items-center px-4 text-[12px] font-bold uppercase tracking-wider text-brand-primary transition-colors hover:text-brand-accent"
         >
           {t('fullCatalog')}
         </Link>

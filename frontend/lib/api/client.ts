@@ -1,12 +1,14 @@
 /**
- * lib/api/client.ts — Resilient HTTP client
+ * lib/api/client.ts — Resilient HTTP client for KiosqueTN
  *
- * SINGLE source of truth for API base-URL resolution:
- *   - Server (SSR / route handlers): API_URL (internal network, e.g. http://nginx:8082/api)
- *   - Browser: NEXT_PUBLIC_API_URL (default '/api', proxied by Next rewrites)
+ * All existing exports (apiGet, apiPost, apiPut, apiPatch, apiDelete) are
+ * preserved with the same signatures for full backward compatibility.
  *
- * Exports (backward compatible): apiGet, apiPost, apiPut, apiPatch, apiDelete,
- * fetchWithTimeout, fetchWithRetry, createApiClient, backendClient.
+ * Added (SRE upgrades):
+ *   - fetchWithTimeout  — hard timeout via AbortController (never hangs)
+ *   - fetchWithRetry    — exponential backoff + ±20% jitter on 5xx errors
+ *   - createApiClient   — factory combining timeout + retry + circuit breaker
+ *   - All existing helpers now route through fetchWithTimeout (8s default)
  */
 
 import {
@@ -15,45 +17,10 @@ import {
   backendApiBreaker,
 } from './circuit-breaker'
 
+// Single source of truth for the backend base URL (see resolveBackendUrl):
+// server (inside Docker) → http://nginx:8082/api, browser → /api via nginx proxy
+const BASE_URL = resolveBackendUrl()
 const DEFAULT_TIMEOUT_MS = 8_000
-
-// ── Base URL resolution (unique, shared by ALL helpers) ────────────────────
-
-export function getApiBaseUrl(): string {
-  if (typeof window === 'undefined') {
-    return (
-      process.env.API_URL ||
-      process.env.NEXT_PUBLIC_API_URL ||
-      'http://nginx:8082/api'
-    ).replace(/\/$/, '')
-  }
-  return (process.env.NEXT_PUBLIC_API_URL || '/api').replace(/\/$/, '')
-}
-
-function toAbsolute(base: string): string {
-  if (/^https?:\/\//i.test(base)) return base.replace(/\/$/, '')
-  const origin =
-    typeof window !== 'undefined'
-      ? window.location.origin
-      : process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
-  return `${origin.replace(/\/$/, '')}/${base.replace(/^\/|\/$/g, '')}`
-}
-
-function buildUrl(
-  base: string,
-  path: string,
-  params?: Record<string, string | number | boolean | undefined>
-): URL {
-  const url = new URL(`${toAbsolute(base)}/${path.replace(/^\//, '')}`)
-  if (params) {
-    Object.entries(params).forEach(([k, v]) => {
-      if (v !== undefined && v !== null && v !== '') {
-        url.searchParams.set(k, String(v))
-      }
-    })
-  }
-  return url
-}
 
 // ── Error types ────────────────────────────────────────────────────────────
 
@@ -190,6 +157,22 @@ interface ApiClientRequest extends RequestInit {
   params?: Record<string, string | number | boolean>
 }
 
+function getApiBaseUrl(baseUrl: string): string {
+  if (/^https?:\/\//i.test(baseUrl)) return baseUrl.replace(/\/$/, '')
+
+  const origin =
+    typeof window !== 'undefined'
+      ? window.location.origin
+      : process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
+
+  return `${origin.replace(/\/$/, '')}/${baseUrl.replace(/^\/|\/$/g, '')}`
+}
+
+function buildApiUrl(baseUrl: string, path: string): URL {
+  const base = getApiBaseUrl(baseUrl)
+  return new URL(`${base}/${path.replace(/^\//, '')}`)
+}
+
 export function createApiClient(opts: ApiClientOptions) {
   const {
     baseUrl,
@@ -201,7 +184,10 @@ export function createApiClient(opts: ApiClientOptions) {
 
   async function request<T>(path: string, init: ApiClientRequest = {}): Promise<T> {
     const { params, headers: extra, ...rest } = init
-    const url = buildUrl(baseUrl, path, params)
+    const url = buildApiUrl(baseUrl, path)
+    if (params) {
+      for (const [k, v] of Object.entries(params)) url.searchParams.set(k, String(v))
+    }
 
     const fetchFn = () =>
       fetchWithRetry(
@@ -220,12 +206,10 @@ export function createApiClient(opts: ApiClientOptions) {
         const requestId = res.headers.get('x-request-id') ?? undefined
         if (!res.ok) {
           const data = await res.json().catch(() => null)
-          const message =
-            (data as { message?: string } | null)?.message || `API ${res.status} on ${path}`
           if (res.status >= 400 && res.status < 500) {
-            throw new HttpClientError(res.status, message)
+            throw new HttpClientError(res.status, `API ${res.status} on ${path}`)
           }
-          throw new ApiError(res.status, message, undefined, requestId)
+          throw new ApiError(res.status, `API ${res.status} on ${path}`, undefined, requestId)
         }
         return res.json() as Promise<T>
       })
@@ -245,33 +229,29 @@ export function createApiClient(opts: ApiClientOptions) {
   }
 }
 
-// ── Default resilient backend client ───────────────────────────────────────
+// ── Default resilient backend client ──────────────────────────────────────
+function resolveBackendUrl(): string {
+  if (typeof window === 'undefined') {
+    return process.env.API_URL || process.env.NEXT_PUBLIC_API_URL || 'http://nginx:8082/api'
+  }
+  return process.env.NEXT_PUBLIC_API_URL || '/api'
+}
 
 export const backendClient = createApiClient({
-  baseUrl: getApiBaseUrl(),
+  baseUrl: resolveBackendUrl(),
   timeoutMs: DEFAULT_TIMEOUT_MS,
   retries: 2,
   breaker: backendApiBreaker,
 })
 
-// ── Backward-compatible helpers (same signatures, same base URL) ───────────
+// ── Backward-compatible helpers (existing API — now with timeout) ──────────
 
 async function handleResponse<T>(res: Response): Promise<T> {
   if (!res.ok) {
-    const error = await res.json().catch(() => ({}) as { message?: string; code?: string })
-    throw new ApiError(res.status, error.message || `HTTP ${res.status}`, error.code)
+    const error = await res.json().catch(() => ({ message: 'Erreur réseau' }))
+    throw new ApiError(res.status, error.message || 'Une erreur est survenue', error.code)
   }
   return res.json()
-}
-
-function jsonInit(method: string, body?: unknown, options?: RequestInit): RequestInit {
-  return {
-    ...options,
-    method,
-    credentials: 'include',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    ...(body !== undefined ? { body: JSON.stringify(body) } : {}),
-  }
 }
 
 export async function apiGet<T>(
@@ -279,31 +259,72 @@ export async function apiGet<T>(
   params?: Record<string, string | number | boolean | undefined>,
   options?: RequestInit
 ): Promise<T> {
-  const url = buildUrl(getApiBaseUrl(), path, params)
-  const res = await fetchWithTimeout(url.toString(), jsonInit('GET', undefined, options))
+  const url = new URL(
+    `${BASE_URL}${path}`,
+    process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
+  )
+  if (params) {
+    Object.entries(params).forEach(([k, v]) => {
+      if (v !== undefined && v !== null && v !== '') {
+        url.searchParams.set(k, String(v))
+      }
+    })
+  }
+  const res = await fetchWithTimeout(url.toString(), {
+    ...options,
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+  })
   return handleResponse<T>(res)
 }
 
-export async function apiPost<T>(path: string, body: unknown): Promise<T> {
-  const url = buildUrl(getApiBaseUrl(), path)
-  const res = await fetchWithTimeout(url.toString(), jsonInit('POST', body))
+export async function apiPost<T>(path: string, body: unknown, ): Promise<T> {
+  const res = await fetchWithTimeout(`${BASE_URL}${path}`, {
+    method: 'POST',
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json',
+      
+    },
+    body: JSON.stringify(body),
+  })
   return handleResponse<T>(res)
 }
 
-export async function apiPut<T>(path: string, body: unknown): Promise<T> {
-  const url = buildUrl(getApiBaseUrl(), path)
-  const res = await fetchWithTimeout(url.toString(), jsonInit('PUT', body))
+export async function apiPut<T>(path: string, body: unknown, ): Promise<T> {
+  const res = await fetchWithTimeout(`${BASE_URL}${path}`, {
+    method: 'PUT',
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json',
+      
+    },
+    body: JSON.stringify(body),
+  })
   return handleResponse<T>(res)
 }
 
-export async function apiPatch<T>(path: string, body: unknown): Promise<T> {
-  const url = buildUrl(getApiBaseUrl(), path)
-  const res = await fetchWithTimeout(url.toString(), jsonInit('PATCH', body))
+export async function apiPatch<T>(path: string, body: unknown, ): Promise<T> {
+  const res = await fetchWithTimeout(`${BASE_URL}${path}`, {
+    method: 'PATCH',
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json',
+      
+    },
+    body: JSON.stringify(body),
+  })
   return handleResponse<T>(res)
 }
 
-export async function apiDelete<T>(path: string): Promise<T> {
-  const url = buildUrl(getApiBaseUrl(), path)
-  const res = await fetchWithTimeout(url.toString(), jsonInit('DELETE'))
+export async function apiDelete<T>(path: string, ): Promise<T> {
+  const res = await fetchWithTimeout(`${BASE_URL}${path}`, {
+    method: 'DELETE',
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json',
+      
+    },
+  })
   return handleResponse<T>(res)
 }
