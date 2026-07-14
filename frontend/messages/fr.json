@@ -120,7 +120,9 @@
     "copied": "Copié !",
     "imageNotAvailable": "Image non disponible",
     "volume": "Volume",
-    "notFound": "Produit introuvable"
+    "notFound": "Produit introuvable",
+    "addedToCart": "Produit ajouté au panier",
+    "stockLimit": "Stock maximum atteint pour ce produit"
   },
   "ProductCard": {
     "promo": "PROMO",

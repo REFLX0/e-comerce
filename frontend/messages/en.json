@@ -120,7 +120,9 @@
     "copied": "Copied!",
     "imageNotAvailable": "Image not available",
     "volume": "Volume",
-    "notFound": "Product not found"
+    "notFound": "Product not found",
+    "addedToCart": "Product added to cart",
+    "stockLimit": "Maximum available stock reached"
   },
   "ProductCard": {
     "promo": "PROMO",
