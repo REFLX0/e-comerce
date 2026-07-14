@@ -4,7 +4,8 @@ import { useSyncExternalStore } from 'react'
 import { useTranslations } from 'next-intl'
 import Image from 'next/image'
 import { Link } from '@/i18n/routing'
-import { ShoppingCart, Heart, Check, X } from 'lucide-react'
+import { Heart, Check, X } from 'lucide-react'
+import { motion } from 'framer-motion'
 import type { Product } from '@/lib/types'
 import { useCartStore } from '@/lib/store/cart.store'
 import { useVehicleStore } from '@/lib/store/vehicle.store'
@@ -28,29 +29,53 @@ export function ProductCard({ product }: Props) {
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault()
-    // By default, add the first variant
-    if (product.variants && product.variants.length > 0) {
-      addItem(product, product.variants[0]!, 1)
-      toast.success('Produit ajouté au panier')
+    const variant = product.variants?.[0]
+    if (!variant) return
+    const result = addItem(product, variant, 1)
+    if (!result.ok) {
+      toast.error(t('outOfStock'))
+      return
+    }
+    if (result.capped) {
+      toast.warning(t('stockLimit'))
+    } else {
+      toast.success(t('addedToCart'))
     }
   }
 
+  const handleAddToWishlist = (e: React.MouseEvent) => {
+    e.preventDefault()
+    toast.success(t('addedToWishlist'))
+  }
+
   const defaultVariant = product.variants?.[0]
-  const oldPrice = defaultVariant ? defaultVariant.priceHT * 1.2 : 0
+  // Only show a crossed-out price when there is a REAL promo — never fabricate one
+  const oldPrice =
+    product.isPromo &&
+    product.promoPercent &&
+    product.promoPercent > 0 &&
+    product.promoPercent < 100 &&
+    defaultVariant
+      ? defaultVariant.priceHT / (1 - product.promoPercent / 100)
+      : 0
 
   return (
-    <div className="group relative flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:border-brand-accent/30 hover:shadow-lg">
+    <motion.div
+      whileHover={{ y: -4 }}
+      transition={{ type: 'spring', stiffness: 300, damping: 22 }}
+      className="group relative flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition-shadow duration-300 hover:border-brand-accent/30 hover:shadow-lg"
+    >
       {/* Image with Badges */}
       <div className="relative aspect-square overflow-hidden bg-white p-2">
         {/* Badges */}
         <div className="absolute top-3 left-3 z-10 flex flex-col gap-2 items-start">
           {product.isPromo && (
-            <span className="rounded-md bg-red-500 px-2.5 py-1 text-[10px] font-bold tracking-normal text-white uppercase shadow-sm">
+            <span className="rounded-md bg-brand-accent px-2.5 py-1 text-[10px] font-bold tracking-normal text-white uppercase shadow-sm">
               {t('promo')} {product.promoPercent ? `-${product.promoPercent}%` : ''}
             </span>
           )}
           {product.isNew && (
-            <span className="rounded-md bg-brand-accent px-2.5 py-1 text-[10px] font-bold tracking-normal text-white uppercase shadow-sm">
+            <span className="rounded-md bg-sky-100 px-2.5 py-1 text-[10px] font-bold tracking-normal text-brand-primary uppercase shadow-sm">
               {t('new')}
             </span>
           )}
@@ -62,13 +87,14 @@ export function ProductCard({ product }: Props) {
         </div>
 
         {/* Wishlist Button */}
-        <button 
+        <motion.button
+          whileTap={{ scale: 0.9 }}
           className="absolute top-3 right-3 z-10 flex h-10 w-10 translate-y-0 items-center justify-center rounded-full border border-gray-200 bg-white/90 text-gray-400 opacity-100 shadow-sm backdrop-blur transition-all duration-200 hover:bg-white hover:text-brand-accent hover:border-brand-accent/20 sm:-translate-y-2 sm:opacity-0 sm:group-hover:translate-y-0 sm:group-hover:opacity-100"
-          onClick={(e) => { e.preventDefault(); toast.success('Ajouté à la liste de souhaits') }}
-           aria-label={t('addToWishlist')}
-         >
-           <Heart size={18} />
-         </button>
+          onClick={handleAddToWishlist}
+          aria-label={t('addToWishlist')}
+        >
+          <Heart size={18} />
+        </motion.button>
 
          <Link href={`/produit/${product.slug}`} className="absolute inset-0 z-0">
           {product.images?.[0] ? (
@@ -76,6 +102,7 @@ export function ProductCard({ product }: Props) {
               src={product.images[0]}
               alt={product.name}
               fill
+              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
               className="object-contain p-2 transition-transform duration-200 ease-out group-hover:scale-[1.03]"
             />
           ) : (
@@ -148,24 +175,26 @@ export function ProductCard({ product }: Props) {
 
         <div className="mt-auto pt-3 flex gap-2">
           {/* Add to Cart Button */}
-          <button
+          <motion.button
+            whileTap={{ scale: 0.97 }}
             onClick={handleAddToCart}
             disabled={defaultVariant?.status === 'out_of_stock'}
             className="flex min-h-11 flex-1 items-center justify-center gap-2 rounded bg-brand-primary py-2.5 text-xs font-bold uppercase tracking-wider text-white transition-all duration-200 hover:bg-brand-accent disabled:cursor-not-allowed disabled:opacity-50"
             aria-label={t('addToCart')}
           >
             {t('addToCart')}
-          </button>
+          </motion.button>
           
-          <button 
+          <motion.button
+            whileTap={{ scale: 0.9 }}
             className="flex h-11 w-11 items-center justify-center rounded border border-gray-200 bg-gray-50 text-gray-400 transition-all duration-200 hover:border-brand-accent hover:text-brand-accent focus:outline-none"
-            onClick={(e) => { e.preventDefault(); toast.success('Ajouté à la liste de souhaits') }}
+            onClick={handleAddToWishlist}
             aria-label={t('addToWishlist')}
           >
             <Heart size={18} />
-          </button>
+          </motion.button>
         </div>
       </div>
-    </div>
+    </motion.div>
   )
 }

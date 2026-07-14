@@ -6,6 +6,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/co
 import { ShoppingCart, Trash2, Plus, Minus } from 'lucide-react'
 import { Link } from '@/i18n/routing'
 import Image from 'next/image'
+import { motion } from 'framer-motion'
 import { useHasMounted } from '@/lib/hooks/useHasMounted'
 import { useTranslations } from 'next-intl'
 
@@ -27,12 +28,18 @@ export default function MiniCart() {
           />
         }
       >
-        <span className="hidden sm:inline">Panier / {formatPrice(visibleTotalTTC)}</span>
+        <span className="hidden sm:inline">{t('title')} / {formatPrice(visibleTotalTTC)}</span>
         <ShoppingCart size={18} />
         {visibleItemCount > 0 && (
-          <span className="absolute -top-1.5 -right-1.5 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-brand-accent px-1 text-xs font-bold text-white shadow-sm">
+          <motion.span
+            key={visibleItemCount}
+            initial={{ scale: 0.4 }}
+            animate={{ scale: 1 }}
+            transition={{ type: 'spring', stiffness: 500, damping: 18 }}
+            className="absolute -top-1.5 -right-1.5 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-brand-accent px-1 text-xs font-bold text-white shadow-sm"
+          >
             {visibleItemCount}
-          </span>
+          </motion.span>
         )}
       </SheetTrigger>
       <SheetContent className="flex h-full w-full flex-col bg-brand-card sm:max-w-md">
@@ -51,13 +58,20 @@ export default function MiniCart() {
           ) : (
             <div className="space-y-6">
               {visibleItems.map((item) => (
-                <div key={item.variantId} className="flex gap-4">
+                <motion.div
+                  key={item.variantId}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="flex gap-4"
+                >
                   <div className="bg-brand-surface relative h-20 w-20 shrink-0 overflow-hidden rounded-lg border border-brand-border">
                     {item.product.images?.[0] ? (
                       <Image
                         src={item.product.images[0]}
                         alt={item.product.name}
                         fill
+                        sizes="80px"
                         className="object-cover"
                       />
                     ) : (
@@ -109,7 +123,7 @@ export default function MiniCart() {
                       </div>
                     </div>
                   </div>
-                </div>
+                </motion.div>
               ))}
             </div>
           )}
