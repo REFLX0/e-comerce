@@ -5,7 +5,9 @@ import { useMutation, useQuery } from '@tanstack/react-query'
 import { adminApi } from '@/lib/api/admin'
 import { useRouter, usePathname } from 'next/navigation'
 import { toast } from 'sonner'
-import { Save, ArrowLeft } from 'lucide-react'
+import { Save, ArrowLeft, Upload, X, Plus, Trash2, Image as ImageIcon } from 'lucide-react'
+import Link from 'next/link'
+import Image from 'next/image'
 import Link from 'next/link'
 
 export default function NewProductPage() {
@@ -24,6 +26,12 @@ export default function NewProductPage() {
   const [stock, setStock] = useState('')
   const [isPublished, setIsPublished] = useState(true)
 
+  const [file, setFile] = useState<File | null>(null)
+  const [imagePreview, setImagePreview] = useState<string | null>(null)
+  const [isUploading, setIsUploading] = useState(false)
+  const [hasVariants, setHasVariants] = useState(false)
+  const [variants, setVariants] = useState<{ volume: string; price: string; stockQty: string }>([{ volume: '1L', price: '', stockQty: '' }])
+
   const { data: brandsData } = useQuery<any>({ queryKey: ['brands'], queryFn: () => fetch('/api/brands').then(r => r.json()) })
   const { data: categoriesData } = useQuery<any>({ queryKey: ['categories'], queryFn: () => fetch('/api/categories').then(r => r.json()) })
 
@@ -36,19 +44,70 @@ export default function NewProductPage() {
     onError: (err: any) => toast.error(err?.message || 'Erreur lors de la création'),
   })
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const selectedFile = e.target.files[0]
+      setFile(selectedFile)
+      setImagePreview(URL.createObjectURL(selectedFile))
+    }
+  }
+
+  const removeImage = () => {
+    setFile(null)
+    setImagePreview(null)
+  }
+
+  const addVariant = () => setVariants([...variants, { volume: '', price: '', stockQty: '' }])
+  const removeVariant = (index: number) => setVariants(variants.filter((_, i) => i !== index))
+  const updateVariant = (index: number, field: string, value: string) => {
+    const newVariants = [...variants]
+    newVariants[index] = { ...newVariants[index], [field]: value }
+    setVariants(newVariants)
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!nameFr || !slug || !sku || !brandId || !categoryId) {
       toast.error('Veuillez remplir tous les champs obligatoires')
       return
     }
-    createMutation.mutate({
-      nameFr, slug, sku, description,
-      brandId, categoryId,
-      price: price ? parseFloat(price) : undefined,
-      stock: stock ? parseInt(stock, 10) : undefined,
-      isPublished,
-    })
+
+    setIsUploading(true)
+    let imageUrl = null
+
+    try {
+      if (file) {
+        const res = await adminApi.uploadImage(file)
+        imageUrl = (res as any).url || (res as any).data?.url
+      }
+      
+      const payload: any = {
+        nameFr, slug, sku, description,
+        brandId, categoryId,
+        isPublished,
+      }
+
+      if (imageUrl) {
+        payload.images = [imageUrl]
+      }
+
+      if (hasVariants) {
+        payload.variants = variants.map(v => ({
+          volume: v.volume,
+          price: parseFloat(v.price) || 0,
+          stockQty: parseInt(v.stockQty, 10) || 0,
+        }))
+      } else {
+        payload.price = price ? parseFloat(price) : undefined
+        payload.stock = stock ? parseInt(stock, 10) : undefined
+      }
+
+      createMutation.mutate(payload)
+    } catch (err: any) {
+      toast.error("Erreur lors de l'upload de l'image")
+    } finally {
+      setIsUploading(false)
+    }
   }
 
   return (
@@ -103,15 +162,78 @@ export default function NewProductPage() {
               </select>
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-1.5">
-              <label className="text-sm font-semibold text-gray-700">Prix (TND)</label>
-              <input type="number" value={price} onChange={e => setPrice(e.target.value)} min={0} step={0.01} className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-brand-accent transition-all" placeholder="0.00" />
+          {/* Image Upload Section */}
+          <div className="space-y-1.5">
+            <label className="text-sm font-semibold text-gray-700">Photo du produit</label>
+            <div className="flex items-center gap-4">
+              {imagePreview ? (
+                <div className="relative h-32 w-32 shrink-0 overflow-hidden rounded-xl border border-gray-200 bg-gray-50">
+                  <Image src={imagePreview} alt="Preview" fill className="object-contain p-2" />
+                  <button type="button" onClick={removeImage} className="absolute top-1 right-1 rounded-full bg-white/90 p-1 text-red-500 shadow-sm hover:bg-white hover:text-red-600">
+                    <X size={14} />
+                  </button>
+                </div>
+              ) : (
+                <div className="flex h-32 w-32 shrink-0 items-center justify-center rounded-xl border-2 border-dashed border-gray-300 bg-gray-50 text-gray-400">
+                  <ImageIcon size={32} />
+                </div>
+              )}
+              <div className="flex-1">
+                <label className="flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 transition-colors w-max">
+                  <Upload size={16} /> Sélectionner une photo
+                  <input type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
+                </label>
+                <p className="mt-2 text-xs text-gray-500">Formats supportés : JPG, PNG, WEBP. Taille max : 5Mo.</p>
+              </div>
             </div>
-            <div className="space-y-1.5">
-              <label className="text-sm font-semibold text-gray-700">Stock initial</label>
-              <input type="number" value={stock} onChange={e => setStock(e.target.value)} min={0} className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-brand-accent transition-all" placeholder="0" />
+          </div>
+
+          <hr className="border-gray-100" />
+
+          {/* Variants / Pricing Section */}
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <label className="text-sm font-semibold text-gray-700">Prix et Stock</label>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" checked={hasVariants} onChange={e => setHasVariants(e.target.checked)} className="rounded border-gray-300 text-brand-accent focus:ring-brand-accent" />
+                <span className="text-sm font-medium text-gray-600">Produit avec plusieurs conditionnements (ex: 1L, 4L, 5L)</span>
+              </label>
             </div>
+
+            {hasVariants ? (
+              <div className="space-y-3 rounded-xl border border-gray-200 bg-gray-50 p-4">
+                <div className="grid grid-cols-[1fr_1fr_1fr_auto] gap-3 mb-2 px-1">
+                  <span className="text-xs font-semibold text-gray-500 uppercase">Conditionnement</span>
+                  <span className="text-xs font-semibold text-gray-500 uppercase">Prix (TND)</span>
+                  <span className="text-xs font-semibold text-gray-500 uppercase">Stock initial</span>
+                  <span className="w-8"></span>
+                </div>
+                {variants.map((v, idx) => (
+                  <div key={idx} className="grid grid-cols-[1fr_1fr_1fr_auto] gap-3 items-center">
+                    <input type="text" value={v.volume} onChange={e => updateVariant(idx, 'volume', e.target.value)} className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:border-brand-accent" placeholder="Ex: 5L" required />
+                    <input type="number" value={v.price} onChange={e => updateVariant(idx, 'price', e.target.value)} min={0} step={0.01} className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:border-brand-accent" placeholder="0.00" required />
+                    <input type="number" value={v.stockQty} onChange={e => updateVariant(idx, 'stockQty', e.target.value)} min={0} className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:border-brand-accent" placeholder="0" required />
+                    <button type="button" onClick={() => removeVariant(idx)} disabled={variants.length === 1} className="flex h-9 w-8 items-center justify-center rounded-lg text-gray-400 hover:bg-white hover:text-red-500 disabled:opacity-50">
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
+                ))}
+                <button type="button" onClick={addVariant} className="flex items-center gap-2 mt-2 text-sm font-medium text-brand-primary hover:text-brand-accent transition-colors">
+                  <Plus size={16} /> Ajouter un conditionnement
+                </button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1.5">
+                  <label className="text-sm font-semibold text-gray-700">Prix unitaire (TND)</label>
+                  <input type="number" value={price} onChange={e => setPrice(e.target.value)} min={0} step={0.01} className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-brand-accent transition-all" placeholder="0.00" />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-sm font-semibold text-gray-700">Stock initial</label>
+                  <input type="number" value={stock} onChange={e => setStock(e.target.value)} min={0} className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-brand-accent transition-all" placeholder="0" />
+                </div>
+              </div>
+            )}
           </div>
           <label className="flex items-center gap-3 cursor-pointer">
             <input type="checkbox" checked={isPublished} onChange={e => setIsPublished(e.target.checked)} className="rounded border-gray-300" />
@@ -123,8 +245,8 @@ export default function NewProductPage() {
           <Link href={localizedHref('/admin/catalog/products')} className="rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">
             Annuler
           </Link>
-          <button type="submit" disabled={createMutation.isPending} className="flex items-center gap-2 rounded-xl bg-brand-accent px-4 py-2.5 text-sm font-semibold text-black hover:bg-brand-accent-hover transition-colors disabled:opacity-50">
-            <Save size={16} /> {createMutation.isPending ? 'Création...' : 'Enregistrer'}
+          <button type="submit" disabled={createMutation.isPending || isUploading} className="flex items-center gap-2 rounded-xl bg-brand-accent px-4 py-2.5 text-sm font-semibold text-black hover:bg-brand-accent-hover transition-colors disabled:opacity-50">
+            <Save size={16} /> {isUploading ? 'Upload...' : createMutation.isPending ? 'Création...' : 'Enregistrer'}
           </button>
         </div>
       </form>

@@ -52,7 +52,7 @@ export class AdminService {
   }
 
   async createProduct(dto: CreateProductDto) {
-    const { price, brandId, categoryId, stock, ...rest } = dto
+    const { price, brandId, categoryId, stock, images, variants, ...rest } = dto
     const sku = dto.sku || `SKU-${dto.slug || dto.nameFr}-${Date.now()}`
     const data: Prisma.ProductCreateInput = {
       ...rest,
@@ -62,8 +62,24 @@ export class AdminService {
       isPublished: dto.isPublished ?? true,
       isFeatured: dto.isFeatured ?? false,
     }
-    // Create a default variant when price is provided
-    if (price !== undefined) {
+
+    if (images && images.length > 0) {
+      data.images = {
+        create: images.map((url, idx) => ({ url, isPrimary: idx === 0, sortOrder: idx }))
+      }
+    }
+
+    if (variants && variants.length > 0) {
+      data.variants = {
+        create: variants.map((v, idx) => ({
+          volume: v.volume,
+          price: v.price,
+          stockQty: v.stockQty,
+          skuVariant: `${sku}-${v.volume.replace(/\s+/g, '').toUpperCase()}`
+        }))
+      }
+    } else if (price !== undefined) {
+      // Create a default variant when price is provided but no explicit variants array
       data.variants = {
         create: {
           volume: 'default',
@@ -73,6 +89,7 @@ export class AdminService {
         },
       }
     }
+
     return this.prisma.product.create({ data, include: { brand: true, category: true, variants: true } })
   }
 

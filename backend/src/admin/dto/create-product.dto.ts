@@ -12,4 +12,6 @@ export class CreateProductDto {
   @ApiProperty({ required: false }) @IsOptional() @IsNumber() @Min(0) stock?: number
   @ApiProperty({ required: false }) @IsOptional() @IsBoolean() isPublished?: boolean
   @ApiProperty({ required: false }) @IsOptional() @IsBoolean() isFeatured?: boolean
+  @ApiProperty({ required: false, type: [String] }) @IsOptional() images?: string[]
+  @ApiProperty({ required: false }) @IsOptional() variants?: Array<{ volume: string; price: number; stockQty: number }>
 }

@@ -10,6 +10,14 @@ export const adminApi = {
   getProduct: (id: string) =>
     api.get(`/admin/products/${id}`),
 
+  uploadImage: (file: File) => {
+    const formData = new FormData()
+    formData.append('file', file)
+    return api.post<{ url: string }>('/uploads/image', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    })
+  },
+
   createProduct: (body: any) =>
     api.post('/admin/products', body),
 
