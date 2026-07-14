@@ -335,6 +335,8 @@
     }
   },
   "Faq": {
+    "metaTitle": "FAQ",
+    "metaDescription": "Find answers to frequently asked questions.",
     "helpCenter": "Help Center",
     "title": "Frequently Asked Questions",
     "subtitle": "Find answers to our customers' most common questions.",

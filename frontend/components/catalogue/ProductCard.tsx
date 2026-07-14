@@ -44,9 +44,14 @@ export function ProductCard({ product }: Props) {
     }
   }
 
-  const handleAddToWishlist = (e: React.MouseEvent) => {
+  const handleAddToWishlist = async (e: React.MouseEvent) => {
     e.preventDefault()
-    toast.success(t('addedToWishlist'))
+    try {
+      await wishlistApi.toggle(product.id)
+      toast.success(t('addedToWishlist'))
+    } catch {
+      toast.error(t('wishlistError'))
+    }
   }
 
   const defaultVariant = product.variants?.[0]
