@@ -1,9 +1,19 @@
 import { useTranslations } from 'next-intl'
+import { getTranslations } from 'next-intl/server'
 import { Breadcrumb } from '@/components/common/Breadcrumb'
+import type { Metadata } from 'next'
 
-export const metadata = {
-  title: 'Conditions Générales de Vente | KiosqueTN',
-  description: 'Consultez les conditions générales de vente de KiosqueTN.',
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}): Promise<Metadata> {
+  const { locale } = await params
+  const t = await getTranslations({ locale, namespace: 'Cgv' })
+  return {
+    title: t('metaTitle'),
+    description: t('metaDescription'),
+  }
 }
 
 export default function CgvPage() {

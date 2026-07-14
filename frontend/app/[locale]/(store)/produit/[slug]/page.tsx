@@ -10,19 +10,33 @@ import type { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
 
 interface Props {
-  params: Promise<{ slug: string }>
+  params: Promise<{ slug: string; locale: string }>
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug, locale } = await params
   try {
-    const { slug } = await params
     const product = await productsApi.getBySlug(slug)
+    const description = product.shortDescription || product.description?.substring(0, 160)
     return {
       title: `${product.name} | KiosqueTN`,
-      description: product.shortDescription || product.description?.substring(0, 160),
+      description,
+      alternates: {
+        canonical: `/${locale}/produit/${slug}`,
+        languages: {
+          fr: `/fr/produit/${slug}`,
+          en: `/en/produit/${slug}`,
+        },
+      },
+      openGraph: {
+        title: product.name,
+        description,
+        type: 'website',
+        ...(product.images?.[0] ? { images: [{ url: product.images[0] }] } : {}),
+      },
     }
   } catch (error) {
-    const t = await getTranslations('Product')
+    const t = await getTranslations({ locale, namespace: 'Product' })
     return {
       title: `${t('notFound')} | KiosqueTN`,
     }

@@ -1,11 +1,21 @@
 import { useTranslations } from 'next-intl'
+import { getTranslations } from 'next-intl/server'
 import { Breadcrumb } from '@/components/common/Breadcrumb'
 import { HelpCircle } from 'lucide-react'
 import FaqItem from '@/components/faq/FaqItem'
+import type { Metadata } from 'next'
 
-export const metadata = {
-  title: 'FAQ | KiosqueTN',
-  description: 'Retrouvez les réponses aux questions fréquentes.',
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}): Promise<Metadata> {
+  const { locale } = await params
+  const t = await getTranslations({ locale, namespace: 'Faq' })
+  return {
+    title: t('metaTitle'),
+    description: t('metaDescription'),
+  }
 }
 
 export default function FaqPage() {

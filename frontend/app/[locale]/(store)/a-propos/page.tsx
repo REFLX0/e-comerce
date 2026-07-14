@@ -1,12 +1,21 @@
 import type { ElementType } from 'react'
 import { useTranslations } from 'next-intl'
+import { getTranslations } from 'next-intl/server'
 import { Breadcrumb } from '@/components/common/Breadcrumb'
 import { Shield, Award, Truck, Users, MapPin, Clock } from 'lucide-react'
+import type { Metadata } from 'next'
 
-export const metadata = {
-  title: 'À propos | KiosqueTN',
-  description:
-    'Découvrez KiosqueTN, le spécialiste de la vente de lubrifiants et huiles moteur en Tunisie.',
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}): Promise<Metadata> {
+  const { locale } = await params
+  const t = await getTranslations({ locale, namespace: 'About' })
+  return {
+    title: t('metaTitle'),
+    description: t('metaDescription'),
+  }
 }
 
 export default function AProposPage() {
