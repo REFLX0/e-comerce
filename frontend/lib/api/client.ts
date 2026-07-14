@@ -17,10 +17,9 @@ import {
   backendApiBreaker,
 } from './circuit-breaker'
 
-const BASE_URL =
-  typeof window === 'undefined'
-    ? process.env.API_URL || process.env.NEXT_PUBLIC_API_URL || 'http://nginx:8082/api'
-    : process.env.NEXT_PUBLIC_API_URL || '/api'
+// Single source of truth for the backend base URL (see resolveBackendUrl):
+// server (inside Docker) → http://nginx:8082/api, browser → /api via nginx proxy
+const BASE_URL = resolveBackendUrl()
 const DEFAULT_TIMEOUT_MS = 8_000
 
 // ── Error types ────────────────────────────────────────────────────────────

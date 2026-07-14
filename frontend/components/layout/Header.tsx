@@ -38,7 +38,7 @@ export default function Header() {
         <div className="section-padding flex items-center justify-center gap-6 md:justify-between flex-wrap">
           <div className="flex items-center gap-2">
             <MapPin size={14} className="text-white/70" />
-            <span>Livraison gratuite à partir de 250dt (sauf batteries) sur toute la Tunisie</span>
+            <span>{tLayout('announcementShipping')}</span>
           </div>
           <div className="hidden md:flex items-center gap-6">
             <div className="flex items-center gap-2">
@@ -91,7 +91,7 @@ export default function Header() {
               aria-label={t('account')}
               title={user?.role?.toUpperCase() === 'ADMIN' ? 'Admin' : t('account')}
             >
-              Se connecter
+              {hasMounted && isAuthenticated ? t('account') : t('signIn')}
             </Link>
 
             <MiniCart />

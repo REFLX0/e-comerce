@@ -29,6 +29,8 @@ const nextConfig: NextConfig = {
       { protocol: 'https', hostname: 'upload.wikimedia.org' },
       // Manufacturer product image CDNs (Reliable ones)
       { protocol: 'https', hostname: 'cdn.autodoc.de' },
+      // Amazon product images
+      { protocol: 'https', hostname: 'm.media-amazon.com' },
       // Generic product stock photos
       { protocol: 'https', hostname: 'cdn.shopify.com' },
     ],
@@ -121,10 +123,11 @@ const nextConfig: NextConfig = {
         source: '/api/auth/:path*',
         destination: '/api/auth/:path*',
       },
-      // Everything else under /api/ proxies to the backend
+      // Everything else under /api/ proxies to the backend.
+      // Override with API_PROXY_ORIGIN (e.g. http://nginx:8082 inside Docker).
       {
         source: '/api/:path*',
-        destination: 'http://localhost:8082/api/:path*',
+        destination: `${process.env.API_PROXY_ORIGIN || 'http://localhost:8082'}/api/:path*`,
       },
     ]
   },
