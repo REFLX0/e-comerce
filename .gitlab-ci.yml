@@ -1,0 +1,27 @@
+# GitLab Security Scanning Configuration
+# Docs: https://docs.gitlab.com/ee/user/application_security/
+
+stages:
+  - test
+
+include:
+  # Static Application Security Testing (SAST)
+  # Covers: TypeScript/TSX/JavaScript (Semgrep), Python
+  - template: Jobs/SAST.gitlab-ci.yml
+
+  # Dependency Scanning
+  # Covers: frontend/package.json, backend/package.json (npm lockfiles)
+  - template: Jobs/Dependency-Scanning.gitlab-ci.yml
+
+  # Secret Detection
+  # Scans repository content for leaked credentials, API keys, tokens
+  - template: Jobs/Secret-Detection.gitlab-ci.yml
+
+  # Infrastructure-as-Code Scanning
+  # Covers: docker-compose.yml, Dockerfiles, nginx configs
+  - template: Jobs/SAST-IaC.gitlab-ci.yml
+
+variables:
+  # Scan the full history on the default branch's first run so pre-existing
+  # leaked secrets are detected, not just the latest commit.
+  SECRET_DETECTION_HISTORIC_SCAN: "true"
