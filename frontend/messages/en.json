@@ -203,7 +203,14 @@
     "delivery": "Delivery",
     "confirmOrder": "Confirm Order",
     "cgv": "Terms & Conditions",
-    "acceptCgv": "I accept the {cgv}"
+    "acceptCgv": "I accept the {cgv}",
+    "metaTitle": "Checkout",
+    "metaDescription": "Complete your order securely.",
+    "securePayment": "100% Secure Payment",
+    "freeDelivery": "Free 24H Delivery",
+    "authenticProducts": "Authentic Products",
+    "finalizeOrder": "Complete your order",
+    "breadcrumbCart": "Cart"
   },
   "Auth": {
     "welcomeBack": "Welcome back",

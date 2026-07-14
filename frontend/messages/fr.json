@@ -203,7 +203,14 @@
     "delivery": "Livraison",
     "confirmOrder": "Confirmer la commande",
     "cgv": "Conditions Générales de Vente",
-    "acceptCgv": "J'accepte les {cgv}"
+    "acceptCgv": "J'accepte les {cgv}",
+    "metaTitle": "Paiement",
+    "metaDescription": "Validez votre commande en toute sécurité.",
+    "securePayment": "Paiement 100% Sécurisé",
+    "freeDelivery": "Livraison Gratuite 24H",
+    "authenticProducts": "Produits Authentiques",
+    "finalizeOrder": "Finaliser votre commande",
+    "breadcrumbCart": "Panier"
   },
   "Auth": {
     "welcomeBack": "Bon retour",
