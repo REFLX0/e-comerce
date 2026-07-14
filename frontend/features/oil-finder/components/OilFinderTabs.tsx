@@ -17,10 +17,7 @@ export function OilFinderTabs() {
     <div id="oil-finder" className="mx-auto w-full max-w-5xl px-4">
       {/* Tabs */}
       <div className="mb-6 flex items-center justify-center">
-        <div
-          className="inline-flex rounded-lg bg-neutral-900 p-1"
-          style={{ border: '1px solid rgba(255,255,255,0.06)' }}
-        >
+        <div className="inline-flex rounded-lg bg-gray-100 p-1 border border-gray-200">
           {TABS.map(tab => {
             const Icon = tab.icon
             const isActive = activeTab === tab.id
@@ -31,8 +28,8 @@ export function OilFinderTabs() {
                 className={`
                   flex items-center gap-2 rounded-md px-5 py-2.5 text-sm font-medium transition-all duration-200
                   ${isActive
-                    ? 'bg-[#E10600] text-white shadow-sm'
-                    : 'text-neutral-500 hover:text-neutral-300'
+                    ? 'bg-brand-primary text-white shadow-sm'
+                    : 'text-gray-500 hover:text-brand-primary'
                   }
                 `}
               >

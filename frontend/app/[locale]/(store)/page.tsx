@@ -9,23 +9,16 @@ export default async function Home() {
   const t = await getTranslations('Home')
   return (
     <>
-      {/* 1. Hero — dark block */}
+      {/* 1. Hero */}
       <HeroBanner />
 
-      {/* 2. Oil finder — dark block */}
-      <section
-        className="relative overflow-hidden py-14 md:py-20"
-        style={{ background: '#080808' }}
-      >
-        {/* Subtle top accent line */}
-        <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-red-600/30 to-transparent" />
-
-        {/* Section heading */}
-        <div className="relative z-10 mb-10 text-center px-4">
-          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.25em] text-red-600/80">
+      {/* 2. Oil finder */}
+      <section className="py-14 md:py-20 bg-white">
+        <div className="mb-10 text-center px-4">
+          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.25em] text-red-600">
             {t('findYourOil')}
           </p>
-          <h2 className="text-3xl font-bold tracking-tight text-white md:text-4xl">
+          <h2 className="text-3xl font-bold tracking-tight text-neutral-900 md:text-4xl">
             {t('rightLubricant')}
           </h2>
           <p className="mt-3 text-sm text-neutral-500 max-w-md mx-auto">
@@ -33,17 +26,17 @@ export default async function Home() {
           </p>
         </div>
 
-        <div className="relative z-10">
+        <div>
           <OilFinderTabs />
         </div>
       </section>
 
-      {/* 3. Trust strip — white block */}
-      <section className="bg-white">
+      {/* 3. Trust strip */}
+      <section className="bg-neutral-50">
         <TrustBadges />
       </section>
 
-      {/* 4. Category tiles — white block */}
+      {/* 4. Category tiles */}
       <CategoryGrid />
 
       {/* 5. Best sellers — dark block */}

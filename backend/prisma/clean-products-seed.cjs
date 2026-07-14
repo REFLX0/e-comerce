@@ -17,48 +17,48 @@ const p = new PrismaClient()
 // ──────────────────────────────────────────────────────────────
 const IMAGES = {
   // CASTROL
-  castrol_edge_5w30:    'https://cdn.autodoc.de/thumb?id=7279313&m=0&n=0&lng=fr&rev=94077',
-  castrol_edge_5w40:    'https://cdn.autodoc.de/thumb?id=7279315&m=0&n=0&lng=fr&rev=94077',
-  castrol_magnatec_5w30:'https://cdn.autodoc.de/thumb?id=8216315&m=0&n=0&lng=fr&rev=94077',
-  castrol_edge_0w20:    'https://cdn.autodoc.de/thumb?id=13636544&m=0&n=0&lng=fr&rev=94077',
+  castrol_edge_5w30:    'https://m.media-amazon.com/images/I/71rO2aXmZ4L._AC_SL1500_.jpg',
+  castrol_edge_5w40:    'https://m.media-amazon.com/images/I/71rO2aXmZ4L._AC_SL1500_.jpg',
+  castrol_magnatec_5w30:'https://m.media-amazon.com/images/I/71rO2aXmZ4L._AC_SL1500_.jpg',
+  castrol_edge_0w20:    'https://m.media-amazon.com/images/I/71rO2aXmZ4L._AC_SL1500_.jpg',
 
   // SHELL
-  shell_ultra_5w40:     'https://cdn.autodoc.de/thumb?id=12859250&m=0&n=0&lng=fr&rev=94077',
-  shell_ultra_5w30:     'https://cdn.autodoc.de/thumb?id=12859251&m=0&n=0&lng=fr&rev=94077',
-  shell_hx7_10w40:      'https://cdn.autodoc.de/thumb?id=12859220&m=0&n=0&lng=fr&rev=94077',
-  shell_hx5_15w40:      'https://cdn.autodoc.de/thumb?id=12859207&m=0&n=0&lng=fr&rev=94077',
-  shell_rimula_r4:      'https://cdn.autodoc.de/thumb?id=12859218&m=0&n=0&lng=fr&rev=94077',
+  shell_ultra_5w40:     'https://m.media-amazon.com/images/I/61U0jF+0aIL._AC_SL1500_.jpg',
+  shell_ultra_5w30:     'https://m.media-amazon.com/images/I/61U0jF+0aIL._AC_SL1500_.jpg',
+  shell_hx7_10w40:      'https://m.media-amazon.com/images/I/61U0jF+0aIL._AC_SL1500_.jpg',
+  shell_hx5_15w40:      'https://m.media-amazon.com/images/I/61U0jF+0aIL._AC_SL1500_.jpg',
+  shell_rimula_r4:      'https://m.media-amazon.com/images/I/61U0jF+0aIL._AC_SL1500_.jpg',
 
   // TOTAL / TOTALENERGIES
-  total_quartz_9000:    'https://cdn.autodoc.de/thumb?id=14187019&m=0&n=0&lng=fr&rev=94077',
-  total_quartz_7000:    'https://cdn.autodoc.de/thumb?id=14187012&m=0&n=0&lng=fr&rev=94077',
-  total_quartz_5000:    'https://cdn.autodoc.de/thumb?id=14187011&m=0&n=0&lng=fr&rev=94077',
-  total_hi_perf:        'https://cdn.autodoc.de/thumb?id=14187018&m=0&n=0&lng=fr&rev=94077',
-  total_rubia:          'https://cdn.autodoc.de/thumb?id=14187023&m=0&n=0&lng=fr&rev=94077',
+  total_quartz_9000:    'https://m.media-amazon.com/images/I/71tK6Eozl-L._AC_SL1500_.jpg',
+  total_quartz_7000:    'https://m.media-amazon.com/images/I/71tK6Eozl-L._AC_SL1500_.jpg',
+  total_quartz_5000:    'https://m.media-amazon.com/images/I/71tK6Eozl-L._AC_SL1500_.jpg',
+  total_hi_perf:        'https://m.media-amazon.com/images/I/71tK6Eozl-L._AC_SL1500_.jpg',
+  total_rubia:          'https://m.media-amazon.com/images/I/71tK6Eozl-L._AC_SL1500_.jpg',
 
   // MOTUL
-  motul_300v_10w40:     'https://cdn.autodoc.de/thumb?id=8216315&m=0&n=0&lng=fr&rev=94077',
-  motul_8100_5w30:      'https://cdn.autodoc.de/thumb?id=8216315&m=0&n=0&lng=fr&rev=94077',
-  motul_8100_5w40:      'https://cdn.autodoc.de/thumb?id=8216315&m=0&n=0&lng=fr&rev=94077',
-  motul_moto_4t:        'https://cdn.autodoc.de/thumb?id=8216315&m=0&n=0&lng=fr&rev=94077',
-  motul_gear_75w80:     'https://cdn.autodoc.de/thumb?id=8216315&m=0&n=0&lng=fr&rev=94077',
+  motul_300v_10w40:     'https://m.media-amazon.com/images/I/71r3ZJ6k-1L._AC_SL1500_.jpg',
+  motul_8100_5w30:      'https://m.media-amazon.com/images/I/71r3ZJ6k-1L._AC_SL1500_.jpg',
+  motul_8100_5w40:      'https://m.media-amazon.com/images/I/71r3ZJ6k-1L._AC_SL1500_.jpg',
+  motul_moto_4t:        'https://m.media-amazon.com/images/I/71r3ZJ6k-1L._AC_SL1500_.jpg',
+  motul_gear_75w80:     'https://m.media-amazon.com/images/I/71r3ZJ6k-1L._AC_SL1500_.jpg',
 
   // LIQUI MOLY
-  liqui_leichtlauf_5w40:'https://cdn.autodoc.de/thumb?id=9713601&m=0&n=0&lng=fr&rev=94077',
-  liqui_molygen_0w30:   'https://cdn.autodoc.de/thumb?id=13636544&m=0&n=0&lng=fr&rev=94077',
-  liqui_special_tec_5w30:'https://cdn.autodoc.de/thumb?id=9713601&m=0&n=0&lng=fr&rev=94077',
-  liqui_ceratec:        'https://cdn.autodoc.de/thumb?id=9713601&m=0&n=0&lng=fr&rev=94077',
-  liqui_oil_sludge:     'https://cdn.autodoc.de/thumb?id=9713601&m=0&n=0&lng=fr&rev=94077',
+  liqui_leichtlauf_5w40:'https://m.media-amazon.com/images/I/61dC2R+dIHL._AC_SL1500_.jpg',
+  liqui_molygen_0w30:   'https://m.media-amazon.com/images/I/61dC2R+dIHL._AC_SL1500_.jpg',
+  liqui_special_tec_5w30:'https://m.media-amazon.com/images/I/61dC2R+dIHL._AC_SL1500_.jpg',
+  liqui_ceratec:        'https://m.media-amazon.com/images/I/61dC2R+dIHL._AC_SL1500_.jpg',
+  liqui_oil_sludge:     'https://m.media-amazon.com/images/I/61dC2R+dIHL._AC_SL1500_.jpg',
 
   // YACCO
-  yacco_lube_di_0w20:   'https://cdn.autodoc.de/thumb?id=12859250&m=0&n=0&lng=fr&rev=94077',
-  yacco_vx1000_5w40:    'https://cdn.autodoc.de/thumb?id=12859250&m=0&n=0&lng=fr&rev=94077',
-  yacco_transpro:       'https://cdn.autodoc.de/thumb?id=12859250&m=0&n=0&lng=fr&rev=94077',
+  yacco_lube_di_0w20:   'https://m.media-amazon.com/images/I/61U0jF+0aIL._AC_SL1500_.jpg',
+  yacco_vx1000_5w40:    'https://m.media-amazon.com/images/I/61U0jF+0aIL._AC_SL1500_.jpg',
+  yacco_transpro:       'https://m.media-amazon.com/images/I/61U0jF+0aIL._AC_SL1500_.jpg',
 
   // BOSCH / PURFLUX (filters)
-  bosch_filter:         'https://cdn.autodoc.de/thumb?id=1184345&m=0&n=0&lng=fr&rev=94077',
-  purflux_filter:       'https://cdn.autodoc.de/thumb?id=1184345&m=0&n=0&lng=fr&rev=94077',
-  mann_filter:          'https://cdn.autodoc.de/thumb?id=1184345&m=0&n=0&lng=fr&rev=94077',
+  bosch_filter:         'https://m.media-amazon.com/images/I/71m6n2+oT-L._AC_SL1500_.jpg',
+  purflux_filter:       'https://m.media-amazon.com/images/I/71m6n2+oT-L._AC_SL1500_.jpg',
+  mann_filter:          'https://m.media-amazon.com/images/I/71m6n2+oT-L._AC_SL1500_.jpg',
 
   // Fallback professional oil bottle image (high quality generic)
   generic_oil_1l:       'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80',

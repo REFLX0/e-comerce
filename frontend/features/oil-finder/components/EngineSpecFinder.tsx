@@ -114,17 +114,17 @@ export function EngineSpecFinder({ onClose }: EngineSpecFinderProps) {
 
   return (
     <div
-      className="relative mx-auto w-full max-w-4xl overflow-hidden rounded-2xl bg-neutral-950"
-      style={{ border: '1px solid rgba(255,255,255,0.08)' }}
+      className="relative mx-auto w-full max-w-4xl overflow-hidden rounded-2xl bg-white"
+      style={{ border: '1px solid rgba(0,0,0,0.1)' }}
     >
       {/* Header */}
-      <div className="border-b border-white/[0.06] px-6 py-5 md:px-8">
+      <div className="border-b border-gray-200 px-6 py-5 md:px-8">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-lg font-semibold text-white">
+            <h2 className="text-lg font-semibold text-gray-900">
               Trouver mon huile
             </h2>
-            <p className="mt-0.5 text-sm text-neutral-500">
+            <p className="mt-0.5 text-sm text-gray-500">
               Renseignez les caractéristiques de votre moteur
             </p>
           </div>
@@ -141,16 +141,16 @@ export function EngineSpecFinder({ onClose }: EngineSpecFinderProps) {
                     onClick={() => s < step && resetTo(s)}
                     className={`
                       flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium transition-colors
-                      ${isCompleted ? 'bg-red-600/10 text-red-500 cursor-pointer hover:bg-red-600/20' : ''}
-                      ${isActive ? 'bg-white/[0.06] text-white' : ''}
-                      ${!isCompleted && !isActive ? 'text-neutral-600' : ''}
+                      ${isCompleted ? 'bg-brand-primary/10 text-brand-primary cursor-pointer hover:bg-brand-primary/20' : ''}
+                      ${isActive ? 'bg-gray-100 text-gray-900' : ''}
+                      ${!isCompleted && !isActive ? 'text-gray-400' : ''}
                     `}
                     disabled={!isCompleted}
                   >
                     {isCompleted ? <Check size={11} strokeWidth={3} /> : null}
                     {label}
                   </button>
-                  {i < 2 && <ChevronRight size={12} className="text-neutral-700" />}
+                  {i < 2 && <ChevronRight size={12} className="text-gray-300" />}
                 </div>
               )
             })}
@@ -171,7 +171,7 @@ export function EngineSpecFinder({ onClose }: EngineSpecFinderProps) {
               animate="animate"
               exit="exit"
             >
-              <p className="mb-5 text-sm font-medium text-neutral-400">
+              <p className="mb-5 text-sm font-medium text-gray-600">
                 Quel type de véhicule ?
               </p>
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
@@ -185,24 +185,24 @@ export function EngineSpecFinder({ onClose }: EngineSpecFinderProps) {
                       className={`
                         group relative flex flex-col items-center gap-3 rounded-xl p-5 transition-all duration-200
                         ${isSelected
-                          ? 'bg-white/[0.08] ring-1 ring-white/20'
-                          : 'bg-white/[0.03] ring-1 ring-white/[0.06] hover:bg-white/[0.06] hover:ring-white/10'
+                          ? 'bg-brand-primary/5 ring-1 ring-brand-primary/20'
+                          : 'bg-white ring-1 ring-gray-200 hover:bg-gray-100 hover:ring-gray-300'
                         }
                       `}
                     >
                       <div
                         className={`
                           flex h-12 w-12 items-center justify-center rounded-lg transition-colors
-                          ${isSelected ? 'bg-red-600/15 text-red-500' : 'bg-white/[0.04] text-neutral-500 group-hover:text-neutral-300'}
+                          ${isSelected ? 'bg-brand-primary/10 text-brand-primary' : 'bg-gray-50 text-gray-500 group-hover:text-gray-800'}
                         `}
                       >
                         <Icon size={24} />
                       </div>
                       <div className="text-center">
-                        <span className={`block text-sm font-semibold ${isSelected ? 'text-white' : 'text-neutral-400'}`}>
+                        <span className={`block text-sm font-semibold ${isSelected ? 'text-gray-900' : 'text-gray-600'}`}>
                           {type.label}
                         </span>
-                        <span className="mt-0.5 block text-[10px] text-neutral-600">
+                        <span className="mt-0.5 block text-[10px] text-gray-400">
                           {type.sub}
                         </span>
                       </div>
@@ -226,16 +226,16 @@ export function EngineSpecFinder({ onClose }: EngineSpecFinderProps) {
               <div className="mb-5 flex items-center gap-3">
                 <button
                   onClick={() => resetTo(1)}
-                  className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/[0.04] text-neutral-500 ring-1 ring-white/[0.06] transition-colors hover:bg-white/[0.08] hover:text-white"
+                  className="flex h-8 w-8 items-center justify-center rounded-lg bg-gray-50 text-gray-500 ring-1 ring-gray-200 transition-colors hover:bg-brand-primary/5 hover:text-gray-900"
                 >
                   <ArrowLeft size={16} />
                 </button>
                 <div>
-                  <p className="text-sm font-medium text-neutral-400">
+                  <p className="text-sm font-medium text-gray-600">
                     Combien de cylindres ?
                   </p>
                   {selectedVehicleConfig && (
-                    <p className="text-xs text-neutral-600">{selectedVehicleConfig.label}</p>
+                    <p className="text-xs text-gray-400">{selectedVehicleConfig.label}</p>
                   )}
                 </div>
               </div>
@@ -250,15 +250,15 @@ export function EngineSpecFinder({ onClose }: EngineSpecFinderProps) {
                       className={`
                         relative flex min-h-[90px] flex-col items-center justify-center gap-1 rounded-xl transition-all duration-200
                         ${isSelected
-                          ? 'bg-white/[0.08] ring-1 ring-red-500/40'
-                          : 'bg-white/[0.03] ring-1 ring-white/[0.06] hover:bg-white/[0.06]'
+                          ? 'bg-brand-primary/5 ring-1 ring-red-500/40'
+                          : 'bg-white ring-1 ring-gray-200 hover:bg-gray-100'
                         }
                       `}
                     >
-                      <span className={`text-2xl font-bold tabular-nums ${isSelected ? 'text-white' : 'text-neutral-500'}`}>
+                      <span className={`text-2xl font-bold tabular-nums ${isSelected ? 'text-gray-900' : 'text-gray-500'}`}>
                         {cyl}
                       </span>
-                      <span className={`text-[10px] font-semibold uppercase tracking-wider ${isSelected ? 'text-red-500' : 'text-neutral-700'}`}>
+                      <span className={`text-[10px] font-semibold uppercase tracking-wider ${isSelected ? 'text-brand-primary' : 'text-gray-300'}`}>
                         cylindres
                       </span>
                     </button>
@@ -281,16 +281,16 @@ export function EngineSpecFinder({ onClose }: EngineSpecFinderProps) {
               <div className="mb-5 flex items-center gap-3">
                 <button
                   onClick={() => resetTo(2)}
-                  className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/[0.04] text-neutral-500 ring-1 ring-white/[0.06] transition-colors hover:bg-white/[0.08] hover:text-white"
+                  className="flex h-8 w-8 items-center justify-center rounded-lg bg-gray-50 text-gray-500 ring-1 ring-gray-200 transition-colors hover:bg-brand-primary/5 hover:text-gray-900"
                 >
                   <ArrowLeft size={16} />
                 </button>
                 <div>
-                  <p className="text-sm font-medium text-neutral-400">
+                  <p className="text-sm font-medium text-gray-600">
                     Dernières précisions
                   </p>
                   {selectedVehicleConfig && (
-                    <p className="text-xs text-neutral-600">
+                    <p className="text-xs text-gray-400">
                       {selectedVehicleConfig.label} — {cylinders} cyl.
                     </p>
                   )}
@@ -300,7 +300,7 @@ export function EngineSpecFinder({ onClose }: EngineSpecFinderProps) {
               <div className="grid gap-5 sm:grid-cols-2">
                 {/* Power input */}
                 <div>
-                  <label className="mb-2 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-neutral-500">
+                  <label className="mb-2 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-gray-500">
                     <Gauge size={13} />
                     Puissance (CV)
                   </label>
@@ -312,9 +312,9 @@ export function EngineSpecFinder({ onClose }: EngineSpecFinderProps) {
                       value={power}
                       onChange={e => setPower(e.target.value ? Number(e.target.value) : '')}
                       placeholder="Ex: 110"
-                      className="w-full rounded-xl bg-white/[0.04] px-4 py-3.5 text-lg font-semibold text-white placeholder-neutral-700 outline-none ring-1 ring-white/[0.06] transition-all focus:ring-red-500/40"
+                      className="w-full rounded-xl bg-gray-50 px-4 py-3.5 text-lg font-semibold text-gray-900 placeholder-neutral-700 outline-none ring-1 ring-gray-200 transition-all focus:ring-red-500/40"
                     />
-                    <div className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-bold text-neutral-600">
+                    <div className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-bold text-gray-400">
                       CV
                     </div>
                   </div>
@@ -322,7 +322,7 @@ export function EngineSpecFinder({ onClose }: EngineSpecFinderProps) {
 
                 {/* Fuel type */}
                 <div>
-                  <label className="mb-2 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-neutral-500">
+                  <label className="mb-2 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-gray-500">
                     <Fuel size={13} />
                     Carburant
                   </label>
@@ -336,12 +336,12 @@ export function EngineSpecFinder({ onClose }: EngineSpecFinderProps) {
                           className={`
                             flex flex-col items-center justify-center gap-1 rounded-xl py-4 transition-all duration-200
                             ${isSelected
-                              ? 'bg-white/[0.08] ring-1 ring-red-500/40'
-                              : 'bg-white/[0.03] ring-1 ring-white/[0.06] hover:bg-white/[0.06]'
+                              ? 'bg-brand-primary/5 ring-1 ring-red-500/40'
+                              : 'bg-white ring-1 ring-gray-200 hover:bg-gray-100'
                             }
                           `}
                         >
-                          <span className={`text-sm font-semibold ${isSelected ? 'text-white' : 'text-neutral-500'}`}>
+                          <span className={`text-sm font-semibold ${isSelected ? 'text-gray-900' : 'text-gray-500'}`}>
                             {fuel.label}
                           </span>
                         </button>
@@ -355,7 +355,7 @@ export function EngineSpecFinder({ onClose }: EngineSpecFinderProps) {
                 <button
                   onClick={handleSearch}
                   disabled={!canSubmit}
-                  className="flex items-center gap-2.5 rounded-xl bg-[#E10600] px-6 py-3 text-sm font-semibold text-white transition-all duration-200 hover:bg-[#c80500] disabled:opacity-30 disabled:cursor-not-allowed"
+                  className="flex items-center gap-2.5 rounded-xl bg-[#E10600] px-6 py-3 text-sm font-semibold text-gray-900 transition-all duration-200 hover:bg-[#c80500] disabled:opacity-30 disabled:cursor-not-allowed"
                 >
                   <Search size={16} />
                   Voir les huiles recommandées

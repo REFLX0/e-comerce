@@ -64,7 +64,7 @@ function BrandLogo({ make: { slug, name } }: { make: { slug: string; name: strin
   const localPath = LOGO_PATHS[slug]
 
   if (!localPath) {
-    return <span className="text-xl font-bold text-neutral-400">{name.charAt(0).toUpperCase()}</span>
+    return <span className="text-xl font-bold text-gray-600">{name.charAt(0).toUpperCase()}</span>
   }
 
   const [loaded, setLoaded] = useState(false)
@@ -72,7 +72,7 @@ function BrandLogo({ make: { slug, name } }: { make: { slug: string; name: strin
   return (
     <>
       {!loaded && (
-        <span className="text-xl font-bold text-neutral-400">
+        <span className="text-xl font-bold text-gray-600">
           {name.charAt(0).toUpperCase()}
         </span>
       )}
@@ -198,7 +198,7 @@ export function VehicleFinder({ onClose }: VehicleFinderProps) {
       disabled={disabled}
       className={`
         flex items-center gap-2.5 rounded-xl px-6 py-3 text-sm font-semibold transition-all duration-200
-        ${!disabled ? 'bg-[#E10600] text-white hover:bg-[#c80500]' : 'bg-white/[0.06] text-neutral-500 cursor-not-allowed'}
+        ${!disabled ? 'bg-[#E10600] text-gray-900 hover:bg-[#c80500]' : 'bg-gray-100 text-gray-500 cursor-not-allowed'}
       `}
     >
       <Search size={16} />
@@ -208,17 +208,17 @@ export function VehicleFinder({ onClose }: VehicleFinderProps) {
 
   return (
     <div
-      className="relative mx-auto w-full max-w-4xl overflow-hidden rounded-2xl bg-neutral-950"
-      style={{ border: '1px solid rgba(255,255,255,0.08)' }}
+      className="relative mx-auto w-full max-w-4xl overflow-hidden rounded-2xl bg-white"
+      style={{ border: '1px solid rgba(0,0,0,0.1)' }}
     >
       {/* Header */}
-      <div className="border-b border-white/[0.06] px-6 py-5 md:px-8">
+      <div className="border-b border-gray-200 px-6 py-5 md:px-8">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-lg font-semibold text-white">
+            <h2 className="text-lg font-semibold text-gray-900">
               Recherche par véhicule
             </h2>
-            <p className="mt-0.5 text-sm text-neutral-500">
+            <p className="mt-0.5 text-sm text-gray-500">
               Marque → Modèle → Motorisation
             </p>
           </div>
@@ -235,16 +235,16 @@ export function VehicleFinder({ onClose }: VehicleFinderProps) {
                     onClick={() => s < step && resetTo(s)}
                     className={`
                       flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium transition-colors
-                      ${isCompleted ? 'bg-red-600/10 text-red-500 cursor-pointer hover:bg-red-600/20' : ''}
-                      ${isActive ? 'bg-white/[0.06] text-white' : ''}
-                      ${!isCompleted && !isActive ? 'text-neutral-600' : ''}
+                      ${isCompleted ? 'bg-brand-primary/10 text-brand-primary cursor-pointer hover:bg-brand-primary/20' : ''}
+                      ${isActive ? 'bg-gray-100 text-gray-900' : ''}
+                      ${!isCompleted && !isActive ? 'text-gray-400' : ''}
                     `}
                     disabled={!isCompleted}
                   >
                     {isCompleted ? <Check size={11} strokeWidth={3} /> : null}
                     {label}
                   </button>
-                  {i < STEP_LABELS.length - 1 && <ChevronRight size={12} className="text-neutral-700" />}
+                  {i < STEP_LABELS.length - 1 && <ChevronRight size={12} className="text-gray-300" />}
                 </div>
               )
             })}
@@ -274,25 +274,25 @@ export function VehicleFinder({ onClose }: VehicleFinderProps) {
                 exit="exit"
               >
                 <div className="mb-5">
-                  <p className="text-sm font-medium text-neutral-400">
+                  <p className="text-sm font-medium text-gray-600">
                     Quelle est la marque de votre véhicule ?
                   </p>
                 </div>
 
                 {/* Search input */}
                 <div className="relative mb-5">
-                  <Search size={15} className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-500" />
+                  <Search size={15} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" />
                   <input
                     type="text"
                     value={makeSearch}
                     onChange={e => setMakeSearch(e.target.value)}
                     placeholder="Rechercher une marque..."
-                    className="w-full rounded-xl bg-white/[0.04] py-3.5 pl-11 pr-10 text-sm text-white placeholder-neutral-600 outline-none ring-1 ring-white/[0.06] transition-all focus:ring-red-500/40"
+                    className="w-full rounded-xl bg-gray-50 py-3.5 pl-11 pr-10 text-sm text-gray-900 placeholder-neutral-600 outline-none ring-1 ring-gray-200 transition-all focus:ring-red-500/40"
                   />
                   {makeSearch && (
                     <button
                       onClick={() => setMakeSearch('')}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 text-neutral-500 hover:text-white"
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-900"
                     >
                       <X size={15} />
                     </button>
@@ -301,10 +301,10 @@ export function VehicleFinder({ onClose }: VehicleFinderProps) {
 
                 {loading && makes.length === 0 ? (
                   <div className="flex items-center justify-center py-20">
-                    <Loader2 size={24} className="animate-spin text-red-500" />
+                    <Loader2 size={24} className="animate-spin text-brand-primary" />
                   </div>
                 ) : filteredMakes.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center py-16 text-center text-neutral-500">
+                  <div className="flex flex-col items-center justify-center py-16 text-center text-gray-500">
                     <Search size={32} className="mb-3 opacity-50" />
                     <p className="text-sm">Aucune marque trouvée pour &ldquo;{makeSearch}&rdquo;</p>
                   </div>
@@ -320,18 +320,18 @@ export function VehicleFinder({ onClose }: VehicleFinderProps) {
                           className={`
                             relative flex flex-col items-center gap-3 rounded-xl p-4 transition-all duration-200
                             ${isSelected
-                              ? 'bg-white/[0.08] ring-1 ring-white/20'
-                              : 'bg-white/[0.03] ring-1 ring-white/[0.06] hover:bg-white/[0.06] hover:ring-white/10'
+                              ? 'bg-brand-primary/5 ring-1 ring-brand-primary/20'
+                              : 'bg-white ring-1 ring-gray-200 hover:bg-gray-100 hover:ring-gray-300'
                             }
                           `}
                         >
                           <div className={`
                             flex h-12 w-12 items-center justify-center rounded-lg transition-colors
-                            ${isSelected ? 'bg-white/[0.04]' : 'bg-transparent'}
+                            ${isSelected ? 'bg-gray-50' : 'bg-transparent'}
                           `}>
                             <BrandLogo make={make} />
                           </div>
-                          <span className={`text-sm font-medium ${isSelected ? 'text-white' : 'text-neutral-400'}`}>
+                          <span className={`text-sm font-medium ${isSelected ? 'text-gray-900' : 'text-gray-600'}`}>
                             {make.name}
                           </span>
                         </button>
@@ -355,24 +355,24 @@ export function VehicleFinder({ onClose }: VehicleFinderProps) {
                 <div className="mb-5 flex items-center gap-3">
                   <button
                     onClick={() => resetTo(1)}
-                    className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/[0.04] text-neutral-500 ring-1 ring-white/[0.06] transition-colors hover:bg-white/[0.08] hover:text-white"
+                    className="flex h-8 w-8 items-center justify-center rounded-lg bg-gray-50 text-gray-500 ring-1 ring-gray-200 transition-colors hover:bg-brand-primary/5 hover:text-gray-900"
                   >
                     <ArrowLeft size={16} />
                   </button>
                   <div>
-                    <p className="text-sm font-medium text-neutral-400">
+                    <p className="text-sm font-medium text-gray-600">
                       Sélectionnez le modèle
                     </p>
-                    <p className="text-xs text-neutral-600">{selectedMake?.name}</p>
+                    <p className="text-xs text-gray-400">{selectedMake?.name}</p>
                   </div>
                 </div>
 
                 {loading ? (
                   <div className="flex items-center justify-center py-20">
-                    <Loader2 size={24} className="animate-spin text-red-500" />
+                    <Loader2 size={24} className="animate-spin text-brand-primary" />
                   </div>
                 ) : models.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center py-16 text-center text-neutral-500">
+                  <div className="flex flex-col items-center justify-center py-16 text-center text-gray-500">
                     <Car size={32} className="mb-3 opacity-50" />
                     <p className="text-sm">Aucun modèle trouvé pour {selectedMake?.name}</p>
                   </div>
@@ -392,28 +392,28 @@ export function VehicleFinder({ onClose }: VehicleFinderProps) {
                           className={`
                             relative flex items-center gap-3 rounded-xl p-3 text-left transition-all duration-200
                             ${isSelected
-                              ? 'bg-white/[0.08] ring-1 ring-white/20'
-                              : 'bg-white/[0.03] ring-1 ring-white/[0.06] hover:bg-white/[0.06] hover:ring-white/10'
+                              ? 'bg-brand-primary/5 ring-1 ring-brand-primary/20'
+                              : 'bg-white ring-1 ring-gray-200 hover:bg-gray-100 hover:ring-gray-300'
                             }
                           `}
                         >
                           <div className={`
                             flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-sm font-bold transition-colors
-                            ${isSelected ? 'bg-red-600/15 text-red-500' : 'bg-white/[0.04] text-neutral-500'}
+                            ${isSelected ? 'bg-brand-primary/10 text-brand-primary' : 'bg-gray-50 text-gray-500'}
                           `}>
                             {model.name.replace(/\(.*\)/, '').trim().charAt(0).toUpperCase()}
                           </div>
                           <div className="min-w-0 flex-1">
-                            <div className={`text-sm font-medium truncate ${isSelected ? 'text-white' : 'text-neutral-300'}`}>
+                            <div className={`text-sm font-medium truncate ${isSelected ? 'text-gray-900' : 'text-gray-800'}`}>
                               {model.name}
                             </div>
                             <div className="mt-1">
-                              <span className="inline-flex items-center rounded bg-white/[0.05] px-1.5 py-0.5 text-[10px] font-semibold text-neutral-400">
+                              <span className="inline-flex items-center rounded bg-white/[0.05] px-1.5 py-0.5 text-[10px] font-semibold text-gray-600">
                                 {vehicleTypeLabel}
                               </span>
                             </div>
                           </div>
-                          <ChevronRight size={16} className={isSelected ? 'text-white' : 'text-neutral-600'} />
+                          <ChevronRight size={16} className={isSelected ? 'text-gray-900' : 'text-gray-400'} />
                         </button>
                       )
                     })}
@@ -435,15 +435,15 @@ export function VehicleFinder({ onClose }: VehicleFinderProps) {
                 <div className="mb-5 flex items-center gap-3">
                   <button
                     onClick={() => resetTo(2)}
-                    className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/[0.04] text-neutral-500 ring-1 ring-white/[0.06] transition-colors hover:bg-white/[0.08] hover:text-white"
+                    className="flex h-8 w-8 items-center justify-center rounded-lg bg-gray-50 text-gray-500 ring-1 ring-gray-200 transition-colors hover:bg-brand-primary/5 hover:text-gray-900"
                   >
                     <ArrowLeft size={16} />
                   </button>
                   <div>
-                    <p className="text-sm font-medium text-neutral-400">
+                    <p className="text-sm font-medium text-gray-600">
                       Motorisation
                     </p>
-                    <p className="text-xs text-neutral-600">
+                    <p className="text-xs text-gray-400">
                       {selectedMake?.name} — {selectedModel?.name}
                     </p>
                   </div>
@@ -451,14 +451,14 @@ export function VehicleFinder({ onClose }: VehicleFinderProps) {
 
                 {loading ? (
                   <div className="flex items-center justify-center py-20">
-                    <Loader2 size={24} className="animate-spin text-red-500" />
+                    <Loader2 size={24} className="animate-spin text-brand-primary" />
                   </div>
                 ) : engines.length === 0 ? (
                   <div className="flex flex-1 flex-col items-center justify-center gap-5 py-12 text-center">
-                    <SlidersHorizontal size={32} className="text-neutral-600" />
+                    <SlidersHorizontal size={32} className="text-gray-400" />
                     <div>
-                      <p className="text-sm font-medium text-neutral-400">Aucune motorisation référencée</p>
-                      <p className="mt-1 text-xs text-neutral-500">
+                      <p className="text-sm font-medium text-gray-600">Aucune motorisation référencée</p>
+                      <p className="mt-1 text-xs text-gray-500">
                         Vous pouvez lancer la recherche sans préciser la motorisation.
                       </p>
                     </div>
@@ -480,26 +480,26 @@ export function VehicleFinder({ onClose }: VehicleFinderProps) {
                             className={`
                               relative flex items-center gap-3 rounded-xl p-3 text-left transition-all duration-200
                               ${isSelected
-                                ? 'bg-white/[0.08] ring-1 ring-white/20'
-                                : 'bg-white/[0.03] ring-1 ring-white/[0.06] hover:bg-white/[0.06] hover:ring-white/10'
+                                ? 'bg-brand-primary/5 ring-1 ring-brand-primary/20'
+                                : 'bg-white ring-1 ring-gray-200 hover:bg-gray-100 hover:ring-gray-300'
                               }
                             `}
                           >
                             <div className={`
                               flex h-10 w-10 shrink-0 items-center justify-center rounded-lg font-mono text-sm font-bold transition-colors
-                              ${isSelected ? 'bg-red-600/15 text-red-500' : 'bg-white/[0.04] text-neutral-500'}
+                              ${isSelected ? 'bg-brand-primary/10 text-brand-primary' : 'bg-gray-50 text-gray-500'}
                             `}>
                               {eng.engineCode.length > 4
                                 ? eng.engineCode.substring(0, 2).toUpperCase()
                                 : eng.engineCode.charAt(0).toUpperCase()}
                             </div>
                             <div className="min-w-0 flex-1">
-                              <div className={`text-sm font-medium truncate ${isSelected ? 'text-white' : 'text-neutral-300'}`}>
+                              <div className={`text-sm font-medium truncate ${isSelected ? 'text-gray-900' : 'text-gray-800'}`}>
                                 {eng.engineCode}
                               </div>
                               {yearLabel && (
                                 <div className="mt-1">
-                                  <span className="inline-flex items-center rounded bg-white/[0.05] px-1.5 py-0.5 text-[10px] font-semibold text-neutral-400">
+                                  <span className="inline-flex items-center rounded bg-white/[0.05] px-1.5 py-0.5 text-[10px] font-semibold text-gray-600">
                                     {yearLabel}
                                   </span>
                                 </div>
@@ -513,7 +513,7 @@ export function VehicleFinder({ onClose }: VehicleFinderProps) {
                     <div className="mt-8 flex flex-col-reverse items-center justify-between gap-4 sm:flex-row">
                       <button
                          onClick={handleSearch}
-                         className="text-sm font-medium text-neutral-500 hover:text-white"
+                         className="text-sm font-medium text-gray-500 hover:text-gray-900"
                        >
                          Passer cette étape →
                        </button>
