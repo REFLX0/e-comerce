@@ -1,9 +1,9 @@
 const { chromium } = require('playwright');
 const assert = require('assert');
 
-const BASE = 'http://localhost:8082/en';
+const BASE = 'http://84.8.254.244:8082/en';
 const ADMIN_EMAIL = 'admin@kiosquetn.tn';
-const ADMIN_PASSWORD = 'newpass456';
+const ADMIN_PASSWORD = 'admin123';
 const TEST_EMAIL = 'regression-' + Date.now() + '@test.tn';
 const TEST_PASSWORD = 'testpass123';
 

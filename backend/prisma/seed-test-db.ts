@@ -47,7 +47,7 @@ async function main() {
         categoryId: p.categoryId,
         isPublished: true,
         variants: { create: [{ volume: '1L', price: p.price, stockQty: 50, skuVariant: p.sku + '-1L' }] },
-        images: { create: [{ url: '/img/product.jpg', isPrimary: true }] },
+        images: { create: [{ url: '/img/product.png', isPrimary: true }] },
       },
     })
   }
@@ -65,7 +65,7 @@ async function main() {
         categoryId: catMin.id,
         isPublished: true,
         variants: { create: [{ volume: '5L', price: 35.0, stockQty: 20, skuVariant: `STD-15W40-V${i}-5L` }] },
-        images: { create: [{ url: '/img/product.jpg', isPrimary: true }] },
+        images: { create: [{ url: '/img/product.png', isPrimary: true }] },
       },
     })
   }

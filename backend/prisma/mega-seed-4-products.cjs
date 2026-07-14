@@ -102,7 +102,7 @@ async function main() {
           } : undefined,
           images: {
             create: [{
-              url: `/img/products/${slug}.jpg`,
+              url: `/img/products/${slug}.png`,
               isPrimary: true,
               sortOrder: 0,
             }],

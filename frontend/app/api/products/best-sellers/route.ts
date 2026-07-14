@@ -34,8 +34,8 @@ export async function GET() {
         ],
       },
       images: [
-        'https://www.KiosqueTN.tn/6193-large_default/huile-moteur-shell-rimula-r3-turbo-15w40.jpg',
-        'https://www.KiosqueTN.tn/6193-home_default/huile-moteur-shell-rimula-r3-turbo-15w40.jpg',
+        'https://www.KiosqueTN.tn/6193-large_default/huile-moteur-shell-rimula-r3-turbo-15w40.png',
+        'https://www.KiosqueTN.tn/6193-home_default/huile-moteur-shell-rimula-r3-turbo-15w40.png',
       ],
       variants: [
         {
@@ -116,7 +116,7 @@ export async function GET() {
         type: '100% Synthèse',
         viscosity: '0W40',
       },
-      images: ['https://www.KiosqueTN.tn/img/p/yacco-vx-1000-ll-0w40.jpg'],
+      images: ['https://www.KiosqueTN.tn/img/p/yacco-vx-1000-ll-0w40.png'],
       variants: [
         {
           id: 'v1',
@@ -182,7 +182,7 @@ export async function GET() {
         type: '100% Synthèse',
         viscosity: '0W20',
       },
-      images: ['https://www.KiosqueTN.tn/img/p/yacco-lube-di-0w20-c6.jpg'],
+      images: ['https://www.KiosqueTN.tn/img/p/yacco-lube-di-0w20-c6.png'],
       variants: [
         {
           id: 'v1',
@@ -236,7 +236,7 @@ export async function GET() {
         type: 'Synthèse',
         viscosity: '10W40',
       },
-      images: ['https://www.KiosqueTN.tn/img/p/shell-helix-hx7-10w40.jpg'],
+      images: ['https://www.KiosqueTN.tn/img/p/shell-helix-hx7-10w40.png'],
       variants: [
         {
           id: 'v1',
@@ -314,7 +314,7 @@ export async function GET() {
         type: 'Semi-Synthèse',
         viscosity: '10W40',
       },
-      images: ['https://www.KiosqueTN.tn/img/p/accor-husynn-10w40.jpg'],
+      images: ['https://www.KiosqueTN.tn/img/p/accor-husynn-10w40.png'],
       variants: [
         {
           id: 'v1',
@@ -381,7 +381,7 @@ export async function GET() {
         type: 'Minérale',
         viscosity: '15W40',
       },
-      images: ['https://www.KiosqueTN.tn/img/p/shell-helix-hx5-15w40.jpg'],
+      images: ['https://www.KiosqueTN.tn/img/p/shell-helix-hx5-15w40.png'],
       variants: [
         {
           id: 'v1',
@@ -459,7 +459,7 @@ export async function GET() {
         type: '100% Synthèse',
         viscosity: '10W50',
       },
-      images: ['https://www.KiosqueTN.tn/img/p/yacco-mvx-1000-4t-10w50.jpg'],
+      images: ['https://www.KiosqueTN.tn/img/p/yacco-mvx-1000-4t-10w50.png'],
       variants: [
         {
           id: 'v1',
@@ -513,7 +513,7 @@ export async function GET() {
         type: '100% Synthèse',
         viscosity: '5W30',
       },
-      images: ['https://www.KiosqueTN.tn/img/p/yacco-vx-1000-le-5w30-c2c3.jpg'],
+      images: ['https://www.KiosqueTN.tn/img/p/yacco-vx-1000-le-5w30-c2c3.png'],
       variants: [
         {
           id: 'v1',
