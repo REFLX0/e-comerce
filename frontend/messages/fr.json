@@ -136,7 +136,8 @@
     "addToWishlist": "Ajouter à la liste de souhaits",
     "addedToCart": "Produit ajouté au panier",
     "addedToWishlist": "Ajouté à la liste de souhaits",
-    "stockLimit": "Stock maximum atteint pour ce produit"
+    "stockLimit": "Stock maximum atteint pour ce produit",
+    "wishlistError": "Connectez-vous pour gérer votre liste de souhaits"
   },
   "Catalogue": {
     "filters": "Filtres",
