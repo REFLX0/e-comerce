@@ -71,7 +71,7 @@ export default function CataloguePage() {
 
   const products = useMemo(() => {
     if (!data) return []
-    let list = []
+    let list: any[] = []
     if (isVehicleSearch) list = Array.isArray(data) ? data : []
     else if (isSpecSearch) list = data?.data ?? []
     else list = data.data ?? []

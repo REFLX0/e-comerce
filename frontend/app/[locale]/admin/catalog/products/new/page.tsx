@@ -8,7 +8,6 @@ import { toast } from 'sonner'
 import { Save, ArrowLeft, Upload, X, Plus, Trash2, Image as ImageIcon } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
-import Link from 'next/link'
 
 export default function NewProductPage() {
   const router = useRouter()
@@ -30,7 +29,7 @@ export default function NewProductPage() {
   const [imagePreview, setImagePreview] = useState<string | null>(null)
   const [isUploading, setIsUploading] = useState(false)
   const [hasVariants, setHasVariants] = useState(false)
-  const [variants, setVariants] = useState<{ volume: string; price: string; stockQty: string }>([{ volume: '1L', price: '', stockQty: '' }])
+  const [variants, setVariants] = useState<{ volume: string; price: string; stockQty: string }[]>([{ volume: '1L', price: '', stockQty: '' }])
 
   const { data: brandsData } = useQuery<any>({ queryKey: ['brands'], queryFn: () => fetch('/api/brands').then(r => r.json()) })
   const { data: categoriesData } = useQuery<any>({ queryKey: ['categories'], queryFn: () => fetch('/api/categories').then(r => r.json()) })
@@ -61,7 +60,7 @@ export default function NewProductPage() {
   const removeVariant = (index: number) => setVariants(variants.filter((_, i) => i !== index))
   const updateVariant = (index: number, field: string, value: string) => {
     const newVariants = [...variants]
-    newVariants[index] = { ...newVariants[index], [field]: value }
+    newVariants[index] = { ...newVariants[index]!, [field]: value }
     setVariants(newVariants)
   }
 

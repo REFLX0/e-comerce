@@ -9,6 +9,7 @@ import { FilterCheckbox } from './FilterCheckbox'
 import { RotateCcw } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { productsApi } from '@/lib/api/products'
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 
 export function FilterSidebar() {
   const t = useTranslations('Catalogue')
@@ -72,7 +73,7 @@ export function FilterSidebar() {
         )}
       </div>
 
-      <div className="w-full px-4 py-4">
+      <Accordion defaultValue={['categories', 'brands']} className="w-full px-4 py-4">
         {/* Brands Dropdown */}
         <div className="mb-8">
           <label className="mb-3 block font-display text-sm font-bold text-brand-primary">
@@ -200,9 +201,18 @@ export function FilterSidebar() {
         </div>
 
         {/* Normes API */}
-        <div className="mb-8">
-          <h3 className="mb-4 font-display text-sm font-bold text-brand-primary">
+        <AccordionItem value="api">
+          <AccordionTrigger className="font-display text-[#111] uppercase tracking-wider text-sm font-bold">
             {t('apiStandards')}
+          </AccordionTrigger>
+          <AccordionContent>
+            <div className="custom-scrollbar flex max-h-[150px] flex-col gap-3 overflow-y-auto pr-2 mt-1">
+              {[
+                'API SL', 'API SM', 'API SN', 'API SP',
+                'API CF', 'API CI-4', 'API CJ-4', 'API CK-4',
+              ].map((norm) => (
+                <FilterCheckbox
+                  key={norm}
                   label={norm}
                   checked={searchParams.get('api') === norm}
                   onChange={(checked) => updateFilters('api', checked ? norm : null)}
