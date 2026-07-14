@@ -120,10 +120,12 @@ const nextConfig: NextConfig = {
         source: '/api/auth/:path*',
         destination: '/api/auth/:path*',
       },
-      // Everything else under /api/ proxies to the backend
+      // Everything else under /api/ proxies to the backend.
+      // API_PROXY_URL lets Docker point at the nginx service (http://nginx:8082)
+      // while local dev falls back to localhost.
       {
         source: '/api/:path*',
-        destination: 'http://localhost:8082/api/:path*',
+        destination: `${process.env.API_PROXY_URL || 'http://localhost:8082'}/api/:path*`,
       },
     ]
   },
