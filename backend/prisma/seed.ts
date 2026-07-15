@@ -50,8 +50,8 @@ async function main() {
   const cHeavy = await prisma.category.create({ data: { nameFr: 'Poids Lourd & Agricole', slug: 'poids-lourd-agricole', imageUrl: '/img/product.png' } })
   const cFilters = await prisma.category.create({ data: { nameFr: 'Filtres', slug: 'filtres', imageUrl: '/img/product.png' } })
   const cAdditives = await prisma.category.create({ data: { nameFr: 'Additifs & Entretien', slug: 'additifs', imageUrl: '/img/product.png' } })
-  const cHydraulics = await prisma.category.create({ data: { nameFr: 'Liquides Hydrauliques', slug: 'liquides-hydrauliques', imageUrl: '/img/product.png' } })
-  const cGreases = await prisma.category.create({ data: { nameFr: 'Graisses & Lubrifiants', slug: 'graisses-lubrifiants', imageUrl: '/img/product.png' } })
+  const cHydraulics = await prisma.category.create({ data: { nameFr: 'Liquides Hydrauliques', slug: 'hydraulique', imageUrl: '/img/product.png' } })
+  const cGreases = await prisma.category.create({ data: { nameFr: 'Graisses & Lubrifiants', slug: 'graisses', imageUrl: '/img/product.png' } })
   const cEngineOils = await prisma.category.create({ data: { nameFr: 'Huiles Moteur', slug: 'huiles-moteur', imageUrl: '/img/product.png' } })
   
   // Subcategories
