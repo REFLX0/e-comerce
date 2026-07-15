@@ -1,5 +1,5 @@
-import { Injectable } from '@nestjs/common'
-import { PrismaService } from '../prisma/prisma.service'
+import { Injectable } from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class NotificationsService {
@@ -13,24 +13,35 @@ export class NotificationsService {
         take: limit,
       }),
       this.prisma.notification.count(),
-    ])
-    return { data, total, page, limit }
+    ]);
+    return { data, total, page, limit };
   }
 
   async unreadCount() {
-    return this.prisma.notification.count({ where: { read: false } })
+    return this.prisma.notification.count({ where: { read: false } });
   }
 
   async markRead(id: string) {
-    return this.prisma.notification.update({ where: { id }, data: { read: true } })
+    return this.prisma.notification.update({
+      where: { id },
+      data: { read: true },
+    });
   }
 
   async markAllRead() {
-    await this.prisma.notification.updateMany({ where: { read: false }, data: { read: true } })
-    return { ok: true }
+    await this.prisma.notification.updateMany({
+      where: { read: false },
+      data: { read: true },
+    });
+    return { ok: true };
   }
 
-  async create(data: { type: string; title: string; message?: string; link?: string }) {
-    return this.prisma.notification.create({ data })
+  async create(data: {
+    type: string;
+    title: string;
+    message?: string;
+    link?: string;
+  }) {
+    return this.prisma.notification.create({ data });
   }
 }

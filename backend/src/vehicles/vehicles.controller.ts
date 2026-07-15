@@ -1,6 +1,6 @@
-import { Controller, Get, Param, Query } from '@nestjs/common'
-import { ApiTags } from '@nestjs/swagger'
-import { VehiclesService } from './vehicles.service'
+import { Controller, Get, Param, Query } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
+import { VehiclesService } from './vehicles.service';
 
 @ApiTags('vehicles')
 @Controller('vehicles')
@@ -9,17 +9,17 @@ export class VehiclesController {
 
   @Get('makes')
   getMakes() {
-    return this.vehiclesService.getMakes()
+    return this.vehiclesService.getMakes();
   }
 
   @Get('makes/:makeSlug/models')
   getModels(@Param('makeSlug') makeSlug: string) {
-    return this.vehiclesService.getModels(makeSlug)
+    return this.vehiclesService.getModels(makeSlug);
   }
 
   @Get('models/:modelSlug/engines')
   getEngines(@Param('modelSlug') modelSlug: string) {
-    return this.vehiclesService.getEngines(modelSlug)
+    return this.vehiclesService.getEngines(modelSlug);
   }
 
   @Get('compatible')
@@ -28,6 +28,6 @@ export class VehiclesController {
     @Query('model') model: string,
     @Query('engine') engine?: string,
   ) {
-    return this.vehiclesService.getCompatibleProducts(make, model, engine)
+    return this.vehiclesService.getCompatibleProducts(make, model, engine);
   }
 }

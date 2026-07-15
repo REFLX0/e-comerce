@@ -1,5 +1,5 @@
-import { Injectable, NotFoundException } from '@nestjs/common'
-import { PrismaService } from '../prisma/prisma.service'
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class CategoriesService {
@@ -8,57 +8,93 @@ export class CategoriesService {
   async findAll() {
     const categories = await this.prisma.category.findMany({
       where: { parentId: null },
-      include: { children: { orderBy: { sortOrder: 'asc' } }, _count: { select: { products: true } } },
+      include: {
+        children: { orderBy: { sortOrder: 'asc' } },
+        _count: { select: { products: true } },
+      },
       orderBy: { sortOrder: 'asc' },
-    })
-    return categories.map(c => ({
-      id: c.id, slug: c.slug, name: c.nameFr, image: c.imageUrl, sortOrder: c.sortOrder,
+    });
+    return categories.map((c) => ({
+      id: c.id,
+      slug: c.slug,
+      name: c.nameFr,
+      image: c.imageUrl,
+      sortOrder: c.sortOrder,
       productCount: c._count.products,
-      children: c.children.map(ch => ({ id: ch.id, slug: ch.slug, name: ch.nameFr, sortOrder: ch.sortOrder })),
-    }))
+      children: c.children.map((ch) => ({
+        id: ch.id,
+        slug: ch.slug,
+        name: ch.nameFr,
+        sortOrder: ch.sortOrder,
+      })),
+    }));
   }
 
   async getTree() {
-    return this.findAll()
+    return this.findAll();
   }
 
   async getFeatured() {
-    const categories = await this.findAll()
-    return categories.slice(0, 4)
+    const categories = await this.findAll();
+    return categories.slice(0, 4);
   }
 
   async findBySlug(slug: string) {
     return this.prisma.category.findUnique({
       where: { slug },
-      include: { children: { orderBy: { sortOrder: 'asc' } }, _count: { select: { products: true } } },
-    })
+      include: {
+        children: { orderBy: { sortOrder: 'asc' } },
+        _count: { select: { products: true } },
+      },
+    });
   }
 
-  async create(data: { nameFr: string; slug: string; imageUrl?: string; parentId?: string }) {
-    const maxOrder = await this.prisma.category.aggregate({ _max: { sortOrder: true } })
+  async create(data: {
+    nameFr: string;
+    slug: string;
+    imageUrl?: string;
+    parentId?: string;
+  }) {
+    const maxOrder = await this.prisma.category.aggregate({
+      _max: { sortOrder: true },
+    });
     return this.prisma.category.create({
       data: { ...data, sortOrder: (maxOrder._max.sortOrder ?? 0) + 1 },
-    })
+    });
   }
 
-  async update(id: string, data: { nameFr?: string; slug?: string; imageUrl?: string; parentId?: string }) {
-    const cat = await this.prisma.category.findUnique({ where: { id } })
-    if (!cat) throw new NotFoundException('Category not found')
-    return this.prisma.category.update({ where: { id }, data })
+  async update(
+    id: string,
+    data: {
+      nameFr?: string;
+      slug?: string;
+      imageUrl?: string;
+      parentId?: string;
+    },
+  ) {
+    const cat = await this.prisma.category.findUnique({ where: { id } });
+    if (!cat) throw new NotFoundException('Category not found');
+    return this.prisma.category.update({ where: { id }, data });
   }
 
   async delete(id: string) {
-    const cat = await this.prisma.category.findUnique({ where: { id } })
-    if (!cat) throw new NotFoundException('Category not found')
-    await this.prisma.category.updateMany({ where: { parentId: id }, data: { parentId: null } })
-    return this.prisma.category.delete({ where: { id } })
+    const cat = await this.prisma.category.findUnique({ where: { id } });
+    if (!cat) throw new NotFoundException('Category not found');
+    await this.prisma.category.updateMany({
+      where: { parentId: id },
+      data: { parentId: null },
+    });
+    return this.prisma.category.delete({ where: { id } });
   }
 
   async reorder(ids: string[]) {
     await this.prisma.$transaction(
       ids.map((id, index) =>
-        this.prisma.category.update({ where: { id }, data: { sortOrder: index } })
-      )
-    )
+        this.prisma.category.update({
+          where: { id },
+          data: { sortOrder: index },
+        }),
+      ),
+    );
   }
 }

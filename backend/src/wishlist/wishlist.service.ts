@@ -1,5 +1,5 @@
-import { Injectable, BadRequestException } from '@nestjs/common'
-import { PrismaService } from '../prisma/prisma.service'
+import { Injectable, BadRequestException } from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class WishlistService {
@@ -8,14 +8,14 @@ export class WishlistService {
   async toggle(userId: string, productId: string) {
     const existing = await this.prisma.wishlistItem.findUnique({
       where: { userId_productId: { userId, productId } },
-    })
+    });
 
     if (existing) {
-      await this.prisma.wishlistItem.delete({ where: { id: existing.id } })
-      return { added: false }
+      await this.prisma.wishlistItem.delete({ where: { id: existing.id } });
+      return { added: false };
     } else {
-      await this.prisma.wishlistItem.create({ data: { userId, productId } })
-      return { added: true }
+      await this.prisma.wishlistItem.create({ data: { userId, productId } });
+      return { added: true };
     }
   }
 
@@ -36,6 +36,6 @@ export class WishlistService {
         },
       },
       orderBy: { createdAt: 'desc' },
-    })
+    });
   }
 }

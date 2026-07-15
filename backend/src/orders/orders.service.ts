@@ -1,8 +1,12 @@
-import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common'
-import { PrismaService } from '../prisma/prisma.service'
-import { NotificationsService } from '../notifications/notifications.service'
-import { CreateOrderDto } from './dto/create-order.dto'
-import { v4 as uuidv4 } from 'uuid'
+import {
+  Injectable,
+  BadRequestException,
+  NotFoundException,
+} from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service';
+import { NotificationsService } from '../notifications/notifications.service';
+import { CreateOrderDto } from './dto/create-order.dto';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class OrdersService {
@@ -13,33 +17,38 @@ export class OrdersService {
 
   async create(dto: CreateOrderDto, userId?: string) {
     // Idempotency: prevent duplicate orders on double-submit
-    const key = dto.idempotencyKey ?? uuidv4()
-    const existing = await this.prisma.order.findUnique({ where: { idempotencyKey: key } })
-    if (existing) return existing
+    const key = dto.idempotencyKey ?? uuidv4();
+    const existing = await this.prisma.order.findUnique({
+      where: { idempotencyKey: key },
+    });
+    if (existing) return existing;
 
     // Validate all variants exist and have enough stock
-    const variantIds = dto.items.map(i => i.variantId)
+    const variantIds = dto.items.map((i) => i.variantId);
     const variants = await this.prisma.productVariant.findMany({
       where: { id: { in: variantIds } },
       include: { product: true },
-    })
+    });
 
     if (variants.length !== dto.items.length) {
-      throw new BadRequestException('One or more variants not found')
+      throw new BadRequestException('One or more variants not found');
     }
 
     for (const item of dto.items) {
-      const variant = variants.find(v => v.id === item.variantId)
-      if (!variant) throw new BadRequestException(`Variant ${item.variantId} not found`)
+      const variant = variants.find((v) => v.id === item.variantId);
+      if (!variant)
+        throw new BadRequestException(`Variant ${item.variantId} not found`);
       if (variant.stockQty < item.quantity) {
-        throw new BadRequestException(`Insufficient stock for ${variant.product.nameFr} (${variant.volume})`)
+        throw new BadRequestException(
+          `Insufficient stock for ${variant.product.nameFr} (${variant.volume})`,
+        );
       }
     }
 
     const totalAmount = dto.items.reduce((sum, item) => {
-      const variant = variants.find(v => v.id === item.variantId)!
-      return sum + variant.price * item.quantity
-    }, 0)
+      const variant = variants.find((v) => v.id === item.variantId)!;
+      return sum + variant.price * item.quantity;
+    }, 0);
 
     // Atomic: create order + decrement stock + create payment in one transaction
     const order = await this.prisma.$transaction(async (tx) => {
@@ -54,26 +63,26 @@ export class OrdersService {
           shipCity: dto.shipping.city,
           notes: dto.notes,
           items: {
-            create: dto.items.map(item => {
-              const variant = variants.find(v => v.id === item.variantId)!
+            create: dto.items.map((item) => {
+              const variant = variants.find((v) => v.id === item.variantId)!;
               return {
                 productId: variant.productId,
                 variantId: item.variantId,
                 quantity: item.quantity,
                 unitPrice: variant.price,
-              }
+              };
             }),
           },
         },
         include: { items: true },
-      })
+      });
 
       // Decrement stock
       for (const item of dto.items) {
         await tx.productVariant.update({
           where: { id: item.variantId },
           data: { stockQty: { decrement: item.quantity } },
-        })
+        });
       }
 
       // Create a Payment record linked to this order
@@ -84,20 +93,22 @@ export class OrdersService {
           amount: totalAmount,
           status: 'PENDING',
         },
-      })
+      });
 
-      return created
-    })
+      return created;
+    });
 
     // Notify admins about new order
-    await this.notifications.create({
-      type: 'new_order',
-      title: `Nouvelle commande #${order.id.slice(0, 8)}`,
-      message: `${totalAmount.toFixed(2)} TND — ${dto.shipping.fullName}`,
-      link: `/admin/orders`,
-    }).catch(() => {})
+    await this.notifications
+      .create({
+        type: 'new_order',
+        title: `Nouvelle commande #${order.id.slice(0, 8)}`,
+        message: `${totalAmount.toFixed(2)} TND — ${dto.shipping.fullName}`,
+        link: `/admin/orders`,
+      })
+      .catch(() => {});
 
-    return order
+    return order;
   }
 
   async findAll(userId: string) {
@@ -112,12 +123,12 @@ export class OrdersService {
         },
       },
       orderBy: { createdAt: 'desc' },
-    })
+    });
   }
 
   async findOne(id: string, userId?: string) {
-    const where: any = { id }
-    if (userId) where.userId = userId
+    const where: any = { id };
+    if (userId) where.userId = userId;
     const order = await this.prisma.order.findFirst({
       where,
       include: {
@@ -128,17 +139,20 @@ export class OrdersService {
           },
         },
       },
-    })
-    if (!order) throw new NotFoundException('Order not found')
-    return order
+    });
+    if (!order) throw new NotFoundException('Order not found');
+    return order;
   }
 
   async cancel(id: string, userId: string) {
-    const order = await this.prisma.order.findFirst({ where: { id, userId } })
-    if (!order) throw new NotFoundException('Order not found')
+    const order = await this.prisma.order.findFirst({ where: { id, userId } });
+    if (!order) throw new NotFoundException('Order not found');
     if (order.status !== 'PENDING') {
-      throw new BadRequestException('Only PENDING orders can be cancelled')
+      throw new BadRequestException('Only PENDING orders can be cancelled');
     }
-    return this.prisma.order.update({ where: { id }, data: { status: 'CANCELLED' } })
+    return this.prisma.order.update({
+      where: { id },
+      data: { status: 'CANCELLED' },
+    });
   }
 }

@@ -1,8 +1,16 @@
-import { Controller, Get, Post, Param, UseGuards, HttpCode, HttpStatus } from '@nestjs/common'
-import { ApiTags, ApiBearerAuth } from '@nestjs/swagger'
-import { WishlistService } from './wishlist.service'
-import { JwtAuthGuard } from '../common/guards/jwt-auth.guard'
-import { CurrentUser } from '../common/decorators/current-user.decorator'
+import {
+  Controller,
+  Get,
+  Post,
+  Param,
+  UseGuards,
+  HttpCode,
+  HttpStatus,
+} from '@nestjs/common';
+import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
+import { WishlistService } from './wishlist.service';
+import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
+import { CurrentUser } from '../common/decorators/current-user.decorator';
 
 @ApiTags('wishlist')
 @ApiBearerAuth()
@@ -13,12 +21,15 @@ export class WishlistController {
 
   @Get()
   findAll(@CurrentUser('id') userId: string) {
-    return this.wishlistService.findAll(userId)
+    return this.wishlistService.findAll(userId);
   }
 
   @Post(':productId/toggle')
   @HttpCode(HttpStatus.OK)
-  toggle(@CurrentUser('id') userId: string, @Param('productId') productId: string) {
-    return this.wishlistService.toggle(userId, productId)
+  toggle(
+    @CurrentUser('id') userId: string,
+    @Param('productId') productId: string,
+  ) {
+    return this.wishlistService.toggle(userId, productId);
   }
 }

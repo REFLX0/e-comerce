@@ -1,8 +1,15 @@
-import { Controller, Get, Head, HttpCode, HttpStatus, Res } from '@nestjs/common'
-import { ApiTags } from '@nestjs/swagger'
-import { HealthCheck, HealthCheckService } from '@nestjs/terminus'
-import { PrismaService } from '../prisma/prisma.service'
-import type { Response } from 'express'
+import {
+  Controller,
+  Get,
+  Head,
+  HttpCode,
+  HttpStatus,
+  Res,
+} from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
+import { HealthCheck, HealthCheckService } from '@nestjs/terminus';
+import { PrismaService } from '../prisma/prisma.service';
+import type { Response } from 'express';
 
 @ApiTags('health')
 @Controller('health')
@@ -18,17 +25,17 @@ export class HealthController {
     return this.health.check([
       async () => {
         try {
-          await this.prisma.$queryRaw`SELECT 1`
-          return { db: { status: 'up' } }
+          await this.prisma.$queryRaw`SELECT 1`;
+          return { db: { status: 'up' } };
         } catch {
-          return { db: { status: 'down' } }
+          return { db: { status: 'down' } };
         }
       },
-    ])
+    ]);
   }
 
   @Head()
   headCheck(@Res() res: Response) {
-    res.status(200).end()
+    res.status(200).end();
   }
 }

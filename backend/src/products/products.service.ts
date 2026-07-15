@@ -1,26 +1,26 @@
-import { Injectable } from '@nestjs/common'
-import { PrismaService } from '../prisma/prisma.service'
-import { Prisma } from '@prisma/client'
-import { OilRecommendationsDto } from './dto/oil-recommendations.dto'
-import { calcSpecificity } from '../specificity'
+import { Injectable } from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service';
+import { Prisma } from '@prisma/client';
+import { OilRecommendationsDto } from './dto/oil-recommendations.dto';
+import { calcSpecificity } from '../specificity';
 
 export interface ProductFilters {
-  categorySlug?: string
-  brandSlug?: string
-  viscosity?: string
-  priceMin?: number
-  priceMax?: number
-  inStockOnly?: boolean
-  isPromo?: boolean
-  isFeatured?: boolean
-  search?: string
-  sortBy?: string
-  page?: number
-  limit?: number
-  type?: string
-  api?: string
-  acea?: string
-  volume?: string
+  categorySlug?: string;
+  brandSlug?: string;
+  viscosity?: string;
+  priceMin?: number;
+  priceMax?: number;
+  inStockOnly?: boolean;
+  isPromo?: boolean;
+  isFeatured?: boolean;
+  search?: string;
+  sortBy?: string;
+  page?: number;
+  limit?: number;
+  type?: string;
+  api?: string;
+  acea?: string;
+  volume?: string;
 }
 
 @Injectable()
@@ -34,15 +34,15 @@ export class ProductsService {
       images: { orderBy: { sortOrder: 'asc' as const } },
       variants: true,
       specs: true,
-    }
+    };
   }
 
   async findAll(filters: ProductFilters) {
-    const page = Math.max(filters.page ?? 1, 1)
-    const limit = Math.min(filters.limit ?? 24, 100)
-    const skip = (page - 1) * limit
+    const page = Math.max(filters.page ?? 1, 1);
+    const limit = Math.min(filters.limit ?? 24, 100);
+    const skip = (page - 1) * limit;
 
-    const where: Prisma.ProductWhereInput = { isPublished: true }
+    const where: Prisma.ProductWhereInput = { isPublished: true };
 
     if (filters.search) {
       where.OR = [
@@ -50,70 +50,86 @@ export class ProductsService {
         { description: { contains: filters.search, mode: 'insensitive' } },
         { sku: { contains: filters.search, mode: 'insensitive' } },
         { brand: { name: { contains: filters.search, mode: 'insensitive' } } },
-        { category: { nameFr: { contains: filters.search, mode: 'insensitive' } } },
-        { specs: { viscosity: { contains: filters.search, mode: 'insensitive' } } },
-      ]
+        {
+          category: {
+            nameFr: { contains: filters.search, mode: 'insensitive' },
+          },
+        },
+        {
+          specs: {
+            viscosity: { contains: filters.search, mode: 'insensitive' },
+          },
+        },
+      ];
     }
     if (filters.categorySlug) {
-      where.category = { slug: filters.categorySlug }
+      where.category = { slug: filters.categorySlug };
     }
     if (filters.brandSlug) {
-      where.brand = { slug: filters.brandSlug }
+      where.brand = { slug: filters.brandSlug };
     }
     if (filters.isFeatured) {
-      where.isFeatured = true
+      where.isFeatured = true;
     }
     if (filters.viscosity) {
-      where.specs = { viscosity: filters.viscosity }
+      where.specs = { viscosity: filters.viscosity };
     }
-    const variantSome: Prisma.ProductVariantWhereInput = {}
-    const specsInput: Prisma.ProductSpecsWhereInput = {}
+    const variantSome: Prisma.ProductVariantWhereInput = {};
+    const specsInput: Prisma.ProductSpecsWhereInput = {};
     if (filters.priceMin !== undefined || filters.priceMax !== undefined) {
       variantSome.price = {
         ...(filters.priceMin !== undefined ? { gte: filters.priceMin } : {}),
         ...(filters.priceMax !== undefined ? { lte: filters.priceMax } : {}),
-      }
+      };
     }
     if (filters.inStockOnly) {
-      variantSome.stockQty = { gt: 0 }
+      variantSome.stockQty = { gt: 0 };
     }
     if (filters.volume) {
-      variantSome.volume = filters.volume
+      variantSome.volume = filters.volume;
     }
     if (filters.type) {
       switch (filters.type) {
-        case '100% Synthèse': specsInput.isFullySynth = true; break
-        case 'Semi-Synthèse': specsInput.isSemiSynth = true; break
-        case 'Minérale': specsInput.isMinerale = true; break
+        case '100% Synthèse':
+          specsInput.isFullySynth = true;
+          break;
+        case 'Semi-Synthèse':
+          specsInput.isSemiSynth = true;
+          break;
+        case 'Minérale':
+          specsInput.isMinerale = true;
+          break;
       }
     }
-    if (filters.api) specsInput.apiStandard = filters.api
-    if (filters.acea) specsInput.aeceaStandard = filters.acea
-    if (Object.keys(variantSome).length > 0) where.variants = { some: variantSome }
+    if (filters.api) specsInput.apiStandard = filters.api;
+    if (filters.acea) specsInput.aeceaStandard = filters.acea;
+    if (Object.keys(variantSome).length > 0)
+      where.variants = { some: variantSome };
     if (Object.keys(specsInput).length > 0) {
-      where.specs = { ...(where.specs as any || {}), ...specsInput }
+      where.specs = { ...((where.specs as any) || {}), ...specsInput };
     }
 
-    const needsManualSort = filters.sortBy === 'price_asc' || filters.sortBy === 'price_desc'
+    const needsManualSort =
+      filters.sortBy === 'price_asc' || filters.sortBy === 'price_desc';
 
-    let data: any[]
-    let total: number
+    let data: any[];
+    let total: number;
 
     if (needsManualSort) {
       const all = await this.prisma.product.findMany({
         where,
         include: this.buildInclude(),
-      })
-      total = all.length
+      });
+      total = all.length;
       all.sort((a, b) => {
-        const pa = a.variants?.[0]?.price ?? 0
-        const pb = b.variants?.[0]?.price ?? 0
-        return filters.sortBy === 'price_asc' ? pa - pb : pb - pa
-      })
-      data = all.slice(skip, skip + limit)
+        const pa = a.variants?.[0]?.price ?? 0;
+        const pb = b.variants?.[0]?.price ?? 0;
+        return filters.sortBy === 'price_asc' ? pa - pb : pb - pa;
+      });
+      data = all.slice(skip, skip + limit);
     } else {
-      const orderBy = this.buildOrderBy(filters.sortBy)
-      ;[data, total] = await Promise.all([
+      const orderBy = this.buildOrderBy(filters.sortBy);
+      [data, total] = await Promise.all([
         this.prisma.product.findMany({
           where,
           include: this.buildInclude(),
@@ -122,10 +138,16 @@ export class ProductsService {
           take: limit,
         }),
         this.prisma.product.count({ where }),
-      ])
+      ]);
     }
 
-    return { data: data.map(this.serialize), total, page, limit, totalPages: Math.ceil(total / limit) }
+    return {
+      data: data.map(this.serialize),
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    };
   }
 
   async findBySlug(slug: string) {
@@ -133,11 +155,13 @@ export class ProductsService {
       where: { slug },
       include: {
         ...this.buildInclude(),
-        compatibilities: { include: { vehicleModel: { include: { make: true } } } },
+        compatibilities: {
+          include: { vehicleModel: { include: { make: true } } },
+        },
       },
-    })
-    if (!product) return null
-    return this.serialize(product)
+    });
+    if (!product) return null;
+    return this.serialize(product);
   }
 
   async findBestSellers(limit = 8) {
@@ -146,8 +170,8 @@ export class ProductsService {
       include: this.buildInclude(),
       take: limit,
       orderBy: { createdAt: 'desc' },
-    })
-    return products.map(this.serialize)
+    });
+    return products.map(this.serialize);
   }
 
   async findNew(limit = 8) {
@@ -156,106 +180,95 @@ export class ProductsService {
       include: this.buildInclude(),
       take: limit,
       orderBy: { createdAt: 'desc' },
-    })
-    return products.map(this.serialize)
+    });
+    return products.map(this.serialize);
   }
 
   async findRelated(id: string, limit = 6) {
-    const product = await this.prisma.product.findUnique({ where: { id }, select: { categoryId: true, brandId: true } })
-    if (!product) return []
+    const product = await this.prisma.product.findUnique({
+      where: { id },
+      select: { categoryId: true, brandId: true },
+    });
+    if (!product) return [];
     const related = await this.prisma.product.findMany({
       where: {
         isPublished: true,
         id: { not: id },
-        OR: [
-          { categoryId: product.categoryId },
-          { brandId: product.brandId }
-        ]
+        OR: [{ categoryId: product.categoryId }, { brandId: product.brandId }],
       },
       include: this.buildInclude(),
       take: limit,
       orderBy: { createdAt: 'desc' },
-    })
-    return related.map(this.serialize)
+    });
+    return related.map(this.serialize);
   }
 
   async getFacets(filters: ProductFilters) {
-    const where: Prisma.ProductWhereInput = { isPublished: true }
-    if (filters.categorySlug) where.category = { slug: filters.categorySlug }
+    const where: Prisma.ProductWhereInput = { isPublished: true };
+    if (filters.categorySlug) where.category = { slug: filters.categorySlug };
     if (filters.search) {
       where.OR = [
         { nameFr: { contains: filters.search, mode: 'insensitive' } },
         { brand: { name: { contains: filters.search, mode: 'insensitive' } } },
-      ]
+      ];
     }
 
     const variantGroups = await this.prisma.productVariant.groupBy({
       by: ['volume'],
       where: {
-        product: where
+        product: where,
       },
-      _count: { volume: true }
-    })
+      _count: { volume: true },
+    });
 
     const volumes = variantGroups
-      .filter(v => v.volume)
-      .map(v => ({
+      .filter((v) => v.volume)
+      .map((v) => ({
         volume: v.volume,
-        count: v._count.volume
+        count: v._count.volume,
       }))
       .sort((a, b) => {
-        const numA = parseFloat(a.volume!) || 0
-        const numB = parseFloat(b.volume!) || 0
-        return numA - numB
-      })
+        const numA = parseFloat(a.volume) || 0;
+        const numB = parseFloat(b.volume) || 0;
+        return numA - numB;
+      });
 
     const brands = await this.prisma.brand.findMany({
-      orderBy: { name: 'asc' }
-    })
+      orderBy: { name: 'asc' },
+    });
 
-    return { volumes, brands }
+    return { volumes, brands };
   }
 
   async findOilRecommendations(dto: OilRecommendationsDto) {
-    const andConditions: Prisma.ProductSpecsScalarWhereWithAggregatesInput[] = []
+    const andConditions: Prisma.ProductSpecsScalarWhereWithAggregatesInput[] =
+      [];
 
     if (dto.cylinders > 0) {
       andConditions.push({
-        OR: [
-          { minCylinders: null },
-          { minCylinders: { lte: dto.cylinders } },
-        ],
-      })
+        OR: [{ minCylinders: null }, { minCylinders: { lte: dto.cylinders } }],
+      });
       andConditions.push({
-        OR: [
-          { maxCylinders: null },
-          { maxCylinders: { gte: dto.cylinders } },
-        ],
-      })
+        OR: [{ maxCylinders: null }, { maxCylinders: { gte: dto.cylinders } }],
+      });
     }
 
     if (dto.power > 0) {
       andConditions.push({
-        OR: [
-          { minPower: null },
-          { minPower: { lte: dto.power } },
-        ],
-      })
+        OR: [{ minPower: null }, { minPower: { lte: dto.power } }],
+      });
       andConditions.push({
-        OR: [
-          { maxPower: null },
-          { maxPower: { gte: dto.power } },
-        ],
-      })
+        OR: [{ maxPower: null }, { maxPower: { gte: dto.power } }],
+      });
     }
 
     const specsWhere: Prisma.ProductSpecsWhereInput = {
       vehicleTypes: { has: dto.vehicleType },
       fuelTypes: { has: dto.fuelType },
-    }
+    };
 
     if (andConditions.length > 0) {
-      specsWhere.AND = andConditions
+      specsWhere.AND = andConditions;
     }
 
     const products = await this.prisma.product.findMany({
@@ -264,64 +277,98 @@ export class ProductsService {
         specs: specsWhere,
       },
       include: this.buildInclude(),
-    })
+    });
 
-    const scored = products.map(p => ({
+    const scored = products.map((p) => ({
       product: p,
       specificity: calcSpecificity(p.specs),
-    }))
+    }));
 
-    scored.sort((a, b) => b.specificity - a.specificity)
+    scored.sort((a, b) => b.specificity - a.specificity);
 
-    const data = scored.map(s => this.serialize(s.product))
-    return { data, total: data.length }
+    const data = scored.map((s) => this.serialize(s.product));
+    return { data, total: data.length };
   }
 
-  private buildOrderBy(sortBy?: string): Prisma.ProductOrderByWithRelationInput {
+  private buildOrderBy(
+    sortBy?: string,
+  ): Prisma.ProductOrderByWithRelationInput {
     switch (sortBy) {
-      case 'newest': return { createdAt: 'desc' }
-      case 'price_asc': return { variants: { _count: 'asc' } }
-      case 'price_desc': return { variants: { _count: 'desc' } }
-      default: return { createdAt: 'desc' }
+      case 'newest':
+        return { createdAt: 'desc' };
+      case 'price_asc':
+        return { variants: { _count: 'asc' } };
+      case 'price_desc':
+        return { variants: { _count: 'desc' } };
+      default:
+        return { createdAt: 'desc' };
     }
   }
 
   private serialize(product: any) {
-    const primaryImage = product.images?.find((img: any) => img.isPrimary) ?? product.images?.[0]
+    const primaryImage =
+      product.images?.find((img: any) => img.isPrimary) ?? product.images?.[0];
     return {
       id: product.id,
       slug: product.slug,
       name: product.nameFr,
       description: product.description,
       brandId: product.brandId,
-      brand: product.brand ? { id: product.brand.id, name: product.brand.name, slug: product.brand.slug, logo: product.brand.logoUrl } : null,
+      brand: product.brand
+        ? {
+            id: product.brand.id,
+            name: product.brand.name,
+            slug: product.brand.slug,
+            logo: product.brand.logoUrl,
+          }
+        : null,
       categoryId: product.categoryId,
-      category: product.category ? { id: product.category.id, name: product.category.nameFr, slug: product.category.slug } : null,
+      category: product.category
+        ? {
+            id: product.category.id,
+            name: product.category.nameFr,
+            slug: product.category.slug,
+          }
+        : null,
       images: product.images?.map((img: any) => img.url) ?? [],
-      variants: product.variants?.map((v: any) => ({
-        id: v.id,
-        productId: v.productId,
-        volume: v.volume,
-        priceHT: v.price,
-        priceTTC: +(v.price * 1.19).toFixed(2),
-        stock: v.stockQty,
-        sku: v.skuVariant,
-        status: v.stockQty === 0 ? 'out_of_stock' : v.stockQty < 5 ? 'low_stock' : 'in_stock',
-      })) ?? [],
-      specs: product.specs ? {
-        viscosity: product.specs.viscosity,
-        apiSpec: product.specs.apiStandard,
-        aceaSpec: product.specs.aeceaStandard,
-        type: product.specs.isFullySynth ? 'full_synth' : product.specs.isSemiSynth ? 'semi_synth' : 'mineral',
-      } : null,
+      variants:
+        product.variants?.map((v: any) => ({
+          id: v.id,
+          productId: v.productId,
+          volume: v.volume,
+          priceHT: v.price,
+          priceTTC: +(v.price * 1.19).toFixed(2),
+          stock: v.stockQty,
+          sku: v.skuVariant,
+          status:
+            v.stockQty === 0
+              ? 'out_of_stock'
+              : v.stockQty < 5
+                ? 'low_stock'
+                : 'in_stock',
+        })) ?? [],
+      specs: product.specs
+        ? {
+            viscosity: product.specs.viscosity,
+            apiSpec: product.specs.apiStandard,
+            aceaSpec: product.specs.aeceaStandard,
+            type: product.specs.isFullySynth
+              ? 'full_synth'
+              : product.specs.isSemiSynth
+                ? 'semi_synth'
+                : 'mineral',
+          }
+        : null,
       isBestSeller: product.isFeatured,
-      isNew: (Date.now() - new Date(product.createdAt).getTime()) < 30 * 24 * 60 * 60 * 1000,
+      isNew:
+        Date.now() - new Date(product.createdAt).getTime() <
+        30 * 24 * 60 * 60 * 1000,
       isPromo: false,
       rating: 0,
       reviewCount: 0,
       createdAt: product.createdAt,
       updatedAt: product.createdAt,
       tags: [],
-    }
+    };
   }
 }

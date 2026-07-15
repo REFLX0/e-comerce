@@ -1,5 +1,5 @@
-import { Injectable } from '@nestjs/common'
-import { PrismaService } from '../prisma/prisma.service'
+import { Injectable } from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class BrandsService {
@@ -9,15 +9,18 @@ export class BrandsService {
     return this.prisma.brand.findMany({
       include: { _count: { select: { products: true } } },
       orderBy: { name: 'asc' },
-    })
+    });
   }
 
   async getFeatured() {
-    const brands = await this.findAll()
-    return brands.slice(0, 4)
+    const brands = await this.findAll();
+    return brands.slice(0, 4);
   }
 
   findBySlug(slug: string) {
-    return this.prisma.brand.findUnique({ where: { slug }, include: { _count: { select: { products: true } } } })
+    return this.prisma.brand.findUnique({
+      where: { slug },
+      include: { _count: { select: { products: true } } },
+    });
   }
 }

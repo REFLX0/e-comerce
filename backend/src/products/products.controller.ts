@@ -1,7 +1,13 @@
-import { Controller, Get, Param, Query, NotFoundException } from '@nestjs/common'
-import { ApiTags, ApiQuery } from '@nestjs/swagger'
-import { ProductsService } from './products.service'
-import { OilRecommendationsDto } from './dto/oil-recommendations.dto'
+import {
+  Controller,
+  Get,
+  Param,
+  Query,
+  NotFoundException,
+} from '@nestjs/common';
+import { ApiTags, ApiQuery } from '@nestjs/swagger';
+import { ProductsService } from './products.service';
+import { OilRecommendationsDto } from './dto/oil-recommendations.dto';
 
 @ApiTags('products')
 @Controller('products')
@@ -27,22 +33,22 @@ export class ProductsController {
       api: query.api,
       acea: query.acea,
       volume: query.volume,
-    })
+    });
   }
 
   @Get('oil-recommendations')
   oilRecommendations(@Query() dto: OilRecommendationsDto) {
-    return this.productsService.findOilRecommendations(dto)
+    return this.productsService.findOilRecommendations(dto);
   }
 
   @Get('best-sellers')
   bestSellers(@Query('limit') limit?: string) {
-    return this.productsService.findBestSellers(limit ? +limit : 8)
+    return this.productsService.findBestSellers(limit ? +limit : 8);
   }
 
   @Get('new')
   findNew(@Query('limit') limit?: string) {
-    return this.productsService.findNew(limit ? +limit : 8)
+    return this.productsService.findNew(limit ? +limit : 8);
   }
 
   @Get('facets')
@@ -50,18 +56,18 @@ export class ProductsController {
     return this.productsService.getFacets({
       categorySlug: query.categorySlug,
       search: query.search || query.q,
-    })
+    });
   }
 
   @Get(':slug')
   async findOne(@Param('slug') slug: string) {
-    const product = await this.productsService.findBySlug(slug)
-    if (!product) throw new NotFoundException('Product not found')
-    return product
+    const product = await this.productsService.findBySlug(slug);
+    if (!product) throw new NotFoundException('Product not found');
+    return product;
   }
 
   @Get(':id/related')
   findRelated(@Param('id') id: string, @Query('limit') limit?: string) {
-    return this.productsService.findRelated(id, limit ? +limit : 6)
+    return this.productsService.findRelated(id, limit ? +limit : 6);
   }
 }
