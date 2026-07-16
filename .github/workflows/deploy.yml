@@ -65,22 +65,22 @@ jobs:
             cp nginx/nginx.prod.conf nginx/nginx.conf
             
             # Rolling rebuild — restart services one by one to minimize downtime
-            docker compose pull db redis || true
-            docker compose up -d db redis
+            docker compose -p achref pull db redis || true
+            docker compose -p achref up -d db redis
             
             # Run database migrations (one-shot, waits for completion)
-            docker compose up --build migrate
+            docker compose -p achref up --build migrate
             
             # Rebuild and restart backend replicas
-            docker compose up -d --build --no-deps backend
+            docker compose -p achref up -d --build --no-deps backend
             sleep 10
             
             # Rebuild and restart frontend
-            docker compose up -d --build --no-deps frontend
+            docker compose -p achref up -d --build --no-deps frontend
             sleep 5
             
             # Ensure nginx is up
-            docker compose up -d nginx
+            docker compose -p achref up -d nginx
             
             # Clean up dangling images
             docker image prune -f
