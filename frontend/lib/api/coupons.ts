@@ -1,5 +1,18 @@
 import { backendClient as api } from './client'
 
+interface CouponValidateResult {
+  id: string
+  code: string
+  type: 'PERCENT' | 'FIXED' | 'SHIPPING'
+  value: number
+  discount: number
+  minAmount: number | null
+  maxUses: number | null
+  currentUses: number
+  expiryDate: string | null
+  isActive: boolean
+}
+
 export const couponsApi = {
   getAll: () =>
     api.get('/coupons'),
@@ -17,6 +30,6 @@ export const couponsApi = {
     api.delete(`/coupons/${id}`),
 
   validate: (code: string, cartTotal: number) =>
-    api.get('/coupons/validate', { params: { code, cartTotal } }),
+    api.get<CouponValidateResult>('/coupons/validate', { params: { code, cartTotal } }),
 }
 
