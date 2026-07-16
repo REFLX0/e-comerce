@@ -1,5 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { CreateCategoryDto } from './dto/create-category.dto';
+import { UpdateCategoryDto } from './dto/update-category.dto';
 
 @Injectable()
 export class CategoriesService {
@@ -49,12 +51,7 @@ export class CategoriesService {
     });
   }
 
-  async create(data: {
-    nameFr: string;
-    slug: string;
-    imageUrl?: string;
-    parentId?: string;
-  }) {
+  async create(data: CreateCategoryDto) {
     const maxOrder = await this.prisma.category.aggregate({
       _max: { sortOrder: true },
     });
@@ -63,15 +60,7 @@ export class CategoriesService {
     });
   }
 
-  async update(
-    id: string,
-    data: {
-      nameFr?: string;
-      slug?: string;
-      imageUrl?: string;
-      parentId?: string;
-    },
-  ) {
+  async update(id: string, data: UpdateCategoryDto) {
     const cat = await this.prisma.category.findUnique({ where: { id } });
     if (!cat) throw new NotFoundException('Category not found');
     return this.prisma.category.update({ where: { id }, data });
