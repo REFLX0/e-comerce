@@ -271,6 +271,7 @@ model Order {
   status         OrderStatus @default(PENDING)
   totalAmount    Float
   shippingCost   Float       @default(0)
+  promoCode      String?
   idempotencyKey String?     @unique
   // Shipping snapshot (denormalized for data integrity)
   shipFullName   String

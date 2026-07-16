@@ -7,9 +7,10 @@ import { useState } from 'react'
 import { useCartStore } from '@/lib/store/cart.store'
 
 import { ordersApi } from '@/lib/api/orders'
+import { couponsApi } from '@/lib/api/coupons'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
-import { Check } from 'lucide-react'
+import { Check, Tag, X } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { WILAYAS_TN } from '@/lib/utils/format'
 import { FormInput, FormSelect, FormTextarea } from '@/components/common/FormInput'
@@ -32,7 +33,10 @@ export function CheckoutForm() {
   const t = useTranslations('Checkout')
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
-  const { items, shippingCost, clearCart } = useCartStore()
+  const [promoInput, setPromoInput] = useState('')
+  const [promoLoading, setPromoLoading] = useState(false)
+  const [promoError, setPromoError] = useState('')
+  const { items, shippingCost, promoCode, promoDiscount, clearCart, applyPromo, removePromo } = useCartStore()
 
   const {
     register,
@@ -41,6 +45,34 @@ export function CheckoutForm() {
   } = useForm<CheckoutFormData>({
     resolver: zodResolver(checkoutSchema),
   })
+
+  const rawSubtotal = items.reduce((acc, item) => acc + item.variant.priceHT * item.quantity, 0)
+
+  const handleApplyPromo = async () => {
+    const code = promoInput.trim()
+    if (!code) return
+    setPromoLoading(true)
+    setPromoError('')
+    try {
+      const res = await couponsApi.validate(code, rawSubtotal)
+      if (res.type === 'SHIPPING') {
+        applyPromo(code, 0)
+      } else {
+        applyPromo(code, res.discount)
+      }
+      setPromoInput('')
+      toast.success('Code promo appliqué !')
+    } catch (err: any) {
+      setPromoError(err?.response?.data?.message || err?.message || 'Code promo invalide')
+    } finally {
+      setPromoLoading(false)
+    }
+  }
+
+  const handleRemovePromo = () => {
+    removePromo()
+    toast.success('Code promo retiré')
+  }
 
   const onSubmit = async (data: CheckoutFormData) => {
     if (items.length === 0) {
@@ -64,6 +96,7 @@ export function CheckoutForm() {
           },
           notes: data.notes,
           shippingCost,
+          promoCode,
         }
       )
 
@@ -178,10 +211,63 @@ export function CheckoutForm() {
         </div>
       </div>
 
-      <div className="border-brand-surface-dark rounded-2xl border bg-white p-6 shadow-card md:p-8 animate-fade-in-up" style={{ animationDelay: '100ms' }}>
+      <div className="border-brand-surface-dark rounded-2xl border bg-white p-6 shadow-card md:p-8 animate-fade-in-up" style={{ animationDelay: '50ms' }}>
         <h2 className="font-display text-brand-primary mb-6 flex items-center gap-3 border-b border-gray-100 pb-4 text-xl font-bold">
           <div className="bg-brand-primary flex h-8 w-8 items-center justify-center rounded-full text-sm text-white">
             2
+          </div>
+          Code promo
+        </h2>
+        {promoCode ? (
+          <div className="bg-brand-primary/10 flex items-center justify-between rounded-xl p-4">
+            <div className="flex items-center gap-3">
+              <Tag size={20} className="text-brand-primary" />
+              <div>
+                <p className="font-bold text-gray-900">{promoCode}</p>
+                <p className="text-sm text-gray-600">
+                  {promoDiscount > 0
+                    ? `-${promoDiscount.toFixed(3)} TND`
+                    : 'Livraison offerte'}
+                </p>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={handleRemovePromo}
+              className="rounded-full p-1 text-gray-400 hover:bg-red-50 hover:text-red-500"
+            >
+              <X size={18} />
+            </button>
+          </div>
+        ) : (
+          <div className="flex gap-3">
+            <div className="flex-1">
+              <input
+                type="text"
+                value={promoInput}
+                onChange={(e) => setPromoInput(e.target.value)}
+                placeholder="Saisissez votre code promo"
+                className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm outline-none transition-colors focus:border-gray-400"
+                onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleApplyPromo())}
+              />
+              {promoError && <p className="mt-1 text-xs text-red-500">{promoError}</p>}
+            </div>
+            <button
+              type="button"
+              onClick={handleApplyPromo}
+              disabled={promoLoading || !promoInput.trim()}
+              className="bg-brand-primary rounded-xl px-6 py-3 text-sm font-bold text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {promoLoading ? '...' : 'Appliquer'}
+            </button>
+          </div>
+        )}
+      </div>
+
+      <div className="border-brand-surface-dark rounded-2xl border bg-white p-6 shadow-card md:p-8 animate-fade-in-up" style={{ animationDelay: '100ms' }}>
+        <h2 className="font-display text-brand-primary mb-6 flex items-center gap-3 border-b border-gray-100 pb-4 text-xl font-bold">
+          <div className="bg-brand-primary flex h-8 w-8 items-center justify-center rounded-full text-sm text-white">
+            3
           </div>
           {t('payment')}
         </h2>

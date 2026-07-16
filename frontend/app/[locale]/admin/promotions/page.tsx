@@ -11,7 +11,7 @@ export default function AdminPromotionsPage() {
     const queryClient = useQueryClient()
   const [showCreate, setShowCreate] = useState(false)
   const [newCode, setNewCode] = useState('')
-  const [newType, setNewType] = useState<'PERCENT' | 'FIXED' | 'FREE_SHIPPING'>('PERCENT')
+  const [newType, setNewType] = useState<'PERCENT' | 'FIXED' | 'SHIPPING'>('PERCENT')
   const [newValue, setNewValue] = useState('')
   const [newMinAmount, setNewMinAmount] = useState('')
   const [newMaxUses, setNewMaxUses] = useState('')
@@ -19,7 +19,7 @@ export default function AdminPromotionsPage() {
 
   const [editingCoupon, setEditingCoupon] = useState<any>(null)
   const [editCode, setEditCode] = useState('')
-  const [editType, setEditType] = useState<'PERCENT' | 'FIXED' | 'FREE_SHIPPING'>('PERCENT')
+  const [editType, setEditType] = useState<'PERCENT' | 'FIXED' | 'SHIPPING'>('PERCENT')
   const [editValue, setEditValue] = useState('')
   const [editMinAmount, setEditMinAmount] = useState('')
   const [editMaxUses, setEditMaxUses] = useState('')
@@ -115,7 +115,7 @@ export default function AdminPromotionsPage() {
                 <select value={newType} onChange={e => setNewType(e.target.value as any)} className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-brand-accent transition-all">
                   <option value="PERCENT">Pourcentage</option>
                   <option value="FIXED">Montant fixe</option>
-                  <option value="FREE_SHIPPING">Livraison gratuite</option>
+                  <option value="SHIPPING">Livraison gratuite</option>
                 </select>
               </div>
               <div className="space-y-1.5">
@@ -162,7 +162,7 @@ export default function AdminPromotionsPage() {
                 <select value={editType} onChange={e => setEditType(e.target.value as any)} className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-brand-accent transition-all">
                   <option value="PERCENT">Pourcentage</option>
                   <option value="FIXED">Montant fixe</option>
-                  <option value="FREE_SHIPPING">Livraison gratuite</option>
+                  <option value="SHIPPING">Livraison gratuite</option>
                 </select>
               </div>
               <div className="space-y-1.5">

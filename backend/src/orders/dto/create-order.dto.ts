@@ -35,4 +35,5 @@ export class CreateOrderDto {
   @IsOptional() @IsString() idempotencyKey?: string;
   @IsOptional() @IsString() paymentMethod?: string;
   @IsOptional() @IsNumber() @Min(0) shippingCost?: number;
+  @IsOptional() @IsString() promoCode?: string;
 }

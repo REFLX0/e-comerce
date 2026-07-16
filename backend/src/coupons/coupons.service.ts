@@ -74,6 +74,27 @@ export class CouponsService {
       );
     }
 
-    return coupon;
+    let discount = 0;
+    if (coupon.type === 'PERCENT') {
+      discount = parseFloat((cartTotal * (coupon.value / 100)).toFixed(3));
+    } else if (coupon.type === 'FIXED') {
+      discount = coupon.value;
+    } else if (coupon.type === 'SHIPPING') {
+      discount = 0; // shipping handled separately
+    }
+
+    return {
+      ...coupon,
+      discount,
+    };
+  }
+
+  async applyCoupon(code: string, cartTotal: number) {
+    const result = await this.validateCode(code, cartTotal);
+    await this.prisma.coupon.update({
+      where: { id: result.id },
+      data: { currentUses: { increment: 1 } },
+    });
+    return result;
   }
 }
