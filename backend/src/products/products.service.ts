@@ -34,6 +34,10 @@ export class ProductsService {
       images: { orderBy: { sortOrder: 'asc' as const } },
       variants: true,
       specs: true,
+      reviews: {
+        where: { isApproved: true },
+        select: { rating: true },
+      },
     };
   }
 
@@ -411,8 +415,14 @@ export class ProductsService {
         Date.now() - new Date(product.createdAt).getTime() <
         30 * 24 * 60 * 60 * 1000,
       isPromo: false,
-      rating: 0,
-      reviewCount: 0,
+      rating:
+        product.reviews?.length > 0
+          ? +(
+              product.reviews.reduce((s: number, r: any) => s + r.rating, 0) /
+              product.reviews.length
+            ).toFixed(1)
+          : 0,
+      reviewCount: product.reviews?.length ?? 0,
       createdAt: product.createdAt,
       updatedAt: product.createdAt,
       tags: [],
