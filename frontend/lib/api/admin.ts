@@ -65,7 +65,7 @@ export const adminApi = {
 
   // Orders - export
   exportOrders: (status?: string) =>
-    api.get<{ csv: string }>('/admin/orders/export', { params: { status } }),
+    api.get<{ csv: string }>('/admin/orders/export', { params: status ? { status } : undefined }),
 
   // Shipping zones
   getShippingZones: () =>
