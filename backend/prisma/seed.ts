@@ -45,14 +45,17 @@ async function main() {
   const [yacco, shell, total, castrol, liqui, motul, bosch, purflux, wynns] = brands
 
   // 3. CATEGORIES
-  const cAuto = await prisma.category.create({ data: { nameFr: 'Automobile', slug: 'automobile', imageUrl: '/img/product.jpg' } })
-  const cMoto = await prisma.category.create({ data: { nameFr: 'Moto', slug: 'moto', imageUrl: '/img/product.jpg' } })
-  const cHeavy = await prisma.category.create({ data: { nameFr: 'Poids Lourd & Agricole', slug: 'poids-lourd-agricole', imageUrl: '/img/product.jpg' } })
-  const cFilters = await prisma.category.create({ data: { nameFr: 'Filtres', slug: 'filtres', imageUrl: '/img/product.jpg' } })
-  const cAdditives = await prisma.category.create({ data: { nameFr: 'Additifs & Entretien', slug: 'additifs', imageUrl: '/img/product.jpg' } })
-  const cHydraulics = await prisma.category.create({ data: { nameFr: 'Liquides Hydrauliques', slug: 'hydraulique', imageUrl: '/img/product.jpg' } })
-  const cGreases = await prisma.category.create({ data: { nameFr: 'Graisses & Lubrifiants', slug: 'graisses', imageUrl: '/img/product.jpg' } })
-  const cEngineOils = await prisma.category.create({ data: { nameFr: 'Huiles Moteur', slug: 'huiles-moteur', imageUrl: '/img/product.jpg' } })
+  const cAuto = await prisma.category.create({ data: { nameFr: 'Automobile', slug: 'automobile', imageUrl: 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?q=80&w=600' } })
+  const cMoto = await prisma.category.create({ data: { nameFr: 'Moto', slug: 'moto', imageUrl: 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?q=80&w=600' } })
+  const cHeavy = await prisma.category.create({ data: { nameFr: 'Poids Lourd & Agricole', slug: 'poids-lourd-agricole', imageUrl: 'https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?q=80&w=600' } })
+  const cFilters = await prisma.category.create({ data: { nameFr: 'Filtres', slug: 'filtres', imageUrl: 'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?q=80&w=600' } })
+  const cAdditives = await prisma.category.create({ data: { nameFr: 'Additifs & Entretien', slug: 'additifs', imageUrl: 'https://images.unsplash.com/photo-1530046339160-ce3e530c7d2f?q=80&w=600' } })
+  const cHydraulics = await prisma.category.create({ data: { nameFr: 'Liquides Hydrauliques', slug: 'hydraulique', imageUrl: 'https://images.unsplash.com/photo-1622185139420-3ca8c280021d?q=80&w=600' } })
+  const cGreases = await prisma.category.create({ data: { nameFr: 'Graisses & Lubrifiants', slug: 'graisses', imageUrl: 'https://images.unsplash.com/photo-1606338168573-5946478cb69f?q=80&w=600' } })
+  const cEngineOils = await prisma.category.create({ data: { nameFr: 'Huiles Moteur', slug: 'huiles-moteur', imageUrl: 'https://images.unsplash.com/photo-1600712242805-5f78671f7c4b?q=80&w=600' } })
+  const cTransmission = await prisma.category.create({ data: { nameFr: 'Huiles Transmission & Boîte', slug: 'transmission', imageUrl: 'https://images.unsplash.com/photo-1580674285054-bed31e145f59?q=80&w=600' } })
+  const cCoolant = await prisma.category.create({ data: { nameFr: 'Liquides de Refroidissement', slug: 'refroidissement', imageUrl: 'https://images.unsplash.com/photo-1601628828688-632f38a1a7d0?q=80&w=600' } })
+  const cBrake = await prisma.category.create({ data: { nameFr: 'Liquides de Frein', slug: 'frein', imageUrl: 'https://images.unsplash.com/photo-1588511553003-66c3d74b99a1?q=80&w=600' } })
   
   // Subcategories
   const cAutoSynth = await prisma.category.create({ data: { nameFr: '100% Synthèse', slug: 'auto-synthese', parentId: cAuto.id } })
