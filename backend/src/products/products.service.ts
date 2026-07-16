@@ -177,7 +177,7 @@ export class ProductsService {
         WHERE o.status IN ('CONFIRMED', 'SHIPPED', 'DELIVERED')
           AND o."createdAt" >= ${ninetyDaysAgo}
         GROUP BY oi."productId"
-        ORDER BY totalsold DESC
+        ORDER BY totalsold DESC, oi."productId" DESC
         LIMIT ${limit}
       `;
       topProductIds.push(...rows.map((r) => r.productid));
