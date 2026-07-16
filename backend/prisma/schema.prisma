@@ -397,6 +397,21 @@ model Payment {
 }
 
 // ─────────────────────────────────────────
+//  SHIPPING ZONES
+// ─────────────────────────────────────────
+
+model ShippingZone {
+  id        String   @id @default(cuid())
+  name      String
+  price     Float
+  eta       String   // e.g. "24-48h"
+  sortOrder Int      @default(0)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ─────────────────────────────────────────
 //  SETTINGS
 // ─────────────────────────────────────────
 

@@ -147,6 +147,101 @@ export class AdminService {
     });
   }
 
+  async duplicateProduct(id: string) {
+    const original = await this.prisma.product.findUnique({
+      where: { id },
+      include: { images: true, variants: true },
+    });
+    if (!original) throw new NotFoundException('Product not found');
+    const slug = `${original.slug}-copie-${Date.now()}`;
+    const sku = `${original.sku}-COPY`;
+    return this.prisma.product.create({
+      data: {
+        nameFr: `${original.nameFr} (copie)`,
+        slug,
+        sku,
+        description: original.description,
+        isPublished: false,
+        brandId: original.brandId,
+        categoryId: original.categoryId,
+        images: { create: original.images.map((img, i) => ({ url: img.url, isPrimary: i === 0, sortOrder: i })) },
+        variants: { create: original.variants.map((v) => ({ volume: v.volume, price: v.price, stockQty: v.stockQty, skuVariant: `${v.skuVariant}-COPY` })) },
+      },
+    });
+  }
+
+  async exportOrders(status?: string) {
+    const where: any = {};
+    const VALID_STATUSES = ['PENDING', 'CONFIRMED', 'SHIPPED', 'DELIVERED', 'CANCELLED'];
+    if (status && VALID_STATUSES.includes(status.toUpperCase())) where.status = status.toUpperCase();
+    const orders = await this.prisma.order.findMany({
+      where,
+      include: { items: { include: { product: { select: { nameFr: true } } } }, user: { select: { name: true, email: true } } },
+      orderBy: { createdAt: 'desc' },
+    });
+    const header = 'ID,Date,Client,Email,Téléphone,Wilaya,Ville,Total TND,Frais Livraison,Statut,Articles\n';
+    const rows = orders.map((o) => {
+      const items = o.items.map((i) => `${i.quantity}x ${i.product.nameFr}`).join('; ');
+      return [
+        o.id,
+        new Date(o.createdAt).toISOString().split('T')[0],
+        `"${o.shipFullName || o.user?.name || ''}"`,
+        o.user?.email || '',
+        o.shipPhone || '',
+        o.shipWilaya || '',
+        o.shipCity || '',
+        o.totalAmount.toFixed(2),
+        o.shippingCost?.toFixed(2) || '0.00',
+        o.status,
+        `"${items}"`,
+      ].join(',');
+    }).join('\n');
+    return { csv: header + rows };
+  }
+
+  async bulkProducts(ids: string[], action: string) {
+    switch (action) {
+      case 'publish':
+        await this.prisma.product.updateMany({ where: { id: { in: ids } }, data: { isPublished: true } });
+        break;
+      case 'unpublish':
+        await this.prisma.product.updateMany({ where: { id: { in: ids } }, data: { isPublished: false } });
+        break;
+      case 'delete':
+        await this.prisma.product.updateMany({ where: { id: { in: ids } }, data: { isPublished: false } });
+        break;
+      case 'duplicate':
+        for (const id of ids) await this.duplicateProduct(id);
+        break;
+    }
+    return { ok: true, count: ids.length };
+  }
+
+  async exportProducts() {
+    const products = await this.prisma.product.findMany({
+      include: { brand: true, category: true, variants: true, images: { take: 1, orderBy: { sortOrder: 'asc' } } },
+      orderBy: { createdAt: 'desc' },
+    });
+    const header = 'SKU,Nom,Slug,Description,Marque,Catégorie,Prix TND,Stock Total,Publié,Image\n';
+    const rows = products.map((p) => {
+      const firstVariant = p.variants[0];
+      const totalStock = p.variants.reduce((sum, v) => sum + v.stockQty, 0);
+      return [
+        p.sku,
+        `"${p.nameFr}"`,
+        p.slug,
+        `"${(p.description || '').replace(/"/g, '""')}"`,
+        p.brand?.name || '',
+        p.category?.nameFr || '',
+        firstVariant ? firstVariant.price.toFixed(2) : '0.00',
+        totalStock,
+        p.isPublished ? 'Oui' : 'Non',
+        p.images[0]?.url || '',
+      ].join(',');
+    }).join('\n');
+    return { csv: header + rows };
+  }
+
   // ─── Orders ───────────────────────────────────────────────────────────────
   async getOrders(page = 1, limit = 20, status?: string) {
     const skip = (page - 1) * limit;
@@ -166,7 +261,7 @@ export class AdminService {
         where,
         skip,
         take: limit,
-        include: { items: true, user: { select: { name: true, email: true } } },
+      include: { items: { include: { product: { select: { nameFr: true } } } }, user: { select: { name: true, email: true } } },
         orderBy: { createdAt: 'desc' },
       }),
       this.prisma.order.count({ where }),

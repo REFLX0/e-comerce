@@ -20,6 +20,7 @@ import { TicketsModule } from './tickets/tickets.module';
 import { WishlistModule } from './wishlist/wishlist.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { SettingsModule } from './settings/settings.module';
+import { ShippingModule } from './shipping/shipping.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { SettingsModule } from './settings/settings.module';
     WishlistModule,
     NotificationsModule,
     SettingsModule,
+    ShippingModule,
   ],
 })
 export class AppModule {}

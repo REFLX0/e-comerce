@@ -67,12 +67,27 @@ export class AdminController {
   ) {
     return this.adminService.deleteProduct(id);
   }
+  @Post('products/bulk') bulkProducts(@Body() body: { ids: string[]; action: string }) {
+    return this.adminService.bulkProducts(body.ids, body.action);
+  }
+  @Post('products/:id/duplicate') duplicateProduct(@Param('id') id: string) {
+    return this.adminService.duplicateProduct(id);
+  }
+  @Patch('products/:id/publish') publishProduct(@Param('id') id: string, @Body('isPublished') isPublished: boolean) {
+    return this.adminService.updateProduct(id, { isPublished });
+  }
+  @Get('products/export') exportProducts() {
+    return this.adminService.exportProducts();
+  }
 
   @Get('orders') getOrders(
     @Query('page') p?: string,
     @Query('status') s?: string,
   ) {
     return this.adminService.getOrders(p ? +p : 1, 20, s);
+  }
+  @Get('orders/export') exportOrders(@Query('status') s?: string) {
+    return this.adminService.exportOrders(s);
   }
   @Patch('orders/:id/status') updateOrderStatus(
     @Param('id') id: string,

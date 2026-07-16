@@ -135,7 +135,18 @@ export default function AdminInventoryPage() {
           <p className="text-sm text-gray-500">Gérez les niveaux de stock en temps réel</p>
         </div>
         <div className="flex gap-2">
-          <button className="flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">
+          <button onClick={() => {
+            const header = 'Produit,SKU,Volume,Prix TND,Stock,Statut\n'
+            const rows = filtered.map((item: any) =>
+              [item.productName, item.sku, item.volume, (item.price ?? 0).toFixed(2), item.qty,
+                item.qty === 0 ? 'Rupture' : item.qty <= 5 ? 'Critique' : 'Normal'
+              ].join(',')
+            ).join('\n')
+            const blob = new Blob([header + rows], { type: 'text/csv;charset=utf-8;' })
+            const url = URL.createObjectURL(blob)
+            const a = document.createElement('a'); a.href = url; a.download = `inventaire-${new Date().toISOString().split('T')[0]}.csv`
+            a.click(); URL.revokeObjectURL(url)
+          }} className="flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">
             <Download size={15} /> Exporter CSV
           </button>
         </div>

@@ -50,6 +50,36 @@ export const adminApi = {
   deleteReview: (id: string) =>
     api.delete(`/admin/reviews/${id}`),
 
+  // Products - bulk & export
+  bulkProducts: (ids: string[], action: string) =>
+    api.post('/admin/products/bulk', { ids, action }),
+
+  duplicateProduct: (id: string) =>
+    api.post(`/admin/products/${id}/duplicate`),
+
+  publishProduct: (id: string, isPublished: boolean) =>
+    api.patch(`/admin/products/${id}/publish`, { isPublished }),
+
+  exportProducts: () =>
+    api.get<{ csv: string }>('/admin/products/export'),
+
+  // Orders - export
+  exportOrders: (status?: string) =>
+    api.get<{ csv: string }>('/admin/orders/export', { params: { status } }),
+
+  // Shipping zones
+  getShippingZones: () =>
+    api.get('/shipping/zones'),
+
+  createShippingZone: (data: { name: string; price: number; eta: string }) =>
+    api.post('/shipping/zones', data),
+
+  updateShippingZone: (id: string, data: any) =>
+    api.patch(`/shipping/zones/${id}`, data),
+
+  deleteShippingZone: (id: string) =>
+    api.delete(`/shipping/zones/${id}`),
+
   // Payments
   getPayments: (params?: { page?: number; limit?: number }) =>
     api.get('/admin/payments', { params }),
