@@ -165,13 +165,60 @@ export class ProductsService {
   }
 
   async findBestSellers(limit = 8) {
+    const ninetyDaysAgo = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000);
+
+    const topProductIds: string[] = [];
+
+    if (limit > 0) {
+      const rows = await this.prisma.$queryRaw<Array<{ productid: string; totalsold: number }>>`
+        SELECT oi."productId", SUM(oi.quantity)::int AS totalsold
+        FROM "OrderItem" oi
+        INNER JOIN "Order" o ON oi."orderId" = o.id
+        WHERE o.status IN ('CONFIRMED', 'SHIPPED', 'DELIVERED')
+          AND o."createdAt" >= ${ninetyDaysAgo}
+        GROUP BY oi."productId"
+        ORDER BY totalsold DESC
+        LIMIT ${limit}
+      `;
+      topProductIds.push(...rows.map((r) => r.productid));
+    }
+
+    if (topProductIds.length < limit) {
+      const fallbackLimit = limit - topProductIds.length;
+      const fallback = await this.prisma.product.findMany({
+        where: {
+          isPublished: true,
+          isFeatured: true,
+          id: { notIn: topProductIds },
+        },
+        include: this.buildInclude(),
+        take: fallbackLimit,
+        orderBy: { createdAt: 'desc' },
+      });
+      topProductIds.push(...fallback.map((p) => p.id));
+    }
+
+    if (topProductIds.length === 0) {
+      const newest = await this.prisma.product.findMany({
+        where: { isPublished: true },
+        include: this.buildInclude(),
+        take: limit,
+        orderBy: { createdAt: 'desc' },
+      });
+      return newest.map(this.serialize);
+    }
+
     const products = await this.prisma.product.findMany({
-      where: { isPublished: true, isFeatured: true },
+      where: { id: { in: topProductIds }, isPublished: true },
       include: this.buildInclude(),
-      take: limit,
-      orderBy: { createdAt: 'desc' },
     });
-    return products.map(this.serialize);
+
+    const map = new Map(products.map((p) => [p.id, p]));
+    const ordered = topProductIds
+      .map((id) => map.get(id))
+      .filter((p): p is NonNullable<typeof p> => p != null);
+
+    return ordered.map(this.serialize);
   }
 
   async findNew(limit = 8) {
