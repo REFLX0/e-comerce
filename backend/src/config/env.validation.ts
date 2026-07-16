@@ -5,13 +5,14 @@ export const envSchema = Joi.object({
   PORT: Joi.number().default(4000),
   DATABASE_URL: Joi.string().uri().required().description('PostgreSQL connection string'),
   JWT_SECRET: Joi.string().min(16).required().description('JWT signing secret (min 16 chars)'),
-  CLOUDINARY_CLOUD_NAME: Joi.string().optional(),
-  CLOUDINARY_API_KEY: Joi.string().optional(),
-  CLOUDINARY_API_SECRET: Joi.string().optional(),
-  RESEND_API_KEY: Joi.string().optional(),
-  REDIS_HOST: Joi.string().optional(),
+  CLOUDINARY_CLOUD_NAME: Joi.string().allow('').optional(),
+  CLOUDINARY_API_KEY: Joi.string().allow('').optional(),
+  CLOUDINARY_API_SECRET: Joi.string().allow('').optional(),
+  RESEND_API_KEY: Joi.string().allow('').optional(),
+  SENTRY_DSN: Joi.string().allow('').optional(),
+  REDIS_HOST: Joi.string().allow('').optional(),
   REDIS_PORT: Joi.number().optional(),
-  FRONTEND_URL: Joi.string().uri().optional(),
+  FRONTEND_URL: Joi.string().uri().allow('').optional(),
 });
 
 export function validateEnv(config: Record<string, unknown>) {
