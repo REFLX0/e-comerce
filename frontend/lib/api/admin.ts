@@ -55,7 +55,7 @@ export const adminApi = {
     api.post('/admin/products/bulk', { ids, action }),
 
   duplicateProduct: (id: string) =>
-    api.post(`/admin/products/${id}/duplicate`),
+    api.post(`/admin/products/${id}/duplicate`, {}),
 
   publishProduct: (id: string, isPublished: boolean) =>
     api.patch(`/admin/products/${id}/publish`, { isPublished }),
