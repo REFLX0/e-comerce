@@ -14,6 +14,7 @@ export class OrdersService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly notifications: NotificationsService,
+    private readonly couponsService: CouponsService,
   ) {}
 
   async create(dto: CreateOrderDto, userId?: string) {
@@ -51,6 +52,11 @@ export class OrdersService {
       return sum + variant.price * item.quantity;
     }, 0);
 
+    // Validate and apply promo code if provided
+    if (dto.promoCode) {
+      await this.couponsService.applyCoupon(dto.promoCode, totalAmount);
+    }
+
     // Atomic: create order + decrement stock + create payment in one transaction
     const order = await this.prisma.$transaction(async (tx) => {
       const created = await tx.order.create({
@@ -59,6 +65,7 @@ export class OrdersService {
           userId: userId ?? null,
           totalAmount,
           shippingCost: dto.shippingCost ?? 0,
+          promoCode: dto.promoCode ?? null,
           shipFullName: dto.shipping.fullName,
           shipPhone: dto.shipping.phone,
           shipWilaya: dto.shipping.wilaya,
