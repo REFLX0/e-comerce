@@ -189,17 +189,21 @@ export function createApiClient(opts: ApiClientOptions) {
       for (const [k, v] of Object.entries(params)) url.searchParams.set(k, String(v))
     }
 
+    const isFormData = rest.body instanceof FormData
+    const headers: Record<string, string> = {
+      ...defaultHeaders,
+      ...(extra as Record<string, string>),
+    }
+    if (!isFormData && !headers['Content-Type']) {
+      headers['Content-Type'] = 'application/json'
+    }
     const fetchFn = () =>
       fetchWithRetry(
         url.toString(),
         {
           ...rest,
           credentials: 'include',
-          headers: {
-            'Content-Type': 'application/json',
-            ...defaultHeaders,
-            ...(extra as Record<string, string>),
-          },
+          headers,
         },
         { retries, timeoutMs }
       ).then(async (res) => {
@@ -217,14 +221,17 @@ export function createApiClient(opts: ApiClientOptions) {
     return breaker ? breaker.execute(fetchFn) : fetchFn()
   }
 
+  const toBody = (body: unknown) =>
+    body instanceof FormData ? body : JSON.stringify(body)
+
   return {
     get:    <T>(path: string, init?: ApiClientRequest) => request<T>(path, { ...init, method: 'GET' }),
     post:   <T>(path: string, body: unknown, init?: ApiClientRequest) =>
-              request<T>(path, { ...init, method: 'POST', body: JSON.stringify(body) }),
+              request<T>(path, { ...init, method: 'POST', body: toBody(body) }),
     put:    <T>(path: string, body: unknown, init?: ApiClientRequest) =>
-              request<T>(path, { ...init, method: 'PUT', body: JSON.stringify(body) }),
+              request<T>(path, { ...init, method: 'PUT', body: toBody(body) }),
     patch:  <T>(path: string, body: unknown, init?: ApiClientRequest) =>
-              request<T>(path, { ...init, method: 'PATCH', body: JSON.stringify(body) }),
+              request<T>(path, { ...init, method: 'PATCH', body: toBody(body) }),
     delete: <T>(path: string, init?: ApiClientRequest) => request<T>(path, { ...init, method: 'DELETE' }),
   }
 }

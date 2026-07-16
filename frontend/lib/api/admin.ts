@@ -13,9 +13,7 @@ export const adminApi = {
   uploadImage: (file: File) => {
     const formData = new FormData()
     formData.append('file', file)
-    return api.post<{ url: string }>('/uploads/image', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    })
+    return api.post<{ url: string }>('/uploads/image', formData)
   },
 
   createProduct: (body: any) =>

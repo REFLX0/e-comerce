@@ -40,6 +40,7 @@ export default auth(async (req: NextRequest & { auth?: unknown }) => {
     `style-src 'self' 'unsafe-inline' https://fonts.googleapis.com`,
     `font-src 'self' https://fonts.gstatic.com`,
     `img-src 'self' blob: data: https://res.cloudinary.com https://images.unsplash.com https://www.google.com https://cdn.autodoc.de`,
+    `media-src 'self' data: blob:`,
     `connect-src 'self' ${env.NEXT_PUBLIC_API_URL ? new URL(env.NEXT_PUBLIC_API_URL, 'http://localhost').origin : ''} http://localhost:4000 https://api.cloudinary.com https://www.upstash.io`,
     `object-src 'none'`,
     `base-uri 'self'`,
