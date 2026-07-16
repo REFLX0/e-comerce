@@ -109,7 +109,7 @@ export default function AdminProductsPage() {
         const cols = line.split(',').map((c) => c.replace(/^"|"$/g, '').trim())
         if (cols[0] && cols[1]) {
           try {
-            await adminApi.createProduct({ sku: cols[0], nameFr: cols[1], slug: cols[2] || cols[1].toLowerCase().replace(/[^a-z0-9]+/g, '-'), description: cols[3] || '', brandId: null, categoryId: null, isPublished: false, price: parseFloat(cols[6]) || 0, stock: parseInt(cols[7]) || 0 })
+            await adminApi.createProduct({ sku: cols[0]!, nameFr: cols[1]!, slug: (cols[2] || cols[1]!.toLowerCase().replace(/[^a-z0-9]+/g, '-'))!, description: cols[3] || '', brandId: null, categoryId: null, isPublished: false, price: parseFloat(cols[6] ?? '0') || 0, stock: parseInt(cols[7] ?? '0') || 0 })
             results.push(`✓ ${cols[1]}`)
           } catch { results.push(`✗ ${cols[1]}`) }
         }
