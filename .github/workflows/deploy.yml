@@ -56,7 +56,8 @@ jobs:
             
             # Pull latest code (or clone if first deploy)
             if [ -d ".git" ]; then
-              git pull origin main
+              git fetch origin main
+              git reset --hard origin/main
             else
               git clone https://github.com/REFLX0/e-comerce.git .
             fi
