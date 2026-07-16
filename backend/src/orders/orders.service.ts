@@ -47,24 +47,42 @@ export class OrdersService {
       }
     }
 
-    const totalAmount = dto.items.reduce((sum, item) => {
+    // Compute totals
+    const TVA_RATE = 0.19;
+    const itemsTotalHT = dto.items.reduce((sum, item) => {
       const variant = variants.find((v) => v.id === item.variantId)!;
       return sum + variant.price * item.quantity;
     }, 0);
 
-    // Validate and apply promo code if provided
+    let promoDiscount = 0;
     if (dto.promoCode) {
-      await this.couponsService.applyCoupon(dto.promoCode, totalAmount);
+      const coupon = await this.couponsService.validateCode(
+        dto.promoCode,
+        itemsTotalHT,
+      );
+      promoDiscount = coupon.discount;
     }
 
-    // Atomic: create order + decrement stock + create payment in one transaction
+    const discountedHT = itemsTotalHT - promoDiscount;
+    const tva = Math.round(discountedHT * TVA_RATE * 100) / 100;
+    const shipping = dto.shippingCost ?? 0;
+    const totalAmount = Math.round((discountedHT + tva + shipping) * 100) / 100;
+
+    // Atomic: create order + decrement stock + create payment + increment coupon
     const order = await this.prisma.$transaction(async (tx) => {
+      if (dto.promoCode) {
+        await tx.coupon.update({
+          where: { code: dto.promoCode },
+          data: { currentUses: { increment: 1 } },
+        });
+      }
+
       const created = await tx.order.create({
         data: {
           idempotencyKey: key,
           userId: userId ?? null,
           totalAmount,
-          shippingCost: dto.shippingCost ?? 0,
+          shippingCost: shipping,
           promoCode: dto.promoCode ?? null,
           shipFullName: dto.shipping.fullName,
           shipPhone: dto.shipping.phone,
