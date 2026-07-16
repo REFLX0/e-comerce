@@ -13,6 +13,7 @@ interface CreateOrderPayload {
   shipping: ShippingDto
   promoCode?: string
   notes?: string
+  shippingCost?: number
 }
 
 export const ordersApi = {

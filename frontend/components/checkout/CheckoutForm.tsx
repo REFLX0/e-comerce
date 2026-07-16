@@ -32,7 +32,7 @@ export function CheckoutForm() {
   const t = useTranslations('Checkout')
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
-  const { items, clearCart } = useCartStore()
+  const { items, shippingCost, clearCart } = useCartStore()
 
   const {
     register,
@@ -63,6 +63,7 @@ export function CheckoutForm() {
             city: data.city,
           },
           notes: data.notes,
+          shippingCost,
         }
       )
 

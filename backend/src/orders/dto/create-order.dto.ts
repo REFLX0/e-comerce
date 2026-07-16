@@ -3,6 +3,7 @@ import {
   IsString,
   IsArray,
   IsInt,
+  IsNumber,
   Min,
   IsOptional,
   ValidateNested,
@@ -33,4 +34,5 @@ export class CreateOrderDto {
   @IsOptional() @IsString() notes?: string;
   @IsOptional() @IsString() idempotencyKey?: string;
   @IsOptional() @IsString() paymentMethod?: string;
+  @IsOptional() @IsNumber() @Min(0) shippingCost?: number;
 }

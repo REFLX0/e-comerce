@@ -270,6 +270,7 @@ model Order {
   user           User?       @relation(fields: [userId], references: [id])
   status         OrderStatus @default(PENDING)
   totalAmount    Float
+  shippingCost   Float       @default(0)
   idempotencyKey String?     @unique
   // Shipping snapshot (denormalized for data integrity)
   shipFullName   String

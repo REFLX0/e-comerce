@@ -57,6 +57,7 @@ export class OrdersService {
           idempotencyKey: key,
           userId: userId ?? null,
           totalAmount,
+          shippingCost: dto.shippingCost ?? 0,
           shipFullName: dto.shipping.fullName,
           shipPhone: dto.shipping.phone,
           shipWilaya: dto.shipping.wilaya,
