@@ -103,7 +103,7 @@ export default function AdminProductsPage() {
     const text = await file.text()
     try {
       const lines = text.split('\n').filter(Boolean)
-      const results = []
+      const results: string[] = []
       for (let i = 1; i < lines.length; i++) {
         const line = lines[i]; if (!line) continue
         const cols = line.split(',').map((c) => c.replace(/^"|"$/g, '').trim())
