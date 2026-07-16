@@ -99,15 +99,13 @@ export default function AdminInventoryPage() {
 
   // Flatten to variants
   const items = products.flatMap((p) =>
-    (p.variants ?? [{ id: p.id, volume: 'Standard', price: p.price, stockQty: p.stock, skuVariant: p.sku }]).map((v: {
-      id: string; volume?: string; price?: number; stockQty?: number; skuVariant?: string
-    }) => ({
+    (p.variants ?? [{ id: p.id, volume: 'Standard', priceHT: p.price, stock: p.stock, sku: p.sku }]).map((v: any) => ({
       productId: p.id,
       productName: p.name,
-      sku: v.skuVariant ?? p.sku,
+      sku: v.sku ?? p.sku,
       volume: v.volume,
-      price: v.price ?? p.price,
-      qty: v.stockQty ?? p.stock ?? 0,
+      price: v.priceHT ?? v.price ?? p.price,
+      qty: v.stock ?? v.stockQty ?? p.stock ?? 0,
     }))
   )
 
