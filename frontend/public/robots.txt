@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+
+# Block admin, API, and auth routes from indexing
+Disallow: /en/admin/
+Disallow: /fr/admin/
+Disallow: /api/
+Disallow: /en/auth/
+Disallow: /fr/auth/
+Disallow: /_next/
+
+Sitemap: https://kiosquetn.dev/sitemap.xml
