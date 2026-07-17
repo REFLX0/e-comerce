@@ -40,12 +40,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Write SSH key
+        env:
+          SSH_KEY_B64: ${{ secrets.ORACLE_SSH_KEY }}
+        run: |
+          echo "$SSH_KEY_B64" | base64 -d > /tmp/ssh_key
+          chmod 600 /tmp/ssh_key
+
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ env.ORACLE_HOST }}
           username: ${{ env.ORACLE_USER }}
-          key: ${{ secrets.ORACLE_SSH_KEY }}
+          key_path: /tmp/ssh_key
           script: |
             set -e
             echo "=== Deploying KiosqueTN (port 8082) ==="
@@ -93,7 +100,7 @@ jobs:
         with:
           host: ${{ env.ORACLE_HOST }}
           username: ${{ env.ORACLE_USER }}
-          key: ${{ secrets.ORACLE_SSH_KEY }}
+          key_path: /tmp/ssh_key
           script: |
             sleep 20
             curl -sf http://84.8.254.244:8082/api/health && echo "✓ API is healthy" || echo "✗ API health check failed"
