@@ -18,6 +18,7 @@ services:
     networks:
       - frontend-net
       - backend-net
+      - nexusaid-network
 
   # ── Backend API (NestJS) ──────────────────────────────────────────
   backend:
@@ -138,6 +139,9 @@ networks:
     driver: bridge
   backend-net:
     driver: bridge
+  nexusaid-network:
+    external: true
+    name: main_nexusaid-network
 
 # ── Volumes ───────────────────────────────────────────────────────
 volumes:
