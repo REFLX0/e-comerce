@@ -38,18 +38,31 @@ export default function AdminShippingPage() {
   const [showTarifs, setShowTarifs] = useState(false)
   const [zoneForm, setZoneForm] = useState<{ name: string; price: string; eta: string }>({ name: '', price: '', eta: '' })
   const [editingZone, setEditingZone] = useState<Zone | null>(null)
+  const [deleteTarget, setDeleteTarget] = useState<Zone | null>(null)
 
-  const { data, isLoading } = useQuery<any>({
+  const { data, isLoading, isError, refetch } = useQuery<any>({
     queryKey: ['admin-shipping-orders'],
     queryFn: () => adminApi.getOrders({ page: 1 }),
   })
   const { data: zones } = useQuery<any>({
     queryKey: ['shipping-zones'],
     queryFn: () => adminApi.getShippingZones(),
-    enabled: showTarifs,
+    enabled: true,
   })
 
   const zoneList: Zone[] = Array.isArray(zones) ? zones : []
+
+  if (isError) {
+    return (
+      <div className="p-4 sm:p-6">
+        <div className="rounded-2xl border border-red-100 bg-red-50 p-6 text-center">
+          <AlertTriangle size={32} className="mx-auto mb-3 text-red-400" />
+          <p className="text-sm font-semibold text-red-700">Erreur de chargement</p>
+          <button onClick={() => refetch()} className="mt-3 rounded-xl bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700">Réessayer</button>
+        </div>
+      </div>
+    )
+  }
 
   const createZone = useMutation({
     mutationFn: (data: { name: string; price: number; eta: string }) => adminApi.createShippingZone(data),
@@ -167,8 +180,8 @@ export default function AdminShippingPage() {
                   return (
                     <tr key={order.id} className="border-t border-gray-50 hover:bg-gray-50/50 transition-colors">
                       <td className="px-4 py-3">
-                        <p className="font-mono text-sm font-semibold text-brand-primary">#{order.id.slice(-8).toUpperCase()}</p>
-                        <p className="text-xs text-gray-400">{new Date(order.createdAt).toLocaleDateString('fr-TN')}</p>
+                        <p className="font-mono text-sm font-semibold text-brand-primary">#{(order.id ?? '').slice(-8).toUpperCase()}</p>
+                        <p className="text-xs text-gray-400">{order.createdAt ? new Date(order.createdAt).toLocaleDateString('fr-TN') : '—'}</p>
                       </td>
                       <td className="px-4 py-3">
                         <p className="text-sm font-medium text-gray-800">{order.shipFullName ?? 'Client'}</p>
@@ -235,7 +248,7 @@ export default function AdminShippingPage() {
                   {editingZone?.id === zone.id ? (
                     <div className="flex-1 flex gap-2 items-center">
                       <input value={editingZone.name} onChange={(e) => setEditingZone({ ...editingZone, name: e.target.value })} className="w-28 rounded-lg border px-2 py-1 text-sm" />
-                      <input value={editingZone.price.toString()} onChange={(e) => setEditingZone({ ...editingZone, price: parseFloat(e.target.value) || 0 })} className="w-20 rounded-lg border px-2 py-1 text-sm" type="number" step="0.01" />
+                      <input value={(editingZone.price ?? 0).toString()} onChange={(e) => setEditingZone({ ...editingZone, price: parseFloat(e.target.value) || 0 })} className="w-20 rounded-lg border px-2 py-1 text-sm" type="number" step="0.01" />
                       <input value={editingZone.eta} onChange={(e) => setEditingZone({ ...editingZone, eta: e.target.value })} className="w-20 rounded-lg border px-2 py-1 text-sm" />
                       <button onClick={() => updateZone.mutate({ id: zone.id, data: { name: editingZone.name, price: editingZone.price, eta: editingZone.eta } })} className="rounded-lg bg-green-50 p-1.5 text-green-600 hover:bg-green-100"><Save size={14} /></button>
                     </div>
@@ -248,7 +261,7 @@ export default function AdminShippingPage() {
                       <div className="flex items-center gap-2">
                         <span className="text-sm font-bold text-brand-primary">{zone.price.toFixed(2)} TND</span>
                         <button onClick={() => setEditingZone(zone)} className="rounded-lg p-1 text-gray-400 hover:text-blue-600"><Settings2 size={14} /></button>
-                        <button onClick={() => { if (confirm('Supprimer cette zone ?')) deleteZone.mutate(zone.id) }} className="rounded-lg p-1 text-gray-400 hover:text-red-500"><Trash2 size={14} /></button>
+                        <button onClick={() => setDeleteTarget(zone)} className="rounded-lg p-1 text-gray-400 hover:text-red-500"><Trash2 size={14} /></button>
                       </div>
                     </>
                   )}
@@ -265,6 +278,19 @@ export default function AdminShippingPage() {
                 <button onClick={() => { if (zoneForm.name && zoneForm.price) createZone.mutate({ name: zoneForm.name, price: parseFloat(zoneForm.price), eta: zoneForm.eta || '24-48h' }) }}
                   className="rounded-xl bg-brand-accent px-3 py-2 text-sm font-semibold text-black hover:bg-brand-accent-hover"><Plus size={16} /></button>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {deleteTarget && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+          <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl">
+            <h3 className="text-lg font-bold text-gray-900">Supprimer la zone</h3>
+            <p className="mt-2 text-sm text-gray-500">Voulez-vous vraiment supprimer la zone <strong>{deleteTarget.name}</strong> ?</p>
+            <div className="mt-6 flex justify-end gap-3">
+              <button onClick={() => setDeleteTarget(null)} className="rounded-xl bg-gray-100 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-200">Annuler</button>
+              <button onClick={() => { deleteZone.mutate(deleteTarget.id); setDeleteTarget(null) }} className="rounded-xl bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700">Supprimer</button>
             </div>
           </div>
         </div>

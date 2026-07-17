@@ -47,11 +47,13 @@ export default function NewProductPage() {
     if (e.target.files && e.target.files[0]) {
       const selectedFile = e.target.files[0]
       setFile(selectedFile)
+      if (imagePreview) URL.revokeObjectURL(imagePreview)
       setImagePreview(URL.createObjectURL(selectedFile))
     }
   }
 
   const removeImage = () => {
+    if (imagePreview) URL.revokeObjectURL(imagePreview)
     setFile(null)
     setImagePreview(null)
   }

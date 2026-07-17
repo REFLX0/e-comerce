@@ -58,7 +58,7 @@ export default function OrderDetailPage() {
           <ArrowLeft size={20} />
         </Link>
         <div>
-          <h1 className="text-2xl font-bold text-brand-primary">Commande #{order.id?.slice(-8).toUpperCase()}</h1>
+          <h1 className="text-2xl font-bold text-brand-primary">Commande #{(order.id ?? '').slice(-8).toUpperCase() || 'N/A'}</h1>
           <p className="text-sm text-gray-500">{order.createdAt ? new Date(order.createdAt).toLocaleDateString('fr-TN') : '—'}</p>
         </div>
       </div>

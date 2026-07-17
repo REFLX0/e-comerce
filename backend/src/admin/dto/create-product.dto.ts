@@ -3,10 +3,19 @@ import {
   IsNumber,
   IsBoolean,
   IsOptional,
+  IsArray,
+  ValidateNested,
   MinLength,
   Min,
 } from 'class-validator';
+import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
+
+export class VariantDto {
+  @ApiProperty() @IsString() @MinLength(1) volume: string;
+  @ApiProperty() @IsNumber() @Min(0) price: number;
+  @ApiProperty() @IsNumber() @Min(0) stockQty: number;
+}
 
 export class CreateProductDto {
   @ApiProperty() @IsString() @MinLength(1) nameFr: string;
@@ -40,9 +49,10 @@ export class CreateProductDto {
   @ApiProperty({ required: false, type: [String] })
   @IsOptional()
   images?: string[];
-  @ApiProperty({ required: false }) @IsOptional() variants?: Array<{
-    volume: string;
-    price: number;
-    stockQty: number;
-  }>;
+  @ApiProperty({ required: false, type: [VariantDto] })
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => VariantDto)
+  variants?: VariantDto[];
 }

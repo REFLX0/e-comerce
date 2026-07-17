@@ -78,6 +78,7 @@ model User {
   image                String?
   passwordHash         String?
   role                 Role       @default(CUSTOMER)
+  previousRole         Role?
   phone                String?
   resetPasswordToken   String?    @unique
   resetPasswordExpires DateTime?

@@ -90,12 +90,24 @@ export default function AdminInventoryPage() {
   const [search, setSearch] = useState('')
   const [filter, setFilter] = useState<'all' | 'critical' | 'rupture'>('all')
 
-  const { data, isLoading } = useQuery<any>({
+  const { data, isLoading, isError, refetch } = useQuery<any>({
     queryKey: ['admin-products-inventory'],
     queryFn: () => productsApi.getAll({ limit: 50 }),
   })
 
   const products = (data as any)?.data ?? []
+
+  if (isError) {
+    return (
+      <div className="p-4 sm:p-6">
+        <div className="rounded-2xl border border-red-100 bg-red-50 p-6 text-center">
+          <AlertTriangle size={32} className="mx-auto mb-3 text-red-400" />
+          <p className="text-sm font-semibold text-red-700">Erreur de chargement des stocks</p>
+          <button onClick={() => refetch()} className="mt-3 rounded-xl bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700">Réessayer</button>
+        </div>
+      </div>
+    )
+  }
 
   // Flatten to variants
   const items = products.flatMap((p) =>

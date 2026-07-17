@@ -8,7 +8,7 @@ import { usePathname } from 'next/navigation'
 import { toast } from 'sonner'
 import {
   Search, Download, Clock, CheckCircle2, Truck,
-  XCircle, Filter, ChevronDown, Package, Edit2, Eye
+  XCircle, Filter, ChevronDown, Package, Edit2, Eye, AlertTriangle
 } from 'lucide-react'
 
 const STATUS_CONFIG = {
@@ -32,7 +32,7 @@ export default function AdminOrdersPage() {
   const [amountMin, setAmountMin] = useState('')
   const [amountMax, setAmountMax] = useState('')
 
-  const { data, isLoading } = useQuery<any>({
+  const { data, isLoading, isError, refetch } = useQuery<any>({
     queryKey: ['admin-orders', statusFilter],
     queryFn: () => adminApi.getOrders({ status: statusFilter === 'ALL' ? undefined : statusFilter }),
     enabled: true,
@@ -40,6 +40,18 @@ export default function AdminOrdersPage() {
 
   const r = (data as any)?.data ?? data ?? {}
   const orders = Array.isArray(r) ? r : r.data ?? []
+
+  if (isError) {
+    return (
+      <div className="p-4 sm:p-6">
+        <div className="rounded-2xl border border-red-100 bg-red-50 p-6 text-center">
+          <AlertTriangle size={32} className="mx-auto mb-3 text-red-400" />
+          <p className="text-sm font-semibold text-red-700">Erreur de chargement des commandes</p>
+          <button onClick={() => refetch()} className="mt-3 rounded-xl bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700">Réessayer</button>
+        </div>
+      </div>
+    )
+  }
 
   const updateMutation = useMutation({
     mutationFn: ({ id, status }: { id: string; status: string }) => adminApi.updateOrderStatus(id, status),
@@ -178,11 +190,11 @@ export default function AdminOrdersPage() {
                         checked={selected.includes(order.id)} onChange={() => toggleSelect(order.id)} />
                     </td>
                     <td className="px-2 py-3">
-                      <p className="font-mono text-sm font-semibold text-brand-primary">#{order.id.slice(-8).toUpperCase()}</p>
+                      <p className="font-mono text-sm font-semibold text-brand-primary">#{(order.id ?? '').slice(-8).toUpperCase()}</p>
                       <p className="text-xs text-gray-400">{order.items?.length ?? 0} articles</p>
                     </td>
                     <td className="px-2 py-3 text-sm text-gray-500">
-                      {new Date(order.createdAt).toLocaleDateString('fr-TN')}
+                      {order.createdAt ? new Date(order.createdAt).toLocaleDateString('fr-TN') : '—'}
                     </td>
                     <td className="px-2 py-3">
                       <p className="text-sm font-medium text-gray-800">{order.user?.firstName ? `${order.user.firstName} ${order.user.lastName}` : order.shipFullName}</p>

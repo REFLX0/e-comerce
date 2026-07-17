@@ -37,6 +37,9 @@ export class AdminController {
   ) {
     return this.adminService.getProducts(p ? +p : 1, l ? +l : 20);
   }
+  @Get('products/export') exportProducts() {
+    return this.adminService.exportProducts();
+  }
   @Get('products/:id') getProduct(@Param('id') id: string) {
     return this.adminService.getProduct(id);
   }
@@ -76,21 +79,17 @@ export class AdminController {
   @Patch('products/:id/publish') publishProduct(@Param('id') id: string, @Body('isPublished') isPublished: boolean) {
     return this.adminService.updateProduct(id, { isPublished });
   }
-  @Get('products/export') exportProducts() {
-    return this.adminService.exportProducts();
-  }
-
   @Get('orders') getOrders(
     @Query('page') p?: string,
     @Query('status') s?: string,
   ) {
     return this.adminService.getOrders(p ? +p : 1, 20, s);
   }
-  @Get('orders/:id') getOrder(@Param('id') id: string) {
-    return this.adminService.getOrder(id);
-  }
   @Get('orders/export') exportOrders(@Query('status') s?: string) {
     return this.adminService.exportOrders(s);
+  }
+  @Get('orders/:id') getOrder(@Param('id') id: string) {
+    return this.adminService.getOrder(id);
   }
   @Patch('orders/:id/status') updateOrderStatus(
     @Param('id') id: string,

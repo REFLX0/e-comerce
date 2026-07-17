@@ -36,6 +36,8 @@ export default function EditProductPage() {
     queryFn: () => adminApi.getProduct(id),
     enabled: !!id,
   })
+  const { data: brandsData } = useQuery<any>({ queryKey: ['brands'], queryFn: () => fetch('/api/brands').then(r => r.json()) })
+  const { data: categoriesData } = useQuery<any>({ queryKey: ['categories'], queryFn: () => fetch('/api/categories').then(r => r.json()) })
 
   useEffect(() => {
     if (product) {
@@ -65,11 +67,13 @@ export default function EditProductPage() {
     if (e.target.files && e.target.files[0]) {
       const selectedFile = e.target.files[0]
       setFile(selectedFile)
+      if (imagePreview) URL.revokeObjectURL(imagePreview)
       setImagePreview(URL.createObjectURL(selectedFile))
     }
   }
 
   const removeNewImage = () => {
+    if (imagePreview) URL.revokeObjectURL(imagePreview)
     setFile(null)
     setImagePreview(null)
   }
@@ -161,12 +165,22 @@ export default function EditProductPage() {
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1.5">
-              <label className="text-sm font-semibold text-gray-700">ID Marque *</label>
-              <input type="text" value={brandId} onChange={e => setBrandId(e.target.value)} className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-brand-accent transition-all" required />
+              <label className="text-sm font-semibold text-gray-700">Marque *</label>
+              <select value={brandId} onChange={e => setBrandId(e.target.value)} className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-brand-accent transition-all" required>
+                <option value="">Sélectionner une marque</option>
+                {Array.isArray(brandsData) && brandsData.map((b: any) => (
+                  <option key={b.id} value={b.id}>{b.name || b.nameFr}</option>
+                ))}
+              </select>
             </div>
             <div className="space-y-1.5">
-              <label className="text-sm font-semibold text-gray-700">ID Catégorie *</label>
-              <input type="text" value={categoryId} onChange={e => setCategoryId(e.target.value)} className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-brand-accent transition-all" required />
+              <label className="text-sm font-semibold text-gray-700">Catégorie *</label>
+              <select value={categoryId} onChange={e => setCategoryId(e.target.value)} className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-brand-accent transition-all" required>
+                <option value="">Sélectionner une catégorie</option>
+                {Array.isArray(categoriesData) && categoriesData.map((c: any) => (
+                  <option key={c.id} value={c.id}>{c.nameFr || c.name}</option>
+                ))}
+              </select>
             </div>
           </div>
           <div className="grid grid-cols-2 gap-4">

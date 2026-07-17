@@ -4,7 +4,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { categoriesApi } from '@/lib/api/categories'
 import { useState, useCallback } from 'react'
 import {
-  Plus, Edit2, Trash2, FolderOpen, Folder, ChevronRight, GripVertical, X, Check, Loader2
+  Plus, Edit2, Trash2, FolderOpen, Folder, ChevronRight, GripVertical, X, Check, Loader2, AlertTriangle
 } from 'lucide-react'
 import {
   DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors,
@@ -189,12 +189,24 @@ export default function AdminCategoriesPage() {
   const [modal, setModal] = useState<{ type: 'create' | 'edit'; cat?: Category; parentId?: string } | null>(null)
   const [deleteTarget, setDeleteTarget] = useState<Category | null>(null)
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ['categories-tree'],
     queryFn: categoriesApi.getTree,
   })
 
   const categories: Category[] = data ?? []
+
+  if (isError) {
+    return (
+      <div className="p-4 sm:p-6">
+        <div className="rounded-2xl border border-red-100 bg-red-50 p-6 text-center">
+          <AlertTriangle size={32} className="mx-auto mb-3 text-red-400" />
+          <p className="text-sm font-semibold text-red-700">Erreur de chargement des catégories</p>
+          <button onClick={() => refetch()} className="mt-3 rounded-xl bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700">Réessayer</button>
+        </div>
+      </div>
+    )
+  }
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),

@@ -203,7 +203,7 @@ export default function AdminDashboard() {
                           #{order.id ? order.id.slice(-8).toUpperCase() : 'N/A'}
                         </td>
                       <td className="px-5 py-4 text-gray-500 text-xs">
-                        {new Date(order.createdAt).toLocaleDateString('fr-TN')}
+                        {order.createdAt ? new Date(order.createdAt).toLocaleDateString('fr-TN') : '—'}
                       </td>
                       <td className="px-5 py-4 font-bold text-brand-primary">
                         {order.totalAmount?.toLocaleString('fr-TN', { minimumFractionDigits: 2 })} TND

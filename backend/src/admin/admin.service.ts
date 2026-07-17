@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 // Force TS reload
 import { Prisma } from '@prisma/client';
@@ -190,7 +190,7 @@ export class AdminService {
         o.shipPhone || '',
         o.shipWilaya || '',
         o.shipCity || '',
-        o.totalAmount.toFixed(2),
+        (o.totalAmount ?? 0).toFixed(2),
         o.shippingCost?.toFixed(2) || '0.00',
         o.status,
         `"${items}"`,
@@ -233,7 +233,7 @@ export class AdminService {
         `"${(p.description || '').replace(/"/g, '""')}"`,
         p.brand?.name || '',
         p.category?.nameFr || '',
-        firstVariant ? firstVariant.price.toFixed(2) : '0.00',
+        firstVariant?.price ? firstVariant.price.toFixed(2) : '0.00',
         totalStock,
         p.isPublished ? 'Oui' : 'Non',
         p.images[0]?.url || '',
@@ -289,6 +289,8 @@ export class AdminService {
   }
 
   async updateOrderStatus(id: string, status: string) {
+    const valid = ['PENDING', 'CONFIRMED', 'SHIPPED', 'DELIVERED', 'CANCELLED'];
+    if (!valid.includes(status)) throw new BadRequestException(`Invalid order status: ${status}`);
     return this.prisma.order.update({
       where: { id },
       data: { status: status as any },
@@ -369,6 +371,11 @@ export class AdminService {
   }
 
   async updateUserRole(id: string, role: string) {
+    const valid = ['CUSTOMER', 'ADMIN', 'PRO'];
+    if (!valid.includes(role)) throw new BadRequestException(`Invalid role: ${role}`);
+    const user = await this.prisma.user.findUnique({ where: { id }, select: { role: true } });
+    if (!user) throw new NotFoundException('User not found');
+    if (user.role === 'ADMIN') throw new BadRequestException('Cannot change an admin user\'s role');
     return this.prisma.user.update({
       where: { id },
       data: { role: role as any },
@@ -376,12 +383,16 @@ export class AdminService {
   }
 
   async toggleBlockUser(id: string) {
-    const user = await this.prisma.user.findUnique({ where: { id }, select: { role: true } });
+    const user = await this.prisma.user.findUnique({ where: { id }, select: { role: true, previousRole: true } });
     if (!user) throw new NotFoundException('User not found');
+    if (user.role === 'ADMIN') throw new BadRequestException('Cannot block an admin user');
     const isBlocked = user.role === 'BLOCKED';
     return this.prisma.user.update({
       where: { id },
-      data: { role: isBlocked ? 'CUSTOMER' : 'BLOCKED' },
+      data: {
+        role: isBlocked ? (user.previousRole ?? 'CUSTOMER') : 'BLOCKED',
+        previousRole: isBlocked ? null : user.role,
+      },
     });
   }
 
@@ -442,6 +453,8 @@ export class AdminService {
   }
 
   async updatePaymentStatus(id: string, status: string) {
+    const valid = ['PENDING', 'COMPLETED', 'FAILED', 'REFUNDED'];
+    if (!valid.includes(status)) throw new BadRequestException(`Invalid payment status: ${status}`);
     return this.prisma.payment.update({
       where: { id },
       data: { status: status as any },
