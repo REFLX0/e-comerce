@@ -86,10 +86,4 @@ export class UsersService {
     });
     return { success: true };
   }
-
-  async subscribeNewsletter(email: string) {
-    // In a real app this would save to a Newsletter subscriber table or external API (like Resend/Mailchimp).
-    // For now we just return success to resolve the fake API call in the frontend.
-    return { success: true, email };
-  }
 }

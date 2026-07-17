@@ -86,4 +86,10 @@ export class AuthController {
   resetPassword(@Body() dto: ResetPasswordDto) {
     return this.authService.resetPassword(dto.token, dto.password);
   }
+
+  @Post('newsletter')
+  @HttpCode(HttpStatus.OK)
+  subscribeNewsletter(@Body('email') email: string) {
+    return this.authService.subscribeNewsletter(email);
+  }
 }

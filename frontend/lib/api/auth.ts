@@ -42,5 +42,5 @@ export const authApi = {
 
   changePassword: (payload: any) => apiPost<void>('/users/me/change-password', payload),
 
-  subscribeNewsletter: (email: string) => apiPost<void>('/users/newsletter', { email }),
+  subscribeNewsletter: (email: string) => apiPost<void>('/auth/newsletter', { email }),
 }
