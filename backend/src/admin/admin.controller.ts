@@ -86,6 +86,9 @@ export class AdminController {
   ) {
     return this.adminService.getOrders(p ? +p : 1, 20, s);
   }
+  @Get('orders/:id') getOrder(@Param('id') id: string) {
+    return this.adminService.getOrder(id);
+  }
   @Get('orders/export') exportOrders(@Query('status') s?: string) {
     return this.adminService.exportOrders(s);
   }
@@ -107,6 +110,10 @@ export class AdminController {
     @Body('role') role: string,
   ) {
     return this.adminService.updateUserRole(id, role);
+  }
+  @HttpCode(HttpStatus.OK)
+  @Patch('users/:id/block') blockUser(@Param('id') id: string) {
+    return this.adminService.toggleBlockUser(id);
   }
 
   @Get('reviews') getReviews(

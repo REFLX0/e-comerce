@@ -5,7 +5,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { adminApi } from '@/lib/api/admin'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Search, Mail, Phone, ShoppingBag, UserCheck, ChevronLeft, ChevronRight, Ban } from 'lucide-react'
+import { Search, Mail, Phone, ShoppingBag, UserCheck, ChevronLeft, ChevronRight, Ban, ShieldOff } from 'lucide-react'
 import { toast } from 'sonner'
 
 export default function AdminCustomersPage() {
@@ -31,6 +31,15 @@ export default function AdminCustomersPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-users'] })
       toast.success('Rôle mis à jour')
+    },
+    onError: () => toast.error('Erreur lors de la mise à jour'),
+  })
+
+  const blockMutation = useMutation({
+    mutationFn: (id: string) => adminApi.blockUser(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-users'] })
+      toast.success('Statut utilisateur mis à jour')
     },
     onError: () => toast.error('Erreur lors de la mise à jour'),
   })
@@ -108,7 +117,7 @@ export default function AdminCustomersPage() {
                       </Link>
                     </td>
                     <td className="px-2 py-3">
-                      <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${c.role === 'ADMIN' ? 'bg-purple-100 text-purple-700' : c.role === 'PRO' ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-700'}`}>{c.role}</span>
+                      <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${c.role === 'ADMIN' ? 'bg-purple-100 text-purple-700' : c.role === 'PRO' ? 'bg-blue-100 text-blue-700' : c.role === 'BLOCKED' ? 'bg-red-100 text-red-700' : 'bg-gray-100 text-gray-700'}`}>{c.role === 'BLOCKED' ? 'Bloqué' : c.role}</span>
                     </td>
                     <td className="px-2 py-3"><span className="flex items-center gap-1.5 text-sm font-semibold text-brand-primary"><ShoppingBag size={14} className="text-brand-accent" />{c.ordersCount ?? 0}</span></td>
                     <td className="px-2 py-3 text-sm font-semibold text-brand-primary whitespace-nowrap">{(c.ltv ?? 0).toLocaleString('fr-TN', { minimumFractionDigits: 2 })} TND</td>
@@ -118,7 +127,10 @@ export default function AdminCustomersPage() {
                         <a href={`mailto:${c.email}`} className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-brand-primary transition-colors" title="Envoyer un email"><Mail size={15} /></a>
                         {c.phone && <a href={`tel:${c.phone}`} className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-brand-primary transition-colors" title="Appeler"><Phone size={15} /></a>}
                         {c.role !== 'ADMIN' && (
-                          <button onClick={() => roleMutation.mutate({ id: c.id, role: c.role === 'PRO' ? 'CUSTOMER' : 'PRO' })} className="rounded-lg p-1.5 text-gray-400 hover:bg-blue-50 hover:text-blue-600 transition-colors" title={c.role === 'PRO' ? 'Rétrograder en Client' : 'Promouvoir en PRO'}><UserCheck size={15} /></button>
+                          <>
+                            <button onClick={() => roleMutation.mutate({ id: c.id, role: c.role === 'PRO' ? 'CUSTOMER' : 'PRO' })} className="rounded-lg p-1.5 text-gray-400 hover:bg-blue-50 hover:text-blue-600 transition-colors" title={c.role === 'PRO' ? 'Rétrograder en Client' : 'Promouvoir en PRO'}><UserCheck size={15} /></button>
+                            <button onClick={() => blockMutation.mutate(c.id)} className={`rounded-lg p-1.5 transition-colors ${c.role === 'BLOCKED' ? 'text-green-600 hover:bg-green-50' : 'text-gray-400 hover:bg-red-50 hover:text-red-500'}`} title={c.role === 'BLOCKED' ? 'Débloquer' : 'Bloquer'}>{c.role === 'BLOCKED' ? <ShieldOff size={15} /> : <Ban size={15} />}</button>
+                          </>
                         )}
                       </div>
                     </td>

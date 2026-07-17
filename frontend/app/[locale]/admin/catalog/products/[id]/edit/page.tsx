@@ -5,8 +5,9 @@ import { useMutation, useQuery } from '@tanstack/react-query'
 import { adminApi } from '@/lib/api/admin'
 import { useRouter, useParams, usePathname } from 'next/navigation'
 import { toast } from 'sonner'
-import { Save, ArrowLeft } from 'lucide-react'
+import { Save, ArrowLeft, Upload, X, Image as ImageIcon } from 'lucide-react'
 import Link from 'next/link'
+import Image from 'next/image'
 
 export default function EditProductPage() {
   const router = useRouter()
@@ -25,6 +26,10 @@ export default function EditProductPage() {
   const [price, setPrice] = useState('')
   const [stock, setStock] = useState('')
   const [isPublished, setIsPublished] = useState(true)
+  const [file, setFile] = useState<File | null>(null)
+  const [imagePreview, setImagePreview] = useState<string | null>(null)
+  const [existingImages, setExistingImages] = useState<string[]>([])
+  const [isUploading, setIsUploading] = useState(false)
 
   const { data: product, isLoading } = useQuery<any>({
     queryKey: ['admin-product', id],
@@ -43,6 +48,7 @@ export default function EditProductPage() {
       setPrice(product.variants?.[0]?.price?.toString() ?? '')
       setStock(product.variants?.[0]?.stockQty?.toString() ?? product.stock?.toString() ?? '')
       setIsPublished(product.isPublished ?? true)
+      setExistingImages((product.images ?? []).map((img: any) => img.url))
     }
   }, [product])
 
@@ -55,19 +61,52 @@ export default function EditProductPage() {
     onError: (err: any) => toast.error(err?.message || 'Erreur lors de la mise à jour'),
   })
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const selectedFile = e.target.files[0]
+      setFile(selectedFile)
+      setImagePreview(URL.createObjectURL(selectedFile))
+    }
+  }
+
+  const removeNewImage = () => {
+    setFile(null)
+    setImagePreview(null)
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!nameFr || !slug || !brandId || !categoryId) {
       toast.error('Veuillez remplir tous les champs obligatoires')
       return
     }
-    updateMutation.mutate({
-      nameFr, slug, sku, description,
-      brandId, categoryId,
-      price: price ? parseFloat(price) : undefined,
-      stock: stock ? parseInt(stock, 10) : undefined,
-      isPublished,
-    })
+
+    setIsUploading(true)
+    let imageUrl = null
+
+    try {
+      if (file) {
+        const res = await adminApi.uploadImage(file)
+        imageUrl = (res as any).url || (res as any).data?.url
+      }
+
+      const payload: any = {
+        nameFr, slug, sku, description,
+        brandId, categoryId,
+        price: price ? parseFloat(price) : undefined,
+        stock: stock ? parseInt(stock, 10) : undefined,
+        isPublished,
+      }
+
+      if (imageUrl) {
+        payload.images = [imageUrl]
+      }
+
+      updateMutation.mutate(payload)
+    } catch {
+      toast.error("Erreur lors de l'upload de l'image")
+      setIsUploading(false)
+    }
   }
 
   if (isLoading) {
@@ -140,6 +179,31 @@ export default function EditProductPage() {
               <input type="number" value={stock} onChange={e => setStock(e.target.value)} min={0} className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-brand-accent transition-all" />
             </div>
           </div>
+
+          {/* Image upload */}
+          <div className="space-y-1.5">
+            <label className="text-sm font-semibold text-gray-700">Images</label>
+            <div className="flex flex-wrap gap-3">
+              {existingImages.map((url, i) => (
+                <div key={i} className="relative h-20 w-20 rounded-lg overflow-hidden border border-gray-200">
+                  <Image src={url} alt="" fill className="object-cover" />
+                </div>
+              ))}
+              {imagePreview ? (
+                <div className="relative h-20 w-20 rounded-lg overflow-hidden border border-brand-accent">
+                  <Image src={imagePreview} alt="" fill className="object-cover" />
+                  <button type="button" onClick={removeNewImage} className="absolute top-0.5 right-0.5 rounded-full bg-black/60 p-0.5 text-white"><X size={12} /></button>
+                </div>
+              ) : (
+                <label className="flex h-20 w-20 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-200 bg-gray-50 hover:border-brand-accent hover:bg-brand-accent/5 transition-colors">
+                  <Upload size={16} className="text-gray-400" />
+                  <span className="mt-1 text-[10px] text-gray-400">Ajouter</span>
+                  <input type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
+                </label>
+              )}
+            </div>
+          </div>
+
           <label className="flex items-center gap-3 cursor-pointer">
             <input type="checkbox" checked={isPublished} onChange={e => setIsPublished(e.target.checked)} className="rounded border-gray-300" />
             <span className="text-sm font-medium text-gray-700">Publié</span>
@@ -150,8 +214,8 @@ export default function EditProductPage() {
           <Link href={localizedHref('/admin/catalog/products')} className="rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">
             Annuler
           </Link>
-          <button type="submit" disabled={updateMutation.isPending} className="flex items-center gap-2 rounded-xl bg-brand-accent px-4 py-2.5 text-sm font-semibold text-black hover:bg-brand-accent-hover transition-colors disabled:opacity-50">
-            <Save size={16} /> {updateMutation.isPending ? 'Enregistrement...' : 'Enregistrer les modifications'}
+          <button type="submit" disabled={updateMutation.isPending || isUploading} className="flex items-center gap-2 rounded-xl bg-brand-accent px-4 py-2.5 text-sm font-semibold text-black hover:bg-brand-accent-hover transition-colors disabled:opacity-50">
+            <Save size={16} /> {isUploading ? 'Upload...' : updateMutation.isPending ? 'Enregistrement...' : 'Enregistrer les modifications'}
           </button>
         </div>
       </form>

@@ -6,7 +6,9 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { settingsApi } from '@/lib/api/admin'
 import Link from 'next/link'
-import { BarChart2, CreditCard, Mail, Package, Scale, Settings2, Shield, Truck, ChevronRight, Loader2 } from 'lucide-react'
+import Image from 'next/image'
+import { adminApi } from '@/lib/api/admin'
+import { BarChart2, CreditCard, Mail, Package, Scale, Settings2, Shield, Truck, ChevronRight, Loader2, Upload } from 'lucide-react'
 
 const SECTION_PANELS: Record<string, { title: string; desc: string }> = {
   'Informations generales': { title: 'Informations générales', desc: 'Configurez le nom du site, la devise et les coordonnées.' },
@@ -135,6 +137,31 @@ export default function AdminSettingsPage() {
                   <div className="space-y-1.5">
                     <label className="text-sm font-semibold text-gray-700">Numéro de téléphone</label>
                     <input type="tel" value={String(form.CONTACT_PHONE ?? '')} onChange={e => set('CONTACT_PHONE', e.target.value)} className="w-full rounded-xl border border-gray-200 px-4 py-2 text-sm outline-none focus:border-brand-accent" />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-sm font-semibold text-gray-700">Logo du site</label>
+                    <div className="flex items-center gap-4">
+                      {form.SITE_LOGO ? (
+                        <div className="relative h-16 w-48 rounded-lg overflow-hidden border border-gray-200 bg-gray-50">
+                          <Image src={String(form.SITE_LOGO)} alt="Logo" fill className="object-contain p-2" />
+                        </div>
+                      ) : (
+                        <div className="flex h-16 w-48 items-center justify-center rounded-lg border-2 border-dashed border-gray-200 bg-gray-50 text-xs text-gray-400">Aucun logo</div>
+                      )}
+                      <label className="cursor-pointer rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">
+                        <Upload size={14} className="inline mr-1" />Choisir un fichier
+                        <input type="file" accept="image/*" className="hidden" onChange={async (e) => {
+                          if (e.target.files?.[0]) {
+                            try {
+                              const res = await adminApi.uploadImage(e.target.files[0]);
+                              const url = (res as any).url || (res as any).data?.url;
+                              if (url) set('SITE_LOGO', url);
+                              toast.success('Logo uploadé');
+                            } catch { toast.error('Erreur upload logo'); }
+                          }
+                        }} />
+                      </label>
+                    </div>
                   </div>
                 </>
               )}

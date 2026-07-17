@@ -3,12 +3,17 @@
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { ticketsApi } from '@/lib/api/tickets'
-import { LifeBuoy, CheckCircle2, PackageSearch, ChevronLeft, ChevronRight } from 'lucide-react'
+import { usePathname } from 'next/navigation'
+import { LifeBuoy, CheckCircle2, PackageSearch, ChevronLeft, ChevronRight, Eye } from 'lucide-react'
 import { toast } from 'sonner'
+import Link from 'next/link'
 
 export default function AdminTicketsPage() {
   const queryClient = useQueryClient()
   const [statusFilter, setStatusFilter] = useState('ALL')
+  const pathname = usePathname()
+  const locale = pathname?.split('/')[1] === 'en' ? 'en' : 'fr'
+
   const [page, setPage] = useState(1)
   const limit = 10
 
@@ -61,13 +66,13 @@ export default function AdminTicketsPage() {
           <div className="py-16 text-center text-gray-400">Aucun ticket trouvé</div>
         ) : (
           tickets.map((ticket: any) => (
-            <div key={ticket.id} className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
+            <div key={ticket.id} className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm hover:shadow-md transition-shadow">
               <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-                <div className="flex gap-4">
+                <Link href={`/${locale}/admin/tickets/${ticket.id}`} className="flex gap-4 flex-1 min-w-0">
                   <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl ${ticket.type === 'RETURN' ? 'bg-blue-50 text-blue-600' : 'bg-purple-50 text-purple-600'}`}>
                     {ticket.type === 'RETURN' ? <PackageSearch size={24} /> : <LifeBuoy size={24} />}
                   </div>
-                  <div>
+                  <div className="min-w-0">
                     <div className="flex items-center gap-2 mb-1">
                       <span className="text-sm font-bold text-brand-primary">{ticket.user?.name || ticket.user?.email}</span>
                       <span className="text-xs text-gray-400">({ticket.user?.email})</span>
@@ -83,11 +88,14 @@ export default function AdminTicketsPage() {
                       )}
                     </div>
                   </div>
-                </div>
-                <div className="flex items-center gap-3">
+                </Link>
+                <div className="flex items-center gap-3 shrink-0">
                   <span className={`rounded-full px-3 py-1 text-xs font-bold ${ticket.status === 'RESOLVED' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
                     {ticket.status === 'RESOLVED' ? 'Résolu' : 'En attente'}
                   </span>
+                  <Link href={`/${locale}/admin/tickets/${ticket.id}`} className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-700 transition-colors" title="Détails">
+                    <Eye size={15} />
+                  </Link>
                   {ticket.status !== 'RESOLVED' && (
                     <button onClick={() => resolveMutation.mutate(ticket.id)} className="flex items-center gap-1.5 rounded-xl border border-gray-200 bg-white px-3 py-1.5 text-xs font-semibold text-gray-600 hover:bg-gray-50 transition-all">
                       <CheckCircle2 size={14} className="text-green-500" />

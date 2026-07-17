@@ -27,6 +27,10 @@ export default function AdminOrdersPage() {
   const [statusFilter, setStatusFilter] = useState<string>('ALL')
   const [selected, setSelected] = useState<string[]>([])
   const [showAdvanced, setShowAdvanced] = useState(false)
+  const [dateFrom, setDateFrom] = useState('')
+  const [dateTo, setDateTo] = useState('')
+  const [amountMin, setAmountMin] = useState('')
+  const [amountMax, setAmountMax] = useState('')
 
   const { data, isLoading } = useQuery<any>({
     queryKey: ['admin-orders', statusFilter],
@@ -48,13 +52,15 @@ export default function AdminOrdersPage() {
     onError: () => toast.error('Erreur lors de la mise à jour'),
   })
 
-  const filtered = orders.filter((o: any) =>
-    !search ||
-    o.id.toLowerCase().includes(search.toLowerCase()) ||
-    o.user?.firstName?.toLowerCase().includes(search.toLowerCase()) ||
-    o.user?.lastName?.toLowerCase().includes(search.toLowerCase()) ||
-    o.shipFullName?.toLowerCase().includes(search.toLowerCase())
-  )
+  const filtered = orders.filter((o: any) => {
+    const q = search.toLowerCase()
+    if (q && !(o.id || '').toLowerCase().includes(q) && !(o.shipFullName || '').toLowerCase().includes(q) && !(o.user?.email || '').toLowerCase().includes(q)) return false
+    if (dateFrom && o.createdAt && new Date(o.createdAt) < new Date(dateFrom)) return false
+    if (dateTo && o.createdAt && new Date(o.createdAt) > new Date(dateTo + 'T23:59:59')) return false
+    if (amountMin && (o.totalAmount || 0) < parseFloat(amountMin)) return false
+    if (amountMax && (o.totalAmount || 0) > parseFloat(amountMax)) return false
+    return true
+  })
 
   const toggleSelect = (id: string) =>
     setSelected((prev) => prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id])
@@ -124,11 +130,15 @@ export default function AdminOrdersPage() {
 
       {showAdvanced && (
         <div className="rounded-xl border border-gray-200 bg-gray-50 p-4 space-y-3">
-          <p className="text-xs font-semibold text-gray-500 uppercase">Filtres avancés (à venir)</p>
-          <div className="flex gap-3">
-            <input type="date" className="rounded-lg border border-gray-200 px-3 py-2 text-sm" />
-            <input type="date" className="rounded-lg border border-gray-200 px-3 py-2 text-sm" />
-            <input type="number" placeholder="Montant min" className="rounded-lg border border-gray-200 px-3 py-2 text-sm w-32" />
+          <p className="text-xs font-semibold text-gray-500 uppercase">Filtres avancés</p>
+          <div className="flex flex-wrap gap-3">
+            <div className="space-y-1"><label className="text-xs text-gray-400">Du</label><input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} className="rounded-lg border border-gray-200 px-3 py-2 text-sm w-40" /></div>
+            <div className="space-y-1"><label className="text-xs text-gray-400">Au</label><input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} className="rounded-lg border border-gray-200 px-3 py-2 text-sm w-40" /></div>
+            <div className="space-y-1"><label className="text-xs text-gray-400">Montant min</label><input type="number" value={amountMin} onChange={e => setAmountMin(e.target.value)} placeholder="0" className="rounded-lg border border-gray-200 px-3 py-2 text-sm w-32" /></div>
+            <div className="space-y-1"><label className="text-xs text-gray-400">Montant max</label><input type="number" value={amountMax} onChange={e => setAmountMax(e.target.value)} placeholder="0" className="rounded-lg border border-gray-200 px-3 py-2 text-sm w-32" /></div>
+            {(dateFrom || dateTo || amountMin || amountMax) && (
+              <button onClick={() => { setDateFrom(''); setDateTo(''); setAmountMin(''); setAmountMax('') }} className="self-end rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs font-medium text-gray-500 hover:bg-gray-100">Réinitialiser</button>
+            )}
           </div>
         </div>
       )}

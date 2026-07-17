@@ -26,6 +26,7 @@ export default function AdminPromotionsPage() {
   const [editExpiryDate, setEditExpiryDate] = useState('')
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null)
   const [page, setPage] = useState(1)
+  const [statusFilter, setStatusFilter] = useState<'ALL' | 'ACTIVE' | 'INACTIVE' | 'EXPIRED'>('ALL')
   const limit = 20
 
   const { data, isLoading, isError } = useQuery<any>({
@@ -34,9 +35,16 @@ export default function AdminPromotionsPage() {
   })
 
   const raw = (data as any)?.data ?? data ?? []
-  const coupons: any[] = Array.isArray(raw) ? raw : raw.data ?? []
-  const total = raw.total ?? coupons.length
+  const allCoupons: any[] = Array.isArray(raw) ? raw : raw.data ?? []
+  const total = raw.total ?? allCoupons.length
   const totalPages = raw.totalPages ?? Math.ceil(total / limit)
+
+  const coupons = allCoupons.filter((c: any) => {
+    if (statusFilter === 'ACTIVE') return c.isActive && (!c.expiryDate || new Date(c.expiryDate) > new Date())
+    if (statusFilter === 'INACTIVE') return !c.isActive
+    if (statusFilter === 'EXPIRED') return c.expiryDate && new Date(c.expiryDate) <= new Date()
+    return true
+  })
 
   const createMutation = useMutation({
     mutationFn: (body: any) => couponsApi.create(body),
@@ -102,6 +110,15 @@ export default function AdminPromotionsPage() {
         <button onClick={() => setShowCreate(true)} className="flex items-center gap-2 self-start rounded-xl bg-brand-accent px-4 py-2.5 text-sm font-semibold text-black hover:bg-brand-accent-hover transition-colors">
           <Plus size={16} /> Nouveau coupon
         </button>
+      </div>
+
+      {/* Status filter */}
+      <div className="flex gap-2">
+        {(['ALL', 'ACTIVE', 'INACTIVE', 'EXPIRED'] as const).map(status => (
+          <button key={status} onClick={() => { setStatusFilter(status); setPage(1) }} className={`rounded-xl px-4 py-2 text-sm font-semibold transition-all ${statusFilter === status ? 'bg-brand-primary text-white' : 'bg-white text-gray-500 hover:text-brand-primary border border-gray-200'}`}>
+            {status === 'ALL' ? 'Tous' : status === 'ACTIVE' ? 'Actifs' : status === 'INACTIVE' ? 'Inactifs' : 'Expirés'}
+          </button>
+        ))}
       </div>
 
       {/* Create modal */}

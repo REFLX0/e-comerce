@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { adminApi } from '@/lib/api/admin'
 import { useAuthStore } from '@/lib/store/auth.store'
@@ -61,13 +62,31 @@ export default function AdminDashboard() {
     )
   }
 
+  const recentOrders = stats?.recentOrders ?? []
+
+  const trends = useMemo(() => {
+    const orders = recentOrders
+    const half = Math.ceil(orders.length / 2)
+    const firstHalf = orders.slice(0, half)
+    const secondHalf = orders.slice(half)
+    const sum1 = firstHalf.reduce((s: number, o: any) => s + (o.totalAmount || 0), 0)
+    const sum2 = secondHalf.reduce((s: number, o: any) => s + (o.totalAmount || 0), 0)
+    const revTrend = sum2 > 0 && sum1 > 0 ? ((sum2 / sum1) - 1) * 100 : 0
+    const count1 = firstHalf.length
+    const count2 = secondHalf.length
+    const orderTrend = count1 > 0 ? ((count2 - count1) / count1) * 100 : 0
+    return { revenue: revTrend, orders: orderTrend }
+  }, [recentOrders])
+
+  const trendStr = (v: number) => `${v >= 0 ? '+' : ''}${v.toFixed(1)}%`
+
   const kpis = [
     {
       label: "Chiffre d'affaires",
       value: `${(stats?.totalRevenue ?? 0).toLocaleString('fr-TN', { minimumFractionDigits: 2 })} TND`,
       icon: DollarSign,
-      trend: '+12.5%',
-      isPositive: true,
+      trend: trendStr(trends.revenue),
+      isPositive: trends.revenue >= 0,
       bg: 'bg-gradient-to-br from-brand-primary to-blue-900',
       iconBg: 'bg-brand-accent/20',
       textColor: 'text-white',
@@ -77,8 +96,8 @@ export default function AdminDashboard() {
       label: 'Commandes',
       value: stats?.totalOrders ?? 0,
       icon: ShoppingBag,
-      trend: '+5.2%',
-      isPositive: true,
+      trend: trendStr(trends.orders),
+      isPositive: trends.orders >= 0,
       bg: 'bg-gradient-to-br from-violet-600 to-purple-800',
       iconBg: 'bg-white/20',
       textColor: 'text-white',
@@ -88,7 +107,7 @@ export default function AdminDashboard() {
       label: 'Clients',
       value: stats?.totalUsers ?? 0,
       icon: Users,
-      trend: '+18.1%',
+      trend: '+0%',
       isPositive: true,
       bg: 'bg-white',
       iconBg: 'bg-brand-accent/10',
@@ -107,8 +126,6 @@ export default function AdminDashboard() {
       subColor: 'text-gray-400',
     },
   ]
-
-  const recentOrders = stats?.recentOrders ?? []
 
   return (
     <div className="p-4 sm:p-6 space-y-6">

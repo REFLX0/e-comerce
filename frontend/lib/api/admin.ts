@@ -28,6 +28,9 @@ export const adminApi = {
   getOrders: (params?: { page?: number; status?: string }) =>
     api.get('/admin/orders', { params }),
 
+  getOrder: (id: string) =>
+    api.get(`/admin/orders/${id}`),
+
   updateOrderStatus: (id: string, status: string) =>
     api.patch(`/admin/orders/${id}/status`, { status }),
 
@@ -39,6 +42,9 @@ export const adminApi = {
 
   updateUserRole: (id: string, role: string) =>
     api.patch(`/admin/users/${id}/role`, { role }),
+
+  blockUser: (id: string) =>
+    api.patch(`/admin/users/${id}/block`, {}),
 
   // Reviews
   getReviews: (params?: { page?: number; limit?: number }) =>

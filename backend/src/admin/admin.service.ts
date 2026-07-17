@@ -269,6 +269,25 @@ export class AdminService {
     return { data, total, page, totalPages: Math.ceil(total / limit) };
   }
 
+  async getOrder(id: string) {
+    const order = await this.prisma.order.findUnique({
+      where: { id },
+      include: {
+        items: {
+          include: {
+            product: {
+              select: { nameFr: true, images: { take: 1, select: { url: true } } },
+            },
+            variant: { select: { volume: true } },
+          },
+        },
+        user: { select: { name: true, email: true } },
+      },
+    });
+    if (!order) throw new NotFoundException('Order not found');
+    return order;
+  }
+
   async updateOrderStatus(id: string, status: string) {
     return this.prisma.order.update({
       where: { id },
@@ -353,6 +372,16 @@ export class AdminService {
     return this.prisma.user.update({
       where: { id },
       data: { role: role as any },
+    });
+  }
+
+  async toggleBlockUser(id: string) {
+    const user = await this.prisma.user.findUnique({ where: { id }, select: { role: true } });
+    if (!user) throw new NotFoundException('User not found');
+    const isBlocked = user.role === 'BLOCKED';
+    return this.prisma.user.update({
+      where: { id },
+      data: { role: isBlocked ? 'CUSTOMER' : 'BLOCKED' },
     });
   }
 
