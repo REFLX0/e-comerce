@@ -7,7 +7,7 @@ import { useTranslations } from 'next-intl'
 
 const MOCK_SESSIONS = [
   { id: '1', device: 'Chrome · Windows', location: 'Tunis, Tunisie', date: "Aujourd'hui 13:42", current: true },
-  { id: '2', device: 'Safari · iPhone',  location: 'Sfax, Tunisie',  date: '30 juin 2026',   current: false },
+  { id: '2', device: 'Safari · iPhone',  location: 'Tunis, Tunisie',  date: '30 juin 2026',   current: false },
 ]
 
 export default function SecuritePage() {

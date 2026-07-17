@@ -29,7 +29,7 @@ export function ProductInfo({ product }: Props) {
 
   if (!selectedVariant) return null
 
-  const oldPrice = selectedVariant.priceHT * 1.2
+  const oldPrice = selectedVariant.priceTTC * 1.19
 
   return (
     <div className="flex h-full flex-col">
@@ -82,7 +82,7 @@ export function ProductInfo({ product }: Props) {
           priceTTC={selectedVariant.priceTTC}
           isPromo={product.isPromo}
           promoPercent={product.promoPercent}
-          oldPriceHT={oldPrice}
+          oldPriceTTC={oldPrice}
           className="origin-left scale-125"
         />
       </div>

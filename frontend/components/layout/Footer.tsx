@@ -120,7 +120,7 @@ export default function Footer() {
             <ul className="space-y-4 text-sm">
               <li className="flex items-start gap-3">
                 <MapPin size={16} className="mt-0.5 shrink-0 text-brand-accent" />
-                <span className="text-white/40">Kélibia, Tunisia</span>
+                <span className="text-white/40">Tunis, Tunisia</span>
               </li>
               <li className="flex items-center gap-3">
                 <Phone size={16} className="shrink-0 text-brand-accent" />

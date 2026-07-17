@@ -11,7 +11,9 @@ import { useTranslations } from 'next-intl'
 export function CartSummary() {
   const t = useTranslations('Checkout')
   const tCart = useTranslations('Cart')
-  const { items, subtotalHT, totalTTC, shippingCost, updateQuantity, removeItem } = useCartStore()
+  const { items, totalTTC, shippingCost, updateQuantity, removeItem } = useCartStore()
+
+  const subtotal = useCartStore((s) => s.subtotalHT)
 
   if (items.length === 0) {
     return (
@@ -122,12 +124,8 @@ export function CartSummary() {
 
           <div className="mb-6 space-y-4">
             <div className="flex justify-between text-sm text-gray-600">
-              <span>{t('totalHT')}</span>
-              <span>{formatPrice(subtotalHT)}</span>
-            </div>
-            <div className="flex justify-between text-sm text-gray-600">
-              <span>{t('vat')}</span>
-              <span>{formatPrice(totalTTC - subtotalHT - shippingCost)}</span>
+              <span>Total TTC</span>
+              <span>{formatPrice(totalTTC)}</span>
             </div>
             <div className="flex justify-between text-sm text-gray-600">
               <span>{t('shipping')}</span>
@@ -138,10 +136,10 @@ export function CartSummary() {
               )}
             </div>
 
-            <FreeShippingProgress subtotal={subtotalHT} className="py-2" />
+            <FreeShippingProgress subtotal={totalTTC} className="py-2" />
 
             <div className="flex items-center justify-between border-t border-gray-100 pt-4">
-              <span className="text-brand-primary font-bold">Total TTC</span>
+              <span className="text-brand-primary font-bold">Total</span>
               <span className="font-display text-brand-accent text-2xl font-bold">
                 {formatPrice(totalTTC)}
               </span>

@@ -62,7 +62,7 @@ export function ProductCard({ product }: Props) {
     product.promoPercent > 0 &&
     product.promoPercent < 100 &&
     defaultVariant
-      ? defaultVariant.priceHT / (1 - product.promoPercent / 100)
+      ? defaultVariant.priceTTC / (1 - product.promoPercent / 100)
       : 0
 
   return (
@@ -163,7 +163,7 @@ export function ProductCard({ product }: Props) {
                 priceTTC={defaultVariant.priceTTC}
                 isPromo={product.isPromo}
                 promoPercent={product.promoPercent}
-                oldPriceHT={oldPrice}
+                oldPriceTTC={oldPrice}
               />
             ) : (
               <span className="text-sm text-gray-500">{t('priceNa')}</span>

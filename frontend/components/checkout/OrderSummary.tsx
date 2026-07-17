@@ -9,7 +9,7 @@ import { useTranslations } from 'next-intl'
 export function OrderSummary() {
   const t = useTranslations('Checkout')
   const tCart = useTranslations('Cart')
-  const { items, subtotalHT, totalTTC, shippingCost } = useCartStore()
+  const { items, totalTTC, shippingCost } = useCartStore()
   const [cgvAccepted, setCgvAccepted] = useState(false)
 
   return (
@@ -52,14 +52,6 @@ export function OrderSummary() {
       </div>
 
       <div className="mb-6 space-y-3 border-t border-white/10 pt-6">
-        <div className="flex justify-between text-sm text-white/70">
-          <span>{t('subtotalHT')}</span>
-          <span>{formatPrice(subtotalHT)}</span>
-        </div>
-        <div className="flex justify-between text-sm text-white/70">
-          <span>{t('vat')}</span>
-          <span>{formatPrice(totalTTC - subtotalHT - shippingCost)}</span>
-        </div>
         <div className="flex justify-between text-sm text-white/70">
           <span>{t('delivery')}</span>
           {shippingCost === 0 ? (

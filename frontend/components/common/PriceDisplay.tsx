@@ -5,7 +5,7 @@ interface Props {
   priceTTC: number
   isPromo?: boolean
   promoPercent?: number
-  oldPriceHT?: number
+  oldPriceTTC?: number
   className?: string
 }
 
@@ -14,17 +14,17 @@ export function PriceDisplay({
   priceTTC,
   isPromo,
   promoPercent,
-  oldPriceHT,
+  oldPriceTTC,
   className = '',
 }: Props) {
   return (
     <div className={`flex flex-col ${className}`}>
       <div className="flex items-center gap-2">
-        <span className="price-ht text-xl">
-          {formatPrice(priceHT)} <span className="text-sm">HT</span>
+        <span className="price-ttc text-xl font-bold">
+          {formatPrice(priceTTC)} <span className="text-sm font-normal">TTC</span>
         </span>
-        {isPromo && oldPriceHT && (
-          <span className="text-sm text-gray-400 line-through">{formatPrice(oldPriceHT)}</span>
+        {isPromo && oldPriceTTC && (
+          <span className="text-sm text-gray-400 line-through">{formatPrice(oldPriceTTC)}</span>
         )}
         {isPromo && promoPercent && (
           <span className="rounded bg-red-500 px-2 py-1 text-xs font-bold text-white">
@@ -32,7 +32,6 @@ export function PriceDisplay({
           </span>
         )}
       </div>
-      <span className="price-ttc">{formatPrice(priceTTC)} TTC</span>
     </div>
   )
 }

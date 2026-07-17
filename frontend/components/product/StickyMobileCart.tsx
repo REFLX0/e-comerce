@@ -19,7 +19,7 @@ export function StickyMobileCart({ product, variant }: Props) {
   const { addItem } = useCartStore()
 
   const isOutOfStock = variant.status === 'out_of_stock'
-  const oldPrice = variant.priceHT * 1.2
+  const oldPrice = variant.priceTTC * 1.19
 
   useEffect(() => {
     const handleScroll = () => {
@@ -51,7 +51,7 @@ export function StickyMobileCart({ product, variant }: Props) {
             priceTTC={variant.priceTTC}
             isPromo={product.isPromo}
             promoPercent={product.promoPercent}
-            oldPriceHT={oldPrice}
+            oldPriceTTC={oldPrice}
           />
         </div>
 
