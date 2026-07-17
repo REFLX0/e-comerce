@@ -75,7 +75,7 @@ export default function CustomerDetailPage() {
           <Calendar size={18} className="text-gray-400" />
           <div>
             <p className="text-xs text-gray-400">Inscrit le</p>
-            <p className="text-sm font-semibold text-brand-primary">{new Date(user.createdAt).toLocaleDateString('fr-TN')}</p>
+            <p className="text-sm font-semibold text-brand-primary">{user.createdAt ? new Date(user.createdAt).toLocaleDateString('fr-TN') : '—'}</p>
           </div>
         </div>
       </div>
@@ -105,12 +105,12 @@ export default function CustomerDetailPage() {
               <div key={order.id} className="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm">
                 <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                   <div>
-                    <p className="font-mono text-xs text-gray-400">#{order.id.slice(-8).toUpperCase()}</p>
+                    <p className="font-mono text-xs text-gray-400">{order.id ? `#${order.id.slice(-8).toUpperCase()}` : 'N/A'}</p>
                     <p className="text-sm font-semibold text-brand-primary">
                       {(order.totalAmount ?? 0).toLocaleString('fr-TN', { minimumFractionDigits: 2 })} TND
                     </p>
                     <p className="text-xs text-gray-400">
-                      {order.items?.length ?? 0} article(s) · {new Date(order.createdAt).toLocaleDateString('fr-TN')}
+                      {order.items?.length ?? 0} article(s) · {order.createdAt ? new Date(order.createdAt).toLocaleDateString('fr-TN') : '—'}
                     </p>
                   </div>
                   <div className="flex items-center gap-2">
@@ -143,11 +143,11 @@ export default function CustomerDetailPage() {
       </div>
 
       {/* Delivery addresses from orders */}
-      {user.orders?.some((o: any) => o.shipFullName) && (
+      {(user.orders ?? []).some((o: any) => o.shipFullName) && (
         <div>
           <h2 className="text-lg font-bold text-brand-primary mb-4">Adresses de livraison</h2>
           <div className="space-y-3">
-            {(Array.from(new Set(user.orders.filter((o: any) => o.shipFullName).map((o: any) => `${o.shipFullName}|${o.shipPhone}|${o.shipWilaya}|${o.shipCity}`))) as string[]).map((key: string) => {
+            {(Array.from(new Set((user.orders ?? []).filter((o: any) => o.shipFullName).map((o: any) => `${o.shipFullName}|${o.shipPhone}|${o.shipWilaya}|${o.shipCity}`))) as string[]).map((key: string) => {
               const [name, phone, wilaya, city] = key.split('|')
               return (
                 <div key={key} className="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm">

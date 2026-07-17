@@ -30,10 +30,17 @@ export class CouponsService {
     });
   }
 
-  async findAll() {
-    return this.prisma.coupon.findMany({
-      orderBy: { createdAt: 'desc' },
-    });
+  async findAll(page = 1, limit = 20) {
+    const skip = (page - 1) * limit;
+    const [data, total] = await Promise.all([
+      this.prisma.coupon.findMany({
+        skip,
+        take: limit,
+        orderBy: { createdAt: 'desc' },
+      }),
+      this.prisma.coupon.count(),
+    ]);
+    return { data, total, page, totalPages: Math.ceil(total / limit) };
   }
 
   async update(id: string, data: Prisma.CouponUpdateInput) {

@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { couponsApi } from '@/lib/api/coupons'
 import { useAuthStore } from '@/lib/store/auth.store'
-import { Plus, Percent, Banknote, Gift, Trash2, ToggleLeft, ToggleRight, Edit2 } from 'lucide-react'
+import { Plus, Percent, Banknote, Gift, Trash2, ToggleLeft, ToggleRight, Edit2, ChevronLeft, ChevronRight } from 'lucide-react'
 import { toast } from 'sonner'
 
 export default function AdminPromotionsPage() {
@@ -25,14 +25,18 @@ export default function AdminPromotionsPage() {
   const [editMaxUses, setEditMaxUses] = useState('')
   const [editExpiryDate, setEditExpiryDate] = useState('')
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null)
+  const [page, setPage] = useState(1)
+  const limit = 20
 
-  const { data, isLoading } = useQuery<any>({
-    queryKey: ['admin-coupons'],
-    queryFn: () => couponsApi.getAll(),
-    enabled: true,
+  const { data, isLoading, isError } = useQuery<any>({
+    queryKey: ['admin-coupons', page],
+    queryFn: () => couponsApi.getAll({ page, limit }),
   })
 
-  const coupons = (data as any)?.data ?? []
+  const raw = (data as any)?.data ?? data ?? []
+  const coupons: any[] = Array.isArray(raw) ? raw : raw.data ?? []
+  const total = raw.total ?? coupons.length
+  const totalPages = raw.totalPages ?? Math.ceil(total / limit)
 
   const createMutation = useMutation({
     mutationFn: (body: any) => couponsApi.create(body),
@@ -211,6 +215,10 @@ export default function AdminPromotionsPage() {
       )}
 
       {/* Coupon list */}
+      {isError && (
+        <div className="rounded-2xl border border-red-100 bg-red-50 p-4 text-center text-sm text-red-700">Erreur de chargement. Essayez de rafraîchir la page.</div>
+      )}
+
       <div className="space-y-3">
         {isLoading ? (
           <div className="py-8 text-center text-gray-400">Chargement...</div>
@@ -290,6 +298,14 @@ export default function AdminPromotionsPage() {
           ))
         )}
       </div>
+
+      {totalPages > 1 && (
+        <div className="flex items-center justify-center gap-2">
+          <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page <= 1} className="rounded-xl border border-gray-200 bg-white p-2 text-gray-500 hover:bg-gray-50 disabled:opacity-40"><ChevronLeft size={16} /></button>
+          <span className="text-sm font-medium text-gray-600">Page {page} / {totalPages}</span>
+          <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page >= totalPages} className="rounded-xl border border-gray-200 bg-white p-2 text-gray-500 hover:bg-gray-50 disabled:opacity-40"><ChevronRight size={16} /></button>
+        </div>
+      )}
     </div>
   )
 }

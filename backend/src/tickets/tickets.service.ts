@@ -44,15 +44,22 @@ export class TicketsService {
     });
   }
 
-  async findAllForAdmin(status?: string) {
+  async findAllForAdmin(status?: string, page = 1, limit = 20) {
     const where = status ? { status: status as any } : {};
-    return this.prisma.supportTicket.findMany({
-      where,
-      include: {
-        user: { select: { name: true, email: true } },
-      },
-      orderBy: { createdAt: 'desc' },
-    });
+    const skip = (page - 1) * limit;
+    const [data, total] = await Promise.all([
+      this.prisma.supportTicket.findMany({
+        where,
+        skip,
+        take: limit,
+        include: {
+          user: { select: { name: true, email: true } },
+        },
+        orderBy: { createdAt: 'desc' },
+      }),
+      this.prisma.supportTicket.count({ where }),
+    ]);
+    return { data, total, page, totalPages: Math.ceil(total / limit) };
   }
 
   async resolveTicket(id: string) {

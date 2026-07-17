@@ -14,8 +14,8 @@ interface CouponValidateResult {
 }
 
 export const couponsApi = {
-  getAll: () =>
-    api.get('/coupons'),
+  getAll: (params?: { page?: number; limit?: number }) =>
+    api.get('/coupons', { params }),
 
   create: (data: any) =>
     api.post('/coupons', data),

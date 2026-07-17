@@ -1,7 +1,7 @@
 "use client";
 
 import type { ReactNode } from 'react'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { useAuthStore } from '@/lib/store/auth.store'
@@ -172,13 +172,13 @@ function Sidebar({
 
       {/* Search */}
       {!collapsed && (
-        <div className="px-3 pt-4 pb-2">
-          <div className="flex items-center gap-2 rounded-xl bg-white/5 px-3 py-2 text-sm text-gray-400">
+        <button onClick={() => document.dispatchEvent(new CustomEvent('open-search'))} className="w-full px-3 pt-4 pb-2">
+          <div className="flex items-center gap-2 rounded-xl bg-white/5 px-3 py-2 text-sm text-gray-400 hover:bg-white/10 transition-colors cursor-pointer">
             <Search size={14} />
             <span className="text-xs">{t('quickSearch')}</span>
             <span className="ml-auto rounded border border-white/10 px-1 text-[10px]">⌘K</span>
           </div>
-        </div>
+        </button>
       )}
 
       {/* Nav */}
@@ -379,14 +379,13 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 
           <div className="ml-auto flex items-center gap-2">
             {/* Global search - desktop */}
-            <div className="relative hidden md:block">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={15} />
-              <input
-                type="search"
-                placeholder={t('quickSearch')}
-                className="w-56 rounded-xl border border-gray-200 bg-gray-50 py-2 pr-4 pl-9 text-sm outline-none focus:border-brand-accent focus:bg-white transition-all"
-              />
-            </div>
+            <button onClick={() => document.dispatchEvent(new CustomEvent('open-search'))} className="relative hidden md:block">
+              <div className="flex items-center gap-2 w-56 rounded-xl border border-gray-200 bg-gray-50 py-2 px-4 pl-9 text-sm text-gray-400 hover:border-brand-accent hover:bg-white transition-all cursor-pointer">
+                <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                <span>{t('quickSearch')}</span>
+                <span className="ml-auto text-[10px] text-gray-300">⌘K</span>
+              </div>
+            </button>
 
             {/* Notifications */}
             <NotificationDropdown />
@@ -402,6 +401,73 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         <main className="flex-1 overflow-y-auto">
           {children}
         </main>
+      </div>
+
+      <SearchModal locale={locale} />
+    </div>
+  )
+}
+
+function SearchModal({ locale }: { locale: string }) {
+  const [open, setOpen] = useState(false)
+  const [query, setQuery] = useState('')
+  const inputRef = useRef<HTMLInputElement>(null)
+  const router = useRouter()
+
+  const pages = [
+    { label: 'Tableau de bord', href: '/admin', icon: LayoutDashboard },
+    { label: 'Commandes', href: '/admin/orders', icon: ShoppingCart },
+    { label: 'Produits', href: '/admin/catalog/products', icon: Package },
+    { label: 'Catégories', href: '/admin/catalog/categories', icon: FolderTree },
+    { label: 'Inventaire', href: '/admin/catalog/inventory', icon: Layers },
+    { label: 'Clients', href: '/admin/customers', icon: Users },
+    { label: 'Promotions', href: '/admin/promotions', icon: Tag },
+    { label: 'Support', href: '/admin/tickets', icon: LifeBuoy },
+    { label: 'Livraison', href: '/admin/shipping', icon: Truck },
+    { label: 'Paiements', href: '/admin/payments', icon: CreditCard },
+    { label: 'Avis', href: '/admin/reviews', icon: Star },
+    { label: 'Analytique', href: '/admin/analytics', icon: BarChart2 },
+    { label: 'Paramètres', href: '/admin/settings', icon: Settings },
+  ]
+
+  const filtered = query ? pages.filter(p => p.label.toLowerCase().includes(query.toLowerCase())) : pages
+
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') { e.preventDefault(); setOpen(true) }
+      if (e.key === '/' && !(e.target instanceof HTMLInputElement)) { e.preventDefault(); setOpen(true) }
+    }
+    document.addEventListener('keydown', handler)
+    const onCustom = () => setOpen(true)
+    document.addEventListener('open-search', onCustom)
+    return () => { document.removeEventListener('keydown', handler); document.removeEventListener('open-search', onCustom) }
+  }, [])
+
+  useEffect(() => { if (open) { setQuery(''); setTimeout(() => inputRef.current?.focus(), 50) } }, [open])
+
+  if (!open) return null
+
+  return (
+    <div className="fixed inset-0 z-[100] flex items-start justify-center pt-[15vh]" onClick={() => setOpen(false)}>
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+      <div className="relative w-full max-w-lg rounded-2xl border border-gray-200 bg-white shadow-2xl overflow-hidden" onClick={e => e.stopPropagation()}>
+        <div className="flex items-center gap-3 border-b border-gray-100 px-4 py-3">
+          <Search size={16} className="text-gray-400 shrink-0" />
+          <input ref={inputRef} type="text" value={query} onChange={e => setQuery(e.target.value)} placeholder="Rechercher une page..." className="flex-1 text-sm outline-none placeholder:text-gray-400" />
+          <kbd className="rounded-md border border-gray-200 bg-gray-50 px-1.5 py-0.5 text-[10px] text-gray-400">ESC</kbd>
+        </div>
+        <div className="max-h-72 overflow-y-auto p-2 space-y-0.5">
+          {filtered.length === 0 ? (
+            <p className="py-6 text-center text-sm text-gray-400">Aucun résultat</p>
+          ) : (
+            filtered.map(p => (
+              <button key={p.href} onClick={() => { router.push(`/${locale}${p.href}`); setOpen(false) }} className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-gray-600 hover:bg-gray-50 transition-colors text-left">
+                <p.icon size={16} className="text-gray-400 shrink-0" />
+                {p.label}
+              </button>
+            ))
+          )}
+        </div>
       </div>
     </div>
   )

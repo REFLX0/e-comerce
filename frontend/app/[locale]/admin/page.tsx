@@ -26,13 +26,25 @@ export default function AdminDashboard() {
   const locale = pathname?.split('/')[1] === 'en' ? 'en' : 'fr'
   const localizedHref = (href: string) => `/${locale}${href}`
   
-  const { data: dashboardData, isLoading, refetch } = useQuery<any>({
+  const { data: dashboardData, isLoading, isError, refetch } = useQuery<any>({
     queryKey: ['admin-dashboard'],
     queryFn: () => adminApi.getDashboard(),
     enabled: true,
   })
 
   const stats = (dashboardData as any)?.data ?? dashboardData
+
+  if (isError) {
+    return (
+      <div className="p-4 sm:p-6">
+        <div className="rounded-2xl border border-red-100 bg-red-50 p-6 text-center">
+          <AlertTriangle size={32} className="mx-auto mb-3 text-red-400" />
+          <p className="text-sm font-semibold text-red-700">Erreur de chargement du tableau de bord</p>
+          <button onClick={() => refetch()} className="mt-3 rounded-xl bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700">Réessayer</button>
+        </div>
+      </div>
+    )
+  }
 
   if (isLoading) {
     return (
@@ -170,9 +182,9 @@ export default function AdminDashboard() {
                   const statusCfg = STATUS_LABELS[order.status] ?? STATUS_LABELS.PENDING
                   return (
                     <tr key={order.id} className="hover:bg-gray-50/60 transition-colors">
-                      <td className="px-5 py-4 font-mono text-xs font-medium text-brand-primary">
-                        #{order.id.slice(-8).toUpperCase()}
-                      </td>
+                        <td className="px-5 py-4 font-mono text-xs font-medium text-brand-primary">
+                          #{order.id ? order.id.slice(-8).toUpperCase() : 'N/A'}
+                        </td>
                       <td className="px-5 py-4 text-gray-500 text-xs">
                         {new Date(order.createdAt).toLocaleDateString('fr-TN')}
                       </td>
@@ -209,8 +221,8 @@ export default function AdminDashboard() {
               </div>
               <h2 className="font-bold text-orange-800">Stock faible</h2>
             </div>
-            <p className="text-sm text-orange-700 mb-3">
-              12 produits nécessitent votre attention immédiate.
+              <p className="text-sm text-orange-700 mb-3">
+              Vérifiez les stocks de produits qui nécessitent votre attention.
             </p>
             <Link
               href={localizedHref('/admin/catalog/inventory')}

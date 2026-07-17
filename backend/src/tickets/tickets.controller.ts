@@ -42,8 +42,12 @@ export class TicketsController {
   @UseGuards(RolesGuard)
   @Roles('ADMIN')
   @Get()
-  findAll(@Query('status') status?: string) {
-    return this.ticketsService.findAllForAdmin(status);
+  findAll(
+    @Query('status') status?: string,
+    @Query('page') p?: string,
+    @Query('limit') l?: string,
+  ) {
+    return this.ticketsService.findAllForAdmin(status, p ? +p : 1, l ? +l : 20);
   }
 
   @UseGuards(RolesGuard)

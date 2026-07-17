@@ -3,21 +3,24 @@
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { ticketsApi } from '@/lib/api/tickets'
-import { useAuthStore } from '@/lib/store/auth.store'
-import { LifeBuoy, Filter, CheckCircle2, PackageSearch } from 'lucide-react'
+import { LifeBuoy, CheckCircle2, PackageSearch, ChevronLeft, ChevronRight } from 'lucide-react'
 import { toast } from 'sonner'
 
 export default function AdminTicketsPage() {
-    const queryClient = useQueryClient()
+  const queryClient = useQueryClient()
   const [statusFilter, setStatusFilter] = useState('ALL')
+  const [page, setPage] = useState(1)
+  const limit = 10
 
-  const { data, isLoading } = useQuery<any>({
-    queryKey: ['admin-tickets', statusFilter],
-    queryFn: () => ticketsApi.getAllForAdmin(statusFilter === 'ALL' ? undefined : statusFilter),
-    enabled: true,
+  const { data, isLoading, isError } = useQuery<any>({
+    queryKey: ['admin-tickets', statusFilter, page],
+    queryFn: () => ticketsApi.getAllForAdmin(statusFilter === 'ALL' ? undefined : statusFilter, page, limit),
   })
 
-  const tickets = (data as any)?.data ?? []
+  const raw = (data as any)?.data ?? data ?? {}
+  const tickets: any[] = Array.isArray(raw) ? raw : raw.data ?? []
+  const total = raw.total ?? tickets.length
+  const totalPages = raw.totalPages ?? Math.ceil(total / limit)
 
   const resolveMutation = useMutation({
     mutationFn: (id: string) => ticketsApi.resolve(id),
@@ -28,29 +31,28 @@ export default function AdminTicketsPage() {
     onError: () => toast.error('Erreur lors de la mise à jour'),
   })
 
+  const sliceId = (id?: string) => id ? `#${id.slice(-8).toUpperCase()}` : 'N/A'
+
   return (
     <div className="p-4 sm:p-6 space-y-5">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold text-brand-primary">Support & Retours</h1>
-          <p className="text-sm text-gray-500">{tickets.length} tickets trouvés</p>
+          <p className="text-sm text-gray-500">{total} tickets trouvés</p>
         </div>
       </div>
 
-      {/* Filters */}
       <div className="flex gap-2">
         {['ALL', 'OPEN', 'RESOLVED'].map(status => (
-          <button
-            key={status}
-            onClick={() => setStatusFilter(status)}
-            className={`rounded-xl px-4 py-2 text-sm font-semibold transition-all ${
-              statusFilter === status ? 'bg-brand-primary text-white' : 'bg-white text-gray-500 hover:text-brand-primary'
-            }`}
-          >
+          <button key={status} onClick={() => { setStatusFilter(status); setPage(1) }} className={`rounded-xl px-4 py-2 text-sm font-semibold transition-all ${statusFilter === status ? 'bg-brand-primary text-white' : 'bg-white text-gray-500 hover:text-brand-primary'}`}>
             {status === 'ALL' ? 'Tous' : status === 'OPEN' ? 'Ouverts' : 'Résolus'}
           </button>
         ))}
       </div>
+
+      {isError && (
+        <div className="rounded-2xl border border-red-100 bg-red-50 p-4 text-center text-sm text-red-700">Erreur de chargement. <button onClick={() => window.location.reload()} className="font-semibold underline">Réessayer</button></div>
+      )}
 
       <div className="space-y-3">
         {isLoading ? (
@@ -62,44 +64,32 @@ export default function AdminTicketsPage() {
             <div key={ticket.id} className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
               <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
                 <div className="flex gap-4">
-                  <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl ${
-                    ticket.type === 'RETURN' ? 'bg-blue-50 text-blue-600' : 'bg-purple-50 text-purple-600'
-                  }`}>
+                  <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl ${ticket.type === 'RETURN' ? 'bg-blue-50 text-blue-600' : 'bg-purple-50 text-purple-600'}`}>
                     {ticket.type === 'RETURN' ? <PackageSearch size={24} /> : <LifeBuoy size={24} />}
                   </div>
                   <div>
                     <div className="flex items-center gap-2 mb-1">
-                      <span className="text-sm font-bold text-brand-primary">{ticket.user?.firstName ? `${ticket.user.firstName} ${ticket.user.lastName}` : ticket.user?.email}</span>
+                      <span className="text-sm font-bold text-brand-primary">{ticket.user?.name || ticket.user?.email}</span>
                       <span className="text-xs text-gray-400">({ticket.user?.email})</span>
                     </div>
                     <p className="text-sm font-semibold text-gray-800">{ticket.reason}</p>
                     {ticket.message && <p className="mt-1 text-sm text-gray-500 italic">"{ticket.message}"</p>}
                     <div className="mt-2 flex items-center gap-3 text-xs text-gray-400">
-                      <span>#{ticket.id.slice(-8).toUpperCase()}</span>
+                      <span>{sliceId(ticket.id)}</span>
                       <span>•</span>
-                      <span>Ouvert le {new Date(ticket.createdAt).toLocaleDateString('fr-TN')}</span>
+                      <span>Ouvert le {ticket.createdAt ? new Date(ticket.createdAt).toLocaleDateString('fr-TN') : '—'}</span>
                       {ticket.orderId && (
-                        <>
-                          <span>•</span>
-                          <span className="font-semibold text-brand-accent">Commande #{ticket.orderId.slice(-8).toUpperCase()}</span>
-                        </>
+                        <><span>•</span><span className="font-semibold text-brand-accent">Commande {sliceId(ticket.orderId)}</span></>
                       )}
                     </div>
                   </div>
                 </div>
-
                 <div className="flex items-center gap-3">
-                  <span className={`rounded-full px-3 py-1 text-xs font-bold ${
-                    ticket.status === 'RESOLVED' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'
-                  }`}>
+                  <span className={`rounded-full px-3 py-1 text-xs font-bold ${ticket.status === 'RESOLVED' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
                     {ticket.status === 'RESOLVED' ? 'Résolu' : 'En attente'}
                   </span>
-
                   {ticket.status !== 'RESOLVED' && (
-                    <button
-                      onClick={() => resolveMutation.mutate(ticket.id)}
-                      className="flex items-center gap-1.5 rounded-xl border border-gray-200 bg-white px-3 py-1.5 text-xs font-semibold text-gray-600 hover:bg-gray-50 transition-all"
-                    >
+                    <button onClick={() => resolveMutation.mutate(ticket.id)} className="flex items-center gap-1.5 rounded-xl border border-gray-200 bg-white px-3 py-1.5 text-xs font-semibold text-gray-600 hover:bg-gray-50 transition-all">
                       <CheckCircle2 size={14} className="text-green-500" />
                       Marquer résolu
                     </button>
@@ -110,6 +100,14 @@ export default function AdminTicketsPage() {
           ))
         )}
       </div>
+
+      {totalPages > 1 && (
+        <div className="flex items-center justify-center gap-2 pt-2">
+          <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page <= 1} className="rounded-xl border border-gray-200 bg-white p-2 text-gray-500 hover:bg-gray-50 disabled:opacity-40"><ChevronLeft size={16} /></button>
+          <span className="text-sm font-medium text-gray-600">Page {page} / {totalPages}</span>
+          <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page >= totalPages} className="rounded-xl border border-gray-200 bg-white p-2 text-gray-500 hover:bg-gray-50 disabled:opacity-40"><ChevronRight size={16} /></button>
+        </div>
+      )}
     </div>
   )
 }
