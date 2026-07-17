@@ -65,3 +65,4 @@ cookies.txt
 CREDENTIALS.md
 *.tar.gz
 .next/
+ssh_key
