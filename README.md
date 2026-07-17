@@ -1,4 +1,4 @@
-# KiosqueTN — Tunisian E-commerce Platform
+# specpart — Tunisian E-commerce Platform
 
 > **Production-grade** full-stack e-commerce platform built for the Tunisian market, featuring a Next.js 16 storefront, NestJS REST API, and enterprise DevOps infrastructure.
 
@@ -60,7 +60,7 @@ The app will be available at **http://localhost:8080**
 ### 3. Seed the database (first time, optional)
 Migrations run automatically on startup via the `migrate` service.
 ```bash
-docker exec kiosquetn-backend npx prisma db seed
+docker exec specpart-backend npx prisma db seed
 ```
 
 ---
@@ -99,11 +99,11 @@ sudo firewall-cmd --zone=public --add-port=8080/tcp --permanent
 sudo firewall-cmd --reload
 
 # Create deploy directory
-sudo mkdir -p /opt/kiosquetn
-sudo chown ubuntu:ubuntu /opt/kiosquetn
+sudo mkdir -p /opt/specpart
+sudo chown ubuntu:ubuntu /opt/specpart
 
 # Clone the repo
-cd /opt/kiosquetn
+cd /opt/specpart
 git clone https://github.com/REFLX0/e-comerce.git .
 
 # Set up .env

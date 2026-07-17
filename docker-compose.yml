@@ -4,7 +4,7 @@ services:
   # ── Reverse Proxy ─────────────────────────────────────────────────
   nginx:
     image: nginx:alpine
-    container_name: kiosquetn-nginx
+    container_name: specpart-nginx
     ports:
       - "8082:8082"
     volumes:
@@ -30,7 +30,7 @@ services:
     env_file: .env
     environment:
       - NODE_ENV=production
-      - DATABASE_URL=postgresql://${POSTGRES_USER:-kiosquetn}:${POSTGRES_PASSWORD:-changeme}@db:5432/${POSTGRES_DB:-kiosquetn}?schema=public
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-specpart}:${POSTGRES_PASSWORD:-changeme}@db:5432/${POSTGRES_DB:-specpart}?schema=public
       - REDIS_HOST=redis
       - REDIS_PORT=6379
       - FRONTEND_URL=${NEXTAUTH_URL:-http://84.8.254.244:8082}
@@ -56,7 +56,7 @@ services:
       dockerfile: Dockerfile
     env_file: .env
     environment:
-      - DATABASE_URL=postgresql://${POSTGRES_USER:-kiosquetn}:${POSTGRES_PASSWORD:-changeme}@db:5432/${POSTGRES_DB:-kiosquetn}?schema=public
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-specpart}:${POSTGRES_PASSWORD:-changeme}@db:5432/${POSTGRES_DB:-specpart}?schema=public
     command: ["npx", "prisma", "migrate", "deploy"]
     depends_on:
       db:
@@ -73,7 +73,7 @@ services:
       args:
         - NEXT_PUBLIC_API_URL=/api
         - NEXT_PUBLIC_SITE_URL=${NEXTAUTH_URL:-http://84.8.254.244:8082}
-    container_name: kiosquetn-frontend
+    container_name: specpart-frontend
     env_file: .env
     environment:
       - NODE_ENV=production
@@ -81,7 +81,7 @@ services:
       - NEXT_PUBLIC_API_URL=/api
       - NEXTAUTH_URL=${NEXTAUTH_URL:-http://84.8.254.244:8082}
       - AUTH_TRUST_HOST=true
-      - DATABASE_URL=postgresql://${POSTGRES_USER:-kiosquetn}:${POSTGRES_PASSWORD:-changeme}@db:5432/${POSTGRES_DB:-kiosquetn}?schema=public
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-specpart}:${POSTGRES_PASSWORD:-changeme}@db:5432/${POSTGRES_DB:-specpart}?schema=public
     depends_on:
       backend:
         condition: service_healthy
@@ -95,19 +95,19 @@ services:
   # ── PostgreSQL ────────────────────────────────────────────────────
   db:
     image: postgres:16-alpine
-    container_name: kiosquetn-db
+    container_name: specpart-db
     env_file: .env
     environment:
-      POSTGRES_USER: ${POSTGRES_USER:-kiosquetn}
+      POSTGRES_USER: ${POSTGRES_USER:-specpart}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
-      POSTGRES_DB: ${POSTGRES_DB:-kiosquetn}
+      POSTGRES_DB: ${POSTGRES_DB:-specpart}
     ports:
       - "5433:5432"
     volumes:
-      - kiosquetn_pgdata:/var/lib/postgresql/data
+      - specpart_pgdata:/var/lib/postgresql/data
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-kiosquetn} -d ${POSTGRES_DB:-kiosquetn}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-specpart} -d ${POSTGRES_DB:-specpart}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -117,11 +117,11 @@ services:
   # ── Redis ─────────────────────────────────────────────────────────
   redis:
     image: redis:7-alpine
-    container_name: kiosquetn-redis
+    container_name: specpart-redis
     ports:
       - "6380:6379"
     volumes:
-      - kiosquetn_redis:/data
+      - specpart_redis:/data
     restart: unless-stopped
     command: redis-server --appendonly yes
     healthcheck:
@@ -141,5 +141,5 @@ networks:
 
 # ── Volumes ───────────────────────────────────────────────────────
 volumes:
-  kiosquetn_pgdata:
-  kiosquetn_redis:
+  specpart_pgdata:
+  specpart_redis:

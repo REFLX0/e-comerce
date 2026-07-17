@@ -1,4 +1,4 @@
-# kiosquetn — Disaster Recovery Runbook
+# specpart — Disaster Recovery Runbook
 
 > **Audience:** On-call engineers, DevOps team  
 > **Last updated:** See Git history  
@@ -49,7 +49,7 @@ docker compose ps db
 docker compose logs --tail=50 db
 
 # Try manual connection
-docker exec -it kiosquetn-db psql -U postgres -c "SELECT 1;"
+docker exec -it specpart-db psql -U postgres -c "SELECT 1;"
 ```
 
 ### Recovery Steps
@@ -64,16 +64,16 @@ curl -s http://localhost:3000/api/health | jq .checks.database
 **Step 2 — If data volume is corrupted, restore from backup**
 ```bash
 # List available backups
-ls -lt /opt/kiosquetn/backups/*.sql.gz
+ls -lt /opt/specpart/backups/*.sql.gz
 
 # Restore most recent
-BACKUP=/opt/kiosquetn/backups/$(ls -t /opt/kiosquetn/backups/*.sql.gz | head -1)
-gunzip -c "$BACKUP" | docker exec -i kiosquetn-db psql -U postgres kiosquetn
+BACKUP=/opt/specpart/backups/$(ls -t /opt/specpart/backups/*.sql.gz | head -1)
+gunzip -c "$BACKUP" | docker exec -i specpart-db psql -U postgres specpart
 ```
 
 **Step 3 — Run pending migrations after restore**
 ```bash
-docker exec -it kiosquetn-frontend npx prisma migrate deploy
+docker exec -it specpart-frontend npx prisma migrate deploy
 ```
 
 **Step 4 — Verify**
@@ -96,12 +96,12 @@ curl -s http://localhost:3000/api/health | jq .
 
 ```bash
 # See image history
-docker image ls kiosquetn-frontend
+docker image ls specpart-frontend
 
 # Roll back to previous image (replace TAG with the previous working tag)
 docker compose stop frontend
 docker compose rm -f frontend
-docker image tag kiosquetn-frontend:previous kiosquetn-frontend:latest
+docker image tag specpart-frontend:previous specpart-frontend:latest
 docker compose up -d frontend
 
 # Verify
@@ -203,7 +203,7 @@ curl -sf http://localhost:3000/api/health
 
 ```bash
 # 1. Connect to DB
-docker exec -it kiosquetn-db psql -U postgres
+docker exec -it specpart-db psql -U postgres
 
 # 2. Change password
 ALTER USER postgres PASSWORD 'new-strong-password';
@@ -226,21 +226,21 @@ curl -s http://localhost:3000/api/health | jq .checks.database
 ### Backup strategy (implement this — it's not automatic yet)
 
 ```bash
-# /etc/cron.d/kiosquetn-backup — runs daily at 02:00
-0 2 * * * root /opt/kiosquetn/scripts/backup.sh
+# /etc/cron.d/specpart-backup — runs daily at 02:00
+0 2 * * * root /opt/specpart/scripts/backup.sh
 ```
 
 ```bash
 #!/bin/bash
-# /opt/kiosquetn/scripts/backup.sh
+# /opt/specpart/scripts/backup.sh
 set -euo pipefail
 
 DATE=$(date +%Y%m%d_%H%M%S)
-BACKUP_DIR="/opt/kiosquetn/backups"
-REMOTE_BUCKET="s3://kiosquetn-backups"  # or your off-site location
+BACKUP_DIR="/opt/specpart/backups"
+REMOTE_BUCKET="s3://specpart-backups"  # or your off-site location
 
 # 1. Database dump
-docker exec kiosquetn-db pg_dump -U postgres kiosquetn | \
+docker exec specpart-db pg_dump -U postgres specpart | \
   gzip > "$BACKUP_DIR/db_${DATE}.sql.gz"
 
 # 2. Copy to off-site (S3 / rclone / rsync)
@@ -260,8 +260,8 @@ docker compose up -d db redis
 sleep 15
 
 # 2. Restore database from off-site backup
-aws s3 cp s3://kiosquetn-backups/db/<LATEST>.sql.gz /tmp/restore.sql.gz
-gunzip -c /tmp/restore.sql.gz | docker exec -i kiosquetn-db psql -U postgres kiosquetn
+aws s3 cp s3://specpart-backups/db/<LATEST>.sql.gz /tmp/restore.sql.gz
+gunzip -c /tmp/restore.sql.gz | docker exec -i specpart-db psql -U postgres specpart
 
 # 3. Run any pending migrations
 docker compose run --rm frontend npx prisma migrate deploy
@@ -330,7 +330,7 @@ After every incident lasting > 15 minutes, complete this template:
 | `docker compose logs -f frontend` | Live frontend logs |
 | `docker compose restart frontend` | Restart frontend |
 | `docker compose up -d --no-deps frontend` | Redeploy frontend only |
-| `docker exec -it kiosquetn-db psql -U postgres` | DB console |
+| `docker exec -it specpart-db psql -U postgres` | DB console |
 | `npx prisma migrate deploy` | Run pending migrations |
 | `npx prisma studio` | Browse DB (dev only!) |
 

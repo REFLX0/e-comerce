@@ -9,7 +9,7 @@ on:
 env:
   ORACLE_HOST: 84.8.254.244
   ORACLE_USER: ubuntu
-  DEPLOY_DIR: /opt/kiosquetn
+  DEPLOY_DIR: /opt/specpart
 
 jobs:
   build-check:

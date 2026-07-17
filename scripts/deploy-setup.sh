@@ -6,11 +6,11 @@ sudo firewall-cmd --zone=public --add-port=8082/tcp --permanent || true
 sudo firewall-cmd --reload || true
 
 echo "=== Preparing Directory ==="
-sudo mkdir -p /opt/kiosquetn
-sudo chown -R ubuntu:ubuntu /opt/kiosquetn
+sudo mkdir -p /opt/specpart
+sudo chown -R ubuntu:ubuntu /opt/specpart
 
 echo "=== Cloning Repository ==="
-cd /opt/kiosquetn
+cd /opt/specpart
 if [ -d ".git" ]; then
   git pull origin main
 else
