@@ -23,11 +23,11 @@ async function main() {
   // 1. ADMIN USER
   const passwordHash = await bcrypt.hash('admin123', 10)
   const admin = await prisma.user.create({
-    data: { name: 'Admin', email: 'admin@kiosquetn.tn', passwordHash, role: 'ADMIN' },
+    data: { name: 'Admin', email: 'admin@specpart.tn', passwordHash, role: 'ADMIN' },
   })
 
   const customer = await prisma.user.create({
-    data: { name: 'Achref', email: 'achref@kiosquetn.tn', passwordHash, role: 'CUSTOMER' },
+    data: { name: 'Achref', email: 'achref@specpart.tn', passwordHash, role: 'CUSTOMER' },
   })
 
   // 2. BRANDS

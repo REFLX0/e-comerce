@@ -1,7 +1,7 @@
 {
   "Index": {
-    "title": "KiosqueTN — Engine Oil & Lubricants in Tunisia",
-    "description": "KiosqueTN, the specialist for lubricants and engine oil in Tunisia. Fast delivery, authentic products from Total, Shell, Castrol, Motul."
+    "title": "specpart — Engine Oil & Lubricants in Tunisia",
+    "description": "specpart, the specialist for lubricants and engine oil in Tunisia. Fast delivery, authentic products from Total, Shell, Castrol, Motul."
   },
   "Nav": {
     "home": "Home",
@@ -274,7 +274,7 @@
     "myProfileDesc": "Manage your personal information",
     "hello": "Hello, {name} 👋",
     "dearCustomer": "dear customer",
-    "welcome": "Welcome to your KiosqueTN personal space",
+    "welcome": "Welcome to your specpart personal space",
     "recentOrders": "Recent Orders",
     "viewAll": "View all",
     "noOrders": "No orders yet",
@@ -407,7 +407,7 @@
           },
           {
             "q": "How can I contact customer support?",
-            "a": "You can reach us by phone at +216 71 123 456, by email at contact@kiosquetn.tn, or via the contact form on our website."
+            "a": "You can reach us by phone at +216 71 123 456, by email at contact@specpart.tn, or via the contact form on our website."
           }
         ]
       }
@@ -420,25 +420,25 @@
     "date": "Last updated: June 2026",
     "breadcrumb": "Terms of Sale",
     "articles": [
-      { "title": "Article 1 – Purpose", "content": "These general conditions of sale (CGV) govern all transactions carried out on the KiosqueTN.tn website. Any order implies unconditional acceptance of these CGV." },
-      { "title": "Article 2 – Products", "content": "The products offered for sale are described as accurately as possible. The product photographs are not contractual. KiosqueTN is committed to offering only 100% authentic products certified by partner brands." },
-      { "title": "Article 3 – Prices", "content": "Prices are given in Tunisian Dinar (DT) including all taxes (TTC). KiosqueTN reserves the right to modify its prices at any time, but products will be billed based on the rates in effect at the time of order validation." },
-      { "title": "Article 4 – Orders", "content": "The customer places an order on the kiosquetn.tn website. Validating the order implies acceptance of these CGV and constitutes a sales contract. KiosqueTN will confirm the order by email." },
+      { "title": "Article 1 – Purpose", "content": "These general conditions of sale (CGV) govern all transactions carried out on the specpart.tn website. Any order implies unconditional acceptance of these CGV." },
+      { "title": "Article 2 – Products", "content": "The products offered for sale are described as accurately as possible. The product photographs are not contractual. specpart is committed to offering only 100% authentic products certified by partner brands." },
+      { "title": "Article 3 – Prices", "content": "Prices are given in Tunisian Dinar (DT) including all taxes (TTC). specpart reserves the right to modify its prices at any time, but products will be billed based on the rates in effect at the time of order validation." },
+      { "title": "Article 4 – Orders", "content": "The customer places an order on the specpart.tn website. Validating the order implies acceptance of these CGV and constitutes a sales contract. specpart will confirm the order by email." },
       { "title": "Article 5 – Shipping", "content": "Delivery is made to the address indicated during the order. Delivery times are 24 to 48 business hours throughout Tunisia. Delivery is free for all orders over 100 DT." },
       { "title": "Article 6 – Payment", "content": "Payment can be made by: cash on delivery, bank transfer, or online credit card. All online transactions are secure." },
       { "title": "Article 7 – Right of Withdrawal", "content": "In accordance with current legislation, the customer has a period of 14 days from receipt of their order to exercise their right of withdrawal, without having to justify reasons. The product must be returned in its original packaging, unopened and unused." },
-      { "title": "Article 8 – Complaints", "content": "For any complaint, the customer can contact customer service by email at contact@kiosquetn.tn or by phone at +216 71 123 456." }
+      { "title": "Article 8 – Complaints", "content": "For any complaint, the customer can contact customer service by email at contact@specpart.tn or by phone at +216 71 123 456." }
     ]
   },
   "About": {
     "metaTitle": "About us",
     "metaDescription": "Discover the specialist in lubricants and engine oils in Tunisia.",
     "title1": "About",
-    "title2": "KiosqueTN",
+    "title2": "specpart",
     "subtitle": "Your trusted partner for all your lubricant and engine oil needs in Tunisia.",
     "breadcrumb": "About",
     "historyTitle": "Our History",
-    "historyP1": "Founded in Tunisia, <strong>KiosqueTN</strong> has established itself as the leading distributor of premium lubricants and engine oils. Our mission is simple: to make the best lubrication products accessible to all Tunisian motorists and professionals.",
+    "historyP1": "Founded in Tunisia, <strong>specpart</strong> has established itself as the leading distributor of premium lubricants and engine oils. Our mission is simple: to make the best lubrication products accessible to all Tunisian motorists and professionals.",
     "historyP2": "We work in partnership with the world's leading brands — Castrol, Shell, Total, Mobil, Motul — to guarantee our customers 100% authentic products, delivered quickly anywhere in Tunisia.",
     "historyP3": "Our team of experts is passionate about cars and is at your disposal to advise and assist you in choosing the right lubricant for your vehicle.",
     "valuesTitle": "Our Values",

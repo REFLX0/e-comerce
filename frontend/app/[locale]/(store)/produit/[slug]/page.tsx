@@ -19,7 +19,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const product = await productsApi.getBySlug(slug)
     const description = product.shortDescription || product.description?.substring(0, 160)
     return {
-      title: `${product.name} | KiosqueTN`,
+      title: `${product.name} | specpart`,
       description,
       alternates: {
         canonical: `/${locale}/produit/${slug}`,
@@ -38,7 +38,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   } catch (error) {
     const t = await getTranslations({ locale, namespace: 'Product' })
     return {
-      title: `${t('notFound')} | KiosqueTN`,
+      title: `${t('notFound')} | specpart`,
     }
   }
 }

@@ -10,14 +10,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const { slug } = await params
     const category = await categoriesApi.getBySlug(slug)
     return {
-      title: `${category.name} | KiosqueTN`,
+      title: `${category.name} | specpart`,
       description:
         category.description?.substring(0, 160) ||
         `Découvrez nos produits dans la catégorie ${category.name}`,
     }
   } catch (error) {
     return {
-      title: 'Catégorie introuvable | KiosqueTN',
+      title: 'Catégorie introuvable | specpart',
     }
   }
 }

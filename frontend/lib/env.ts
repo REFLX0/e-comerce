@@ -72,7 +72,7 @@ const envSchema = z.object({
     .string()
     .min(1)
     .optional()
-    .default('KiosqueTN'),
+    .default('specpart'),
 
   // ── Cloudinary (optional — features degrade gracefully without it) ────
   NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: z.string().optional(),

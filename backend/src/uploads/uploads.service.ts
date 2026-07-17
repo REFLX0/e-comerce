@@ -15,7 +15,7 @@ export class UploadsService {
     return new Promise((resolve, reject) => {
       cloudinary.uploader
         .upload_stream(
-          { folder: 'kiosquetn/products', resource_type: 'image' },
+          { folder: 'specpart/products', resource_type: 'image' },
           (error, result) => {
             if (error) reject(error);
             else resolve(result!.secure_url);

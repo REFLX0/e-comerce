@@ -3,15 +3,15 @@ import { PrismaService } from '../prisma/prisma.service';
 
 // Default settings seeded if they don't exist in the DB
 const DEFAULT_SETTINGS: Record<string, string> = {
-  SITE_NAME: '"KiosqueTN"',
+  SITE_NAME: '"specpart"',
   SITE_CURRENCY: '"TND"',
-  CONTACT_EMAIL: '"contact@kiosquetn.tn"',
+  CONTACT_EMAIL: '"contact@specpart.tn"',
   CONTACT_PHONE: '"+216 71 000 000"',
-  SEO_TITLE: '"KiosqueTN - L\'Expertise Automobile"',
+  SEO_TITLE: '"specpart - Pièces Auto & Lubrifiants"',
   SEO_DESCRIPTION:
     '"Découvrez notre large gamme de lubrifiants et huiles moteur en Tunisie."',
   SEO_INDEX: 'true',
-  EMAIL_SENDER: '"noreply@kiosquetn.tn"',
+  EMAIL_SENDER: '"noreply@specpart.tn"',
   EMAIL_ORDER_CONFIRMATION: 'true',
   EMAIL_SHIP_CONFIRMATION: 'true',
   PAYMENT_COD_ENABLED: 'true',

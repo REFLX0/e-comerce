@@ -137,7 +137,7 @@ export class AuthService {
         if (resendApiKey && resendApiKey !== 'local') {
           const resend = new Resend(resendApiKey);
           await resend.emails.send({
-            from: this.config.get('RESEND_FROM', 'noreply@kiosquetn.tn'),
+            from: this.config.get('RESEND_FROM', 'noreply@specpart.tn'),
             to: email,
             subject: 'Réinitialisation de mot de passe',
             html: `<p>Cliquez sur le lien ci-dessous pour réinitialiser votre mot de passe :</p><p><a href="${resetUrl}">${resetUrl}</a></p><p>Ce lien expire dans 1 heure.</p>`,

@@ -1,4 +1,4 @@
-name: Deploy KiosqueTN to Oracle VM
+name: Deploy specpart to Oracle VM
 
 on:
   push:
@@ -48,7 +48,7 @@ jobs:
           key: ${{ secrets.ORACLE_SSH_KEY }}
           script: |
             set -e
-            echo "=== Deploying KiosqueTN (port 8082) ==="
+            echo "=== Deploying specpart (port 8082) ==="
             
             # Create deploy dir if first time
             mkdir -p ${{ env.DEPLOY_DIR }}
@@ -86,7 +86,7 @@ jobs:
             # Clean up dangling images
             docker image prune -f
             
-            echo "=== Deployment done — KiosqueTN live on http://84.8.254.244:8082 ==="
+            echo "=== Deployment done — specpart live on http://84.8.254.244:8082 ==="
 
       - name: Health Check
         uses: appleboy/ssh-action@v1.0.3

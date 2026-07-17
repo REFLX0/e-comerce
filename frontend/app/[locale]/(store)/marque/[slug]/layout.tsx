@@ -10,13 +10,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const { slug } = await params
     const brand = await brandsApi.getBySlug(slug)
     return {
-      title: `${brand.name} | KiosqueTN`,
+      title: `${brand.name} | specpart`,
       description:
         brand.description?.substring(0, 160) || `Découvrez nos produits de la marque ${brand.name}`,
     }
   } catch (error) {
     return {
-      title: 'Marque introuvable | KiosqueTN',
+      title: 'Marque introuvable | specpart',
     }
   }
 }

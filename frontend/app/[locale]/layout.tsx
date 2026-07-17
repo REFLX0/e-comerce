@@ -35,8 +35,8 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     title: t('title'),
     description: t('description'),
     keywords: locale === 'fr'
-      ? ['huile moteur', 'lubrifiant', 'Tunisie', 'KiosqueTN', 'huile synthétique', 'vidange', 'Total', 'Shell', 'Castrol', 'Motul', 'filtres auto']
-      : ['engine oil', 'lubricant', 'Tunisia', 'KiosqueTN', 'synthetic oil', 'oil change', 'Total', 'Shell', 'Castrol', 'Motul', 'auto filters'],
+      ? ['huile moteur', 'lubrifiant', 'Tunisie', 'specpart', 'huile synthétique', 'vidange', 'Total', 'Shell', 'Castrol', 'Motul', 'filtres auto']
+      : ['engine oil', 'lubricant', 'Tunisia', 'specpart', 'synthetic oil', 'oil change', 'Total', 'Shell', 'Castrol', 'Motul', 'auto filters'],
     openGraph: {
       title: t('title'),
       description: t('description'),

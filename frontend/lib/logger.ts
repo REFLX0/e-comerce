@@ -1,5 +1,5 @@
 /**
- * lib/logger.ts — Structured JSON logger for KiosqueTN
+ * lib/logger.ts — Structured JSON logger for specpart
  *
  * Principles (from the SRE checklist):
  *  - Every event includes: timestamp, level, requestId, message, meta

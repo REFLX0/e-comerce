@@ -49,7 +49,7 @@ export default function MobileMenu() {
             <Link href="/" onClick={() => setOpen(false)}>
               <Image
                 src="/logo.png"
-                alt="KiosqueTN"
+                alt="specpart"
                 width={120}
                 height={36}
                 className="h-9 w-auto object-contain"
@@ -182,7 +182,7 @@ export default function MobileMenu() {
           {/* Gold accent bottom bar */}
           <div className="mx-4 mt-8 h-px bg-brand-border" />
           <p className="mt-4 text-center text-[11px] text-brand-muted">
-            © {new Date().getFullYear()} KiosqueTN
+            © {new Date().getFullYear()} specpart
           </p>
         </div>
       </SheetContent>

@@ -95,7 +95,7 @@ export default function RegisterPage() {
         ...(data.phone ? { phone: data.phone } : {}),
       })
       toast.success('Compte créé avec succès !', {
-        description: 'Bienvenue chez KiosqueTN. Vous êtes maintenant connecté.',
+        description: 'Bienvenue chez specpart. Vous êtes maintenant connecté.',
       })
       router.push('/compte')
     } catch (error) {
@@ -128,7 +128,7 @@ export default function RegisterPage() {
             Créer un compte
           </h1>
           <p className="text-gray-500">
-            Rejoignez KiosqueTN et profitez d&apos;une expérience d&apos;achat simplifiée.
+            Rejoignez specpart et profitez d&apos;une expérience d&apos;achat simplifiée.
           </p>
         </div>
 

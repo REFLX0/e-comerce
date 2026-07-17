@@ -44,7 +44,7 @@ export default function Footer() {
                 K
               </span>
               <span className="text-xl font-bold tracking-tight text-white">
-                KiosqueTN
+                specpart
               </span>
             </Link>
             <p className="mb-6 max-w-xs text-sm leading-relaxed text-white/40">
@@ -128,13 +128,13 @@ export default function Footer() {
               </li>
               <li className="flex items-center gap-3">
                 <Mail size={16} className="shrink-0 text-brand-accent" />
-                <a href="mailto:contact@kiosquetn.tn" className="text-white/40 hover:text-white">contact@kiosquetn.tn</a>
+                <a href="mailto:contact@specpart.tn" className="text-white/40 hover:text-white">contact@specpart.tn</a>
               </li>
             </ul>
 
             {/* Social */}
             <div className="mt-6 flex gap-3">
-              <a href="https://www.facebook.com/KiosqueTN/" target="_blank" rel="noreferrer" aria-label="Facebook" className="flex h-9 w-9 items-center justify-center rounded border border-white/10 text-white/40 transition-all hover:border-brand-accent hover:text-brand-accent">
+              <a href="https://www.facebook.com/specpart/" target="_blank" rel="noreferrer" aria-label="Facebook" className="flex h-9 w-9 items-center justify-center rounded border border-white/10 text-white/40 transition-all hover:border-brand-accent hover:text-brand-accent">
                 <Facebook size={16} />
               </a>
               <a href="#" aria-label="Instagram" className="flex h-9 w-9 items-center justify-center rounded border border-white/10 text-white/40 transition-all hover:border-brand-accent hover:text-brand-accent">
@@ -146,7 +146,7 @@ export default function Footer() {
 
         {/* Bottom */}
         <div className="flex flex-col items-center justify-between gap-4 text-xs text-white/20 sm:flex-row">
-          <p>&copy; {new Date().getFullYear()} KiosqueTN. {tLayout('allRightsReserved')}</p>
+          <p>&copy; {new Date().getFullYear()} specpart. {tLayout('allRightsReserved')}</p>
           <p>{tLayout('madeBy')}</p>
         </div>
       </div>

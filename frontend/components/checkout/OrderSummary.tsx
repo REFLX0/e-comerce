@@ -92,7 +92,7 @@ export function OrderSummary() {
           <a href="/cgv" target="_blank" className="underline hover:text-white">
             {t('cgv')}
           </a>{' '}
-          de KiosqueTN.
+          de specpart.
         </label>
       </div>
 

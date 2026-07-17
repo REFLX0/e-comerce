@@ -1,7 +1,7 @@
 {
   "Index": {
-    "title": "KiosqueTN — Huile Moteur & Lubrifiants en Tunisie",
-    "description": "KiosqueTN, le spécialiste de la vente de lubrifiants et huiles moteur en Tunisie. Livraison rapide, produits authentiques Total, Shell, Castrol, Motul."
+    "title": "specpart — Huile Moteur & Lubrifiants en Tunisie",
+    "description": "specpart, le spécialiste de la vente de lubrifiants et huiles moteur en Tunisie. Livraison rapide, produits authentiques Total, Shell, Castrol, Motul."
   },
   "Nav": {
     "home": "Accueil",
@@ -274,7 +274,7 @@
     "myProfileDesc": "Gérer vos informations personnelles",
     "hello": "Bonjour, {name} 👋",
     "dearCustomer": "cher client",
-    "welcome": "Bienvenue dans votre espace personnel KiosqueTN",
+    "welcome": "Bienvenue dans votre espace personnel specpart",
     "recentOrders": "Commandes récentes",
     "viewAll": "Voir tout",
     "noOrders": "Aucune commande pour l'instant",
@@ -406,7 +406,7 @@
           },
           {
             "q": "Comment contacter le service client ?",
-            "a": "Vous pouvez nous joindre par téléphone au +216 71 123 456, par email à contact@kiosquetn.tn, ou via le formulaire de contact sur notre site."
+            "a": "Vous pouvez nous joindre par téléphone au +216 71 123 456, par email à contact@specpart.tn, ou via le formulaire de contact sur notre site."
           }
         ]
       }
@@ -419,25 +419,25 @@
     "date": "Dernière mise à jour : Juin 2026",
     "breadcrumb": "Conditions de vente",
     "articles": [
-      { "title": "Article 1 – Objet", "content": "Les présentes conditions générales de vente (CGV) régissent l'ensemble des transactions effectuées sur le site KiosqueTN.tn. Toute commande implique l'acceptation sans réserve des présentes CGV." },
-      { "title": "Article 2 – Produits", "content": "Les produits proposés à la vente sont décrits avec la plus grande exactitude possible. Les photographies des produits ne sont pas contractuelles. KiosqueTN s'engage à proposer uniquement des produits 100% authentiques et certifiés par les marques partenaires." },
-      { "title": "Article 3 – Prix", "content": "Les prix sont indiqués en Dinar Tunisien (DT) toutes taxes comprises (TTC). KiosqueTN se réserve le droit de modifier ses prix à tout moment, mais les produits seront facturés sur la base des tarifs en vigueur au moment de la validation de la commande." },
-      { "title": "Article 4 – Commandes", "content": "Le client passe commande sur le site internet kiosquetn.tn. La validation de la commande implique l'acceptation des présentes CGV et constitue un contrat de vente. KiosqueTN confirmera la commande par email." },
+      { "title": "Article 1 – Objet", "content": "Les présentes conditions générales de vente (CGV) régissent l'ensemble des transactions effectuées sur le site specpart.tn. Toute commande implique l'acceptation sans réserve des présentes CGV." },
+      { "title": "Article 2 – Produits", "content": "Les produits proposés à la vente sont décrits avec la plus grande exactitude possible. Les photographies des produits ne sont pas contractuelles. specpart s'engage à proposer uniquement des produits 100% authentiques et certifiés par les marques partenaires." },
+      { "title": "Article 3 – Prix", "content": "Les prix sont indiqués en Dinar Tunisien (DT) toutes taxes comprises (TTC). specpart se réserve le droit de modifier ses prix à tout moment, mais les produits seront facturés sur la base des tarifs en vigueur au moment de la validation de la commande." },
+      { "title": "Article 4 – Commandes", "content": "Le client passe commande sur le site internet specpart.tn. La validation de la commande implique l'acceptation des présentes CGV et constitue un contrat de vente. specpart confirmera la commande par email." },
       { "title": "Article 5 – Livraison", "content": "La livraison est effectuée à l'adresse indiquée lors de la commande. Les délais de livraison sont de 24 à 48 heures ouvrables sur l'ensemble du territoire tunisien. La livraison est gratuite pour toute commande supérieure à 100 DT." },
       { "title": "Article 6 – Paiement", "content": "Le paiement peut être effectué par : paiement à la livraison, virement bancaire, ou carte bancaire en ligne. Toutes les transactions en ligne sont sécurisées." },
       { "title": "Article 7 – Droit de rétractation", "content": "Conformément à la législation en vigueur, le client dispose d'un délai de 14 jours à compter de la réception de sa commande pour exercer son droit de rétractation, sans avoir à justifier de motifs. Le produit doit être retourné dans son emballage d'origine, non ouvert et non utilisé." },
-      { "title": "Article 8 – Réclamations", "content": "Pour toute réclamation, le client peut contacter le service client par email à contact@kiosquetn.tn ou par téléphone au +216 71 123 456." }
+      { "title": "Article 8 – Réclamations", "content": "Pour toute réclamation, le client peut contacter le service client par email à contact@specpart.tn ou par téléphone au +216 71 123 456." }
     ]
   },
   "About": {
     "metaTitle": "À propos",
     "metaDescription": "Découvrez le spécialiste de la vente de lubrifiants et huiles moteur en Tunisie.",
     "title1": "À propos de",
-    "title2": "KiosqueTN",
+    "title2": "specpart",
     "subtitle": "Le partenaire de confiance pour tous vos besoins en lubrifiants et huiles moteur en Tunisie.",
     "breadcrumb": "À propos",
     "historyTitle": "Notre Histoire",
-    "historyP1": "Fondée en Tunisie, <strong>KiosqueTN</strong> s'est imposée comme le leader de la distribution de lubrifiants et d'huiles moteur de qualité supérieure. Notre mission est simple : rendre accessibles les meilleurs produits de lubrification à tous les automobilistes et professionnels tunisiens.",
+    "historyP1": "Fondée en Tunisie, <strong>specpart</strong> s'est imposée comme le leader de la distribution de lubrifiants et d'huiles moteur de qualité supérieure. Notre mission est simple : rendre accessibles les meilleurs produits de lubrification à tous les automobilistes et professionnels tunisiens.",
     "historyP2": "Nous travaillons en partenariat avec les plus grandes marques mondiales — Castrol, Shell, Total, Mobil, Motul — pour garantir à nos clients des produits 100% authentiques, livrés rapidement partout en Tunisie.",
     "historyP3": "Notre équipe d'experts est passionnée par l'automobile et se tient à votre disposition pour vous conseiller et vous accompagner dans le choix du lubrifiant adapté à votre véhicule.",
     "valuesTitle": "Nos Valeurs",

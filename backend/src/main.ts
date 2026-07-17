@@ -43,8 +43,8 @@ async function bootstrap() {
   // Swagger (dev only)
   if (process.env.NODE_ENV !== 'production') {
     const config = new DocumentBuilder()
-      .setTitle('kiosquetn API')
-      .setDescription('E-commerce REST API for kiosquetn lubricants')
+      .setTitle('specpart API')
+      .setDescription('E-commerce REST API for specpart auto parts')
       .setVersion('1.0')
       .addBearerAuth()
       .build();

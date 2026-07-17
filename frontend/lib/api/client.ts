@@ -1,5 +1,5 @@
 /**
- * lib/api/client.ts — Resilient HTTP client for KiosqueTN
+ * lib/api/client.ts — Resilient HTTP client for specpart
  *
  * All existing exports (apiGet, apiPost, apiPut, apiPatch, apiDelete) are
  * preserved with the same signatures for full backward compatibility.

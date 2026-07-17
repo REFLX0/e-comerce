@@ -65,7 +65,7 @@ export default function Header() {
           <Link href="/" className="flex shrink-0 items-center group">
             <Image
               src="/logo.png"
-              alt="KiosqueTN"
+              alt="specpart"
               width={140}
               height={40}
               className="h-9 w-auto object-contain"

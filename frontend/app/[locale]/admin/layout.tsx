@@ -157,7 +157,7 @@ function Sidebar({
         <Link href={withLocale('/admin', locale)} onClick={onClose} className="flex items-center gap-2">
           <Image
             src="/logo.png"
-            alt="KiosqueTN Admin"
+            alt="specpart Admin"
             width={120}
             height={36}
             className="h-8 w-auto brightness-0 invert"
