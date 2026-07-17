@@ -2,25 +2,39 @@
 
 import { useState } from 'react'
 import { useAuthStore } from '@/lib/store/auth.store'
+import { authApi } from '@/lib/api/auth'
 import { Save, User, Mail, Phone, Calendar } from 'lucide-react'
 import { toast } from 'sonner'
 
 export default function ProfilPage() {
-  const { user } = useAuthStore()
+  const { user, updateUser } = useAuthStore()
   const [form, setForm] = useState({
     name: user?.firstName ? `${user.firstName} ${user.lastName}` : '',
     email: user?.email ?? '',
-    phone: '',
-    birthday: '',
+    phone: (user as any)?.phone ?? '',
+    birthday: (user as any)?.birthday ?? '',
   })
   const [saving, setSaving] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setSaving(true)
-    await new Promise((r) => setTimeout(r, 800)) // simulate API call
-    toast.success('Profil mis à jour avec succès !')
-    setSaving(false)
+    try {
+      const [firstName, ...rest] = form.name.trim().split(' ')
+      const updatedUser = await authApi.updateProfile({
+        firstName,
+        lastName: rest.join(' ') || undefined,
+        email: form.email,
+        ...(form.phone ? { phone: form.phone } : {}),
+        ...(form.birthday ? { birthday: form.birthday } : {}),
+      })
+      updateUser(updatedUser)
+      toast.success('Profil mis à jour avec succès !')
+    } catch {
+      toast.error('Erreur lors de la mise à jour du profil.')
+    } finally {
+      setSaving(false)
+    }
   }
 
   const fullName = user?.firstName ? `${user.firstName} ${user.lastName}` : ''

@@ -39,5 +39,8 @@ export const authApi = {
   forgotPassword: (email: string) => apiPost<void>('/auth/forgot-password', { email }),
 
   resetPassword: (token: string, password: string) => apiPost<void>('/auth/reset-password', { token, password }),
-}
 
+  changePassword: (payload: any) => apiPost<void>('/users/me/change-password', payload),
+
+  subscribeNewsletter: (email: string) => apiPost<void>('/users/newsletter', { email }),
+}

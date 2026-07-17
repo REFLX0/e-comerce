@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { ArrowRight } from 'lucide-react'
 import { toast } from 'sonner'
 import { useTranslations } from 'next-intl'
+import { authApi } from '@/lib/api/auth'
 
 export function NewsletterForm() {
   const t = useTranslations('Home')
@@ -20,12 +21,15 @@ export function NewsletterForm() {
 
     setIsLoading(true)
     
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 800))
-    
-    toast.success(t('thankYou'))
-    setEmail('')
-    setIsLoading(false)
+    try {
+      await authApi.subscribeNewsletter(email)
+      toast.success(t('thankYou'))
+      setEmail('')
+    } catch (err) {
+      toast.error('Erreur lors de l\'inscription')
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (

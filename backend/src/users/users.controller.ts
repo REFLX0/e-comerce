@@ -14,6 +14,8 @@ import { CurrentUser } from '../common/decorators/current-user.decorator';
 import { UsersService } from './users.service';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { CreateAddressDto } from './dto/create-address.dto';
+import { ChangePasswordDto } from './dto/change-password.dto';
+import { Public } from '../common/decorators/public.decorator';
 
 @ApiTags('users')
 @ApiBearerAuth()
@@ -50,5 +52,16 @@ export class UsersController {
   @Delete('me/addresses/:id')
   removeAddress(@CurrentUser('id') userId: string, @Param('id') id: string) {
     return this.usersService.removeAddress(userId, id);
+  }
+
+  @Post('me/change-password')
+  changePassword(@CurrentUser('id') userId: string, @Body() dto: ChangePasswordDto) {
+    return this.usersService.changePassword(userId, dto);
+  }
+
+  @Public()
+  @Post('newsletter')
+  subscribeNewsletter(@Body('email') email: string) {
+    return this.usersService.subscribeNewsletter(email);
   }
 }

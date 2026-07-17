@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { ShieldCheck, Lock, Smartphone, Monitor, LogOut, Eye, EyeOff, Save } from 'lucide-react'
 import { toast } from 'sonner'
 import { useTranslations } from 'next-intl'
+import { authApi } from '@/lib/api/auth'
 
 const MOCK_SESSIONS = [
   { id: '1', device: 'Chrome · Windows', location: 'Tunis, Tunisie', date: "Aujourd'hui 13:42", current: true },
@@ -25,10 +26,18 @@ export default function SecuritePage() {
       return
     }
     setSaving(true)
-    await new Promise((r) => setTimeout(r, 800))
-    toast.success(t('success'))
-    setForm({ oldPassword: '', newPassword: '', confirmPassword: '' })
-    setSaving(false)
+    try {
+      await authApi.changePassword({
+        oldPassword: form.oldPassword,
+        newPassword: form.newPassword
+      })
+      toast.success(t('success'))
+      setForm({ oldPassword: '', newPassword: '', confirmPassword: '' })
+    } catch (err: any) {
+      toast.error(err.message || 'Erreur lors de la modification')
+    } finally {
+      setSaving(false)
+    }
   }
 
   return (
