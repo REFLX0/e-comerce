@@ -30,7 +30,7 @@ export default function MentionsLegalesPage() {
               <br />
               Téléphone : +216 71 123 456
               <br />
-              Email : contact@specpart.tn
+              Email : specpart@hotmail.com
               <br />
               Registre du commerce : [Numéro RC]
               <br />
@@ -79,7 +79,7 @@ export default function MentionsLegalesPage() {
             </p>
             <p>
               Vous disposez d&apos;un droit d&apos;accès, de rectification et de suppression de vos
-              données personnelles. Pour exercer ce droit, contactez-nous à : contact@specpart.tn.
+              données personnelles. Pour exercer ce droit, contactez-nous à : specpart@hotmail.com.
             </p>
           </section>
 

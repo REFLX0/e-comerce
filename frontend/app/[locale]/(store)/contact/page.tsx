@@ -74,7 +74,7 @@ export default function ContactPage() {
               info: '+216 92 975 959',
               sub: t('phoneSub'),
             },
-            { icon: Mail, title: t('email'), info: 'contact@specpart.tn', sub: t('emailSub') },
+            { icon: Mail, title: t('email'), info: 'specpart@hotmail.com', sub: t('emailSub') },
             {
               icon: MapPin,
               title: t('address'),

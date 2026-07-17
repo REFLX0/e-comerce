@@ -5,7 +5,7 @@ import { PrismaService } from '../prisma/prisma.service';
 const DEFAULT_SETTINGS: Record<string, string> = {
   SITE_NAME: '"specpart"',
   SITE_CURRENCY: '"TND"',
-  CONTACT_EMAIL: '"contact@specpart.tn"',
+  CONTACT_EMAIL: '"specpart@hotmail.com"',
   CONTACT_PHONE: '"+216 71 000 000"',
   SEO_TITLE: '"specpart - Pièces Auto & Lubrifiants"',
   SEO_DESCRIPTION:
