@@ -141,10 +141,18 @@ export class AdminService {
   }
 
   async deleteProduct(id: string) {
-    return this.prisma.product.update({
-      where: { id },
-      data: { isPublished: false },
-    });
+    await this.prisma.review.deleteMany({ where: { productId: id } });
+    await this.prisma.wishlistItem.deleteMany({ where: { productId: id } });
+    await this.prisma.vehicleCompatibility.deleteMany({ where: { productId: id } });
+    try {
+      return await this.prisma.product.delete({ where: { id } });
+    } catch (err: any) {
+      if (err?.code === 'P2003') {
+        await this.prisma.product.update({ where: { id }, data: { isPublished: false } });
+        return { message: 'Produit masqué (des commandes y sont liées)' };
+      }
+      throw err;
+    }
   }
 
   async duplicateProduct(id: string) {
@@ -220,7 +228,7 @@ export class AdminService {
         await this.prisma.product.updateMany({ where: { id: { in: ids } }, data: { isPublished: false } });
         break;
       case 'delete':
-        await this.prisma.product.updateMany({ where: { id: { in: ids } }, data: { isPublished: false } });
+        for (const id of ids) await this.deleteProduct(id);
         break;
       case 'duplicate':
         for (const id of ids) await this.duplicateProduct(id);

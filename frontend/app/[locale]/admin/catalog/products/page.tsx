@@ -61,8 +61,8 @@ export default function AdminProductsPage() {
 
   const deleteMutation = useMutation({
     mutationFn: (id: string) => adminApi.deleteProduct(id),
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['admin-products'] }); toast.success('Produit dépublié'); setConfirmDelete(null) },
-    onError: () => toast.error('Erreur lors de la suppression'),
+    onSuccess: (res: any) => { queryClient.invalidateQueries({ queryKey: ['admin-products'] }); toast.success(res?.message ?? 'Produit supprimé'); setConfirmDelete(null) },
+    onError: (err) => { console.error('Delete error:', err); toast.error('Erreur lors de la suppression') },
   })
 
   const bulkMutation = useMutation({
@@ -238,7 +238,7 @@ export default function AdminProductsPage() {
                       <Link href={localizedHref(`/produit/${product.slug}`)} target="_blank" className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-brand-primary transition-colors" title="Voir sur le site"><Eye size={15} /></Link>
                       <Link href={localizedHref(`/admin/catalog/products/${product.id}/edit`)} className="rounded-lg p-1.5 text-gray-400 hover:bg-blue-50 hover:text-blue-600 transition-colors" title="Modifier"><Edit2 size={15} /></Link>
                       <button onClick={() => duplicateMutation.mutate(product.id)} className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-700 transition-colors" title="Dupliquer"><Copy size={15} /></button>
-                      <button onClick={() => setConfirmDelete(product.id)} className="rounded-lg p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-500 transition-colors" title="Dépublier"><Trash2 size={15} /></button>
+                      <button onClick={() => setConfirmDelete(product.id)} className="rounded-lg p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-500 transition-colors" title="Supprimer"><Trash2 size={15} /></button>
                     </div>
                   </td>
                 </tr>
@@ -251,12 +251,12 @@ export default function AdminProductsPage() {
       {confirmDelete && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
           <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-xl max-w-sm w-full mx-4">
-            <h3 className="text-lg font-bold text-brand-primary mb-2">Confirmer la dépublication</h3>
-            <p className="text-sm text-gray-500 mb-6">Le produit sera masqué de la boutique. Vous pourrez le republier à tout moment.</p>
+            <h3 className="text-lg font-bold text-brand-primary mb-2">Confirmer la suppression</h3>
+            <p className="text-sm text-gray-500 mb-6">Cette action est irréversible. Le produit et toutes ses données seront définitivement supprimés.</p>
             <div className="flex justify-end gap-3">
               <button onClick={() => setConfirmDelete(null)} className="rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">Annuler</button>
               <button onClick={() => deleteMutation.mutate(confirmDelete)} disabled={deleteMutation.isPending} className="rounded-xl bg-red-500 px-4 py-2 text-sm font-semibold text-white hover:bg-red-600 transition-colors disabled:opacity-50">
-                {deleteMutation.isPending ? 'Dépublication...' : 'Dépublier'}
+                {deleteMutation.isPending ? 'Suppression...' : 'Supprimer'}
               </button>
             </div>
           </div>
@@ -283,7 +283,7 @@ export default function AdminProductsPage() {
             </div>
             <div className="flex flex-col gap-1">
               <Link href={localizedHref(`/admin/catalog/products/${product.id}/edit`)} className="rounded-lg p-2 text-gray-400 hover:bg-blue-50 hover:text-blue-600 transition-colors"><Edit2 size={16} /></Link>
-              <button onClick={() => setConfirmDelete(product.id)} className="rounded-lg p-2 text-gray-400 hover:bg-red-50 hover:text-red-500 transition-colors" title="Dépublier"><Trash2 size={16} /></button>
+              <button onClick={() => setConfirmDelete(product.id)} className="rounded-lg p-2 text-gray-400 hover:bg-red-50 hover:text-red-500 transition-colors" title="Supprimer"><Trash2 size={16} /></button>
             </div>
           </div>
         ))}

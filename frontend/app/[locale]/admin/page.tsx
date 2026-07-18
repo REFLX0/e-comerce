@@ -34,6 +34,23 @@ export default function AdminDashboard() {
   })
 
   const stats = (dashboardData as any)?.data ?? dashboardData
+  const recentOrders = stats?.recentOrders ?? []
+
+  const trends = useMemo(() => {
+    const orders = recentOrders
+    const half = Math.ceil(orders.length / 2)
+    const firstHalf = orders.slice(0, half)
+    const secondHalf = orders.slice(half)
+    const sum1 = firstHalf.reduce((s: number, o: any) => s + (o.totalAmount || 0), 0)
+    const sum2 = secondHalf.reduce((s: number, o: any) => s + (o.totalAmount || 0), 0)
+    const revTrend = sum2 > 0 && sum1 > 0 ? ((sum2 / sum1) - 1) * 100 : 0
+    const count1 = firstHalf.length
+    const count2 = secondHalf.length
+    const orderTrend = count1 > 0 ? ((count2 - count1) / count1) * 100 : 0
+    return { revenue: revTrend, orders: orderTrend }
+  }, [recentOrders])
+
+  const trendStr = (v: number) => `${v >= 0 ? '+' : ''}${v.toFixed(1)}%`
 
   if (isError) {
     return (
@@ -61,24 +78,6 @@ export default function AdminDashboard() {
       </div>
     )
   }
-
-  const recentOrders = stats?.recentOrders ?? []
-
-  const trends = useMemo(() => {
-    const orders = recentOrders
-    const half = Math.ceil(orders.length / 2)
-    const firstHalf = orders.slice(0, half)
-    const secondHalf = orders.slice(half)
-    const sum1 = firstHalf.reduce((s: number, o: any) => s + (o.totalAmount || 0), 0)
-    const sum2 = secondHalf.reduce((s: number, o: any) => s + (o.totalAmount || 0), 0)
-    const revTrend = sum2 > 0 && sum1 > 0 ? ((sum2 / sum1) - 1) * 100 : 0
-    const count1 = firstHalf.length
-    const count2 = secondHalf.length
-    const orderTrend = count1 > 0 ? ((count2 - count1) / count1) * 100 : 0
-    return { revenue: revTrend, orders: orderTrend }
-  }, [recentOrders])
-
-  const trendStr = (v: number) => `${v >= 0 ? '+' : ''}${v.toFixed(1)}%`
 
   const kpis = [
     {

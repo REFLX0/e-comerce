@@ -44,28 +44,14 @@ export default function AdminAnalyticsPage() {
   const stats = ((data as { data?: DashboardStats } | undefined)?.data ?? data ?? {}) as DashboardStats
   const recentOrders: RecentOrder[] = useMemo(() => stats.recentOrders ?? [], [stats.recentOrders])
 
-  if (isError) {
-    return (
-      <div className="p-4 sm:p-6">
-        <div className="rounded-2xl border border-red-100 bg-red-50 p-6 text-center">
-          <p className="text-sm font-semibold text-red-700">Erreur de chargement des données analytiques</p>
-          <button onClick={() => refetch()} className="mt-3 rounded-xl bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700">Réessayer</button>
-        </div>
-      </div>
-    )
-  }
-
   const statusRows = useMemo(() => {
     const counts = recentOrders.reduce<Record<string, number>>((acc, order) => {
       acc[order.status] = (acc[order.status] ?? 0) + 1
       return acc
     }, {})
-
     const total = Math.max(recentOrders.length, 1)
     return Object.entries(counts).map(([status, count]) => ({
-      status,
-      count,
-      pct: Math.round((count / total) * 100),
+      status, count, pct: Math.round((count / total) * 100),
     }))
   }, [recentOrders])
 
@@ -76,13 +62,11 @@ export default function AdminAnalyticsPage() {
       const key = date.toISOString().slice(0, 10)
       return { key, label: date.toLocaleDateString('fr-TN', { weekday: 'short' }), value: 0 }
     })
-
     recentOrders.forEach((order) => {
       const key = new Date(order.createdAt).toISOString().slice(0, 10)
       const day = days.find((item) => item.key === key)
       if (day) day.value += order.totalAmount ?? 0
     })
-
     const max = Math.max(...days.map((day) => day.value), 1)
     return days.map((day) => ({ ...day, pct: Math.max(6, Math.round((day.value / max) * 100)) }))
   }, [recentOrders])
@@ -100,14 +84,22 @@ export default function AdminAnalyticsPage() {
     const count1 = firstHalf.length
     const count2 = secondHalf.length
     const orderTrend = count1 > 0 ? ((count2 - count1) / count1) * 100 : 0
-    return {
-      revenue: revTrend,
-      orders: orderTrend,
-    }
+    return { revenue: revTrend, orders: orderTrend }
   }, [recentOrders])
 
   const trendStr = (v: number) => `${v >= 0 ? '+' : ''}${v.toFixed(1)}%`
   const isGood = (v: number) => v >= 0
+
+  if (isError) {
+    return (
+      <div className="p-4 sm:p-6">
+        <div className="rounded-2xl border border-red-100 bg-red-50 p-6 text-center">
+          <p className="text-sm font-semibold text-red-700">Erreur de chargement des données analytiques</p>
+          <button onClick={() => refetch()} className="mt-3 rounded-xl bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700">Réessayer</button>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="p-4 sm:p-6 space-y-6">

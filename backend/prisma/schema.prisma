@@ -211,21 +211,26 @@ model ProductImage {
 
 // Oil technical specs (viscosity, API standard, etc.)
 model ProductSpecs {
-  id            String      @id @default(cuid())
-  productId     String      @unique
-  product       Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
-  viscosity     String?     // e.g., "5W-40"
-  apiStandard   String?     // e.g., "API SN"
-  aeceaStandard String?     // e.g., "ACEA C3"
-  isFullySynth  Boolean     @default(false)
-  isSemiSynth   Boolean     @default(false)
-  isMinerale    Boolean     @default(false)
-  vehicleTypes  VehicleType[]
-  fuelTypes     FuelType[]
-  minCylinders  Int?
-  maxCylinders  Int?
-  minPower      Float?
-  maxPower      Float?
+  id               String      @id @default(cuid())
+  productId        String      @unique
+  product          Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  viscosity        String?     // e.g., "5W-40"
+  apiStandard      String?     // e.g., "API SN"
+  aeceaStandard    String?     // e.g., "ACEA C3"
+  jasoStandard     String?     // e.g., "MA2", "MA", "MB" — motorcycle wet-clutch JASO grade
+  isFullySynth     Boolean     @default(false)
+  isSemiSynth      Boolean     @default(false)
+  isMinerale       Boolean     @default(false)
+  DPFCompatible    Boolean?
+  TurboCompatible  Boolean?
+  HybridCompatible Boolean?
+  OEMApprovals     String?     // e.g., "BMW LL-04; MB 229.51"
+  vehicleTypes     VehicleType[]
+  fuelTypes        FuelType[]
+  minCylinders     Int?
+  maxCylinders     Int?
+  minPower         Float?
+  maxPower         Float?
 }
 
 // ─────────────────────────────────────────

@@ -41,6 +41,17 @@ export default function AdminOrdersPage() {
   const r = (data as any)?.data ?? data ?? {}
   const orders = Array.isArray(r) ? r : r.data ?? []
 
+  const updateMutation = useMutation({
+    mutationFn: ({ id, status }: { id: string; status: string }) => adminApi.updateOrderStatus(id, status),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-orders'] })
+      queryClient.invalidateQueries({ queryKey: ['admin-dashboard'] })
+      toast.success('Statut mis à jour')
+      setSelected([])
+    },
+    onError: () => toast.error('Erreur lors de la mise à jour'),
+  })
+
   if (isError) {
     return (
       <div className="p-4 sm:p-6">
@@ -52,17 +63,6 @@ export default function AdminOrdersPage() {
       </div>
     )
   }
-
-  const updateMutation = useMutation({
-    mutationFn: ({ id, status }: { id: string; status: string }) => adminApi.updateOrderStatus(id, status),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-orders'] })
-      queryClient.invalidateQueries({ queryKey: ['admin-dashboard'] })
-      toast.success('Statut mis à jour')
-      setSelected([])
-    },
-    onError: () => toast.error('Erreur lors de la mise à jour'),
-  })
 
   const filtered = orders.filter((o: any) => {
     const q = search.toLowerCase()

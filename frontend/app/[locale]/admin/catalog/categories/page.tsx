@@ -196,18 +196,6 @@ export default function AdminCategoriesPage() {
 
   const categories: Category[] = data ?? []
 
-  if (isError) {
-    return (
-      <div className="p-4 sm:p-6">
-        <div className="rounded-2xl border border-red-100 bg-red-50 p-6 text-center">
-          <AlertTriangle size={32} className="mx-auto mb-3 text-red-400" />
-          <p className="text-sm font-semibold text-red-700">Erreur de chargement des catégories</p>
-          <button onClick={() => refetch()} className="mt-3 rounded-xl bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700">Réessayer</button>
-        </div>
-      </div>
-    )
-  }
-
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
@@ -242,6 +230,18 @@ export default function AdminCategoriesPage() {
     const reordered = arrayMove(categories, oldIndex, newIndex)
     reorderMutation.mutate(reordered.map((c) => c.id))
   }, [categories, reorderMutation])
+
+  if (isError) {
+    return (
+      <div className="p-4 sm:p-6">
+        <div className="rounded-2xl border border-red-100 bg-red-50 p-6 text-center">
+          <AlertTriangle size={32} className="mx-auto mb-3 text-red-400" />
+          <p className="text-sm font-semibold text-red-700">Erreur de chargement des catégories</p>
+          <button onClick={() => refetch()} className="mt-3 rounded-xl bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700">Réessayer</button>
+        </div>
+      </div>
+    )
+  }
 
   const toggleExpanded = (id: string) => {
     setExpandedIds((prev) => {

@@ -51,36 +51,6 @@ export default function AdminShippingPage() {
   })
 
   const zoneList: Zone[] = Array.isArray(zones) ? zones : []
-
-  if (isError) {
-    return (
-      <div className="p-4 sm:p-6">
-        <div className="rounded-2xl border border-red-100 bg-red-50 p-6 text-center">
-          <AlertTriangle size={32} className="mx-auto mb-3 text-red-400" />
-          <p className="text-sm font-semibold text-red-700">Erreur de chargement</p>
-          <button onClick={() => refetch()} className="mt-3 rounded-xl bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700">Réessayer</button>
-        </div>
-      </div>
-    )
-  }
-
-  const createZone = useMutation({
-    mutationFn: (data: { name: string; price: number; eta: string }) => adminApi.createShippingZone(data),
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['shipping-zones'] }); setZoneForm({ name: '', price: '', eta: '' }); toast.success('Zone ajoutée') },
-    onError: () => toast.error('Erreur'),
-  })
-
-  const updateZone = useMutation({
-    mutationFn: ({ id, data }: { id: string; data: any }) => adminApi.updateShippingZone(id, data),
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['shipping-zones'] }); setEditingZone(null); toast.success('Zone mise à jour') },
-    onError: () => toast.error('Erreur'),
-  })
-
-  const deleteZone = useMutation({
-    mutationFn: (id: string) => adminApi.deleteShippingZone(id),
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['shipping-zones'] }); toast.success('Zone supprimée') },
-  })
-
   const r = (data as any)?.data ?? data ?? {}
   const orders: ShippingOrder[] = useMemo(() => Array.isArray(r) ? r : r.data ?? [], [r])
   const shippingOrders = useMemo(() => orders.filter((o) => ['CONFIRMED', 'SHIPPED', 'DELIVERED'].includes(o.status)), [orders])
@@ -93,6 +63,33 @@ export default function AdminShippingPage() {
     ready: shippingOrders.filter((o) => o.status === 'CONFIRMED').length,
     shipped: shippingOrders.filter((o) => o.status === 'SHIPPED').length,
     delivered: shippingOrders.filter((o) => o.status === 'DELIVERED').length,
+  }
+
+  const createZone = useMutation({
+    mutationFn: (d: { name: string; price: number; eta: string }) => adminApi.createShippingZone(d),
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['shipping-zones'] }); setZoneForm({ name: '', price: '', eta: '' }); toast.success('Zone ajoutée') },
+    onError: () => toast.error('Erreur'),
+  })
+  const updateZone = useMutation({
+    mutationFn: ({ id, data }: { id: string; data: any }) => adminApi.updateShippingZone(id, data),
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['shipping-zones'] }); setEditingZone(null); toast.success('Zone mise à jour') },
+    onError: () => toast.error('Erreur'),
+  })
+  const deleteZone = useMutation({
+    mutationFn: (id: string) => adminApi.deleteShippingZone(id),
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['shipping-zones'] }); toast.success('Zone supprimée') },
+  })
+
+  if (isError) {
+    return (
+      <div className="p-4 sm:p-6">
+        <div className="rounded-2xl border border-red-100 bg-red-50 p-6 text-center">
+          <AlertTriangle size={32} className="mx-auto mb-3 text-red-400" />
+          <p className="text-sm font-semibold text-red-700">Erreur de chargement</p>
+          <button onClick={() => refetch()} className="mt-3 rounded-xl bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700">Réessayer</button>
+        </div>
+      </div>
+    )
   }
 
   const exportCsv = async () => {
