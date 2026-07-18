@@ -76,8 +76,9 @@ jobs:
             docker compose -p achref up -d --build --no-deps backend
             sleep 10
             
-            # Rebuild and restart frontend
-            docker compose -p achref up -d --build --no-deps frontend
+            # Rebuild and restart frontend (remove stale container if any)
+            docker rm -f specpart-frontend 2>/dev/null || true
+            docker compose -p achref up -d --build --no-deps --remove-orphans frontend
             sleep 5
             
             # Ensure nginx is up
