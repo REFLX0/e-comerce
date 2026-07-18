@@ -1,6 +1,5 @@
 import { productsApi } from '@/lib/api/products'
-import { ProductGallery } from '@/components/product/ProductGallery'
-import { ProductInfo } from '@/components/product/ProductInfo'
+import { ProductPageClient } from './ProductPageClient'
 import { ProductTabs } from '@/components/product/ProductTabs'
 import { RelatedProducts } from '@/components/product/RelatedProducts'
 import { StickyMobileCartWrapper } from '@/components/product/StickyMobileCartWrapper'
@@ -71,17 +70,7 @@ export default async function ProductPage({ params }: Props) {
         />
 
         <div className="border-brand-surface-dark mt-6 rounded-3xl border bg-white p-6 shadow-card md:p-10 animate-fade-in-up">
-          <div className="grid grid-cols-1 gap-10 lg:grid-cols-2 lg:gap-16">
-            {/* Left Column: Gallery */}
-            <div>
-              <ProductGallery images={product.images} productName={product.name} />
-            </div>
-
-            {/* Right Column: Info & Actions */}
-            <div>
-              <ProductInfo product={product} />
-            </div>
-          </div>
+          <ProductPageClient product={product} />
         </div>
 
         <ProductTabs product={product} />

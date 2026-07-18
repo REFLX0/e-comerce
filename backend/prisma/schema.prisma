@@ -196,6 +196,7 @@ model ProductVariant {
   price      Float
   stockQty   Int         @default(0)
   skuVariant String      @unique
+  imageUrl   String?     // variant-specific image (different bottles per volume)
   orderItems OrderItem[]
 }
 

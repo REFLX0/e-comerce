@@ -387,6 +387,7 @@ export class ProductsService {
           id: v.id,
           productId: v.productId,
           volume: v.volume,
+          imageUrl: v.imageUrl ?? null,
           priceHT: v.price,
           priceTTC: +(v.price * 1.19).toFixed(2),
           stock: v.stockQty,

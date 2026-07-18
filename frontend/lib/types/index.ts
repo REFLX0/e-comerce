@@ -40,6 +40,7 @@ export interface ProductVariant {
   label?: string
   volume: string
   volumeL?: number
+  imageUrl?: string | null
   priceHT: number
   priceTTC: number
   stock: number

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useTranslations } from 'next-intl'
-import type { Product } from '@/lib/types'
+import type { Product, ProductVariant } from '@/lib/types'
 import { RatingStars } from '../common/RatingStars'
 import { StockIndicator } from '../common/StockIndicator'
 import { PriceDisplay } from '../common/PriceDisplay'
@@ -17,11 +17,15 @@ import { ShareDropdown } from './ShareDropdown'
 
 interface Props {
   product: Product
+  selectedVariant?: ProductVariant
+  onVariantChange?: (variant: ProductVariant) => void
 }
 
-export function ProductInfo({ product }: Props) {
+export function ProductInfo({ product, selectedVariant: controlledVariant, onVariantChange }: Props) {
   const t = useTranslations('Product')
-  const [selectedVariant, setSelectedVariant] = useState(product.variants[0])
+  const [internalVariant, setInternalVariant] = useState(product.variants[0])
+  const selectedVariant = controlledVariant ?? internalVariant
+  const setSelectedVariant = onVariantChange ?? setInternalVariant
   const { vehicle } = useVehicleStore()
   const [mounted, setMounted] = useState(false)
 
