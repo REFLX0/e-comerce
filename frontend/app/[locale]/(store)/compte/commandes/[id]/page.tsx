@@ -64,7 +64,7 @@ export default function OrderDetailsPage() {
         >
           <ArrowLeft size={20} />
         </Link>
-        <h1 className="font-display text-brand-primary text-2xl font-bold">Commande #{order.id}</h1>
+        <h1 className="font-display text-brand-primary text-2xl font-bold">Commande #{order.id.slice(-8).toUpperCase()}</h1>
         <span
           className={`ml-auto rounded-full px-3 py-1 text-sm font-bold ${
             order.status === 'DELIVERED'
