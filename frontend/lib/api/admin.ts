@@ -1,5 +1,24 @@
 import { backendClient as api } from './client'
 
+export async function downloadOrderPdf(orderId: string) {
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL || '/api'
+  try {
+    const res = await fetch(`${baseUrl}/admin/orders/${orderId}/pdf`, { credentials: 'include' })
+    if (!res.ok) throw new Error('PDF download failed')
+    const blob = await res.blob()
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `livraison-${orderId.slice(-8).toUpperCase()}.pdf`
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
+  } catch (e) {
+    console.error('PDF download error:', e)
+  }
+}
+
 export const adminApi = {
   getDashboard: () =>
     api.get('/admin/dashboard'),

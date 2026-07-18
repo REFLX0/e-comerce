@@ -2,10 +2,10 @@
 
 import { useMemo, useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { adminApi } from '@/lib/api/admin'
+import { adminApi, downloadOrderPdf } from '@/lib/api/admin'
 import { toast } from 'sonner'
 import {
-  AlertTriangle, CheckCircle2, Clock, Download, MapPin,
+  AlertTriangle, CheckCircle2, Clock, Download, FileText, MapPin,
   PackageCheck, Search, Settings2, Truck, Plus, X, Save, Trash2,
 } from 'lucide-react'
 
@@ -168,6 +168,7 @@ export default function AdminShippingPage() {
                   <th className="px-4 py-3 text-xs font-semibold text-gray-500">Destination</th>
                   <th className="px-4 py-3 text-xs font-semibold text-gray-500">Articles</th>
                   <th className="px-4 py-3 text-xs font-semibold text-gray-500">Statut</th>
+                  <th className="px-4 py-3 text-xs font-semibold text-gray-500"></th>
                 </tr>
               </thead>
               <tbody>
@@ -194,6 +195,11 @@ export default function AdminShippingPage() {
                         <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-bold ${s.className}`}>
                           <Icon size={12} /> {s.label}
                         </span>
+                      </td>
+                      <td className="px-4 py-3">
+                        <button onClick={() => downloadOrderPdf(order.id)} className="flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-medium text-brand-primary hover:bg-brand-primary/5 transition-colors" title="Bon de livraison PDF">
+                          <FileText size={14} /> PDF
+                        </button>
                       </td>
                     </tr>
                   )

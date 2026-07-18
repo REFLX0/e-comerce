@@ -11,7 +11,9 @@ import {
   HttpCode,
   HttpStatus,
   BadRequestException,
+  Res,
 } from '@nestjs/common';
+import type { Response } from 'express';
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../common/guards/roles.guard';
@@ -96,6 +98,14 @@ export class AdminController {
     @Body('status') status: string,
   ) {
     return this.adminService.updateOrderStatus(id, status);
+  }
+
+  @Get('orders/:id/pdf')
+  async exportOrderPdf(@Param('id') id: string, @Res() res: Response) {
+    const doc = await this.adminService.exportOrderPdf(id);
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename="livraison-${id.slice(-8).toUpperCase()}.pdf"`);
+    doc.pipe(res);
   }
 
   @Get('users') getUsers(@Query('page') p?: string) {

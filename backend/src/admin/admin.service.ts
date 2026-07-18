@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-// Force TS reload
 import { Prisma } from '@prisma/client';
 import { CreateProductDto } from './dto/create-product.dto';
+import { generateDeliveryNotePDF } from './invoice-pdf';
 
 @Injectable()
 export class AdminService {
@@ -197,6 +197,18 @@ export class AdminService {
       ].join(',');
     }).join('\n');
     return { csv: header + rows };
+  }
+
+  async exportOrderPdf(id: string) {
+    const order = await this.prisma.order.findUnique({
+      where: { id },
+      include: {
+        items: { include: { product: { select: { nameFr: true } }, variant: { select: { volume: true } } } },
+        user: { select: { name: true, email: true } },
+      },
+    });
+    if (!order) throw new NotFoundException('Order not found');
+    return generateDeliveryNotePDF(order as any);
   }
 
   async bulkProducts(ids: string[], action: string) {
