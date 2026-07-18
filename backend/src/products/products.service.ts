@@ -174,8 +174,8 @@ export class ProductsService {
     const topProductIds: string[] = [];
 
     if (limit > 0) {
-      const rows = await this.prisma.$queryRaw<Array<{ productid: string; totalsold: number }>>`
-        SELECT oi."productId", SUM(oi.quantity)::int AS totalsold
+      const rows = await this.prisma.$queryRaw<Array<{ productid: string }>>`
+        SELECT oi."productId" AS productid, SUM(oi.quantity)::int AS totalsold
         FROM "OrderItem" oi
         INNER JOIN "Order" o ON oi."orderId" = o.id
         WHERE o.status IN ('CONFIRMED', 'SHIPPED', 'DELIVERED')
@@ -184,7 +184,7 @@ export class ProductsService {
         ORDER BY totalsold DESC, oi."productId" DESC
         LIMIT ${limit}
       `;
-      topProductIds.push(...rows.map((r) => r.productid ?? r.productId).filter(Boolean));
+      topProductIds.push(...rows.map((r) => r.productid).filter((id): id is string => id != null));
     }
 
     if (topProductIds.length < limit) {
