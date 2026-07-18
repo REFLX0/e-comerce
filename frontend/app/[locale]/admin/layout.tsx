@@ -5,6 +5,7 @@ import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { useAuthStore } from '@/lib/store/auth.store'
+import { useSiteLogo } from '@/lib/hooks/useSiteLogo'
 import { useTranslations } from 'next-intl'
 import { authApi } from '@/lib/api/auth'
 import { NotificationDropdown } from '@/components/admin/NotificationDropdown'
@@ -134,10 +135,12 @@ function Sidebar({
   collapsed,
   onClose,
   nav,
+  siteLogo,
 }: {
   collapsed: boolean
   onClose?: () => void
   nav: NavItemShape[]
+  siteLogo?: string
 }) {
   const t = useTranslations('Admin')
   const { user, logout } = useAuthStore()
@@ -156,7 +159,7 @@ function Sidebar({
       <div className="flex h-16 shrink-0 items-center gap-3 border-b border-white/10 px-4">
         <Link href={withLocale('/admin', locale)} onClick={onClose} className="flex items-center gap-2">
           <Image
-            src="/logo.png"
+            src={siteLogo || '/logo.png'}
             alt="specpart Admin"
             width={120}
             height={36}
@@ -255,6 +258,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   const { isAuthenticated, isHydrated, user, setAuth } = useAuthStore()
   const router = useRouter()
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+  const siteLogo = useSiteLogo()
   const [mobileOpen, setMobileOpen] = useState(false)
   const [isCheckingServerAuth, setIsCheckingServerAuth] = useState(true)
   const pathname = usePathname()
@@ -324,7 +328,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
           sidebarCollapsed ? 'w-16' : 'w-64'
         }`}
       >
-        <Sidebar collapsed={sidebarCollapsed} nav={NAV} />
+        <Sidebar collapsed={sidebarCollapsed} nav={NAV} siteLogo={siteLogo} />
         {/* Collapse toggle */}
         <button
           onClick={() => setSidebarCollapsed((p) => !p)}
@@ -350,7 +354,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
             className="absolute inset-y-0 left-0 w-72 shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
-            <Sidebar collapsed={false} onClose={() => setMobileOpen(false)} nav={NAV} />
+            <Sidebar collapsed={false} onClose={() => setMobileOpen(false)} nav={NAV} siteLogo={siteLogo} />
           </div>
         </div>
       )}

@@ -8,12 +8,14 @@ import { Link } from '@/i18n/routing'
 import { useState } from 'react'
 import Image from 'next/image'
 import { useTranslations } from 'next-intl'
+import { useSiteLogo } from '@/lib/hooks/useSiteLogo'
 
 export default function MobileMenu() {
   const [open, setOpen] = useState(false)
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set())
   const tNav = useTranslations('Navigation')
   const tLayout = useTranslations('Layout')
+  const siteLogo = useSiteLogo()
   const { data: categories } = useQuery({
     queryKey: ['categories-tree'],
     queryFn: categoriesApi.getTree,
@@ -48,7 +50,7 @@ export default function MobileMenu() {
           <div className="flex items-center justify-between">
             <Link href="/" onClick={() => setOpen(false)}>
               <Image
-                src="/logo.png"
+                src={siteLogo}
                 alt="specpart"
                 width={120}
                 height={36}

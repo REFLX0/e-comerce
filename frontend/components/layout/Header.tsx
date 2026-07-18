@@ -10,6 +10,7 @@ import { GlobalSearch } from './GlobalSearch'
 import { MobileSearchSheet } from './MobileSearchSheet'
 import { CategoryNav } from './CategoryNav'
 import { useAuthStore } from '@/lib/store/auth.store'
+import { useSiteLogo } from '@/lib/hooks/useSiteLogo'
 import Image from 'next/image'
 import { useTranslations } from 'next-intl'
 import { LanguageSwitcher } from './LanguageSwitcher'
@@ -19,6 +20,7 @@ export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
   const { isAuthenticated, user } = useAuthStore()
   const hasMounted = useHasMounted()
+  const siteLogo = useSiteLogo()
   const t = useTranslations('Navigation')
   const tLayout = useTranslations('Layout')
 
@@ -64,7 +66,7 @@ export default function Header() {
           {/* Logo */}
           <Link href="/" className="flex shrink-0 items-center group">
             <Image
-              src="/logo.png"
+              src={siteLogo}
               alt="specpart"
               width={140}
               height={40}
