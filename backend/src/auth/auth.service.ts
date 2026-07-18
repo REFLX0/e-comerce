@@ -92,7 +92,7 @@ export class AuthService {
 
     const accessToken = this.jwtService.sign(payload, {
       secret: this.config.get('JWT_SECRET'),
-      expiresIn: '15m',
+      expiresIn: '7d',
     });
 
     const refreshToken = uuidv4();
