@@ -66,3 +66,8 @@ CREDENTIALS.md
 *.tar.gz
 .next/
 ssh_key
+
+audit_results.txt
+products_data.txt
+products_moto_data.txt
+backend/prisma/dump-products.cjs
