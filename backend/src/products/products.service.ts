@@ -184,7 +184,7 @@ export class ProductsService {
         ORDER BY totalsold DESC, oi."productId" DESC
         LIMIT ${limit}
       `;
-      topProductIds.push(...rows.map((r) => r.productid));
+      topProductIds.push(...rows.map((r) => r.productid ?? r.productId).filter(Boolean));
     }
 
     if (topProductIds.length < limit) {
