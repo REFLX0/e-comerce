@@ -71,7 +71,7 @@ export default function ContactPage() {
             {
               icon: Phone,
               title: t('phone'),
-              info: '+216 92 975 959',
+              info: '+216 29 294 195',
               sub: t('phoneSub'),
             },
             { icon: Mail, title: t('email'), info: 'specpart@hotmail.com', sub: t('emailSub') },
