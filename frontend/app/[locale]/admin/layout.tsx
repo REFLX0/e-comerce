@@ -163,7 +163,7 @@ function Sidebar({
             alt="specpart Admin"
             width={120}
             height={36}
-            className="h-8 w-auto brightness-0 invert"
+            className="h-8 w-auto"
           />
           {!collapsed && (
             <span className="rounded bg-brand-accent px-1.5 py-0.5 text-[10px] font-bold text-black">

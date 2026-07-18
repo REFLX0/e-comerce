@@ -47,7 +47,7 @@ export default function Footer() {
                 alt="specpart"
                 width={140}
                 height={40}
-                className="h-9 w-auto object-contain brightness-0 invert"
+                className="h-9 w-auto object-contain"
               />
             </Link>
             <p className="mb-6 max-w-xs text-sm leading-relaxed text-white/40">
