@@ -2,13 +2,12 @@
 
 import { useState, useEffect, useMemo } from 'react'
 import {
-  Search, ArrowLeft, Car, ChevronRight, Check,
+  Search, Car, ChevronRight, Check,
   AlertCircle, Loader2, SlidersHorizontal, X
 } from 'lucide-react'
 import { useRouter, usePathname } from 'next/navigation'
 import { productsApi } from '@/lib/api/products'
 import type { VehicleMake, VehicleModel, VehicleEngine } from '@/lib/types'
-import { motion, AnimatePresence } from 'framer-motion'
 
 
 interface VehicleFinderProps {
@@ -122,7 +121,6 @@ export function VehicleFinder({ onClose }: VehicleFinderProps) {
   const locale = pathname?.split('/')[1] === 'en' ? 'en' : 'fr'
 
   const [step, setStep] = useState(1)
-  const [direction, setDirection] = useState(1)
 
   const [makes, setMakes] = useState<VehicleMake[]>([])
   const [models, setModels] = useState<VehicleModel[]>([])
@@ -170,7 +168,6 @@ export function VehicleFinder({ onClose }: VehicleFinderProps) {
   }
 
   const navigateToStep = (newStep: number) => {
-    setDirection(newStep > step ? 1 : -1)
     setStep(newStep)
   }
 
@@ -215,12 +212,6 @@ export function VehicleFinder({ onClose }: VehicleFinderProps) {
     router.push(`/${locale}/catalogue?${params.toString()}`)
   }
 
-  const variants = {
-    initial: (d: number) => ({ opacity: 0, x: d > 0 ? 30 : -30 }),
-    animate: { opacity: 1, x: 0, transition: { duration: 0.25, ease: 'easeOut' as const } },
-    exit: (d: number) => ({ opacity: 0, x: d < 0 ? 30 : -30, transition: { duration: 0.2, ease: 'easeIn' as const } }),
-  }
-
   const renderSearchButton = (disabled = false) => (
     <button
       onClick={handleSearch}
@@ -240,6 +231,18 @@ export function VehicleFinder({ onClose }: VehicleFinderProps) {
       className="relative mx-auto w-full max-w-4xl overflow-hidden rounded-2xl bg-white"
       style={{ border: '1px solid rgba(0,0,0,0.1)' }}
     >
+      {/* Step indicator */}
+      <div className="px-6 pt-4 md:px-8">
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-xs font-semibold uppercase tracking-wider text-brand-accent">
+            Étape {step} sur 3
+          </span>
+        </div>
+        <div className="h-1 w-full rounded-full bg-gray-200 overflow-hidden">
+          <div className="h-full rounded-full bg-brand-accent transition-all duration-300" style={{ width: `${((step - 1) / 2) * 100}%` }} />
+        </div>
+      </div>
+
       {/* Header */}
       <div className="border-b border-gray-200 px-6 py-5 md:px-8">
         <div className="flex items-center justify-between">
@@ -252,7 +255,7 @@ export function VehicleFinder({ onClose }: VehicleFinderProps) {
             </p>
           </div>
 
-          {/* Step indicator */}
+          {/* Step indicator dots */}
           <div className="hidden sm:flex items-center gap-1.5">
             {STEP_LABELS.map((label, i) => {
               const s = i + 1
@@ -281,143 +284,191 @@ export function VehicleFinder({ onClose }: VehicleFinderProps) {
         </div>
       </div>
 
-      {/* Content */}
-      <div className="flex min-h-[400px] flex-col p-6 md:p-8">
-        <div className="relative flex-1">
-          {error && (
-            <div className="mb-5 flex items-center gap-2 rounded-xl bg-red-500/10 p-3 text-sm text-red-400 ring-1 ring-red-500/20">
-              <AlertCircle size={16} className="shrink-0" />
-              {error}
+      {/* Content — all 3 steps visible at once, future steps disabled */}
+      <div className="flex flex-col p-6 md:p-8">
+        {error && (
+          <div className="mb-5 flex items-center gap-2 rounded-xl bg-red-500/10 p-3 text-sm text-red-400 ring-1 ring-red-500/20">
+            <AlertCircle size={16} className="shrink-0" />
+            {error}
+          </div>
+        )}
+
+        {/* ═══════════════ STEP 1: MAKE ═══════════════ */}
+        <div className={`transition-all duration-300 ${step >= 1 ? 'opacity-100 max-h-[500px]' : 'opacity-40 max-h-[80px] overflow-hidden pointer-events-none'}`}>
+          <div className="mb-3 flex items-center gap-2">
+            <div className={`flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold ${step > 1 ? 'bg-green-500 text-white' : step === 1 ? 'bg-brand-accent text-white' : 'bg-gray-200 text-gray-500'}`}>
+              {step > 1 ? <Check size={14} strokeWidth={3} /> : 1}
+            </div>
+            <span className="text-sm font-bold text-gray-700">Marque</span>
+            {step > 1 && <Check size={14} className="text-green-500" strokeWidth={3} />}
+            {step < 1 && <span className="text-xs text-gray-400">— Complétez d'abord cette étape</span>}
+          </div>
+          {step >= 1 && (
+            <div className="ml-9 mb-6">
+              <div className="relative mb-4">
+                <Search size={15} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" />
+                <input
+                  type="text"
+                  value={makeSearch}
+                  onChange={e => setMakeSearch(e.target.value)}
+                  placeholder="Rechercher une marque..."
+                  className="w-full rounded-xl bg-gray-50 py-3 pl-11 pr-10 text-sm text-gray-900 placeholder-neutral-600 outline-none ring-1 ring-gray-200 transition-all focus:ring-brand-accent/40"
+                />
+                {makeSearch && (
+                  <button
+                    onClick={() => setMakeSearch('')}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-900"
+                  >
+                    <X size={15} />
+                  </button>
+                )}
+              </div>
+
+              {loading && makes.length === 0 ? (
+                <div className="flex items-center justify-center py-10">
+                  <Loader2 size={24} className="animate-spin text-brand-primary" />
+                </div>
+              ) : filteredMakes.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-10 text-center text-gray-500">
+                  <Search size={32} className="mb-3 opacity-50" />
+                  <p className="text-sm">Aucune marque trouvée pour &ldquo;{makeSearch}&rdquo;</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 md:grid-cols-5 max-h-[240px] overflow-y-auto pr-2 custom-scrollbar">
+                  {filteredMakes.map((make) => {
+                    const isSelected = selectedMake?.id === make.id
+                    return (
+                      <button
+                        key={make.id}
+                        onClick={() => selectMake(make)}
+                        className={`
+                          relative flex flex-col items-center gap-3 rounded-xl p-4 transition-all duration-200
+                          ${isSelected
+                            ? 'bg-brand-primary/5 ring-1 ring-brand-primary/20'
+                            : 'bg-white ring-1 ring-gray-200 hover:bg-gray-100 hover:ring-gray-300'
+                          }
+                        `}
+                      >
+                        <div className={`flex h-12 w-12 items-center justify-center rounded-lg transition-colors ${isSelected ? 'bg-gray-50' : 'bg-transparent'}`}>
+                          <BrandLogo make={make} />
+                        </div>
+                        <span className={`text-sm font-medium ${isSelected ? 'text-gray-900' : 'text-gray-600'}`}>
+                          {make.name}
+                        </span>
+                      </button>
+                    )
+                  })}
+                </div>
+              )}
             </div>
           )}
+        </div>
 
-          <AnimatePresence mode="wait" custom={direction}>
-            {/* ═══════════════ STEP 1: MAKE ═══════════════ */}
-            {step === 1 && (
-              <motion.div
-                key="step1"
-                custom={direction}
-                variants={variants}
-                initial="initial"
-                animate="animate"
-                exit="exit"
-              >
-                <div className="mb-5">
-                  <p className="text-sm font-medium text-gray-600">
-                    Quelle est la marque de votre véhicule ?
-                  </p>
+        {/* Divider */}
+        <div className="mx-9 mb-6 border-t border-gray-100" />
+
+        {/* ═══════════════ STEP 2: MODEL ═══════════════ */}
+        <div className={`transition-all duration-300 ${step >= 2 ? 'opacity-100 max-h-[500px]' : 'opacity-40 max-h-[80px] overflow-hidden pointer-events-none'}`}>
+          <div className="mb-3 flex items-center gap-2">
+            <div className={`flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold ${step > 2 ? 'bg-green-500 text-white' : step === 2 ? 'bg-brand-accent text-white' : 'bg-gray-200 text-gray-500'}`}>
+              {step > 2 ? <Check size={14} strokeWidth={3} /> : 2}
+            </div>
+            <span className="text-sm font-bold text-gray-700">Modèle</span>
+            {selectedMake && step >= 2 && <span className="text-xs text-gray-400">— {selectedMake.name}</span>}
+            {step < 2 && <span className="text-xs text-gray-400">— Sélectionnez d'abord une marque</span>}
+          </div>
+          {step >= 2 && (
+            <div className="ml-9 mb-6">
+              {loading ? (
+                <div className="flex items-center justify-center py-10">
+                  <Loader2 size={24} className="animate-spin text-brand-primary" />
                 </div>
-
-                {/* Search input */}
-                <div className="relative mb-5">
-                  <Search size={15} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" />
-                  <input
-                    type="text"
-                    value={makeSearch}
-                    onChange={e => setMakeSearch(e.target.value)}
-                    placeholder="Rechercher une marque..."
-                    className="w-full rounded-xl bg-gray-50 py-3.5 pl-11 pr-10 text-sm text-gray-900 placeholder-neutral-600 outline-none ring-1 ring-gray-200 transition-all focus:ring-red-500/40"
-                  />
-                  {makeSearch && (
-                    <button
-                      onClick={() => setMakeSearch('')}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-900"
-                    >
-                      <X size={15} />
-                    </button>
-                  )}
+              ) : models.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-10 text-center text-gray-500">
+                  <Car size={32} className="mb-3 opacity-50" />
+                  <p className="text-sm">Aucun modèle trouvé pour {selectedMake?.name}</p>
                 </div>
-
-                {loading && makes.length === 0 ? (
-                  <div className="flex items-center justify-center py-20">
-                    <Loader2 size={24} className="animate-spin text-brand-primary" />
-                  </div>
-                ) : filteredMakes.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center py-16 text-center text-gray-500">
-                    <Search size={32} className="mb-3 opacity-50" />
-                    <p className="text-sm">Aucune marque trouvée pour &ldquo;{makeSearch}&rdquo;</p>
-                  </div>
-                ) : (
-                  <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 md:grid-cols-5 max-h-[280px] overflow-y-auto pr-2 custom-scrollbar">
-                    {filteredMakes.map((make) => {
-                      const isSelected = selectedMake?.id === make.id
-
-                      return (
-                        <button
-                          key={make.id}
-                          onClick={() => selectMake(make)}
-                          className={`
-                            relative flex flex-col items-center gap-3 rounded-xl p-4 transition-all duration-200
-                            ${isSelected
-                              ? 'bg-brand-primary/5 ring-1 ring-brand-primary/20'
-                              : 'bg-white ring-1 ring-gray-200 hover:bg-gray-100 hover:ring-gray-300'
-                            }
-                          `}
-                        >
-                          <div className={`
-                            flex h-12 w-12 items-center justify-center rounded-lg transition-colors
-                            ${isSelected ? 'bg-gray-50' : 'bg-transparent'}
-                          `}>
-                            <BrandLogo make={make} />
+              ) : (
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 max-h-[240px] overflow-y-auto pr-2 custom-scrollbar">
+                  {models.map((model) => {
+                    const isSelected = selectedModel?.id === model.id
+                    const vehicleTypeLabel =
+                      model.vehicleType === 'poids_lourd' ? 'PL' :
+                      model.vehicleType === 'agricole' ? 'AG' :
+                      model.vehicleType === 'moto' ? 'MO' : 'VL'
+                    return (
+                      <button
+                        key={model.id}
+                        onClick={() => selectModel(model)}
+                        className={`
+                          relative flex items-center gap-3 rounded-xl p-3 text-left transition-all duration-200
+                          ${isSelected
+                            ? 'bg-brand-primary/5 ring-1 ring-brand-primary/20'
+                            : 'bg-white ring-1 ring-gray-200 hover:bg-gray-100 hover:ring-gray-300'
+                          }
+                        `}
+                      >
+                        <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-sm font-bold transition-colors ${isSelected ? 'bg-brand-primary/10 text-brand-primary' : 'bg-gray-50 text-gray-500'}`}>
+                          {model.name.replace(/\(.*\)/, '').trim().charAt(0).toUpperCase()}
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <div className={`text-sm font-medium truncate ${isSelected ? 'text-gray-900' : 'text-gray-800'}`}>
+                            {model.name}
                           </div>
-                          <span className={`text-sm font-medium ${isSelected ? 'text-gray-900' : 'text-gray-600'}`}>
-                            {make.name}
-                          </span>
-                        </button>
-                      )
-                    })}
-                  </div>
-                )}
-              </motion.div>
-            )}
-
-            {/* ═══════════════ STEP 2: MODEL ═══════════════ */}
-            {step === 2 && (
-              <motion.div
-                key="step2"
-                custom={direction}
-                variants={variants}
-                initial="initial"
-                animate="animate"
-                exit="exit"
-              >
-                <div className="mb-5 flex items-center gap-3">
-                  <button
-                    onClick={() => resetTo(1)}
-                    className="flex h-8 w-8 items-center justify-center rounded-lg bg-gray-50 text-gray-500 ring-1 ring-gray-200 transition-colors hover:bg-brand-primary/5 hover:text-gray-900"
-                  >
-                    <ArrowLeft size={16} />
-                  </button>
-                  <div>
-                    <p className="text-sm font-medium text-gray-600">
-                      Sélectionnez le modèle
-                    </p>
-                    <p className="text-xs text-gray-400">{selectedMake?.name}</p>
-                  </div>
+                          <div className="mt-1">
+                            <span className="inline-flex items-center rounded bg-white/[0.05] px-1.5 py-0.5 text-[10px] font-semibold text-gray-600">
+                              {vehicleTypeLabel}
+                            </span>
+                          </div>
+                        </div>
+                        <ChevronRight size={16} className={isSelected ? 'text-gray-900' : 'text-gray-400'} />
+                      </button>
+                    )
+                  })}
                 </div>
+              )}
+            </div>
+          )}
+        </div>
 
-                {loading ? (
-                  <div className="flex items-center justify-center py-20">
-                    <Loader2 size={24} className="animate-spin text-brand-primary" />
+        {/* Divider */}
+        <div className="mx-9 mb-6 border-t border-gray-100" />
+
+        {/* ═══════════════ STEP 3: ENGINE ═══════════════ */}
+        <div className={`transition-all duration-300 ${step >= 3 ? 'opacity-100 max-h-[500px]' : 'opacity-40 max-h-[80px] overflow-hidden pointer-events-none'}`}>
+          <div className="mb-3 flex items-center gap-2">
+            <div className={`flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold ${step > 3 ? 'bg-green-500 text-white' : step === 3 ? 'bg-brand-accent text-white' : 'bg-gray-200 text-gray-500'}`}>
+              3
+            </div>
+            <span className="text-sm font-bold text-gray-700">Motorisation</span>
+            {selectedModel && step >= 3 && <span className="text-xs text-gray-400">— {selectedMake?.name} {selectedModel?.name}</span>}
+            {step < 3 && <span className="text-xs text-gray-400">— Sélectionnez d'abord un modèle</span>}
+          </div>
+          {step >= 3 && (
+            <div className="ml-9 mb-6">
+              {loading ? (
+                <div className="flex items-center justify-center py-10">
+                  <Loader2 size={24} className="animate-spin text-brand-primary" />
+                </div>
+              ) : engines.length === 0 ? (
+                <div className="flex flex-1 flex-col items-center justify-center gap-5 py-10 text-center">
+                  <SlidersHorizontal size={32} className="text-gray-400" />
+                  <div>
+                    <p className="text-sm font-medium text-gray-600">Aucune motorisation référencée</p>
+                    <p className="mt-1 text-xs text-gray-500">Vous pouvez lancer la recherche sans préciser la motorisation.</p>
                   </div>
-                ) : models.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center py-16 text-center text-gray-500">
-                    <Car size={32} className="mb-3 opacity-50" />
-                    <p className="text-sm">Aucun modèle trouvé pour {selectedMake?.name}</p>
-                  </div>
-                ) : (
-                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
-                    {models.map((model) => {
-                      const isSelected = selectedModel?.id === model.id
-                      const vehicleTypeLabel =
-                        model.vehicleType === 'poids_lourd' ? 'PL' :
-                        model.vehicleType === 'agricole' ? 'AG' :
-                        model.vehicleType === 'moto' ? 'MO' : 'VL'
-                      
+                  {renderSearchButton()}
+                </div>
+              ) : (
+                <>
+                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 max-h-[240px] overflow-y-auto pr-2 custom-scrollbar">
+                    {engines.map((eng) => {
+                      const isSelected = selectedEngine === eng.engineCode
+                      const yearLabel = eng.yearFrom || eng.yearTo ? `${eng.yearFrom || '…'}–${eng.yearTo || '…'}` : null
                       return (
                         <button
-                          key={model.id}
-                          onClick={() => selectModel(model)}
+                          key={eng.engineCode}
+                          onClick={() => setSelectedEngine(eng.engineCode)}
                           className={`
                             relative flex items-center gap-3 rounded-xl p-3 text-left transition-all duration-200
                             ${isSelected
@@ -426,133 +477,35 @@ export function VehicleFinder({ onClose }: VehicleFinderProps) {
                             }
                           `}
                         >
-                          <div className={`
-                            flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-sm font-bold transition-colors
-                            ${isSelected ? 'bg-brand-primary/10 text-brand-primary' : 'bg-gray-50 text-gray-500'}
-                          `}>
-                            {model.name.replace(/\(.*\)/, '').trim().charAt(0).toUpperCase()}
+                          <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg font-mono text-sm font-bold transition-colors ${isSelected ? 'bg-brand-primary/10 text-brand-primary' : 'bg-gray-50 text-gray-500'}`}>
+                            {eng.engineCode.length > 4 ? eng.engineCode.substring(0, 2).toUpperCase() : eng.engineCode.charAt(0).toUpperCase()}
                           </div>
                           <div className="min-w-0 flex-1">
                             <div className={`text-sm font-medium truncate ${isSelected ? 'text-gray-900' : 'text-gray-800'}`}>
-                              {model.name}
+                              {eng.engineCode}
                             </div>
-                            <div className="mt-1">
-                              <span className="inline-flex items-center rounded bg-white/[0.05] px-1.5 py-0.5 text-[10px] font-semibold text-gray-600">
-                                {vehicleTypeLabel}
-                              </span>
-                            </div>
+                            {yearLabel && (
+                              <div className="mt-1">
+                                <span className="inline-flex items-center rounded bg-white/[0.05] px-1.5 py-0.5 text-[10px] font-semibold text-gray-600">{yearLabel}</span>
+                              </div>
+                            )}
                           </div>
-                          <ChevronRight size={16} className={isSelected ? 'text-gray-900' : 'text-gray-400'} />
                         </button>
                       )
                     })}
                   </div>
-                )}
-              </motion.div>
-            )}
-
-            {/* ═══════════════ STEP 3: ENGINE ═══════════════ */}
-            {step === 3 && (
-              <motion.div
-                key="step3"
-                custom={direction}
-                variants={variants}
-                initial="initial"
-                animate="animate"
-                exit="exit"
-              >
-                <div className="mb-5 flex items-center gap-3">
-                  <button
-                    onClick={() => resetTo(2)}
-                    className="flex h-8 w-8 items-center justify-center rounded-lg bg-gray-50 text-gray-500 ring-1 ring-gray-200 transition-colors hover:bg-brand-primary/5 hover:text-gray-900"
-                  >
-                    <ArrowLeft size={16} />
-                  </button>
-                  <div>
-                    <p className="text-sm font-medium text-gray-600">
-                      Motorisation
-                    </p>
-                    <p className="text-xs text-gray-400">
-                      {selectedMake?.name} — {selectedModel?.name}
-                    </p>
+                  <div className="mt-6 flex flex-col-reverse items-center justify-between gap-4 sm:flex-row">
+                    {selectedModel && (
+                      <button onClick={handleSearch} className="text-sm font-medium text-gray-500 hover:text-gray-900">
+                        Passer cette étape →
+                      </button>
+                    )}
+                    {renderSearchButton(!selectedEngine)}
                   </div>
-                </div>
-
-                {loading ? (
-                  <div className="flex items-center justify-center py-20">
-                    <Loader2 size={24} className="animate-spin text-brand-primary" />
-                  </div>
-                ) : engines.length === 0 ? (
-                  <div className="flex flex-1 flex-col items-center justify-center gap-5 py-12 text-center">
-                    <SlidersHorizontal size={32} className="text-gray-400" />
-                    <div>
-                      <p className="text-sm font-medium text-gray-600">Aucune motorisation référencée</p>
-                      <p className="mt-1 text-xs text-gray-500">
-                        Vous pouvez lancer la recherche sans préciser la motorisation.
-                      </p>
-                    </div>
-                    {renderSearchButton()}
-                  </div>
-                ) : (
-                  <>
-                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
-                      {engines.map((eng) => {
-                        const isSelected = selectedEngine === eng.engineCode
-                        const yearLabel =
-                          eng.yearFrom || eng.yearTo
-                            ? `${eng.yearFrom || '…'}–${eng.yearTo || '…'}`
-                            : null
-                        return (
-                          <button
-                            key={eng.engineCode}
-                            onClick={() => setSelectedEngine(eng.engineCode)}
-                            className={`
-                              relative flex items-center gap-3 rounded-xl p-3 text-left transition-all duration-200
-                              ${isSelected
-                                ? 'bg-brand-primary/5 ring-1 ring-brand-primary/20'
-                                : 'bg-white ring-1 ring-gray-200 hover:bg-gray-100 hover:ring-gray-300'
-                              }
-                            `}
-                          >
-                            <div className={`
-                              flex h-10 w-10 shrink-0 items-center justify-center rounded-lg font-mono text-sm font-bold transition-colors
-                              ${isSelected ? 'bg-brand-primary/10 text-brand-primary' : 'bg-gray-50 text-gray-500'}
-                            `}>
-                              {eng.engineCode.length > 4
-                                ? eng.engineCode.substring(0, 2).toUpperCase()
-                                : eng.engineCode.charAt(0).toUpperCase()}
-                            </div>
-                            <div className="min-w-0 flex-1">
-                              <div className={`text-sm font-medium truncate ${isSelected ? 'text-gray-900' : 'text-gray-800'}`}>
-                                {eng.engineCode}
-                              </div>
-                              {yearLabel && (
-                                <div className="mt-1">
-                                  <span className="inline-flex items-center rounded bg-white/[0.05] px-1.5 py-0.5 text-[10px] font-semibold text-gray-600">
-                                    {yearLabel}
-                                  </span>
-                                </div>
-                              )}
-                            </div>
-                          </button>
-                        )
-                      })}
-                    </div>
-
-                    <div className="mt-8 flex flex-col-reverse items-center justify-between gap-4 sm:flex-row">
-                      <button
-                         onClick={handleSearch}
-                         className="text-sm font-medium text-gray-500 hover:text-gray-900"
-                       >
-                         Passer cette étape →
-                       </button>
-                      {renderSearchButton(!selectedEngine)}
-                    </div>
-                  </>
-                )}
-              </motion.div>
-            )}
-          </AnimatePresence>
+                </>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>

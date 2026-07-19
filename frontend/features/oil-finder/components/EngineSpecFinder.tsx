@@ -117,6 +117,18 @@ export function EngineSpecFinder({ onClose }: EngineSpecFinderProps) {
       className="relative mx-auto w-full max-w-4xl overflow-hidden rounded-2xl bg-white"
       style={{ border: '1px solid rgba(0,0,0,0.1)' }}
     >
+      {/* Step indicator */}
+      <div className="px-6 pt-4 md:px-8">
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-xs font-semibold uppercase tracking-wider text-brand-accent">
+            Étape {step} sur 3
+          </span>
+        </div>
+        <div className="h-1 w-full rounded-full bg-gray-200 overflow-hidden">
+          <div className="h-full rounded-full bg-brand-accent transition-all duration-300" style={{ width: `${((step - 1) / 2) * 100}%` }} />
+        </div>
+      </div>
+
       {/* Header */}
       <div className="border-b border-gray-200 px-6 py-5 md:px-8">
         <div className="flex items-center justify-between">
@@ -129,7 +141,7 @@ export function EngineSpecFinder({ onClose }: EngineSpecFinderProps) {
             </p>
           </div>
 
-          {/* Step indicator — minimal dots */}
+          {/* Step indicator dots */}
           <div className="hidden sm:flex items-center gap-1.5">
             {STEPS.map((label, i) => {
               const s = i + 1

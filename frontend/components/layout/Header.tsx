@@ -46,21 +46,21 @@ export default function Header() {
           <div className="hidden md:flex items-center gap-6">
             <div className="flex items-center gap-2">
               <Clock size={14} className="text-white/70" />
-              <span>08:00 - 18:00</span>
+              <span>Lun-Sam 8h-18h</span>
             </div>
             <div className="flex items-center gap-2">
               <Phone size={14} className="text-white/70" />
-              <span>+216 29 294 195</span>
+              <a href="tel:+21629294195" className="hover:text-white transition-colors">+216 29 294 195</a>
             </div>
           </div>
         </div>
       </div>
 
       {/* ── Main Bar ──────────────────────────────────────────────── */}
-      <div className={`border-b border-gray-100 bg-white transition-all duration-300 ${
+      <div className={`border-b border-gray-100 bg-white shadow-sm transition-all duration-300 ${
         isScrolled ? 'py-2' : 'py-3'
       }`}>
-        <div className="section-padding flex items-center gap-4 md:gap-8">
+        <div className="section-padding flex items-center gap-4 md:gap-6">
           {/* Mobile menu */}
           <MobileMenu />
 
@@ -69,28 +69,28 @@ export default function Header() {
             <Image
               src={siteLogo}
               alt="specpart"
-              width={140}
-              height={40}
-              className="h-9 w-auto object-contain"
+              width={130}
+              height={36}
+              className="h-8 w-auto object-contain"
               priority
             />
           </Link>
 
-          {/* Search — Desktop */}
+          {/* Search — Desktop (more prominent) */}
           <div className="hidden flex-1 md:flex md:justify-center">
-            <div className="w-full max-w-2xl">
+            <div className="w-full max-w-xl">
               <GlobalSearch />
             </div>
           </div>
 
           {/* Right icons */}
-          <div className="ml-auto flex shrink-0 items-center gap-1">
+          <div className="ml-auto flex shrink-0 items-center gap-2">
             <LanguageSwitcher />
             <MobileSearchSheet />
 
             <Link
               href={hasMounted && isAuthenticated ? (user?.role?.toUpperCase() === 'ADMIN' ? '/admin' : '/compte') : '/auth/login'}
-              className="hidden h-10 px-4 items-center justify-center rounded-lg border border-gray-200 text-gray-700 font-medium text-sm transition-colors hover:bg-gray-50 sm:flex gap-2"
+              className="hidden h-10 px-4 items-center justify-center rounded-lg bg-brand-primary text-white font-medium text-sm transition-all duration-200 hover:bg-brand-primary-light sm:flex gap-2"
               aria-label={t('account')}
               title={user?.role?.toUpperCase() === 'ADMIN' ? 'Admin' : t('account')}
             >

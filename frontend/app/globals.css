@@ -17,10 +17,10 @@
   --color-brand-primary-light: #1f356b;    /* Lighter Navy */
   --color-brand-primary-dark: #0d162d;     /* Dark Navy */
   
-  --color-brand-accent: #f99d27;           /* Orange Accent */
-  --color-brand-accent-light: #fbaf4c;
-  --color-brand-accent-hover: #e08819;
-  --color-brand-accent-glow: rgba(249, 157, 39, 0.15);
+  --color-brand-accent: #D4A76A;           /* Gold Accent */
+  --color-brand-accent-light: #DEBB85;
+  --color-brand-accent-hover: #C49A5E;
+  --color-brand-accent-glow: rgba(212, 167, 106, 0.15);
   
   --color-brand-promo: #93c5fd;            /* Light Blue for promo/badges (blue-300) */
   --color-brand-promo-dark: #60a5fa;       /* Darker Light Blue (blue-400) */
@@ -140,7 +140,7 @@
   --destructive: #b20000;
   --border: rgba(0, 0, 0, 0.1);
   --input: rgba(0, 0, 0, 0.1);
-  --ring: #f99d27;
+  --ring: #D4A76A;
   --chart-1: #16254c;
   --chart-2: #0f766e;
   --chart-3: #315b7c;

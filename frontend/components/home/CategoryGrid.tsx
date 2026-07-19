@@ -61,7 +61,7 @@ export function CategoryGrid() {
 
   if (isLoading) {
     return (
-      <section className="bg-white py-20">
+    <section className="bg-white py-6 md:py-10 lg:py-16">
         <div className="section-padding">
           <div className="grid grid-cols-2 gap-4 lg:grid-cols-4 lg:gap-6">
             {[1, 2, 3, 4].map((i) => (
@@ -95,7 +95,7 @@ export function CategoryGrid() {
             <Link
               key={cat.id}
               href={`/categorie/${cat.slug}`}
-              className="group relative aspect-[3/4] overflow-hidden rounded-lg bg-gray-100"
+              className="group relative aspect-[3/4] overflow-hidden rounded-xl bg-gray-100 transition-all duration-200 hover:scale-[1.02] hover:shadow-xl"
             >
               {/* Image */}
               <CategoryCardImage cat={cat} />
@@ -108,13 +108,13 @@ export function CategoryGrid() {
                 <h3 className="text-lg font-bold uppercase tracking-wide text-white drop-shadow-lg">
                   {cat.name}
                 </h3>
-                <span className="mt-1 inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-white/70 transition-colors group-hover:text-[#E10600]">
+                <span className="mt-2 inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-brand-accent transition-all duration-200 group-hover:gap-2">
                   {t('explore')} <ArrowRight size={12} />
                 </span>
               </div>
 
-              {/* Hover shadow lift */}
-              <div className="absolute inset-0 rounded-lg ring-0 ring-[#E10600]/0 transition-all duration-300 group-hover:shadow-[0_16px_40px_rgba(0,0,0,0.2)] group-hover:ring-2 group-hover:ring-[#E10600]/30" />
+              {/* Hover ring */}
+              <div className="absolute inset-0 rounded-xl ring-0 ring-brand-accent/0 transition-all duration-200 group-hover:ring-2 group-hover:ring-brand-accent/40" />
             </Link>
           ))}
         </div>

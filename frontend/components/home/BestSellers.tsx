@@ -27,52 +27,56 @@ function BestSellerCard({ product }: { product: Product }) {
   return (
     <Link
       href={`/produit/${product.slug}`}
-      className="group flex w-[260px] shrink-0 flex-col overflow-hidden rounded-xl border border-slate-100 bg-white transition-all duration-300 hover:border-orange-200 hover:shadow-xl sm:w-[280px]"
+      className="group flex w-[280px] shrink-0 flex-col overflow-hidden rounded-xl border border-gray-100 bg-white transition-all duration-200 hover:border-brand-accent/30 hover:shadow-xl sm:w-[300px]"
     >
-      {/* Image — fills ~80% */}
-      <div className="relative aspect-[4/5] overflow-hidden bg-slate-50">
+      {/* Image — fills ~60% of card */}
+      <div className="relative aspect-[4/5] overflow-hidden bg-white p-4">
         {product.images?.[0] ? (
           <Image
             src={product.images[0]}
             alt={product.name}
             fill
-            className="object-contain p-4 transition-transform duration-300 group-hover:scale-[1.05]"
+            className="object-contain p-2 transition-transform duration-200 group-hover:scale-[1.03]"
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center">
-            <span className="text-2xl font-bold text-slate-200">
+            <span className="text-2xl font-bold text-gray-200">
               {product.name.charAt(0)}
             </span>
           </div>
         )}
 
-        {/* Quick add overlay */}
+        {/* Quick add overlay — slides in on hover */}
         <button
           onClick={handleAdd}
-          className="absolute bottom-3 right-3 flex h-10 w-10 translate-y-3 items-center justify-center rounded-full bg-orange-600 text-white opacity-0 shadow-lg transition-all duration-200 group-hover:translate-y-0 group-hover:opacity-100 hover:bg-orange-700"
+          className="absolute bottom-4 right-4 flex h-11 w-11 translate-y-4 items-center justify-center rounded-full bg-brand-accent text-brand-primary-dark opacity-0 shadow-lg transition-all duration-200 group-hover:translate-y-0 group-hover:opacity-100 hover:bg-brand-accent-hover hover:shadow-xl"
           aria-label="Quick add to cart"
         >
-          <ShoppingBag size={16} />
+          <ShoppingBag size={18} />
         </button>
       </div>
 
-      {/* Info — minimal */}
-      <div className="flex flex-col gap-1 p-4">
+      {/* Info — 40% */}
+      <div className="flex flex-col gap-1.5 p-4 pt-0">
         {product.brand && (
-          <span className="text-[11px] font-bold uppercase tracking-wider text-orange-600">
+          <span className="text-[11px] font-bold uppercase tracking-wider text-brand-accent">
             {product.brand.name}
           </span>
         )}
-        <h3 className="line-clamp-2 text-sm font-semibold leading-snug text-slate-900">
+        <h3 className="line-clamp-2 text-sm font-bold leading-snug text-gray-800">
           {product.name}
         </h3>
-        <div className="mt-1 flex items-baseline gap-2">
+        <div className="flex items-baseline gap-2">
           {v && (
-            <span className="text-lg font-bold text-slate-900">
-              {v.priceTTC.toFixed(2)} <span className="text-xs font-normal text-slate-500">DT</span>
+            <span className="text-lg font-bold text-brand-accent">
+              {v.priceTTC.toFixed(2)} <span className="text-xs font-normal text-gray-400">DT</span>
             </span>
           )}
         </div>
+        {/* Stock status */}
+        <span className={`text-[11px] font-medium ${v?.status !== 'out_of_stock' ? 'text-green-600' : 'text-red-500'}`}>
+          {v?.status !== 'out_of_stock' ? '✓ En stock' : 'Rupture'}
+        </span>
       </div>
     </Link>
   )
@@ -110,31 +114,31 @@ export function BestSellers() {
   if (!products || products.length === 0) return null
 
   return (
-    <section className="bg-white py-20">
+    <section className="bg-brand-surface py-20">
       <div className="section-padding">
         {/* Header */}
         <div className="mb-8 flex items-end justify-between">
-          <h2 className="text-3xl font-bold uppercase tracking-tight text-slate-900 md:text-4xl">
+          <h2 className="text-3xl font-bold uppercase tracking-tight text-brand-primary md:text-4xl">
             {t('bestSellers')}
           </h2>
           <div className="flex items-center gap-3">
             <Link
               href="/catalogue?sort=popular"
-              className="hidden items-center gap-1 text-sm font-bold text-orange-600 transition-colors hover:text-orange-700 sm:inline-flex"
+              className="inline-flex items-center gap-1 text-sm font-bold text-brand-accent transition-colors hover:text-brand-accent-hover"
             >
               {t('viewAll')} <ArrowRight size={14} />
             </Link>
-            <div className="hidden gap-2 sm:flex">
+            <div className="flex gap-2">
               <button
                 onClick={() => scroll('left')}
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 text-slate-600 transition-colors hover:border-orange-600 hover:text-orange-600"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-500 shadow-sm transition-all duration-200 hover:border-brand-accent/40 hover:text-brand-accent hover:shadow-md"
                 aria-label="Scroll left"
               >
                 <ChevronLeft size={18} />
               </button>
               <button
                 onClick={() => scroll('right')}
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 text-slate-600 transition-colors hover:border-orange-600 hover:text-orange-600"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-500 shadow-sm transition-all duration-200 hover:border-brand-accent/40 hover:text-brand-accent hover:shadow-md"
                 aria-label="Scroll right"
               >
                 <ChevronRight size={18} />
@@ -143,10 +147,10 @@ export function BestSellers() {
           </div>
         </div>
 
-        {/* Horizontal scroll */}
+        {/* Horizontal scroll — 4 cards visible on desktop */}
         <div
           ref={scrollRef}
-          className="hide-scrollbar -mx-5 flex gap-4 overflow-x-auto px-5 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8"
+          className="hide-scrollbar -mx-5 flex gap-6 overflow-x-auto px-5 pb-2 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8"
         >
           {products.map((product) => (
             <BestSellerCard key={product.id} product={product} />
