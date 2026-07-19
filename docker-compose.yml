@@ -22,6 +22,7 @@ services:
 
   # ── Backend API (NestJS) ──────────────────────────────────────────
   backend:
+    image: ghcr.io/reflx0/e-comerce-backend:latest
     build:
       context: ./backend
       dockerfile: Dockerfile
@@ -52,6 +53,7 @@ services:
 
   # ── Database Migrations (one-shot) ────────────────────────────────
   migrate:
+    image: ghcr.io/reflx0/e-comerce-migrate:latest
     build:
       context: ./backend
       dockerfile: Dockerfile
@@ -68,6 +70,7 @@ services:
 
   # ── Frontend (Next.js) ────────────────────────────────────────────
   frontend:
+    image: ghcr.io/reflx0/e-comerce-frontend:latest
     build:
       context: .
       dockerfile: frontend/Dockerfile
