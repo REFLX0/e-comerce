@@ -1,6 +1,7 @@
 import { Controller, Get, Post, Body } from '@nestjs/common';
 import { AppService } from './app.service';
 import { PrismaService } from './prisma/prisma.service';
+import { SubmitContactDto } from './contact.dto';
 
 @Controller()
 export class AppController {
@@ -15,9 +16,7 @@ export class AppController {
   }
 
   @Post('contact')
-  async submitContact(
-    @Body() body: { name: string; email: string; phone?: string; subject: string; message: string; isProfessional?: boolean },
-  ) {
+  async submitContact(@Body() body: SubmitContactDto) {
     const msg = await this.prisma.contactMessage.create({
       data: {
         name: body.name,
