@@ -50,7 +50,7 @@ export default function Header() {
             </div>
             <div className="flex items-center gap-2">
               <Phone size={14} className="text-white/70" />
-              <span>55 033 035</span>
+              <span>+216 29 294 195</span>
             </div>
           </div>
         </div>

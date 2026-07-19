@@ -140,7 +140,7 @@ export default function Footer() {
               <a href="https://www.facebook.com/specpart/" target="_blank" rel="noreferrer" aria-label="Facebook" className="flex h-9 w-9 items-center justify-center rounded border border-white/10 text-white/40 transition-all hover:border-brand-accent hover:text-brand-accent">
                 <Facebook size={16} />
               </a>
-              <a href="#" aria-label="Instagram" className="flex h-9 w-9 items-center justify-center rounded border border-white/10 text-white/40 transition-all hover:border-brand-accent hover:text-brand-accent">
+              <a href="https://www.instagram.com/specpart/" target="_blank" rel="noreferrer" aria-label="Instagram" className="flex h-9 w-9 items-center justify-center rounded border border-white/10 text-white/40 transition-all hover:border-brand-accent hover:text-brand-accent">
                 <Instagram size={16} />
               </a>
             </div>

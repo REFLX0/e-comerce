@@ -5,14 +5,24 @@ import {
   HttpCode,
   HttpStatus,
   Res,
+  Req,
 } from '@nestjs/common';
-import type { Response } from 'express';
+import type { Response, Request } from 'express';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
+
+const COOKIE_OPTIONS = {
+  httpOnly: true,
+  secure:
+    process.env.NODE_ENV === 'production' &&
+    process.env.FRONTEND_URL?.startsWith('https'),
+  sameSite: 'lax' as const,
+  maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+};
 
 @ApiTags('auth')
 @Controller('auth')
@@ -26,14 +36,8 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ) {
     const data = await this.authService.register(dto);
-    res.cookie('access_token', data.accessToken, {
-      httpOnly: true,
-      secure:
-        process.env.NODE_ENV === 'production' &&
-        process.env.FRONTEND_URL?.startsWith('https'),
-      sameSite: 'lax',
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-    });
+    res.cookie('access_token', data.accessToken, COOKIE_OPTIONS);
+    res.cookie('refresh_token', data.refreshToken, COOKIE_OPTIONS);
     return data;
   }
 
@@ -45,14 +49,8 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ) {
     const data = await this.authService.login(dto);
-    res.cookie('access_token', data.accessToken, {
-      httpOnly: true,
-      secure:
-        process.env.NODE_ENV === 'production' &&
-        process.env.FRONTEND_URL?.startsWith('https'),
-      sameSite: 'lax',
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-    });
+    res.cookie('access_token', data.accessToken, COOKIE_OPTIONS);
+    res.cookie('refresh_token', data.refreshToken, COOKIE_OPTIONS);
     return data;
   }
 
@@ -66,11 +64,14 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   logout(
     @Body('refreshToken') token: string,
+    @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
   ) {
+    const refreshToken = token || req.cookies?.refresh_token;
     res.clearCookie('access_token');
-    if (token) {
-      return this.authService.logout(token);
+    res.clearCookie('refresh_token');
+    if (refreshToken) {
+      return this.authService.logout(refreshToken);
     }
     return { success: true };
   }

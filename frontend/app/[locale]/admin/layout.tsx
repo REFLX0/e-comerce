@@ -257,7 +257,6 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
     { label: t('settings'), icon: Settings, href: '/admin/settings' },
   ]
 
-  const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
   const isHydrated = useAuthStore((s) => s.isHydrated)
   const user = useAuthStore((s) => s.user)
   const setAuth = useAuthStore((s) => s.setAuth)
@@ -286,11 +285,6 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (!isHydrated) return
 
-    if (isAuthenticated && user?.role?.toUpperCase() === 'ADMIN') {
-      window.setTimeout(() => setIsCheckingServerAuth(false), 0)
-      return
-    }
-
     let cancelled = false
     const checkingTimer = window.setTimeout(() => {
       if (!cancelled) setIsCheckingServerAuth(true)
@@ -315,7 +309,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       cancelled = true
       window.clearTimeout(checkingTimer)
     }
-  }, [isHydrated, isAuthenticated, setAuth, router, locale])
+  }, [isHydrated, setAuth, router, locale])
 
   if (!isHydrated || isCheckingServerAuth || user?.role?.toUpperCase() !== 'ADMIN') {
     return (
