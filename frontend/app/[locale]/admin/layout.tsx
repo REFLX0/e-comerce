@@ -143,7 +143,8 @@ function Sidebar({
   siteLogo?: string
 }) {
   const t = useTranslations('Admin')
-  const { user, logout } = useAuthStore()
+  const user = useAuthStore((s) => s.user)
+  const logout = useAuthStore((s) => s.logout)
   const router = useRouter()
   const pathname = usePathname()
   const locale = pathname?.split('/')[1] === 'en' ? 'en' : 'fr'
@@ -256,7 +257,10 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
     { label: t('settings'), icon: Settings, href: '/admin/settings' },
   ]
 
-  const { isAuthenticated, isHydrated, user, setAuth } = useAuthStore()
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
+  const isHydrated = useAuthStore((s) => s.isHydrated)
+  const user = useAuthStore((s) => s.user)
+  const setAuth = useAuthStore((s) => s.setAuth)
   const router = useRouter()
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const siteLogo = useSiteLogo()
@@ -311,7 +315,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       cancelled = true
       window.clearTimeout(checkingTimer)
     }
-  }, [isHydrated, isAuthenticated, user, setAuth, router, locale])
+  }, [isHydrated, isAuthenticated, setAuth, router, locale])
 
   if (!isHydrated || isCheckingServerAuth || user?.role?.toUpperCase() !== 'ADMIN') {
     return (

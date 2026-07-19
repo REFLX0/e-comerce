@@ -22,7 +22,7 @@ const STATUS_LABELS: Record<string, { label: string; cls: string }> = {
 }
 
 export default function AdminDashboard() {
-  const { user } = useAuthStore()
+  const user = useAuthStore((s) => s.user)
   const pathname = usePathname()
   const locale = pathname?.split('/')[1] === 'en' ? 'en' : 'fr'
   const localizedHref = (href: string) => `/${locale}${href}`

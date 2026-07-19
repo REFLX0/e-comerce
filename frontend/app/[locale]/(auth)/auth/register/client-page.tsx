@@ -72,7 +72,8 @@ function PasswordStrength({ value }: { value: string }) {
 
 export default function RegisterPage() {
   const router = useRouter()
-  const { register: registerUser, isLoading } = useAuthStore()
+  const registerUser = useAuthStore((s) => s.register)
+  const isLoading = useAuthStore((s) => s.isLoading)
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
   const [passwordValue, setPasswordValue] = useState('')

@@ -7,7 +7,8 @@ import { Save, User, Mail, Phone, Calendar } from 'lucide-react'
 import { toast } from 'sonner'
 
 export default function ProfilPage() {
-  const { user, updateUser } = useAuthStore()
+  const user = useAuthStore((s) => s.user)
+  const updateUser = useAuthStore((s) => s.updateUser)
   const [form, setForm] = useState({
     name: user?.firstName ? `${user.firstName} ${user.lastName}` : '',
     email: user?.email ?? '',

@@ -15,7 +15,7 @@ import { useTranslations } from 'next-intl'
 export function MobileBottomNav() {
   const pathname = usePathname()
   const { items } = useCartStore()
-  const { isAuthenticated } = useAuthStore()
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
   const hasMounted = useHasMounted()
   const t = useTranslations('Layout')
 

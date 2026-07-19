@@ -14,7 +14,8 @@ export default function OrderDetailsPage() {
   const params = useParams()
   const router = useRouter()
   const id = params.id as string
-  const { isAuthenticated, isHydrated } = useAuthStore()
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
+  const isHydrated = useAuthStore((s) => s.isHydrated)
   
   useEffect(() => {
     if (isHydrated && !isAuthenticated) {

@@ -18,7 +18,8 @@ import { useHasMounted } from '@/lib/hooks/useHasMounted'
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
-  const { isAuthenticated, user } = useAuthStore()
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
+  const user = useAuthStore((s) => s.user)
   const hasMounted = useHasMounted()
   const siteLogo = useSiteLogo()
   const t = useTranslations('Navigation')

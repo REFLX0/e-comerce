@@ -23,7 +23,10 @@ export default function CompteLayout({ children }: { children: React.ReactNode }
     { href: '/compte/securite',  icon: ShieldCheck,      label: t('security') },
   ]
 
-  const { isAuthenticated, logout, isHydrated, user } = useAuthStore()
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
+  const logout = useAuthStore((s) => s.logout)
+  const isHydrated = useAuthStore((s) => s.isHydrated)
+  const user = useAuthStore((s) => s.user)
   const router = useRouter()
   const pathname = usePathname()
   const [mobileOpen, setMobileOpen] = useState(false)
@@ -34,7 +37,7 @@ export default function CompteLayout({ children }: { children: React.ReactNode }
     if (!isHydrated) return
     if (!isAuthenticated) router.push('/auth/login')
     else if (user?.role?.toUpperCase() === 'ADMIN') router.push('/admin')
-  }, [isHydrated, isAuthenticated, user, router])
+  }, [isHydrated, isAuthenticated, router])
 
   const handleLogout = () => { logout(); router.push('/') }
 

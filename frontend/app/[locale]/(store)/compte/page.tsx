@@ -27,7 +27,7 @@ const QUICK_LINKS = [
 
 export default function CompteDashboardPage() {
   const t = useTranslations('Account')
-  const { user } = useAuthStore()
+  const user = useAuthStore((s) => s.user)
 
   const { data, isLoading } = useQuery<any>({
     queryKey: ['my-orders-preview'],
