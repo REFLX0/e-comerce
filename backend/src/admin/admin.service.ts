@@ -513,11 +513,32 @@ export class AdminService {
   }
 
   // ─── Contact Messages ──────────────────────────────────────────────────────
-  async getContactMessages(page = 1, limit = 20) {
+  async getContactMessages(
+    page = 1,
+    limit = 20,
+    sort?: 'recent' | 'oldest' | 'unread',
+    filter?: 'all' | 'unread' | 'withPhone',
+  ) {
     const skip = (page - 1) * limit;
+
+    const orderBy =
+      sort === 'oldest'
+        ? { createdAt: 'asc' as const }
+        : sort === 'unread'
+          ? [{ isRead: 'asc' as const }, { createdAt: 'desc' as const }]
+          : { createdAt: 'desc' as const };
+
+    const where =
+      filter === 'unread'
+        ? { isRead: false }
+        : filter === 'withPhone'
+          ? { phone: { not: null } }
+          : {};
+
     const [data, total, unreadCount] = await Promise.all([
       this.prisma.contactMessage.findMany({
-        orderBy: { createdAt: 'desc' },
+        where,
+        orderBy,
         skip,
         take: limit,
       }),

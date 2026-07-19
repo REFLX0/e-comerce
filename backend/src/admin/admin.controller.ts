@@ -144,8 +144,15 @@ export class AdminController {
   @Get('contact-messages') getContactMessages(
     @Query('page') p?: string,
     @Query('limit') l?: string,
+    @Query('sort') sort?: string,
+    @Query('filter') filter?: string,
   ) {
-    return this.adminService.getContactMessages(p ? +p : 1, l ? +l : 20);
+    return this.adminService.getContactMessages(
+      p ? +p : 1,
+      l ? +l : 20,
+      sort as any,
+      filter as any,
+    );
   }
   @Patch('contact-messages/:id/read') markContactMessageRead(@Param('id') id: string) {
     return this.adminService.markContactMessageRead(id);

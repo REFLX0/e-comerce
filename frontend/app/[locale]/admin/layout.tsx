@@ -427,6 +427,7 @@ function SearchModal({ locale }: { locale: string }) {
     { label: 'Inventaire', href: '/admin/catalog/inventory', icon: Layers },
     { label: 'Clients', href: '/admin/customers', icon: Users },
     { label: 'Promotions', href: '/admin/promotions', icon: Tag },
+    { label: 'Messages', href: '/admin/contact-messages', icon: Mail },
     { label: 'Support', href: '/admin/tickets', icon: LifeBuoy },
     { label: 'Livraison', href: '/admin/shipping', icon: Truck },
     { label: 'Paiements', href: '/admin/payments', icon: CreditCard },

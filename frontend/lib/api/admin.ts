@@ -113,7 +113,7 @@ export const adminApi = {
     api.patch(`/admin/payments/${id}/status`, { status }),
 
   // Contact messages
-  getContactMessages: (params?: { page?: number; limit?: number }) =>
+  getContactMessages: (params?: { page?: number; limit?: number; sort?: string; filter?: string }) =>
     api.get('/admin/contact-messages', { params }),
 
   markContactMessageRead: (id: string) =>
