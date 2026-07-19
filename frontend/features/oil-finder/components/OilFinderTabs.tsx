@@ -197,7 +197,7 @@ export function OilFinderTabs() {
                   Retour
                 </button>
               </div>
-              <EngineSpecFinder onClose={() => {}} />
+              <EngineSpecFinder onClose={() => {}} initialVehicleType={vehicleType} />
             </motion.div>
           )}
         </AnimatePresence>

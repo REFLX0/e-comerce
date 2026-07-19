@@ -29,16 +29,17 @@ const FUEL_OPTIONS: { id: FuelType; label: string; desc: string }[] = [
 
 interface EngineSpecFinderProps {
   onClose?: () => void
+  initialVehicleType?: VehicleType | null
 }
 
-export function EngineSpecFinder({ onClose }: EngineSpecFinderProps) {
+export function EngineSpecFinder({ onClose, initialVehicleType }: EngineSpecFinderProps) {
   const router = useRouter()
   const pathname = usePathname()
   const locale = pathname?.split('/')[1] === 'en' ? 'en' : 'fr'
   
-  const [step, setStep] = useState(1)
+  const [step, setStep] = useState(initialVehicleType ? 2 : 1)
   const [direction, setDirection] = useState(1)
-  const [vehicleType, setVehicleType] = useState<VehicleType | ''>('')
+  const [vehicleType, setVehicleType] = useState<VehicleType | ''>(initialVehicleType ?? '')
   const [cylinders, setCylinders] = useState<number | ''>('')
   const [power, setPower] = useState<number | ''>('')
   const [fuelType, setFuelType] = useState<FuelType | ''>('')

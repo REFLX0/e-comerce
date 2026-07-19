@@ -302,7 +302,10 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         router.push(`/${locale}/auth/login?callbackUrl=/${locale}/admin&reason=admin`)
       })
       .catch(() => {
-        if (!cancelled) router.push(`/${locale}/auth/login?callbackUrl=/${locale}/admin`)
+        if (!cancelled) {
+          setIsCheckingServerAuth(false)
+          router.push(`/${locale}/auth/login?callbackUrl=/${locale}/admin`)
+        }
       })
 
     return () => {
