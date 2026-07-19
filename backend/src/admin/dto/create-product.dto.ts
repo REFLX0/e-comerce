@@ -15,6 +15,10 @@ export class VariantDto {
   @ApiProperty() @IsString() @MinLength(1) volume: string;
   @ApiProperty() @IsNumber() @Min(0) price: number;
   @ApiProperty() @IsNumber() @Min(0) stockQty: number;
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  imageUrl?: string;
 }
 
 export class CreateProductDto {

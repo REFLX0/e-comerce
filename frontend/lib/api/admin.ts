@@ -111,6 +111,16 @@ export const adminApi = {
 
   updatePaymentStatus: (id: string, status: string) =>
     api.patch(`/admin/payments/${id}/status`, { status }),
+
+  // Contact messages
+  getContactMessages: (params?: { page?: number; limit?: number }) =>
+    api.get('/admin/contact-messages', { params }),
+
+  markContactMessageRead: (id: string) =>
+    api.patch(`/admin/contact-messages/${id}/read`, {}),
+
+  deleteContactMessage: (id: string) =>
+    api.delete(`/admin/contact-messages/${id}`),
 }
 
 // Settings (public read, admin write)

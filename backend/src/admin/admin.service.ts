@@ -92,6 +92,7 @@ export class AdminService {
           volume: v.volume,
           price: v.price,
           stockQty: v.stockQty,
+          imageUrl: v.imageUrl ?? null,
           skuVariant: `${sku}-${v.volume.replace(/\s+/g, '').toUpperCase()}`,
         })),
       };
@@ -114,30 +115,60 @@ export class AdminService {
   }
 
   async updateProduct(id: string, data: any) {
-    const { price, stock, ...productData } = data;
+    const { price, stock, variants, ...productData } = data;
     const updateData: any = { ...productData };
 
-    // If price or stock is provided, update the first variant
-    const variantUpdate: any = {};
-    if (price !== undefined) variantUpdate.price = price;
-    if (stock !== undefined) variantUpdate.stockQty = stock;
-
-    if (Object.keys(variantUpdate).length > 0) {
+    // If a full variants array is provided, update all variants
+    if (variants && variants.length > 0) {
       const existing = await this.prisma.product.findUnique({
         where: { id },
-        select: { variants: { take: 1, select: { id: true } } },
+        select: { variants: { select: { id: true, volume: true } } },
       });
-      if (existing?.variants.length) {
-        updateData.variants = {
-          update: {
+
+      const updates = variants.map((v: any) => {
+        const match = existing?.variants.find(
+          (ev: any) => ev.volume === v.volume && ev.id,
+        );
+        if (match) {
+          return this.prisma.productVariant.update({
+            where: { id: match.id },
+            data: {
+              price: v.price,
+              stockQty: v.stockQty,
+              imageUrl: v.imageUrl ?? null,
+            },
+          });
+        }
+        return Promise.resolve(null);
+      }).filter(Boolean);
+
+      if (updates.length > 0) {
+        await this.prisma.$transaction(updates);
+      }
+    } else {
+      // Fallback: update first variant price/stock
+      const variantUpdate: any = {};
+      if (price !== undefined) variantUpdate.price = price;
+      if (stock !== undefined) variantUpdate.stockQty = stock;
+
+      if (Object.keys(variantUpdate).length > 0) {
+        const existing = await this.prisma.product.findUnique({
+          where: { id },
+          select: { variants: { take: 1, select: { id: true } } },
+        });
+        if (existing?.variants.length) {
+          await this.prisma.productVariant.update({
             where: { id: existing.variants[0].id },
             data: variantUpdate,
-          },
-        };
+          });
+        }
       }
     }
 
-    return this.prisma.product.update({ where: { id }, data: updateData });
+    return this.prisma.product.findUnique({
+      where: { id },
+      include: { brand: true, category: true, variants: true, images: true },
+    });
   }
 
   async deleteProduct(id: string) {
@@ -479,5 +510,31 @@ export class AdminService {
       where: { id },
       data: { status: status as any },
     });
+  }
+
+  // ─── Contact Messages ──────────────────────────────────────────────────────
+  async getContactMessages(page = 1, limit = 20) {
+    const skip = (page - 1) * limit;
+    const [data, total, unreadCount] = await Promise.all([
+      this.prisma.contactMessage.findMany({
+        orderBy: { createdAt: 'desc' },
+        skip,
+        take: limit,
+      }),
+      this.prisma.contactMessage.count(),
+      this.prisma.contactMessage.count({ where: { isRead: false } }),
+    ]);
+    return { data, total, unreadCount, page, totalPages: Math.ceil(total / limit) };
+  }
+
+  async markContactMessageRead(id: string) {
+    return this.prisma.contactMessage.update({
+      where: { id },
+      data: { isRead: true },
+    });
+  }
+
+  async deleteContactMessage(id: string) {
+    return this.prisma.contactMessage.delete({ where: { id } });
   }
 }

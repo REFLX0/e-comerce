@@ -5,9 +5,19 @@ import { useMutation, useQuery } from '@tanstack/react-query'
 import { adminApi } from '@/lib/api/admin'
 import { useRouter, useParams, usePathname } from 'next/navigation'
 import { toast } from 'sonner'
-import { Save, ArrowLeft, Upload, X, Image as ImageIcon } from 'lucide-react'
+import { Save, ArrowLeft, Upload, X, Trash2, Plus } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
+
+interface VariantForm {
+  id?: string
+  volume: string
+  price: string
+  stockQty: string
+  imageUrl: string | null
+  imageFile: File | null
+  imagePreview: string | null
+}
 
 export default function EditProductPage() {
   const router = useRouter()
@@ -23,13 +33,12 @@ export default function EditProductPage() {
   const [description, setDescription] = useState('')
   const [brandId, setBrandId] = useState('')
   const [categoryId, setCategoryId] = useState('')
-  const [price, setPrice] = useState('')
-  const [stock, setStock] = useState('')
   const [isPublished, setIsPublished] = useState(true)
   const [file, setFile] = useState<File | null>(null)
   const [imagePreview, setImagePreview] = useState<string | null>(null)
   const [existingImages, setExistingImages] = useState<string[]>([])
   const [isUploading, setIsUploading] = useState(false)
+  const [variants, setVariants] = useState<VariantForm[]>([])
 
   const { data: product, isLoading } = useQuery<any>({
     queryKey: ['admin-product', id],
@@ -47,10 +56,17 @@ export default function EditProductPage() {
       setDescription(product.description ?? '')
       setBrandId(product.brandId ?? '')
       setCategoryId(product.categoryId ?? '')
-      setPrice(product.variants?.[0]?.price?.toString() ?? '')
-      setStock(product.variants?.[0]?.stockQty?.toString() ?? product.stock?.toString() ?? '')
       setIsPublished(product.isPublished ?? true)
       setExistingImages((product.images ?? []).map((img: any) => img.url))
+      setVariants((product.variants ?? []).map((v: any) => ({
+        id: v.id,
+        volume: v.volume,
+        price: v.price?.toString() ?? '',
+        stockQty: v.stockQty?.toString() ?? '',
+        imageUrl: v.imageUrl ?? null,
+        imageFile: null,
+        imagePreview: null,
+      })))
     }
   }, [product])
 
@@ -78,6 +94,26 @@ export default function EditProductPage() {
     setImagePreview(null)
   }
 
+  const updateVariant = (index: number, field: keyof VariantForm, value: string) => {
+    setVariants(prev => prev.map((v, i) => i === index ? { ...v, [field]: value } : v))
+  }
+
+  const handleVariantImage = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
+    const f = e.target.files?.[0]
+    if (!f) return
+    setVariants(prev => {
+      if (prev[index]?.imagePreview) URL.revokeObjectURL(prev[index].imagePreview!)
+      return prev.map((v, i) => i === index ? { ...v, imageFile: f, imagePreview: URL.createObjectURL(f) } : v)
+    })
+  }
+
+  const removeVariantImage = (index: number) => {
+    setVariants(prev => {
+      if (prev[index]?.imagePreview) URL.revokeObjectURL(prev[index].imagePreview!)
+      return prev.map((v, i) => i === index ? { ...v, imageFile: null, imagePreview: null, imageUrl: null } : v)
+    })
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!nameFr || !slug || !brandId || !categoryId) {
@@ -94,12 +130,27 @@ export default function EditProductPage() {
         imageUrl = (res as any).url || (res as any).data?.url
       }
 
+      // Upload any new variant images
+      const variantImageUrls: (string | null)[] = await Promise.all(
+        variants.map(async (v) => {
+          if (v.imageFile) {
+            const res = await adminApi.uploadImage(v.imageFile)
+            return (res as any).url || (res as any).data?.url || null
+          }
+          return v.imageUrl
+        })
+      )
+
       const payload: any = {
         nameFr, slug, sku, description,
         brandId, categoryId,
-        price: price ? parseFloat(price) : undefined,
-        stock: stock ? parseInt(stock, 10) : undefined,
         isPublished,
+        variants: variants.map((v, idx) => ({
+          volume: v.volume,
+          price: parseFloat(v.price) || 0,
+          stockQty: parseInt(v.stockQty, 10) || 0,
+          imageUrl: variantImageUrls[idx],
+        })),
       }
 
       if (imageUrl) {
@@ -183,20 +234,43 @@ export default function EditProductPage() {
               </select>
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-1.5">
-              <label className="text-sm font-semibold text-gray-700">Prix (TND)</label>
-              <input type="number" value={price} onChange={e => setPrice(e.target.value)} min={0} step={0.01} className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-brand-accent transition-all" />
-            </div>
-            <div className="space-y-1.5">
-              <label className="text-sm font-semibold text-gray-700">Stock</label>
-              <input type="number" value={stock} onChange={e => setStock(e.target.value)} min={0} className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-brand-accent transition-all" />
+
+          {/* Variants */}
+          <div className="space-y-3">
+            <label className="text-sm font-semibold text-gray-700">Conditionnements</label>
+            <div className="rounded-xl border border-gray-200 bg-gray-50 p-4 space-y-3">
+              <div className="grid grid-cols-[1fr_1fr_1fr_1fr_auto] gap-3 mb-2 px-1">
+                <span className="text-xs font-semibold text-gray-500 uppercase">Volume</span>
+                <span className="text-xs font-semibold text-gray-500 uppercase">Prix (TND)</span>
+                <span className="text-xs font-semibold text-gray-500 uppercase">Stock</span>
+                <span className="text-xs font-semibold text-gray-500 uppercase">Photo</span>
+                <span className="w-8"></span>
+              </div>
+              {variants.map((v, idx) => (
+                <div key={idx} className="grid grid-cols-[1fr_1fr_1fr_1fr_auto] gap-3 items-center">
+                  <input type="text" value={v.volume} onChange={e => updateVariant(idx, 'volume', e.target.value)} className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:border-brand-accent" placeholder="Ex: 5L" required />
+                  <input type="number" value={v.price} onChange={e => updateVariant(idx, 'price', e.target.value)} min={0} step={0.01} className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:border-brand-accent" placeholder="0.00" required />
+                  <input type="number" value={v.stockQty} onChange={e => updateVariant(idx, 'stockQty', e.target.value)} min={0} className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:border-brand-accent" placeholder="0" required />
+                  <div className="flex items-center gap-2">
+                    {(v.imagePreview || v.imageUrl) ? (
+                      <div className="relative h-9 w-9 shrink-0 rounded-lg overflow-hidden border border-gray-200">
+                        <Image src={v.imagePreview || v.imageUrl!} alt="" fill className="object-cover" />
+                        <button type="button" onClick={() => removeVariantImage(idx)} className="absolute top-0 right-0 rounded-full bg-black/60 p-0.5 text-white leading-none text-[10px]" style={{ width: 14, height: 14 }}>×</button>
+                      </div>
+                    ) : null}
+                    <label className="cursor-pointer rounded-lg border border-gray-200 bg-white p-1.5 text-gray-400 hover:border-brand-accent hover:text-brand-accent transition-colors">
+                      <Upload size={14} />
+                      <input type="file" accept="image/*" onChange={e => handleVariantImage(idx, e)} className="hidden" />
+                    </label>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
 
-          {/* Image upload */}
+          {/* Product images */}
           <div className="space-y-1.5">
-            <label className="text-sm font-semibold text-gray-700">Images</label>
+            <label className="text-sm font-semibold text-gray-700">Images du produit</label>
             <div className="flex flex-wrap gap-3">
               {existingImages.map((url, i) => (
                 <div key={i} className="relative h-20 w-20 rounded-lg overflow-hidden border border-gray-200">

@@ -1,9 +1,13 @@
 import { Controller, Get, Post, Body } from '@nestjs/common';
 import { AppService } from './app.service';
+import { PrismaService } from './prisma/prisma.service';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(
+    private readonly appService: AppService,
+    private readonly prisma: PrismaService,
+  ) {}
 
   @Get()
   getHello(): string {
@@ -11,8 +15,19 @@ export class AppController {
   }
 
   @Post('contact')
-  submitContact(@Body() body: any) {
-    console.log('Received contact message:', body);
-    return { success: true, message: 'Message reçu' };
+  async submitContact(
+    @Body() body: { name: string; email: string; phone?: string; subject: string; message: string; isProfessional?: boolean },
+  ) {
+    const msg = await this.prisma.contactMessage.create({
+      data: {
+        name: body.name,
+        email: body.email,
+        phone: body.phone ?? null,
+        subject: body.subject,
+        message: body.message,
+        isProfessional: body.isProfessional ?? false,
+      },
+    });
+    return { success: true, id: msg.id };
   }
 }

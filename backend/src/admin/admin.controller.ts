@@ -141,6 +141,19 @@ export class AdminController {
     return this.adminService.deleteReview(id);
   }
 
+  @Get('contact-messages') getContactMessages(
+    @Query('page') p?: string,
+    @Query('limit') l?: string,
+  ) {
+    return this.adminService.getContactMessages(p ? +p : 1, l ? +l : 20);
+  }
+  @Patch('contact-messages/:id/read') markContactMessageRead(@Param('id') id: string) {
+    return this.adminService.markContactMessageRead(id);
+  }
+  @Delete('contact-messages/:id') deleteContactMessage(@Param('id') id: string) {
+    return this.adminService.deleteContactMessage(id);
+  }
+
   @Get('payments') getPayments(
     @Query('page') p?: string,
     @Query('limit') l?: string,

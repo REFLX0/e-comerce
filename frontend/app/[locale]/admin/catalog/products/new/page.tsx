@@ -29,7 +29,7 @@ export default function NewProductPage() {
   const [imagePreview, setImagePreview] = useState<string | null>(null)
   const [isUploading, setIsUploading] = useState(false)
   const [hasVariants, setHasVariants] = useState(false)
-  const [variants, setVariants] = useState<{ volume: string; price: string; stockQty: string }[]>([{ volume: '1L', price: '', stockQty: '' }])
+  const [variants, setVariants] = useState<{ volume: string; price: string; stockQty: string; imageFile: File | null; imagePreview: string | null }[]>([{ volume: '1L', price: '', stockQty: '', imageFile: null, imagePreview: null }])
 
   const { data: brandsData } = useQuery<any>({ queryKey: ['brands'], queryFn: () => fetch('/api/brands').then(r => r.json()) })
   const { data: categoriesData } = useQuery<any>({ queryKey: ['categories'], queryFn: () => fetch('/api/categories').then(r => r.json()) })
@@ -58,12 +58,24 @@ export default function NewProductPage() {
     setImagePreview(null)
   }
 
-  const addVariant = () => setVariants([...variants, { volume: '', price: '', stockQty: '' }])
+  const addVariant = () => setVariants([...variants, { volume: '', price: '', stockQty: '', imageFile: null, imagePreview: null }])
   const removeVariant = (index: number) => setVariants(variants.filter((_, i) => i !== index))
   const updateVariant = (index: number, field: string, value: string) => {
-    const newVariants = [...variants]
-    newVariants[index] = { ...newVariants[index]!, [field]: value }
-    setVariants(newVariants)
+    setVariants(prev => prev.map((v, i) => i === index ? { ...v, [field]: value } : v))
+  }
+  const handleVariantImage = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setVariants(prev => {
+      if (prev[index]?.imagePreview) URL.revokeObjectURL(prev[index].imagePreview!)
+      return prev.map((v, i) => i === index ? { ...v, imageFile: file, imagePreview: URL.createObjectURL(file) } : v)
+    })
+  }
+  const removeVariantImage = (index: number) => {
+    setVariants(prev => {
+      if (prev[index]?.imagePreview) URL.revokeObjectURL(prev[index].imagePreview!)
+      return prev.map((v, i) => i === index ? { ...v, imageFile: null, imagePreview: null } : v)
+    })
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -93,10 +105,20 @@ export default function NewProductPage() {
       }
 
       if (hasVariants) {
-        payload.variants = variants.map(v => ({
+        const variantImageUrls: (string | null)[] = await Promise.all(
+          variants.map(async (v) => {
+            if (v.imageFile) {
+              const res = await adminApi.uploadImage(v.imageFile)
+              return (res as any).url || (res as any).data?.url || null
+            }
+            return null
+          })
+        )
+        payload.variants = variants.map((v, idx) => ({
           volume: v.volume,
           price: parseFloat(v.price) || 0,
           stockQty: parseInt(v.stockQty, 10) || 0,
+          imageUrl: variantImageUrls[idx],
         }))
       } else {
         payload.price = price ? parseFloat(price) : undefined
@@ -203,17 +225,30 @@ export default function NewProductPage() {
 
             {hasVariants ? (
               <div className="space-y-3 rounded-xl border border-gray-200 bg-gray-50 p-4">
-                <div className="grid grid-cols-[1fr_1fr_1fr_auto] gap-3 mb-2 px-1">
+                <div className="grid grid-cols-[1fr_1fr_1fr_1fr_auto] gap-3 mb-2 px-1">
                   <span className="text-xs font-semibold text-gray-500 uppercase">Conditionnement</span>
                   <span className="text-xs font-semibold text-gray-500 uppercase">Prix (TND)</span>
                   <span className="text-xs font-semibold text-gray-500 uppercase">Stock initial</span>
+                  <span className="text-xs font-semibold text-gray-500 uppercase">Photo</span>
                   <span className="w-8"></span>
                 </div>
                 {variants.map((v, idx) => (
-                  <div key={idx} className="grid grid-cols-[1fr_1fr_1fr_auto] gap-3 items-center">
+                  <div key={idx} className="grid grid-cols-[1fr_1fr_1fr_1fr_auto] gap-3 items-center">
                     <input type="text" value={v.volume} onChange={e => updateVariant(idx, 'volume', e.target.value)} className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:border-brand-accent" placeholder="Ex: 5L" required />
                     <input type="number" value={v.price} onChange={e => updateVariant(idx, 'price', e.target.value)} min={0} step={0.01} className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:border-brand-accent" placeholder="0.00" required />
                     <input type="number" value={v.stockQty} onChange={e => updateVariant(idx, 'stockQty', e.target.value)} min={0} className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:border-brand-accent" placeholder="0" required />
+                    <div className="flex items-center gap-2">
+                      {v.imagePreview ? (
+                        <div className="relative h-9 w-9 shrink-0 rounded-lg overflow-hidden border border-gray-200">
+                          <Image src={v.imagePreview} alt="" fill className="object-cover" />
+                          <button type="button" onClick={() => removeVariantImage(idx)} className="absolute top-0 right-0 rounded-full bg-black/60 p-0.5 text-white leading-none text-[10px]" style={{ width: 14, height: 14 }}>×</button>
+                        </div>
+                      ) : null}
+                      <label className="cursor-pointer rounded-lg border border-gray-200 bg-white p-1.5 text-gray-400 hover:border-brand-accent hover:text-brand-accent transition-colors">
+                        <Upload size={14} />
+                        <input type="file" accept="image/*" onChange={e => handleVariantImage(idx, e)} className="hidden" />
+                      </label>
+                    </div>
                     <button type="button" onClick={() => removeVariant(idx)} disabled={variants.length === 1} className="flex h-9 w-8 items-center justify-center rounded-lg text-gray-400 hover:bg-white hover:text-red-500 disabled:opacity-50">
                       <Trash2 size={16} />
                     </button>

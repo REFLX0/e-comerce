@@ -7,16 +7,14 @@ import { useAuthStore } from '@/lib/store/auth.store'
 export function AuthSync() {
   const { data: session, status } = useSession()
   const setAuth = useAuthStore((state) => state.setAuth)
-  const currentEmail = useAuthStore((state) => state.user?.email)
 
   useEffect(() => {
     if (status === 'authenticated' && session?.user) {
-      const sessionEmail = session.user.email
-      if (!currentEmail || currentEmail === sessionEmail) {
-        setAuth(session.user as any)
-      }
+      setAuth(session.user as any)
+    } else if (status === 'unauthenticated') {
+      useAuthStore.setState({ user: null, isAuthenticated: false })
     }
-  }, [session, status, setAuth, currentEmail])
+  }, [session, status, setAuth])
 
   return null
 }
