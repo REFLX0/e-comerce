@@ -52,8 +52,8 @@ export function BestSellers() {
     return (
       <section className="bg-white py-16 md:py-20">
         <div className="section-padding">
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
-            {[1, 2, 3, 4, 5, 6].map((i) => (
+          <div className="grid grid-cols-2 gap-3 sm:gap-4 md:gap-5 lg:grid-cols-4">
+            {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
               <div key={i} className="aspect-[3/4] animate-pulse rounded-xl bg-slate-100" />
             ))}
           </div>
@@ -85,9 +85,9 @@ export function BestSellers() {
           </Link>
         </div>
 
-        {/* 6-product grid using existing ProductCard */}
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
-          {products.slice(0, 6).map((product) => (
+        {/* 4-product grid using existing ProductCard */}
+        <div className="grid grid-cols-2 gap-3 sm:gap-4 md:gap-5 lg:grid-cols-4">
+          {products.slice(0, 8).map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
         </div>

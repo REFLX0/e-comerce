@@ -1,43 +1,41 @@
 "use client";
 
-import { useSyncExternalStore } from 'react'
+import { useSyncExternalStore, useState } from 'react'
 import { useTranslations } from 'next-intl'
 import Image from 'next/image'
 import { Link } from '@/i18n/routing'
-import { Heart, Check, X } from 'lucide-react'
+import { Heart, Check, X, ShoppingCart } from 'lucide-react'
 import { motion } from 'framer-motion'
 import type { Product } from '@/lib/types'
 import { useCartStore } from '@/lib/store/cart.store'
 import { useVehicleStore } from '@/lib/store/vehicle.store'
 import { wishlistApi } from '@/lib/api/wishlist'
-import { PriceDisplay } from '../common/PriceDisplay'
 import { RatingStars } from '../common/RatingStars'
 import { toast } from 'sonner'
-import { useState } from 'react'
+import { formatPrice } from '@/lib/utils/format'
 
-const CardImage = ({ src, alt, t }: { src: string; alt: string; t: any }) => {
+/* ── Lazy image with skeleton + error fallback ───────────────────────── */
+function CardImage({ src, alt, t }: { src: string; alt: string; t: any }) {
   const [error, setError] = useState(false)
   const [loading, setLoading] = useState(true)
 
   if (error) {
     return (
       <div className="flex h-full w-full items-center justify-center bg-gray-50">
-        <span className="text-xs text-gray-400 text-center px-2">{t('imageNotAvailable')}</span>
+        <span className="text-[10px] text-gray-300 text-center px-3">{t('imageNotAvailable')}</span>
       </div>
     )
   }
 
   return (
     <>
-      {loading && (
-        <div className="absolute inset-0 z-0 animate-pulse bg-gray-100" />
-      )}
+      {loading && <div className="absolute inset-0 animate-pulse bg-gray-100" />}
       <Image
         src={src}
         alt={alt}
         fill
         sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-        className={`object-contain p-2 transition-transform duration-200 ease-out group-hover:scale-[1.03] transition-opacity ${loading ? 'opacity-0' : 'opacity-100'}`}
+        className={`object-contain p-3 transition-transform duration-300 ease-out group-hover:scale-[1.04] ${loading ? 'opacity-0' : 'opacity-100'}`}
         onLoad={() => setLoading(false)}
         onError={() => { setError(true); setLoading(false) }}
       />
@@ -45,9 +43,8 @@ const CardImage = ({ src, alt, t }: { src: string; alt: string; t: any }) => {
   )
 }
 
-interface Props {
-  product: Product
-}
+/* ── Main card ───────────────────────────────────────────────────────── */
+interface Props { product: Product }
 
 export function ProductCard({ product }: Props) {
   const t = useTranslations('ProductCard')
@@ -64,15 +61,9 @@ export function ProductCard({ product }: Props) {
     const variant = product.variants?.[0]
     if (!variant) return
     const result = addItem(product, variant, 1)
-    if (!result.ok) {
-      toast.error(t('outOfStock'))
-      return
-    }
-    if (result.capped) {
-      toast.warning(t('stockLimit'))
-    } else {
-      toast.success(t('addedToCart'))
-    }
+    if (!result.ok) { toast.error(t('outOfStock')); return }
+    if (result.capped) toast.warning(t('stockLimit'))
+    else toast.success(t('addedToCart'))
   }
 
   const handleAddToWishlist = async (e: React.MouseEvent) => {
@@ -86,7 +77,7 @@ export function ProductCard({ product }: Props) {
   }
 
   const defaultVariant = product.variants?.[0]
-  // Only show a crossed-out price when there is a REAL promo — never fabricate one
+  const isOutOfStock = defaultVariant?.status === 'out_of_stock'
   const oldPrice =
     product.isPromo &&
     product.promoPercent &&
@@ -98,123 +89,143 @@ export function ProductCard({ product }: Props) {
 
   return (
     <motion.div
-      whileHover={{ y: -4 }}
-      transition={{ type: 'spring', stiffness: 300, damping: 22 }}
-      className="group relative flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition-shadow duration-300 hover:border-gray-300 hover:shadow-lg"
+      whileHover={{ y: -3 }}
+      transition={{ type: 'spring', stiffness: 320, damping: 24 }}
+      className="group relative flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition-shadow duration-300 hover:border-brand-primary/20 hover:shadow-lg"
     >
-      {/* Image with Badges */}
-      <div className="relative aspect-square overflow-hidden bg-white p-2">
-        {/* Badges */}
-        <div className="absolute top-3 left-3 z-10 flex flex-col gap-2 items-start">
-          {product.isPromo && (
-            <span className="rounded-md bg-brand-accent px-2.5 py-1 text-[10px] font-bold tracking-normal text-white uppercase shadow-sm">
-              {t('promo')} {product.promoPercent ? `-${product.promoPercent}%` : ''}
-            </span>
-          )}
+      {/* ── Image zone ─────────────────────────────────────────────── */}
+      <div className="relative aspect-square overflow-hidden bg-white">
+
+        {/* Top-left badges */}
+        <div className="absolute top-2.5 left-2.5 z-10 flex flex-col gap-1.5 items-start">
           {product.isNew && (
-            <span className="rounded-md bg-sky-100 px-2.5 py-1 text-[10px] font-bold tracking-normal text-brand-primary uppercase shadow-sm">
+            <span className="rounded bg-brand-primary px-2 py-0.5 text-[9px] font-black uppercase tracking-wider text-white shadow-sm">
               {t('new')}
             </span>
           )}
+          {product.isPromo && (
+            <span className="rounded bg-brand-accent px-2 py-0.5 text-[9px] font-black uppercase tracking-wider text-brand-primary-dark shadow-sm">
+              {t('promo')}{product.promoPercent ? ` -${product.promoPercent}%` : ''}
+            </span>
+          )}
           {mounted && vehicle && (
-            <span className="flex items-center gap-1 rounded-md border border-green-400 bg-green-500 px-2.5 py-1 text-[10px] font-bold tracking-normal text-white uppercase shadow-sm">
-              <Check size={10} strokeWidth={3} /> {t('compatible')}
+            <span className="flex items-center gap-1 rounded bg-green-500 px-2 py-0.5 text-[9px] font-black uppercase tracking-wider text-white shadow-sm">
+              <Check size={8} strokeWidth={3} /> {t('compatible')}
             </span>
           )}
         </div>
 
+        {/* Top-right: Wishlist */}
+        <motion.button
+          whileTap={{ scale: 0.88 }}
+          className="absolute top-2.5 right-2.5 z-10 flex h-8 w-8 items-center justify-center rounded-full border border-gray-200 bg-white/90 text-gray-400 shadow-sm backdrop-blur transition-all duration-200 hover:border-red-200 hover:bg-white hover:text-red-400"
+          onClick={handleAddToWishlist}
+          aria-label={t('addToWishlist')}
+        >
+          <Heart size={15} />
+        </motion.button>
 
-
-         <Link href={`/produit/${product.slug}`} className="absolute inset-0 z-0">
+        {/* Clickable image */}
+        <Link href={`/produit/${product.slug}`} className="absolute inset-0 z-0">
           {product.images?.[0] ? (
             <CardImage src={product.images[0]} alt={product.name} t={t} />
           ) : (
             <div className="flex h-full w-full items-center justify-center bg-gray-50">
-              <span className="text-xs text-gray-400">{t('imageNotAvailable')}</span>
+              <span className="text-[10px] text-gray-300">{t('imageNotAvailable')}</span>
             </div>
           )}
         </Link>
       </div>
 
-      {/* Content */}
-      <div className="flex flex-1 flex-col gap-2 p-4">
-        {/* Brand & Title */}
-        <Link href={`/produit/${product.slug}`} className="flex flex-col gap-1 focus:outline-none">
-          {product.brand && (
-            <span className="text-xs font-black tracking-wider text-brand-primary uppercase">
-              {product.brand.name}
-            </span>
-          )}
-          <h3 className="line-clamp-2 min-h-10 text-sm leading-snug font-bold text-gray-800 transition-colors duration-200 group-hover:text-gray-900">
+      {/* ── Content zone ───────────────────────────────────────────── */}
+      <div className="flex flex-1 flex-col p-3.5">
+
+        {/* Brand */}
+        {product.brand && (
+          <span className="text-[10px] font-black uppercase tracking-[0.12em] text-brand-primary/70">
+            {product.brand.name}
+          </span>
+        )}
+
+        {/* Product name */}
+        <Link href={`/produit/${product.slug}`} className="mt-0.5 focus:outline-none">
+          <h3 className="line-clamp-2 min-h-[2.5rem] text-[13px] font-bold leading-snug text-gray-800 transition-colors duration-150 group-hover:text-brand-primary">
             {product.name}
           </h3>
         </Link>
 
-        {/* Rating */}
-        <div className="flex items-center gap-1">
-          <RatingStars rating={product.rating} count={product.reviewCount} />
-          {product.reviewCount > 0 && <span className="text-xs text-gray-500">({product.reviewCount})</span>}
+        {/* Stars + review count */}
+        <div className="mt-1.5 flex items-center gap-1">
+          <RatingStars rating={product.rating} count={product.reviewCount} size={13} />
+          <span className="text-[11px] text-gray-400">({product.reviewCount})</span>
         </div>
 
-        {/* Specs Preview */}
-        <div className="mt-1 flex flex-wrap items-center gap-2 text-[11px] font-medium text-gray-500">
+        {/* Spec tags: volume + viscosity */}
+        <div className="mt-2 flex flex-wrap items-center gap-1.5">
           {defaultVariant?.volume && (
-            <span className="rounded-md bg-gray-100 px-1.5 py-0.5">{defaultVariant.volume}</span>
+            <span className="rounded bg-gray-100 px-2 py-0.5 text-[10px] font-semibold text-gray-500">
+              {defaultVariant.volume}
+            </span>
           )}
           {product.specs?.viscosity && (
-            <span className="rounded-md bg-gray-100 px-1.5 py-0.5">{product.specs.viscosity}</span>
-          )}
-          {product.specs?.approvals?.[0] && (
-            <span className="max-w-[100px] truncate rounded-md bg-gray-100 px-1.5 py-0.5" title={product.specs.approvals[0]}>
-              {product.specs.approvals[0]}
+            <span className="rounded bg-gray-100 px-2 py-0.5 text-[10px] font-semibold text-gray-500">
+              {product.specs.viscosity}
             </span>
           )}
         </div>
 
-        {/* Price & Stock */}
-        <div className="mt-2 flex items-end justify-between border-t border-gray-100 pt-3">
-          <div>
-            {defaultVariant ? (
-              <PriceDisplay
-                priceHT={defaultVariant.priceHT}
-                priceTTC={defaultVariant.priceTTC}
-                isPromo={product.isPromo}
-                promoPercent={product.promoPercent}
-                oldPriceTTC={oldPrice}
-              />
-            ) : (
-              <span className="text-sm text-gray-500">{t('priceNa')}</span>
-            )}
-            
-            <div className="mt-1 flex items-center gap-1 text-[11px] font-medium">
-              {defaultVariant?.status !== 'out_of_stock' ? (
-                <span className="flex items-center gap-1 text-green-600"><Check size={12} /> {t('inStock')}</span>
-              ) : (
-                <span className="flex items-center gap-1 text-red-500"><X size={12} /> {t('outOfStock')}</span>
+        {/* Price */}
+        <div className="mt-3 border-t border-gray-100 pt-3">
+          {defaultVariant ? (
+            <div className="flex flex-wrap items-baseline gap-1.5">
+              <span className="text-base font-black text-brand-primary">
+                {formatPrice(defaultVariant.priceTTC)}
+              </span>
+              <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide">TTC</span>
+              {product.isPromo && oldPrice > 0 && (
+                <span className="text-[11px] text-gray-400 line-through">
+                  {formatPrice(oldPrice)}
+                </span>
               )}
             </div>
+          ) : (
+            <span className="text-sm text-gray-400">{t('priceNa')}</span>
+          )}
+
+          {/* Stock indicator */}
+          <div className="mt-1.5">
+            {!isOutOfStock ? (
+              <span className="flex items-center gap-1 text-[11px] font-semibold text-green-600">
+                <Check size={11} strokeWidth={3} /> {t('inStock')}
+              </span>
+            ) : (
+              <span className="flex items-center gap-1 text-[11px] font-semibold text-red-500">
+                <X size={11} /> {t('outOfStock')}
+              </span>
+            )}
           </div>
         </div>
 
-        <div className="mt-auto pt-3 flex gap-2">
-          {/* Add to Cart Button */}
+        {/* CTA row — full-width "ADD TO CART" + small cart icon */}
+        <div className="mt-3 flex gap-2">
           <motion.button
             whileTap={{ scale: 0.97 }}
             onClick={handleAddToCart}
-            disabled={defaultVariant?.status === 'out_of_stock'}
-            className="flex min-h-11 flex-1 items-center justify-center gap-2 rounded bg-brand-primary py-2.5 text-xs font-bold uppercase tracking-wider text-white transition-all duration-200 hover:bg-brand-primary-dark disabled:cursor-not-allowed disabled:opacity-50"
+            disabled={isOutOfStock}
+            className="flex min-h-[44px] flex-1 items-center justify-center rounded-lg bg-brand-primary text-[11px] font-black uppercase tracking-widest text-white transition-all duration-200 hover:bg-brand-primary-dark disabled:cursor-not-allowed disabled:opacity-50"
             aria-label={t('addToCart')}
           >
             {t('addToCart')}
           </motion.button>
-          
+
           <motion.button
             whileTap={{ scale: 0.9 }}
-            className="flex h-11 w-11 items-center justify-center rounded border border-gray-200 bg-gray-50 text-gray-400 transition-all duration-200 hover:border-gray-300 hover:text-gray-600 focus:outline-none"
-            onClick={handleAddToWishlist}
-            aria-label={t('addToWishlist')}
+            onClick={handleAddToCart}
+            disabled={isOutOfStock}
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border-2 border-brand-primary/20 bg-white text-brand-primary transition-all duration-200 hover:border-brand-primary hover:bg-brand-primary/5 disabled:cursor-not-allowed disabled:opacity-50"
+            aria-label={t('addToCart')}
           >
-            <Heart size={18} />
+            <ShoppingCart size={17} />
           </motion.button>
         </div>
       </div>
