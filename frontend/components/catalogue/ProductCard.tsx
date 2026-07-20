@@ -13,6 +13,37 @@ import { wishlistApi } from '@/lib/api/wishlist'
 import { PriceDisplay } from '../common/PriceDisplay'
 import { RatingStars } from '../common/RatingStars'
 import { toast } from 'sonner'
+import { useState } from 'react'
+
+const CardImage = ({ src, alt, t }: { src: string; alt: string; t: any }) => {
+  const [error, setError] = useState(false)
+  const [loading, setLoading] = useState(true)
+
+  if (error) {
+    return (
+      <div className="flex h-full w-full items-center justify-center bg-gray-50">
+        <span className="text-xs text-gray-400 text-center px-2">{t('imageNotAvailable')}</span>
+      </div>
+    )
+  }
+
+  return (
+    <>
+      {loading && (
+        <div className="absolute inset-0 z-0 animate-pulse bg-gray-100" />
+      )}
+      <Image
+        src={src}
+        alt={alt}
+        fill
+        sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+        className={`object-contain p-2 transition-transform duration-200 ease-out group-hover:scale-[1.03] transition-opacity ${loading ? 'opacity-0' : 'opacity-100'}`}
+        onLoad={() => setLoading(false)}
+        onError={() => { setError(true); setLoading(false) }}
+      />
+    </>
+  )
+}
 
 interface Props {
   product: Product
@@ -104,13 +135,7 @@ export function ProductCard({ product }: Props) {
 
          <Link href={`/produit/${product.slug}`} className="absolute inset-0 z-0">
           {product.images?.[0] ? (
-            <Image
-              src={product.images[0]}
-              alt={product.name}
-              fill
-              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-              className="object-contain p-2 transition-transform duration-200 ease-out group-hover:scale-[1.03]"
-            />
+            <CardImage src={product.images[0]} alt={product.name} t={t} />
           ) : (
             <div className="flex h-full w-full items-center justify-center bg-gray-50">
               <span className="text-xs text-gray-400">{t('imageNotAvailable')}</span>

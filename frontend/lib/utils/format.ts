@@ -1,10 +1,7 @@
 export function formatPrice(amount: number): string {
-  return (
-    new Intl.NumberFormat('fr-TN', {
-      minimumFractionDigits: 3,
-      maximumFractionDigits: 3,
-    }).format(amount) + ' DT'
-  )
+  const parts = amount.toFixed(3).split('.')
+  parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+  return `${parts.join('.')} DT`
 }
 
 export function formatDate(date: string): string {
