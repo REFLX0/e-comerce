@@ -7,7 +7,6 @@ import dynamic from 'next/dynamic'
 const MiniCart = dynamic(() => import('./MiniCart'), { ssr: false })
 const MobileMenu = dynamic(() => import('./MobileMenu'), { ssr: false })
 import { GlobalSearch } from './GlobalSearch'
-import { MobileSearchSheet } from './MobileSearchSheet'
 import { CategoryNav } from './CategoryNav'
 import { useAuthStore } from '@/lib/store/auth.store'
 import { useSiteLogo } from '@/lib/hooks/useSiteLogo'
@@ -69,9 +68,9 @@ export default function Header() {
             <Image
               src={siteLogo}
               alt="specpart"
-              width={130}
-              height={36}
-              className="h-8 w-auto object-contain"
+              width={220}
+              height={60}
+              className="h-12 w-auto object-contain md:h-16"
               priority
             />
           </Link>
@@ -86,7 +85,6 @@ export default function Header() {
           {/* Right icons */}
           <div className="ml-auto flex shrink-0 items-center gap-2">
             <LanguageSwitcher />
-            <MobileSearchSheet />
 
             <Link
               href={hasMounted && isAuthenticated ? (user?.role?.toUpperCase() === 'ADMIN' ? '/admin' : '/compte') : '/auth/login'}
@@ -99,6 +97,13 @@ export default function Header() {
 
             <MiniCart />
           </div>
+        </div>
+      </div>
+
+      {/* Mobile Search Bar — always visible below main row */}
+      <div className="border-b border-gray-100 bg-white lg:hidden">
+        <div className="section-padding pb-3">
+          <GlobalSearch className="max-w-none" />
         </div>
       </div>
 

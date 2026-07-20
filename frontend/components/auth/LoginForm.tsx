@@ -56,6 +56,9 @@ export default function LoginForm() {
         description: 'Bienvenue sur votre espace.',
       })
 
+      // Small delay to ensure persist middleware has saved to localStorage
+      await new Promise((r) => setTimeout(r, 50))
+
       const user = useAuthStore.getState().user
       const adminPath = `/${currentLocale}/admin`
       const accountPath = `/${currentLocale}/compte`
@@ -67,10 +70,12 @@ export default function LoginForm() {
       } else {
         window.location.href = callbackUrl
       }
-    } catch {
-      toast.error('Email ou mot de passe incorrect', {
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Email ou mot de passe incorrect'
+      toast.error(msg, {
         description: 'Vérifiez vos identifiants et réessayez.',
       })
+      console.error('[LoginForm] Login failed:', err)
     } finally {
       setIsLoading(false)
     }
@@ -131,7 +136,7 @@ export default function LoginForm() {
           <div className="flex justify-end">
             <Link
               href="/auth/mot-de-passe-oublie"
-              className="text-brand-primary hover:text-brand-accent text-sm font-medium transition-colors"
+              className="text-brand-primary hover:text-brand-primary/70 text-sm font-medium transition-colors"
             >
               {t('forgotPassword')}
             </Link>
@@ -152,7 +157,7 @@ export default function LoginForm() {
 
         <p className="mt-8 text-center text-sm text-gray-500">
           Pas encore de compte ?{' '}
-          <Link href="/auth/register" className="text-brand-primary hover:text-brand-accent font-bold transition-colors">
+          <Link href="/auth/register" className="text-brand-primary hover:text-brand-primary/70 font-bold transition-colors">
             {t('createAccount')}
           </Link>
         </p>

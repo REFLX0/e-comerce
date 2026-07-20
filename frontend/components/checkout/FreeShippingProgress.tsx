@@ -39,7 +39,7 @@ export function FreeShippingProgress({
             ) : (
               <>
                 {t.rich('freeShippingProgress', {
-                  amount: () => <span className="font-bold text-brand-accent">{formatPrice(remaining)}</span>
+                  amount: () => <span className="font-bold text-brand-primary">{formatPrice(remaining)}</span>
                 })}
               </>
             )}
@@ -51,7 +51,7 @@ export function FreeShippingProgress({
         <div
           className={cn(
             'h-full rounded-full transition-all duration-500 ease-out',
-            isFree ? 'bg-green-500' : 'bg-brand-accent'
+            isFree ? 'bg-green-500' : 'bg-brand-primary'
           )}
           style={{ width: `${percentage}%` }}
         />

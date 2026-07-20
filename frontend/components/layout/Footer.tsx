@@ -45,9 +45,9 @@ export default function Footer() {
               <Image
                 src={siteLogo}
                 alt="specpart"
-                width={140}
-                height={40}
-                className="h-9 w-auto object-contain"
+                width={220}
+                height={60}
+                className="h-14 w-auto object-contain"
               />
             </Link>
             <p className="mb-6 max-w-xs text-sm leading-relaxed text-white/40">
@@ -60,11 +60,11 @@ export default function Footer() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder={tFooter('newsletterPlaceholder')}
-                className="h-10 flex-1 border border-white/10 bg-white/5 px-3 text-sm text-white placeholder:text-white/25 focus:border-brand-accent focus:outline-none"
+                className="h-10 flex-1 border border-white/10 bg-white/5 px-3 text-sm text-white placeholder:text-white/25 focus:border-white/30 focus:outline-none"
               />
               <button
                 type="submit"
-                className="flex h-10 w-10 shrink-0 items-center justify-center bg-brand-accent text-brand-primary-dark transition-colors hover:bg-brand-accent-hover"
+                className="flex h-10 w-10 shrink-0 items-center justify-center bg-white/20 text-white transition-colors hover:bg-white/30"
                 aria-label={tFooter('subscribe')}
               >
                 <Send size={14} />
@@ -122,25 +122,25 @@ export default function Footer() {
             </h3>
             <ul className="space-y-4 text-sm">
               <li className="flex items-start gap-3">
-                <MapPin size={16} className="mt-0.5 shrink-0 text-brand-accent" />
+                <MapPin size={16} className="mt-0.5 shrink-0 text-white/30" />
                 <span className="text-white/40">Tunis, Tunisia</span>
               </li>
               <li className="flex items-center gap-3">
-                <Phone size={16} className="shrink-0 text-brand-accent" />
+                <Phone size={16} className="shrink-0 text-white/30" />
                 <a href="tel:+21629294195" className="text-white/40 hover:text-white">+216 29 294 195</a>
               </li>
               <li className="flex items-center gap-3">
-                <Mail size={16} className="shrink-0 text-brand-accent" />
+                <Mail size={16} className="shrink-0 text-white/30" />
                 <a href="mailto:specpart@hotmail.com" className="text-white/40 hover:text-white">specpart@hotmail.com</a>
               </li>
             </ul>
 
             {/* Social */}
             <div className="mt-6 flex gap-3">
-              <a href="https://www.facebook.com/specpart/" target="_blank" rel="noreferrer" aria-label="Facebook" className="flex h-9 w-9 items-center justify-center rounded border border-white/10 text-white/40 transition-all hover:border-brand-accent hover:text-brand-accent">
+              <a href="https://www.facebook.com/specpart/" target="_blank" rel="noreferrer" aria-label="Facebook" className="flex h-9 w-9 items-center justify-center rounded border border-white/10 text-white/40 transition-all hover:border-white/30 hover:text-white">
                 <Facebook size={16} />
               </a>
-              <a href="https://www.instagram.com/specpart/" target="_blank" rel="noreferrer" aria-label="Instagram" className="flex h-9 w-9 items-center justify-center rounded border border-white/10 text-white/40 transition-all hover:border-brand-accent hover:text-brand-accent">
+              <a href="https://www.instagram.com/specpart/" target="_blank" rel="noreferrer" aria-label="Instagram" className="flex h-9 w-9 items-center justify-center rounded border border-white/10 text-white/40 transition-all hover:border-white/30 hover:text-white">
                 <Instagram size={16} />
               </a>
             </div>

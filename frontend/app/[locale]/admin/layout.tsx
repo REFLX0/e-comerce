@@ -64,7 +64,7 @@ function NavItem({
           onClick={() => setOpen((p) => !p)}
           className={`group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all ${
             isActive
-              ? 'bg-brand-accent/15 text-brand-accent'
+              ? 'bg-white/10 text-white'
               : 'text-gray-400 hover:bg-white/5 hover:text-white'
           }`}
         >
@@ -90,7 +90,7 @@ function NavItem({
                   onClick={onClose}
                   className={`flex items-center gap-2 rounded-lg px-2 py-2 text-xs font-medium transition-all ${
                     childActive
-                      ? 'text-brand-accent'
+                      ? 'text-white'
                       : 'text-gray-500 hover:text-white'
                   }`}
                 >
@@ -112,7 +112,7 @@ function NavItem({
       title={collapsed ? item.label : undefined}
       className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all ${
         isActive
-          ? 'bg-brand-accent/15 text-brand-accent'
+          ? 'bg-white/10 text-white'
           : 'text-gray-400 hover:bg-white/5 hover:text-white'
       }`}
     >
@@ -121,7 +121,7 @@ function NavItem({
         <>
           <span className="flex-1">{item.label}</span>
           {item.badge && (
-            <span className="rounded-full bg-brand-accent px-1.5 py-0.5 text-[10px] font-bold text-black">
+            <span className="rounded-full bg-blue-500 px-1.5 py-0.5 text-[10px] font-bold text-white">
               {item.badge}
             </span>
           )}

@@ -103,8 +103,8 @@ export function CategoryNav() {
             >
               {hasChildren ? (
                 <button
-                  className={`flex h-12 items-center gap-1.5 whitespace-nowrap px-3 text-sm font-semibold tracking-wide text-brand-primary transition-colors duration-150 hover:text-brand-accent ${
-                    isActive ? 'text-brand-accent' : ''
+                  className={`flex h-12 items-center gap-1.5 whitespace-nowrap px-3 text-sm font-semibold tracking-wide text-brand-primary transition-colors duration-150 hover:text-brand-primary/80 ${
+                    isActive ? 'text-brand-primary' : ''
                   }`}
                 >
                   {category.name}
@@ -116,8 +116,8 @@ export function CategoryNav() {
               ) : (
                 <Link
                   href={`/catalogue?categorySlug=${category.slug}`}
-                  className={`flex h-12 items-center whitespace-nowrap px-3 text-sm font-semibold tracking-wide text-brand-primary transition-colors duration-150 hover:text-brand-accent ${
-                    isActive ? 'text-brand-accent' : ''
+                  className={`flex h-12 items-center whitespace-nowrap px-3 text-sm font-semibold tracking-wide text-brand-primary transition-colors duration-150 hover:text-brand-primary/80 ${
+                    isActive ? 'text-brand-primary' : ''
                   }`}
                 >
                   {category.name}
@@ -141,7 +141,7 @@ export function CategoryNav() {
                           onClick={() => { setActiveDropdown(null); setMoreOpen(false) }}
                           className="group flex items-center gap-2 rounded-md px-3 py-2 text-sm font-semibold text-brand-primary transition-colors hover:bg-brand-surface"
                         >
-                          <ChevronRight size={14} className="text-brand-accent" />
+                          <ChevronRight size={14} className="text-gray-400" />
                           {t('allProducts')}
                         </Link>
                         {category.children?.map((sub) => (
@@ -151,7 +151,7 @@ export function CategoryNav() {
                             onClick={() => { setActiveDropdown(null); setMoreOpen(false) }}
                             className="group flex items-center gap-2 rounded-md px-3 py-2 text-sm text-brand-primary/76 transition-colors hover:bg-brand-surface hover:text-brand-primary"
                           >
-                            <ChevronRight size={14} className="text-brand-accent/60" />
+                            <ChevronRight size={14} className="text-gray-400" />
                             {sub.name}
                           </Link>
                         ))}
@@ -180,7 +180,7 @@ export function CategoryNav() {
                                 )}
                               </div>
                               <div className="min-w-0">
-                                <span className="block truncate text-xs font-semibold text-brand-primary group-hover:text-brand-accent transition-colors">
+                                <span className="block truncate text-xs font-semibold text-brand-primary group-hover:text-brand-primary/70 transition-colors">
                                   {product.name}
                                 </span>
                                 <span className="text-[11px] font-medium text-gray-500">
@@ -209,7 +209,7 @@ export function CategoryNav() {
             aria-expanded={moreOpen}
             className={`flex h-12 items-center gap-1.5 whitespace-nowrap px-3 text-sm font-semibold tracking-wide transition-colors duration-150 ${
               moreOpen
-                ? 'text-brand-accent'
+                ? 'text-brand-primary'
                 : 'text-brand-primary/60 hover:text-brand-primary'
             }`}
           >
@@ -235,7 +235,7 @@ export function CategoryNav() {
                     onClick={() => { setActiveDropdown(null); setMoreOpen(false) }}
                     className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-brand-primary transition-colors duration-100 hover:bg-[#F5F6F8]"
                   >
-                    <span className="flex h-8 w-8 items-center justify-center rounded-md bg-brand-surface text-brand-accent">
+                    <span className="flex h-8 w-8 items-center justify-center rounded-md bg-brand-surface text-brand-primary/60">
                       {CATEGORY_ICONS[cat.slug] || <Package size={15} />}
                     </span>
                     <span className="flex-1">{cat.name}</span>

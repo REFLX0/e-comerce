@@ -108,13 +108,13 @@ export function CategoryGrid() {
                 <h3 className="text-lg font-bold uppercase tracking-wide text-white drop-shadow-lg">
                   {cat.name}
                 </h3>
-                <span className="mt-2 inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-brand-accent transition-all duration-200 group-hover:gap-2">
+                <span className="mt-2 inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-white/80 transition-all duration-200 group-hover:gap-2">
                   {t('explore')} <ArrowRight size={12} />
                 </span>
               </div>
 
               {/* Hover ring */}
-              <div className="absolute inset-0 rounded-xl ring-0 ring-brand-accent/0 transition-all duration-200 group-hover:ring-2 group-hover:ring-brand-accent/40" />
+              <div className="absolute inset-0 rounded-xl ring-0 ring-white/0 transition-all duration-200 group-hover:ring-2 group-hover:ring-white/30" />
             </Link>
           ))}
         </div>

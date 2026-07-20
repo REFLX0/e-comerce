@@ -43,7 +43,7 @@ export function HeroBanner() {
           <div className="mt-10 flex flex-col sm:flex-row items-center gap-4">
             <Link
               href="/catalogue"
-              className="group inline-flex h-12 min-w-[180px] items-center justify-center gap-2 rounded bg-brand-primary px-8 text-sm font-bold uppercase tracking-wider text-brand-accent transition-all duration-200 hover:bg-brand-primary-light hover:shadow-lg"
+              className="group inline-flex h-12 min-w-[180px] items-center justify-center gap-2 rounded bg-brand-primary px-8 text-sm font-bold uppercase tracking-wider text-white transition-all duration-200 hover:bg-brand-primary-light hover:shadow-lg"
             >
               {t('shopNow')}
               <ArrowRight size={16} className="transition-transform group-hover:translate-x-0.5" />

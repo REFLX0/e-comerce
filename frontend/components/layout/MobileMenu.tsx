@@ -70,17 +70,17 @@ export default function MobileMenu() {
             className="flex min-h-11 items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-brand-primary/76 transition-all duration-150 hover:bg-brand-surface hover:text-brand-primary"
             onClick={() => setOpen(false)}
           >
-            <Home size={17} className="text-brand-accent" />
+            <Home size={17} className="text-brand-muted" />
             {tNav('home')}
           </Link>
 
           {/* Find My Oil — hero CTA */}
           <Link
             href="/#oil-finder"
-            className="flex min-h-11 items-center gap-3 rounded-lg border border-brand-accent/25 bg-brand-accent/10 px-4 py-3 text-sm font-semibold text-brand-primary transition-all duration-150 hover:bg-brand-accent/20"
+            className="flex min-h-11 items-center gap-3 rounded-lg border border-brand-primary/10 bg-brand-surface px-4 py-3 text-sm font-semibold text-brand-primary transition-all duration-150 hover:bg-brand-surface-dark"
             onClick={() => setOpen(false)}
           >
-            <Search size={17} className="text-brand-accent" />
+            <Search size={17} className="text-brand-primary/60" />
             {tNav('findMyOil')}
           </Link>
 
@@ -100,7 +100,7 @@ export default function MobileMenu() {
                       onClick={() => toggleCategory(category.id)}
                       className="flex min-h-11 w-full items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-brand-primary/76 transition-all duration-150 hover:bg-brand-surface hover:text-brand-primary"
                     >
-                      <Tag size={17} className="shrink-0 text-brand-accent" />
+                      <Tag size={17} className="shrink-0 text-brand-muted" />
                       <span className="flex-1 text-left">{category.name}</span>
                       {isExpanded ? (
                         <ChevronUp size={14} className="shrink-0 text-brand-muted transition-transform duration-150" />
@@ -113,7 +113,7 @@ export default function MobileMenu() {
                         isExpanded ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
                       }`}
                     >
-                      <div className="ml-4 mb-1 flex flex-col gap-0.5 border-l-2 border-brand-accent/25 pl-4">
+                      <div className="ml-4 mb-1 flex flex-col gap-0.5 border-l-2 border-brand-border pl-4">
                         <Link
                           href={`/categorie/${category.slug}`}
                           className="flex min-h-11 items-center gap-2 rounded-lg px-3 py-2 text-sm text-brand-muted transition-all duration-150 hover:bg-brand-surface hover:text-brand-primary"
@@ -143,7 +143,7 @@ export default function MobileMenu() {
                     className="flex min-h-11 w-full items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-brand-primary/76 transition-all duration-150 hover:bg-brand-surface hover:text-brand-primary"
                     onClick={() => setOpen(false)}
                   >
-                    <Tag size={17} className="shrink-0 text-brand-accent" />
+                    <Tag size={17} className="shrink-0 text-brand-muted" />
                     <span className="flex-1">{category.name}</span>
                     <ChevronRight size={14} className="shrink-0 text-brand-muted" />
                   </Link>
@@ -156,7 +156,7 @@ export default function MobileMenu() {
               className="flex min-h-11 items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-brand-primary/76 transition-all duration-150 hover:bg-brand-surface hover:text-brand-primary"
               onClick={() => setOpen(false)}
             >
-              <BookOpen size={17} className="text-brand-accent" />
+              <BookOpen size={17} className="text-brand-muted" />
               {tNav('viewAllCatalog')}
             </Link>
           )}

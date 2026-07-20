@@ -81,10 +81,18 @@ export const useAuthStore = create<AuthStore>()(
       name: 'auth-storage',
       // SECURE: We partialize state to only save user data, NEVER a token!
       partialize: (state) => ({ user: state.user, isAuthenticated: state.isAuthenticated }),
+      onRehydrateStorage: () => (state, error) => {
+        if (!error) {
+          useAuthStore.setState({ isHydrated: true })
+        }
+      },
     }
   )
 )
 
 if (typeof window !== 'undefined') {
-  useAuthStore.setState({ isHydrated: true })
+  const unsubHydrate = useAuthStore.persist.onFinishHydration(() => {
+    useAuthStore.setState({ isHydrated: true })
+    unsubHydrate()
+  })
 }

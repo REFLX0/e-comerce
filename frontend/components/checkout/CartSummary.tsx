@@ -6,6 +6,7 @@ import { Trash2, Plus, Minus, ArrowRight } from 'lucide-react'
 import Image from 'next/image'
 import { Link } from '@/i18n/routing'
 import { FreeShippingProgress } from './FreeShippingProgress'
+import { CrossSellSuggestions } from '@/components/cart/CrossSellSuggestions'
 import { useTranslations } from 'next-intl'
 
 export function CartSummary() {
@@ -64,7 +65,7 @@ export function CartSummary() {
               <div className="flex flex-1 flex-col justify-between">
                 <div className="flex items-start justify-between gap-4">
                   <div>
-                    <h3 className="text-brand-primary hover:text-brand-accent font-semibold transition-colors">
+                    <h3 className="text-brand-primary hover:text-brand-primary/70 font-semibold transition-colors">
                       <Link href={`/produit/${item.product.slug}`}>{item.product.name}</Link>
                     </h3>
                     <p className="mt-1 text-sm text-gray-500">Volume : {item.variant.volume}</p>
@@ -138,9 +139,11 @@ export function CartSummary() {
 
             <FreeShippingProgress subtotal={totalTTC} className="py-2" />
 
+            <CrossSellSuggestions variant="sidebar" />
+
             <div className="flex items-center justify-between border-t border-gray-100 pt-4">
               <span className="text-brand-primary font-bold">Total</span>
-              <span className="font-display text-brand-accent text-2xl font-bold">
+              <span className="font-display text-brand-primary text-2xl font-bold">
                 {formatPrice(totalTTC)}
               </span>
             </div>

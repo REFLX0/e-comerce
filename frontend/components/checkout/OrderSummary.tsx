@@ -32,7 +32,7 @@ export function OrderSummary() {
               ) : (
                 <div className="h-full w-full bg-gray-200" />
               )}
-              <span className="bg-brand-accent absolute -top-2 -right-2 z-10 flex h-5 w-5 items-center justify-center rounded-full text-xs font-bold text-white">
+              <span className="bg-white/20 absolute -top-2 -right-2 z-10 flex h-5 w-5 items-center justify-center rounded-full text-xs font-bold text-white">
                 {item.quantity}
               </span>
             </div>
@@ -65,7 +65,7 @@ export function OrderSummary() {
       <div className="mb-8 border-t border-white/10 pt-6">
         <div className="flex items-center justify-between">
           <span className="text-lg font-bold">Total TTC</span>
-          <span className="font-display text-brand-accent text-3xl font-bold">
+          <span className="font-display text-white text-3xl font-bold">
             {formatPrice(totalTTC)}
           </span>
         </div>
@@ -77,7 +77,7 @@ export function OrderSummary() {
           id="cgv"
           checked={cgvAccepted}
           onChange={(e) => setCgvAccepted(e.target.checked)}
-          className="text-brand-accent focus:ring-brand-accent focus:ring-offset-brand-primary mt-1 h-4 w-4 rounded border-white/20 bg-white/10"
+          className="text-white focus:ring-white focus:ring-offset-brand-primary mt-1 h-4 w-4 rounded border-white/20 bg-white/10"
         />
         <label htmlFor="cgv" className="text-xs leading-snug text-white/80">
           J'ai lu et j'accepte les{' '}

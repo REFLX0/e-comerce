@@ -100,7 +100,7 @@ export function ProductCard({ product }: Props) {
     <motion.div
       whileHover={{ y: -4 }}
       transition={{ type: 'spring', stiffness: 300, damping: 22 }}
-      className="group relative flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition-shadow duration-300 hover:border-brand-accent/30 hover:shadow-lg"
+      className="group relative flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition-shadow duration-300 hover:border-gray-300 hover:shadow-lg"
     >
       {/* Image with Badges */}
       <div className="relative aspect-square overflow-hidden bg-white p-2">
@@ -126,7 +126,7 @@ export function ProductCard({ product }: Props) {
         {/* Wishlist Button */}
         <motion.button
           whileTap={{ scale: 0.9 }}
-          className="absolute top-3 right-3 z-10 flex h-10 w-10 translate-y-0 items-center justify-center rounded-full border border-gray-200 bg-white/90 text-gray-400 opacity-100 shadow-sm backdrop-blur transition-all duration-200 hover:bg-white hover:text-brand-accent hover:border-brand-accent/20 sm:-translate-y-2 sm:opacity-0 sm:group-hover:translate-y-0 sm:group-hover:opacity-100"
+          className="absolute top-3 right-3 z-10 flex h-10 w-10 translate-y-0 items-center justify-center rounded-full border border-gray-200 bg-white/90 text-gray-400 opacity-100 shadow-sm backdrop-blur transition-all duration-200 hover:bg-white hover:text-gray-600 hover:border-gray-300 sm:-translate-y-2 sm:opacity-0 sm:group-hover:translate-y-0 sm:group-hover:opacity-100"
           onClick={handleAddToWishlist}
           aria-label={t('addToWishlist')}
         >
@@ -153,7 +153,7 @@ export function ProductCard({ product }: Props) {
               {product.brand.name}
             </span>
           )}
-          <h3 className="line-clamp-2 min-h-10 text-sm leading-snug font-bold text-gray-800 transition-colors duration-200 group-hover:text-brand-accent">
+          <h3 className="line-clamp-2 min-h-10 text-sm leading-snug font-bold text-gray-800 transition-colors duration-200 group-hover:text-gray-900">
             {product.name}
           </h3>
         </Link>
@@ -210,7 +210,7 @@ export function ProductCard({ product }: Props) {
             whileTap={{ scale: 0.97 }}
             onClick={handleAddToCart}
             disabled={defaultVariant?.status === 'out_of_stock'}
-            className="flex min-h-11 flex-1 items-center justify-center gap-2 rounded bg-brand-primary py-2.5 text-xs font-bold uppercase tracking-wider text-white transition-all duration-200 hover:bg-brand-accent disabled:cursor-not-allowed disabled:opacity-50"
+            className="flex min-h-11 flex-1 items-center justify-center gap-2 rounded bg-brand-primary py-2.5 text-xs font-bold uppercase tracking-wider text-white transition-all duration-200 hover:bg-brand-primary-dark disabled:cursor-not-allowed disabled:opacity-50"
             aria-label={t('addToCart')}
           >
             {t('addToCart')}
@@ -218,7 +218,7 @@ export function ProductCard({ product }: Props) {
           
           <motion.button
             whileTap={{ scale: 0.9 }}
-            className="flex h-11 w-11 items-center justify-center rounded border border-gray-200 bg-gray-50 text-gray-400 transition-all duration-200 hover:border-brand-accent hover:text-brand-accent focus:outline-none"
+            className="flex h-11 w-11 items-center justify-center rounded border border-gray-200 bg-gray-50 text-gray-400 transition-all duration-200 hover:border-gray-300 hover:text-gray-600 focus:outline-none"
             onClick={handleAddToWishlist}
             aria-label={t('addToWishlist')}
           >

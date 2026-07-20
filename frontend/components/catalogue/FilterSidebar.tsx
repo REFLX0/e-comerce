@@ -62,7 +62,7 @@ export function FilterSidebar() {
         {activeFiltersCount > 0 && (
           <button
             onClick={clearAllFilters}
-            className="flex items-center gap-1.5 text-xs font-medium text-gray-500 hover:text-brand-accent transition-colors"
+            className="flex items-center gap-1.5 text-xs font-medium text-gray-500 hover:text-gray-700 transition-colors"
           >
             <RotateCcw size={12} />
             {t('clear')}
@@ -106,7 +106,7 @@ export function FilterSidebar() {
                   <li key={v.volume}>
                     <button
                       onClick={() => updateFilters('volume', isActive ? null : v.volume)}
-                      className={`flex w-full items-center justify-between text-sm transition-colors hover:text-brand-accent ${
+                      className={`flex w-full items-center justify-between text-sm transition-colors hover:text-gray-700 ${
                         isActive ? 'font-bold text-brand-primary' : 'text-gray-600'
                       }`}
                     >
@@ -129,7 +129,7 @@ export function FilterSidebar() {
             <li>
               <button
                 onClick={() => updateFilters('categorySlug', null)}
-                className={`flex w-full text-left text-sm transition-all hover:text-brand-accent ${
+                className={`flex w-full text-left text-sm transition-all hover:text-gray-700 ${
                   !currentCategory ? 'text-brand-primary font-bold' : 'text-gray-600'
                 }`}
               >
@@ -140,7 +140,7 @@ export function FilterSidebar() {
               <li key={cat.id}>
                 <button
                   onClick={() => updateFilters('categorySlug', cat.slug)}
-                  className={`flex w-full justify-between text-left text-sm transition-all hover:text-brand-accent ${
+                  className={`flex w-full justify-between text-left text-sm transition-all hover:text-gray-700 ${
                     currentCategory === cat.slug ? 'text-brand-primary font-bold' : 'text-gray-600'
                   }`}
                 >
@@ -283,7 +283,7 @@ export function FilterSidebar() {
                     onClick={() => updateFilters('volume', isActive ? null : vol)}
                     className={`rounded-lg border px-2 py-1.5 text-center text-[10px] font-medium transition-all duration-200 active:scale-95 ${
                       isActive
-                        ? 'bg-brand-accent border-brand-accent text-white shadow-sm'
+                        ? 'bg-brand-primary border-brand-primary text-white shadow-sm'
                         : 'hover:border-gray-400 border-gray-200 bg-gray-50 text-brand-primary hover:bg-white hover:shadow-sm'
                     }`}
                   >

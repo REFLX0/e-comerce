@@ -10,7 +10,11 @@ import Image from 'next/image'
 import { useDebounce } from '@/lib/hooks/useDebounce'
 import { useTranslations } from 'next-intl'
 
-export function GlobalSearch() {
+interface GlobalSearchProps {
+  className?: string
+}
+
+export function GlobalSearch({ className }: GlobalSearchProps) {
   const [query, setQuery] = useState('')
   const [isOpen, setIsOpen] = useState(false)
   const router = useRouter()
@@ -57,7 +61,7 @@ export function GlobalSearch() {
   }
 
   return (
-    <div ref={searchRef} className="relative z-50 hidden max-w-sm flex-1 lg:flex">
+    <div ref={searchRef} className={`relative z-50 flex-1 ${className ?? ''}`}>
       <form onSubmit={handleSearch} className="w-full relative group">
         <input
           type="text"
@@ -70,7 +74,7 @@ export function GlobalSearch() {
           placeholder={t('placeholder')}
           className="w-full rounded-lg border border-brand-border bg-brand-surface px-4 py-2.5 pr-12 text-sm text-brand-primary placeholder:text-brand-muted
                      transition-all duration-200 outline-none
-                     focus:border-brand-accent/60 focus:bg-brand-card focus:ring-2 focus:ring-brand-accent/20"
+                     focus:border-brand-primary/30 focus:bg-brand-card focus:ring-2 focus:ring-brand-primary/10"
           aria-label={t('ariaLabel')}
         />
         <div className="absolute top-1/2 right-3 -translate-y-1/2 flex items-center gap-1">
@@ -88,7 +92,7 @@ export function GlobalSearch() {
             className="flex h-8 w-8 items-center justify-center rounded-md text-brand-muted transition-colors duration-150 hover:bg-brand-primary/5 hover:text-brand-primary"
             aria-label={t('ariaLabel')}
           >
-            {isFetching ? <Loader2 size={17} className="animate-spin text-brand-accent" /> : <Search size={17} />}
+            {isFetching ? <Loader2 size={17} className="animate-spin text-brand-muted" /> : <Search size={17} />}
           </button>
         </div>
       </form>
@@ -121,7 +125,7 @@ export function GlobalSearch() {
                       )}
                     </div>
                     <div className="flex flex-col min-w-0">
-                      <span className="text-sm font-semibold text-brand-primary truncate group-hover/item:text-brand-accent transition-colors">
+                      <span className="text-sm font-semibold text-brand-primary truncate group-hover/item:text-brand-primary/70 transition-colors">
                         {product.name}
                       </span>
                       {product.brand && (
@@ -166,7 +170,7 @@ export function GlobalSearch() {
                           )}
                         </div>
                         <div className="flex flex-col min-w-0">
-                          <span className="text-sm font-semibold text-brand-primary truncate group-hover/item:text-brand-accent transition-colors">
+                          <span className="text-sm font-semibold text-brand-primary truncate group-hover/item:text-brand-primary/70 transition-colors">
                             {product.name}
                           </span>
                           {product.brand && (

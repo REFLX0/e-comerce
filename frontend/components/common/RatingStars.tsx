@@ -13,7 +13,7 @@ export function RatingStars({ rating, count, size = 16 }: Props) {
 
   return (
     <div className="flex items-center gap-1">
-      <div className="text-brand-accent flex">
+      <div className="text-amber-500 flex">
         {Array.from({ length: fullStars }).map((_, i) => (
           <Star key={`full-${i}`} size={size} fill="currentColor" />
         ))}

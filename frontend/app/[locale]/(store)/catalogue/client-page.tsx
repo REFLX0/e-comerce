@@ -155,7 +155,7 @@ export default function CataloguePage() {
           <div className="mb-6 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
             <div>
               {isSearchMode && (
-                <div className="mb-2 flex items-center gap-2 text-sm text-brand-accent">
+                <div className="mb-2 flex items-center gap-2 text-sm text-brand-muted">
                   {isVehicleSearch ? <Car size={16} /> : <Search size={16} />}
                   <span>{isVehicleSearch ? t('searchByVehicle') : t('searchBySpecs')}</span>
                 </div>
@@ -231,7 +231,7 @@ export default function CataloguePage() {
                   </p>
                   <Link
                     href={`/${locale}/#oil-finder`}
-                    className="inline-flex items-center gap-2 rounded-lg border border-brand-accent/30 bg-brand-accent/5 px-5 py-2.5 text-sm font-semibold text-brand-accent transition-colors hover:bg-brand-accent/10"
+                    className="inline-flex items-center gap-2 rounded-lg border border-brand-primary/20 bg-brand-surface px-5 py-2.5 text-sm font-semibold text-brand-primary transition-colors hover:bg-brand-surface-dark"
                   >
                     <Search size={16} />
                     {t('searchBySpecs')}

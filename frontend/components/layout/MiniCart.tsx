@@ -9,6 +9,7 @@ import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { useHasMounted } from '@/lib/hooks/useHasMounted'
 import { useTranslations } from 'next-intl'
+import { CrossSellSuggestions } from '@/components/cart/CrossSellSuggestions'
 
 export default function MiniCart() {
   const { items, itemCount, totalTTC, updateQuantity, removeItem } = useCartStore()
@@ -36,7 +37,7 @@ export default function MiniCart() {
             initial={{ scale: 0.4 }}
             animate={{ scale: 1 }}
             transition={{ type: 'spring', stiffness: 500, damping: 18 }}
-            className="absolute -top-1.5 -right-1.5 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-brand-accent px-1 text-xs font-bold text-white shadow-sm"
+            className="absolute -top-1.5 -right-1.5 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-brand-primary px-1 text-xs font-bold text-white shadow-sm"
           >
             {visibleItemCount}
           </motion.span>
@@ -130,6 +131,8 @@ export default function MiniCart() {
         </div>
 
         {visibleItems.length > 0 && (
+          <CrossSellSuggestions />
+
           <div className="mt-auto border-t border-brand-border pt-6">
             <div className="mb-4 flex items-center justify-between">
               <span className="text-gray-600">{t('totalTTC')}</span>

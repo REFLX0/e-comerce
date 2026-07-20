@@ -50,7 +50,7 @@ export function NewsletterForm() {
           placeholder={t('newsletterPlaceholder')}
           autoComplete="email"
           disabled={isLoading}
-          className="min-h-12 flex-1 rounded-lg border border-white/[0.18] bg-white/[0.10] px-4 text-brand-surface placeholder:text-brand-surface/50 transition-all duration-200 focus:border-brand-accent focus:bg-white/[0.15] focus:ring-2 focus:ring-brand-accent/30 disabled:opacity-50"
+          className="min-h-12 flex-1 rounded-lg border border-white/[0.18] bg-white/[0.10] px-4 text-brand-surface placeholder:text-brand-surface/50 transition-all duration-200 focus:border-white/40 focus:bg-white/[0.15] focus:ring-2 focus:ring-white/20 disabled:opacity-50"
           aria-label="Adresse email"
         />
         <button

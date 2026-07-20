@@ -27,7 +27,7 @@ function BestSellerCard({ product }: { product: Product }) {
   return (
     <Link
       href={`/produit/${product.slug}`}
-      className="group flex w-[280px] shrink-0 flex-col overflow-hidden rounded-xl border border-gray-100 bg-white transition-all duration-200 hover:border-brand-accent/30 hover:shadow-xl sm:w-[300px]"
+      className="group flex w-[280px] shrink-0 flex-col overflow-hidden rounded-xl border border-gray-100 bg-white transition-all duration-200 hover:border-gray-200 hover:shadow-xl sm:w-[300px]"
     >
       {/* Image — fills ~60% of card */}
       <div className="relative aspect-[4/5] overflow-hidden bg-white p-4">
@@ -49,7 +49,7 @@ function BestSellerCard({ product }: { product: Product }) {
         {/* Quick add overlay — slides in on hover */}
         <button
           onClick={handleAdd}
-          className="absolute bottom-4 right-4 flex h-11 w-11 translate-y-4 items-center justify-center rounded-full bg-brand-accent text-brand-primary-dark opacity-0 shadow-lg transition-all duration-200 group-hover:translate-y-0 group-hover:opacity-100 hover:bg-brand-accent-hover hover:shadow-xl"
+          className="absolute bottom-4 right-4 flex h-11 w-11 translate-y-4 items-center justify-center rounded-full bg-brand-primary text-white opacity-0 shadow-lg transition-all duration-200 group-hover:translate-y-0 group-hover:opacity-100 hover:bg-brand-primary-light hover:shadow-xl"
           aria-label="Quick add to cart"
         >
           <ShoppingBag size={18} />
@@ -59,7 +59,7 @@ function BestSellerCard({ product }: { product: Product }) {
       {/* Info — 40% */}
       <div className="flex flex-col gap-1.5 p-4 pt-0">
         {product.brand && (
-          <span className="text-[11px] font-bold uppercase tracking-wider text-brand-accent">
+          <span className="text-[11px] font-bold uppercase tracking-wider text-brand-muted">
             {product.brand.name}
           </span>
         )}
@@ -68,7 +68,7 @@ function BestSellerCard({ product }: { product: Product }) {
         </h3>
         <div className="flex items-baseline gap-2">
           {v && (
-            <span className="text-lg font-bold text-brand-accent">
+            <span className="text-lg font-bold text-brand-primary">
               {v.priceTTC.toFixed(2)} <span className="text-xs font-normal text-gray-400">DT</span>
             </span>
           )}
@@ -124,21 +124,21 @@ export function BestSellers() {
           <div className="flex items-center gap-3">
             <Link
               href="/catalogue?sort=popular"
-              className="inline-flex items-center gap-1 text-sm font-bold text-brand-accent transition-colors hover:text-brand-accent-hover"
+              className="inline-flex items-center gap-1 text-sm font-bold text-brand-primary/70 transition-colors hover:text-brand-primary"
             >
               {t('viewAll')} <ArrowRight size={14} />
             </Link>
             <div className="flex gap-2">
               <button
                 onClick={() => scroll('left')}
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-500 shadow-sm transition-all duration-200 hover:border-brand-accent/40 hover:text-brand-accent hover:shadow-md"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-500 shadow-sm transition-all duration-200 hover:border-gray-400 hover:text-gray-700 hover:shadow-md"
                 aria-label="Scroll left"
               >
                 <ChevronLeft size={18} />
               </button>
               <button
                 onClick={() => scroll('right')}
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-500 shadow-sm transition-all duration-200 hover:border-brand-accent/40 hover:text-brand-accent hover:shadow-md"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-500 shadow-sm transition-all duration-200 hover:border-gray-400 hover:text-gray-700 hover:shadow-md"
                 aria-label="Scroll right"
               >
                 <ChevronRight size={18} />

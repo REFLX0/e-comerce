@@ -52,13 +52,13 @@ export function MobileBottomNav() {
             >
               {/* Active pill indicator */}
               {isActive && (
-                <span className="absolute -top-1.5 left-1/2 -translate-x-1/2 h-1 w-6 rounded-full bg-brand-accent" />
+                <span className="absolute -top-1.5 left-1/2 -translate-x-1/2 h-1 w-6 rounded-full bg-brand-primary" />
               )}
 
               <div className="relative">
                 <link.icon size={22} strokeWidth={isActive ? 2.5 : 1.8} />
                 {link.badge != null && (
-                  <span className="absolute -top-2 -right-2.5 flex h-4.5 min-w-[18px] items-center justify-center rounded-full bg-brand-accent px-1 text-[10px] leading-none font-black text-brand-primary">
+                  <span className="absolute -top-2 -right-2.5 flex h-4.5 min-w-[18px] items-center justify-center rounded-full bg-brand-primary px-1 text-[10px] leading-none font-black text-white">
                     {link.badge > 9 ? '9+' : link.badge}
                   </span>
                 )}

@@ -70,7 +70,7 @@ export function ProductGallery({ images, productName, variantImageUrl }: Props) 
               onClick={() => setCurrentIndex(idx)}
               className={`relative h-20 w-20 shrink-0 overflow-hidden rounded-xl border-2 transition-all duration-300 ${
                 currentIndex === idx
-                  ? 'border-brand-accent shadow-md ring-2 ring-brand-accent/30 scale-105'
+                  ? 'border-brand-primary shadow-md ring-2 ring-brand-primary/20 scale-105'
                   : 'hover:border-brand-primary/40 border-gray-200 opacity-70 hover:opacity-100'
               }`}
             >

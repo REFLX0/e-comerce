@@ -9,7 +9,7 @@ import { PriceDisplay } from '../common/PriceDisplay'
 import { VariantSelector } from './VariantSelector'
 import { AddToCartButton } from './AddToCartButton'
 import { useVehicleStore } from '@/lib/store/vehicle.store'
-import { Check, Share2, Truck, ShieldCheck, RotateCcw } from 'lucide-react'
+import { Check, Share2 } from 'lucide-react'
 import { toast } from 'sonner'
 import { Link } from '@/i18n/routing'
 import { TrustBadges } from '../common/TrustBadges'
@@ -42,7 +42,7 @@ export function ProductInfo({ product, selectedVariant: controlledVariant, onVar
         {product.brand && (
           <Link
             href={`/marque/${product.brand.slug}`}
-            className="text-brand-accent text-sm font-semibold tracking-wider uppercase hover:underline"
+            className="text-brand-muted text-sm font-semibold tracking-wider uppercase hover:underline"
           >
             {product.brand.name}
           </Link>
@@ -73,7 +73,7 @@ export function ProductInfo({ product, selectedVariant: controlledVariant, onVar
         <RatingStars rating={product.rating} count={product.reviewCount} size={20} />
         <a
           href="#avis"
-          className="text-brand-primary hover:text-brand-accent text-sm underline-offset-4 transition-colors hover:underline"
+          className="text-brand-primary hover:text-brand-primary/70 text-sm underline-offset-4 transition-colors hover:underline"
         >
           {t('seeReviews')}
         </a>
@@ -116,11 +116,11 @@ export function ProductInfo({ product, selectedVariant: controlledVariant, onVar
           </div>
         )}
 
-      {/* Trust & Delivery Badges */}
-      <TrustBadges variant="inline" className="mb-6" />
-
       {/* Add to Cart */}
       <AddToCartButton product={product} variant={selectedVariant} />
+
+      {/* Reassurance */}
+      <TrustBadges variant="compact" className="mb-6" />
 
       {/* Quick Actions */}
       <div className="border-brand-surface-dark mt-auto flex items-center gap-6 border-t pt-6">
