@@ -118,17 +118,19 @@ export function EngineSpecFinder({ onClose, initialVehicleType }: EngineSpecFind
       className="relative mx-auto w-full max-w-4xl overflow-hidden rounded-2xl bg-white"
       style={{ border: '1px solid rgba(0,0,0,0.1)' }}
     >
-      {/* Step indicator */}
-      <div className="px-6 pt-4 md:px-8">
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-xs font-semibold uppercase tracking-wider text-brand-accent">
-            Étape {step} sur 3
-          </span>
+      {/* Step indicator — only shown in standalone mode */}
+      {!initialVehicleType && (
+        <div className="px-6 pt-4 md:px-8">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs font-semibold uppercase tracking-wider text-brand-accent">
+              Étape {step} sur 3
+            </span>
+          </div>
+          <div className="h-1 w-full rounded-full bg-gray-200 overflow-hidden">
+            <div className="h-full rounded-full bg-brand-accent transition-all duration-300" style={{ width: `${((step - 1) / 2) * 100}%` }} />
+          </div>
         </div>
-        <div className="h-1 w-full rounded-full bg-gray-200 overflow-hidden">
-          <div className="h-full rounded-full bg-brand-accent transition-all duration-300" style={{ width: `${((step - 1) / 2) * 100}%` }} />
-        </div>
-      </div>
+      )}
 
       {/* Header */}
       <div className="border-b border-gray-200 px-6 py-5 md:px-8">
@@ -238,7 +240,7 @@ export function EngineSpecFinder({ onClose, initialVehicleType }: EngineSpecFind
             >
               <div className="mb-5 flex items-center gap-3">
                 <button
-                  onClick={() => resetTo(1)}
+                  onClick={() => initialVehicleType ? (onClose?.()) : resetTo(1)}
                   className="flex h-8 w-8 items-center justify-center rounded-lg bg-gray-50 text-gray-500 ring-1 ring-gray-200 transition-colors hover:bg-brand-primary/5 hover:text-gray-900"
                 >
                   <ArrowLeft size={16} />

@@ -286,14 +286,21 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
     if (!isHydrated) return
 
     let cancelled = false
-    const checkingTimer = window.setTimeout(() => {
-      if (!cancelled) setIsCheckingServerAuth(true)
-    }, 0)
+
+    // Timeout fallback: if authApi.me() hangs for >10s, stop spinning and redirect
+    const timeoutId = window.setTimeout(() => {
+      if (!cancelled) {
+        cancelled = true
+        setIsCheckingServerAuth(false)
+        router.push(`/${locale}/auth/login?callbackUrl=/${locale}/admin`)
+      }
+    }, 10_000)
 
     authApi
       .me()
       .then((serverUser) => {
         if (cancelled) return
+        window.clearTimeout(timeoutId)
         if (serverUser?.role?.toUpperCase() === 'ADMIN') {
           setAuth(serverUser)
           setIsCheckingServerAuth(false)
@@ -302,19 +309,20 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         router.push(`/${locale}/auth/login?callbackUrl=/${locale}/admin&reason=admin`)
       })
       .catch(() => {
-        if (!cancelled) {
-          setIsCheckingServerAuth(false)
-          router.push(`/${locale}/auth/login?callbackUrl=/${locale}/admin`)
-        }
+        if (cancelled) return
+        window.clearTimeout(timeoutId)
+        setIsCheckingServerAuth(false)
+        router.push(`/${locale}/auth/login?callbackUrl=/${locale}/admin`)
       })
 
     return () => {
       cancelled = true
-      window.clearTimeout(checkingTimer)
+      window.clearTimeout(timeoutId)
     }
-  }, [isHydrated, setAuth, router, locale])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isHydrated, locale])
 
-  if (!isHydrated || isCheckingServerAuth || user?.role?.toUpperCase() !== 'ADMIN') {
+  if (!isHydrated || isCheckingServerAuth) {
     return (
       <div className="flex h-screen items-center justify-center bg-brand-primary-dark">
         <div className="h-10 w-10 animate-spin rounded-full border-4 border-brand-accent border-t-transparent" />
