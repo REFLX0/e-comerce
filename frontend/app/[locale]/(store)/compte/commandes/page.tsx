@@ -2,7 +2,6 @@
 
 import { useQuery } from '@tanstack/react-query'
 import { ordersApi } from '@/lib/api/orders'
-import { useAuthStore } from '@/lib/store/auth.store'
 import { useState } from 'react'
 import {
   Package, Clock, CheckCircle2, Truck, XCircle,

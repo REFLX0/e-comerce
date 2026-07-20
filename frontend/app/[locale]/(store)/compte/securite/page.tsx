@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from 'react'
-import { ShieldCheck, Lock, Smartphone, Monitor, LogOut, Eye, EyeOff, Save } from 'lucide-react'
+import { Lock, Smartphone, Monitor, LogOut, Eye, EyeOff, Save } from 'lucide-react'
 import { toast } from 'sonner'
 import { useTranslations } from 'next-intl'
 import { authApi } from '@/lib/api/auth'

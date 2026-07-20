@@ -2,7 +2,6 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { wishlistApi } from '@/lib/api/wishlist'
-import { useAuthStore } from '@/lib/store/auth.store'
 import { Heart, ShoppingCart, Trash2 } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'

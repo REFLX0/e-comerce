@@ -74,7 +74,7 @@ export function NotificationDropdown() {
             {unread > 0 && (
               <button
                 onClick={handleMarkAllRead}
-                className="flex items-center gap-1 text-xs font-medium text-brand-accent hover:underline"
+                className="flex items-center gap-1 text-xs font-medium text-blue-500 hover:underline"
               >
                 <CheckCheck size={14} /> Tout marquer lu
               </button>
@@ -95,7 +95,7 @@ export function NotificationDropdown() {
                 <div
                   key={n.id}
                   className={`flex items-start gap-3 border-b border-gray-50 px-4 py-3 transition-colors ${
-                    n.read ? '' : 'bg-brand-accent/5'
+                    n.read ? '' : 'bg-blue-500/5'
                   }`}
                 >
                   <div className="min-w-0 flex-1">
@@ -132,7 +132,7 @@ export function NotificationDropdown() {
                   {!n.read && (
                     <button
                       onClick={() => handleMarkRead(n.id)}
-                      className="mt-0.5 shrink-0 rounded-full bg-brand-accent/20 p-1 text-brand-accent hover:bg-brand-accent/30 transition-colors"
+                      className="mt-0.5 shrink-0 rounded-full bg-blue-500/20 p-1 text-blue-500 hover:bg-blue-500/30 transition-colors"
                       title="Marquer comme lu"
                     >
                       <CheckCheck size={12} />

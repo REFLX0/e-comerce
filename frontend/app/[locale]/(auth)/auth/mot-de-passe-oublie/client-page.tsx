@@ -66,7 +66,7 @@ export default function ForgotPasswordPage() {
             </p>
             <button
               onClick={() => setIsSuccess(false)}
-              className="text-brand-accent text-sm font-medium hover:underline"
+              className="text-brand-primary text-sm font-medium hover:underline"
             >
               Je n'ai pas reçu l'email, réessayer
             </button>

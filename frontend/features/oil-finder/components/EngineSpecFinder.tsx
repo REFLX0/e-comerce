@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Car, Bike, Truck, Tractor, Search, ArrowLeft, Fuel, Gauge, Check, ChevronRight, Zap } from 'lucide-react'
+import { Car, Bike, Truck, Tractor, Search, ArrowLeft, Fuel, Gauge, Check, ChevronRight } from 'lucide-react'
 import { useRouter, usePathname } from 'next/navigation'
 import type { FuelType } from '@/lib/types'
 import { motion, AnimatePresence } from 'framer-motion'

@@ -1,109 +1,60 @@
 "use client";
 
-import { useRef } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { productsApi } from '@/lib/api/products'
 import { Link } from '@/i18n/routing'
-import Image from 'next/image'
-import { ArrowRight, ChevronLeft, ChevronRight, ShoppingBag } from 'lucide-react'
-import type { Product } from '@/lib/types'
-import { useCartStore } from '@/lib/store/cart.store'
-import { toast } from 'sonner'
+import { ArrowRight, HelpCircle, Phone, Package2 } from 'lucide-react'
+import { ProductCard } from '@/components/catalogue/ProductCard'
 import { useTranslations } from 'next-intl'
 
-function BestSellerCard({ product }: { product: Product }) {
-  const t = useTranslations('Home')
-  const { addItem } = useCartStore()
-  const v = product.variants?.[0]
-
-  const handleAdd = (e: React.MouseEvent) => {
-    e.preventDefault()
-    if (v) {
-      addItem(product, v, 1)
-      toast.success(t('addedToCart'))
-    }
-  }
-
-  return (
-    <Link
-      href={`/produit/${product.slug}`}
-      className="group flex w-[280px] shrink-0 flex-col overflow-hidden rounded-xl border border-gray-100 bg-white transition-all duration-200 hover:border-gray-200 hover:shadow-xl sm:w-[300px]"
-    >
-      {/* Image — fills ~60% of card */}
-      <div className="relative aspect-[4/5] overflow-hidden bg-white p-4">
-        {product.images?.[0] ? (
-          <Image
-            src={product.images[0]}
-            alt={product.name}
-            fill
-            className="object-contain p-2 transition-transform duration-200 group-hover:scale-[1.03]"
-          />
-        ) : (
-          <div className="flex h-full w-full items-center justify-center">
-            <span className="text-2xl font-bold text-gray-200">
-              {product.name.charAt(0)}
-            </span>
-          </div>
-        )}
-
-        {/* Quick add overlay — slides in on hover */}
-        <button
-          onClick={handleAdd}
-          className="absolute bottom-4 right-4 flex h-11 w-11 translate-y-4 items-center justify-center rounded-full bg-brand-primary text-white opacity-0 shadow-lg transition-all duration-200 group-hover:translate-y-0 group-hover:opacity-100 hover:bg-brand-primary-light hover:shadow-xl"
-          aria-label="Quick add to cart"
-        >
-          <ShoppingBag size={18} />
-        </button>
-      </div>
-
-      {/* Info — 40% */}
-      <div className="flex flex-col gap-1.5 p-4 pt-0">
-        {product.brand && (
-          <span className="text-[11px] font-bold uppercase tracking-wider text-brand-muted">
-            {product.brand.name}
-          </span>
-        )}
-        <h3 className="line-clamp-2 text-sm font-bold leading-snug text-gray-800">
-          {product.name}
-        </h3>
-        <div className="flex items-baseline gap-2">
-          {v && (
-            <span className="text-lg font-bold text-brand-primary">
-              {v.priceTTC.toFixed(2)} <span className="text-xs font-normal text-gray-400">DT</span>
-            </span>
-          )}
-        </div>
-        {/* Stock status */}
-        <span className={`text-[11px] font-medium ${v?.status !== 'out_of_stock' ? 'text-green-600' : 'text-red-500'}`}>
-          {v?.status !== 'out_of_stock' ? '✓ En stock' : 'Rupture'}
-        </span>
-      </div>
-    </Link>
-  )
-}
+const HELP_CARDS = [
+  {
+    icon: HelpCircle,
+    title: "Pas sûr de l'huile ?",
+    desc: "Utilisez notre outil pour trouver l'huile parfaite adaptée à votre véhicule.",
+    cta: "Trouver mon huile →",
+    href: "#oil-finder",
+    accent: 'border-amber-200 hover:border-amber-400',
+    iconColor: 'text-amber-500',
+    iconBg: 'bg-amber-50',
+  },
+  {
+    icon: Phone,
+    title: "Besoin d'aide ?",
+    desc: "Notre équipe d'experts est disponible du Lundi au Samedi de 8h à 18h.",
+    cta: "Nous contacter →",
+    href: "/contact",
+    accent: 'border-blue-200 hover:border-blue-400',
+    iconColor: 'text-blue-500',
+    iconBg: 'bg-blue-50',
+  },
+  {
+    icon: Package2,
+    title: "Commandes en gros",
+    desc: "Des prix spéciaux pour les ateliers, garages et entreprises. Demandez un devis.",
+    cta: "En savoir plus →",
+    href: "/contact",
+    accent: 'border-green-200 hover:border-green-400',
+    iconColor: 'text-green-500',
+    iconBg: 'bg-green-50',
+  },
+]
 
 export function BestSellers() {
   const t = useTranslations('Home')
-  const scrollRef = useRef<HTMLDivElement>(null)
 
   const { data: products, isLoading } = useQuery({
     queryKey: ['best-sellers'],
-    queryFn: () => productsApi.getBestSellers(10),
+    queryFn: () => productsApi.getBestSellers(6),
   })
-
-  const scroll = (dir: 'left' | 'right') => {
-    if (!scrollRef.current) return
-    const amount = 300
-    scrollRef.current.scrollBy({ left: dir === 'right' ? amount : -amount, behavior: 'smooth' })
-  }
 
   if (isLoading) {
     return (
-      <section className="bg-white py-20">
+      <section className="bg-white py-16 md:py-20">
         <div className="section-padding">
-          <div className="flex gap-4 overflow-hidden">
-            {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="h-[380px] w-[280px] shrink-0 animate-pulse rounded-xl bg-slate-100" />
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <div key={i} className="aspect-[3/4] animate-pulse rounded-xl bg-slate-100" />
             ))}
           </div>
         </div>
@@ -114,47 +65,68 @@ export function BestSellers() {
   if (!products || products.length === 0) return null
 
   return (
-    <section className="bg-brand-surface py-20">
+    <section className="bg-white py-16 md:py-20">
       <div className="section-padding">
         {/* Header */}
-        <div className="mb-8 flex items-end justify-between">
-          <h2 className="text-3xl font-bold uppercase tracking-tight text-brand-primary md:text-4xl">
-            {t('bestSellers')}
-          </h2>
-          <div className="flex items-center gap-3">
-            <Link
-              href="/catalogue?sort=popular"
-              className="inline-flex items-center gap-1 text-sm font-bold text-brand-primary/70 transition-colors hover:text-brand-primary"
-            >
-              {t('viewAll')} <ArrowRight size={14} />
-            </Link>
-            <div className="flex gap-2">
-              <button
-                onClick={() => scroll('left')}
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-500 shadow-sm transition-all duration-200 hover:border-gray-400 hover:text-gray-700 hover:shadow-md"
-                aria-label="Scroll left"
-              >
-                <ChevronLeft size={18} />
-              </button>
-              <button
-                onClick={() => scroll('right')}
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-500 shadow-sm transition-all duration-200 hover:border-gray-400 hover:text-gray-700 hover:shadow-md"
-                aria-label="Scroll right"
-              >
-                <ChevronRight size={18} />
-              </button>
-            </div>
+        <div className="mb-10 flex items-end justify-between gap-4">
+          <div>
+            <p className="mb-1 text-xs font-bold uppercase tracking-[0.25em] text-brand-accent">
+              Nos meilleures ventes
+            </p>
+            <h2 className="text-3xl font-black uppercase tracking-tight text-brand-primary md:text-4xl">
+              Top Produits
+            </h2>
           </div>
+          <Link
+            href="/catalogue?sort=popular"
+            className="hidden items-center gap-1 text-sm font-bold text-brand-primary/60 transition-colors hover:text-brand-primary sm:inline-flex"
+          >
+            Voir tous les produits <ArrowRight size={14} />
+          </Link>
         </div>
 
-        {/* Horizontal scroll — 4 cards visible on desktop */}
-        <div
-          ref={scrollRef}
-          className="hide-scrollbar -mx-5 flex gap-6 overflow-x-auto px-5 pb-2 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8"
-        >
-          {products.map((product) => (
-            <BestSellerCard key={product.id} product={product} />
+        {/* 6-product grid using existing ProductCard */}
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
+          {products.slice(0, 6).map((product) => (
+            <ProductCard key={product.id} product={product} />
           ))}
+        </div>
+
+        {/* Mobile "view all" link */}
+        <div className="mt-6 flex justify-center sm:hidden">
+          <Link
+            href="/catalogue?sort=popular"
+            className="inline-flex items-center gap-1 text-sm font-bold text-brand-primary"
+          >
+            Voir tous les produits <ArrowRight size={14} />
+          </Link>
+        </div>
+
+        {/* Help cards */}
+        <div className="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-3">
+          {HELP_CARDS.map((card) => {
+            const Icon = card.icon
+            return (
+              <Link
+                key={card.title}
+                href={card.href}
+                className={`group flex items-start gap-4 rounded-2xl border-2 bg-white p-5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md ${card.accent}`}
+              >
+                <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${card.iconBg}`}>
+                  <Icon size={22} className={card.iconColor} />
+                </div>
+                <div>
+                  <h3 className="font-bold text-gray-900 group-hover:text-brand-primary transition-colors">
+                    {card.title}
+                  </h3>
+                  <p className="mt-1 text-xs leading-relaxed text-gray-500">{card.desc}</p>
+                  <span className="mt-2 inline-block text-xs font-bold text-brand-primary">
+                    {card.cta}
+                  </span>
+                </div>
+              </Link>
+            )
+          })}
         </div>
       </div>
     </section>

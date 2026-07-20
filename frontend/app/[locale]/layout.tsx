@@ -74,7 +74,7 @@ export default async function RootLayout({
           <Providers>
             <a
               href="#main-content"
-              className="bg-brand-primary ring-brand-accent sr-only z-50 rounded-lg p-4 font-bold text-white ring-2 outline-none focus:not-sr-only focus:absolute focus:top-4 focus:left-4"
+              className="bg-brand-primary ring-white sr-only z-50 rounded-lg p-4 font-bold text-white ring-2 outline-none focus:not-sr-only focus:absolute focus:top-4 focus:left-4"
             >
               {tLayout('skipToContent')}
             </a>

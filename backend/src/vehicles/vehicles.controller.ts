@@ -8,8 +8,8 @@ export class VehiclesController {
   constructor(private readonly vehiclesService: VehiclesService) {}
 
   @Get('makes')
-  getMakes() {
-    return this.vehiclesService.getMakes();
+  getMakes(@Query('vehicleType') vehicleType?: string) {
+    return this.vehiclesService.getMakes(vehicleType);
   }
 
   @Get('makes/:makeSlug/models')

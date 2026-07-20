@@ -49,7 +49,7 @@ export default function ResetPasswordClient() {
           </div>
           <h1 className="font-display text-brand-primary mb-4 text-2xl font-bold">Mot de passe réinitialisé</h1>
           <p className="text-gray-500 mb-8">Votre mot de passe a été modifié avec succès.</p>
-          <Link href="/auth/login" className="btn-primary inline-block w-full py-4 text-center text-lg font-semibold rounded-xl bg-brand-accent text-black hover:bg-brand-accent-hover transition-colors">Se connecter</Link>
+          <Link href="/auth/login" className="btn-primary inline-block w-full py-4 text-center text-lg font-semibold rounded-xl bg-brand-primary text-white hover:bg-brand-primary-light transition-colors">Se connecter</Link>
         </div>
       </div>
     )
@@ -84,7 +84,7 @@ export default function ResetPasswordClient() {
             </div>
             {errors.confirmPassword && <span className="text-xs text-red-500">{errors.confirmPassword.message}</span>}
           </div>
-          <button type="submit" disabled={isLoading} className="btn-primary flex w-full items-center justify-center gap-2 py-4 text-lg font-semibold rounded-xl bg-brand-accent text-black hover:bg-brand-accent-hover transition-colors disabled:opacity-50">
+          <button type="submit" disabled={isLoading} className="btn-primary flex w-full items-center justify-center gap-2 py-4 text-lg font-semibold rounded-xl bg-brand-primary text-white hover:bg-brand-primary-light transition-colors disabled:opacity-50">
             {isLoading ? 'Réinitialisation...' : 'Réinitialiser le mot de passe'}
           </button>
         </form>

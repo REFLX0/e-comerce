@@ -145,7 +145,7 @@ export default function AdminAnalyticsPage() {
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm lg:col-span-2">
           <div className="mb-5 flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-accent/15 text-brand-primary">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-primary/10 text-brand-primary">
               <BarChart3 size={18} />
             </div>
             <h2 className="font-bold text-brand-primary">Revenus sur 7 jours</h2>
@@ -156,7 +156,7 @@ export default function AdminAnalyticsPage() {
               <div key={day.key} className="flex min-w-0 flex-1 flex-col items-center gap-2">
                 <div className="flex h-56 w-full items-end rounded-xl bg-gray-50 px-2">
                   <div
-                    className="w-full rounded-t-lg bg-brand-accent transition-all"
+                    className="w-full rounded-t-lg bg-blue-500 transition-all"
                     style={{ height: `${day.pct}%` }}
                     title={money(day.value)}
                   />

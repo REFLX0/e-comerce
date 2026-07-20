@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { addressesApi } from '@/lib/api/addresses'
-import { useAuthStore } from '@/lib/store/auth.store'
 import { MapPin, Plus, Trash2, Home, Briefcase } from 'lucide-react'
 import { toast } from 'sonner'
 

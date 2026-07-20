@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Car, Bike, Truck, Tractor, Search, ArrowLeft, Check } from 'lucide-react'
+import { Car, Bike, Truck, Tractor, Search, ArrowLeft } from 'lucide-react'
 import { EngineSpecFinder } from './EngineSpecFinder'
 import { VehicleFinder } from './VehicleFinder'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -176,7 +176,7 @@ export function OilFinderTabs() {
                   Retour
                 </button>
               </div>
-              <VehicleFinder onClose={() => {}} />
+              <VehicleFinder onClose={() => {}} initialVehicleType={vehicleType} />
             </motion.div>
           )}
 

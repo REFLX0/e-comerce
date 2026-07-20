@@ -5,8 +5,15 @@ import { PrismaService } from '../prisma/prisma.service';
 export class VehiclesService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async getMakes() {
-    return this.prisma.vehicleMake.findMany({ orderBy: { name: 'asc' } });
+  async getMakes(vehicleType?: string) {
+    const where: any = {};
+    if (vehicleType) {
+      where.models = { some: { vehicleType } };
+    }
+    return this.prisma.vehicleMake.findMany({
+      where,
+      orderBy: { name: 'asc' },
+    });
   }
 
   async getModels(makeSlug: string) {

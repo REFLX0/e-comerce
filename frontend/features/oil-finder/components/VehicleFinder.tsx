@@ -12,6 +12,7 @@ import type { VehicleMake, VehicleModel, VehicleEngine } from '@/lib/types'
 
 interface VehicleFinderProps {
   onClose?: () => void
+  initialVehicleType?: string | null
 }
 
 const STEP_LABELS = ['Marque', 'Modèle', 'Motorisation']
@@ -89,13 +90,12 @@ const LOGO_PATHS: Record<string, string> = {
 }
 
 function BrandLogo({ make: { slug, name } }: { make: { slug: string; name: string } }) {
+  const [loaded, setLoaded] = useState(false)
   const localPath = LOGO_PATHS[slug]
 
   if (!localPath) {
     return <span className="text-xl font-bold text-gray-600">{name.charAt(0).toUpperCase()}</span>
   }
-
-  const [loaded, setLoaded] = useState(false)
 
   return (
     <>
@@ -115,7 +115,7 @@ function BrandLogo({ make: { slug, name } }: { make: { slug: string; name: strin
   )
 }
 
-export function VehicleFinder({ onClose }: VehicleFinderProps) {
+export function VehicleFinder({ onClose, initialVehicleType }: VehicleFinderProps) {
   const router = useRouter()
   const pathname = usePathname()
   const locale = pathname?.split('/')[1] === 'en' ? 'en' : 'fr'
@@ -136,11 +136,11 @@ export function VehicleFinder({ onClose }: VehicleFinderProps) {
   useEffect(() => {
     setLoading(true)
     setError('')
-    productsApi.getMakes()
+    productsApi.getMakes(initialVehicleType ?? undefined)
       .then(setMakes)
       .catch(() => setError('Impossible de charger les marques'))
       .finally(() => setLoading(false))
-  }, [])
+  }, [initialVehicleType])
 
   const filteredMakes = useMemo(
     () => makes.filter(m => m.name.toLowerCase().includes(makeSearch.toLowerCase())),

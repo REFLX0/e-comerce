@@ -1,7 +1,7 @@
 "use client"
 
 import { Link } from '@/i18n/routing'
-import { Phone, Mail, MapPin, ArrowRight, Send } from 'lucide-react'
+import { Phone, Mail, MapPin, Clock, Send } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'sonner'
 import Image from 'next/image'
@@ -20,11 +20,35 @@ const Instagram = ({ size = 20 }: { size?: number }) => (
   </svg>
 )
 
+const SHOP_LINKS = [
+  { href: '/categorie/huiles-moteur',   label: 'Huiles Moteur' },
+  { href: '/categorie/hydraulique',     label: 'Liquides Hydrauliques' },
+  { href: '/categorie/filtres',         label: 'Filtres' },
+  { href: '/categorie/additifs',        label: 'Additifs' },
+  { href: '/catalogue',                 label: 'Toutes les catégories' },
+]
+
+const SERVICE_LINKS = [
+  { href: '/a-propos',          label: 'À propos' },
+  { href: '/livraison',         label: 'Livraison & Information' },
+  { href: '/retours',           label: 'Retours & Remboursements' },
+  { href: '/cgv',               label: 'Conditions Générales' },
+  { href: '/faq',               label: 'FAQ' },
+  { href: '/contact',           label: 'Nous contacter' },
+]
+
+const ACCOUNT_LINKS = [
+  { href: '/compte/commandes',  label: 'Mes Commandes' },
+  { href: '/compte/wishlist',   label: 'Ma Wishlist' },
+  { href: '/compte',            label: 'Suivi de commande' },
+  { href: '/compte/securite',   label: 'Paramètres du compte' },
+]
+
 export default function Footer() {
   const [email, setEmail] = useState('')
   const tFooter = useTranslations('Footer')
-  const tLayout = useTranslations('Layout')
   const tHome = useTranslations('Home')
+  const tLayout = useTranslations('Layout')
   const siteLogo = useSiteLogo()
 
   const handleNewsletter = (e: React.FormEvent) => {
@@ -37,11 +61,12 @@ export default function Footer() {
   return (
     <footer className="bg-brand-primary-dark">
       <div className="section-padding pt-16 pb-10">
-        <div className="mb-14 grid grid-cols-1 gap-10 border-b border-white/8 pb-14 sm:grid-cols-2 lg:grid-cols-4">
+        {/* 5-column grid */}
+        <div className="mb-14 grid grid-cols-1 gap-10 border-b border-white/8 pb-14 sm:grid-cols-2 lg:grid-cols-5">
 
-          {/* Brand + Newsletter */}
+          {/* Col 1: Brand */}
           <div className="sm:col-span-2 lg:col-span-1">
-            <Link href="/" className="mb-5 inline-flex items-center gap-2">
+            <Link href="/" className="mb-5 inline-flex items-center">
               <Image
                 src={siteLogo}
                 alt="specpart"
@@ -53,104 +78,111 @@ export default function Footer() {
             <p className="mb-6 max-w-xs text-sm leading-relaxed text-white/40">
               {tFooter('description')}
             </p>
-            {/* Newsletter inline */}
+            {/* Newsletter */}
             <form onSubmit={handleNewsletter} className="flex gap-0">
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder={tFooter('newsletterPlaceholder')}
-                className="h-10 flex-1 border border-white/10 bg-white/5 px-3 text-sm text-white placeholder:text-white/25 focus:border-white/30 focus:outline-none"
+                className="h-10 flex-1 border border-white/10 bg-white/5 px-3 text-sm text-white placeholder:text-white/25 focus:border-brand-accent focus:outline-none"
               />
               <button
                 type="submit"
-                className="flex h-10 w-10 shrink-0 items-center justify-center bg-white/20 text-white transition-colors hover:bg-white/30"
+                className="flex h-10 w-10 shrink-0 items-center justify-center bg-brand-accent text-brand-primary-dark transition-colors hover:bg-brand-accent-hover"
                 aria-label={tFooter('subscribe')}
               >
                 <Send size={14} />
               </button>
             </form>
-          </div>
-
-          {/* Information */}
-          <div>
-            <h3 className="mb-5 text-xs font-bold uppercase tracking-[0.15em] text-white/30">
-              {tFooter('information')}
-            </h3>
-            <ul className="space-y-2.5 text-sm">
-              {[
-                { href: '/a-propos', label: tFooter('aboutUs') },
-                { href: '/cgv', label: tFooter('terms') },
-                { href: '/mentions-legales', label: tFooter('legalNotice') },
-                { href: '/faq', label: tFooter('faq') },
-                { href: '/contact', label: tFooter('contactUs') },
-              ].map(({ href, label }) => (
-                <li key={href}>
-                  <Link href={href} className="text-white/40 transition-colors hover:text-white">
-                    {label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Account */}
-          <div>
-            <h3 className="mb-5 text-xs font-bold uppercase tracking-[0.15em] text-white/30">
-              {tFooter('myAccount')}
-            </h3>
-            <ul className="space-y-2.5 text-sm">
-              {[
-                { href: '/compte', label: tFooter('dashboard') },
-                { href: '/compte/commandes', label: tFooter('myOrders') },
-                { href: '/compte/wishlist', label: tFooter('wishlist') },
-                { href: '/auth/login', label: tFooter('signIn') },
-              ].map(({ href, label }) => (
-                <li key={href}>
-                  <Link href={href} className="text-white/40 transition-colors hover:text-white">
-                    {label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Contact */}
-          <div>
-            <h3 className="mb-5 text-xs font-bold uppercase tracking-[0.15em] text-white/30">
-              {tFooter('contact')}
-            </h3>
-            <ul className="space-y-4 text-sm">
-              <li className="flex items-start gap-3">
-                <MapPin size={16} className="mt-0.5 shrink-0 text-white/30" />
-                <span className="text-white/40">Tunis, Tunisia</span>
-              </li>
-              <li className="flex items-center gap-3">
-                <Phone size={16} className="shrink-0 text-white/30" />
-                <a href="tel:+21629294195" className="text-white/40 hover:text-white">+216 29 294 195</a>
-              </li>
-              <li className="flex items-center gap-3">
-                <Mail size={16} className="shrink-0 text-white/30" />
-                <a href="mailto:specpart@hotmail.com" className="text-white/40 hover:text-white">specpart@hotmail.com</a>
-              </li>
-            </ul>
-
             {/* Social */}
-            <div className="mt-6 flex gap-3">
-              <a href="https://www.facebook.com/specpart/" target="_blank" rel="noreferrer" aria-label="Facebook" className="flex h-9 w-9 items-center justify-center rounded border border-white/10 text-white/40 transition-all hover:border-white/30 hover:text-white">
+            <div className="mt-5 flex gap-3">
+              <a href="https://www.facebook.com/specpart/" target="_blank" rel="noreferrer" aria-label="Facebook" className="flex h-9 w-9 items-center justify-center rounded border border-white/10 text-white/40 transition-all hover:border-brand-accent hover:text-brand-accent">
                 <Facebook size={16} />
               </a>
-              <a href="https://www.instagram.com/specpart/" target="_blank" rel="noreferrer" aria-label="Instagram" className="flex h-9 w-9 items-center justify-center rounded border border-white/10 text-white/40 transition-all hover:border-white/30 hover:text-white">
+              <a href="https://www.instagram.com/specpart/" target="_blank" rel="noreferrer" aria-label="Instagram" className="flex h-9 w-9 items-center justify-center rounded border border-white/10 text-white/40 transition-all hover:border-brand-accent hover:text-brand-accent">
                 <Instagram size={16} />
               </a>
             </div>
           </div>
+
+          {/* Col 2: Boutique */}
+          <div>
+            <h3 className="mb-5 text-xs font-bold uppercase tracking-[0.15em] text-white/30">Boutique</h3>
+            <ul className="space-y-2.5 text-sm">
+              {SHOP_LINKS.map(({ href, label }) => (
+                <li key={href}>
+                  <Link href={href} className="text-white/40 transition-colors hover:text-white">{label}</Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Col 3: Service Client */}
+          <div>
+            <h3 className="mb-5 text-xs font-bold uppercase tracking-[0.15em] text-white/30">Service Client</h3>
+            <ul className="space-y-2.5 text-sm">
+              {SERVICE_LINKS.map(({ href, label }) => (
+                <li key={href}>
+                  <Link href={href} className="text-white/40 transition-colors hover:text-white">{label}</Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Col 4: Mon Compte */}
+          <div>
+            <h3 className="mb-5 text-xs font-bold uppercase tracking-[0.15em] text-white/30">Mon Compte</h3>
+            <ul className="space-y-2.5 text-sm">
+              {ACCOUNT_LINKS.map(({ href, label }) => (
+                <li key={href}>
+                  <Link href={href} className="text-white/40 transition-colors hover:text-white">{label}</Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Col 5: Contact */}
+          <div>
+            <h3 className="mb-5 text-xs font-bold uppercase tracking-[0.15em] text-white/30">Contact</h3>
+            <ul className="space-y-4 text-sm">
+              <li className="flex items-start gap-3">
+                <Clock size={15} className="mt-0.5 shrink-0 text-brand-accent" />
+                <span className="text-white/40">Lun–Sam 8h–18h</span>
+              </li>
+              <li className="flex items-center gap-3">
+                <Phone size={15} className="shrink-0 text-brand-accent" />
+                <a href="tel:+21629294195" className="text-white/40 hover:text-white">+216 29 294 195</a>
+              </li>
+              <li className="flex items-center gap-3">
+                <Mail size={15} className="shrink-0 text-brand-accent" />
+                <a href="mailto:contact@specpart.tn" className="text-white/40 hover:text-white">contact@specpart.tn</a>
+              </li>
+              <li className="flex items-start gap-3">
+                <MapPin size={15} className="mt-0.5 shrink-0 text-brand-accent" />
+                <span className="text-white/40">Kalâa, Tunisie</span>
+              </li>
+            </ul>
+          </div>
         </div>
 
-        {/* Bottom */}
-        <div className="flex flex-col items-center justify-between gap-4 text-xs text-white/20 sm:flex-row">
-          <p>&copy; {new Date().getFullYear()} specpart. {tLayout('allRightsReserved')}</p>
-          <p>{tLayout('madeBy')}</p>
+        {/* Bottom bar */}
+        <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
+          <p className="text-xs text-white/20">
+            &copy; {new Date().getFullYear()} specpart. {tLayout('allRightsReserved')}
+          </p>
+
+          {/* Payment logos text badges */}
+          <div className="flex items-center gap-2">
+            {['VISA', 'MC', 'D17', 'FLOUSS'].map((label) => (
+              <span
+                key={label}
+                className="flex h-7 min-w-[42px] items-center justify-center rounded border border-white/10 bg-white/5 px-2 text-[10px] font-black tracking-wider text-white/40"
+              >
+                {label}
+              </span>
+            ))}
+          </div>
         </div>
       </div>
     </footer>

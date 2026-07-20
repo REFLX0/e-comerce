@@ -7,8 +7,62 @@ import { useAuthStore } from '@/lib/store/auth.store'
 import { useTranslations } from 'next-intl'
 import {
   LayoutDashboard, Package, Heart, MapPin, ShieldCheck,
-  Star, Bell, LifeBuoy, LogOut, User, ChevronRight, Menu, X
+  LifeBuoy, LogOut, User, ChevronRight, Menu, X
 } from 'lucide-react'
+
+function SidebarContent({
+  initials, fullName, user, pathname, handleLogout, setMobileOpen, t, NAV_ITEMS
+}: {
+  initials: string; fullName: string; user: any; pathname: string;
+  handleLogout: () => void; setMobileOpen: (v: boolean) => void; t: (k: string) => string
+  NAV_ITEMS: { href: string; icon: React.ElementType; label: string; exact?: boolean }[]
+}) {
+  return (
+    <div className="flex h-full flex-col">
+      <div className="p-5 border-b border-gray-100">
+        <div className="flex items-center gap-3">
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-brand-primary font-bold text-white">
+            {initials}
+          </div>
+          <div className="min-w-0">
+            <p className="truncate font-semibold text-brand-primary">{fullName || t('myAccount')}</p>
+            <p className="truncate text-xs text-gray-400">{user?.email}</p>
+          </div>
+        </div>
+      </div>
+      <nav className="flex-1 overflow-y-auto p-3 space-y-0.5">
+        {NAV_ITEMS.map((item) => {
+          const isActive = item.exact ? pathname === item.href : pathname.startsWith(item.href)
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              onClick={() => setMobileOpen(false)}
+              className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all ${
+                isActive
+                  ? 'bg-brand-primary/10 text-brand-primary font-semibold'
+                  : 'text-gray-500 hover:bg-gray-50 hover:text-brand-primary'
+              }`}
+            >
+              <item.icon size={18} className={isActive ? 'text-brand-primary' : 'text-gray-400'} />
+              {item.label}
+              {isActive && <ChevronRight size={14} className="ml-auto text-brand-primary" />}
+            </Link>
+          )
+        })}
+      </nav>
+      <div className="p-3 border-t border-gray-100">
+        <button
+          onClick={handleLogout}
+          className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-red-500 hover:bg-red-50 transition-colors"
+        >
+          <LogOut size={18} />
+          {t('logout')}
+        </button>
+      </div>
+    </div>
+  )
+}
 
 export default function CompteLayout({ children }: { children: React.ReactNode }) {
   const t = useTranslations('Account')
@@ -31,8 +85,6 @@ export default function CompteLayout({ children }: { children: React.ReactNode }
   const pathname = usePathname()
   const [mobileOpen, setMobileOpen] = useState(false)
 
-  useEffect(() => setMobileOpen(false), [pathname])
-
   useEffect(() => {
     if (!isHydrated) return
     if (!isAuthenticated) router.push('/auth/login')
@@ -54,56 +106,7 @@ export default function CompteLayout({ children }: { children: React.ReactNode }
     ? fullName.split(' ').map((n: string) => n[0]).join('').toUpperCase().slice(0, 2)
     : 'U'
 
-  const SidebarContent = () => (
-    <div className="flex h-full flex-col">
-      {/* User card */}
-      <div className="p-5 border-b border-gray-100">
-        <div className="flex items-center gap-3">
-          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-brand-primary font-bold text-white">
-            {initials}
-          </div>
-          <div className="min-w-0">
-            <p className="truncate font-semibold text-brand-primary">{fullName || t('myAccount')}</p>
-            <p className="truncate text-xs text-gray-400">{user?.email}</p>
-          </div>
-        </div>
-      </div>
-
-      {/* Nav */}
-      <nav className="flex-1 overflow-y-auto p-3 space-y-0.5">
-        {NAV_ITEMS.map((item) => {
-          const isActive = item.exact ? pathname === item.href : pathname.startsWith(item.href)
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              onClick={() => setMobileOpen(false)}
-              className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all ${
-                isActive
-                  ? 'bg-brand-primary/10 text-brand-primary font-semibold'
-                  : 'text-gray-500 hover:bg-gray-50 hover:text-brand-primary'
-              }`}
-            >
-              <item.icon size={18} className={isActive ? 'text-brand-primary' : 'text-gray-400'} />
-              {item.label}
-              {isActive && <ChevronRight size={14} className="ml-auto text-brand-primary" />}
-            </Link>
-          )
-        })}
-      </nav>
-
-      {/* Logout */}
-      <div className="p-3 border-t border-gray-100">
-        <button
-          onClick={handleLogout}
-          className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-red-500 hover:bg-red-50 transition-colors"
-        >
-          <LogOut size={18} />
-          {t('logout')}
-        </button>
-      </div>
-    </div>
-  )
+  const sidebarProps = { initials, fullName, user, pathname, handleLogout, setMobileOpen, t, NAV_ITEMS }
 
   return (
     <div className="min-h-screen bg-brand-surface">
@@ -136,7 +139,7 @@ export default function CompteLayout({ children }: { children: React.ReactNode }
               </button>
             </div>
             <div className="h-[calc(100%-64px)]">
-              <SidebarContent />
+              <SidebarContent {...sidebarProps} />
             </div>
           </div>
         </div>
@@ -148,7 +151,7 @@ export default function CompteLayout({ children }: { children: React.ReactNode }
           {/* Desktop Sidebar */}
           <aside className="hidden lg:block w-64 shrink-0">
             <div className="sticky top-24 rounded-2xl border border-gray-100 bg-white shadow-sm overflow-hidden">
-              <SidebarContent />
+              <SidebarContent {...sidebarProps} />
             </div>
           </aside>
 

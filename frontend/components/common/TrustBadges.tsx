@@ -1,11 +1,34 @@
-import { useTranslations } from 'next-intl'
 import { Truck, ShieldCheck, RotateCcw, CreditCard } from 'lucide-react'
 
 const BADGES = [
-  { icon: ShieldCheck, title: '100% AUTHENTIC', desc: 'Produits originaux certifiés par les marques' },
-  { icon: Truck,       title: 'FAST DELIVERY',  desc: 'Livraison 24/48h partout en Tunisie' },
-  { icon: RotateCcw,   title: 'EASY RETURNS',   desc: '14 jours pour changer d\'avis' },
-  { icon: CreditCard,  title: 'SECURE PAYMENT', desc: 'Paiement sécurisé & à la livraison' },
+  {
+    icon: ShieldCheck,
+    title: '100% Authentique',
+    desc: 'Produits originaux certifiés par les marques',
+    color: 'text-emerald-600',
+    bg: 'bg-emerald-50',
+  },
+  {
+    icon: Truck,
+    title: 'Livraison Rapide',
+    desc: '24/48h partout en Tunisie',
+    color: 'text-blue-600',
+    bg: 'bg-blue-50',
+  },
+  {
+    icon: RotateCcw,
+    title: 'Retours Faciles',
+    desc: '14 jours pour changer d\'avis',
+    color: 'text-violet-600',
+    bg: 'bg-violet-50',
+  },
+  {
+    icon: CreditCard,
+    title: 'Paiement Sécurisé',
+    desc: 'Paiement à la livraison disponible',
+    color: 'text-amber-600',
+    bg: 'bg-amber-50',
+  },
 ]
 
 interface TrustBadgesProps {
@@ -14,9 +37,7 @@ interface TrustBadgesProps {
 }
 
 export function TrustBadges({ variant = 'grid', className }: TrustBadgesProps) {
-  const t = useTranslations('Common')
-
-  // Compact variant: 3 key items in a horizontal row (used under Add to Cart)
+  // Compact variant: 3 key items horizontal (under Add to Cart)
   if (variant === 'compact') {
     const compactBadges = BADGES.slice(1)
     return (
@@ -33,24 +54,37 @@ export function TrustBadges({ variant = 'grid', className }: TrustBadgesProps) {
     )
   }
 
+  // Inline variant (used on product page)
+  if (variant === 'inline') {
+    return (
+      <div className={`${className ?? ''}`}>
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+          {BADGES.map((b) => (
+            <div key={b.title} className="flex items-center gap-3 text-sm text-gray-600">
+              <b.icon size={16} className={`shrink-0 ${b.color}`} />
+              <span className="font-medium">{b.title}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    )
+  }
+
+  // Default grid variant — homepage reassurance bar
   return (
     <div className={`${className ?? ''}`}>
       <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
         {BADGES.map((b) => (
           <div
             key={b.title}
-            className="flex flex-col items-center text-center gap-3 rounded-xl bg-white p-6 shadow-sm border border-gray-100 transition-all duration-200 hover:shadow-md hover:-translate-y-0.5"
+            className="flex flex-col items-center text-center gap-3 rounded-2xl border border-gray-100 bg-white p-6 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
           >
-            <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-brand-surface text-brand-primary/60">
-              <b.icon size={26} strokeWidth={1.5} />
+            <div className={`flex h-12 w-12 items-center justify-center rounded-xl ${b.bg}`}>
+              <b.icon size={24} strokeWidth={1.75} className={b.color} />
             </div>
             <div>
-              <span className="block text-xs font-bold uppercase tracking-wider text-gray-800">
-                {b.title}
-              </span>
-              <span className="mt-1 block text-[12px] leading-relaxed text-gray-400">
-                {b.desc}
-              </span>
+              <span className="block text-sm font-bold text-gray-900">{b.title}</span>
+              <span className="mt-1 block text-xs leading-relaxed text-gray-400">{b.desc}</span>
             </div>
           </div>
         ))}

@@ -130,7 +130,7 @@ export default function MiniCart() {
           )}
         </div>
 
-        {visibleItems.length > 0 && (
+        {visibleItems.length > 0 && (<>
           <CrossSellSuggestions />
 
           <div className="mt-auto border-t border-brand-border pt-6">
@@ -147,7 +147,7 @@ export default function MiniCart() {
               </Link>
             </div>
           </div>
-        )}
+        </>)}
       </SheetContent>
     </Sheet>
   )

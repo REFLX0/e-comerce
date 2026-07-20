@@ -34,7 +34,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         ...(product.images?.[0] ? { images: [{ url: product.images[0] }] } : {}),
       },
     }
-  } catch (error) {
+  } catch {
     const t = await getTranslations({ locale, namespace: 'Product' })
     return {
       title: `${t('notFound')} | specpart`,
@@ -48,7 +48,7 @@ export default async function ProductPage({ params }: Props) {
   try {
     const { slug } = await params
     product = await productsApi.getBySlug(slug)
-  } catch (error) {
+  } catch {
     notFound()
   }
 

@@ -45,7 +45,7 @@ export const productsApi = {
   getOilRecommendations: (params: { vehicleType: string; cylinders: number; power: number; fuelType: FuelType; make?: string }) =>
     apiGet<{ data: Product[]; total: number }>('/products/oil-recommendations', params),
 
-  getMakes: () => apiGet<VehicleMake[]>('/vehicles/makes'),
+  getMakes: (vehicleType?: string) => apiGet<VehicleMake[]>('/vehicles/makes', vehicleType ? { vehicleType } : undefined),
 
   getModels: (makeSlug: string) => apiGet<VehicleModel[]>(`/vehicles/makes/${makeSlug}/models`),
 

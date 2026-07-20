@@ -123,15 +123,7 @@ export function ProductCard({ product }: Props) {
           )}
         </div>
 
-        {/* Wishlist Button */}
-        <motion.button
-          whileTap={{ scale: 0.9 }}
-          className="absolute top-3 right-3 z-10 flex h-10 w-10 translate-y-0 items-center justify-center rounded-full border border-gray-200 bg-white/90 text-gray-400 opacity-100 shadow-sm backdrop-blur transition-all duration-200 hover:bg-white hover:text-gray-600 hover:border-gray-300 sm:-translate-y-2 sm:opacity-0 sm:group-hover:translate-y-0 sm:group-hover:opacity-100"
-          onClick={handleAddToWishlist}
-          aria-label={t('addToWishlist')}
-        >
-          <Heart size={18} />
-        </motion.button>
+
 
          <Link href={`/produit/${product.slug}`} className="absolute inset-0 z-0">
           {product.images?.[0] ? (

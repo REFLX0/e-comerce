@@ -14,7 +14,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description:
         brand.description?.substring(0, 160) || `Découvrez nos produits de la marque ${brand.name}`,
     }
-  } catch (error) {
+  } catch {
     return {
       title: 'Marque introuvable | specpart',
     }

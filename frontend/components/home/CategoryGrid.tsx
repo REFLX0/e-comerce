@@ -7,134 +7,33 @@ import { Link } from '@/i18n/routing'
 import Image from 'next/image'
 import {
   ArrowRight,
-  Droplets,
-  Car,
-  Gauge,
-  CircleDot,
-  Thermometer,
-  Disc3,
-  Bike,
-  Tractor,
-  Filter,
-  Package,
-  FlaskConical,
+  Droplets, Car, Gauge, CircleDot, Thermometer,
+  Disc3, Bike, Tractor, Filter, Package, FlaskConical,
 } from 'lucide-react'
-import { useTranslations } from 'next-intl'
 
-const CATEGORY_ICONS: Record<string, React.ReactNode> = {
-  'huiles-moteur': <Droplets size={36} />,
-  automobile: <Car size={36} />,
-  transmission: <Gauge size={36} />,
-  hydraulique: <CircleDot size={36} />,
-  graisses: <Disc3 size={36} />,
-  refroidissement: <Thermometer size={36} />,
-  frein: <CircleDot size={36} />,
-  moto: <Bike size={36} />,
-  'poids-lourd-agricole': <Tractor size={36} />,
-  filtres: <Filter size={36} />,
-  additifs: <FlaskConical size={36} />,
-}
-
-const CATEGORY_COLORS: Record<string, string> = {
-  'huiles-moteur': 'from-amber-500/20 to-amber-700/20',
-  automobile: 'from-blue-500/20 to-blue-700/20',
-  transmission: 'from-cyan-500/20 to-cyan-700/20',
-  hydraulique: 'from-sky-500/20 to-sky-700/20',
-  graisses: 'from-yellow-500/20 to-yellow-700/20',
-  refroidissement: 'from-teal-500/20 to-teal-700/20',
-  frein: 'from-red-500/20 to-red-700/20',
-  moto: 'from-orange-500/20 to-orange-700/20',
-  'poids-lourd-agricole': 'from-green-500/20 to-green-700/20',
-  filtres: 'from-purple-500/20 to-purple-700/20',
-  additifs: 'from-pink-500/20 to-pink-700/20',
-}
-
-export function CategoryGrid() {
-  const t = useTranslations('Home')
-  const { data: categories, isLoading } = useQuery({
-    queryKey: ['categories-all'],
-    queryFn: categoriesApi.getAll,
-  })
-
-  // Filter to root categories only (no parentId)
-  const roots = categories?.filter((c) => !c.parentId)?.slice(0, 4) ?? []
-
-  if (isLoading) {
-    return (
-    <section className="bg-white py-6 md:py-10 lg:py-16">
-        <div className="section-padding">
-          <div className="grid grid-cols-2 gap-4 lg:grid-cols-4 lg:gap-6">
-            {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="aspect-[3/4] animate-pulse rounded-lg bg-gray-100" />
-            ))}
-          </div>
-        </div>
-      </section>
-    )
-  }
-
-  return (
-    <section className="bg-white py-20">
-      <div className="section-padding">
-        {/* Section header */}
-        <div className="mb-10 flex items-end justify-between">
-          <h2 className="text-3xl font-bold uppercase tracking-tight text-[#111] md:text-4xl">
-            {t('shopByCategory')}
-          </h2>
-          <Link
-            href="/catalogue"
-            className="hidden items-center gap-1 text-sm font-bold text-[#E10600] transition-colors hover:text-[#b80500] sm:inline-flex"
-          >
-            {t('viewAll')} <ArrowRight size={14} />
-          </Link>
-        </div>
-
-        {/* Tiles */}
-        <div className="grid grid-cols-2 gap-4 lg:grid-cols-4 lg:gap-6">
-          {roots.map((cat) => (
-            <Link
-              key={cat.id}
-              href={`/categorie/${cat.slug}`}
-              className="group relative aspect-[3/4] overflow-hidden rounded-xl bg-gray-100 transition-all duration-200 hover:scale-[1.02] hover:shadow-xl"
-            >
-              {/* Image */}
-              <CategoryCardImage cat={cat} />
-
-              {/* Gradient overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
-
-              {/* Label */}
-              <div className="absolute bottom-0 left-0 right-0 p-5">
-                <h3 className="text-lg font-bold uppercase tracking-wide text-white drop-shadow-lg">
-                  {cat.name}
-                </h3>
-                <span className="mt-2 inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-white/80 transition-all duration-200 group-hover:gap-2">
-                  {t('explore')} <ArrowRight size={12} />
-                </span>
-              </div>
-
-              {/* Hover ring */}
-              <div className="absolute inset-0 rounded-xl ring-0 ring-white/0 transition-all duration-200 group-hover:ring-2 group-hover:ring-white/30" />
-            </Link>
-          ))}
-        </div>
-      </div>
-    </section>
-  )
+const CATEGORY_META: Record<string, { icon: React.ElementType; color: string; bg: string; desc: string }> = {
+  'huiles-moteur':        { icon: Droplets,     color: 'text-amber-600',   bg: 'bg-amber-50',   desc: 'Haute performance, toutes viscosités' },
+  'automobile':           { icon: Car,          color: 'text-blue-600',    bg: 'bg-blue-50',    desc: 'Voitures de tourisme & SUV' },
+  'transmission':         { icon: Gauge,        color: 'text-cyan-600',    bg: 'bg-cyan-50',    desc: 'Boîtes manuelles & automatiques' },
+  'hydraulique':          { icon: CircleDot,    color: 'text-sky-600',     bg: 'bg-sky-50',     desc: 'Systèmes hydrauliques industriels' },
+  'graisses':             { icon: Disc3,        color: 'text-yellow-600',  bg: 'bg-yellow-50',  desc: 'Protection maximale' },
+  'refroidissement':      { icon: Thermometer,  color: 'text-teal-600',    bg: 'bg-teal-50',    desc: 'Liquides de refroidissement' },
+  'frein':                { icon: CircleDot,    color: 'text-red-600',     bg: 'bg-red-50',     desc: 'Sécurité optimale' },
+  'moto':                 { icon: Bike,         color: 'text-orange-600',  bg: 'bg-orange-50',  desc: '2 roues & scooters' },
+  'poids-lourd-agricole': { icon: Tractor,      color: 'text-green-600',   bg: 'bg-green-50',   desc: 'Camions & engins agricoles' },
+  'filtres':              { icon: Filter,       color: 'text-purple-600',  bg: 'bg-purple-50',  desc: 'Tous types de filtration' },
+  'additifs':             { icon: FlaskConical, color: 'text-pink-600',    bg: 'bg-pink-50',    desc: 'Traitements & entretien moteur' },
 }
 
 function CategoryCardImage({ cat }: { cat: { image?: string | null; name: string; slug: string } }) {
   const [imgError, setImgError] = useState(false)
+  const meta = CATEGORY_META[cat.slug]
 
   if (!cat.image || imgError) {
+    const Icon = meta?.icon ?? Package
     return (
-      <div className={`flex h-full w-full items-center justify-center bg-gradient-to-br ${CATEGORY_COLORS[cat.slug] || 'from-gray-200 to-gray-100'}`}>
-        <div className="flex flex-col items-center gap-2">
-          <div className="text-gray-400">
-            {CATEGORY_ICONS[cat.slug] || <Package size={36} />}
-          </div>
-          <span className="text-lg font-bold uppercase text-gray-400">{cat.name.charAt(0)}</span>
-        </div>
+      <div className={`flex h-full w-full items-center justify-center ${meta?.bg ?? 'bg-gray-100'}`}>
+        <Icon size={40} className={`${meta?.color ?? 'text-gray-400'}`} strokeWidth={1.5} />
       </div>
     )
   }
@@ -144,8 +43,95 @@ function CategoryCardImage({ cat }: { cat: { image?: string | null; name: string
       src={cat.image}
       alt={cat.name}
       fill
-      className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
+      className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.06]"
       onError={() => setImgError(true)}
     />
+  )
+}
+
+export function CategoryGrid() {
+  const { data: categories, isLoading } = useQuery({
+    queryKey: ['categories-all'],
+    queryFn: categoriesApi.getAll,
+  })
+
+  // Show up to 6 root categories
+  const roots = categories?.filter((c) => !c.parentId)?.slice(0, 6) ?? []
+
+  if (isLoading) {
+    return (
+      <section className="bg-gray-50 py-16 md:py-20">
+        <div className="section-padding">
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <div key={i} className="aspect-square animate-pulse rounded-2xl bg-gray-200" />
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  return (
+    <section className="bg-gray-50 py-16 md:py-20">
+      <div className="section-padding">
+        {/* Section header */}
+        <div className="mb-12 text-center">
+          <p className="mb-2 text-xs font-bold uppercase tracking-[0.25em] text-brand-accent">
+            Notre catalogue
+          </p>
+          <h2 className="text-3xl font-black uppercase tracking-tight text-brand-primary md:text-4xl">
+            Acheter par catégorie
+          </h2>
+          <p className="mt-3 text-sm text-gray-500">
+            Trouvez exactement ce qu&apos;il vous faut
+          </p>
+        </div>
+
+        {/* 6-column grid */}
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
+          {roots.map((cat) => {
+            const meta = CATEGORY_META[cat.slug]
+            return (
+              <Link
+                key={cat.id}
+                href={`/categorie/${cat.slug}`}
+                className="group flex flex-col overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-brand-accent/30 hover:shadow-lg"
+              >
+                {/* Image / Icon area */}
+                <div className="relative aspect-square overflow-hidden">
+                  <CategoryCardImage cat={cat} />
+                  {/* Overlay on hover */}
+                  <div className="absolute inset-0 bg-brand-primary/0 transition-colors duration-200 group-hover:bg-brand-primary/10" />
+                </div>
+
+                {/* Text */}
+                <div className="p-3 text-center">
+                  <h3 className="text-xs font-bold leading-tight text-gray-800 group-hover:text-brand-accent transition-colors">
+                    {cat.name}
+                  </h3>
+                  {meta?.desc && (
+                    <p className="mt-1 text-[10px] text-gray-400 leading-tight line-clamp-2">
+                      {meta.desc}
+                    </p>
+                  )}
+                </div>
+              </Link>
+            )
+          })}
+        </div>
+
+        {/* CTA */}
+        <div className="mt-10 flex justify-center">
+          <Link
+            href="/catalogue"
+            className="inline-flex items-center gap-2 rounded-lg border-2 border-brand-primary px-8 py-3 text-sm font-bold uppercase tracking-widest text-brand-primary transition-all duration-200 hover:bg-brand-primary hover:text-white"
+          >
+            Parcourir toutes les catégories
+            <ArrowRight size={16} />
+          </Link>
+        </div>
+      </div>
+    </section>
   )
 }

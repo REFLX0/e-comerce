@@ -167,7 +167,7 @@ function Sidebar({
             className="h-8 w-auto"
           />
           {!collapsed && (
-            <span className="rounded bg-brand-accent px-1.5 py-0.5 text-[10px] font-bold text-black">
+            <span className="rounded bg-blue-500 px-1.5 py-0.5 text-[10px] font-bold text-white">
               {t('adminLabel')}
             </span>
           )}
@@ -202,7 +202,7 @@ function Sidebar({
       <div className="border-t border-white/10 p-3">
         {!collapsed ? (
           <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand-accent font-bold text-sm text-black">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/20 font-bold text-sm text-white">
               {user?.firstName?.[0] ?? 'A'}
             </div>
             <div className="min-w-0 flex-1">
@@ -325,7 +325,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   if (!isHydrated || isCheckingServerAuth) {
     return (
       <div className="flex h-screen items-center justify-center bg-brand-primary-dark">
-        <div className="h-10 w-10 animate-spin rounded-full border-4 border-brand-accent border-t-transparent" />
+        <div className="h-10 w-10 animate-spin rounded-full border-4 border-white/20 border-t-white" />
       </div>
     )
   }
@@ -394,7 +394,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
           <div className="ml-auto flex items-center gap-2">
             {/* Global search - desktop */}
             <button onClick={() => document.dispatchEvent(new CustomEvent('open-search'))} className="relative hidden md:block">
-              <div className="flex items-center gap-2 w-56 rounded-xl border border-gray-200 bg-gray-50 py-2 px-4 pl-9 text-sm text-gray-400 hover:border-brand-accent hover:bg-white transition-all cursor-pointer">
+              <div className="flex items-center gap-2 w-56 rounded-xl border border-gray-200 bg-gray-50 py-2 px-4 pl-9 text-sm text-gray-400 hover:border-gray-300 hover:bg-white transition-all cursor-pointer">
                 <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                 <span>{t('quickSearch')}</span>
                 <span className="ml-auto text-[10px] text-gray-300">⌘K</span>
@@ -405,7 +405,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
             <NotificationDropdown />
 
             {/* Avatar */}
-            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-accent font-bold text-sm text-black">
+            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-white/20 font-bold text-sm text-white">
               {user?.firstName?.[0] ?? 'A'}
             </div>
           </div>

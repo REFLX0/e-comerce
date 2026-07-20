@@ -15,7 +15,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         category.description?.substring(0, 160) ||
         `Découvrez nos produits dans la catégorie ${category.name}`,
     }
-  } catch (error) {
+  } catch {
     return {
       title: 'Catégorie introuvable | specpart',
     }

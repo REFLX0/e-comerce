@@ -322,7 +322,7 @@ export default function RegisterPage() {
           Déjà un compte ?{' '}
           <Link
             href="/auth/login"
-            className="text-brand-primary hover:text-brand-accent font-bold transition-colors"
+            className="text-brand-primary hover:text-brand-primary/70 font-bold transition-colors"
           >
             Se connecter
           </Link>

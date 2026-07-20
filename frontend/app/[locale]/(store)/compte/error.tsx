@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import Link from 'next/link'
 import { AlertCircle, RefreshCw, User } from 'lucide-react'
 
@@ -8,15 +8,11 @@ export default function CompteError({
   error,
   reset,
 }: {
-  error: Error & { digest?: string }
+  error: Error & { digest?: string; requestId?: string }
   reset: () => void
 }) {
-  const [requestId, setRequestId] = useState<string | null>(null)
-
   useEffect(() => {
-    const reqId = (error as any)?.requestId || null
-    if (reqId) setRequestId(reqId)
-    console.error('[Compte Error Boundary]', error, { requestId: reqId })
+    console.error('[Compte Error Boundary]', error, { requestId: error?.requestId || null })
   }, [error])
 
   return (
@@ -30,9 +26,9 @@ export default function CompteError({
         </h1>
         <p className="mb-8 text-sm text-gray-500">
           Votre espace client a rencontré un problème inattendu.
-          {(error.digest || requestId) && (
+          {(error.digest || error.requestId) && (
             <span className="mt-2 block font-mono text-xs text-gray-400">
-              Réf: {error.digest} {requestId ? ` / Req: ${requestId.slice(0,8)}` : ''}
+              Réf: {error.digest} {error.requestId ? ` / Req: ${error.requestId.slice(0,8)}` : ''}
             </span>
           )}
         </p>

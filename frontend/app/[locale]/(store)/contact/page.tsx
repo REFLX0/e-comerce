@@ -1,7 +1,6 @@
 "use client";
 
 import { Breadcrumb } from '@/components/common/Breadcrumb'
-import { Button } from '@/components/ui/button'
 import { apiPost } from '@/lib/api/client'
 import { Phone, Mail, MapPin, Clock, Send } from 'lucide-react'
 import { useState } from 'react'
@@ -41,7 +40,7 @@ export default function ContactPage() {
       await apiPost('/contact', data)
       toast.success(t('success'))
       reset()
-    } catch (error) {
+    } catch {
       toast.error(t('error'))
     } finally {
       setIsSubmitting(false)
