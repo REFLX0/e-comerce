@@ -117,6 +117,35 @@ const nextConfig: NextConfig = {
   // ── Rewrites (Proxy backend API calls to nginx) ──────────────────────────
   async rewrites() {
     return [
+      // Backend auth endpoints that should NOT go to NextAuth
+      {
+        source: '/api/auth/login',
+        destination: `${process.env.API_PROXY_ORIGIN || 'http://localhost:8082'}/api/auth/login`,
+      },
+      {
+        source: '/api/auth/register',
+        destination: `${process.env.API_PROXY_ORIGIN || 'http://localhost:8082'}/api/auth/register`,
+      },
+      {
+        source: '/api/auth/logout',
+        destination: `${process.env.API_PROXY_ORIGIN || 'http://localhost:8082'}/api/auth/logout`,
+      },
+      {
+        source: '/api/auth/refresh',
+        destination: `${process.env.API_PROXY_ORIGIN || 'http://localhost:8082'}/api/auth/refresh`,
+      },
+      {
+        source: '/api/auth/forgot-password',
+        destination: `${process.env.API_PROXY_ORIGIN || 'http://localhost:8082'}/api/auth/forgot-password`,
+      },
+      {
+        source: '/api/auth/reset-password',
+        destination: `${process.env.API_PROXY_ORIGIN || 'http://localhost:8082'}/api/auth/reset-password`,
+      },
+      {
+        source: '/api/auth/newsletter',
+        destination: `${process.env.API_PROXY_ORIGIN || 'http://localhost:8082'}/api/auth/newsletter`,
+      },
       // NextAuth routes (handled by app/api/auth/[...nextauth]/route.ts)
       // Must come BEFORE the catch-all /api/ rewrite to prevent proxy loop.
       {
