@@ -5,7 +5,7 @@ import { useMutation, useQuery } from '@tanstack/react-query'
 import { adminApi } from '@/lib/api/admin'
 import { useRouter, usePathname } from 'next/navigation'
 import { toast } from 'sonner'
-import { Save, ArrowLeft, Upload, X, Plus, Trash2, Image as ImageIcon } from 'lucide-react'
+import { Save, ArrowLeft, Upload, X, Plus, Trash2, Image as ImageIcon, Info } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
 
@@ -229,7 +229,10 @@ export default function NewProductPage() {
                   <span className="text-xs font-semibold text-gray-500 uppercase">Conditionnement</span>
                   <span className="text-xs font-semibold text-gray-500 uppercase">Prix (TND)</span>
                   <span className="text-xs font-semibold text-gray-500 uppercase">Stock initial</span>
-                  <span className="text-xs font-semibold text-gray-500 uppercase">Photo</span>
+                  <span className="text-xs font-semibold text-gray-500 uppercase flex items-center gap-1" title="Photo optionnelle propre à ce conditionnement. Remplace l'image principale sur la page produit quand cette variante est sélectionnée.">
+                    Photo
+                    <Info size={11} className="text-gray-300" />
+                  </span>
                   <span className="w-8"></span>
                 </div>
                 {variants.map((v, idx) => (
