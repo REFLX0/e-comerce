@@ -21,7 +21,7 @@ export function OilFinderTabs() {
   const [vehicleType, setVehicleType] = useState<VehicleType | null>(null)
   const [searchMode, setSearchMode] = useState<SearchMode | null>(null)
 
-  const progress = ((step - 1) / 2) * 100
+  const progress = (step / 3) * 100
 
   const handleSelectType = (type: VehicleType) => {
     setVehicleType(type)

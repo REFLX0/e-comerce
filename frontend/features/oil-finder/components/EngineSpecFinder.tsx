@@ -127,7 +127,7 @@ export function EngineSpecFinder({ onClose, initialVehicleType }: EngineSpecFind
             </span>
           </div>
           <div className="h-1 w-full rounded-full bg-gray-200 overflow-hidden">
-            <div className="h-full rounded-full bg-brand-accent transition-all duration-300" style={{ width: `${((step - 1) / 2) * 100}%` }} />
+            <div className="h-full rounded-full bg-brand-accent transition-all duration-300" style={{ width: `${(step / 3) * 100}%` }} />
           </div>
         </div>
       )}

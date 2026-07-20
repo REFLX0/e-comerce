@@ -230,8 +230,8 @@ export default function NewProductPage() {
                   <span className="text-xs font-semibold text-gray-500 uppercase">Prix (TND)</span>
                   <span className="text-xs font-semibold text-gray-500 uppercase">Stock initial</span>
                   <span className="text-xs font-semibold text-gray-500 uppercase flex items-center gap-1" title="Photo optionnelle propre à ce conditionnement. Remplace l'image principale sur la page produit quand cette variante est sélectionnée.">
-                    Photo
-                    <Info size={11} className="text-gray-300" />
+                    Photo (Optionnelle)
+                    <Info size={11} className="text-brand-accent" />
                   </span>
                   <span className="w-8"></span>
                 </div>
@@ -260,6 +260,9 @@ export default function NewProductPage() {
                 <button type="button" onClick={addVariant} className="flex items-center gap-2 mt-2 text-sm font-medium text-brand-primary hover:text-brand-accent transition-colors">
                   <Plus size={16} /> Ajouter un conditionnement
                 </button>
+                <p className="mt-3 text-xs text-gray-500">
+                  <span className="font-semibold text-brand-primary">Astuce :</span> Vous pouvez uploader une photo spécifique pour chaque conditionnement (ex: bidon 1L vs 5L). Si vous n'en mettez pas, l'image principale du produit sera utilisée.
+                </p>
               </div>
             ) : (
               <div className="grid grid-cols-2 gap-4">

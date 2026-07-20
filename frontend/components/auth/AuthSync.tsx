@@ -11,8 +11,6 @@ export function AuthSync() {
   useEffect(() => {
     if (status === 'authenticated' && session?.user) {
       setAuth(session.user as any)
-    } else if (status === 'unauthenticated') {
-      useAuthStore.setState({ user: null, isAuthenticated: false })
     }
   }, [session, status, setAuth])
 
