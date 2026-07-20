@@ -87,7 +87,7 @@ export default function AdminDashboard() {
       trend: trendStr(trends.revenue),
       isPositive: trends.revenue >= 0,
       bg: 'bg-gradient-to-br from-brand-primary to-blue-900',
-      iconBg: 'bg-brand-accent/20',
+      iconBg: 'bg-blue-500/20',
       textColor: 'text-white',
       subColor: 'text-white/60',
     },
@@ -109,7 +109,7 @@ export default function AdminDashboard() {
       trend: '+0%',
       isPositive: true,
       bg: 'bg-white',
-      iconBg: 'bg-brand-accent/10',
+      iconBg: 'bg-blue-500/10',
       textColor: 'text-brand-primary',
       subColor: 'text-gray-400',
     },
@@ -179,7 +179,7 @@ export default function AdminDashboard() {
               </div>
               <h2 className="font-bold text-brand-primary">Commandes récentes</h2>
             </div>
-            <Link href={localizedHref('/admin/orders')} className="flex items-center gap-1 text-sm font-semibold text-brand-accent hover:underline">
+            <Link href={localizedHref('/admin/orders')} className="flex items-center gap-1 text-sm font-semibold text-brand-primary/60 hover:text-brand-primary">
               Voir tout <ArrowRight size={15} />
             </Link>
           </div>
@@ -269,7 +269,7 @@ export default function AdminDashboard() {
                   <span className="text-sm font-medium text-gray-700 group-hover:text-brand-primary transition-colors">
                     {action.label}
                   </span>
-                  <ArrowRight size={14} className="ml-auto text-gray-300 group-hover:text-brand-accent transition-colors" />
+                  <ArrowRight size={14} className="ml-auto text-gray-300 group-hover:text-gray-600 transition-colors" />
                 </Link>
               ))}
             </div>

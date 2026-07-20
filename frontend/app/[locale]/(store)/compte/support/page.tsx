@@ -113,7 +113,7 @@ export default function SupportPage() {
           )}
           <button
             onClick={() => setTab('new-return')}
-            className="flex w-full items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-gray-200 py-4 text-sm font-medium text-gray-400 hover:border-brand-accent hover:text-brand-accent transition-all"
+            className="flex w-full items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-gray-200 py-4 text-sm font-medium text-gray-400 hover:border-gray-300 hover:text-gray-600 transition-all"
           >
             <Plus size={16} /> {t('openTicket')}
           </button>
@@ -130,7 +130,7 @@ export default function SupportPage() {
             <select
               value={selectedOrder}
               onChange={(e) => setSelectedOrder(e.target.value)}
-              className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-3 text-sm outline-none focus:border-brand-accent focus:bg-white transition-all"
+              className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-3 text-sm outline-none focus:border-brand-primary focus:bg-white transition-all"
             >
               <option value="">{t('selectOrder')}</option>
               {orders.map((o: any) => (
@@ -146,7 +146,7 @@ export default function SupportPage() {
             <select
               value={selectedReason}
               onChange={(e) => setSelectedReason(e.target.value)}
-              className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-3 text-sm outline-none focus:border-brand-accent focus:bg-white transition-all"
+              className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-3 text-sm outline-none focus:border-brand-primary focus:bg-white transition-all"
             >
               <option value="">{t('selectReason')}</option>
               {RETURN_REASONS.map((r) => <option key={r} value={r}>{r}</option>)}
@@ -160,7 +160,7 @@ export default function SupportPage() {
               onChange={(e) => setMessage(e.target.value)}
               rows={4}
               placeholder={t('descriptionPlaceholder')}
-              className="w-full resize-none rounded-xl border border-gray-200 bg-gray-50 px-3 py-3 text-sm outline-none focus:border-brand-accent focus:bg-white transition-all"
+              className="w-full resize-none rounded-xl border border-gray-200 bg-gray-50 px-3 py-3 text-sm outline-none focus:border-brand-primary focus:bg-white transition-all"
             />
           </div>
 

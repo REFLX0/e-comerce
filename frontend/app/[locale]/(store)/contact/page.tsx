@@ -92,8 +92,8 @@ export default function ContactPage() {
               key={c.title}
               className="shadow-soft rounded-2xl border border-gray-100 bg-white p-6 text-center"
             >
-              <div className="bg-brand-accent/10 mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl">
-                <c.icon size={24} className="text-brand-accent" />
+              <div className="bg-brand-primary/10 mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl">
+                <c.icon size={24} className="text-brand-primary" />
               </div>
               <h3 className="font-display text-brand-primary mb-1 font-semibold">{c.title}</h3>
               <p className="text-sm font-medium text-gray-800">{c.info}</p>
@@ -120,7 +120,7 @@ export default function ContactPage() {
                   <input
                     id="contact-name"
                     {...register('name')}
-                    className={`focus:ring-brand-accent w-full rounded-xl border px-4 py-3 text-sm transition-all outline-none focus:ring-2 ${
+                    className={`focus:ring-brand-primary/30 w-full rounded-xl border px-4 py-3 text-sm transition-all outline-none focus:ring-2 ${
                       errors.name
                         ? 'border-red-500 focus:border-red-500'
                         : 'border-gray-300 focus:border-transparent'
@@ -142,7 +142,7 @@ export default function ContactPage() {
                     id="contact-email"
                     type="email"
                     {...register('email')}
-                    className={`focus:ring-brand-accent w-full rounded-xl border px-4 py-3 text-sm transition-all outline-none focus:ring-2 ${
+                    className={`focus:ring-brand-primary/30 w-full rounded-xl border px-4 py-3 text-sm transition-all outline-none focus:ring-2 ${
                       errors.email
                         ? 'border-red-500 focus:border-red-500'
                         : 'border-gray-300 focus:border-transparent'
@@ -165,7 +165,7 @@ export default function ContactPage() {
                   id="contact-phone"
                   type="tel"
                   {...register('phone')}
-                  className={`focus:ring-brand-accent w-full rounded-xl border px-4 py-3 text-sm transition-all outline-none focus:ring-2 ${
+                  className={`focus:ring-brand-primary/30 w-full rounded-xl border px-4 py-3 text-sm transition-all outline-none focus:ring-2 ${
                     errors.phone
                       ? 'border-red-500 focus:border-red-500'
                       : 'border-gray-300 focus:border-transparent'
@@ -186,7 +186,7 @@ export default function ContactPage() {
                 <input
                   id="contact-subject"
                   {...register('subject')}
-                  className={`focus:ring-brand-accent w-full rounded-xl border px-4 py-3 text-sm transition-all outline-none focus:ring-2 ${
+                  className={`focus:ring-brand-primary/30 w-full rounded-xl border px-4 py-3 text-sm transition-all outline-none focus:ring-2 ${
                     errors.subject
                       ? 'border-red-500 focus:border-red-500'
                       : 'border-gray-300 focus:border-transparent'
@@ -208,7 +208,7 @@ export default function ContactPage() {
                   id="contact-message"
                   rows={5}
                   {...register('message')}
-                  className={`focus:ring-brand-accent w-full resize-none rounded-xl border px-4 py-3 text-sm transition-all outline-none focus:ring-2 ${
+                  className={`focus:ring-brand-primary/30 w-full resize-none rounded-xl border px-4 py-3 text-sm transition-all outline-none focus:ring-2 ${
                     errors.message
                       ? 'border-red-500 focus:border-red-500'
                       : 'border-gray-300 focus:border-transparent'
@@ -234,7 +234,7 @@ export default function ContactPage() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="bg-brand-accent hover:bg-brand-accent/90 flex w-full items-center justify-center gap-2 rounded-xl py-3 font-semibold text-white transition-colors disabled:opacity-50"
+                className="bg-brand-primary hover:bg-brand-primary/90 flex w-full items-center justify-center gap-2 rounded-xl py-3 font-semibold text-white transition-colors disabled:opacity-50"
               >
                 <Send size={18} />
                 {isSubmitting ? t('sending') : t('send')}

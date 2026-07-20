@@ -22,7 +22,7 @@ export default async function Home() {
       {/* 3. Oil finder */}
       <section className="py-6 md:py-10 lg:py-16 bg-white">
         <div className="mb-10 text-center px-4">
-          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.25em] text-brand-accent">
+          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.25em] text-brand-muted">
             {t('findYourOil')}
           </p>
           <h2 className="text-3xl font-bold tracking-tight text-brand-primary md:text-4xl">

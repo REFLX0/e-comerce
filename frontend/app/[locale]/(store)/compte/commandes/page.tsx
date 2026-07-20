@@ -35,19 +35,19 @@ function OrderTimeline({ step }: { step: number }) {
           <div key={s.key} className="flex flex-1 flex-col items-center">
             <div className="flex w-full items-center">
               {i > 0 && (
-                <div className={`h-0.5 flex-1 transition-colors ${done || current ? 'bg-brand-accent' : 'bg-gray-200'}`} />
+                <div className={`h-0.5 flex-1 transition-colors ${done || current ? 'bg-brand-primary' : 'bg-gray-200'}`} />
               )}
               <div
                 className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2 transition-colors ${
-                  done ? 'border-brand-accent bg-brand-accent text-black'
-                  : current ? 'border-brand-accent bg-white text-brand-accent'
+                  done ? 'border-brand-primary bg-brand-primary text-white'
+                  : current ? 'border-brand-primary bg-white text-brand-primary'
                   : 'border-gray-200 bg-white text-gray-300'
                 }`}
               >
                 <s.icon size={14} />
               </div>
               {i < TIMELINE_STEPS.length - 1 && (
-                <div className={`h-0.5 flex-1 transition-colors ${done ? 'bg-brand-accent' : 'bg-gray-200'}`} />
+                <div className={`h-0.5 flex-1 transition-colors ${done ? 'bg-brand-primary' : 'bg-gray-200'}`} />
               )}
             </div>
             <p className={`mt-1.5 text-center text-[10px] font-medium leading-tight ${done || current ? 'text-brand-primary' : 'text-gray-400'}`}>
@@ -114,7 +114,7 @@ function OrderCard({ order }: { order: { id: string; createdAt: string; status: 
 
       {/* Actions */}
       <div className="flex flex-wrap gap-2 p-4 border-t border-gray-50">
-        <Link href={`/compte/commandes/${order.id}`} className="flex items-center gap-1.5 rounded-xl border border-brand-accent px-3 py-2 text-xs font-medium text-brand-primary hover:bg-brand-accent/10 transition-colors">
+        <Link href={`/compte/commandes/${order.id}`} className="flex items-center gap-1.5 rounded-xl border border-brand-primary/30 px-3 py-2 text-xs font-medium text-brand-primary hover:bg-brand-primary/5 transition-colors">
           <Eye size={13} /> Détails
         </Link>
         <button className="flex items-center gap-1.5 rounded-xl border border-gray-200 px-3 py-2 text-xs font-medium text-gray-600 hover:bg-gray-50 transition-colors">
@@ -129,7 +129,7 @@ function OrderCard({ order }: { order: { id: string; createdAt: string; status: 
           </button>
         )}
         {order.status === 'DELIVERED' && (
-          <button className="flex items-center gap-1.5 rounded-xl border border-brand-accent px-3 py-2 text-xs font-medium text-brand-primary hover:bg-brand-accent/10 transition-colors">
+          <button className="flex items-center gap-1.5 rounded-xl border border-brand-primary/30 px-3 py-2 text-xs font-medium text-brand-primary hover:bg-brand-primary/5 transition-colors">
             <ArrowRight size={13} /> Retour / Remboursement
           </button>
         )}
@@ -163,7 +163,7 @@ export default function MesCommandesPage() {
           <ShoppingBag size={48} className="mx-auto mb-4 text-gray-200" />
           <h3 className="font-semibold text-gray-400">Aucune commande</h3>
           <p className="mt-1 text-sm text-gray-300">Vous n'avez pas encore passé de commande.</p>
-          <Link href="/catalogue" className="mt-4 inline-flex items-center gap-1.5 rounded-xl bg-brand-accent px-4 py-2.5 text-sm font-semibold text-black hover:bg-brand-accent-hover transition-colors">
+          <Link href="/catalogue" className="mt-4 inline-flex items-center gap-1.5 rounded-xl bg-brand-primary px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-primary-light transition-colors">
             Explorer le catalogue
           </Link>
         </div>

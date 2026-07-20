@@ -44,7 +44,7 @@ export default function CompteLayout({ children }: { children: React.ReactNode }
   if (!isHydrated || !isAuthenticated) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-brand-surface">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-brand-accent border-t-transparent" />
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-brand-primary/20 border-t-brand-primary" />
       </div>
     )
   }
@@ -80,13 +80,13 @@ export default function CompteLayout({ children }: { children: React.ReactNode }
               onClick={() => setMobileOpen(false)}
               className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all ${
                 isActive
-                  ? 'bg-brand-accent/10 text-brand-primary font-semibold'
+                  ? 'bg-brand-primary/10 text-brand-primary font-semibold'
                   : 'text-gray-500 hover:bg-gray-50 hover:text-brand-primary'
               }`}
             >
-              <item.icon size={18} className={isActive ? 'text-brand-accent' : 'text-gray-400'} />
+              <item.icon size={18} className={isActive ? 'text-brand-primary' : 'text-gray-400'} />
               {item.label}
-              {isActive && <ChevronRight size={14} className="ml-auto text-brand-accent" />}
+              {isActive && <ChevronRight size={14} className="ml-auto text-brand-primary" />}
             </Link>
           )
         })}

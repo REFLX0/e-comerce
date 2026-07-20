@@ -65,8 +65,8 @@ export default function AProposPage() {
                   key={v.title}
                   className="shadow-soft rounded-2xl border border-gray-100 bg-white p-8 transition-shadow hover:shadow-lg"
                 >
-                  <div className="bg-brand-accent/10 mb-5 flex h-14 w-14 items-center justify-center rounded-xl">
-                    <Icon size={28} className="text-brand-accent" />
+                  <div className="bg-brand-primary/10 mb-5 flex h-14 w-14 items-center justify-center rounded-xl">
+                    <Icon size={28} className="text-brand-primary" />
                   </div>
                   <h3 className="font-display text-brand-primary mb-2 text-xl font-semibold">
                     {v.title}
@@ -83,7 +83,7 @@ export default function AProposPage() {
           <div className="grid grid-cols-2 gap-8 text-center md:grid-cols-4">
             {stats.map((s) => (
               <div key={s.label}>
-                <div className="text-brand-accent mb-2 text-3xl font-bold md:text-4xl">
+                <div className="text-white mb-2 text-3xl font-bold md:text-4xl">
                   {s.value}
                 </div>
                 <div className="text-sm text-white/70">{s.label}</div>

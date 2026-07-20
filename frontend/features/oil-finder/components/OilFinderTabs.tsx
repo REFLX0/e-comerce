@@ -44,7 +44,7 @@ export function OilFinderTabs() {
       {/* Progress bar */}
       <div className="mb-6">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-xs font-semibold uppercase tracking-wider text-brand-accent">
+          <span className="text-xs font-semibold uppercase tracking-wider text-brand-muted">
             Étape {step} sur 3
           </span>
           <button
@@ -56,7 +56,7 @@ export function OilFinderTabs() {
         </div>
         <div className="h-1.5 w-full rounded-full bg-gray-200 overflow-hidden">
           <motion.div
-            className="h-full rounded-full bg-brand-accent"
+            className="h-full rounded-full bg-brand-primary"
             initial={{ width: 0 }}
             animate={{ width: `${progress}%` }}
             transition={{ duration: 0.4, ease: 'easeOut' }}
@@ -88,9 +88,9 @@ export function OilFinderTabs() {
                     <button
                       key={type.id}
                       onClick={() => handleSelectType(type.id)}
-                      className="group flex flex-col items-center gap-3 rounded-xl p-5 bg-white ring-1 ring-gray-200 transition-all duration-200 hover:ring-brand-accent/40 hover:shadow-md hover:-translate-y-0.5"
+                      className="group flex flex-col items-center gap-3 rounded-xl p-5 bg-white ring-1 ring-gray-200 transition-all duration-200 hover:ring-gray-300 hover:shadow-md hover:-translate-y-0.5"
                     >
-                      <div className="flex h-14 w-14 items-center justify-center rounded-lg bg-brand-primary/5 text-brand-primary transition-colors group-hover:bg-brand-accent/10 group-hover:text-brand-accent">
+                      <div className="flex h-14 w-14 items-center justify-center rounded-lg bg-brand-primary/5 text-brand-primary transition-colors group-hover:bg-brand-primary/10 group-hover:text-brand-primary">
                         <Icon size={28} />
                       </div>
                       <div className="text-center">
@@ -137,7 +137,7 @@ export function OilFinderTabs() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <button
                   onClick={() => handleSelectMode('vehicle')}
-                  className="flex flex-col items-center gap-4 rounded-xl p-8 bg-white ring-1 ring-gray-200 transition-all duration-200 hover:ring-brand-accent/40 hover:shadow-md hover:-translate-y-0.5"
+                  className="flex flex-col items-center gap-4 rounded-xl p-8 bg-white ring-1 ring-gray-200 transition-all duration-200 hover:ring-gray-300 hover:shadow-md hover:-translate-y-0.5"
                 >
                   <Car size={40} className="text-brand-primary" />
                   <div className="text-center">
@@ -147,7 +147,7 @@ export function OilFinderTabs() {
                 </button>
                 <button
                   onClick={() => handleSelectMode('specs')}
-                  className="flex flex-col items-center gap-4 rounded-xl p-8 bg-white ring-1 ring-gray-200 transition-all duration-200 hover:ring-brand-accent/40 hover:shadow-md hover:-translate-y-0.5"
+                  className="flex flex-col items-center gap-4 rounded-xl p-8 bg-white ring-1 ring-gray-200 transition-all duration-200 hover:ring-gray-300 hover:shadow-md hover:-translate-y-0.5"
                 >
                   <Search size={40} className="text-brand-primary" />
                   <div className="text-center">

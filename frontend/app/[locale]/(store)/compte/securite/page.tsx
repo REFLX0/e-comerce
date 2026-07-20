@@ -50,7 +50,7 @@ export default function SecuritePage() {
       {/* Change password */}
       <div>
         <h2 className="mb-4 flex items-center gap-2 font-semibold text-brand-primary">
-          <Lock size={18} className="text-brand-accent" />
+          <Lock size={18} className="text-brand-muted" />
           {t('changePassword')}
         </h2>
         <form onSubmit={handleSubmit} className="max-w-sm space-y-4">
@@ -68,7 +68,7 @@ export default function SecuritePage() {
                   type={field.show ? 'text' : 'password'}
                   value={form[field.key]}
                   onChange={(e) => setForm((p) => ({ ...p, [field.key]: e.target.value }))}
-                  className="w-full rounded-xl border border-gray-200 bg-gray-50 py-3 pr-10 pl-10 text-sm outline-none focus:border-brand-accent focus:bg-white transition-all"
+                  className="w-full rounded-xl border border-gray-200 bg-gray-50 py-3 pr-10 pl-10 text-sm outline-none focus:border-brand-primary focus:bg-white transition-all"
                   required
                 />
                 <button type="button" onClick={field.toggle} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
@@ -93,7 +93,7 @@ export default function SecuritePage() {
       {/* Active sessions */}
       <div>
         <h2 className="mb-4 flex items-center gap-2 font-semibold text-brand-primary">
-          <Monitor size={18} className="text-brand-accent" />
+          <Monitor size={18} className="text-brand-muted" />
           {t('activeSessions')}
         </h2>
         <div className="space-y-3">
@@ -101,12 +101,12 @@ export default function SecuritePage() {
             <div
               key={session.id}
               className={`flex flex-col gap-3 rounded-2xl border p-4 sm:flex-row sm:items-center ${
-                session.current ? 'border-brand-accent/30 bg-brand-accent/5' : 'border-gray-100 bg-white'
+                session.current ? 'border-brand-primary/20 bg-brand-primary/5' : 'border-gray-100 bg-white'
               }`}
             >
               <div className="flex items-center gap-3 flex-1 min-w-0">
                 <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${
-                  session.current ? 'bg-brand-accent text-black' : 'bg-gray-100 text-gray-500'
+                  session.current ? 'bg-brand-primary text-white' : 'bg-gray-100 text-gray-500'
                 }`}>
                   {session.device.includes('iPhone') ? <Smartphone size={18} /> : <Monitor size={18} />}
                 </div>

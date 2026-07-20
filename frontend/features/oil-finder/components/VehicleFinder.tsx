@@ -234,12 +234,12 @@ export function VehicleFinder({ onClose }: VehicleFinderProps) {
       {/* Step indicator */}
       <div className="px-6 pt-4 md:px-8">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-xs font-semibold uppercase tracking-wider text-brand-accent">
-            Étape {step} sur 3
-          </span>
-        </div>
-        <div className="h-1 w-full rounded-full bg-gray-200 overflow-hidden">
-          <div className="h-full rounded-full bg-brand-accent transition-all duration-300" style={{ width: `${(step / 3) * 100}%` }} />
+            <span className="text-xs font-semibold uppercase tracking-wider text-brand-muted">
+              Étape {step} sur 3
+            </span>
+          </div>
+          <div className="h-1 w-full rounded-full bg-gray-200 overflow-hidden">
+            <div className="h-full rounded-full bg-brand-primary transition-all duration-300" style={{ width: `${(step / 3) * 100}%` }} />
         </div>
       </div>
 
@@ -296,7 +296,7 @@ export function VehicleFinder({ onClose }: VehicleFinderProps) {
         {/* ═══════════════ STEP 1: MAKE ═══════════════ */}
         <div className={`transition-all duration-300 ${step >= 1 ? 'opacity-100 max-h-[500px]' : 'opacity-40 max-h-[80px] overflow-hidden pointer-events-none'}`}>
           <div className="mb-3 flex items-center gap-2">
-            <div className={`flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold ${step > 1 ? 'bg-green-500 text-white' : step === 1 ? 'bg-brand-accent text-white' : 'bg-gray-200 text-gray-500'}`}>
+            <div className={`flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold ${step > 1 ? 'bg-green-500 text-white' : step === 1 ? 'bg-brand-primary text-white' : 'bg-gray-200 text-gray-500'}`}>
               {step > 1 ? <Check size={14} strokeWidth={3} /> : 1}
             </div>
             <span className="text-sm font-bold text-gray-700">Marque</span>
@@ -312,7 +312,7 @@ export function VehicleFinder({ onClose }: VehicleFinderProps) {
                   value={makeSearch}
                   onChange={e => setMakeSearch(e.target.value)}
                   placeholder="Rechercher une marque..."
-                  className="w-full rounded-xl bg-gray-50 py-3 pl-11 pr-10 text-sm text-gray-900 placeholder-neutral-600 outline-none ring-1 ring-gray-200 transition-all focus:ring-brand-accent/40"
+                  className="w-full rounded-xl bg-gray-50 py-3 pl-11 pr-10 text-sm text-gray-900 placeholder-neutral-600 outline-none ring-1 ring-gray-200 transition-all focus:ring-brand-primary/30"
                 />
                 {makeSearch && (
                   <button
@@ -370,7 +370,7 @@ export function VehicleFinder({ onClose }: VehicleFinderProps) {
         {/* ═══════════════ STEP 2: MODEL ═══════════════ */}
         <div className={`transition-all duration-300 ${step >= 2 ? 'opacity-100 max-h-[500px]' : 'opacity-40 max-h-[80px] overflow-hidden pointer-events-none'}`}>
           <div className="mb-3 flex items-center gap-2">
-            <div className={`flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold ${step > 2 ? 'bg-green-500 text-white' : step === 2 ? 'bg-brand-accent text-white' : 'bg-gray-200 text-gray-500'}`}>
+            <div className={`flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold ${step > 2 ? 'bg-green-500 text-white' : step === 2 ? 'bg-brand-primary text-white' : 'bg-gray-200 text-gray-500'}`}>
               {step > 2 ? <Check size={14} strokeWidth={3} /> : 2}
             </div>
             <span className="text-sm font-bold text-gray-700">Modèle</span>
@@ -437,7 +437,7 @@ export function VehicleFinder({ onClose }: VehicleFinderProps) {
         {/* ═══════════════ STEP 3: ENGINE ═══════════════ */}
         <div className={`transition-all duration-300 ${step >= 3 ? 'opacity-100 max-h-[500px]' : 'opacity-40 max-h-[80px] overflow-hidden pointer-events-none'}`}>
           <div className="mb-3 flex items-center gap-2">
-            <div className={`flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold ${step > 3 ? 'bg-green-500 text-white' : step === 3 ? 'bg-brand-accent text-white' : 'bg-gray-200 text-gray-500'}`}>
+            <div className={`flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold ${step > 3 ? 'bg-green-500 text-white' : step === 3 ? 'bg-brand-primary text-white' : 'bg-gray-200 text-gray-500'}`}>
               3
             </div>
             <span className="text-sm font-bold text-gray-700">Motorisation</span>

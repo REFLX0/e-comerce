@@ -8,13 +8,13 @@ export default function Loading() {
       <div className="flex flex-col items-center gap-6">
         {/* Animated oil drop */}
         <div className="relative">
-          <div className="bg-brand-accent/20 h-16 w-16 animate-ping rounded-full absolute inset-0 m-auto" />
+          <div className="bg-brand-primary/20 h-16 w-16 animate-ping rounded-full absolute inset-0 m-auto" />
           <div className="relative flex h-16 w-16 items-center justify-center">
             <svg
               viewBox="0 0 48 48"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
-              className="text-brand-accent h-9 w-9 animate-bounce"
+              className="text-brand-primary h-9 w-9 animate-bounce"
               aria-hidden="true"
             >
               <path

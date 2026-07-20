@@ -55,9 +55,9 @@ export default function CompteDashboardPage() {
           <Link
             key={link.href}
             href={link.href}
-            className="group flex flex-col gap-2 rounded-2xl border border-gray-100 bg-gray-50 p-4 text-center transition-all hover:border-brand-accent/30 hover:bg-brand-accent/5 hover:shadow-sm"
+            className="group flex flex-col gap-2 rounded-2xl border border-gray-100 bg-gray-50 p-4 text-center transition-all hover:border-gray-200 hover:bg-white hover:shadow-sm"
           >
-            <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-xl bg-white shadow-sm group-hover:bg-brand-accent group-hover:text-black transition-all">
+            <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-xl bg-white shadow-sm group-hover:bg-brand-primary group-hover:text-white transition-all">
               <link.icon size={18} className="text-brand-primary group-hover:text-black transition-colors" />
             </div>
             <p className="text-xs font-semibold text-brand-primary">{t(link.labelKey)}</p>
@@ -70,7 +70,7 @@ export default function CompteDashboardPage() {
       <div>
         <div className="mb-4 flex items-center justify-between">
           <h2 className="font-semibold text-brand-primary">{t('recentOrders')}</h2>
-          <Link href="/compte/commandes" className="flex items-center gap-1 text-xs font-medium text-brand-accent hover:underline">
+          <Link href="/compte/commandes" className="flex items-center gap-1 text-xs font-medium text-brand-primary/60 hover:text-brand-primary">
             {t('viewAll')} <ArrowRight size={12} />
           </Link>
         </div>
@@ -85,7 +85,7 @@ export default function CompteDashboardPage() {
           <div className="rounded-2xl border-2 border-dashed border-gray-200 py-12 text-center">
             <ShoppingBag size={36} className="mx-auto mb-3 text-gray-200" />
             <p className="text-sm font-semibold text-gray-400">{t('noOrders')}</p>
-            <Link href="/catalogue" className="mt-3 inline-flex items-center gap-1.5 rounded-xl bg-brand-accent px-4 py-2 text-sm font-semibold text-black hover:bg-brand-accent-hover transition-colors">
+            <Link href="/catalogue" className="mt-3 inline-flex items-center gap-1.5 rounded-xl bg-brand-primary px-4 py-2 text-sm font-semibold text-white hover:bg-brand-primary-light transition-colors">
               {t('discoverCatalog')}
             </Link>
           </div>

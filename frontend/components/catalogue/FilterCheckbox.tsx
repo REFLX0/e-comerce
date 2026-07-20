@@ -41,7 +41,7 @@ export function FilterCheckbox({
           'flex h-5 w-5 shrink-0 items-center justify-center rounded border transition-all duration-200',
           checked
             ? isAccent
-              ? 'border-brand-accent bg-brand-accent text-brand-primary'
+              ? 'border-red-500 bg-red-500 text-white'
               : 'border-brand-primary bg-brand-primary text-white'
             : 'border-brand-border bg-brand-surface group-hover:border-brand-primary/50'
         )}

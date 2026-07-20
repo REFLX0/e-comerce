@@ -29,12 +29,12 @@ export default function NotFound() {
           </span>
           <div className="absolute inset-0 flex flex-col items-center justify-center">
             {/* Oil drop icon */}
-            <div className="bg-brand-accent/10 border-brand-accent/20 mb-4 flex h-20 w-20 items-center justify-center rounded-2xl border">
+            <div className="bg-brand-primary/10 border-brand-primary/20 mb-4 flex h-20 w-20 items-center justify-center rounded-2xl border">
               <svg
                 viewBox="0 0 48 48"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
-                className="text-brand-accent h-10 w-10"
+                className="text-brand-primary h-10 w-10"
                 aria-hidden="true"
               >
                 <path

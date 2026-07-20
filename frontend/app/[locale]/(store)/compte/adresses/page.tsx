@@ -59,7 +59,7 @@ export default function AddressesPage() {
         {!showForm && (
           <button
             onClick={() => setShowForm(true)}
-            className="flex items-center gap-2 rounded-xl bg-brand-accent px-4 py-2.5 text-sm font-semibold text-black hover:bg-brand-accent-hover transition-colors"
+            className="flex items-center gap-2 rounded-xl bg-brand-primary px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-primary-light transition-colors"
           >
             <Plus size={16} /> Ajouter une adresse
           </button>
@@ -76,7 +76,7 @@ export default function AddressesPage() {
                 type="text"
                 value={formData.name}
                 onChange={e => setFormData({ ...formData, name: e.target.value })}
-                className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5 outline-none focus:border-brand-accent focus:bg-white transition-colors"
+                className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5 outline-none focus:border-brand-primary focus:bg-white transition-colors"
               />
             </div>
             <div className="sm:col-span-2">
@@ -85,7 +85,7 @@ export default function AddressesPage() {
                 type="text"
                 value={formData.street}
                 onChange={e => setFormData({ ...formData, street: e.target.value })}
-                className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5 outline-none focus:border-brand-accent focus:bg-white transition-colors"
+                className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5 outline-none focus:border-brand-primary focus:bg-white transition-colors"
                 placeholder="123 Rue de l'Exemple..."
               />
             </div>
@@ -95,7 +95,7 @@ export default function AddressesPage() {
                 type="text"
                 value={formData.city}
                 onChange={e => setFormData({ ...formData, city: e.target.value })}
-                className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5 outline-none focus:border-brand-accent focus:bg-white transition-colors"
+                className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5 outline-none focus:border-brand-primary focus:bg-white transition-colors"
               />
             </div>
             <div>
@@ -104,7 +104,7 @@ export default function AddressesPage() {
                 type="text"
                 value={formData.zipCode}
                 onChange={e => setFormData({ ...formData, zipCode: e.target.value })}
-                className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5 outline-none focus:border-brand-accent focus:bg-white transition-colors"
+                className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5 outline-none focus:border-brand-primary focus:bg-white transition-colors"
               />
             </div>
             <div className="sm:col-span-2 flex items-center gap-2 mt-2">
@@ -113,7 +113,7 @@ export default function AddressesPage() {
                 id="isDefault"
                 checked={formData.isDefault}
                 onChange={e => setFormData({ ...formData, isDefault: e.target.checked })}
-                className="h-4 w-4 rounded border-gray-300 text-brand-primary focus:ring-brand-accent"
+                className="h-4 w-4 rounded border-gray-300 text-brand-primary focus:ring-brand-primary/30"
               />
               <label htmlFor="isDefault" className="text-sm font-medium text-gray-700">
                 Définir comme adresse par défaut

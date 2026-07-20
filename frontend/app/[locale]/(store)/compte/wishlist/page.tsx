@@ -43,7 +43,7 @@ export default function WishlistPage() {
         <div className="py-16 text-center">
           <Heart size={48} className="mx-auto mb-4 text-gray-200" />
           <p className="font-semibold text-gray-400">Votre liste est vide</p>
-          <Link href="/catalogue" className="mt-4 inline-flex items-center gap-1.5 rounded-xl bg-brand-accent px-4 py-2.5 text-sm font-semibold text-black hover:bg-brand-accent-hover transition-colors">
+          <Link href="/catalogue" className="mt-4 inline-flex items-center gap-1.5 rounded-xl bg-brand-primary px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-primary-light transition-colors">
             Explorer le catalogue
           </Link>
         </div>
@@ -63,7 +63,7 @@ export default function WishlistPage() {
                 </Link>
                 <div className="flex-1 min-w-0">
                   <Link href={`/produit/${product.slug}`}>
-                    <p className="truncate text-sm font-semibold text-brand-primary hover:text-brand-accent transition-colors">{product.nameFr}</p>
+                    <p className="truncate text-sm font-semibold text-brand-primary hover:text-brand-primary/70 transition-colors">{product.nameFr}</p>
                   </Link>
                   <p className="text-xs text-gray-400">{product.brand?.name}</p>
                   <p className="mt-1 font-bold text-brand-primary">
@@ -72,7 +72,7 @@ export default function WishlistPage() {
                   <div className="mt-2 flex gap-2">
                     <button
                       disabled={!inStock}
-                      className="flex items-center gap-1.5 rounded-xl bg-brand-accent px-3 py-1.5 text-xs font-semibold text-black hover:bg-brand-accent-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="flex items-center gap-1.5 rounded-xl bg-brand-primary px-3 py-1.5 text-xs font-semibold text-white hover:bg-brand-primary-light transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       <ShoppingCart size={13} />
                       {inStock ? 'Ajouter au panier' : 'Rupture'}
