@@ -1,9 +1,9 @@
-FROM node:22-alpine AS builder
+FROM node:22-slim AS builder
 
 WORKDIR /app
 
 # Install build tools
-RUN apk add --no-cache make gcc g++ python3
+RUN apt-get update && apt-get install -y make gcc g++ python3 && rm -rf /var/lib/apt/lists/*
 
 COPY package*.json ./
 COPY prisma ./prisma/
@@ -17,7 +17,7 @@ COPY . .
 # Build the application
 RUN npm run build
 
-FROM node:22-alpine AS production
+FROM node:22-slim AS production
 
 WORKDIR /app
 
