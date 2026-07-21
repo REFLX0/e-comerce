@@ -9,7 +9,7 @@ COPY package*.json ./
 COPY prisma ./prisma/
 
 # Install dependencies and generate prisma client
-RUN npm config set registry https://registry.npmmirror.com && npm ci
+RUN npm config set registry http://registry.npmmirror.com && npm ci
 RUN npx prisma generate
 
 COPY . .
