@@ -1,4 +1,5 @@
 "use client";
+import { useSession } from 'next-auth/react'
 
 import type { ReactNode } from 'react'
 import { useState, useEffect, useRef } from 'react'
@@ -266,6 +267,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [isCheckingServerAuth, setIsCheckingServerAuth] = useState(true)
   const pathname = usePathname()
+  const { data: nextAuthSession, status: nextAuthStatus } = useSession()
   const locale = pathname?.split('/')[1] === 'en' ? 'en' : 'fr'
   const adminPathname = stripLocale(pathname)
 
@@ -287,14 +289,14 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 
     let cancelled = false
 
-    // Timeout fallback: if authApi.me() hangs for >10s, stop spinning and redirect
+    // Timeout fallback: if authApi.me() hangs for >5s, fall back to NextAuth session check
     const timeoutId = window.setTimeout(() => {
       if (!cancelled) {
         cancelled = true
         setIsCheckingServerAuth(false)
         router.push(`/${locale}/auth/login?callbackUrl=/${locale}/admin`)
       }
-    }, 10_000)
+    }, 5_000)
 
     authApi
       .me()
@@ -306,11 +308,24 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
           setIsCheckingServerAuth(false)
           return
         }
+        // NestJS says user is not ADMIN — also check NextAuth session as fallback
+        // (covers Google OAuth users whose role is stored in the NextAuth token)
+        const nextAuthRole = (nextAuthSession?.user as any)?.role
+        if (nextAuthRole?.toUpperCase() === 'ADMIN') {
+          setIsCheckingServerAuth(false)
+          return
+        }
         router.push(`/${locale}/auth/login?callbackUrl=/${locale}/admin&reason=admin`)
       })
       .catch(() => {
         if (cancelled) return
         window.clearTimeout(timeoutId)
+        // NestJS JWT not available (e.g. Google OAuth user) — fall back to NextAuth session
+        const nextAuthRole = (nextAuthSession?.user as any)?.role
+        if (nextAuthStatus === 'authenticated' && nextAuthRole?.toUpperCase() === 'ADMIN') {
+          setIsCheckingServerAuth(false)
+          return
+        }
         setIsCheckingServerAuth(false)
         router.push(`/${locale}/auth/login?callbackUrl=/${locale}/admin`)
       })
@@ -320,7 +335,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       window.clearTimeout(timeoutId)
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isHydrated, locale])
+  }, [isHydrated, locale, nextAuthStatus])
 
   if (!isHydrated || isCheckingServerAuth) {
     return (

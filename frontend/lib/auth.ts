@@ -50,4 +50,37 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       },
     }),
   ],
+  callbacks: {
+    // Override jwt callback here (Node.js context) so we can access DB for OAuth logins.
+    // auth.config.ts runs on the Edge runtime (middleware) where Prisma is unavailable.
+    async jwt({ token, user, account }) {
+      // On credentials sign-in, 'user' is returned from authorize() and includes role
+      if (user) {
+        token.id = user.id
+        token.role = (user as any).role
+      }
+      // On OAuth sign-in (e.g. Google), the Prisma Adapter user object does NOT include
+      // the 'role' field from our schema. Fetch it explicitly from the DB.
+      if (account && token.id) {
+        try {
+          const dbUser = await db.user.findUnique({
+            where: { id: token.id as string },
+            select: { role: true },
+          })
+          if (dbUser) token.role = dbUser.role
+        } catch {
+          // Silently fall back — treated as CUSTOMER by default
+        }
+      }
+      return token
+    },
+    // Keep the session callback from authConfig
+    async session({ session, token }) {
+      if (token) {
+        session.user.id = token.id as string
+        ;(session.user as any).role = token.role
+      }
+      return session
+    },
+  },
 })
