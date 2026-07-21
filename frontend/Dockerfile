@@ -1,9 +1,11 @@
-FROM node:22-slim AS base
+FROM node:20-alpine AS base
 
 FROM base AS deps
+RUN apk add --no-cache libc6-compat
 WORKDIR /app
 COPY frontend/package.json frontend/package-lock.json* ./
 COPY backend/prisma ./prisma
+ENV PRISMA_CLI_BINARY_TARGETS="native,linux-musl-openssl-3.0.x"
 RUN npm ci
 
 FROM base AS builder

@@ -1,14 +1,15 @@
-FROM node:22-slim AS builder
+FROM node:20-alpine AS builder
 
 WORKDIR /app
 
 # Install build tools
-RUN apt-get update && apt-get install -y make gcc g++ python3 && rm -rf /var/lib/apt/lists/*
+RUN apk add --no-cache make gcc g++ python3
 
 COPY package*.json ./
 COPY prisma ./prisma/
 
 # Install dependencies and generate prisma client
+ENV PRISMA_CLI_BINARY_TARGETS="native,linux-musl-openssl-3.0.x"
 RUN npm ci
 RUN npx prisma generate
 
@@ -17,7 +18,7 @@ COPY . .
 # Build the application
 RUN npm run build
 
-FROM node:22-slim AS production
+FROM node:20-alpine AS production
 
 WORKDIR /app
 
