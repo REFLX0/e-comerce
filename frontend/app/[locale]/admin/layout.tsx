@@ -284,11 +284,17 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
     return () => document.removeEventListener('keydown', handler)
   }, [])
 
+  const hasCheckedAuth = useRef(false)
+
   useEffect(() => {
     if (!isHydrated) return
     
     // Wait for NextAuth session status to be determined before doing anything
     if (nextAuthStatus === 'loading') return
+
+    // Prevent infinite loops by only running the check once
+    if (hasCheckedAuth.current) return
+    hasCheckedAuth.current = true
 
     let cancelled = false
 
@@ -333,7 +339,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       window.clearTimeout(timeoutId)
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isHydrated, locale, nextAuthStatus, nextAuthSession])
+  }, [isHydrated, locale, nextAuthStatus])
 
   if (!isHydrated || isCheckingServerAuth) {
     return (
