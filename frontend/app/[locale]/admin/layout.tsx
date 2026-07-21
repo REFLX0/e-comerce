@@ -286,10 +286,21 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (!isHydrated) return
+    
+    // Wait for NextAuth session status to be determined before doing anything
+    if (nextAuthStatus === 'loading') return
 
     let cancelled = false
 
-    // Timeout fallback: if authApi.me() hangs for >5s, fall back to NextAuth session check
+    // ── Fast-path: NextAuth session already has the role (Google OAuth or any provider) ──
+    const nextAuthRole = (nextAuthSession?.user as any)?.role
+    if (nextAuthStatus === 'authenticated' && nextAuthRole?.toUpperCase() === 'ADMIN') {
+      setIsCheckingServerAuth(false)
+      return
+    }
+
+    // ── If not authenticated at all via NextAuth, still try NestJS JWT ──
+    // (covers email/password login which sets an access_token cookie directly)
     const timeoutId = window.setTimeout(() => {
       if (!cancelled) {
         cancelled = true
@@ -308,24 +319,11 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
           setIsCheckingServerAuth(false)
           return
         }
-        // NestJS says user is not ADMIN — also check NextAuth session as fallback
-        // (covers Google OAuth users whose role is stored in the NextAuth token)
-        const nextAuthRole = (nextAuthSession?.user as any)?.role
-        if (nextAuthRole?.toUpperCase() === 'ADMIN') {
-          setIsCheckingServerAuth(false)
-          return
-        }
         router.push(`/${locale}/auth/login?callbackUrl=/${locale}/admin&reason=admin`)
       })
       .catch(() => {
         if (cancelled) return
         window.clearTimeout(timeoutId)
-        // NestJS JWT not available (e.g. Google OAuth user) — fall back to NextAuth session
-        const nextAuthRole = (nextAuthSession?.user as any)?.role
-        if (nextAuthStatus === 'authenticated' && nextAuthRole?.toUpperCase() === 'ADMIN') {
-          setIsCheckingServerAuth(false)
-          return
-        }
         setIsCheckingServerAuth(false)
         router.push(`/${locale}/auth/login?callbackUrl=/${locale}/admin`)
       })
@@ -335,7 +333,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       window.clearTimeout(timeoutId)
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isHydrated, locale, nextAuthStatus])
+  }, [isHydrated, locale, nextAuthStatus, nextAuthSession])
 
   if (!isHydrated || isCheckingServerAuth) {
     return (
