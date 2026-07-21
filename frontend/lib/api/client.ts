@@ -266,10 +266,11 @@ export async function apiGet<T>(
   params?: Record<string, string | number | boolean | undefined>,
   options?: RequestInit
 ): Promise<T> {
-  const url = new URL(
-    `${BASE_URL}${path}`,
-    process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
-  )
+  const origin = typeof window !== 'undefined'
+    ? window.location.origin
+    : process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
+    
+  const url = new URL(`${BASE_URL}${path}`, origin)
   if (params) {
     Object.entries(params).forEach(([k, v]) => {
       if (v !== undefined && v !== null && v !== '') {
