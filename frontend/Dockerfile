@@ -4,6 +4,7 @@ FROM base AS deps
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 COPY frontend/package.json frontend/package-lock.json* ./
+COPY backend/prisma ./prisma
 RUN npm ci
 
 FROM base AS builder
