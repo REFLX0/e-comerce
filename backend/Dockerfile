@@ -9,7 +9,6 @@ COPY package*.json ./
 COPY prisma ./prisma/
 
 # Install dependencies and generate prisma client
-ENV PRISMA_CLI_BINARY_TARGETS="native,linux-musl-openssl-3.0.x"
 RUN npm ci
 RUN npx prisma generate
 
