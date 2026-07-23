@@ -105,8 +105,8 @@ jobs:
             # Pull external images (Fast, no CPU spike)
             docker compose -p achref pull db redis nginx          
             
-            # Rebuild and restart frontend (remove stale container if any - merged from HEAD)
-            docker rm -f specpart-frontend 2>/dev/null || true
+            # Remove any conflicting containers from old projects to allow clean recreation
+            docker rm -f specpart-frontend specpart-db specpart-redis specpart-nginx 2>/dev/null || true
             
             # Run database migrations (one-shot)
             docker compose -p achref up migrate
