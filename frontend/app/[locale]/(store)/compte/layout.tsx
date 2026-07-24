@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { useAuthStore } from '@/lib/store/auth.store'
+import { useSession } from 'next-auth/react'
+import { authApi } from '@/lib/api/auth'
 import { useTranslations } from 'next-intl'
 import {
   LayoutDashboard, Package, Heart, MapPin, ShieldCheck,
@@ -78,22 +80,66 @@ export default function CompteLayout({ children }: { children: React.ReactNode }
   ]
 
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
+  const setAuth = useAuthStore((s) => s.setAuth)
   const logout = useAuthStore((s) => s.logout)
-  const isHydrated = useAuthStore((s) => s.isHydrated)
   const user = useAuthStore((s) => s.user)
   const router = useRouter()
   const pathname = usePathname()
+  const locale = pathname?.split('/')[1] === 'en' ? 'en' : 'fr'
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [isMounted, setIsMounted] = useState(false)
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true)
+  const { data: nextAuthSession, status: nextAuthStatus } = useSession()
 
   useEffect(() => {
-    if (!isHydrated) return
-    if (!isAuthenticated) router.push('/auth/login')
-    else if (user?.role?.toUpperCase() === 'ADMIN') router.push('/admin')
-  }, [isHydrated, isAuthenticated, router])
+    setIsMounted(true)
+  }, [])
+
+  useEffect(() => {
+    if (!isMounted) return
+    if (nextAuthStatus === 'loading') return
+
+    let cancelled = false
+
+    const timeoutId = window.setTimeout(() => {
+      if (!cancelled) {
+        cancelled = true
+        setIsCheckingAuth(false)
+        router.push(`/${locale}/auth/login?callbackUrl=/${locale}/compte`)
+      }
+    }, 5_000)
+
+    authApi
+      .me()
+      .then((serverUser) => {
+        if (cancelled) return
+        window.clearTimeout(timeoutId)
+        if (serverUser) {
+          setAuth(serverUser)
+          setIsCheckingAuth(false)
+          if (serverUser.role?.toUpperCase() === 'ADMIN') {
+            router.push(`/${locale}/admin`)
+          }
+          return
+        }
+        router.push(`/${locale}/auth/login?callbackUrl=/${locale}/compte`)
+      })
+      .catch((err) => {
+        if (cancelled) return
+        window.clearTimeout(timeoutId)
+        setIsCheckingAuth(false)
+        router.push(`/${locale}/auth/login?callbackUrl=/${locale}/compte`)
+      })
+
+    return () => {
+      cancelled = true
+      window.clearTimeout(timeoutId)
+    }
+  }, [isMounted, locale, nextAuthStatus, router, setAuth])
 
   const handleLogout = () => { logout(); router.push('/') }
 
-  if (!isHydrated || !isAuthenticated) {
+  if (!isMounted || isCheckingAuth || !user) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-brand-surface">
         <div className="h-8 w-8 animate-spin rounded-full border-4 border-brand-primary/20 border-t-brand-primary" />
