@@ -108,6 +108,10 @@ export class AdminController {
     doc.pipe(res);
   }
 
+  @Get('buyers/top') getTopBuyers(@Query('limit') l?: string) {
+    return this.adminService.getTopBuyers(l ? +l : 20);
+  }
+
   @Get('users') getUsers(@Query('page') p?: string) {
     return this.adminService.getUsers(p ? +p : 1);
   }

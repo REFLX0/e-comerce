@@ -512,6 +512,67 @@ export class AdminService {
     });
   }
 
+  // ─── Top Buyers ────────────────────────────────────────────────────────────
+  async getTopBuyers(limit = 20) {
+    const users = await this.prisma.user.findMany({
+      where: { role: { not: 'BLOCKED' } },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        phone: true,
+        createdAt: true,
+        orders: {
+          where: { status: { not: 'CANCELLED' } },
+          select: {
+            totalAmount: true,
+            createdAt: true,
+            shippingCost: true,
+          },
+        },
+      },
+    });
+
+    const scored = users
+      .filter((u) => u.orders.length > 0)
+      .map((u) => {
+        const totalSpent = u.orders.reduce((s, o) => s + o.totalAmount, 0);
+        const orderCount = u.orders.length;
+        const avgOrderValue = totalSpent / orderCount;
+        const lastOrderAt = u.orders.reduce(
+          (latest, o) => (o.createdAt > latest ? o.createdAt : latest),
+          u.orders[0].createdAt,
+        );
+        const firstOrderAt = u.orders.reduce(
+          (earliest, o) => (o.createdAt < earliest ? o.createdAt : earliest),
+          u.orders[0].createdAt,
+        );
+        const repeatRate = orderCount > 1 ? 1 : 0;
+
+        // Composite score: 50% LTV + 30% frequency + 20% avg order value
+        const score = totalSpent * 0.5 + orderCount * avgOrderValue * 0.3 + avgOrderValue * 0.2;
+
+        return {
+          id: u.id,
+          name: u.name,
+          email: u.email,
+          phone: u.phone,
+          createdAt: u.createdAt,
+          totalSpent: Math.round(totalSpent * 100) / 100,
+          orderCount,
+          avgOrderValue: Math.round(avgOrderValue * 100) / 100,
+          lastOrderAt,
+          firstOrderAt,
+          repeatBuyer: repeatRate === 1,
+          score: Math.round(score * 100) / 100,
+        };
+      })
+      .sort((a, b) => b.score - a.score)
+      .slice(0, limit);
+
+    return scored;
+  }
+
   // ─── Contact Messages ──────────────────────────────────────────────────────
   async getContactMessages(
     page = 1,

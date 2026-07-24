@@ -8,6 +8,7 @@ import { NotificationsService } from '../notifications/notifications.service';
 import { CouponsService } from '../coupons/coupons.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { v4 as uuidv4 } from 'uuid';
+import { generateDeliveryNotePDF } from '../admin/invoice-pdf';
 
 @Injectable()
 export class OrdersService {
@@ -181,5 +182,17 @@ export class OrdersService {
       where: { id },
       data: { status: 'CANCELLED' },
     });
+  }
+
+  async exportOrderPdf(id: string, userId: string) {
+    const order = await this.prisma.order.findUnique({
+      where: { id, userId },
+      include: {
+        items: { include: { product: { select: { nameFr: true } }, variant: { select: { volume: true } } } },
+        user: { select: { name: true, email: true } },
+      },
+    });
+    if (!order) throw new NotFoundException('Order not found');
+    return generateDeliveryNotePDF(order as any);
   }
 }

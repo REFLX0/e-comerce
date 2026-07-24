@@ -7,7 +7,9 @@ import {
   UseGuards,
   HttpCode,
   HttpStatus,
+  Res,
 } from '@nestjs/common';
+import type { Response } from 'express';
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
@@ -49,5 +51,23 @@ export class OrdersController {
   @HttpCode(HttpStatus.OK)
   cancel(@Param('id') id: string, @CurrentUser('id') userId: string) {
     return this.ordersService.cancel(id, userId);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Get(':id/pdf')
+  async exportOrderPdf(
+    @Param('id') id: string,
+    @CurrentUser('id') userId: string,
+    @Res() res: Response,
+  ) {
+    const doc = await this.ordersService.exportOrderPdf(id, userId);
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader(
+      'Content-Disposition',
+      `attachment; filename="facture-${id.slice(-8).toUpperCase()}.pdf"`,
+    );
+    doc.pipe(res);
+    doc.end();
   }
 }

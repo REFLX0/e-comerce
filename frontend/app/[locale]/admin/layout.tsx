@@ -258,7 +258,12 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
     { label: t('settings'), icon: Settings, href: '/admin/settings' },
   ]
 
-  const isHydrated = useAuthStore((s) => s.isHydrated)
+  const [isMounted, setIsMounted] = useState(false)
+  
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
+
   const user = useAuthStore((s) => s.user)
   const setAuth = useAuthStore((s) => s.setAuth)
   const router = useRouter()
@@ -285,7 +290,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   }, [])
 
   useEffect(() => {
-    if (!isHydrated) return
+    if (!isMounted) return
     
     // Wait for NextAuth session status to be determined before doing anything
     if (nextAuthStatus === 'loading') return
@@ -321,8 +326,9 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         }
         router.push(`/${locale}/auth/login?callbackUrl=/${locale}/admin&reason=admin`)
       })
-      .catch(() => {
+      .catch((err) => {
         if (cancelled) return
+        console.error("[AdminLayout] authApi.me() failed:", err)
         window.clearTimeout(timeoutId)
         setIsCheckingServerAuth(false)
         router.push(`/${locale}/auth/login?callbackUrl=/${locale}/admin`)
@@ -333,9 +339,9 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       window.clearTimeout(timeoutId)
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isHydrated, locale, nextAuthStatus])
+  }, [isMounted, locale, nextAuthStatus])
 
-  if (!isHydrated || isCheckingServerAuth) {
+  if (!isMounted || isCheckingServerAuth) {
     return (
       <div className="flex h-screen items-center justify-center bg-brand-primary-dark">
         <div className="h-10 w-10 animate-spin rounded-full border-4 border-white/20 border-t-white" />

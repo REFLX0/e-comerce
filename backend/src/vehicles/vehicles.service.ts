@@ -7,8 +7,8 @@ export class VehiclesService {
 
   async getMakes(vehicleType?: string) {
     const where: any = {};
-    if (vehicleType) {
-      where.models = { some: { vehicleType } };
+    if (vehicleType && vehicleType !== 'undefined') {
+      where.models = { some: { vehicleType: vehicleType.toUpperCase() } };
     }
     return this.prisma.vehicleMake.findMany({
       where,
