@@ -185,10 +185,15 @@ export class OrdersService {
   }
 
   async exportOrderPdf(id: string, userId: string) {
-    const order = await this.prisma.order.findUnique({
+    const order = await this.prisma.order.findFirst({
       where: { id, userId },
       include: {
-        items: { include: { product: { select: { nameFr: true } }, variant: { select: { volume: true } } } },
+        items: {
+          include: {
+            product: { select: { nameFr: true } },
+            variant: { select: { volume: true } },
+          },
+        },
         user: { select: { name: true, email: true } },
       },
     });
