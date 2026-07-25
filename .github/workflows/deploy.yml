@@ -114,6 +114,9 @@ jobs:
             # Remove any stale migrate containers from prior runs (merged from HEAD)
             docker ps -aq --filter name=migrate | xargs -r docker rm -f || true
             
+            # Ensure external network exists before docker-compose commands
+            docker network create main_nexusaid-network || true
+            
             # Pull external images (Fast, no CPU spike)
             docker compose -p achref pull db redis nginx          
             
