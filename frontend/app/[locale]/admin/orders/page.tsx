@@ -8,8 +8,9 @@ import { usePathname } from 'next/navigation'
 import { toast } from 'sonner'
 import {
   Search, Download, Clock, CheckCircle2, Truck,
-  XCircle, Filter, ChevronDown, Package, Edit2, Eye, AlertTriangle
+  XCircle, Filter, ChevronDown, Package, Edit2, Eye, AlertTriangle, Printer
 } from 'lucide-react'
+import { downloadOrderPdf } from '@/lib/api/admin'
 
 const STATUS_CONFIG = {
   PENDING:   { label: 'En attente', icon: Clock,        cls: 'text-yellow-600 bg-yellow-50',     border: 'border-yellow-100' },
@@ -38,8 +39,12 @@ export default function AdminOrdersPage() {
     enabled: true,
   })
 
-  const r = (data as any)?.data ?? data ?? {}
-  const orders = Array.isArray(r) ? r : r.data ?? []
+  // Backend returns { data: [...], total, page, totalPages }
+  const orders: any[] = Array.isArray(data)
+    ? data
+    : Array.isArray((data as any)?.data)
+      ? (data as any).data
+      : []
 
   const updateMutation = useMutation({
     mutationFn: ({ id, status }: { id: string; status: string }) => adminApi.updateOrderStatus(id, status),
@@ -225,6 +230,13 @@ export default function AdminOrdersPage() {
                           className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-700 transition-colors" title="Détails">
                           <Eye size={15} />
                         </Link>
+                        <button
+                          onClick={() => downloadOrderPdf(order.id)}
+                          className="rounded-lg p-1.5 text-gray-400 hover:bg-brand-primary/10 hover:text-brand-primary transition-colors"
+                          title="Télécharger la facture"
+                        >
+                          <Printer size={15} />
+                        </button>
                       </div>
                     </td>
                   </tr>
@@ -233,6 +245,80 @@ export default function AdminOrdersPage() {
             </tbody>
           </table>
         </div>
+      </div>
+
+      {/* Mobile view */}
+      <div className="md:hidden space-y-4">
+        {isLoading ? (
+          <div className="py-8 text-center text-gray-400">Chargement...</div>
+        ) : filtered.length === 0 ? (
+          <div className="rounded-2xl border border-gray-100 bg-white py-12 text-center shadow-sm">
+            <Package size={40} className="mx-auto mb-3 text-gray-200" />
+            <p className="text-sm text-gray-400">Aucune commande trouvée</p>
+          </div>
+        ) : (
+          filtered.map((order: any) => {
+            const s = STATUS_CONFIG[order.status as keyof typeof STATUS_CONFIG] ?? STATUS_CONFIG.PENDING
+            return (
+              <div key={order.id} className={`rounded-2xl border bg-white p-4 shadow-sm transition-all duration-200 ${selected.includes(order.id) ? 'ring-2 ring-brand-primary border-transparent' : 'border-gray-100'}`}>
+                <div className="mb-3 flex items-start justify-between border-b border-gray-50 pb-3">
+                  <div className="flex items-center gap-3">
+                    <input type="checkbox" className="h-5 w-5 rounded border-gray-300 text-brand-primary focus:ring-brand-primary"
+                      checked={selected.includes(order.id)} onChange={() => toggleSelect(order.id)} />
+                    <div>
+                      <p className="font-mono text-sm font-bold text-brand-primary">#{(order.id ?? '').slice(-8).toUpperCase()}</p>
+                      <p className="text-xs text-gray-400">{order.items?.length ?? 0} articles</p>
+                    </div>
+                  </div>
+                  <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-bold ${s.cls}`}>
+                    <s.icon size={12} /> {s.label}
+                  </span>
+                </div>
+                
+                <div className="mb-4 grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400">Date</p>
+                    <p className="text-sm font-medium text-gray-800">{order.createdAt ? new Date(order.createdAt).toLocaleDateString('fr-TN') : '—'}</p>
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400">Total</p>
+                    <p className="text-sm font-bold text-brand-primary">{order.totalAmount?.toLocaleString('fr-TN', { minimumFractionDigits: 2 })} TND</p>
+                  </div>
+                  <div className="col-span-2">
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400">Client</p>
+                    <p className="text-sm font-medium text-gray-800">{order.user?.firstName ? `${order.user.firstName} ${order.user.lastName}` : order.shipFullName}</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2 pt-2">
+                  <Link href={`/${locale}/admin/orders/${order.id}`}
+                    className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-gray-50 py-2.5 text-sm font-semibold text-gray-600 hover:bg-gray-100 hover:text-brand-primary transition-colors">
+                    <Eye size={16} /> Détails
+                  </Link>
+                  <button
+                    onClick={() => downloadOrderPdf(order.id)}
+                    className="flex items-center justify-center rounded-xl border border-gray-200 bg-white p-2.5 text-gray-500 hover:bg-brand-primary/10 hover:text-brand-primary hover:border-brand-primary transition-colors"
+                    title="Télécharger la facture"
+                  >
+                    <Printer size={16} />
+                  </button>
+                  {order.status === 'PENDING' && (
+                    <button onClick={() => updateMutation.mutate({ id: order.id, status: 'CONFIRMED' })}
+                      className="flex items-center justify-center rounded-xl bg-blue-50 p-2.5 text-blue-600 hover:bg-blue-100 transition-colors" title="Confirmer">
+                      <CheckCircle2 size={16} />
+                    </button>
+                  )}
+                  {order.status === 'CONFIRMED' && (
+                    <button onClick={() => updateMutation.mutate({ id: order.id, status: 'SHIPPED' })}
+                      className="flex items-center justify-center rounded-xl bg-purple-50 p-2.5 text-purple-600 hover:bg-purple-100 transition-colors" title="Expédier">
+                      <Truck size={16} />
+                    </button>
+                  )}
+                </div>
+              </div>
+            )
+          })
+        )}
       </div>
     </div>
   )
