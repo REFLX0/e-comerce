@@ -6,11 +6,22 @@ import Google from 'next-auth/providers/google'
 import { CredentialsSignin } from 'next-auth'
 import { db } from '@/lib/db'
 import { authConfig } from './auth.config'
+import { SignJWT } from 'jose'
+
+async function generateNestToken(user: { id: string; email: string; role: string }) {
+  const secretString = process.env.JWT_SECRET || 'fallback-dev-secret'
+  const secret = new TextEncoder().encode(secretString)
+  return new SignJWT({ sub: user.id, email: user.email, role: user.role })
+    .setProtectedHeader({ alg: 'HS256' })
+    .setIssuedAt()
+    .setExpirationTime('7d')
+    .sign(secret)
+}
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   ...authConfig,
   adapter: PrismaAdapter(db),
-  session: { strategy: 'jwt', maxAge: 86400 }, // 24h — shorter than default 30d
+  session: { strategy: 'jwt', maxAge: 86400 }, // 24h
   providers: [
     Google({
       clientId: process.env.GOOGLE_CLIENT_ID,
@@ -51,34 +62,40 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     }),
   ],
   callbacks: {
-    // Override jwt callback here (Node.js context) so we can access DB for OAuth logins.
-    // auth.config.ts runs on the Edge runtime (middleware) where Prisma is unavailable.
     async jwt({ token, user, account }) {
-      // On credentials sign-in, 'user' is returned from authorize() and includes role
       if (user) {
         token.id = user.id
         token.role = (user as any).role
       }
-      // On OAuth sign-in (e.g. Google), the Prisma Adapter user object does NOT include
-      // the 'role' field from our schema. Fetch it explicitly from the DB.
+      
+      // On OAuth sign-in (e.g. Google), account is present.
+      // We need to fetch the DB user to get the role AND mint a NestJS access_token.
       if (account && token.id) {
         try {
           const dbUser = await db.user.findUnique({
             where: { id: token.id as string },
-            select: { role: true },
+            select: { id: true, email: true, role: true },
           })
-          if (dbUser) token.role = dbUser.role
-        } catch {
-          // Silently fall back — treated as CUSTOMER by default
+          if (dbUser) {
+            token.role = dbUser.role
+            // Only generate NestJS token for OAuth sign-ins
+            if (account.provider !== 'credentials') {
+              token.accessToken = await generateNestToken(dbUser as any)
+            }
+          }
+        } catch (err) {
+          console.error('[NextAuth] Error syncing OAuth user with DB:', err)
         }
       }
       return token
     },
-    // Keep the session callback from authConfig
     async session({ session, token }) {
       if (token) {
         session.user.id = token.id as string
         ;(session.user as any).role = token.role
+        if (token.accessToken) {
+          ;(session as any).accessToken = token.accessToken
+        }
       }
       return session
     },

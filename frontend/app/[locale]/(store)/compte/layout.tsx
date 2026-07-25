@@ -109,6 +109,19 @@ export default function CompteLayout({ children }: { children: React.ReactNode }
       }
     }, 5_000)
 
+    // Fast-path: If user is logged in via NextAuth (e.g. Google)
+    if (nextAuthStatus === 'authenticated' && nextAuthSession?.user) {
+      if (cancelled) return
+      window.clearTimeout(timeoutId)
+      const u = nextAuthSession.user as any
+      setAuth(u)
+      setIsCheckingAuth(false)
+      if (u.role?.toUpperCase() === 'ADMIN') {
+        router.push(`/${locale}/admin`)
+      }
+      return
+    }
+
     authApi
       .me()
       .then((serverUser) => {
