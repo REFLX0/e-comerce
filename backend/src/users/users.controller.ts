@@ -54,7 +54,10 @@ export class UsersController {
   }
 
   @Post('me/change-password')
-  changePassword(@CurrentUser('id') userId: string, @Body() dto: ChangePasswordDto) {
+  changePassword(
+    @CurrentUser('id') userId: string,
+    @Body() dto: ChangePasswordDto,
+  ) {
     return this.usersService.changePassword(userId, dto);
   }
 }

@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Prisma } from '@prisma/client';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -125,22 +129,24 @@ export class AdminService {
         select: { variants: { select: { id: true, volume: true } } },
       });
 
-      const updates = variants.map((v: any) => {
-        const match = existing?.variants.find(
-          (ev: any) => ev.volume === v.volume && ev.id,
-        );
-        if (match) {
-          return this.prisma.productVariant.update({
-            where: { id: match.id },
-            data: {
-              price: v.price,
-              stockQty: v.stockQty,
-              imageUrl: v.imageUrl ?? null,
-            },
-          });
-        }
-        return Promise.resolve(null);
-      }).filter(Boolean);
+      const updates = variants
+        .map((v: any) => {
+          const match = existing?.variants.find(
+            (ev: any) => ev.volume === v.volume && ev.id,
+          );
+          if (match) {
+            return this.prisma.productVariant.update({
+              where: { id: match.id },
+              data: {
+                price: v.price,
+                stockQty: v.stockQty,
+                imageUrl: v.imageUrl ?? null,
+              },
+            });
+          }
+          return Promise.resolve(null);
+        })
+        .filter(Boolean);
 
       if (updates.length > 0) {
         await this.prisma.$transaction(updates);
@@ -174,12 +180,17 @@ export class AdminService {
   async deleteProduct(id: string) {
     await this.prisma.review.deleteMany({ where: { productId: id } });
     await this.prisma.wishlistItem.deleteMany({ where: { productId: id } });
-    await this.prisma.vehicleCompatibility.deleteMany({ where: { productId: id } });
+    await this.prisma.vehicleCompatibility.deleteMany({
+      where: { productId: id },
+    });
     try {
       return await this.prisma.product.delete({ where: { id } });
     } catch (err: any) {
       if (err?.code === 'P2003') {
-        await this.prisma.product.update({ where: { id }, data: { isPublished: false } });
+        await this.prisma.product.update({
+          where: { id },
+          data: { isPublished: false },
+        });
         return { message: 'Produit masqué (des commandes y sont liées)' };
       }
       throw err;
@@ -203,38 +214,66 @@ export class AdminService {
         isPublished: false,
         brandId: original.brandId,
         categoryId: original.categoryId,
-        images: { create: original.images.map((img, i) => ({ url: img.url, isPrimary: i === 0, sortOrder: i })) },
-        variants: { create: original.variants.map((v) => ({ volume: v.volume, price: v.price, stockQty: v.stockQty, skuVariant: `${v.skuVariant}-COPY` })) },
+        images: {
+          create: original.images.map((img, i) => ({
+            url: img.url,
+            isPrimary: i === 0,
+            sortOrder: i,
+          })),
+        },
+        variants: {
+          create: original.variants.map((v) => ({
+            volume: v.volume,
+            price: v.price,
+            stockQty: v.stockQty,
+            skuVariant: `${v.skuVariant}-COPY`,
+          })),
+        },
       },
     });
   }
 
   async exportOrders(status?: string) {
     const where: any = {};
-    const VALID_STATUSES = ['PENDING', 'CONFIRMED', 'SHIPPED', 'DELIVERED', 'CANCELLED'];
-    if (status && VALID_STATUSES.includes(status.toUpperCase())) where.status = status.toUpperCase();
+    const VALID_STATUSES = [
+      'PENDING',
+      'CONFIRMED',
+      'SHIPPED',
+      'DELIVERED',
+      'CANCELLED',
+    ];
+    if (status && VALID_STATUSES.includes(status.toUpperCase()))
+      where.status = status.toUpperCase();
     const orders = await this.prisma.order.findMany({
       where,
-      include: { items: { include: { product: { select: { nameFr: true } } } }, user: { select: { name: true, email: true } } },
+      include: {
+        items: { include: { product: { select: { nameFr: true } } } },
+        user: { select: { name: true, email: true } },
+      },
       orderBy: { createdAt: 'desc' },
     });
-    const header = 'ID,Date,Client,Email,Téléphone,Wilaya,Ville,Total TND,Frais Livraison,Statut,Articles\n';
-    const rows = orders.map((o) => {
-      const items = o.items.map((i) => `${i.quantity}x ${i.product.nameFr}`).join('; ');
-      return [
-        o.id,
-        new Date(o.createdAt).toISOString().split('T')[0],
-        `"${o.shipFullName || o.user?.name || ''}"`,
-        o.user?.email || '',
-        o.shipPhone || '',
-        o.shipWilaya || '',
-        o.shipCity || '',
-        (o.totalAmount ?? 0).toFixed(2),
-        o.shippingCost?.toFixed(2) || '0.00',
-        o.status,
-        `"${items}"`,
-      ].join(',');
-    }).join('\n');
+    const header =
+      'ID,Date,Client,Email,Téléphone,Wilaya,Ville,Total TND,Frais Livraison,Statut,Articles\n';
+    const rows = orders
+      .map((o) => {
+        const items = o.items
+          .map((i) => `${i.quantity}x ${i.product.nameFr}`)
+          .join('; ');
+        return [
+          o.id,
+          new Date(o.createdAt).toISOString().split('T')[0],
+          `"${o.shipFullName || o.user?.name || ''}"`,
+          o.user?.email || '',
+          o.shipPhone || '',
+          o.shipWilaya || '',
+          o.shipCity || '',
+          (o.totalAmount ?? 0).toFixed(2),
+          o.shippingCost?.toFixed(2) || '0.00',
+          o.status,
+          `"${items}"`,
+        ].join(',');
+      })
+      .join('\n');
     return { csv: header + rows };
   }
 
@@ -242,21 +281,32 @@ export class AdminService {
     const order = await this.prisma.order.findUnique({
       where: { id },
       include: {
-        items: { include: { product: { select: { nameFr: true } }, variant: { select: { volume: true } } } },
+        items: {
+          include: {
+            product: { select: { nameFr: true } },
+            variant: { select: { volume: true } },
+          },
+        },
         user: { select: { name: true, email: true } },
       },
     });
     if (!order) throw new NotFoundException('Order not found');
-    return generateDeliveryNotePDF(order as any);
+    return generateDeliveryNotePDF(order);
   }
 
   async bulkProducts(ids: string[], action: string) {
     switch (action) {
       case 'publish':
-        await this.prisma.product.updateMany({ where: { id: { in: ids } }, data: { isPublished: true } });
+        await this.prisma.product.updateMany({
+          where: { id: { in: ids } },
+          data: { isPublished: true },
+        });
         break;
       case 'unpublish':
-        await this.prisma.product.updateMany({ where: { id: { in: ids } }, data: { isPublished: false } });
+        await this.prisma.product.updateMany({
+          where: { id: { in: ids } },
+          data: { isPublished: false },
+        });
         break;
       case 'delete':
         for (const id of ids) await this.deleteProduct(id);
@@ -270,26 +320,34 @@ export class AdminService {
 
   async exportProducts() {
     const products = await this.prisma.product.findMany({
-      include: { brand: true, category: true, variants: true, images: { take: 1, orderBy: { sortOrder: 'asc' } } },
+      include: {
+        brand: true,
+        category: true,
+        variants: true,
+        images: { take: 1, orderBy: { sortOrder: 'asc' } },
+      },
       orderBy: { createdAt: 'desc' },
     });
-    const header = 'SKU,Nom,Slug,Description,Marque,Catégorie,Prix TND,Stock Total,Publié,Image\n';
-    const rows = products.map((p) => {
-      const firstVariant = p.variants[0];
-      const totalStock = p.variants.reduce((sum, v) => sum + v.stockQty, 0);
-      return [
-        p.sku,
-        `"${p.nameFr}"`,
-        p.slug,
-        `"${(p.description || '').replace(/"/g, '""')}"`,
-        p.brand?.name || '',
-        p.category?.nameFr || '',
-        firstVariant?.price ? firstVariant.price.toFixed(2) : '0.00',
-        totalStock,
-        p.isPublished ? 'Oui' : 'Non',
-        p.images[0]?.url || '',
-      ].join(',');
-    }).join('\n');
+    const header =
+      'SKU,Nom,Slug,Description,Marque,Catégorie,Prix TND,Stock Total,Publié,Image\n';
+    const rows = products
+      .map((p) => {
+        const firstVariant = p.variants[0];
+        const totalStock = p.variants.reduce((sum, v) => sum + v.stockQty, 0);
+        return [
+          p.sku,
+          `"${p.nameFr}"`,
+          p.slug,
+          `"${(p.description || '').replace(/"/g, '""')}"`,
+          p.brand?.name || '',
+          p.category?.nameFr || '',
+          firstVariant?.price ? firstVariant.price.toFixed(2) : '0.00',
+          totalStock,
+          p.isPublished ? 'Oui' : 'Non',
+          p.images[0]?.url || '',
+        ].join(',');
+      })
+      .join('\n');
     return { csv: header + rows };
   }
 
@@ -312,7 +370,10 @@ export class AdminService {
         where,
         skip,
         take: limit,
-      include: { items: { include: { product: { select: { nameFr: true } } } }, user: { select: { name: true, email: true } } },
+        include: {
+          items: { include: { product: { select: { nameFr: true } } } },
+          user: { select: { name: true, email: true } },
+        },
         orderBy: { createdAt: 'desc' },
       }),
       this.prisma.order.count({ where }),
@@ -327,7 +388,10 @@ export class AdminService {
         items: {
           include: {
             product: {
-              select: { nameFr: true, images: { take: 1, select: { url: true } } },
+              select: {
+                nameFr: true,
+                images: { take: 1, select: { url: true } },
+              },
             },
             variant: { select: { volume: true } },
           },
@@ -341,7 +405,8 @@ export class AdminService {
 
   async updateOrderStatus(id: string, status: string) {
     const valid = ['PENDING', 'CONFIRMED', 'SHIPPED', 'DELIVERED', 'CANCELLED'];
-    if (!valid.includes(status)) throw new BadRequestException(`Invalid order status: ${status}`);
+    if (!valid.includes(status))
+      throw new BadRequestException(`Invalid order status: ${status}`);
     return this.prisma.order.update({
       where: { id },
       data: { status: status as any },
@@ -423,10 +488,15 @@ export class AdminService {
 
   async updateUserRole(id: string, role: string) {
     const valid = ['CUSTOMER', 'ADMIN', 'PRO'];
-    if (!valid.includes(role)) throw new BadRequestException(`Invalid role: ${role}`);
-    const user = await this.prisma.user.findUnique({ where: { id }, select: { role: true } });
+    if (!valid.includes(role))
+      throw new BadRequestException(`Invalid role: ${role}`);
+    const user = await this.prisma.user.findUnique({
+      where: { id },
+      select: { role: true },
+    });
     if (!user) throw new NotFoundException('User not found');
-    if (user.role === 'ADMIN') throw new BadRequestException('Cannot change an admin user\'s role');
+    if (user.role === 'ADMIN')
+      throw new BadRequestException("Cannot change an admin user's role");
     return this.prisma.user.update({
       where: { id },
       data: { role: role as any },
@@ -434,9 +504,13 @@ export class AdminService {
   }
 
   async toggleBlockUser(id: string) {
-    const user = await this.prisma.user.findUnique({ where: { id }, select: { role: true, previousRole: true } });
+    const user = await this.prisma.user.findUnique({
+      where: { id },
+      select: { role: true, previousRole: true },
+    });
     if (!user) throw new NotFoundException('User not found');
-    if (user.role === 'ADMIN') throw new BadRequestException('Cannot block an admin user');
+    if (user.role === 'ADMIN')
+      throw new BadRequestException('Cannot block an admin user');
     const isBlocked = user.role === 'BLOCKED';
     return this.prisma.user.update({
       where: { id },
@@ -505,7 +579,8 @@ export class AdminService {
 
   async updatePaymentStatus(id: string, status: string) {
     const valid = ['PENDING', 'COMPLETED', 'FAILED', 'REFUNDED'];
-    if (!valid.includes(status)) throw new BadRequestException(`Invalid payment status: ${status}`);
+    if (!valid.includes(status))
+      throw new BadRequestException(`Invalid payment status: ${status}`);
     return this.prisma.payment.update({
       where: { id },
       data: { status: status as any },
@@ -550,7 +625,10 @@ export class AdminService {
         const repeatRate = orderCount > 1 ? 1 : 0;
 
         // Composite score: 50% LTV + 30% frequency + 20% avg order value
-        const score = totalSpent * 0.5 + orderCount * avgOrderValue * 0.3 + avgOrderValue * 0.2;
+        const score =
+          totalSpent * 0.5 +
+          orderCount * avgOrderValue * 0.3 +
+          avgOrderValue * 0.2;
 
         return {
           id: u.id,
@@ -606,7 +684,13 @@ export class AdminService {
       this.prisma.contactMessage.count(),
       this.prisma.contactMessage.count({ where: { isRead: false } }),
     ]);
-    return { data, total, unreadCount, page, totalPages: Math.ceil(total / limit) };
+    return {
+      data,
+      total,
+      unreadCount,
+      page,
+      totalPages: Math.ceil(total / limit),
+    };
   }
 
   async markContactMessageRead(id: string) {

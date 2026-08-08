@@ -78,7 +78,7 @@ export class UsersService {
     }
     const valid = await bcrypt.compare(dto.oldPassword, user.passwordHash);
     if (!valid) throw new ForbiddenException('Ancien mot de passe incorrect');
-    
+
     const hash = await bcrypt.hash(dto.newPassword, 12);
     await this.prisma.user.update({
       where: { id: userId },

@@ -41,7 +41,7 @@ describe('ProductsService — findBestSellers', () => {
     }).compile();
 
     service = module.get<ProductsService>(ProductsService);
-    prisma = module.get(PrismaService) as jest.Mocked<PrismaService>;
+    prisma = module.get(PrismaService);
   });
 
   it('returns products ranked by sales from CONFIRMED/SHIPPED/DELIVERED orders only', async () => {
@@ -109,9 +109,7 @@ describe('ProductsService — findBestSellers', () => {
     prisma.$queryRaw.mockResolvedValue([]);
     prisma.product.findMany
       .mockResolvedValueOnce([])
-      .mockResolvedValueOnce([
-        mockProduct({ id: 'n1', nameFr: 'New Oil' }),
-      ]);
+      .mockResolvedValueOnce([mockProduct({ id: 'n1', nameFr: 'New Oil' })]);
 
     const result = await service.findBestSellers(2);
 
@@ -121,9 +119,7 @@ describe('ProductsService — findBestSellers', () => {
 
   it('does not include PENDING or CANCELLED orders in the SQL filter', async () => {
     prisma.$queryRaw.mockResolvedValue([]);
-    prisma.product.findMany
-      .mockResolvedValueOnce([])
-      .mockResolvedValueOnce([]);
+    prisma.product.findMany.mockResolvedValueOnce([]).mockResolvedValueOnce([]);
 
     await service.findBestSellers(2);
 

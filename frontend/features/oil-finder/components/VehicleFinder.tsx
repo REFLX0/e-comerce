@@ -134,12 +134,28 @@ export function VehicleFinder({ onClose, initialVehicleType }: VehicleFinderProp
   const [selectedEngine, setSelectedEngine] = useState<string | null>(null)
 
   useEffect(() => {
-    setLoading(true)
-    setError('')
-    productsApi.getMakes(initialVehicleType ?? undefined)
-      .then(setMakes)
-      .catch(() => setError('Impossible de charger les marques'))
-      .finally(() => setLoading(false))
+    let active = true;
+    
+    const fetchInitialData = async () => {
+      // Delay state update to avoid synchronous cascading render warning
+      await Promise.resolve();
+      if (!active) return;
+      
+      setLoading(true)
+      setError('')
+      
+      try {
+        const data = await productsApi.getMakes(initialVehicleType ?? undefined)
+        if (active) setMakes(data)
+      } catch {
+        if (active) setError('Impossible de charger les marques')
+      } finally {
+        if (active) setLoading(false)
+      }
+    }
+    
+    fetchInitialData()
+    return () => { active = false; }
   }, [initialVehicleType])
 
   const filteredMakes = useMemo(

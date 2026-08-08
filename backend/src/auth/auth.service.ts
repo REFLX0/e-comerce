@@ -13,7 +13,6 @@ import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { Redis } from 'ioredis';
 
-
 @Injectable()
 export class AuthService {
   private redis: Redis;

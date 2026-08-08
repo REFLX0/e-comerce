@@ -40,31 +40,32 @@ export class CategoriesController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('ADMIN')
-  @Post() create(@Body() body: CreateCategoryDto) {
+  @Post()
+  create(@Body() body: CreateCategoryDto) {
     return this.categoriesService.create(body);
   }
 
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('ADMIN')
-  @Patch('reorder') reorder(@Body() body: { ids: string[] }) {
+  @Patch('reorder')
+  reorder(@Body() body: { ids: string[] }) {
     return this.categoriesService.reorder(body.ids);
   }
 
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('ADMIN')
-  @Patch(':id') update(
-    @Param('id') id: string,
-    @Body() body: UpdateCategoryDto,
-  ) {
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() body: UpdateCategoryDto) {
     return this.categoriesService.update(id, body);
   }
 
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('ADMIN')
-  @Delete(':id') delete(@Param('id') id: string) {
+  @Delete(':id')
+  delete(@Param('id') id: string) {
     return this.categoriesService.delete(id);
   }
 }

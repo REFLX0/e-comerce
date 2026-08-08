@@ -37,10 +37,7 @@ export class CouponsController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('ADMIN')
   @Get()
-  findAll(
-    @Query('page') p?: string,
-    @Query('limit') l?: string,
-  ) {
+  findAll(@Query('page') p?: string, @Query('limit') l?: string) {
     return this.couponsService.findAll(p ? +p : 1, l ? +l : 20);
   }
 

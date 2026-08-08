@@ -12,9 +12,14 @@ export class ShippingService {
   }
 
   async create(data: CreateShippingZoneDto) {
-    const max = await this.prisma.shippingZone.aggregate({ _max: { sortOrder: true } });
+    const max = await this.prisma.shippingZone.aggregate({
+      _max: { sortOrder: true },
+    });
     return this.prisma.shippingZone.create({
-      data: { ...data, sortOrder: data.sortOrder ?? (max._max.sortOrder ?? 0) + 1 },
+      data: {
+        ...data,
+        sortOrder: data.sortOrder ?? (max._max.sortOrder ?? 0) + 1,
+      },
     });
   }
 
@@ -33,7 +38,10 @@ export class ShippingService {
   async reorder(ids: string[]) {
     return this.prisma.$transaction(
       ids.map((id, index) =>
-        this.prisma.shippingZone.update({ where: { id }, data: { sortOrder: index } }),
+        this.prisma.shippingZone.update({
+          where: { id },
+          data: { sortOrder: index },
+        }),
       ),
     );
   }

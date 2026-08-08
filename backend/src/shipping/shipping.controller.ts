@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Patch, Delete, Param, Body, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Patch,
+  Delete,
+  Param,
+  Body,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { ShippingService } from './shipping.service';
 import { CreateShippingZoneDto } from './dto/create-shipping-zone.dto';
@@ -19,28 +28,32 @@ export class ShippingController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('ADMIN')
-  @Post('zones') create(@Body() body: CreateShippingZoneDto) {
+  @Post('zones')
+  create(@Body() body: CreateShippingZoneDto) {
     return this.shippingService.create(body);
   }
 
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('ADMIN')
-  @Patch('zones/reorder') reorder(@Body() body: { ids: string[] }) {
+  @Patch('zones/reorder')
+  reorder(@Body() body: { ids: string[] }) {
     return this.shippingService.reorder(body.ids);
   }
 
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('ADMIN')
-  @Patch('zones/:id') update(@Param('id') id: string, @Body() body: UpdateShippingZoneDto) {
+  @Patch('zones/:id')
+  update(@Param('id') id: string, @Body() body: UpdateShippingZoneDto) {
     return this.shippingService.update(id, body);
   }
 
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('ADMIN')
-  @Delete('zones/:id') delete(@Param('id') id: string) {
+  @Delete('zones/:id')
+  delete(@Param('id') id: string) {
     return this.shippingService.delete(id);
   }
 }

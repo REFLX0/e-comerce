@@ -198,6 +198,6 @@ export class OrdersService {
       },
     });
     if (!order) throw new NotFoundException('Order not found');
-    return generateDeliveryNotePDF(order as any);
+    return generateDeliveryNotePDF(order);
   }
 }

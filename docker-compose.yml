@@ -5,9 +5,12 @@ services:
     image: nginx:alpine
     container_name: specpart-nginx
     ports:
-      - "8082:8082"
+      - "80:80"
+      - "443:443"
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - certbot-etc:/etc/letsencrypt
+      - certbot-var:/var/www/certbot
     depends_on:
       backend:
         condition: service_healthy
@@ -16,6 +19,40 @@ services:
     restart: unless-stopped
     networks:
       - frontend-net
+      - backend-net
+
+  # ── SSL Certificates ──────────────────────────────────────────────
+  certbot:
+    image: certbot/certbot
+    container_name: certbot
+    volumes:
+      - certbot-etc:/etc/letsencrypt
+      - certbot-var:/var/www/certbot
+    depends_on:
+      - nginx
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+
+  # ── Database Backups ──────────────────────────────────────────────
+  pg-backups:
+    image: prodrigestivill/postgres-backup-local
+    container_name: specpart-pg-backups
+    restart: unless-stopped
+    environment:
+      - POSTGRES_HOST=db
+      - POSTGRES_DB=${POSTGRES_DB:-specpart}
+      - POSTGRES_USER=${POSTGRES_USER:-specpart}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-changeme}
+      - SCHEDULE=@daily
+      - BACKUP_KEEP_DAYS=7
+      - BACKUP_KEEP_WEEKS=4
+      - BACKUP_KEEP_MONTHS=6
+      - HEALTHCHECK_PORT=8080
+    volumes:
+      - ./backups:/backups
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
       - backend-net
 
   # ── Backend API (NestJS) ──────────────────────────────────────────
@@ -78,6 +115,8 @@ services:
       - NODE_ENV=production
       # Internal API proxy: Next.js rewrites /api/* → nginx → backend
       - API_PROXY_ORIGIN=http://nginx:8082
+      # Direct server-side URL so SSR bypasses rewrites and calls nginx directly
+      - API_URL=http://nginx:8082/api
       - NEXT_PUBLIC_API_URL=/api
       - NEXTAUTH_URL=${NEXTAUTH_URL:-http://localhost:8082}
       - AUTH_TRUST_HOST=true
@@ -147,3 +186,5 @@ networks:
 volumes:
   specpart_pgdata:
   specpart_redis:
+  certbot-etc:
+  certbot-var:

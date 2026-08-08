@@ -72,13 +72,18 @@ export class AdminController {
   ) {
     return this.adminService.deleteProduct(id);
   }
-  @Post('products/bulk') bulkProducts(@Body() body: { ids: string[]; action: string }) {
+  @Post('products/bulk') bulkProducts(
+    @Body() body: { ids: string[]; action: string },
+  ) {
     return this.adminService.bulkProducts(body.ids, body.action);
   }
   @Post('products/:id/duplicate') duplicateProduct(@Param('id') id: string) {
     return this.adminService.duplicateProduct(id);
   }
-  @Patch('products/:id/publish') publishProduct(@Param('id') id: string, @Body('isPublished') isPublished: boolean) {
+  @Patch('products/:id/publish') publishProduct(
+    @Param('id') id: string,
+    @Body('isPublished') isPublished: boolean,
+  ) {
     return this.adminService.updateProduct(id, { isPublished });
   }
   @Get('orders') getOrders(
@@ -104,7 +109,10 @@ export class AdminController {
   async exportOrderPdf(@Param('id') id: string, @Res() res: Response) {
     const doc = await this.adminService.exportOrderPdf(id);
     res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', `attachment; filename="livraison-${id.slice(-8).toUpperCase()}.pdf"`);
+    res.setHeader(
+      'Content-Disposition',
+      `attachment; filename="livraison-${id.slice(-8).toUpperCase()}.pdf"`,
+    );
     doc.pipe(res);
   }
 
@@ -125,7 +133,8 @@ export class AdminController {
     return this.adminService.updateUserRole(id, role);
   }
   @HttpCode(HttpStatus.OK)
-  @Patch('users/:id/block') blockUser(@Param('id') id: string) {
+  @Patch('users/:id/block')
+  blockUser(@Param('id') id: string) {
     return this.adminService.toggleBlockUser(id);
   }
 
@@ -158,10 +167,14 @@ export class AdminController {
       filter as any,
     );
   }
-  @Patch('contact-messages/:id/read') markContactMessageRead(@Param('id') id: string) {
+  @Patch('contact-messages/:id/read') markContactMessageRead(
+    @Param('id') id: string,
+  ) {
     return this.adminService.markContactMessageRead(id);
   }
-  @Delete('contact-messages/:id') deleteContactMessage(@Param('id') id: string) {
+  @Delete('contact-messages/:id') deleteContactMessage(
+    @Param('id') id: string,
+  ) {
     return this.adminService.deleteContactMessage(id);
   }
 

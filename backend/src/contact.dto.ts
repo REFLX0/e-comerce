@@ -1,4 +1,10 @@
-import { IsString, IsEmail, IsOptional, IsBoolean, MinLength } from 'class-validator';
+import {
+  IsString,
+  IsEmail,
+  IsOptional,
+  IsBoolean,
+  MinLength,
+} from 'class-validator';
 
 export class SubmitContactDto {
   @IsString() @MinLength(2) name: string;
