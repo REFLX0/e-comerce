@@ -12,7 +12,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { Redis } from 'ioredis';
-import { v4 as uuidv4 } from 'uuid';
+
 
 @Injectable()
 export class AuthService {
@@ -95,7 +95,7 @@ export class AuthService {
       expiresIn: '7d',
     });
 
-    const refreshToken = uuidv4();
+    const refreshToken = crypto.randomUUID();
     const refreshTtl = 60 * 60 * 24 * 7; // 7 days
     await this.redis.setex(`refresh:${refreshToken}`, refreshTtl, user.id);
 

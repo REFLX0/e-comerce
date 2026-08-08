@@ -4,7 +4,6 @@ import { CategoryGrid } from '@/components/home/CategoryGrid'
 import { TrustBadges } from '@/components/common/TrustBadges'
 import { BrandsBar } from '@/components/home/BrandsBar'
 import { WhySpecpart } from '@/components/home/WhySpecpart'
-import { BlogSection } from '@/components/home/BlogSection'
 import { OilFinderTabs } from '@/features/oil-finder/components/OilFinderTabs'
 
 export default function Home() {
@@ -49,9 +48,6 @@ export default function Home() {
           <OilFinderTabs />
         </div>
       </section>
-
-      {/* 8. Blog */}
-      <BlogSection />
     </>
   )
 }

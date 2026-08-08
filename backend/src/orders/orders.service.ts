@@ -7,7 +7,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { NotificationsService } from '../notifications/notifications.service';
 import { CouponsService } from '../coupons/coupons.service';
 import { CreateOrderDto } from './dto/create-order.dto';
-import { v4 as uuidv4 } from 'uuid';
+import * as crypto from 'crypto';
 import { generateDeliveryNotePDF } from '../admin/invoice-pdf';
 
 @Injectable()
@@ -20,7 +20,7 @@ export class OrdersService {
 
   async create(dto: CreateOrderDto, userId?: string) {
     // Idempotency: prevent duplicate orders on double-submit
-    const key = dto.idempotencyKey ?? uuidv4();
+    const key = dto.idempotencyKey ?? crypto.randomUUID();
     const existing = await this.prisma.order.findUnique({
       where: { idempotencyKey: key },
     });

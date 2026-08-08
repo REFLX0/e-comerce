@@ -1,26 +1,34 @@
+# ── Stage 1: Builder ──────────────────────────────────────────────────────────
 FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-# Install build tools
+# Build tools needed for native modules (bcrypt, etc.)
 RUN apk add --no-cache make gcc g++ python3
 
+# Copy manifests & Prisma schema first for layer caching
 COPY package*.json ./
 COPY prisma ./prisma/
 
-# Install dependencies and generate prisma client
-RUN npm config set registry https://registry.npmmirror.com && npm ci
+# Install all deps (including devDependencies for the build)
+RUN npm ci
+
+# Generate Prisma client against the schema
 RUN npx prisma generate
 
+# Copy the rest of the source and build
 COPY . .
-
-# Build the application
 RUN npm run build
 
+# ── Stage 2: Production runner ────────────────────────────────────────────────
 FROM node:20-alpine AS production
 
 WORKDIR /app
 
+# wget is used by the docker-compose healthcheck
+RUN apk add --no-cache wget
+
+# Copy only what the production runtime needs
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package*.json ./
 COPY --from=builder /app/dist ./dist
