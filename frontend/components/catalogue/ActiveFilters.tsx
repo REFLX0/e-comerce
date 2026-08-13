@@ -1,11 +1,45 @@
-"use client";
+"use client"
 
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter } from '@/i18n/routing'
+import { useSearchParams } from 'next/navigation'
 import { X } from 'lucide-react'
+import { useTranslations } from 'next-intl'
+
+const FILTER_LABELS: Record<string, string> = {
+  categorySlug: 'categoryFilter',
+  brandSlug: 'brandFilter',
+  viscosity: 'viscosityFilter',
+  volume: 'volumeFilter',
+  type: 'oilTypeFilter',
+  api: 'apiFilter',
+  acea: 'aceaFilter',
+  priceMin: 'minPriceFilter',
+  priceMax: 'maxPriceFilter',
+  inStockOnly: 'inStockOnly',
+  isNew: 'newArrivals',
+  isFeatured: 'featuredProducts',
+  search: 'searchFilter',
+}
 
 export function ActiveFilters() {
+  const t = useTranslations('Catalogue')
   const router = useRouter()
   const searchParams = useSearchParams()
+
+  const activeFilters: { key: string; label: string }[] = []
+  for (const [key, value] of searchParams.entries()) {
+    const translationKey = FILTER_LABELS[key]
+    if (key === 'page' || !translationKey || !value) continue
+    activeFilters.push({
+      key,
+      label:
+        key === 'inStockOnly' || key === 'isNew' || key === 'isFeatured'
+          ? t(translationKey)
+          : `${t(translationKey)}: ${value}`,
+    })
+  }
+
+  if (!activeFilters.length) return null
 
   const removeFilter = (key: string) => {
     const params = new URLSearchParams(searchParams.toString())
@@ -14,54 +48,24 @@ export function ActiveFilters() {
     router.push(`/catalogue?${params.toString()}`)
   }
 
-  const clearAll = () => {
-    router.push('/catalogue')
-  }
-
-  const activeFilters: { key: string; label: string }[] = []
-
-  if (searchParams.get('categorySlug')) {
-    activeFilters.push({
-      key: 'categorySlug',
-      label: `Catégorie: ${searchParams.get('categorySlug')}`,
-    })
-  }
-  if (searchParams.get('brandSlug')) {
-    activeFilters.push({ key: 'brandSlug', label: `Marque: ${searchParams.get('brandSlug')}` })
-  }
-  if (searchParams.get('viscosity')) {
-    activeFilters.push({ key: 'viscosity', label: `Viscosité: ${searchParams.get('viscosity')}` })
-  }
-  if (searchParams.get('inStockOnly') === 'true') {
-    activeFilters.push({ key: 'inStockOnly', label: 'En stock uniquement' })
-  }
-  if (searchParams.get('isPromo') === 'true') {
-    activeFilters.push({ key: 'isPromo', label: 'En promotion' })
-  }
-  if (searchParams.get('search')) {
-    activeFilters.push({ key: 'search', label: `Recherche: "${searchParams.get('search')}"` })
-  }
-
-  if (activeFilters.length === 0) return null
+  const clearAll = () => router.push('/catalogue')
 
   return (
-    <div className="mb-6 flex flex-wrap items-center gap-2">
-      <span className="mr-2 text-sm text-gray-500">Filtres actifs :</span>
+    <div className="mb-6 flex flex-wrap items-center gap-2 border-y border-black/10 py-4">
+      <span className="mr-1 text-[11px] font-black uppercase tracking-[0.15em] text-neutral-500">{t('activeFilters')}</span>
       {activeFilters.map((filter) => (
         <button
           key={filter.key}
+          type="button"
           onClick={() => removeFilter(filter.key)}
-          className="bg-gray-100 text-[#111] hover:bg-[#E10600] flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-colors hover:text-white"
+          className="inline-flex items-center gap-1.5 border border-[#E10600]/20 bg-[#E10600]/[0.06] px-2.5 py-1.5 text-xs font-bold text-[#111] transition-colors hover:border-[#E10600] hover:bg-[#E10600] hover:text-white"
         >
           {filter.label}
-          <X size={14} />
+          <X size={13} />
         </button>
       ))}
-      <button
-        onClick={clearAll}
-        className="text-[#E10600] ml-2 text-xs font-medium hover:underline"
-      >
-        Tout effacer
+      <button type="button" onClick={clearAll} className="ml-1 text-xs font-bold text-[#E10600] hover:underline">
+        {t('clearAllFilters')}
       </button>
     </div>
   )

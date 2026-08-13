@@ -13,6 +13,7 @@ export interface ProductFilters {
   inStockOnly?: boolean;
   isPromo?: boolean;
   isFeatured?: boolean;
+  isNew?: boolean;
   search?: string;
   sortBy?: string;
   page?: number;
@@ -74,6 +75,11 @@ export class ProductsService {
     }
     if (filters.isFeatured) {
       where.isFeatured = true;
+    }
+    if (filters.isNew) {
+      where.createdAt = {
+        gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
+      };
     }
     if (filters.viscosity) {
       where.specs = { viscosity: filters.viscosity };
@@ -408,6 +414,14 @@ export class ProductsService {
             viscosity: product.specs.viscosity,
             apiSpec: product.specs.apiStandard,
             aceaSpec: product.specs.aeceaStandard,
+            jasoSpec: product.specs.jasoStandard,
+            oemApprovals: product.specs.OEMApprovals
+              ?.split(';')
+              .map((approval: string) => approval.trim())
+              .filter(Boolean),
+            dpfCompatible: product.specs.DPFCompatible,
+            turboCompatible: product.specs.TurboCompatible,
+            hybridCompatible: product.specs.HybridCompatible,
             type: product.specs.isFullySynth
               ? 'full_synth'
               : product.specs.isSemiSynth

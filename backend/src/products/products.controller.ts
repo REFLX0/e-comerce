@@ -25,6 +25,7 @@ export class ProductsController {
       inStockOnly: query.inStockOnly === 'true',
       isPromo: query.isPromo === 'true',
       isFeatured: query.isFeatured === 'true',
+      isNew: query.isNew === 'true',
       search: query.search || query.q,
       sortBy: query.sortBy,
       page: query.page ? +query.page : 1,

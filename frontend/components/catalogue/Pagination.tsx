@@ -1,6 +1,7 @@
-"use client";
+"use client"
 
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter } from '@/i18n/routing'
+import { useSearchParams } from 'next/navigation'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 
 interface Props {
@@ -22,58 +23,50 @@ export function Pagination({ currentPage, totalPages }: Props) {
   }
 
   const pages: (number | string)[] = []
-  for (let i = 1; i <= totalPages; i++) {
-    // Simple logic to show limited pages
-    if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
-      pages.push(i)
-    } else if (i === currentPage - 2 || i === currentPage + 2) {
-      pages.push('...')
-    }
+  for (let page = 1; page <= totalPages; page += 1) {
+    if (page === 1 || page === totalPages || (page >= currentPage - 1 && page <= currentPage + 1)) pages.push(page)
+    else if (page === currentPage - 2 || page === currentPage + 2) pages.push('...')
   }
 
-  // Remove duplicate '...'
-  const uniquePages = pages.filter((item, index) => {
-    if (item === '...' && pages[index - 1] === '...') return false
-    return true
-  })
-
   return (
-    <div className="mt-12 flex items-center justify-center gap-2">
+    <nav className="mt-12 flex items-center justify-center gap-1.5 border-t border-black/10 pt-7" aria-label="Pagination">
       <button
+        type="button"
         onClick={() => handlePageChange(currentPage - 1)}
         disabled={currentPage === 1}
-        className="border-brand-surface-dark hover:bg-brand-surface flex h-10 w-10 items-center justify-center rounded-full border text-gray-500 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+        className="flex h-10 w-10 items-center justify-center border border-black/15 text-[#111] transition-colors hover:border-[#E10600] hover:bg-[#E10600] hover:text-white disabled:cursor-not-allowed disabled:opacity-35"
+        aria-label="Previous page"
       >
-        <ChevronLeft size={20} />
+        <ChevronLeft size={18} />
       </button>
-
-      {uniquePages.map((page, index) =>
+      {pages.map((page, index) =>
         page === '...' ? (
-          <span key={`ellipsis-${index}`} className="px-2 text-gray-400">
-            ...
-          </span>
+          <span key={`ellipsis-${index}`} className="px-2 text-sm text-neutral-400">…</span>
         ) : (
           <button
             key={page}
+            type="button"
             onClick={() => handlePageChange(page as number)}
-            className={`flex h-10 w-10 items-center justify-center rounded-full text-sm font-medium transition-colors ${
+            aria-current={currentPage === page ? 'page' : undefined}
+            className={`flex h-10 min-w-10 items-center justify-center border px-2 text-sm font-black transition-colors ${
               currentPage === page
-                ? 'bg-brand-primary border-brand-primary border text-white'
-                : 'border-brand-surface-dark hover:bg-brand-surface border text-gray-600'
+                ? 'border-[#E10600] bg-[#E10600] text-white'
+                : 'border-black/15 text-[#111] hover:border-[#E10600] hover:text-[#E10600]'
             }`}
           >
             {page}
           </button>
         )
       )}
-
       <button
+        type="button"
         onClick={() => handlePageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
-        className="border-brand-surface-dark hover:bg-brand-surface flex h-10 w-10 items-center justify-center rounded-full border text-gray-500 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+        className="flex h-10 w-10 items-center justify-center border border-black/15 text-[#111] transition-colors hover:border-[#E10600] hover:bg-[#E10600] hover:text-white disabled:cursor-not-allowed disabled:opacity-35"
+        aria-label="Next page"
       >
-        <ChevronRight size={20} />
+        <ChevronRight size={18} />
       </button>
-    </div>
+    </nav>
   )
 }

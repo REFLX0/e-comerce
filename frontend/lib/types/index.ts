@@ -53,10 +53,15 @@ export interface ProductSpec {
   viscosity?: string
   apiSpec?: string
   aceaSpec?: string
+  jasoSpec?: string
   approvals?: string[]
+  oemApprovals?: string[]
   application?: string
   type?: string
   baseOil?: string
+  dpfCompatible?: boolean
+  turboCompatible?: boolean
+  hybridCompatible?: boolean
   vehicleTypes?: VehicleType[]
   fuelTypes?: FuelType[]
   minCylinders?: number
@@ -266,6 +271,7 @@ export interface ProductFilters {
   inStockOnly?: boolean
   isPromo?: boolean
   isNew?: boolean
+  isFeatured?: boolean
   isBestSeller?: boolean
   search?: string
   sortBy?: 'relevance' | 'price_asc' | 'price_desc' | 'newest' | 'rating'
