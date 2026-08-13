@@ -164,6 +164,24 @@ export interface Address {
   isDefault?: boolean
 }
 
+export interface UserCar {
+  id: string
+  name: string
+  make?: string | null
+  model?: string | null
+  year?: number | null
+  plateNumber?: string | null
+  currentMileage: number
+  lastOilChangeMileage: number
+  oilChangeIntervalKm: number
+  oilChangeDone: boolean
+  oilFilterChanged: boolean
+  airFilterChanged: boolean
+  cabinFilterChanged: boolean
+  createdAt: string
+  updatedAt: string
+}
+
 export interface User {
   id: string
   email: string
@@ -173,6 +191,7 @@ export interface User {
   phone?: string
   role: UserRole
   addresses: Address[]
+  cars?: UserCar[]
   createdAt: string
 }
 

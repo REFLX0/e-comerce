@@ -39,9 +39,19 @@ export function EmptyState({
           {title}
         </h3>
       )}
-      <p className="mb-8 max-w-sm text-sm leading-relaxed text-gray-500">
+      <p className="mb-6 max-w-sm text-sm leading-relaxed text-gray-500">
         {message}
       </p>
+
+      <div className="mb-8 max-w-sm rounded-xl border border-brand-primary/10 bg-brand-primary/5 p-4 text-sm text-brand-primary shadow-sm flex items-start gap-3 text-left">
+        <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white text-brand-primary shadow-sm">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
+        </div>
+        <div>
+          <strong className="block font-bold">Vous ne trouvez pas votre pièce ?</strong>
+          <span className="opacity-90 leading-snug block mt-1">Contactez notre chatbot en bas de l'écran, il vous aidera à trouver exactement ce qu'il vous faut !</span>
+        </div>
+      </div>
 
       {/* Actions */}
       {(action || secondaryAction) && (

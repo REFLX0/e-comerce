@@ -15,6 +15,8 @@ import { UsersService } from './users.service';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { CreateAddressDto } from './dto/create-address.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
+import { CreateUserCarDto } from './dto/create-user-car.dto';
+import { UpdateUserCarDto } from './dto/update-user-car.dto';
 
 @ApiTags('users')
 @ApiBearerAuth()
@@ -51,6 +53,30 @@ export class UsersController {
   @Delete('me/addresses/:id')
   removeAddress(@CurrentUser('id') userId: string, @Param('id') id: string) {
     return this.usersService.removeAddress(userId, id);
+  }
+
+  @Get('me/cars')
+  getCars(@CurrentUser('id') userId: string) {
+    return this.usersService.getCars(userId);
+  }
+
+  @Post('me/cars')
+  addCar(@CurrentUser('id') userId: string, @Body() dto: CreateUserCarDto) {
+    return this.usersService.addCar(userId, dto);
+  }
+
+  @Patch('me/cars/:id')
+  updateCar(
+    @CurrentUser('id') userId: string,
+    @Param('id') id: string,
+    @Body() dto: UpdateUserCarDto,
+  ) {
+    return this.usersService.updateCar(userId, id, dto);
+  }
+
+  @Delete('me/cars/:id')
+  removeCar(@CurrentUser('id') userId: string, @Param('id') id: string) {
+    return this.usersService.removeCar(userId, id);
   }
 
   @Post('me/change-password')

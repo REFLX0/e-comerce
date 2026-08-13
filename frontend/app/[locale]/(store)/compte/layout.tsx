@@ -8,7 +8,7 @@ import { useSession } from 'next-auth/react'
 import { authApi } from '@/lib/api/auth'
 import { useTranslations } from 'next-intl'
 import {
-  LayoutDashboard, Package, Heart, MapPin, ShieldCheck,
+  LayoutDashboard, Package, Heart, MapPin, ShieldCheck, Car,
   LifeBuoy, LogOut, User, ChevronRight, Menu, X
 } from 'lucide-react'
 
@@ -73,6 +73,7 @@ export default function CompteLayout({ children }: { children: React.ReactNode }
     { href: '/compte',           icon: LayoutDashboard, label: t('dashboard'),     exact: true },
     { href: '/compte/commandes', icon: Package,          label: t('myOrders') },
     { href: '/compte/wishlist',  icon: Heart,            label: t('myWishlist') },
+    { href: '/compte/voitures',  icon: Car,              label: t('myCars') },
     { href: '/compte/profil',    icon: User,             label: t('myProfile') },
     { href: '/compte/adresses',  icon: MapPin,           label: t('myAddresses') },
     { href: '/compte/support',   icon: LifeBuoy,         label: t('support') },

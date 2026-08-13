@@ -11,15 +11,22 @@ import { toast } from 'sonner'
 const STATUS = {
   PENDING: { label: 'En attente', icon: Clock, cls: 'text-yellow-600 bg-yellow-50' },
   CONFIRMED: { label: 'Confirmée', icon: CheckCircle2, cls: 'text-blue-600 bg-blue-50' },
-  SHIPPED: { label: 'Expédiée', icon: Truck, cls: 'text-purple-600 bg-purple-50' },
-  DELIVERED: { label: 'Livrée', icon: Truck, cls: 'text-green-600 bg-green-50' },
+  SHIPPED: { label: 'Expédiée', icon: Truck, cls: 'text-brand-primary bg-brand-primary/10' },
+  DELIVERED: { label: 'Livrée', icon: CheckCircle2, cls: 'text-green-600 bg-green-50' },
   CANCELLED: { label: 'Annulée', icon: XCircle, cls: 'text-red-600 bg-red-50' },
+  RETURNED: { label: 'En retour', icon: Package, cls: 'text-orange-600 bg-orange-50' },
 }
 
 const NEXT_STATUS: Record<string, { label: string; status: string; cls: string }[]> = {
   PENDING: [{ label: 'Confirmer', status: 'CONFIRMED', cls: 'bg-blue-500 hover:bg-blue-600' }],
-  CONFIRMED: [{ label: 'Expédier', status: 'SHIPPED', cls: 'bg-purple-500 hover:bg-purple-600' }],
-  SHIPPED: [{ label: 'Livrer', status: 'DELIVERED', cls: 'bg-green-500 hover:bg-green-600' }],
+  CONFIRMED: [{ label: 'Expédier', status: 'SHIPPED', cls: 'bg-brand-primary hover:bg-brand-primary/90' }],
+  SHIPPED: [
+    { label: 'Livrer', status: 'DELIVERED', cls: 'bg-green-500 hover:bg-green-600' },
+    { label: 'Marquer retourné', status: 'RETURNED', cls: 'bg-orange-500 hover:bg-orange-600 mt-2' }
+  ],
+  DELIVERED: [
+    { label: 'Marquer retourné', status: 'RETURNED', cls: 'bg-orange-500 hover:bg-orange-600' }
+  ]
 }
 
 export default function OrderDetailPage() {

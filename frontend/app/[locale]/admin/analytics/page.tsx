@@ -12,6 +12,7 @@ import {
   Package,
   RefreshCw,
   ShoppingCart,
+  Truck,
   Users,
 } from 'lucide-react'
 
@@ -26,6 +27,8 @@ type RecentOrder = {
 type DashboardStats = {
   totalOrders?: number
   totalRevenue?: number
+  revenueLivraison?: number
+  revenueHanout?: number
   totalUsers?: number
   totalProducts?: number
   recentOrders?: RecentOrder[]
@@ -117,12 +120,14 @@ export default function AdminAnalyticsPage() {
         </button>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {[
-          { label: "Chiffre d'affaires", value: money(stats.totalRevenue ?? 0), icon: DollarSign, trend: trendStr(trends.revenue), good: isGood(trends.revenue) },
-          { label: 'Commandes', value: stats.totalOrders ?? 0, icon: ShoppingCart, trend: trendStr(trends.orders), good: isGood(trends.orders) },
+          { label: "Chiffre d'affaires Global", value: money(stats.totalRevenue ?? 0), icon: DollarSign, trend: trendStr(trends.revenue), good: isGood(trends.revenue) },
+          { label: "Revenus Livraison", value: money(stats.revenueLivraison ?? 0), icon: Truck, trend: '-', good: true },
+          { label: "Revenus Boutique (Store)", value: money(stats.revenueHanout ?? 0), icon: Package, trend: '-', good: true },
+          { label: 'Commandes Totales', value: stats.totalOrders ?? 0, icon: ShoppingCart, trend: trendStr(trends.orders), good: isGood(trends.orders) },
           { label: 'Clients', value: stats.totalUsers ?? 0, icon: Users, trend: '+0%', good: true },
-          { label: 'Panier moyen', value: money(avgOrderValue), icon: Package, trend: '-', good: true },
+          { label: 'Panier moyen', value: money(avgOrderValue), icon: Activity, trend: '-', good: true },
         ].map((kpi) => (
           <div key={kpi.label} className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
             <div className="flex items-center justify-between">

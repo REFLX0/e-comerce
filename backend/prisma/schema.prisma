@@ -27,6 +27,7 @@ enum OrderStatus {
   SHIPPED
   DELIVERED
   CANCELLED
+  RETURNED
 }
 
 enum PaymentStatus {
@@ -87,6 +88,7 @@ model User {
   accounts              Account[]
   sessions              Session[]
   addresses             Address[]
+  cars                  UserCar[]
   orders                Order[]
   reviews               Review[]
   wishlistItems         WishlistItem[]
@@ -140,6 +142,32 @@ model Address {
   city      String
   wilaya    String
   isDefault Boolean @default(false)
+}
+
+// ─────────────────────────────────────────
+//  CUSTOMER CARS / VIDANGE REMINDERS
+// ─────────────────────────────────────────
+
+model UserCar {
+  id                   String   @id @default(cuid())
+  userId               String
+  user                 User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name                 String
+  make                 String?
+  model                String?
+  year                 Int?
+  plateNumber          String?
+  currentMileage       Int      @default(0)
+  lastOilChangeMileage Int      @default(0)
+  oilChangeIntervalKm  Int      @default(10000)
+  oilChangeDone        Boolean  @default(false)
+  oilFilterChanged     Boolean  @default(false)
+  airFilterChanged     Boolean  @default(false)
+  cabinFilterChanged   Boolean  @default(false)
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  @@index([userId])
 }
 
 // ─────────────────────────────────────────

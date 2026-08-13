@@ -6,7 +6,7 @@ import { ordersApi } from '@/lib/api/orders'
 import Link from 'next/link'
 import {
   Package, Heart, MapPin, Star, ArrowRight, ShoppingBag,
-  Clock, CheckCircle2, Truck, XCircle
+  Clock, CheckCircle2, Truck, XCircle, Car
 } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
@@ -21,6 +21,7 @@ const STATUS_CONFIG = {
 const QUICK_LINKS = [
   { href: '/compte/commandes', icon: Package,  labelKey: 'myOrders',    descKey: 'myOrdersDesc' },
   { href: '/compte/wishlist',  icon: Heart,    labelKey: 'myWishlist',  descKey: 'myWishlistDesc' },
+  { href: '/compte/voitures',  icon: Car,      labelKey: 'myCars',      descKey: 'myCarsDesc' },
   { href: '/compte/adresses',  icon: MapPin,   labelKey: 'myAddresses', descKey: 'myAddressesDesc' },
   { href: '/compte/profil',    icon: Star,     labelKey: 'myProfile',   descKey: 'myProfileDesc' },
 ]
@@ -50,7 +51,7 @@ export default function CompteDashboardPage() {
       </div>
 
       {/* Quick links */}
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
         {QUICK_LINKS.map((link) => (
           <Link
             key={link.href}

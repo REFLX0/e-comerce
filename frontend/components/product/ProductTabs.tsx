@@ -13,6 +13,31 @@ interface Props {
 
 export function ProductTabs({ product }: Props) {
   const t = useTranslations('Product')
+  
+  const descString = product.description || '<p>Aucune description détaillée disponible.</p>';
+  let baseDesc = descString;
+  let specsHtml = '';
+  let oeHtml = '';
+  let compatHtml = '';
+
+  const specsMatch = descString.match(/(<h3>Spécifications<\/h3><ul>.*?<\/ul>)/);
+  if (specsMatch && specsMatch[1]) {
+    specsHtml = specsMatch[1].replace('<h3>Spécifications</h3>', '');
+    baseDesc = baseDesc.replace(specsMatch[1], '');
+  }
+
+  const oeMatch = descString.match(/(<h3>Références d'origine<\/h3><ul>.*?<\/ul>)/);
+  if (oeMatch && oeMatch[1]) {
+    oeHtml = oeMatch[1].replace('<h3>Références d\'origine</h3>', '');
+    baseDesc = baseDesc.replace(oeMatch[1], '');
+  }
+
+  const compatMatch = descString.match(/(<h3>Compatibilité Véhicules<\/h3><ul>.*?<\/ul>)/);
+  if (compatMatch && compatMatch[1]) {
+    compatHtml = compatMatch[1].replace('<h3>Compatibilité Véhicules</h3>', '');
+    baseDesc = baseDesc.replace(compatMatch[1], '');
+  }
+
   return (
     <div className="border-brand-surface-dark mt-16 rounded-2xl border bg-white p-6 shadow-sm md:p-10">
       <Tabs defaultValue="description" className="w-full">
@@ -43,16 +68,20 @@ export function ProductTabs({ product }: Props) {
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="description" className="mt-0 space-y-6 leading-relaxed text-gray-600">
-          <div
-            dangerouslySetInnerHTML={{
-              __html: product.description || '<p>Aucune description détaillée disponible.</p>',
-            }}
-          />
+        <TabsContent value="description" className="mt-0 space-y-6 leading-relaxed text-gray-600 prose prose-brand max-w-none">
+          <div dangerouslySetInnerHTML={{ __html: baseDesc }} />
+          {oeHtml && (
+            <div className="mt-8">
+              <h3 className="text-xl font-display font-bold text-brand-primary mb-4">Références d'origine</h3>
+              <div className="bg-gray-50 rounded-xl p-5" dangerouslySetInnerHTML={{ __html: oeHtml }} />
+            </div>
+          )}
         </TabsContent>
 
         <TabsContent value="specs" className="mt-0">
-          {product.specs ? (
+          {specsHtml ? (
+            <div className="prose prose-brand max-w-none prose-li:text-gray-600 prose-strong:text-gray-900 bg-gray-50 rounded-xl p-6" dangerouslySetInnerHTML={{ __html: specsHtml }} />
+          ) : product.specs ? (
             <div className="flex flex-col gap-10">
               <div className="grid grid-cols-1 gap-x-12 gap-y-4 md:grid-cols-2">
                 {Object.entries(product.specs).map(([key, value]) => {
@@ -102,7 +131,9 @@ export function ProductTabs({ product }: Props) {
         </TabsContent>
 
         <TabsContent value="compatibility" className="mt-0">
-          {product.compatibility && product.compatibility.length > 0 ? (
+          {compatHtml ? (
+            <div className="prose prose-brand max-w-none prose-li:text-gray-600 prose-li:marker:text-brand-primary bg-gray-50 rounded-xl p-6" dangerouslySetInnerHTML={{ __html: compatHtml }} />
+          ) : product.compatibility && product.compatibility.length > 0 ? (
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {product.compatibility.map((comp: any) => (
                 <div

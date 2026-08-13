@@ -12,27 +12,8 @@ export default function Home() {
       {/* 1. Hero */}
       <HeroBanner />
 
-      {/* 2. Reassurance strip */}
-      <section className="bg-white py-10 md:py-14">
-        <div className="section-padding">
-          <TrustBadges />
-        </div>
-      </section>
-
-      {/* 3. Shop by Category */}
-      <CategoryGrid />
-
-      {/* 4. Best Sellers */}
-      <BestSellers />
-
-      {/* 5. Brands */}
-      <BrandsBar />
-
-      {/* 6. Why Specpart */}
-      <WhySpecpart />
-
-      {/* 7. Oil Finder — full section */}
-      <section id="oil-finder" className="bg-white py-16 md:py-20">
+      {/* 2. Oil Finder — full section */}
+      <section id="oil-finder" className="bg-white py-16 md:py-20 border-b border-gray-100">
         <div className="section-padding">
           <div className="mb-10 text-center">
             <p className="mb-2 text-xs font-bold uppercase tracking-[0.25em] text-brand-accent">
@@ -48,6 +29,25 @@ export default function Home() {
           <OilFinderTabs />
         </div>
       </section>
+
+      {/* 3. Reassurance strip */}
+      <section className="bg-white py-10 md:py-14 border-b border-gray-100">
+        <div className="section-padding">
+          <TrustBadges />
+        </div>
+      </section>
+
+      {/* 4. Shop by Category */}
+      <CategoryGrid />
+
+      {/* 5. Best Sellers */}
+      <BestSellers />
+
+      {/* 6. Brands */}
+      <BrandsBar />
+
+      {/* 7. Why Specpart */}
+      <WhySpecpart />
     </>
   )
 }

@@ -14,7 +14,7 @@ export class AdminService {
 
   // ─── Dashboard Stats ───────────────────────────────────────────────────────
   async getDashboardStats() {
-    const [totalOrders, totalRevenue, totalUsers, totalProducts, recentOrders] =
+    const [totalOrders, totalRevenue, totalUsers, totalProducts, recentOrders, revenueLivraison, revenueHanout] =
       await Promise.all([
         this.prisma.order.count(),
         this.prisma.order.aggregate({ _sum: { totalAmount: true } }),
@@ -25,10 +25,20 @@ export class AdminService {
           orderBy: { createdAt: 'desc' },
           include: { items: true },
         }),
+        this.prisma.order.aggregate({
+          where: { shippingCost: { gt: 0 } },
+          _sum: { totalAmount: true },
+        }),
+        this.prisma.order.aggregate({
+          where: { shippingCost: { equals: 0 } },
+          _sum: { totalAmount: true },
+        }),
       ]);
     return {
       totalOrders,
       totalRevenue: totalRevenue._sum.totalAmount ?? 0,
+      revenueLivraison: revenueLivraison._sum.totalAmount ?? 0,
+      revenueHanout: revenueHanout._sum.totalAmount ?? 0,
       totalUsers,
       totalProducts,
       recentOrders,

@@ -8,16 +8,17 @@ import { usePathname } from 'next/navigation'
 import { toast } from 'sonner'
 import {
   Search, Download, Clock, CheckCircle2, Truck,
-  XCircle, Filter, ChevronDown, Package, Edit2, Eye, AlertTriangle, Printer
+  XCircle, Filter, ChevronDown, Package, Edit2, Eye, AlertTriangle, Printer, PackageX
 } from 'lucide-react'
 import { downloadOrderPdf } from '@/lib/api/admin'
 
 const STATUS_CONFIG = {
   PENDING:   { label: 'En attente', icon: Clock,        cls: 'text-yellow-600 bg-yellow-50',     border: 'border-yellow-100' },
   CONFIRMED: { label: 'Confirmée',  icon: CheckCircle2, cls: 'text-blue-600 bg-blue-50',         border: 'border-blue-100' },
-  SHIPPED:   { label: 'Expédiée',   icon: Truck,        cls: 'text-purple-600 bg-purple-50',     border: 'border-purple-100' },
+  SHIPPED:   { label: 'Expédiée',   icon: Truck,        cls: 'text-brand-primary bg-brand-primary/10', border: 'border-brand-primary/20' },
   DELIVERED: { label: 'Livrée',     icon: CheckCircle2, cls: 'text-green-600 bg-green-50',       border: 'border-green-100' },
   CANCELLED: { label: 'Annulée',    icon: XCircle,      cls: 'text-red-600 bg-red-50',           border: 'border-red-100' },
+  RETURNED:  { label: 'En retour',  icon: PackageX,     cls: 'text-orange-600 bg-orange-50',     border: 'border-orange-100' }
 }
 
 export default function AdminOrdersPage() {

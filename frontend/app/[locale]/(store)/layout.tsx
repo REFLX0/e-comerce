@@ -2,6 +2,8 @@ import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import { MobileBottomNav } from '@/components/layout/MobileBottomNav'
 
+import { ChatWidget } from '@/components/common/ChatWidget'
+
 export default function StoreLayout({
   children,
 }: Readonly<{
@@ -14,6 +16,7 @@ export default function StoreLayout({
         {children}
       </main>
       <Footer />
+      <ChatWidget />
       <MobileBottomNav />
     </>
   )
