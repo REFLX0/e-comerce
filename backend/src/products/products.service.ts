@@ -415,6 +415,16 @@ export class ProductsService {
                 : 'mineral',
           }
         : null,
+      compatibility:
+        product.compatibilities?.map((c: any) => ({
+          id: c.id,
+          productId: c.productId,
+          make: c.vehicleModel?.make?.name,
+          model: c.vehicleModel?.name,
+          yearFrom: c.yearFrom,
+          yearTo: c.yearTo,
+          engine: c.engineCode,
+        })) ?? [],
       isBestSeller: product.isFeatured,
       isNew:
         Date.now() - new Date(product.createdAt).getTime() <

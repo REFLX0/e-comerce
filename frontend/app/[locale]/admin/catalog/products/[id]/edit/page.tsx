@@ -9,6 +9,11 @@ import { Save, ArrowLeft, Upload, X, Trash2, Plus, Info } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
 
+function categoryLabel(category: any) {
+  const name = category.nameFr ?? category.name ?? 'Catégorie'
+  return category.parent?.nameFr ? `${category.parent.nameFr} / ${name}` : name
+}
+
 interface VariantForm {
   id?: string
   volume: string
@@ -45,8 +50,8 @@ export default function EditProductPage() {
     queryFn: () => adminApi.getProduct(id),
     enabled: !!id,
   })
-  const { data: brandsData } = useQuery<any>({ queryKey: ['brands'], queryFn: () => fetch('/api/brands').then(r => r.json()) })
-  const { data: categoriesData } = useQuery<any>({ queryKey: ['categories'], queryFn: () => fetch('/api/categories').then(r => r.json()) })
+  const { data: brandsData = [] } = useQuery<any[]>({ queryKey: ['admin-catalog-brands'], queryFn: adminApi.getCatalogBrands })
+  const { data: categoriesData = [] } = useQuery<any[]>({ queryKey: ['admin-catalog-categories'], queryFn: adminApi.getCatalogCategories })
 
   useEffect(() => {
     if (product) {
@@ -146,6 +151,7 @@ export default function EditProductPage() {
         brandId, categoryId,
         isPublished,
         variants: variants.map((v, idx) => ({
+          id: v.id,
           volume: v.volume,
           price: parseFloat(v.price) || 0,
           stockQty: parseInt(v.stockQty, 10) || 0,
@@ -219,7 +225,7 @@ export default function EditProductPage() {
               <label className="text-sm font-semibold text-gray-700">Marque *</label>
               <select value={brandId} onChange={e => setBrandId(e.target.value)} className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-brand-accent transition-all" required>
                 <option value="">Sélectionner une marque</option>
-                {Array.isArray(brandsData) && brandsData.map((b: any) => (
+                {brandsData.map((b: any) => (
                   <option key={b.id} value={b.id}>{b.name || b.nameFr}</option>
                 ))}
               </select>
@@ -228,8 +234,8 @@ export default function EditProductPage() {
               <label className="text-sm font-semibold text-gray-700">Catégorie *</label>
               <select value={categoryId} onChange={e => setCategoryId(e.target.value)} className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-brand-accent transition-all" required>
                 <option value="">Sélectionner une catégorie</option>
-                {Array.isArray(categoriesData) && categoriesData.map((c: any) => (
-                  <option key={c.id} value={c.id}>{c.nameFr || c.name}</option>
+                {categoriesData.map((c: any) => (
+                  <option key={c.id} value={c.id}>{categoryLabel(c)}</option>
                 ))}
               </select>
             </div>

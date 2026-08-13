@@ -1,8 +1,7 @@
 "use client";
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { productsApi } from '@/lib/api/products'
 import { adminApi } from '@/lib/api/admin'
 import { toast } from 'sonner'
 import { Search, AlertTriangle, TrendingDown, Package, Edit2, Download } from 'lucide-react'
@@ -30,10 +29,24 @@ function StatusTag({ qty }: { qty: number }) {
 }
 
 // Inline editable qty cell
-function QtyCell({ productId, qty }: { productId: string; qty: number }) {
+function QtyCell({
+  productId,
+  variantId,
+  qty,
+  onSaved,
+}: {
+  productId: string
+  variantId?: string
+  qty: number
+  onSaved: () => void
+}) {
   const [editing, setEditing] = useState(false)
   const [val, setVal] = useState(qty)
   const [saving, setSaving] = useState(false)
+
+  useEffect(() => {
+    setVal(qty)
+  }, [qty])
 
   return editing ? (
     <form
@@ -42,8 +55,12 @@ function QtyCell({ productId, qty }: { productId: string; qty: number }) {
         if (val === qty) { setEditing(false); return }
         setSaving(true)
         try {
-          await adminApi.updateProduct(productId, { stock: val })
+          await adminApi.updateProduct(
+            productId,
+            variantId ? { variants: [{ id: variantId, stockQty: val }] } : { stock: val }
+          )
           setEditing(false)
+          onSaved()
         } catch {
           setVal(qty)
           toast.error('Erreur lors de la mise à jour du stock')
@@ -79,6 +96,7 @@ function QtyCell({ productId, qty }: { productId: string; qty: number }) {
 
 interface InventoryItem {
   productId: string
+  variantId?: string
   productName: string
   sku: string
   volume?: string
@@ -92,7 +110,7 @@ export default function AdminInventoryPage() {
 
   const { data, isLoading, isError, refetch } = useQuery<any>({
     queryKey: ['admin-products-inventory'],
-    queryFn: () => productsApi.getAll({ limit: 50 }),
+    queryFn: () => adminApi.getProducts({ limit: 100 }),
   })
 
   const products = (data as any)?.data ?? []
@@ -113,7 +131,8 @@ export default function AdminInventoryPage() {
   const items = products.flatMap((p) =>
     (p.variants ?? [{ id: p.id, volume: 'Standard', priceHT: p.price, stock: p.stock, sku: p.sku }]).map((v: any) => ({
       productId: p.id,
-      productName: p.name,
+      variantId: v.id,
+      productName: p.nameFr ?? p.name,
       sku: v.sku ?? p.sku,
       volume: v.volume,
       price: v.priceHT ?? v.price ?? p.price,
@@ -246,7 +265,7 @@ export default function AdminInventoryPage() {
                 </tr>
               ) : (
                 filtered.map((item: any) => (
-                  <tr key={item.sku} className="border-t border-gray-50 hover:bg-gray-50/50 transition-colors">
+                  <tr key={`${item.productId}-${item.variantId ?? item.sku}`} className="border-t border-gray-50 hover:bg-gray-50/50 transition-colors">
                     <td className="py-3 pl-4 pr-2">
                       <p className="text-sm font-medium text-brand-primary">{item.productName}</p>
                       <p className="font-mono text-xs text-gray-400">{item.sku}</p>
@@ -258,7 +277,7 @@ export default function AdminInventoryPage() {
                     <td className="px-2 py-3">
                       <div className="max-w-xs space-y-1">
                         <StockBar qty={item.qty} />
-                        <QtyCell productId={item.productId} qty={item.qty} />
+                        <QtyCell productId={item.productId} variantId={item.variantId} qty={item.qty} onSaved={refetch} />
                       </div>
                     </td>
                     <td className="py-3 pl-2 pr-4">

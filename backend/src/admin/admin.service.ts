@@ -58,23 +58,65 @@ export class AdminService {
     });
   }
 
-  async getProducts(page = 1, limit = 20) {
-    const skip = (page - 1) * limit;
+  async getProducts(page = 1, limit = 20, search?: string, status?: string) {
+    const safePage = Math.max(page, 1);
+    const safeLimit = Math.min(Math.max(limit, 1), 100);
+    const skip = (safePage - 1) * safeLimit;
+    const where: Prisma.ProductWhereInput = {};
+
+    if (search?.trim()) {
+      const query = search.trim();
+      where.OR = [
+        { nameFr: { contains: query, mode: 'insensitive' } },
+        { sku: { contains: query, mode: 'insensitive' } },
+        { slug: { contains: query, mode: 'insensitive' } },
+        { brand: { name: { contains: query, mode: 'insensitive' } } },
+        { category: { nameFr: { contains: query, mode: 'insensitive' } } },
+      ];
+    }
+
+    if (status === 'published') where.isPublished = true;
+    if (status === 'unpublished') where.isPublished = false;
+
     const [data, total] = await Promise.all([
       this.prisma.product.findMany({
+        where,
         include: {
           brand: true,
           category: true,
           variants: true,
-          images: { take: 1 },
+          images: { take: 1, orderBy: { sortOrder: 'asc' } },
         },
         orderBy: { createdAt: 'desc' },
         skip,
-        take: limit,
+        take: safeLimit,
       }),
-      this.prisma.product.count(),
+      this.prisma.product.count({ where }),
     ]);
-    return { data, total, page, totalPages: Math.ceil(total / limit) };
+    return {
+      data,
+      total,
+      page: safePage,
+      limit: safeLimit,
+      totalPages: Math.ceil(total / safeLimit),
+    };
+  }
+
+  async getCatalogBrands() {
+    return this.prisma.brand.findMany({
+      orderBy: { name: 'asc' },
+      include: { _count: { select: { products: true } } },
+    });
+  }
+
+  async getCatalogCategories() {
+    return this.prisma.category.findMany({
+      orderBy: [{ parentId: 'asc' }, { sortOrder: 'asc' }, { nameFr: 'asc' }],
+      include: {
+        parent: { select: { id: true, nameFr: true, slug: true } },
+        _count: { select: { products: true } },
+      },
+    });
   }
 
   async createProduct(dto: CreateProductDto) {
@@ -129,32 +171,88 @@ export class AdminService {
   }
 
   async updateProduct(id: string, data: any) {
-    const { price, stock, variants, ...productData } = data;
-    const updateData: any = { ...productData };
+    const { price, stock, variants, images, ...productData } = data;
+    const updateData: Prisma.ProductUncheckedUpdateInput = {};
+
+    for (const key of [
+      'sku',
+      'nameFr',
+      'slug',
+      'description',
+      'brandId',
+      'categoryId',
+      'isPublished',
+      'isFeatured',
+    ] as const) {
+      if (productData[key] !== undefined) {
+        (updateData as any)[key] = productData[key];
+      }
+    }
+
+    if (Object.keys(updateData).length > 0) {
+      await this.prisma.product.update({
+        where: { id },
+        data: updateData,
+      });
+    }
+
+    if (Array.isArray(images)) {
+      await this.prisma.productImage.deleteMany({ where: { productId: id } });
+      if (images.length > 0) {
+        await this.prisma.productImage.createMany({
+          data: images.map((url: string, idx: number) => ({
+            productId: id,
+            url,
+            isPrimary: idx === 0,
+            sortOrder: idx,
+          })),
+        });
+      }
+    }
 
     // If a full variants array is provided, update all variants
     if (variants && variants.length > 0) {
       const existing = await this.prisma.product.findUnique({
         where: { id },
-        select: { variants: { select: { id: true, volume: true } } },
+        select: {
+          sku: true,
+          variants: { select: { id: true, volume: true, skuVariant: true } },
+        },
       });
 
       const updates = variants
         .map((v: any) => {
-          const match = existing?.variants.find(
-            (ev: any) => ev.volume === v.volume && ev.id,
-          );
+          const match = v.id
+            ? existing?.variants.find((ev: any) => ev.id === v.id)
+            : existing?.variants.find(
+                (ev: any) => ev.volume === v.volume && ev.id,
+              );
           if (match) {
+            const variantData: Prisma.ProductVariantUpdateInput = {};
+            if (v.volume !== undefined) variantData.volume = v.volume;
+            if (v.price !== undefined) variantData.price = v.price;
+            if (v.stockQty !== undefined) variantData.stockQty = v.stockQty;
+            if (v.imageUrl !== undefined) variantData.imageUrl = v.imageUrl;
+
             return this.prisma.productVariant.update({
               where: { id: match.id },
-              data: {
-                price: v.price,
-                stockQty: v.stockQty,
-                imageUrl: v.imageUrl ?? null,
-              },
+              data: variantData,
             });
           }
-          return Promise.resolve(null);
+
+          if (!v.volume || v.price === undefined) return Promise.resolve(null);
+
+          const skuBase = existing?.sku ?? productData.sku ?? id;
+          return this.prisma.productVariant.create({
+            data: {
+              productId: id,
+              volume: v.volume,
+              price: v.price,
+              stockQty: v.stockQty ?? 0,
+              imageUrl: v.imageUrl ?? null,
+              skuVariant: `${skuBase}-${v.volume.replace(/\s+/g, '').toUpperCase()}-${Date.now()}`,
+            },
+          });
         })
         .filter(Boolean);
 
@@ -176,6 +274,20 @@ export class AdminService {
           await this.prisma.productVariant.update({
             where: { id: existing.variants[0].id },
             data: variantUpdate,
+          });
+        } else if (price !== undefined) {
+          const product = await this.prisma.product.findUnique({
+            where: { id },
+            select: { sku: true },
+          });
+          await this.prisma.productVariant.create({
+            data: {
+              productId: id,
+              volume: 'default',
+              price,
+              stockQty: stock ?? 0,
+              skuVariant: `${product?.sku ?? id}-default-${Date.now()}`,
+            },
           });
         }
       }
@@ -237,6 +349,7 @@ export class AdminService {
             price: v.price,
             stockQty: v.stockQty,
             skuVariant: `${v.skuVariant}-COPY`,
+            imageUrl: v.imageUrl,
           })),
         },
       },

@@ -1,6 +1,6 @@
 "use client";
 
-import { useSyncExternalStore, useState } from 'react'
+import { useState } from 'react'
 import { useTranslations } from 'next-intl'
 import Image from 'next/image'
 import { Link } from '@/i18n/routing'
@@ -8,11 +8,11 @@ import { Heart, Check, X, ShoppingCart } from 'lucide-react'
 import { motion } from 'framer-motion'
 import type { Product } from '@/lib/types'
 import { useCartStore } from '@/lib/store/cart.store'
-import { useVehicleStore } from '@/lib/store/vehicle.store'
 import { wishlistApi } from '@/lib/api/wishlist'
 import { RatingStars } from '../common/RatingStars'
 import { toast } from 'sonner'
 import { formatPrice } from '@/lib/utils/format'
+import { useProductCompatibility } from '@/lib/hooks/useProductCompatibility'
 
 /* ── Lazy image with skeleton + error fallback ───────────────────────── */
 function CardImage({ src, alt, t }: { src: string; alt: string; t: any }) {
@@ -49,12 +49,7 @@ interface Props { product: Product }
 export function ProductCard({ product }: Props) {
   const t = useTranslations('ProductCard')
   const { addItem } = useCartStore()
-  const { vehicle } = useVehicleStore()
-  const mounted = useSyncExternalStore(
-    () => () => {},
-    () => true,
-    () => false
-  )
+  const { isCompatible } = useProductCompatibility(product)
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault()
@@ -108,7 +103,7 @@ export function ProductCard({ product }: Props) {
               {t('promo')}{product.promoPercent ? ` -${product.promoPercent}%` : ''}
             </span>
           )}
-          {mounted && vehicle && (
+          {isCompatible && (
             <span className="flex items-center gap-1 rounded bg-green-500 px-2 py-0.5 text-[9px] font-black uppercase tracking-wider text-white shadow-sm">
               <Check size={8} strokeWidth={3} /> {t('compatible')}
             </span>

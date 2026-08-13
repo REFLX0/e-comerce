@@ -166,7 +166,12 @@ def process_one(url):
                     b = d.get('brand', {})
                     brand = b.get('name', '') if isinstance(b, dict) else str(b)
                     imgs = d.get('image', [])
-                    img = imgs[0] if imgs else ''
+                    if isinstance(imgs, str):
+                        img = imgs
+                    elif isinstance(imgs, list) and imgs:
+                        img = imgs[0]
+                    else:
+                        img = ''
                     o = d.get('offers', {})
                     if isinstance(o, dict):
                         price = o.get('price', '')

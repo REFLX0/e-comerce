@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useTranslations } from 'next-intl'
 import type { Product, ProductVariant } from '@/lib/types'
 import { RatingStars } from '../common/RatingStars'
@@ -8,12 +8,11 @@ import { StockIndicator } from '../common/StockIndicator'
 import { PriceDisplay } from '../common/PriceDisplay'
 import { VariantSelector } from './VariantSelector'
 import { AddToCartButton } from './AddToCartButton'
-import { useVehicleStore } from '@/lib/store/vehicle.store'
-import { Check, Share2 } from 'lucide-react'
-import { toast } from 'sonner'
+import { Check } from 'lucide-react'
 import { Link } from '@/i18n/routing'
 import { TrustBadges } from '../common/TrustBadges'
 import { ShareDropdown } from './ShareDropdown'
+import { useProductCompatibility } from '@/lib/hooks/useProductCompatibility'
 
 interface Props {
   product: Product
@@ -26,10 +25,7 @@ export function ProductInfo({ product, selectedVariant: controlledVariant, onVar
   const [internalVariant, setInternalVariant] = useState(product.variants[0])
   const selectedVariant = controlledVariant ?? internalVariant
   const setSelectedVariant = onVariantChange ?? setInternalVariant
-  const { vehicle } = useVehicleStore()
-  const [mounted, setMounted] = useState(false)
-
-  useEffect(() => setMounted(true), [])
+  const { isCompatible, vehicleLabel } = useProductCompatibility(product)
 
   if (!selectedVariant) return null
 
@@ -56,14 +52,14 @@ export function ProductInfo({ product, selectedVariant: controlledVariant, onVar
       </h1>
 
       {/* Compatibility Banner */}
-      {mounted && vehicle && (
+      {isCompatible && vehicleLabel && (
         <div className="mb-6 rounded-xl border-2 border-green-500 bg-green-50 p-4 flex items-center gap-4 animate-fade-in">
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-green-500 text-white shadow-sm">
             <Check size={20} strokeWidth={3} />
           </div>
           <div>
             <p className="text-sm font-bold text-green-900">{t('compatibleVehicle')}</p>
-            <p className="text-xs text-green-700 mt-0.5">{vehicle.makeName} {vehicle.modelName} {vehicle.engineCode}</p>
+            <p className="text-xs text-green-700 mt-0.5">{vehicleLabel}</p>
           </div>
         </div>
       )}

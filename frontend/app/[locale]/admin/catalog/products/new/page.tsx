@@ -9,6 +9,11 @@ import { Save, ArrowLeft, Upload, X, Plus, Trash2, Image as ImageIcon, Info } fr
 import Link from 'next/link'
 import Image from 'next/image'
 
+function categoryLabel(category: any) {
+  const name = category.nameFr ?? category.name ?? 'Catégorie'
+  return category.parent?.nameFr ? `${category.parent.nameFr} / ${name}` : name
+}
+
 export default function NewProductPage() {
   const router = useRouter()
   const pathname = usePathname()
@@ -31,8 +36,8 @@ export default function NewProductPage() {
   const [hasVariants, setHasVariants] = useState(false)
   const [variants, setVariants] = useState<{ volume: string; price: string; stockQty: string; imageFile: File | null; imagePreview: string | null }[]>([{ volume: '1L', price: '', stockQty: '', imageFile: null, imagePreview: null }])
 
-  const { data: brandsData } = useQuery<any>({ queryKey: ['brands'], queryFn: () => fetch('/api/brands').then(r => r.json()) })
-  const { data: categoriesData } = useQuery<any>({ queryKey: ['categories'], queryFn: () => fetch('/api/categories').then(r => r.json()) })
+  const { data: brandsData = [] } = useQuery<any[]>({ queryKey: ['admin-catalog-brands'], queryFn: adminApi.getCatalogBrands })
+  const { data: categoriesData = [] } = useQuery<any[]>({ queryKey: ['admin-catalog-categories'], queryFn: adminApi.getCatalogCategories })
 
   const createMutation = useMutation({
     mutationFn: (body: any) => adminApi.createProduct(body),
@@ -170,7 +175,7 @@ export default function NewProductPage() {
               <label className="text-sm font-semibold text-gray-700">Marque *</label>
               <select value={brandId} onChange={e => setBrandId(e.target.value)} className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-brand-accent transition-all" required>
                 <option value="">Sélectionner une marque</option>
-                {Array.isArray(brandsData) && brandsData.map((b: any) => (
+                {brandsData.map((b: any) => (
                   <option key={b.id} value={b.id}>{b.name || b.nameFr}</option>
                 ))}
               </select>
@@ -179,8 +184,8 @@ export default function NewProductPage() {
               <label className="text-sm font-semibold text-gray-700">Catégorie *</label>
               <select value={categoryId} onChange={e => setCategoryId(e.target.value)} className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-brand-accent transition-all" required>
                 <option value="">Sélectionner une catégorie</option>
-                {Array.isArray(categoriesData) && categoriesData.map((c: any) => (
-                  <option key={c.id} value={c.id}>{c.nameFr || c.name}</option>
+                {categoriesData.map((c: any) => (
+                  <option key={c.id} value={c.id}>{categoryLabel(c)}</option>
                 ))}
               </select>
             </div>

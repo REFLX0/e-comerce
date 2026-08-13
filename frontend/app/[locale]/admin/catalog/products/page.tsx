@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { adminApi } from '@/lib/api/admin'
 import Link from 'next/link'
@@ -41,6 +41,46 @@ function productStock(p: Product) {
   return p.variants?.reduce((sum, v) => sum + (v.stockQty ?? 0), 0) ?? 0
 }
 function productImage(p: Product) { const f = p.images?.[0]; return typeof f === 'string' ? f : f?.url }
+function parseCsvLine(line: string) {
+  const cells: string[] = []
+  let current = ''
+  let inQuotes = false
+
+  for (let i = 0; i < line.length; i++) {
+    const char = line[i]
+    const next = line[i + 1]
+
+    if (char === '"' && next === '"') {
+      current += '"'
+      i++
+    } else if (char === '"') {
+      inQuotes = !inQuotes
+    } else if (char === ',' && !inQuotes) {
+      cells.push(current.trim())
+      current = ''
+    } else {
+      current += char
+    }
+  }
+
+  cells.push(current.trim())
+  return cells
+}
+function normalizeLookup(value?: string | null) {
+  return String(value ?? '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, ' ')
+    .trim()
+}
+function findByName<T extends { name?: string; nameFr?: string }>(items: T[], value?: string) {
+  const normalized = normalizeLookup(value)
+  if (!normalized) return null
+  return items.find((item) =>
+    [item.name, item.nameFr].some((candidate) => normalizeLookup(candidate) === normalized)
+  ) ?? null
+}
 
 export default function AdminProductsPage() {
   const pathname = usePathname()
@@ -49,15 +89,31 @@ export default function AdminProductsPage() {
   const queryClient = useQueryClient()
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [search, setSearch] = useState('')
+  const [page, setPage] = useState(1)
   const [selected, setSelected] = useState<string[]>([])
   const [showPublished, setShowPublished] = useState<'all' | 'published' | 'unpublished'>('all')
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null)
+  const limit = 50
 
   const { data: productsData, isLoading } = useQuery<any>({
-    queryKey: ['admin-products'],
-    queryFn: () => adminApi.getProducts({ limit: 50 }),
+    queryKey: ['admin-products', page, search, showPublished],
+    queryFn: () => adminApi.getProducts({
+      page,
+      limit,
+      search: search.trim() || undefined,
+      status: showPublished === 'all' ? undefined : showPublished,
+    }),
   })
+  const { data: brandsData = [] } = useQuery<any[]>({ queryKey: ['admin-catalog-brands'], queryFn: adminApi.getCatalogBrands })
+  const { data: categoriesData = [] } = useQuery<any[]>({ queryKey: ['admin-catalog-categories'], queryFn: adminApi.getCatalogCategories })
   const products: Product[] = (productsData as any)?.data ?? []
+  const total = (productsData as any)?.total ?? products.length
+  const totalPages = Math.max((productsData as any)?.totalPages ?? 1, 1)
+
+  useEffect(() => {
+    setPage(1)
+    setSelected([])
+  }, [search, showPublished])
 
   const deleteMutation = useMutation({
     mutationFn: (id: string) => adminApi.deleteProduct(id),
@@ -77,11 +133,7 @@ export default function AdminProductsPage() {
     onError: () => toast.error('Erreur lors de la duplication'),
   })
 
-  const filtered = products.filter((p) => {
-    const ms = !search || productName(p).toLowerCase().includes(search.toLowerCase()) || productSku(p)?.toLowerCase().includes(search.toLowerCase()) || brandName(p)?.toLowerCase().includes(search.toLowerCase())
-    const mp = showPublished === 'all' ? true : showPublished === 'published' ? p.isPublished : !p.isPublished
-    return ms && mp
-  })
+  const filtered = products
 
   const toggleSelect = (id: string) =>
     setSelected((prev) => prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id])
@@ -106,10 +158,30 @@ export default function AdminProductsPage() {
       const results: string[] = []
       for (let i = 1; i < lines.length; i++) {
         const line = lines[i]; if (!line) continue
-        const cols = line.split(',').map((c) => c.replace(/^"|"$/g, '').trim())
+        const cols = parseCsvLine(line)
         if (cols[0] && cols[1]) {
           try {
-            await adminApi.createProduct({ sku: cols[0]!, nameFr: cols[1]!, slug: (cols[2] || cols[1]!.toLowerCase().replace(/[^a-z0-9]+/g, '-'))!, description: cols[3] || '', brandId: null, categoryId: null, isPublished: false, price: parseFloat(cols[6] ?? '0') || 0, stock: parseInt(cols[7] ?? '0') || 0 })
+            const brand = findByName(brandsData, cols[4])
+            const category = findByName(categoriesData, cols[5])
+
+            if (!brand || !category) {
+              results.push(`✗ ${cols[1]} (marque/catégorie introuvable)`)
+              continue
+            }
+
+            const image = cols[9]?.trim()
+            await adminApi.createProduct({
+              sku: cols[0]!,
+              nameFr: cols[1]!,
+              slug: (cols[2] || cols[1]!.toLowerCase().replace(/[^a-z0-9]+/g, '-'))!,
+              description: cols[3] || cols[1]!,
+              brandId: (brand as any).id,
+              categoryId: (category as any).id,
+              isPublished: normalizeLookup(cols[8]).startsWith('oui'),
+              price: parseFloat(cols[6] ?? '0') || 0,
+              stock: parseInt(cols[7] ?? '0') || 0,
+              images: image ? [image] : undefined,
+            })
             results.push(`✓ ${cols[1]}`)
           } catch { results.push(`✗ ${cols[1]}`) }
         }
@@ -125,7 +197,7 @@ export default function AdminProductsPage() {
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold text-brand-primary">Produits</h1>
-          <p className="text-sm text-gray-500">{products.length} produits dans le catalogue</p>
+          <p className="text-sm text-gray-500">{total} produits dans le catalogue</p>
         </div>
         <div className="flex flex-wrap gap-2">
           <input ref={fileInputRef} type="file" accept=".csv" onChange={importCsv} className="hidden" />
@@ -247,6 +319,32 @@ export default function AdminProductsPage() {
           </table>
         </div>
       </div>
+
+      {totalPages > 1 && (
+        <div className="flex items-center justify-between rounded-2xl border border-gray-100 bg-white px-4 py-3 text-sm shadow-sm">
+          <span className="text-gray-500">
+            Page {page} sur {totalPages}
+          </span>
+          <div className="flex gap-2">
+            <button
+              type="button"
+              disabled={page <= 1}
+              onClick={() => setPage((value) => Math.max(value - 1, 1))}
+              className="rounded-lg border border-gray-200 px-3 py-1.5 font-medium text-gray-600 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              Précédent
+            </button>
+            <button
+              type="button"
+              disabled={page >= totalPages}
+              onClick={() => setPage((value) => Math.min(value + 1, totalPages))}
+              className="rounded-lg border border-gray-200 px-3 py-1.5 font-medium text-gray-600 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              Suivant
+            </button>
+          </div>
+        </div>
+      )}
 
       {confirmDelete && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">

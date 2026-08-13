@@ -8,6 +8,7 @@ import {
 import { useRouter, usePathname } from 'next/navigation'
 import { productsApi } from '@/lib/api/products'
 import type { VehicleMake, VehicleModel, VehicleEngine } from '@/lib/types'
+import { useVehicleStore } from '@/lib/store/vehicle.store'
 
 
 interface VehicleFinderProps {
@@ -119,6 +120,7 @@ export function VehicleFinder({ onClose, initialVehicleType }: VehicleFinderProp
   const router = useRouter()
   const pathname = usePathname()
   const locale = pathname?.split('/')[1] === 'en' ? 'en' : 'fr'
+  const setVehicle = useVehicleStore((state) => state.setVehicle)
 
   const [step, setStep] = useState(1)
 
@@ -224,6 +226,16 @@ export function VehicleFinder({ onClose, initialVehicleType }: VehicleFinderProp
     params.set('make', selectedMake.slug)
     params.set('model', selectedModel.slug)
     if (selectedEngine) params.set('engine', selectedEngine)
+    setVehicle({
+      type: selectedModel.vehicleType,
+      makeId: selectedMake.id,
+      makeName: selectedMake.name,
+      makeSlug: selectedMake.slug,
+      modelId: selectedModel.id,
+      modelName: selectedModel.name,
+      modelSlug: selectedModel.slug,
+      engineCode: selectedEngine ?? '',
+    })
     if (onClose) onClose()
     router.push(`/${locale}/catalogue?${params.toString()}`)
   }

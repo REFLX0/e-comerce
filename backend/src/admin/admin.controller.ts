@@ -36,8 +36,21 @@ export class AdminController {
   @Get('products') getProducts(
     @Query('page') p?: string,
     @Query('limit') l?: string,
+    @Query('search') search?: string,
+    @Query('status') status?: string,
   ) {
-    return this.adminService.getProducts(p ? +p : 1, l ? +l : 20);
+    return this.adminService.getProducts(
+      p ? +p : 1,
+      l ? +l : 20,
+      search,
+      status,
+    );
+  }
+  @Get('catalog/brands') getCatalogBrands() {
+    return this.adminService.getCatalogBrands();
+  }
+  @Get('catalog/categories') getCatalogCategories() {
+    return this.adminService.getCatalogCategories();
   }
   @Get('products/export') exportProducts() {
     return this.adminService.exportProducts();

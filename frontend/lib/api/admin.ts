@@ -1,5 +1,20 @@
 import { backendClient as api } from './client'
 
+export interface CatalogBrand {
+  id: string
+  name: string
+  slug: string
+  _count?: { products: number }
+}
+
+export interface CatalogCategory {
+  id: string
+  nameFr: string
+  slug: string
+  parent?: { id: string; nameFr: string; slug: string } | null
+  _count?: { products: number }
+}
+
 export async function downloadOrderPdf(orderId: string) {
   const baseUrl = process.env.NEXT_PUBLIC_API_URL || '/api'
   try {
@@ -23,8 +38,14 @@ export const adminApi = {
   getDashboard: () =>
     api.get('/admin/dashboard'),
 
-  getProducts: (params?: { page?: number; limit?: number }) =>
+  getProducts: (params?: { page?: number; limit?: number; search?: string; status?: string }) =>
     api.get('/admin/products', { params }),
+
+  getCatalogBrands: () =>
+    api.get<CatalogBrand[]>('/admin/catalog/brands'),
+
+  getCatalogCategories: () =>
+    api.get<CatalogCategory[]>('/admin/catalog/categories'),
 
   getProduct: (id: string) =>
     api.get(`/admin/products/${id}`),
@@ -131,5 +152,3 @@ export const settingsApi = {
   batchUpdate: (body: Record<string, unknown>) =>
     api.patch<Record<string, unknown>>('/settings', body),
 }
-
-

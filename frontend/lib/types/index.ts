@@ -90,8 +90,8 @@ export interface VehicleCompatibility {
   productId: string
   make: string
   model: string
-  yearFrom: number
-  yearTo?: number
+  yearFrom?: number | null
+  yearTo?: number | null
   engine?: string
 }
 
