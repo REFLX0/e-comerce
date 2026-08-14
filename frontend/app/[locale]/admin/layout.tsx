@@ -155,20 +155,20 @@ function Sidebar({
   return (
     <div className="flex h-full flex-col bg-brand-primary-dark">
       {/* Logo */}
-      <div className="flex h-16 shrink-0 items-center gap-3 border-b border-white/10 px-4">
-        <Link href={withLocale('/admin', locale)} onClick={onClose} className="flex items-center gap-2">
+      <div className="flex h-20 shrink-0 items-center gap-3 border-b border-white/10 px-4">
+        <Link href="/admin" className="flex items-center gap-2 group">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/logo.jpg"
-            alt="specpart Admin"
-            className="h-8 w-auto object-contain"
+            alt="specpart"
+            className="h-12 w-auto object-contain scale-110 origin-left"
           />
-          {!collapsed && (
-            <span className="rounded bg-blue-500 px-1.5 py-0.5 text-[10px] font-bold text-white">
-              {t('adminLabel')}
-            </span>
-          )}
         </Link>
+        {!collapsed && (
+          <span className="rounded bg-blue-500 px-1.5 py-0.5 text-[10px] font-bold text-white">
+            {t('adminLabel')}
+          </span>
+        )}
       </div>
 
       {/* Search */}

@@ -32,10 +32,15 @@ async function main() {
 
   // L2: Pièces de Rechange
   const autoRechange = await ensureCategory('auto-pieces-rechange', 'Pièces de Rechange / D\'origine', auto.id, 1)
-  await ensureCategory('filtres', 'Filtres', autoRechange.id, 1)
-  await ensureCategory('frein', 'Freinage', autoRechange.id, 2)
-  await ensureCategory('suspension-direction', 'Suspension & Direction', autoRechange.id, 3)
-  await ensureCategory('transmission', 'Boîte de Vitesse', autoRechange.id, 4)
+  await ensureCategory('auto-filtres', 'Filtres', autoRechange.id, 1)
+  await ensureCategory('auto-freinage', 'Freinage', autoRechange.id, 2)
+  await ensureCategory('auto-moteur-distribution', 'Moteur & distribution', autoRechange.id, 3)
+  await ensureCategory('auto-suspension-direction', 'Suspension & direction', autoRechange.id, 4)
+  await ensureCategory('auto-transmission-embrayage', 'Transmission & embrayage', autoRechange.id, 5)
+  await ensureCategory('auto-refroidissement-climatisation', 'Refroidissement & climatisation', autoRechange.id, 6)
+  await ensureCategory('auto-electricite-eclairage', 'Electricite & eclairage', autoRechange.id, 7)
+  await ensureCategory('auto-carrosserie-habitacle', 'Carrosserie & habitacle', autoRechange.id, 8)
+  await ensureCategory('auto-echappement', 'Echappement', autoRechange.id, 9)
 
   // L2: Huiles & Lubrifiants
   const autoLubrifiants = await ensureCategory('auto-huiles-lubrifiants', 'Huiles & Lubrifiants Moteur', auto.id, 2)

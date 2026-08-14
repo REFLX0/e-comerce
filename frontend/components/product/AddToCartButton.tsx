@@ -15,8 +15,17 @@ interface Props {
 
 // Slugs of categories that require WhatsApp compatibility/stock check
 const SENSITIVE_CATEGORIES = [
+  'auto-pieces-rechange',
+  'auto-filtres',
+  'auto-freinage',
+  'auto-moteur-distribution',
+  'auto-suspension-direction',
+  'auto-transmission-embrayage',
+  'auto-refroidissement-climatisation',
+  'auto-electricite-eclairage',
+  'auto-carrosserie-habitacle',
+  'auto-echappement',
   'huiles-moteur',
-  'frein',
   'direction-assistee',
   'transmission',
   'refroidissement',

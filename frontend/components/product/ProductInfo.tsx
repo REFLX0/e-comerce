@@ -85,6 +85,7 @@ export function ProductInfo({ product, selectedVariant: controlledVariant, onVar
           oldPriceTTC={oldPrice}
           className="origin-left scale-125"
         />
+        <p className="mt-2 text-xs font-medium text-gray-500 italic">+ Frais de livraison (non inclus)</p>
       </div>
 
       {/* Stock */}

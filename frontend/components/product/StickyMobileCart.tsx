@@ -14,9 +14,25 @@ interface Props {
 }
 
 const SENSITIVE_CATEGORIES = [
-  'huiles-moteur', 'frein', 'direction-assistee', 'transmission',
-  'refroidissement', 'adblue', 'additif-essence', 'additif-diesel',
-  'additif-huile', 'filtres'
+  'auto-pieces-rechange',
+  'auto-filtres',
+  'auto-freinage',
+  'auto-moteur-distribution',
+  'auto-suspension-direction',
+  'auto-transmission-embrayage',
+  'auto-refroidissement-climatisation',
+  'auto-electricite-eclairage',
+  'auto-carrosserie-habitacle',
+  'auto-echappement',
+  'huiles-moteur',
+  'direction-assistee',
+  'transmission',
+  'refroidissement',
+  'adblue',
+  'additif-essence',
+  'additif-diesel',
+  'additif-huile',
+  'filtres'
 ]
 
 const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '+21655555555'
@@ -67,6 +83,7 @@ export function StickyMobileCart({ product, variant }: Props) {
             promoPercent={product.promoPercent}
             oldPriceTTC={oldPrice}
           />
+          <p className="mt-0.5 text-[10px] font-medium text-gray-500 italic">+ Frais de livraison (non inclus)</p>
         </div>
 
         {/* CTA */}
