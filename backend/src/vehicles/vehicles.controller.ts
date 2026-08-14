@@ -27,7 +27,8 @@ export class VehiclesController {
     @Query('make') make: string,
     @Query('model') model: string,
     @Query('engine') engine?: string,
+    @Query('specification') specification?: string,
   ) {
-    return this.vehiclesService.getCompatibleProducts(make, model, engine);
+    return this.vehiclesService.getCompatibleProducts(make, model, engine, specification);
   }
 }

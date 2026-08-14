@@ -214,6 +214,7 @@ model Product {
   variants         ProductVariant[]
   images           ProductImage[]
   specs            ProductSpecs?
+  sourcing         ProductSourcing?
   compatibilities  VehicleCompatibility[]
   orderItems       OrderItem[]
   reviews          Review[]
@@ -299,6 +300,37 @@ model VehicleCompatibility {
   yearTo        Int?
 
   @@unique([productId, vehicleModelId, engineCode])
+}
+
+// Administrative provenance for imported lubricant specifications.  This is
+// deliberately kept separate from the customer-facing product data.
+model ProductSourcing {
+  id                String   @id @default(cuid())
+  productId         String   @unique
+  product           Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  sourceUrl         String?
+  sourceTitle       String?
+  evidence          String?  @db.Text
+  derivedValueNotes String?  @db.Text
+  confidence        String
+  createdAt         DateTime @default(now())
+}
+
+// Captures unsupported vehicle searches so the catalogue team can source the
+// corresponding specifications later.
+model UnmatchedVehicleQuery {
+  id                    String   @id @default(cuid())
+  make                  String
+  model                 String
+  engineCode            String?
+  yearFrom              Int?
+  yearTo                Int?
+  requiredSpecification String?
+  source                String   @default("user_search")
+  resolved              Boolean  @default(false)
+  createdAt             DateTime @default(now())
+
+  @@index([make, model, engineCode, createdAt])
 }
 
 // ─────────────────────────────────────────

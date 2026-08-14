@@ -11,6 +11,17 @@ import {
   Disc3, Bike, Tractor, Filter, Package, FlaskConical,
 } from 'lucide-react'
 
+// Map of category slug → local image override (takes priority over DB image)
+const LOCAL_CATEGORY_IMAGES: Record<string, string> = {
+  'lubrifiants':    '/img/categories/lubrifiant.png',
+  'karting':        '/img/categories/karting.jpg',
+  'frein':          '/img/categories/frein.png',
+  'hydraulique':    '/img/categories/hydraulique.png',
+  'pieces-auto':    'https://images.unsplash.com/photo-1530046339160-ce3e530c7d2f?q=80&w=600',
+  'moto-karting':   'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?q=80&w=600',
+  'marine':         'https://images.unsplash.com/photo-1569263979104-865ab7cd8d13?q=80&w=600',
+}
+
 const CATEGORY_META: Record<string, { icon: React.ElementType; color: string; bg: string; desc: string }> = {
   'huiles-moteur':        { icon: Droplets,     color: 'text-amber-600',   bg: 'bg-amber-50',   desc: 'Haute performance, toutes viscosités' },
   'automobile':           { icon: Car,          color: 'text-blue-600',    bg: 'bg-blue-50',    desc: 'Voitures de tourisme & SUV' },
@@ -29,13 +40,15 @@ function CategoryCardImage({ cat }: { cat: { image?: string | null; name: string
   const [imgError, setImgError] = useState(false)
   const meta = CATEGORY_META[cat.slug]
 
-  // Provide fallback photos if they are missing from the database
-  let imageUrl = cat.image;
+  // Use local image first, then fall back to DB image, then fallback map
+  const localImg = LOCAL_CATEGORY_IMAGES[cat.slug]
+  let imageUrl = localImg || cat.image;
   if (!imageUrl && !imgError) {
-    if (cat.slug === 'pieces-auto' || cat.name.includes('Pièces')) imageUrl = 'https://images.unsplash.com/photo-1530046339160-ce3e530c7d2f?q=80&w=600';
-    else if (cat.slug === 'lubrifiants' || cat.name.includes('Lubrifiants')) imageUrl = 'https://images.unsplash.com/photo-1600712242805-5f78671f7c4b?q=80&w=600';
-    else if (cat.slug === 'moto-karting' || cat.name.includes('Moto')) imageUrl = 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?q=80&w=600';
-    else if (cat.slug === 'marine' || cat.name.includes('Marine')) imageUrl = 'https://images.unsplash.com/photo-1569263979104-865ab7cd8d13?q=80&w=600';
+    // Search by name if slug doesn't match exactly
+    const entry = Object.entries(LOCAL_CATEGORY_IMAGES).find(([, _]) =>
+      cat.name.toLowerCase().includes(_)
+    )
+    if (entry) imageUrl = entry[1]
   }
 
   if (!imageUrl || imgError) {

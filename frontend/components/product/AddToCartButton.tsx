@@ -82,9 +82,11 @@ export function AddToCartButton({ product, variant }: Props) {
   }
   
   const handleWhatsAppRedirect = () => {
-    const text = `Bonjour, je suis intéressé par la pièce "${product.name}" (Réf: ${variant.sku || product.slug}).\n\nVeuillez vérifier la disponibilité et la correspondance de cette pièce.\n\n[Insérez votre numéro de châssis / carte grise ici]`
+    const text = `Bonjour, veuillez ajouter votre numéro de châssis (carte grise) de votre voiture pour vérifier la disponibilité et la correspondance de la pièce avec votre voiture.\n\nPièce concernée: ${product.name} (Réf: ${variant.sku || product.slug})`
     const url = `https://wa.me/${WHATSAPP_NUMBER.replace(/\D/g, '')}?text=${encodeURIComponent(text)}`
     window.open(url, '_blank')
+    // Also add the item to cart so the customer doesn't lose their selection
+    addItem(product, variant, quantity)
     setShowWhatsAppPrompt(false)
   }
 
@@ -144,11 +146,11 @@ export function AddToCartButton({ product, variant }: Props) {
               </div>
               
               <div className="p-6">
-                <p className="mb-4 text-center text-slate-600">
-                  Pour ce type de pièce ({product.name}), nous devons vérifier la compatibilité exacte avec votre véhicule pour éviter les erreurs.
+                <p className="mb-2 text-center text-slate-600 text-sm">
+                  Bonjour, veuillez ajouter votre numéro de châssis (carte grise) de votre voiture pour vérifier la disponibilité et la correspondance de la pièce avec votre voiture.
                 </p>
-                <p className="mb-6 text-center font-medium text-brand-primary">
-                  Veuillez nous envoyer votre numéro de châssis (carte grise) sur WhatsApp.
+                <p className="mb-6 text-center text-xs text-slate-400">
+                  Pièce: <strong className="text-brand-primary">{product.name}</strong>
                 </p>
                 
                 <button
@@ -156,7 +158,7 @@ export function AddToCartButton({ product, variant }: Props) {
                   className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#25D366] px-4 py-3.5 font-bold text-white transition-colors hover:bg-[#20b858]"
                 >
                   <MessageCircle size={20} />
-                  Continuer sur WhatsApp
+                  Envoyer sur WhatsApp
                 </button>
                 
                 <button

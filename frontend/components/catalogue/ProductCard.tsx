@@ -73,6 +73,7 @@ export function ProductCard({ product }: Props) {
 
   const defaultVariant = product.variants?.[0]
   const isOutOfStock = defaultVariant?.status === 'out_of_stock'
+  const isPriceTbd = defaultVariant?.sku.includes('-PRICE-TBD-')
   const oldPrice =
     product.isPromo &&
     product.promoPercent &&
@@ -171,7 +172,9 @@ export function ProductCard({ product }: Props) {
 
         {/* Price */}
         <div className="mt-3 border-t border-gray-100 pt-3">
-          {defaultVariant ? (
+          {isPriceTbd ? (
+            <span className="text-sm font-semibold text-brand-primary">Prix sur demande</span>
+          ) : defaultVariant ? (
             <div className="flex flex-wrap items-baseline gap-1.5">
               <span className="text-base font-black text-brand-primary">
                 {formatPrice(defaultVariant.priceTTC)}

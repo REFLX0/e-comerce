@@ -39,8 +39,8 @@ export const productsApi = {
 
   search: (query: string, limit = 10) => apiGet<Product[]>('/search/products', { q: query, limit }),
 
-  getCompatible: (make: string, model: string, engine?: string) =>
-    apiGet<Product[]>('/vehicles/compatible', { make, model, engine }),
+  getCompatible: (make: string, model: string, engine?: string, specification?: string) =>
+    apiGet<Product[]>('/vehicles/compatible', { make, model, engine, specification }),
 
   getOilRecommendations: (params: { vehicleType: string; cylinders: number; power: number; fuelType: FuelType; make?: string }) =>
     apiGet<{ data: Product[]; total: number }>('/products/oil-recommendations', params),
@@ -51,4 +51,3 @@ export const productsApi = {
 
   getEngines: (modelSlug: string) => apiGet<VehicleEngine[]>(`/vehicles/models/${modelSlug}/engines`),
 }
-
