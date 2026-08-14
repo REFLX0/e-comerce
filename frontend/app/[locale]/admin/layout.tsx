@@ -6,11 +6,10 @@ import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { useAuthStore } from '@/lib/store/auth.store'
-import { useSiteLogo } from '@/lib/hooks/useSiteLogo'
 import { useTranslations } from 'next-intl'
 import { authApi } from '@/lib/api/auth'
 import { NotificationDropdown } from '@/components/admin/NotificationDropdown'
-import Image from 'next/image'
+
 import {
   LayoutDashboard, ShoppingCart, Package, Users, Tag,
   Truck, CreditCard, Star, Settings, ChevronRight,
@@ -136,12 +135,10 @@ function Sidebar({
   collapsed,
   onClose,
   nav,
-  siteLogo,
 }: {
   collapsed: boolean
   onClose?: () => void
   nav: NavItemShape[]
-  siteLogo?: string
 }) {
   const t = useTranslations('Admin')
   const user = useAuthStore((s) => s.user)
@@ -160,12 +157,11 @@ function Sidebar({
       {/* Logo */}
       <div className="flex h-16 shrink-0 items-center gap-3 border-b border-white/10 px-4">
         <Link href={withLocale('/admin', locale)} onClick={onClose} className="flex items-center gap-2">
-          <Image
-            src={siteLogo || '/logo.png'}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/logo.jpg"
             alt="specpart Admin"
-            width={120}
-            height={36}
-            className="h-8 w-auto"
+            className="h-8 w-auto object-contain"
           />
           {!collapsed && (
             <span className="rounded bg-blue-500 px-1.5 py-0.5 text-[10px] font-bold text-white">
@@ -268,7 +264,6 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   const setAuth = useAuthStore((s) => s.setAuth)
   const router = useRouter()
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
-  const siteLogo = useSiteLogo()
   const [mobileOpen, setMobileOpen] = useState(false)
   const [isCheckingServerAuth, setIsCheckingServerAuth] = useState(true)
   const pathname = usePathname()
@@ -357,7 +352,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
           sidebarCollapsed ? 'w-16' : 'w-64'
         }`}
       >
-        <Sidebar collapsed={sidebarCollapsed} nav={NAV} siteLogo={siteLogo} />
+        <Sidebar collapsed={sidebarCollapsed} nav={NAV} />
         {/* Collapse toggle */}
         <button
           onClick={() => setSidebarCollapsed((p) => !p)}
@@ -383,7 +378,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
             className="absolute inset-y-0 left-0 w-72 shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
-            <Sidebar collapsed={false} onClose={() => setMobileOpen(false)} nav={NAV} siteLogo={siteLogo} />
+            <Sidebar collapsed={false} onClose={() => setMobileOpen(false)} nav={NAV} />
           </div>
         </div>
       )}

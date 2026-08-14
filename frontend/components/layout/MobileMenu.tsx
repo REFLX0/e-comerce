@@ -6,16 +6,14 @@ import { Menu, X, ChevronRight, ChevronDown, ChevronUp, Home, BookOpen, Info, Ph
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { Link } from '@/i18n/routing'
 import { useState } from 'react'
-import Image from 'next/image'
 import { useTranslations } from 'next-intl'
-import { useSiteLogo } from '@/lib/hooks/useSiteLogo'
 
 export default function MobileMenu() {
   const [open, setOpen] = useState(false)
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set())
   const tNav = useTranslations('Navigation')
   const tLayout = useTranslations('Layout')
-  const siteLogo = useSiteLogo()
+
   const { data: categories } = useQuery({
     queryKey: ['categories-tree'],
     queryFn: categoriesApi.getTree,
@@ -49,11 +47,10 @@ export default function MobileMenu() {
         <SheetHeader className="border-b border-brand-border px-6 py-5">
           <div className="flex items-center justify-between">
             <Link href="/" onClick={() => setOpen(false)}>
-              <Image
-                src={siteLogo}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/logo.jpg"
                 alt="specpart"
-                width={120}
-                height={36}
                 className="h-9 w-auto object-contain"
               />
             </Link>

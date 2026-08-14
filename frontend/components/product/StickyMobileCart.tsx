@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useTranslations } from 'next-intl'
-import { ShoppingCart } from 'lucide-react'
+import { ShoppingCart, MessageCircle } from 'lucide-react'
 import type { Product, ProductVariant } from '@/lib/types'
 import { useCartStore } from '@/lib/store/cart.store'
 import { PriceDisplay } from '../common/PriceDisplay'
@@ -13,6 +13,14 @@ interface Props {
   variant: ProductVariant
 }
 
+const SENSITIVE_CATEGORIES = [
+  'huiles-moteur', 'frein', 'direction-assistee', 'transmission',
+  'refroidissement', 'adblue', 'additif-essence', 'additif-diesel',
+  'additif-huile', 'filtres'
+]
+
+const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '+21655555555'
+
 export function StickyMobileCart({ product, variant }: Props) {
   const t = useTranslations('ProductCard')
   const [isVisible, setIsVisible] = useState(false)
@@ -20,10 +28,10 @@ export function StickyMobileCart({ product, variant }: Props) {
 
   const isOutOfStock = variant.status === 'out_of_stock'
   const oldPrice = variant.priceTTC * 1.19
+  const isSensitive = product.category?.slug && SENSITIVE_CATEGORIES.includes(product.category.slug)
 
   useEffect(() => {
     const handleScroll = () => {
-      // Show after scrolling past the main Add to Cart button (~600px)
       setIsVisible(window.scrollY > 600)
     }
     window.addEventListener('scroll', handleScroll, { passive: true })
@@ -32,6 +40,12 @@ export function StickyMobileCart({ product, variant }: Props) {
 
   const handleAddToCart = () => {
     if (isOutOfStock) return
+    if (isSensitive) {
+      const text = `Bonjour, je suis intéressé par la pièce "${product.name}" (Réf: ${variant.sku || product.slug}).\n\nVeuillez vérifier la disponibilité et la correspondance de cette pièce avec mon véhicule.\n\n[Insérez votre numéro de châssis / carte grise ici]`
+      const url = `https://wa.me/${WHATSAPP_NUMBER.replace(/\D/g, '')}?text=${encodeURIComponent(text)}`
+      window.open(url, '_blank')
+      return
+    }
     addItem(product, variant, 1)
     toast.success('Produit ajouté au panier')
   }
@@ -59,11 +73,11 @@ export function StickyMobileCart({ product, variant }: Props) {
         <button
           onClick={handleAddToCart}
           disabled={isOutOfStock}
-          className="btn-primary flex h-12 shrink-0 items-center gap-2 px-6 shadow-lg"
+          className={`flex h-12 shrink-0 items-center gap-2 px-6 shadow-lg rounded-xl font-bold text-white transition-colors ${isSensitive ? 'bg-[#25D366] hover:bg-[#20b858]' : 'btn-primary'}`}
         >
-          <ShoppingCart size={18} />
+          {isSensitive ? <MessageCircle size={18} /> : <ShoppingCart size={18} />}
           <span className="hidden sm:inline">
-            {isOutOfStock ? t('outOfStock') : t('addToCart')}
+            {isOutOfStock ? t('outOfStock') : (isSensitive ? 'Vérifier via WhatsApp' : t('addToCart'))}
           </span>
         </button>
       </div>

@@ -7,11 +7,11 @@ import { useQuery } from '@tanstack/react-query'
 import { categoriesApi } from '@/lib/api/categories'
 import { useTranslations } from 'next-intl'
 
-const NAVIGATION_ORDER = ['pieces-auto', 'lubrifiants', 'automobile', 'moto-karting', 'marine']
+const NAVIGATION_ORDER = ['pieces-auto', 'automobile', 'additifs', 'moto-karting', 'marine']
 
 const NAVIGATION_ICONS: Record<string, React.ElementType> = {
   'pieces-auto': Wrench,
-  lubrifiants: Droplets,
+  additifs: Droplets,
   automobile: Car,
   'moto-karting': Bike,
   marine: ShipWheel,
