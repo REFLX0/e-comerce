@@ -161,7 +161,7 @@ function Sidebar({
           <img
             src="/logo.jpg"
             alt="specpart"
-            className="h-12 w-auto object-contain scale-110 origin-left"
+            className="h-10 w-auto object-contain"
           />
         </Link>
         {!collapsed && (

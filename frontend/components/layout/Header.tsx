@@ -33,7 +33,7 @@ export default function Header() {
             <img
               src="/logo.jpg"
               alt="specpart"
-              className="h-16 w-auto object-contain md:h-20 lg:h-24 scale-[1.15] origin-left"
+              className="h-10 w-auto object-contain sm:h-12 md:h-14 lg:h-16"
             />
           </Link>
 
