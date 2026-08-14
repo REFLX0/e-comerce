@@ -33,7 +33,7 @@ export default function Header() {
             <img
               src="/logo.jpg"
               alt="specpart"
-              className="h-16 w-auto object-contain sm:h-20 md:h-24 mix-blend-multiply"
+              className="h-12 w-auto object-contain sm:h-16 md:h-20 lg:h-20"
             />
           </Link>
 
