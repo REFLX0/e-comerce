@@ -5,17 +5,17 @@ import Image from 'next/image'
 import { Link } from '@/i18n/routing'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 
-// Static list of brands with confirmed local SVG logos
+// Static list of brands with confirmed local PNG logos
 const KNOWN_BRANDS = [
-  { slug: 'yacco',         name: 'Yacco',         logo: '/img/b/yacco.svg' },
-  { slug: 'shell',         name: 'Shell',         logo: '/img/b/shell.svg' },
-  { slug: 'totalenergies', name: 'TotalEnergies', logo: '/img/b/total.svg' },
-  { slug: 'castrol',       name: 'Castrol',       logo: '/img/b/castrol.svg' },
-  { slug: 'liqui-moly',    name: 'Liqui Moly',   logo: '/img/b/liqui-moly.svg' },
-  { slug: 'motul',         name: 'Motul',         logo: '/img/b/motul.svg' },
-  { slug: 'bosch',         name: 'Bosch',         logo: '/img/b/bosch.svg' },
-  { slug: 'purflux',       name: 'Purflux',       logo: '/img/b/purflux.svg' },
-  { slug: 'wynns',         name: "Wynn's",        logo: '/img/b/wynns.svg' },
+  { slug: 'yacco',         name: 'Yacco',         logo: '/img/b/Yacco.png' },
+  { slug: 'shell',         name: 'Shell',         logo: '/img/b/Shell.png' },
+  { slug: 'totalenergies', name: 'TotalEnergies', logo: '/img/b/Total.png' },
+  { slug: 'castrol',       name: 'Castrol',       logo: '/img/b/Castrol.png' },
+  { slug: 'liqui-moly',    name: 'Liqui Moly',    logo: '/img/b/Liqui Moly.png' },
+  { slug: 'motul',         name: 'Motul',         logo: '/img/b/Motul.png' },
+  { slug: 'bosch',         name: 'Bosch',         logo: '/img/b/Bosch.png' },
+  { slug: 'purflux',       name: 'Purflux',       logo: '/img/b/Purflux.png' },
+  { slug: 'wynns',         name: "Wynn's",        logo: '/img/b/Wynns.png' },
 ]
 
 export function BrandsBar() {
