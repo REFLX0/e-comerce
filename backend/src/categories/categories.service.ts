@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
@@ -102,6 +102,20 @@ export class CategoriesService {
   }
 
   async reorder(ids: string[]) {
+    const parentCategories = await this.prisma.category.findMany({
+      where: { parentId: null },
+      select: { id: true },
+    });
+    const parentIds = new Set(parentCategories.map((category) => category.id));
+
+    if (
+      ids.length !== parentIds.size ||
+      new Set(ids).size !== ids.length ||
+      ids.some((id) => !parentIds.has(id))
+    ) {
+      throw new BadRequestException('The category order must contain each parent category exactly once');
+    }
+
     await this.prisma.$transaction(
       ids.map((id, index) =>
         this.prisma.category.update({

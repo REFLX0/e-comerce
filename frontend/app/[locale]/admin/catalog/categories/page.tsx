@@ -203,7 +203,23 @@ export default function AdminCategoriesPage() {
 
   const reorderMutation = useMutation({
     mutationFn: (ids: string[]) => categoriesApi.reorder(ids),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['categories-tree'] }),
+    onMutate: async (ids) => {
+      await queryClient.cancelQueries({ queryKey: ['categories-tree'] })
+      const previousCategories = queryClient.getQueryData<Category[]>(['categories-tree'])
+
+      queryClient.setQueryData<Category[]>(['categories-tree'], (current = []) => {
+        const categoriesById = new Map(current.map((category) => [category.id, category]))
+        return ids.map((id) => categoriesById.get(id)).filter((category): category is Category => Boolean(category))
+      })
+
+      return { previousCategories }
+    },
+    onError: (_error, _ids, context) => {
+      if (context?.previousCategories) {
+        queryClient.setQueryData(['categories-tree'], context.previousCategories)
+      }
+    },
+    onSettled: () => queryClient.invalidateQueries({ queryKey: ['categories-tree'] }),
   })
 
   const saveMutation = useMutation({
@@ -223,13 +239,15 @@ export default function AdminCategoriesPage() {
 
   const handleDragEnd = useCallback((event: DragEndEvent) => {
     const { active, over } = event
-    if (!over || active.id === over.id) return
-    const oldIndex = categories.findIndex((c) => c.id === active.id)
-    const newIndex = categories.findIndex((c) => c.id === over.id)
+    if (!over || active.id === over.id || reorderMutation.isPending) return
+    const activeId = String(active.id)
+    const overId = String(over.id)
+    const oldIndex = categories.findIndex((c) => c.id === activeId)
+    const newIndex = categories.findIndex((c) => c.id === overId)
     if (oldIndex === -1 || newIndex === -1) return
     const reordered = arrayMove(categories, oldIndex, newIndex)
     reorderMutation.mutate(reordered.map((c) => c.id))
-  }, [categories, reorderMutation])
+  }, [categories, reorderMutation.isPending, reorderMutation.mutate])
 
   if (isError) {
     return (
