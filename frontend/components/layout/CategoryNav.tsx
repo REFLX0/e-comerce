@@ -69,19 +69,36 @@ export function CategoryNav() {
                 )}
 
                 {hasChildren && isOpen && (
-                  <div className="absolute left-0 top-full z-50 w-80 overflow-hidden rounded-b-2xl border border-slate-200 bg-white shadow-[0_18px_40px_rgba(22,37,76,0.16)]" onMouseEnter={() => openDropdown(category.slug)} onMouseLeave={scheduleClose}>
-                    <div className="border-b border-slate-100 bg-slate-50 px-5 py-4">
+                  <div className="absolute left-0 top-full z-50 min-w-[600px] overflow-hidden rounded-b-2xl border border-slate-200 bg-white shadow-[0_18px_40px_rgba(22,37,76,0.16)]" onMouseEnter={() => openDropdown(category.slug)} onMouseLeave={scheduleClose}>
+                    <div className="border-b border-slate-100 bg-slate-50 px-6 py-4 flex items-center justify-between">
                       <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-brand-accent">{category.name}</p>
-                      <Link href={`/catalogue?categorySlug=${category.slug}`} onClick={() => setActiveDropdown(null)} className="mt-2 inline-flex items-center gap-1 text-sm font-bold text-brand-primary hover:underline">
+                      <Link href={`/catalogue?categorySlug=${category.slug}`} onClick={() => setActiveDropdown(null)} className="inline-flex items-center gap-1 text-sm font-bold text-brand-primary hover:underline">
                         {t('allProducts')} <ChevronRight size={14} />
                       </Link>
                     </div>
-                    <div className="p-2">
+                    <div className="flex p-6 gap-8">
                       {category.children?.map((child) => (
-                        <Link key={child.id} href={`/catalogue?categorySlug=${child.slug}`} onClick={() => setActiveDropdown(null)} className="group flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold text-brand-primary/75 transition-colors hover:bg-brand-primary hover:text-white">
-                          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-primary/5 text-brand-primary transition-colors group-hover:bg-white/15 group-hover:text-brand-accent"><ChevronRight size={15} /></span>
-                          <span>{child.name}</span>
-                        </Link>
+                        <div key={child.id} className="flex-1 min-w-[200px]">
+                          <Link href={`/catalogue?categorySlug=${child.slug}`} onClick={() => setActiveDropdown(null)} className="block mb-4 text-sm font-bold text-brand-primary hover:text-brand-accent transition-colors border-b border-brand-primary/10 pb-2">
+                            {child.name}
+                          </Link>
+                          {child.children && child.children.length > 0 ? (
+                            <ul className="flex flex-col gap-2.5">
+                              {child.children.map((subChild) => (
+                                <li key={subChild.id}>
+                                  <Link href={`/catalogue?categorySlug=${subChild.slug}`} onClick={() => setActiveDropdown(null)} className="group flex items-center gap-2 text-sm font-medium text-brand-primary/70 hover:text-brand-primary transition-colors">
+                                    <span className="h-1.5 w-1.5 rounded-full bg-brand-primary/20 group-hover:bg-brand-accent transition-colors" />
+                                    {subChild.name}
+                                  </Link>
+                                </li>
+                              ))}
+                            </ul>
+                          ) : (
+                            <Link href={`/catalogue?categorySlug=${child.slug}`} onClick={() => setActiveDropdown(null)} className="group inline-flex items-center gap-2 rounded-lg bg-brand-primary/5 px-3 py-2 text-xs font-semibold text-brand-primary transition-colors hover:bg-brand-primary hover:text-white">
+                              {t('allProducts')} <ChevronRight size={12} />
+                            </Link>
+                          )}
+                        </div>
                       ))}
                     </div>
                   </div>

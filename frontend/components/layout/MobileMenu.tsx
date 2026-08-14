@@ -107,12 +107,12 @@ export default function MobileMenu() {
                     </button>
                     <div
                       className={`overflow-hidden transition-all duration-200 ease-in-out ${
-                        isExpanded ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+                        isExpanded ? 'max-h-[800px] opacity-100' : 'max-h-0 opacity-0'
                       }`}
                     >
-                      <div className="ml-4 mb-1 flex flex-col gap-0.5 border-l-2 border-brand-border pl-4">
+                      <div className="ml-4 mb-2 flex flex-col gap-1 border-l-2 border-brand-border pl-4">
                         <Link
-                          href={`/categorie/${category.slug}`}
+                          href={`/catalogue?categorySlug=${category.slug}`}
                           className="flex min-h-11 items-center gap-2 rounded-lg px-3 py-2 text-sm text-brand-muted transition-all duration-150 hover:bg-brand-surface hover:text-brand-primary"
                           onClick={() => setOpen(false)}
                         >
@@ -120,15 +120,31 @@ export default function MobileMenu() {
                           {tNav('allProducts')}
                         </Link>
                         {category.children?.map((sub) => (
-                          <Link
-                            key={sub.id}
-                            href={`/categorie/${sub.slug}`}
-                            className="flex min-h-11 items-center gap-2 rounded-lg px-3 py-2 text-sm text-brand-muted transition-all duration-150 hover:bg-brand-surface hover:text-brand-primary"
-                            onClick={() => setOpen(false)}
-                          >
-                            <ChevronRight size={13} />
-                            {sub.name}
-                          </Link>
+                          <div key={sub.id} className="flex flex-col mb-2">
+                            <Link
+                              href={`/catalogue?categorySlug=${sub.slug}`}
+                              className="flex min-h-10 items-center gap-2 rounded-lg px-3 py-2 text-sm font-bold text-brand-primary transition-all duration-150 hover:bg-brand-surface hover:text-brand-accent"
+                              onClick={() => setOpen(false)}
+                            >
+                              <ChevronRight size={13} />
+                              {sub.name}
+                            </Link>
+                            {sub.children && sub.children.length > 0 && (
+                              <div className="ml-5 mt-1 flex flex-col gap-0.5 border-l border-brand-border/50 pl-3">
+                                {sub.children.map((child) => (
+                                  <Link
+                                    key={child.id}
+                                    href={`/catalogue?categorySlug=${child.slug}`}
+                                    className="flex min-h-9 items-center gap-2 rounded-lg px-2 py-1.5 text-xs text-brand-muted transition-all duration-150 hover:bg-brand-surface hover:text-brand-primary"
+                                    onClick={() => setOpen(false)}
+                                  >
+                                    <span className="h-1 w-1 rounded-full bg-brand-primary/20" />
+                                    {child.name}
+                                  </Link>
+                                ))}
+                              </div>
+                            )}
+                          </div>
                         ))}
                       </div>
                     </div>
@@ -136,7 +152,7 @@ export default function MobileMenu() {
                 ) : (
                   <Link
                     key={category.id}
-                    href={`/categorie/${category.slug}`}
+                    href={`/catalogue?categorySlug=${category.slug}`}
                     className="flex min-h-11 w-full items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-brand-primary/76 transition-all duration-150 hover:bg-brand-surface hover:text-brand-primary"
                     onClick={() => setOpen(false)}
                   >

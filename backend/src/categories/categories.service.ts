@@ -13,7 +13,13 @@ export class CategoriesService {
       include: {
         children: {
           orderBy: { sortOrder: 'asc' },
-          include: { _count: { select: { products: true } } },
+          include: { 
+            _count: { select: { products: true } },
+            children: {
+              orderBy: { sortOrder: 'asc' },
+              include: { _count: { select: { products: true } } }
+            }
+          },
         },
         _count: { select: { products: true } },
       },
@@ -25,13 +31,22 @@ export class CategoriesService {
       name: c.nameFr,
       image: c.imageUrl,
       sortOrder: c.sortOrder,
-      productCount: c._count.products + c.children.reduce((total, child) => total + child._count.products, 0),
+      productCount: c._count.products + c.children.reduce((total, child) => 
+        total + child._count.products + child.children.reduce((subTotal, subChild) => subTotal + subChild._count.products, 0)
+      , 0),
       children: c.children.map((ch) => ({
         id: ch.id,
         slug: ch.slug,
         name: ch.nameFr,
         sortOrder: ch.sortOrder,
-        productCount: ch._count.products,
+        productCount: ch._count.products + ch.children.reduce((subTotal, subChild) => subTotal + subChild._count.products, 0),
+        children: ch.children.map((subCh) => ({
+          id: subCh.id,
+          slug: subCh.slug,
+          name: subCh.nameFr,
+          sortOrder: subCh.sortOrder,
+          productCount: subCh._count.products,
+        }))
       })),
     }));
   }
@@ -49,7 +64,13 @@ export class CategoriesService {
     return this.prisma.category.findUnique({
       where: { slug },
       include: {
-        children: { orderBy: { sortOrder: 'asc' } },
+        children: { 
+          orderBy: { sortOrder: 'asc' },
+          include: {
+            children: { orderBy: { sortOrder: 'asc' } },
+            _count: { select: { products: true } }
+          }
+        },
         _count: { select: { products: true } },
       },
     });
