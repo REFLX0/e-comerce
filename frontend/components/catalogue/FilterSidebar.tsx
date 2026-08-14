@@ -96,15 +96,27 @@ export function FilterSidebar() {
               active={!currentCategory}
               onClick={() => updateFilters('categorySlug', null)}
             />
-            {categories?.map((category) => (
+            {categories?.filter((category) => category.productCount > 0).slice(0, 12).flatMap((category) => [
               <FilterChoice
                 key={category.id}
                 label={category.name}
                 count={category.productCount}
                 active={currentCategory === category.slug}
                 onClick={() => updateFilters('categorySlug', category.slug)}
-              />
-            ))}
+              />,
+              ...(category.slug === 'pieces-auto' ? (category.children ?? [])
+                .filter((child) => child.productCount > 0)
+                .map((child) => (
+                  <FilterChoice
+                    key={child.id}
+                    label={child.name}
+                    count={child.productCount}
+                    active={currentCategory === child.slug}
+                    onClick={() => updateFilters('categorySlug', child.slug)}
+                    nested
+                  />
+                )) : []),
+            ])}
           </div>
         </section>
 
@@ -257,17 +269,19 @@ function FilterChoice({
   count,
   active,
   onClick,
+  nested = false,
 }: {
   label: string
   count?: number
   active: boolean
   onClick: () => void
+  nested?: boolean
 }) {
   return (
     <button
       type="button"
       onClick={onClick}
-      className={`flex min-h-9 w-full items-center justify-between gap-3 border-l-2 px-3 text-left text-sm transition-colors ${
+      className={`flex min-h-9 w-full items-center justify-between gap-3 border-l-2 px-3 text-left text-sm transition-colors ${nested ? 'pl-7 text-[13px]' : ''} ${
         active
           ? 'border-[#E10600] bg-[#E10600]/[0.06] font-bold text-[#111]'
           : 'border-transparent text-neutral-600 hover:border-black/25 hover:bg-neutral-50 hover:text-[#111]'

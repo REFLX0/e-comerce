@@ -239,6 +239,7 @@ export interface Order {
   shipWilaya: string
   shipCity: string
   notes?: string | null
+  vehicleVin?: string | null
   idempotencyKey?: string
   createdAt: string
   updatedAt: string

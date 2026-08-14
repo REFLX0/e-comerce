@@ -314,6 +314,7 @@ model Order {
   shipPhone      String
   shipWilaya     String
   shipCity       String
+  vehicleVin     String?
   notes          String?
   items          OrderItem[]
   supportTickets SupportTicket[]

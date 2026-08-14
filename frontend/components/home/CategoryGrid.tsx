@@ -29,7 +29,16 @@ function CategoryCardImage({ cat }: { cat: { image?: string | null; name: string
   const [imgError, setImgError] = useState(false)
   const meta = CATEGORY_META[cat.slug]
 
-  if (!cat.image || imgError) {
+  // Provide fallback photos if they are missing from the database
+  let imageUrl = cat.image;
+  if (!imageUrl && !imgError) {
+    if (cat.slug === 'pieces-auto' || cat.name.includes('Pièces')) imageUrl = 'https://images.unsplash.com/photo-1530046339160-ce3e530c7d2f?q=80&w=600';
+    else if (cat.slug === 'lubrifiants' || cat.name.includes('Lubrifiants')) imageUrl = 'https://images.unsplash.com/photo-1600712242805-5f78671f7c4b?q=80&w=600';
+    else if (cat.slug === 'moto-karting' || cat.name.includes('Moto')) imageUrl = 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?q=80&w=600';
+    else if (cat.slug === 'marine' || cat.name.includes('Marine')) imageUrl = 'https://images.unsplash.com/photo-1569263979104-865ab7cd8d13?q=80&w=600';
+  }
+
+  if (!imageUrl || imgError) {
     const Icon = meta?.icon ?? Package
     return (
       <div className={`flex h-full w-full items-center justify-center ${meta?.bg ?? 'bg-gray-100'}`}>
@@ -40,7 +49,7 @@ function CategoryCardImage({ cat }: { cat: { image?: string | null; name: string
 
   return (
     <Image
-      src={cat.image}
+      src={imageUrl}
       alt={cat.name}
       fill
       className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.06]"

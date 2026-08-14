@@ -307,3 +307,12 @@ The devis describes a basic MVP e-commerce site for oils and lubricants. The cur
 ### Main conclusion
 
 The devis is valid as a basic launch proposal, but it underestimates the real scope of the website. If the proposal should match the site, it needs to mention the oil finder, customer account area, wishlist, coupons, reviews, support, shipping tools, analytics, and deployment setup.
+
+---
+
+## Recent Changes (UI & Bug Fixes)
+
+- **Logo Fixes:** Hardcoded the logo path to `/logo.jpg` using a plain `<img>` tag in both `Header.tsx` and `Footer.tsx` to prevent hydration flicker and Next.js image caching issues. Modified `useSiteLogo.ts` to return the static path, bypassing the failing admin API endpoint.
+- **Brands Bar:** Replaced the dynamic API-based brand fetching with a static list of 9 known brands (`Yacco`, `Shell`, `TotalEnergies`, `Castrol`, `Liqui Moly`, `Motul`, `Bosch`, `Purflux`, `Wynn's`) that have verified local SVG logos (`/img/b/*.svg`). This prevents empty brand cards from rendering.
+- **Header Cleanups:** Removed unused variables and duplicate imports in `Header.tsx`.
+- A full diff of all recent modifications is available in `changes.diff`.

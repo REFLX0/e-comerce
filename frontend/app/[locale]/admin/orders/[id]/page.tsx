@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { adminApi, downloadOrderPdf } from '@/lib/api/admin'
 import { useParams, usePathname } from 'next/navigation'
-import { ArrowLeft, Package, Truck, CheckCircle2, Clock, XCircle, MapPin, Printer, Loader2 } from 'lucide-react'
+import { ArrowLeft, Package, Truck, CheckCircle2, Clock, XCircle, MapPin, Printer, Loader2, Car } from 'lucide-react'
 import Link from 'next/link'
 import { toast } from 'sonner'
 
@@ -151,6 +151,7 @@ export default function OrderDetailPage() {
               <p className="font-medium text-gray-800">{order.shipFullName || 'Non renseigné'}</p>
               <p className="text-gray-500">{order.shipPhone}</p>
               <p className="flex items-center gap-1 text-gray-500"><MapPin size={14} /> {[order.shipCity, order.shipWilaya].filter(Boolean).join(', ') || 'Adresse non définie'}</p>
+              {order.vehicleVin && <p className="flex items-center gap-1 break-all text-gray-500"><Car size={14} /> VIN : <span className="font-mono text-xs">{order.vehicleVin}</span></p>}
               {order.promoCode && <p className="text-xs text-gray-400">Code promo: {order.promoCode}</p>}
             </div>
           </div>

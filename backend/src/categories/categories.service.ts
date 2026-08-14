@@ -11,7 +11,10 @@ export class CategoriesService {
     const categories = await this.prisma.category.findMany({
       where: { parentId: null },
       include: {
-        children: { orderBy: { sortOrder: 'asc' } },
+        children: {
+          orderBy: { sortOrder: 'asc' },
+          include: { _count: { select: { products: true } } },
+        },
         _count: { select: { products: true } },
       },
       orderBy: { sortOrder: 'asc' },
@@ -22,12 +25,13 @@ export class CategoriesService {
       name: c.nameFr,
       image: c.imageUrl,
       sortOrder: c.sortOrder,
-      productCount: c._count.products,
+      productCount: c._count.products + c.children.reduce((total, child) => total + child._count.products, 0),
       children: c.children.map((ch) => ({
         id: ch.id,
         slug: ch.slug,
         name: ch.nameFr,
         sortOrder: ch.sortOrder,
+        productCount: ch._count.products,
       })),
     }));
   }

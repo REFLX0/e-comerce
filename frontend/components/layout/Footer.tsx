@@ -6,7 +6,7 @@ import { useState } from 'react'
 import { toast } from 'sonner'
 import Image from 'next/image'
 import { useTranslations } from 'next-intl'
-import { useSiteLogo } from '@/lib/hooks/useSiteLogo'
+// Logo is served directly from public/logo.jpg
 
 const Facebook = ({ size = 20 }: { size?: number }) => (
   <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -49,7 +49,7 @@ export default function Footer() {
   const tFooter = useTranslations('Footer')
   const tHome = useTranslations('Home')
   const tLayout = useTranslations('Layout')
-  const siteLogo = useSiteLogo()
+  const siteLogo = '/logo.jpg'
 
   const handleNewsletter = (e: React.FormEvent) => {
     e.preventDefault()
@@ -67,12 +67,11 @@ export default function Footer() {
           {/* Col 1: Brand */}
           <div className="sm:col-span-2 lg:col-span-1">
             <Link href="/" className="mb-5 inline-flex items-center">
-              <Image
-                src={siteLogo}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/logo.jpg"
                 alt="specpart"
-                width={220}
-                height={60}
-                className="h-14 w-auto object-contain"
+                className="h-20 sm:h-24 w-auto object-contain"
               />
             </Link>
             <p className="mb-6 max-w-xs text-sm leading-relaxed text-white/40">

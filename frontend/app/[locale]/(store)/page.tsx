@@ -13,16 +13,18 @@ export default function Home() {
       <HeroBanner />
 
       {/* 2. Oil Finder — full section */}
-      <section id="oil-finder" className="bg-white py-16 md:py-20 border-b border-gray-100">
+      <section id="oil-finder" className="relative overflow-hidden border-b border-brand-primary/10 bg-[linear-gradient(180deg,#f7f9fc_0%,#ffffff_72%)] py-16 md:py-20">
+        <div aria-hidden="true" className="absolute -left-32 top-12 h-80 w-80 rounded-full bg-brand-accent/10 blur-3xl" />
+        <div aria-hidden="true" className="absolute -right-40 bottom-0 h-96 w-96 rounded-full bg-brand-primary/[0.06] blur-3xl" />
         <div className="section-padding">
-          <div className="mb-10 text-center">
-            <p className="mb-2 text-xs font-bold uppercase tracking-[0.25em] text-brand-accent">
+          <div className="relative mb-10 text-center">
+            <p className="mb-3 text-xs font-bold uppercase tracking-[0.25em] text-brand-accent">
               Outil de recherche
             </p>
-            <h2 className="text-3xl font-black uppercase tracking-tight text-brand-primary md:text-4xl">
+            <h2 className="text-3xl font-black tracking-tight text-brand-primary md:text-5xl">
               Trouver mon huile
             </h2>
-            <p className="mt-3 text-sm text-gray-500 max-w-md mx-auto">
+            <p className="mx-auto mt-4 max-w-xl text-sm leading-6 text-gray-500 md:text-base">
               Trouvez l&apos;huile parfaitement adaptée à votre véhicule en quelques clics
             </p>
           </div>

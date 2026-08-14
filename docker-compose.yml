@@ -8,6 +8,7 @@ services:
       - "8082:8082"
     volumes:
       - ./nginx/nginx.dev.conf:/etc/nginx/nginx.conf:ro
+      - ./autopart_db/images:/srv/product-images:ro
     depends_on:
       backend:
         condition: service_healthy

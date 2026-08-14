@@ -63,15 +63,14 @@ export function ReviewsSection({ productId, rating, reviewCount }: Props) {
   const onSubmit = async (data: ReviewFormData) => {
     setIsSubmitting(true)
     try {
-      // API call to add review
-      await reviewsApi.create(productId, { ...data, authorName: 'Client' })
+      await reviewsApi.create(productId, data)
       
-      toast.success('Votre avis a été publié avec succès !')
+      toast.success('Votre avis a été envoyé pour modération.')
       setShowForm(false)
       reset()
       refetch()
     } catch (error) {
-      toast.error('Une erreur est survenue lors de la publication de votre avis.')
+      toast.error(error instanceof Error ? error.message : 'Une erreur est survenue lors de la publication de votre avis.')
     } finally {
       setIsSubmitting(false)
     }
@@ -90,20 +89,7 @@ export function ReviewsSection({ productId, rating, reviewCount }: Props) {
           </div>
         </div>
 
-        {/* Progress bars (simplified) */}
-        <div className="mb-8 space-y-3">
-          {[5, 4, 3, 2, 1].map((stars) => (
-            <div key={stars} className="flex items-center gap-3 text-sm">
-              <span className="w-12 text-gray-500">{t('stars', { count: stars })}</span>
-              <div className="bg-brand-surface h-2 flex-1 overflow-hidden rounded-full">
-                <div
-                  className="h-full rounded-full bg-yellow-400"
-                  style={{ width: `${stars === 5 ? 70 : stars === 4 ? 20 : stars === 3 ? 5 : 0}%` }}
-                />
-              </div>
-            </div>
-          ))}
-        </div>
+        <p className="mb-8 text-sm leading-6 text-gray-500">Seuls les clients ayant reçu ce produit peuvent publier un avis. Chaque avis est modéré avant publication.</p>
 
         {!showForm ? (
           <button

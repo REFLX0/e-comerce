@@ -28,6 +28,15 @@ export interface ProductFilters {
 export class ProductsService {
   constructor(private readonly prisma: PrismaService) {}
 
+  /** Include direct children when a top-level catalogue group is selected. */
+  private async resolveCategoryIds(slug: string) {
+    const category = await this.prisma.category.findUnique({
+      where: { slug },
+      select: { id: true, children: { select: { id: true } } },
+    });
+    return category ? [category.id, ...category.children.map((child) => child.id)] : [];
+  }
+
   private buildInclude() {
     return {
       brand: true,
@@ -68,7 +77,8 @@ export class ProductsService {
       ];
     }
     if (filters.categorySlug) {
-      where.category = { slug: filters.categorySlug };
+      const categoryIds = await this.resolveCategoryIds(filters.categorySlug);
+      where.categoryId = { in: categoryIds };
     }
     if (filters.brandSlug) {
       where.brand = { slug: filters.brandSlug };
@@ -266,7 +276,10 @@ export class ProductsService {
 
   async getFacets(filters: ProductFilters) {
     const where: Prisma.ProductWhereInput = { isPublished: true };
-    if (filters.categorySlug) where.category = { slug: filters.categorySlug };
+    if (filters.categorySlug) {
+      const categoryIds = await this.resolveCategoryIds(filters.categorySlug);
+      where.categoryId = { in: categoryIds };
+    }
     if (filters.search) {
       where.OR = [
         { nameFr: { contains: filters.search, mode: 'insensitive' } },

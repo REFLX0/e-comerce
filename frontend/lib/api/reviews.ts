@@ -4,7 +4,6 @@ import type { Review, PaginatedResponse } from '@/lib/types'
 interface CreateReviewPayload {
   rating: number
   comment: string
-  authorName: string
 }
 
 export const reviewsApi = {
@@ -14,7 +13,6 @@ export const reviewsApi = {
       limit,
     }),
 
-  create: (productId: string, payload: CreateReviewPayload, ) =>
+  create: (productId: string, payload: CreateReviewPayload) =>
     apiPost<Review>(`/products/${productId}/reviews`, payload),
 }
-

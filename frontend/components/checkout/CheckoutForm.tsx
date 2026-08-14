@@ -24,6 +24,10 @@ const checkoutSchema = z.object({
   city: z.string().min(2, 'Ville requise'),
   wilaya: z.string().min(1, 'Wilaya requise'),
   postalCode: z.string().min(4, 'Code postal requis'),
+  vehicleVin: z.string().trim().refine(
+    (value) => value === '' || /^[A-HJ-NPR-Z0-9]{17}$/i.test(value),
+    'Le VIN doit contenir 17 caractères alphanumériques (sans I, O ni Q)'
+  ).optional(),
   notes: z.string().optional(),
 })
 
@@ -95,6 +99,7 @@ export function CheckoutForm() {
             city: data.city,
           },
           notes: data.notes,
+          vehicleVin: data.vehicleVin?.trim() || undefined,
           shippingCost,
           promoCode,
         }
@@ -198,6 +203,19 @@ export function CheckoutForm() {
             error={errors.postalCode?.message}
             {...register('postalCode')}
           />
+
+          <div className="md:col-span-2">
+            <FormInput
+              id="vehicleVin"
+              label="VIN du véhicule (facultatif)"
+              placeholder="17 caractères, ex. VF1..."
+              maxLength={17}
+              autoCapitalize="characters"
+              error={errors.vehicleVin?.message}
+              {...register('vehicleVin')}
+            />
+            <p className="mt-1 text-xs text-gray-500">Ajoutez-le uniquement si vous souhaitez faciliter la vérification de compatibilité.</p>
+          </div>
 
           <div className="md:col-span-2">
             <FormTextarea

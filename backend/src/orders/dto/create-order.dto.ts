@@ -32,6 +32,7 @@ export class CreateOrderDto {
   shipping: ShippingDto;
 
   @IsOptional() @IsString() notes?: string;
+  @IsOptional() @IsString() vehicleVin?: string;
   @IsOptional() @IsString() idempotencyKey?: string;
   @IsOptional() @IsString() paymentMethod?: string;
   @IsOptional() @IsNumber() @Min(0) shippingCost?: number;

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Car, Bike, Truck, Tractor, Search, ArrowLeft } from 'lucide-react'
+import { Car, Bike, Truck, Tractor, Search, ArrowLeft, Check, ChevronRight, RotateCcw, Sparkles } from 'lucide-react'
 import { EngineSpecFinder } from './EngineSpecFinder'
 import { VehicleFinder } from './VehicleFinder'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -22,6 +22,7 @@ export function OilFinderTabs() {
   const [searchMode, setSearchMode] = useState<SearchMode | null>(null)
 
   const progress = (step / 3) * 100
+  const selectedVehicle = VEHICLE_TYPES.find((type) => type.id === vehicleType)
 
   const handleSelectType = (type: VehicleType) => {
     setVehicleType(type)
@@ -40,31 +41,55 @@ export function OilFinderTabs() {
   }
 
   return (
-    <div id="oil-finder" className="mx-auto w-full max-w-5xl px-4">
-      {/* Progress bar */}
-      <div className="mb-6">
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-xs font-semibold uppercase tracking-wider text-brand-muted">
-            Étape {step} sur 3
-          </span>
-          <button
-            onClick={handleReset}
-            className="text-xs font-medium text-gray-400 hover:text-gray-600 transition-colors"
-          >
-            Recommencer
-          </button>
-        </div>
-        <div className="h-1.5 w-full rounded-full bg-gray-200 overflow-hidden">
-          <motion.div
-            className="h-full rounded-full bg-brand-primary"
-            initial={{ width: 0 }}
-            animate={{ width: `${progress}%` }}
-            transition={{ duration: 0.4, ease: 'easeOut' }}
-          />
-        </div>
-      </div>
+    <div id="oil-finder" className="mx-auto w-full max-w-6xl px-4">
+      <div className="overflow-hidden rounded-[2rem] border border-brand-primary/10 bg-white shadow-[0_24px_70px_rgba(22,37,76,0.12)]">
+        <div className="border-b border-brand-primary/10 bg-[linear-gradient(110deg,#16254c_0%,#1f356b_68%,#283e79_100%)] px-5 py-5 text-white sm:px-8 md:px-10">
+          <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-start gap-3">
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-brand-accent text-brand-primary shadow-lg shadow-black/10">
+                <Sparkles size={20} strokeWidth={2.4} />
+              </div>
+              <div>
+                <p className="text-xs font-bold uppercase tracking-[0.2em] text-brand-accent-light">Assistant de sélection</p>
+                <p className="mt-1 text-sm text-white/75">Une recommandation basée uniquement sur les critères que vous renseignez.</p>
+              </div>
+            </div>
+            <button
+              onClick={handleReset}
+              className="inline-flex items-center gap-2 self-start rounded-xl border border-white/15 bg-white/10 px-3 py-2 text-xs font-semibold text-white transition-colors hover:bg-white/20 sm:self-auto"
+            >
+              <RotateCcw size={14} />
+              Recommencer
+            </button>
+          </div>
 
-      <div className="relative mx-auto w-full max-w-4xl overflow-hidden rounded-2xl bg-white shadow-card">
+          <div className="mt-6 grid grid-cols-3 gap-2 sm:gap-4">
+            {['Véhicule', 'Méthode', 'Recherche'].map((label, index) => {
+              const stage = index + 1
+              const isComplete = stage < step
+              const isCurrent = stage === step
+              return (
+                <div key={label} className="flex min-w-0 items-center gap-2">
+                  <div className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-bold ${isComplete ? 'bg-brand-accent text-brand-primary' : isCurrent ? 'bg-white text-brand-primary' : 'bg-white/10 text-white/55'}`}>
+                    {isComplete ? <Check size={14} strokeWidth={3} /> : stage}
+                  </div>
+                  <span className={`hidden truncate text-xs font-semibold sm:block ${isCurrent || isComplete ? 'text-white' : 'text-white/50'}`}>{label}</span>
+                  {stage < 3 && <div className={`ml-auto h-px flex-1 ${isComplete ? 'bg-brand-accent' : 'bg-white/15'}`} />}
+                </div>
+              )
+            })}
+          </div>
+          <div className="mt-4 h-1 overflow-hidden rounded-full bg-white/15">
+            <motion.div
+              className="h-full rounded-full bg-brand-accent"
+              initial={{ width: 0 }}
+              animate={{ width: `${progress}%` }}
+              transition={{ duration: 0.35, ease: 'easeOut' }}
+            />
+          </div>
+        </div>
+
+        <div className="relative bg-[radial-gradient(circle_at_top_right,rgba(212,167,106,0.12),transparent_30%),#fff]">
         <AnimatePresence mode="wait">
           {step === 1 && (
             <motion.div
@@ -73,32 +98,37 @@ export function OilFinderTabs() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.25 }}
-              className="p-6 md:p-8"
+              className="p-6 sm:p-8 md:p-10"
             >
-              <h3 className="text-lg font-bold text-brand-primary mb-1">
+              <p className="mb-2 text-xs font-bold uppercase tracking-[0.18em] text-brand-accent">Étape 1 · véhicule</p>
+              <h3 className="text-2xl font-bold tracking-tight text-brand-primary">
                 Quel type de véhicule ?
               </h3>
-              <p className="text-sm text-gray-500 mb-6">
+              <p className="mt-2 max-w-xl text-sm leading-6 text-gray-500">
                 Sélectionnez la catégorie de votre véhicule pour commencer
               </p>
-              <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+              <div className="mt-7 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
                 {VEHICLE_TYPES.map((type) => {
                   const Icon = type.icon
                   return (
                     <button
                       key={type.id}
                       onClick={() => handleSelectType(type.id)}
-                      className="group flex flex-col items-center gap-3 rounded-xl p-5 bg-white ring-1 ring-gray-200 transition-all duration-200 hover:ring-gray-300 hover:shadow-md hover:-translate-y-0.5"
+                      className="group relative flex min-h-44 flex-col items-start justify-between overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 text-left transition-all duration-200 hover:-translate-y-1 hover:border-brand-primary/35 hover:shadow-[0_16px_30px_rgba(22,37,76,0.12)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
                     >
-                      <div className="flex h-14 w-14 items-center justify-center rounded-lg bg-brand-primary/5 text-brand-primary transition-colors group-hover:bg-brand-primary/10 group-hover:text-brand-primary">
-                        <Icon size={28} />
+                      <div className="absolute right-0 top-0 h-20 w-20 rounded-bl-[3rem] bg-brand-primary/[0.035] transition-colors group-hover:bg-brand-accent/15" />
+                      <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-primary text-white shadow-lg shadow-brand-primary/15 transition-transform group-hover:scale-105">
+                        <Icon size={23} />
                       </div>
-                      <div className="text-center">
-                        <span className="block text-sm font-bold text-gray-800">
+                      <div className="w-full">
+                        <span className="block text-base font-bold text-brand-primary">
                           {type.label}
                         </span>
-                        <span className="mt-0.5 block text-[11px] text-gray-400">
+                        <span className="mt-1 block text-sm text-gray-500">
                           {type.sub}
+                        </span>
+                        <span className="mt-4 inline-flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-brand-primary/70 transition-colors group-hover:text-brand-primary">
+                          Sélectionner <ChevronRight size={14} />
                         </span>
                       </div>
                     </button>
@@ -115,44 +145,48 @@ export function OilFinderTabs() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.25 }}
-              className="p-6 md:p-8"
+              className="p-6 sm:p-8 md:p-10"
             >
-              <div className="flex items-center gap-3 mb-6">
+              <div className="mb-7 flex items-start gap-3">
                 <button
                   onClick={handleReset}
-                  className="flex h-8 w-8 items-center justify-center rounded-lg bg-gray-100 text-gray-500 transition-colors hover:bg-gray-200"
+                  className="mt-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white text-gray-500 transition-colors hover:border-brand-primary/30 hover:text-brand-primary"
+                  aria-label="Retour au choix du véhicule"
                 >
                   <ArrowLeft size={16} />
                 </button>
                 <div>
-                  <h3 className="text-lg font-bold text-brand-primary">
+                  <p className="mb-2 text-xs font-bold uppercase tracking-[0.18em] text-brand-accent">Étape 2 · méthode</p>
+                  <h3 className="text-2xl font-bold tracking-tight text-brand-primary">
                     Comment rechercher ?
                   </h3>
-                  <p className="text-sm text-gray-500">
-                    {VEHICLE_TYPES.find(t => t.id === vehicleType)?.label} — Choisissez votre méthode
+                  <p className="mt-2 text-sm text-gray-500">
+                    {selectedVehicle?.label} · Choisissez le parcours le plus adapté aux informations dont vous disposez.
                   </p>
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <button
                   onClick={() => handleSelectMode('vehicle')}
-                  className="flex flex-col items-center gap-4 rounded-xl p-8 bg-white ring-1 ring-gray-200 transition-all duration-200 hover:ring-gray-300 hover:shadow-md hover:-translate-y-0.5"
+                  className="group flex min-h-56 flex-col items-start rounded-2xl border border-slate-200 bg-white p-6 text-left transition-all hover:-translate-y-1 hover:border-brand-primary/35 hover:shadow-[0_16px_30px_rgba(22,37,76,0.12)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
                 >
-                  <Car size={40} className="text-brand-primary" />
-                  <div className="text-center">
-                    <span className="block text-base font-bold text-gray-800">Par véhicule</span>
-                    <span className="mt-1 block text-sm text-gray-400">Marque → Modèle → Motorisation</span>
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-primary text-white shadow-lg shadow-brand-primary/15"><Car size={24} /></div>
+                  <div className="mt-auto">
+                    <span className="block text-lg font-bold text-brand-primary">Par véhicule</span>
+                    <span className="mt-2 block text-sm leading-6 text-gray-500">Sélectionnez marque, modèle et motorisation pour une recherche précise.</span>
+                    <span className="mt-5 inline-flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-brand-primary">Commencer <ChevronRight size={14} /></span>
                   </div>
                 </button>
                 <button
                   onClick={() => handleSelectMode('specs')}
-                  className="flex flex-col items-center gap-4 rounded-xl p-8 bg-white ring-1 ring-gray-200 transition-all duration-200 hover:ring-gray-300 hover:shadow-md hover:-translate-y-0.5"
+                  className="group flex min-h-56 flex-col items-start rounded-2xl border border-slate-200 bg-white p-6 text-left transition-all hover:-translate-y-1 hover:border-brand-primary/35 hover:shadow-[0_16px_30px_rgba(22,37,76,0.12)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
                 >
-                  <Search size={40} className="text-brand-primary" />
-                  <div className="text-center">
-                    <span className="block text-base font-bold text-gray-800">Par caractéristiques</span>
-                    <span className="mt-1 block text-sm text-gray-400">Cylindres → Puissance → Carburant</span>
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-accent text-brand-primary shadow-lg shadow-brand-accent/20"><Search size={24} /></div>
+                  <div className="mt-auto">
+                    <span className="block text-lg font-bold text-brand-primary">Par caractéristiques</span>
+                    <span className="mt-2 block text-sm leading-6 text-gray-500">Renseignez cylindres, puissance et carburant si vous ne connaissez pas votre motorisation.</span>
+                    <span className="mt-5 inline-flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-brand-primary">Commencer <ChevronRight size={14} /></span>
                   </div>
                 </button>
               </div>
@@ -167,7 +201,7 @@ export function OilFinderTabs() {
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.25 }}
             >
-              <div className="p-4 md:p-6 border-b border-gray-100">
+              <div className="border-b border-slate-100 bg-slate-50/70 p-4 md:px-6">
                 <button
                   onClick={() => { setStep(2); setSearchMode(null) }}
                   className="flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-gray-800 transition-colors"
@@ -188,7 +222,7 @@ export function OilFinderTabs() {
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.25 }}
             >
-              <div className="p-4 md:p-6 border-b border-gray-100">
+              <div className="border-b border-slate-100 bg-slate-50/70 p-4 md:px-6">
                 <button
                   onClick={() => { setStep(2); setSearchMode(null) }}
                   className="flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-gray-800 transition-colors"
@@ -201,6 +235,7 @@ export function OilFinderTabs() {
             </motion.div>
           )}
         </AnimatePresence>
+        </div>
       </div>
     </div>
   )

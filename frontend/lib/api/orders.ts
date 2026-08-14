@@ -13,6 +13,7 @@ interface CreateOrderPayload {
   shipping: ShippingDto
   promoCode?: string
   notes?: string
+  vehicleVin?: string
   shippingCost?: number
 }
 
@@ -28,4 +29,3 @@ export const ordersApi = {
   getById: (id: string, ) =>
     apiGet<Order>(`/orders/${id}`, undefined),
 }
-

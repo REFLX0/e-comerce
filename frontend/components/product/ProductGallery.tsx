@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useTranslations } from 'next-intl'
 import Image from 'next/image'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Package } from 'lucide-react'
 
 interface Props {
   images: string[]
@@ -15,6 +15,7 @@ export function ProductGallery({ images, productName, variantImageUrl }: Props) 
   const t = useTranslations('Product')
   const displayImages = variantImageUrl ? [variantImageUrl] : images
   const [currentIndex, setCurrentIndex] = useState(0)
+  const [imageUnavailable, setImageUnavailable] = useState(false)
 
   if (!displayImages || displayImages.length === 0) {
     return (
@@ -28,13 +29,21 @@ export function ProductGallery({ images, productName, variantImageUrl }: Props) 
     <div className="flex flex-col gap-4">
       {/* Main image */}
       <div className="bg-brand-surface border-brand-surface-dark group relative aspect-square overflow-hidden rounded-2xl border shadow-card">
-        <Image
-          src={displayImages[currentIndex] || ''}
-          alt={`${productName} - Image ${currentIndex + 1}`}
-          fill
-          className="object-contain p-8 transition-transform duration-500 group-hover:scale-110"
-          priority
-        />
+        {imageUnavailable ? (
+          <div className="flex h-full w-full flex-col items-center justify-center gap-3 text-gray-400">
+            <Package size={34} strokeWidth={1.5} />
+            <span className="text-sm">{t('imageNotAvailable')}</span>
+          </div>
+        ) : (
+          <Image
+            src={displayImages[currentIndex] || ''}
+            alt={`${productName} - Image ${currentIndex + 1}`}
+            fill
+            className="object-contain p-8 transition-transform duration-500 group-hover:scale-110"
+            priority
+            onError={() => setImageUnavailable(true)}
+          />
+        )}
 
         {displayImages.length > 1 && (
           <>
@@ -67,7 +76,7 @@ export function ProductGallery({ images, productName, variantImageUrl }: Props) 
           {displayImages.map((img, idx) => (
             <button
               key={idx}
-              onClick={() => setCurrentIndex(idx)}
+              onClick={() => { setCurrentIndex(idx); setImageUnavailable(false) }}
               className={`relative h-20 w-20 shrink-0 overflow-hidden rounded-xl border-2 transition-all duration-300 ${
                 currentIndex === idx
                   ? 'border-brand-primary shadow-md ring-2 ring-brand-primary/20 scale-105'

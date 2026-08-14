@@ -19,6 +19,13 @@ export class OrdersService {
   ) {}
 
   async create(dto: CreateOrderDto, userId?: string) {
+    const vehicleVin = dto.vehicleVin?.trim().toUpperCase();
+    if (vehicleVin && !/^[A-HJ-NPR-Z0-9]{17}$/.test(vehicleVin)) {
+      throw new BadRequestException(
+        'Le VIN doit contenir 17 caractères alphanumériques (sans I, O ni Q)',
+      );
+    }
+
     // Idempotency: prevent duplicate orders on double-submit
     const key = dto.idempotencyKey ?? crypto.randomUUID();
     const existing = await this.prisma.order.findUnique({
@@ -89,6 +96,7 @@ export class OrdersService {
           shipPhone: dto.shipping.phone,
           shipWilaya: dto.shipping.wilaya,
           shipCity: dto.shipping.city,
+          vehicleVin: vehicleVin || null,
           notes: dto.notes,
           items: {
             create: dto.items.map((item) => {

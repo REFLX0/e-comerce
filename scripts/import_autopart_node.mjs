@@ -73,6 +73,7 @@ function cleanDescription(raw) {
   if (!raw) return '';
   // Remove price source lines, EAN lines, livraison lines, autopart.tn links
   return raw
+    .replace(/\s*—\s*\.?\s*Pièce de qualité livrée partout en Tunisie\.?/gi, '')
     .replace(/https?:\/\/[^\s]*/g, '')
     .replace(/Source\s*:.*$/gim, '')
     .replace(/Prix\s*source\s*:.*$/gim, '')
@@ -111,6 +112,7 @@ async function readCsv(filepath) {
     if (!headers) { headers = fields; continue; }
     const obj = {};
     headers.forEach((h, i) => { obj[h] = fields[i] ?? ''; });
+    if (fields.length > headers.length) obj._overflow = fields.slice(headers.length);
     rows.push(obj);
   }
   return rows;
@@ -143,8 +145,19 @@ async function main() {
     const specRows = await readCsv(SPECS_CSV);
     for (const row of specRows) {
       const pid = (row.product_id || '').trim();
-      const key = (row.attribute_name || '').trim();
-      const val = (row.attribute_value || '').trim();
+      // The scraper writes product_id,spec_label,spec_value. Most files pack
+      // the label and value into spec_label with a `|` separator.
+      const packed = (row.spec_label || '').trim();
+      const separator = packed.indexOf('|');
+      const trailingValue = [row.spec_value, ...(row._overflow || [])]
+        .filter(value => value !== undefined && value !== '')
+        .join(',')
+        .trim();
+      const key = (separator === -1 ? packed : packed.slice(0, separator)).trim();
+      const val = (separator === -1
+        ? trailingValue
+        : `${packed.slice(separator + 1)}${trailingValue ? `,${trailingValue}` : ''}`
+      ).trim();
       if (!pid || !key) continue;
       if (!specMap.has(pid)) specMap.set(pid, []);
       specMap.get(pid).push(`${key}: ${val}`);
@@ -223,7 +236,7 @@ async function main() {
       const extId   = (row.product_id || '').trim();
       const name    = (row.name || '').trim();
       const brand   = (row.brand || row.manufacturer || '').trim();
-      const cat     = (row.category || row.product_type || '').trim();
+      const cat     = (row.category_name || row.category || row.product_type || row.subcategory_slug || '').trim();
       const priceRaw = row.price || row.selling_price || '0';
       const descRaw  = row.description || row.long_description || '';
       const avail    = (row.availability || row.stock_status || 'in_stock').toLowerCase();
@@ -232,27 +245,30 @@ async function main() {
 
       const price = parsePrice(priceRaw);
       const sku = extId.slice(0, 100);
-      if (usedSkus.has(sku)) {
-        // Already imported, just ensure we have the DB id
-        skippedProds++;
-        continue;
-      }
+      // Keep the SKU stable so a later import refreshes existing products,
+      // including their descriptions and technical specifications.
+      const isExistingProduct = usedSkus.has(sku);
       usedSkus.add(sku);
 
       const slugBase = slugify(name).slice(0, 90);
       const slug = ensureUniqueSlug(slugBase, usedProdSlugs);
 
       let desc = cleanDescription(descRaw);
-      const specs = specMap.get(extId) || [];
-      if (specs.length > 0) {
-        desc += `\n\nSpécifications techniques:\n${specs.slice(0, 20).map(s => `• ${s}`).join('\n')}`;
+      if (!desc || desc === name) {
+        desc = `${name} est une pièce de rechange automobile de marque ${brand || 'd’origine contrôlée'}.`;
       }
-      desc = desc.trim() || name;
+      const catalogueSpecs = [
+        brand && `Marque: ${brand}`,
+        (row.mpn || row.sku || extId) && `Référence fabricant: ${row.mpn || row.sku || extId}`,
+        cat && `Catégorie: ${cat.replace(/-/g, ' ')}`,
+      ].filter(Boolean);
+      const specs = [...catalogueSpecs, ...(specMap.get(extId) || [])];
+      desc = `${desc.trim()}\n\nSpécifications techniques:\n${specs.slice(0, 20).map(s => `• ${s}`).join('\n')}`;
 
       const inStock = avail.includes('stock') && !avail.includes('rupture');
       const stockQty = inStock ? 10 : 0;
 
-      batch.push({ extId, sku, name, slug, desc, brand, cat, price, stockQty });
+      batch.push({ extId, sku, name, slug, desc, brand, cat, price, stockQty, isExistingProduct });
 
       if (batch.length >= PROD_BATCH) {
         await insertProductBatch(client, batch, imgMap, prodMap, getOrCreateBrand, getOrCreateCategory);
@@ -383,7 +399,7 @@ async function main() {
 
 // ─── BATCH HELPERS ────────────────────────────────────────────────────────────
 async function insertProductBatch(client, batch, imgMap, prodMap, getOrCreateBrand, getOrCreateCategory) {
-  for (const { extId, sku, name, slug, desc, brand, cat, price, stockQty } of batch) {
+  for (const { extId, sku, name, slug, desc, brand, cat, price, stockQty, isExistingProduct } of batch) {
     try {
       const brandId = await getOrCreateBrand(brand);
       const catId   = await getOrCreateCategory(cat);
@@ -394,7 +410,9 @@ async function insertProductBatch(client, batch, imgMap, prodMap, getOrCreateBra
          ON CONFLICT (sku) DO UPDATE
            SET "nameFr" = EXCLUDED."nameFr",
                description = EXCLUDED.description,
-               "isPublished" = true
+               "isPublished" = true,
+               "brandId" = EXCLUDED."brandId",
+               "categoryId" = EXCLUDED."categoryId"
          RETURNING id`,
         [randomUUID(), sku, name, slug, desc, brandId, catId]
       );
@@ -410,7 +428,9 @@ async function insertProductBatch(client, batch, imgMap, prodMap, getOrCreateBra
         [randomUUID(), prodDbId, price, stockQty, variantSku]
       );
 
-      const images = imgMap.get(extId) || [];
+      // Existing products already have their images. Avoid duplicating image
+      // rows when this script is used to refresh descriptions/specifications.
+      const images = isExistingProduct ? [] : (imgMap.get(extId) || []);
       for (let i = 0; i < Math.min(images.length, 5); i++) {
         await client.query(
           `INSERT INTO "ProductImage" (id, "productId", url, "isPrimary", "sortOrder")

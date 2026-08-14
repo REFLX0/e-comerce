@@ -1,25 +1,43 @@
 "use client";
 
-import { useRef } from 'react'
-import { useQuery } from '@tanstack/react-query'
-import { brandsApi } from '@/lib/api/brands'
+import { useRef, useState, useEffect } from 'react'
 import Image from 'next/image'
 import { Link } from '@/i18n/routing'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 
+// Static list of brands with confirmed local SVG logos
+const KNOWN_BRANDS = [
+  { slug: 'yacco',         name: 'Yacco',         logo: '/img/b/yacco.svg' },
+  { slug: 'shell',         name: 'Shell',         logo: '/img/b/shell.svg' },
+  { slug: 'totalenergies', name: 'TotalEnergies', logo: '/img/b/total.svg' },
+  { slug: 'castrol',       name: 'Castrol',       logo: '/img/b/castrol.svg' },
+  { slug: 'liqui-moly',    name: 'Liqui Moly',   logo: '/img/b/liqui-moly.svg' },
+  { slug: 'motul',         name: 'Motul',         logo: '/img/b/motul.svg' },
+  { slug: 'bosch',         name: 'Bosch',         logo: '/img/b/bosch.svg' },
+  { slug: 'purflux',       name: 'Purflux',       logo: '/img/b/purflux.svg' },
+  { slug: 'wynns',         name: "Wynn's",        logo: '/img/b/wynns.svg' },
+]
+
 export function BrandsBar() {
-  const { data: brands, isLoading } = useQuery({
-    queryKey: ['all-brands'],
-    queryFn: brandsApi.getAll,
-  })
   const scrollRef = useRef<HTMLDivElement>(null)
+  const [isPaused, setIsPaused] = useState(false)
+
+  useEffect(() => {
+    if (isPaused || !scrollRef.current) return
+    const timer = window.setInterval(() => {
+      const carousel = scrollRef.current
+      if (!carousel) return
+      const atEnd = carousel.scrollLeft + carousel.clientWidth >= carousel.scrollWidth - 8
+      carousel.scrollTo({ left: atEnd ? 0 : carousel.scrollLeft + 180, behavior: 'smooth' })
+    }, 3000)
+    return () => window.clearInterval(timer)
+  }, [isPaused])
 
   const scroll = (dir: 'left' | 'right') => {
     if (!scrollRef.current) return
     scrollRef.current.scrollBy({ left: dir === 'right' ? 200 : -200, behavior: 'smooth' })
   }
 
-  if (isLoading || !brands || brands.length === 0) return null
 
   return (
     <section className="border-y border-gray-100 bg-white py-12">
@@ -57,26 +75,24 @@ export function BrandsBar() {
         <div
           ref={scrollRef}
           className="hide-scrollbar flex gap-4 overflow-x-auto pb-2"
+          onMouseEnter={() => setIsPaused(true)}
+          onMouseLeave={() => setIsPaused(false)}
+          onFocus={() => setIsPaused(true)}
+          onBlur={() => setIsPaused(false)}
         >
-          {brands.map((brand) => (
+          {KNOWN_BRANDS.map((brand) => (
             <Link
-              key={brand.id}
+              key={brand.slug}
               href={`/marque/${brand.slug}`}
               title={brand.name}
               className="relative flex h-16 w-28 shrink-0 items-center justify-center rounded-xl border border-gray-100 bg-gray-50 opacity-60 transition-all duration-200 hover:border-gray-200 hover:bg-white hover:opacity-100 hover:shadow-md md:h-20 md:w-36"
             >
-              {brand.logo ? (
-                <Image
-                  src={brand.logo}
-                  alt={brand.name}
-                  fill
-                  className="object-contain p-3 grayscale transition-all duration-200 hover:grayscale-0"
-                />
-              ) : (
-                <span className="font-black text-sm uppercase tracking-tight text-brand-primary">
-                  {brand.name}
-                </span>
-              )}
+              <Image
+                src={brand.logo}
+                alt={brand.name}
+                fill
+                className="object-contain p-3 grayscale transition-all duration-200 hover:grayscale-0"
+              />
             </Link>
           ))}
         </div>

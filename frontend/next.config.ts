@@ -17,8 +17,14 @@ const nextConfig: NextConfig = {
 
   // ── Images ──────────────────────────────────────────────────────────────
   images: {
+    // Product images are served by Nginx from the local catalogue volume.
+    // Bypass Next's optimizer, which runs in a separate container and cannot
+    // resolve the /product-images route from its own filesystem.
+    unoptimized: true,
     remotePatterns: [
       { protocol: 'https', hostname: 'www.specpart.tn' },
+      // autopart.tn — original source of product images (fallback for un-migrated URLs)
+      { protocol: 'https', hostname: 'autopart.tn' },
       // Unsplash (fallback product photos)
       { protocol: 'https', hostname: 'images.unsplash.com' },
       // Cloudinary — uploaded product images

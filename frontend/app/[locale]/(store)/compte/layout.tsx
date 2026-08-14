@@ -21,18 +21,19 @@ function SidebarContent({
 }) {
   return (
     <div className="flex h-full flex-col">
-      <div className="p-5 border-b border-gray-100">
+      <div className="relative overflow-hidden border-b border-white/10 bg-[linear-gradient(135deg,#16254c,#223b76)] p-5 text-white">
+        <div className="absolute -right-6 -top-8 h-24 w-24 rounded-full border-[16px] border-brand-accent/20" />
         <div className="flex items-center gap-3">
-          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-brand-primary font-bold text-white">
+          <div className="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-brand-accent font-bold text-brand-primary shadow-lg shadow-black/10">
             {initials}
           </div>
-          <div className="min-w-0">
-            <p className="truncate font-semibold text-brand-primary">{fullName || t('myAccount')}</p>
-            <p className="truncate text-xs text-gray-400">{user?.email}</p>
+          <div className="relative min-w-0">
+            <p className="truncate font-semibold">{fullName || t('myAccount')}</p>
+            <p className="truncate text-xs text-white/65">{user?.email}</p>
           </div>
         </div>
       </div>
-      <nav className="flex-1 overflow-y-auto p-3 space-y-0.5">
+      <nav className="flex-1 space-y-1 overflow-y-auto p-3">
         {NAV_ITEMS.map((item) => {
           const isActive = item.exact ? pathname === item.href : pathname.startsWith(item.href)
           return (
@@ -42,18 +43,18 @@ function SidebarContent({
               onClick={() => setMobileOpen(false)}
               className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all ${
                 isActive
-                  ? 'bg-brand-primary/10 text-brand-primary font-semibold'
-                  : 'text-gray-500 hover:bg-gray-50 hover:text-brand-primary'
+                  ? 'bg-brand-primary text-white font-semibold shadow-sm'
+                  : 'text-gray-500 hover:bg-brand-primary/5 hover:text-brand-primary'
               }`}
             >
-              <item.icon size={18} className={isActive ? 'text-brand-primary' : 'text-gray-400'} />
+              <item.icon size={18} className={isActive ? 'text-brand-accent' : 'text-gray-400'} />
               {item.label}
-              {isActive && <ChevronRight size={14} className="ml-auto text-brand-primary" />}
+              {isActive && <ChevronRight size={14} className="ml-auto text-brand-accent" />}
             </Link>
           )
         })}
       </nav>
-      <div className="p-3 border-t border-gray-100">
+      <div className="border-t border-gray-100 p-3">
         <button
           onClick={handleLogout}
           className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-red-500 hover:bg-red-50 transition-colors"
@@ -169,7 +170,7 @@ export default function CompteLayout({ children }: { children: React.ReactNode }
   const sidebarProps = { initials, fullName, user, pathname, handleLogout, setMobileOpen, t, NAV_ITEMS }
 
   return (
-    <div className="min-h-screen bg-brand-surface">
+    <div className="min-h-screen bg-[linear-gradient(180deg,#f7f8fb_0%,#eef1f6_100%)]">
       {/* Mobile top bar */}
       <div className="sticky top-16 z-30 flex items-center gap-3 border-b border-gray-200 bg-white px-4 py-3 lg:hidden">
         <button
@@ -206,18 +207,18 @@ export default function CompteLayout({ children }: { children: React.ReactNode }
       )}
 
       {/* Desktop layout */}
-      <div className="section-padding py-8">
-        <div className="mx-auto flex max-w-6xl gap-6">
+      <div className="section-padding py-6 sm:py-8">
+        <div className="mx-auto flex max-w-7xl gap-6 lg:gap-8">
           {/* Desktop Sidebar */}
           <aside className="hidden lg:block w-64 shrink-0">
-            <div className="sticky top-24 rounded-2xl border border-gray-100 bg-white shadow-sm overflow-hidden">
+            <div className="sticky top-24 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-[0_14px_35px_rgba(22,37,76,0.08)]">
               <SidebarContent {...sidebarProps} />
             </div>
           </aside>
 
           {/* Main */}
           <main className="min-w-0 flex-1">
-            <div className="rounded-2xl border border-gray-100 bg-white p-5 sm:p-8 shadow-sm">
+            <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-[0_14px_35px_rgba(22,37,76,0.08)] sm:p-8">
               {children}
             </div>
           </main>
