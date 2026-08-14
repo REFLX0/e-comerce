@@ -51,7 +51,7 @@ export default function MobileMenu() {
               <img
                 src="/logo.jpg"
                 alt="specpart"
-                className="h-10 w-auto object-contain"
+                className="h-16 w-auto object-contain mix-blend-multiply"
               />
             </Link>
             <SheetTitle className="sr-only">{tLayout('menu')}</SheetTitle>
