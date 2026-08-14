@@ -262,29 +262,75 @@ export default function CataloguePage() {
 
           <div className="min-w-0 flex-1">
             {!isSearchMode && <ActiveFilters />}
-            {isLoading ? (
-              <ProductGridSkeleton count={12} />
-            ) : isError ? (
-              <ErrorState onRetry={() => refetch()} />
-            ) : products.length > 0 ? (
-              <>
-                <ProductGrid products={products} />
-                <Pagination currentPage={isSearchMode ? 1 : (data?.page ?? 1)} totalPages={isSearchMode ? 1 : (data?.totalPages ?? 1)} />
-              </>
-            ) : (
-              <div className="border border-black/10 bg-neutral-50 px-5 py-3 sm:px-8">
-                <EmptyState title={emptyTitle} message={emptyMessage} action={emptyAction} />
-                {isVehicleSearch && (
-                  <div className="mb-8 border-t border-black/10 pt-6 text-center">
-                    <p className="mb-3 text-sm text-neutral-500">{t('vehicleNotFoundHint')}</p>
-                    <Link href={`/${locale}/#oil-finder`} className="inline-flex min-h-11 items-center gap-2 bg-[#E10600] px-5 text-xs font-black uppercase tracking-[0.12em] text-white transition-colors hover:bg-[#bd0500]">
+            
+            {(() => {
+              const categorySlug = searchParams.get('categorySlug')
+              const STRICT_COMPATIBILITY_CATEGORIES = [
+                'auto-pieces-rechange',
+                'auto-filtres',
+                'auto-freinage',
+                'auto-moteur-distribution',
+                'auto-suspension-direction',
+                'auto-transmission-embrayage',
+                'auto-refroidissement-climatisation',
+                'auto-electricite-eclairage',
+                'auto-carrosserie-habitacle',
+                'auto-echappement'
+              ]
+              const requiresVehicle = categorySlug && STRICT_COMPATIBILITY_CATEGORIES.includes(categorySlug) && !isVehicleSearch
+              
+              if (requiresVehicle) {
+                return (
+                  <div className="border border-black/10 bg-neutral-50 px-5 py-12 text-center sm:px-8">
+                    <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#E10600]/10 mb-4">
+                      <Car className="text-[#E10600]" size={32} />
+                    </div>
+                    <h3 className="mb-2 text-xl font-black uppercase tracking-[-0.03em] text-[#111]">
+                      {locale === 'en' ? 'Select your vehicle' : 'Sélectionnez votre véhicule'}
+                    </h3>
+                    <p className="mx-auto mb-6 max-w-md text-sm text-neutral-500">
+                      {locale === 'en' 
+                        ? 'To view parts in this category (Filters, Brakes, Suspension, etc.), you must first select your vehicle to ensure 100% compatibility.' 
+                        : 'Pour voir les pièces de cette catégorie (Filtres, Freinage, Suspension, etc.), veuillez d\'abord sélectionner votre véhicule afin de garantir une compatibilité à 100%.'}
+                    </p>
+                    <Link 
+                      href={`/${locale}/#oil-finder`} 
+                      className="inline-flex min-h-12 items-center justify-center gap-2 bg-[#E10600] px-6 text-xs font-black uppercase tracking-[0.12em] text-white transition-colors hover:bg-[#bd0500]"
+                    >
                       <Car size={16} />
-                      {t('searchBySpecs')}
+                      {locale === 'en' ? 'Select Vehicle' : 'Sélectionner un véhicule'}
                     </Link>
                   </div>
-                )}
-              </div>
-            )}
+                )
+              }
+
+              if (isLoading) return <ProductGridSkeleton count={12} />
+              if (isError) return <ErrorState onRetry={() => refetch()} />
+              
+              if (products.length > 0) {
+                return (
+                  <>
+                    <ProductGrid products={products} />
+                    <Pagination currentPage={isSearchMode ? 1 : (data?.page ?? 1)} totalPages={isSearchMode ? 1 : (data?.totalPages ?? 1)} />
+                  </>
+                )
+              }
+
+              return (
+                <div className="border border-black/10 bg-neutral-50 px-5 py-3 sm:px-8">
+                  <EmptyState title={emptyTitle} message={emptyMessage} action={emptyAction} />
+                  {isVehicleSearch && (
+                    <div className="mb-8 border-t border-black/10 pt-6 text-center">
+                      <p className="mb-3 text-sm text-neutral-500">{t('vehicleNotFoundHint')}</p>
+                      <Link href={`/${locale}/#oil-finder`} className="inline-flex min-h-11 items-center gap-2 bg-[#E10600] px-5 text-xs font-black uppercase tracking-[0.12em] text-white transition-colors hover:bg-[#bd0500]">
+                        <Car size={16} />
+                        {t('searchBySpecs')}
+                      </Link>
+                    </div>
+                  )}
+                </div>
+              )
+            })()}
           </div>
         </div>
       </main>

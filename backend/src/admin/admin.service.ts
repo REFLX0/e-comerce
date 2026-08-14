@@ -26,11 +26,11 @@ export class AdminService {
           include: { items: true },
         }),
         this.prisma.order.aggregate({
-          where: { shippingCost: { gt: 0 } },
+          where: { orderType: 'DELIVERY' },
           _sum: { totalAmount: true },
         }),
         this.prisma.order.aggregate({
-          where: { shippingCost: { equals: 0 } },
+          where: { orderType: 'STORE_PICKUP' },
           _sum: { totalAmount: true },
         }),
       ]);

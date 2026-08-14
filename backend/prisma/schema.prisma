@@ -30,6 +30,11 @@ enum OrderStatus {
   RETURNED
 }
 
+enum OrderType {
+  DELIVERY      // Placed through checkout, shipped to customer
+  STORE_PICKUP  // Placed/collected in person at the boutique
+}
+
 enum PaymentStatus {
   PENDING
   COMPLETED
@@ -305,6 +310,7 @@ model Order {
   userId         String?
   user           User?       @relation(fields: [userId], references: [id])
   status         OrderStatus @default(PENDING)
+  orderType      OrderType   @default(DELIVERY)
   totalAmount    Float
   shippingCost   Float       @default(0)
   promoCode      String?

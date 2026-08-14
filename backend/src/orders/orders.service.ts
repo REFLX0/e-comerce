@@ -89,6 +89,7 @@ export class OrdersService {
         data: {
           idempotencyKey: key,
           userId: userId ?? null,
+          orderType: 'DELIVERY', // only fulfillment path checkout currently supports
           totalAmount,
           shippingCost: shipping,
           promoCode: dto.promoCode ?? null,
