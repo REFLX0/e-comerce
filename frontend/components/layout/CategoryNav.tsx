@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Link } from '@/i18n/routing'
-import { Bike, Car, ChevronDown, ChevronRight, Flag, Package, ShipWheel } from 'lucide-react'
+import { Bike, Car, ChevronDown, ChevronRight, Package, ShipWheel } from 'lucide-react'
 import { useLocale } from 'next-intl'
 import { useQuery } from '@tanstack/react-query'
 import { categoriesApi } from '@/lib/api/categories'
@@ -20,7 +20,6 @@ const DROPDOWN_CLOSE_DELAY_MS = 160
 const NAVIGATION_ICONS: Record<string, React.ElementType> = {
   automobile: Car,
   'moto-karting': Bike,
-  karting: Flag,
   marine: ShipWheel,
 }
 

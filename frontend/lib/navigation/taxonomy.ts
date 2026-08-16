@@ -10,10 +10,14 @@
 // is the fallback.
 //
 // Structure (exact):
-//   Automobile → Pièces de Rechange / D'origine · Huiles & Lubrifiants Moteur
-//   Moto       → Pièces & Consommables · Équipements & Entretien
-//   Karting    → Pièces & Consommables
-//   Marine     → Huiles & Lubrifiants Marine · Entretien & Accessoires
+//   Automobile  → Huile moteur · Liquide de frein · Liquide de direction ·
+//                 Huile de boîte · Additifs (essence / diesel / huile)
+//   Moto & Karting → Pièces & Consommables · Équipements & Entretien · Karting
+//   Marine      → Huiles & Lubrifiants Marine · Entretien & Accessoires
+//
+// NOTE: auto-pieces-rechange and auto-huiles-lubrifiants remain in the DB
+// (products still navigable by URL + search) but are intentionally NOT part
+// of the flat Automobile menu.
 // ---------------------------------------------------------------------------
 
 export type NavigationTaxonomyNode = {
@@ -40,83 +44,48 @@ export const NAVIGATION_TAXONOMY: NavigationTaxonomyItem[] = [
     label: 'Automobile',
     children: [
       {
-        slug: 'auto-pieces-rechange',
-        label: "Pièces de Rechange / D'origine",
-        children: [
-          {
-            slug: 'auto-filtres',
-            label: 'Filtres',
-            hint: 'Air, Huile, Carburant, Habitacle',
-          },
-          {
-            slug: 'auto-freinage',
-            label: 'Freinage',
-            hint: 'Disques, Plaquettes, Liquide de frein',
-          },
-          {
-            slug: 'auto-suspension-direction',
-            label: 'Suspension & Direction',
-            hint: 'Amortisseurs, Huile de direction',
-          },
-          {
-            slug: 'transmission',
-            label: 'Boîte de Vitesse',
-            hint: 'Huile de boîte',
-          },
-          { slug: 'auto-moteur-distribution', label: 'Moteur & Distribution' },
-          { slug: 'auto-refroidissement-climatisation', label: 'Refroidissement & Climatisation' },
-          { slug: 'auto-electricite-eclairage', label: 'Électricité & Éclairage' },
-          { slug: 'auto-carrosserie-habitacle', label: 'Carrosserie & Habitacle' },
-          { slug: 'auto-echappement', label: 'Échappement' },
-          { slug: 'auto-autres-pieces', label: 'Autres pièces auto' },
-        ],
+        slug: 'huiles-moteur',
+        label: 'Huile moteur',
+        hint: '100% Synthétique, Semi-Synthétique, Minéral',
       },
       {
-        slug: 'auto-huiles-lubrifiants',
-        label: 'Huiles & Lubrifiants Moteur',
+        slug: 'liquide-de-frein',
+        label: 'Liquide de frein',
+        hint: 'DOT 3, DOT 4',
+      },
+      {
+        slug: 'direction-assistee',
+        label: 'Liquide de direction',
+        hint: 'Huile pour direction assistée',
+      },
+      {
+        slug: 'huile-de-boite',
+        label: 'Huile de boîte',
+        hint: 'ATF, DSG, CVT, MTF, Hypoid',
+      },
+      {
+        slug: 'additifs',
+        label: 'Additifs',
+        hint: 'Additif Essence, Additif Diesel, Additif Huile/Graisse',
         children: [
-          {
-            slug: 'huiles-moteur',
-            label: 'Huile Moteur',
-            hint: '100% Synthétique, Semi-Synthétique, Minéral',
-            children: [
-              { slug: 'auto-synthese', label: '100% Synthétique' },
-              { slug: 'auto-semi', label: 'Semi-Synthétique' },
-              { slug: 'auto-minerale', label: 'Minérale' },
-            ],
-          },
-          {
-            slug: 'liquides-auto',
-            label: 'Liquides',
-            hint: 'Liquide de refroidissement, Liquide de frein, Huile de direction',
-          },
-          {
-            slug: 'additifs',
-            label: 'Additifs',
-            hint: 'Additif Essence, Additif Diesel, Additif Huile/Graisse',
-          },
-          {
-            slug: 'entretien-auto',
-            label: "Produits d'entretien",
-            hint: 'AdBlue',
-          },
+          { slug: 'additif-essence', label: 'Additif Essence' },
+          { slug: 'additif-diesel', label: 'Additif Diesel' },
+          { slug: 'additif-huile', label: 'Additif Huile' },
         ],
       },
     ],
   },
   {
     slug: 'moto-karting',
-    label: 'Moto',
+    label: 'Moto & Karting',
     children: [
       {
         slug: 'moto-pieces-consommables',
         label: 'Pièces & Consommables',
         children: [
-          {
-            slug: 'moto-huiles',
-            label: 'Huiles moteur spécifiques moto',
-            hint: 'Motul, Liqui Moly, etc.',
-          },
+          { slug: 'moto-huile-moteur', label: 'Huile moteur' },
+          { slug: 'moto-huile-boite', label: 'Huile de boîte' },
+          { slug: 'moto-huile-fourche', label: 'Huile de fourche' },
           { slug: 'moto-lubrifiants-chaine', label: 'Lubrifiants de chaîne et additifs' },
         ],
       },
@@ -136,15 +105,10 @@ export const NAVIGATION_TAXONOMY: NavigationTaxonomyItem[] = [
           },
         ],
       },
-    ],
-  },
-  {
-    slug: 'karting',
-    label: 'Karting',
-    children: [
       {
         slug: 'karting-pieces-consommables',
-        label: 'Pièces & Consommables',
+        label: 'Karting',
+        hint: 'Compétition',
         children: [
           {
             slug: 'karting-huiles',
@@ -172,6 +136,11 @@ export const NAVIGATION_TAXONOMY: NavigationTaxonomyItem[] = [
             slug: 'marine-moteurs',
             label: 'Huiles moteurs marins',
             hint: 'Gamme complète Motul Marine & Liqui Moly',
+          },
+          {
+            slug: 'marine-hydraulique',
+            label: 'Hydraulique',
+            hint: 'Systèmes hydrauliques',
           },
           {
             slug: 'marine-graisses',

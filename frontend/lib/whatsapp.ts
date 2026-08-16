@@ -33,7 +33,6 @@ const NON_PARTS_CATEGORY_SLUGS = new Set([
   'antigel',
   'entretien-auto',
   // Non-car domains
-  'karting',
   'marine',
   'moto',
   'moto-karting',

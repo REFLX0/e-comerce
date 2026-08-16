@@ -14,7 +14,6 @@ import {
 // Map of category slug → local image override (takes priority over DB image)
 const LOCAL_CATEGORY_IMAGES: Record<string, string> = {
   'lubrifiants':    '/img/categories/lubrifiant.png',
-  'karting':        '/img/categories/karting.jpg',
   'frein':          '/img/categories/frein.png',
   'hydraulique':    '/img/categories/hydraulique.png',
   'pieces-auto':    'https://images.unsplash.com/photo-1530046339160-ce3e530c7d2f?q=80&w=600',
