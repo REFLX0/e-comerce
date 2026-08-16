@@ -7,6 +7,7 @@ import { calcSpecificity } from '../specificity';
 export interface ProductFilters {
   categorySlug?: string;
   brandSlug?: string;
+  brands?: string[];
   viscosity?: string;
   priceMin?: number;
   priceMax?: number;
@@ -28,13 +29,35 @@ export interface ProductFilters {
 export class ProductsService {
   constructor(private readonly prisma: PrismaService) {}
 
-  /** Include direct children when a top-level catalogue group is selected. */
+  /** Include every descendant when a catalogue group is selected. */
   private async resolveCategoryIds(slug: string) {
     const category = await this.prisma.category.findUnique({
       where: { slug },
-      select: { id: true, children: { select: { id: true } } },
+      select: { id: true },
     });
-    return category ? [category.id, ...category.children.map((child) => child.id)] : [];
+    if (!category) return [];
+
+    const categories = await this.prisma.category.findMany({
+      select: { id: true, parentId: true },
+    });
+    const ids = new Set([category.id]);
+    const pending = [category.id];
+    while (pending.length > 0) {
+      const parentId = pending.shift();
+      for (const child of categories) {
+        if (child.parentId === parentId && !ids.has(child.id)) {
+          ids.add(child.id);
+          pending.push(child.id);
+        }
+      }
+    }
+    return [...ids];
+  }
+
+  private normalizeViscosity(value: string) {
+    const compact = value.replace(/[\s-]/g, '').toUpperCase();
+    const match = compact.match(/^(\d+W)(\d+)$/);
+    return match ? `${match[1]}-${match[2]}` : compact;
   }
 
   private buildInclude() {
@@ -80,7 +103,9 @@ export class ProductsService {
       const categoryIds = await this.resolveCategoryIds(filters.categorySlug);
       where.categoryId = { in: categoryIds };
     }
-    if (filters.brandSlug) {
+    if (filters.brands?.length) {
+      where.brand = { slug: { in: filters.brands } };
+    } else if (filters.brandSlug) {
       where.brand = { slug: filters.brandSlug };
     }
     if (filters.isFeatured) {
@@ -92,7 +117,7 @@ export class ProductsService {
       };
     }
     if (filters.viscosity) {
-      where.specs = { viscosity: filters.viscosity };
+      where.specs = { viscosity: this.normalizeViscosity(filters.viscosity) };
     }
     const variantSome: Prisma.ProductVariantWhereInput = {};
     const specsInput: Prisma.ProductSpecsWhereInput = {};
@@ -121,8 +146,18 @@ export class ProductsService {
           break;
       }
     }
-    if (filters.api) specsInput.apiStandard = filters.api;
-    if (filters.acea) specsInput.aeceaStandard = filters.acea;
+    if (filters.api) {
+      specsInput.apiStandard = {
+        contains: filters.api.replace(/^API\s+/i, ''),
+        mode: 'insensitive',
+      };
+    }
+    if (filters.acea) {
+      specsInput.aeceaStandard = {
+        contains: filters.acea.replace(/^ACEA\s+/i, ''),
+        mode: 'insensitive',
+      };
+    }
     if (Object.keys(variantSome).length > 0)
       where.variants = { some: variantSome };
     if (Object.keys(specsInput).length > 0) {
@@ -286,6 +321,19 @@ export class ProductsService {
         { brand: { name: { contains: filters.search, mode: 'insensitive' } } },
       ];
     }
+    // Brand and viscosity selections are intentionally NOT applied here so the
+    // facet lists stay stable while the user multi-selects brands.
+    const variantSome: Prisma.ProductVariantWhereInput = {};
+    if (filters.inStockOnly) variantSome.stockQty = { gt: 0 };
+    if (filters.priceMin !== undefined || filters.priceMax !== undefined) {
+      variantSome.price = {
+        ...(filters.priceMin !== undefined ? { gte: filters.priceMin } : {}),
+        ...(filters.priceMax !== undefined ? { lte: filters.priceMax } : {}),
+      };
+    }
+    if (Object.keys(variantSome).length > 0) {
+      where.variants = { some: variantSome };
+    }
 
     const variantGroups = await this.prisma.productVariant.groupBy({
       by: ['volume'],
@@ -307,11 +355,71 @@ export class ProductsService {
         return numA - numB;
       });
 
-    const brands = await this.prisma.brand.findMany({
-      orderBy: { name: 'asc' },
+    const viscosityGroups = await this.prisma.productSpecs.groupBy({
+      by: ['viscosity'],
+      where: { product: where },
+      _count: { viscosity: true },
     });
 
-    return { volumes, brands };
+    const viscosities = viscosityGroups
+      .filter((v) => v.viscosity)
+      .map((v) => ({
+        value: v.viscosity as string,
+        count: v._count.viscosity,
+      }))
+      .sort((a, b) => {
+        const numA = parseFloat(a.value) || 0;
+        const numB = parseFloat(b.value) || 0;
+        return numA - numB || a.value.localeCompare(b.value);
+      });
+
+    const brandGroups = await this.prisma.product.groupBy({
+      by: ['brandId'],
+      where,
+      _count: { brandId: true },
+    });
+    const brandCounts = new Map(
+      brandGroups.map((group) => [group.brandId, group._count.brandId]),
+    );
+
+    const availableBrands = await this.prisma.brand.findMany({
+      orderBy: { name: 'asc' },
+    });
+    const seenBrandNames = new Set<string>();
+    const brands = availableBrands
+      .filter((brand) => {
+        const normalizedName = brand.name.trim().toLocaleLowerCase();
+        if (
+          /^(supplier|unknown)\b/i.test(brand.name) ||
+          seenBrandNames.has(normalizedName)
+        ) {
+          return false;
+        }
+        seenBrandNames.add(normalizedName);
+        return true;
+      })
+      .map((brand) => ({
+        id: brand.id,
+        name: brand.name,
+        slug: brand.slug,
+        count: brandCounts.get(brand.id) ?? 0,
+      }));
+
+    const priceAgg = await this.prisma.productVariant.aggregate({
+      _min: { price: true },
+      _max: { price: true },
+      where: { product: where },
+    });
+
+    return {
+      volumes,
+      brands,
+      viscosities,
+      priceRange: {
+        min: Math.floor(priceAgg._min?.price ?? 0),
+        max: Math.ceil(priceAgg._max?.price ?? 0),
+      },
+    };
   }
 
   async findOilRecommendations(dto: OilRecommendationsDto) {

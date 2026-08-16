@@ -1,7 +1,7 @@
 "use client"
 
 import { useRouter } from '@/i18n/routing'
-import { useSearchParams } from 'next/navigation'
+import { usePathname, useSearchParams } from 'next/navigation'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 
 interface Props {
@@ -11,6 +11,7 @@ interface Props {
 
 export function Pagination({ currentPage, totalPages }: Props) {
   const router = useRouter()
+  const pathname = usePathname()
   const searchParams = useSearchParams()
 
   if (totalPages <= 1) return null
@@ -19,7 +20,7 @@ export function Pagination({ currentPage, totalPages }: Props) {
     if (page < 1 || page > totalPages) return
     const params = new URLSearchParams(searchParams.toString())
     params.set('page', page.toString())
-    router.push(`/catalogue?${params.toString()}`)
+    router.push(`${pathname}?${params.toString()}`)
   }
 
   const pages: (number | string)[] = []

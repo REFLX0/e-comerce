@@ -261,11 +261,33 @@ export interface ApiError {
   status: number
 }
 
+// ─── Facets ────────────────────────────────────────────────────────────────
+
+export interface FacetBrand {
+  id: string
+  name: string
+  slug: string
+  count: number
+}
+
+export interface FacetValue {
+  value: string
+  count: number
+}
+
+export interface FacetsResponse {
+  volumes: { volume: string; count: number }[]
+  brands: FacetBrand[]
+  viscosities: FacetValue[]
+  priceRange: { min: number; max: number }
+}
+
 // ─── Filters ──────────────────────────────────────────────────────────────
 
 export interface ProductFilters {
   categorySlug?: string
   brandSlug?: string
+  brands?: string
   viscosity?: string
   priceMin?: number
   priceMax?: number
@@ -275,6 +297,10 @@ export interface ProductFilters {
   isFeatured?: boolean
   isBestSeller?: boolean
   search?: string
+  type?: string
+  api?: string
+  acea?: string
+  volume?: string
   sortBy?: 'relevance' | 'price_asc' | 'price_desc' | 'newest' | 'rating'
   page?: number
   limit?: number

@@ -19,6 +19,7 @@ export class ProductsController {
     return this.productsService.findAll({
       categorySlug: query.categorySlug,
       brandSlug: query.brandSlug,
+      brands: query.brands ? query.brands.split(',') : undefined,
       viscosity: query.viscosity,
       priceMin: query.priceMin ? +query.priceMin : undefined,
       priceMax: query.priceMax ? +query.priceMax : undefined,
@@ -56,7 +57,12 @@ export class ProductsController {
   getFacets(@Query() query: Record<string, string>) {
     return this.productsService.getFacets({
       categorySlug: query.categorySlug,
+      brands: query.brands ? query.brands.split(',') : undefined,
+      viscosity: query.viscosity,
+      inStockOnly: query.inStockOnly === 'true',
       search: query.search || query.q,
+      priceMin: query.priceMin ? +query.priceMin : undefined,
+      priceMax: query.priceMax ? +query.priceMax : undefined,
     });
   }
 

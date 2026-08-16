@@ -4,11 +4,12 @@ import { useEffect, useMemo, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useSearchParams } from 'next/navigation'
 import { useLocale, useTranslations } from 'next-intl'
-import { Car, Filter, Search, Sparkles, X } from 'lucide-react'
+import { Car, Search, Sparkles, X } from 'lucide-react'
 import Link from 'next/link'
 import { productsApi } from '@/lib/api/products'
 import { useRouter } from '@/i18n/routing'
 import { FilterSidebar } from '@/components/catalogue/FilterSidebar'
+import { MobileFiltersSheet } from '@/components/catalogue/MobileFiltersSheet'
 import { ActiveFilters } from '@/components/catalogue/ActiveFilters'
 import { SortDropdown } from '@/components/catalogue/SortDropdown'
 import { ProductGrid } from '@/components/catalogue/ProductGrid'
@@ -17,7 +18,6 @@ import { Breadcrumb } from '@/components/common/Breadcrumb'
 import { ProductGridSkeleton } from '@/components/common/Skeleton'
 import { ErrorState } from '@/components/common/ErrorState'
 import { EmptyState } from '@/components/common/EmptyState'
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 
 const VEHICLE_QUERY_KEYS = ['make', 'model', 'engine', 'vehicleType', 'cylinders', 'power', 'fuelType']
 
@@ -26,7 +26,6 @@ export default function CataloguePage() {
   const locale = useLocale()
   const router = useRouter()
   const searchParams = useSearchParams()
-  const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false)
   const [searchValue, setSearchValue] = useState(searchParams.get('search') || '')
 
   const vehicleMake = searchParams.get('make')
@@ -229,26 +228,7 @@ export default function CataloguePage() {
             {!isLoading && !isSearchMode && <p className="mt-1 text-sm text-neutral-500">{t('catalogueHint')}</p>}
           </div>
           <div className="flex w-full items-center gap-2 sm:w-auto">
-            {!isSearchMode && (
-              <Sheet open={isMobileFiltersOpen} onOpenChange={setIsMobileFiltersOpen}>
-                <SheetTrigger render={<button className="flex h-11 flex-1 items-center justify-center gap-2 border border-black/15 bg-white px-4 text-xs font-black uppercase tracking-[0.12em] text-[#111] transition-colors hover:border-[#E10600] hover:text-[#E10600] lg:hidden sm:flex-none" />}>
-                  <Filter size={16} />
-                  {t('filters')}
-                </SheetTrigger>
-                <SheetContent side="left" showCloseButton className="w-full max-w-[390px] gap-0 overflow-y-auto bg-white p-0 sm:max-w-[390px]">
-                  <div className="p-4 pt-16">
-                    <FilterSidebar />
-                    <button
-                      type="button"
-                      onClick={() => setIsMobileFiltersOpen(false)}
-                      className="mt-4 min-h-12 w-full bg-[#E10600] px-5 text-xs font-black uppercase tracking-[0.14em] text-white transition-colors hover:bg-[#bd0500]"
-                    >
-                      {t('showResults')}
-                    </button>
-                  </div>
-                </SheetContent>
-              </Sheet>
-            )}
+            {!isSearchMode && <MobileFiltersSheet />}
             <SortDropdown />
           </div>
         </div>

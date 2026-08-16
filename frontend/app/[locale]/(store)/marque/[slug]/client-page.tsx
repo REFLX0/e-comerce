@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query'
 import { brandsApi } from '@/lib/api/brands'
 import { productsApi } from '@/lib/api/products'
 import { FilterSidebar } from '@/components/catalogue/FilterSidebar'
+import { MobileFiltersSheet } from '@/components/catalogue/MobileFiltersSheet'
 import { ActiveFilters } from '@/components/catalogue/ActiveFilters'
 import { SortDropdown } from '@/components/catalogue/SortDropdown'
 import { ProductGrid } from '@/components/catalogue/ProductGrid'
@@ -13,16 +14,16 @@ import { ProductGridSkeleton } from '@/components/common/Skeleton'
 import { ErrorState } from '@/components/common/ErrorState'
 import { EmptyState } from '@/components/common/EmptyState'
 import { useSearchParams } from 'next/navigation'
-import { Filter } from 'lucide-react'
-import { use, useState } from 'react'
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
+import { Loader2 } from 'lucide-react'
+import { use } from 'react'
 import type { ProductFilters } from '@/lib/types'
 import Image from 'next/image'
+import { useTranslations } from 'next-intl'
 
 export default function BrandPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params)
   const searchParams = useSearchParams()
-  const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false)
+  const t = useTranslations('Catalogue')
 
   const { data: brand, isLoading: brandLoading } = useQuery<any>({
     queryKey: ['brand', slug],
@@ -46,6 +47,7 @@ export default function BrandPage({ params }: { params: Promise<{ slug: string }
   const {
     data: productsData,
     isLoading: productsLoading,
+    isFetching,
     isError,
     refetch,
   } = useQuery<any>({
@@ -94,7 +96,7 @@ export default function BrandPage({ params }: { params: Promise<{ slug: string }
         <div className="mt-6 flex flex-col gap-8 md:flex-row">
           {/* Desktop Sidebar */}
           <aside className="hidden w-64 shrink-0 lg:block">
-            <FilterSidebar />
+            <FilterSidebar hideBrands />
           </aside>
 
           {/* Main Content */}
@@ -104,32 +106,16 @@ export default function BrandPage({ params }: { params: Promise<{ slug: string }
                 <h2 className="font-display text-brand-primary text-2xl font-bold">
                   Produits {brand?.name}
                 </h2>
-                <p className="mt-1 text-gray-500">{productsData?.total || 0} produits trouvés</p>
+                <p className="mt-1 flex items-center gap-2 text-gray-500">
+                  {productsData?.total || 0} produits trouvés
+                  {isFetching && !productsLoading && (
+                    <Loader2 size={13} className="animate-spin text-[#E10600]" aria-label={t('updating')} />
+                  )}
+                </p>
               </div>
 
               <div className="flex w-full items-center gap-3 sm:w-auto">
-                <Sheet open={isMobileFiltersOpen} onOpenChange={setIsMobileFiltersOpen}>
-                  <SheetTrigger
-                    render={
-                      <button className="btn-secondary flex flex-1 items-center justify-center gap-2 py-2 sm:flex-none lg:hidden" />
-                    }
-                  >
-                    <Filter size={18} />
-                    Filtres
-                  </SheetTrigger>
-                  <SheetContent
-                    side="left"
-                    className="bg-brand-surface w-full overflow-y-auto p-0 sm:max-w-sm"
-                  >
-                    <div className="p-6">
-                      <h2 className="font-display text-brand-primary mb-6 text-xl font-bold">
-                        Filtres
-                      </h2>
-                      <FilterSidebar />
-                    </div>
-                  </SheetContent>
-                </Sheet>
-
+                <MobileFiltersSheet hideBrands />
                 <SortDropdown />
               </div>
             </div>

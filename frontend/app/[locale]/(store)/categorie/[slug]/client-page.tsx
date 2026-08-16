@@ -5,6 +5,7 @@ import { productsApi } from '@/lib/api/products'
 import { categoriesApi } from '@/lib/api/categories'
 import type { ProductFilters } from '@/lib/types'
 import { FilterSidebar } from '@/components/catalogue/FilterSidebar'
+import { MobileFiltersSheet } from '@/components/catalogue/MobileFiltersSheet'
 import { ActiveFilters } from '@/components/catalogue/ActiveFilters'
 import { SortDropdown } from '@/components/catalogue/SortDropdown'
 import { ProductGrid } from '@/components/catalogue/ProductGrid'
@@ -14,14 +15,14 @@ import { ProductGridSkeleton } from '@/components/common/Skeleton'
 import { ErrorState } from '@/components/common/ErrorState'
 import { EmptyState } from '@/components/common/EmptyState'
 import { useSearchParams } from 'next/navigation'
-import { Filter } from 'lucide-react'
-import { use, useState } from 'react'
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
+import { Loader2 } from 'lucide-react'
+import { useTranslations } from 'next-intl'
+import { use } from 'react'
 
 export default function CategoryPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params)
   const searchParams = useSearchParams()
-  const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false)
+  const t = useTranslations('Catalogue')
 
   // Construct filters
   const filters: Record<string, string | number | boolean | undefined> = {}
@@ -44,7 +45,7 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
   })
 
   // Fetch Products
-  const { data, isLoading, isError, refetch } = useQuery<any>({
+  const { data, isLoading, isFetching, isError, refetch } = useQuery<any>({
     queryKey: ['products-by-category', slug, filters],
     queryFn: () => productsApi.getByCategory(slug, filters as ProductFilters),
   })
@@ -61,7 +62,7 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
       <div className="mt-6 flex flex-col gap-8 md:flex-row">
         {/* Desktop Sidebar */}
         <aside className="hidden w-64 shrink-0 lg:block">
-          <FilterSidebar />
+          <FilterSidebar hideCategories />
         </aside>
 
         {/* Main Content */}
@@ -86,32 +87,15 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
           )}
 
           <div className="mb-6 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
-            <p className="text-gray-500">{data?.total || 0} produits trouvés</p>
+            <p className="flex items-center gap-2 text-gray-500" aria-live="polite">
+              {data?.total || 0} produits trouvés
+              {isFetching && !isLoading && (
+                <Loader2 size={13} className="animate-spin text-[#E10600]" aria-label={t('updating')} />
+              )}
+            </p>
 
             <div className="flex w-full items-center gap-3 sm:w-auto">
-              {/* Mobile Filters Trigger */}
-              <Sheet open={isMobileFiltersOpen} onOpenChange={setIsMobileFiltersOpen}>
-                <SheetTrigger
-                  render={
-                    <button className="btn-secondary flex flex-1 items-center justify-center gap-2 py-2 sm:flex-none lg:hidden" />
-                  }
-                >
-                  <Filter size={18} />
-                  Filtres
-                </SheetTrigger>
-                <SheetContent
-                  side="left"
-                  className="bg-white w-full overflow-y-auto p-0 sm:max-w-sm"
-                >
-                  <div className="p-6">
-                    <h2 className="font-display text-[#111] mb-6 text-xl font-bold">
-                      Filtres
-                    </h2>
-                    <FilterSidebar />
-                  </div>
-                </SheetContent>
-              </Sheet>
-
+              <MobileFiltersSheet />
               <SortDropdown />
             </div>
           </div>

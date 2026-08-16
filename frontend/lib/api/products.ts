@@ -1,5 +1,5 @@
 import { apiGet } from './client'
-import type { Product, PaginatedResponse, ProductFilters, FuelType, VehicleMake, VehicleModel, VehicleEngine } from '@/lib/types'
+import type { Product, PaginatedResponse, ProductFilters, FuelType, VehicleMake, VehicleModel, VehicleEngine, FacetsResponse } from '@/lib/types'
 
 export const productsApi = {
   getAll: (filters?: ProductFilters) =>
@@ -9,7 +9,7 @@ export const productsApi = {
     ),
 
   getFacets: (filters?: Partial<ProductFilters>) =>
-    apiGet<{ volumes: { volume: string; count: number }[]; brands: { id: string; name: string; slug: string }[] }>(
+    apiGet<FacetsResponse>(
       '/products/facets',
       filters as Record<string, string | number | boolean | undefined>
     ),
