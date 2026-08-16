@@ -4,16 +4,15 @@ import type { ProductStatus } from '@/lib/types'
 
 interface Props {
   status: ProductStatus
-  stock?: number
 }
 
-export function StockIndicator({ status, stock }: Props) {
+export function StockIndicator({ status }: Props) {
   const t = useTranslations('Common')
   if (status === 'in_stock') {
     return (
       <div className="flex items-center gap-1.5 text-sm font-medium text-green-600">
         <CheckCircle2 size={16} />
-        <span>{t('inStock')} {stock !== undefined && `(${stock})`}</span>
+        <span>{t('inStock')}</span>
       </div>
     )
   }
@@ -22,7 +21,7 @@ export function StockIndicator({ status, stock }: Props) {
     return (
       <div className="flex items-center gap-1.5 text-sm font-medium text-orange-500">
         <Clock size={16} />
-        <span>{t('lowStock')} {stock !== undefined && `(${stock})`}</span>
+        <span>{t('lowStock')}</span>
       </div>
     )
   }

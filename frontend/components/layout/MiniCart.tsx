@@ -65,7 +65,7 @@ export default function MiniCart() {
                 {t('myCart', { count: visibleItemCount })}
               </SheetTitle>
               {visibleItemCount > 0 && (
-                <p className="text-xs text-gray-400 mt-0.5">{visibleItemCount} article{visibleItemCount > 1 ? 's' : ''}</p>
+                <p className="text-xs text-gray-400 mt-0.5">{t('itemsLabel', { count: visibleItemCount })}</p>
               )}
             </div>
           </div>
@@ -75,10 +75,13 @@ export default function MiniCart() {
             <div className="mt-3">
               {remaining > 0 ? (
                 <p className="text-xs text-gray-500 mb-1.5">
-                  Plus que <span className="font-bold text-brand-primary">{formatPrice(remaining)}</span> pour la livraison gratuite 🚚
+                  {t.rich('freeShippingProgress', {
+                    amount: (chunks) => <span className="font-bold text-brand-primary">{chunks}</span>,
+                    remaining: formatPrice(remaining),
+                  })}
                 </p>
               ) : (
-                <p className="text-xs font-bold text-green-600 mb-1.5">✓ Livraison gratuite débloquée !</p>
+                <p className="text-xs font-bold text-green-600 mb-1.5">{t('freeShippingUnlocked')}</p>
               )}
               <div className="h-1.5 w-full rounded-full bg-gray-100 overflow-hidden">
                 <motion.div
@@ -105,13 +108,13 @@ export default function MiniCart() {
               </div>
               <div>
                 <p className="font-semibold text-gray-700 text-base">{t('empty')}</p>
-                <p className="text-sm text-gray-400 mt-1">Ajoutez des produits pour commencer</p>
+                <p className="text-sm text-gray-400 mt-1">{t('addProductsToStart')}</p>
               </div>
               <Link
                 href="/catalogue"
                 className="mt-2 inline-flex items-center gap-2 rounded-xl bg-brand-primary px-5 py-2.5 text-sm font-bold text-white hover:bg-brand-primary-light transition-colors"
               >
-                Voir le catalogue <ArrowRight size={15} />
+                {t('viewCatalog')} <ArrowRight size={15} />
               </Link>
             </motion.div>
           ) : (

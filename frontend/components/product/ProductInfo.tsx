@@ -90,7 +90,7 @@ export function ProductInfo({ product, selectedVariant: controlledVariant, onVar
 
       {/* Stock */}
       <div className="mb-6">
-        <StockIndicator status={selectedVariant.status} stock={selectedVariant.stock} />
+        <StockIndicator status={selectedVariant.status} />
       </div>
 
       {/* Short Description */}

@@ -53,8 +53,12 @@ export default auth(async (req: NextRequest & { auth?: unknown }) => {
   const { nextUrl } = req
   const backendAuth = await getBackendAuth(req)
   const isLoggedIn = !!(req as { auth?: unknown }).auth || !!backendAuth
-  const nextAuthRole = ((req as { auth?: { user?: { role?: string } } }).auth?.user as { role?: string })?.role
-  const isAdmin = [backendAuth?.role, nextAuthRole].some((authRole) => authRole?.toUpperCase() === 'ADMIN')
+  const nextAuthRole = (
+    (req as { auth?: { user?: { role?: string } } }).auth?.user as { role?: string }
+  )?.role
+  const isAdmin = [backendAuth?.role, nextAuthRole].some(
+    (authRole) => authRole?.toUpperCase() === 'ADMIN'
+  )
 
   const pathnameParts = nextUrl.pathname.split('/')
   const locale = SUPPORTED_LOCALES.includes(pathnameParts[1] as (typeof SUPPORTED_LOCALES)[number])
@@ -64,8 +68,43 @@ export default auth(async (req: NextRequest & { auth?: unknown }) => {
 
   // Remove locale prefix for auth checks
   const pathWithoutLocale = nextUrl.pathname.replace(/^\/(?:fr|en|ar)/, '') || '/'
-  
-  const isAdminRoute  = pathWithoutLocale.startsWith('/admin')
+
+  // ── Category redirects ────────────────────────────────────────────────
+  // "Pièces Auto" (pieces-auto) was merged into Automobile — keep old
+  // bookmarks / indexed URLs working instead of 404ing. The same applies to
+  // category slugs removed by backend/prisma/migrate-nav-taxonomy.ts
+  // (filtres → auto-filtres, hydraulique → liquides-auto).
+  const CATEGORY_REDIRECTS: Record<string, string> = {
+    'pieces-auto': 'automobile',
+    filtres: 'auto-filtres',
+    hydraulique: 'liquides-auto',
+  }
+  const categorieMatch = pathWithoutLocale.match(/^\/categorie\/([^/]+)$/)
+  const categorieSlug = categorieMatch?.[1]
+  if (categorieSlug && CATEGORY_REDIRECTS[categorieSlug]) {
+    const target = new URL(withLocale(`/categorie/${CATEGORY_REDIRECTS[categorieSlug]}`), nextUrl)
+    target.search = nextUrl.search
+    const redirect = NextResponse.redirect(target, 308)
+    redirect.headers.set('x-request-id', requestId)
+    return redirect
+  }
+  if (pathWithoutLocale === '/catalogue') {
+    const categorySlug = nextUrl.searchParams.get('categorySlug')
+    if (categorySlug && CATEGORY_REDIRECTS[categorySlug]) {
+      const target = new URL(withLocale('/catalogue'), nextUrl)
+      for (const [key, value] of nextUrl.searchParams.entries()) {
+        target.searchParams.set(
+          key,
+          key === 'categorySlug' ? CATEGORY_REDIRECTS[categorySlug] : value
+        )
+      }
+      const redirect = NextResponse.redirect(target, 308)
+      redirect.headers.set('x-request-id', requestId)
+      return redirect
+    }
+  }
+
+  const isAdminRoute = pathWithoutLocale.startsWith('/admin')
   const isCompteRoute = pathWithoutLocale.startsWith('/compte')
 
   if (isAdminRoute && (!isLoggedIn || !isAdmin)) {
@@ -97,7 +136,7 @@ export default auth(async (req: NextRequest & { auth?: unknown }) => {
   const response = intlMiddleware(req)
 
   // ── 6. Build response with all security headers ───────────────────────
-  
+
   // Tracing
   response.headers.set('x-request-id', requestId)
   response.headers.set('x-nonce', nonce)

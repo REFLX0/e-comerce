@@ -210,6 +210,11 @@
     scroll-behavior: smooth;
   }
 
+  /* RTL: flip right-pointing chevrons so they still indicate "forward" */
+  [dir='rtl'] .rtl-flip {
+    transform: scaleX(-1);
+  }
+
   /* ── Typography Scale ─────────────────────────────────────────────── */
   h1 {
     font-size: var(--text-h1);

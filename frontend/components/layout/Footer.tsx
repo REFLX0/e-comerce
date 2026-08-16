@@ -43,27 +43,27 @@ const Instagram = ({ size = 20 }: { size?: number }) => (
 )
 
 const SHOP_LINKS = [
-  { href: '/categorie/huiles-moteur', label: 'Huiles Moteur' },
-  { href: '/categorie/liquides-auto', label: 'Liquides' },
-  { href: '/categorie/auto-filtres', label: 'Filtres' },
-  { href: '/categorie/additifs', label: 'Additifs' },
-  { href: '/catalogue', label: 'Toutes les catégories' },
+  { href: '/categorie/huiles-moteur', ns: 'Footer', key: 'shopHuilesMoteur' },
+  { href: '/categorie/liquides-auto', ns: 'Footer', key: 'shopLiquides' },
+  { href: '/categorie/auto-filtres', ns: 'Footer', key: 'shopFiltres' },
+  { href: '/categorie/additifs', ns: 'Footer', key: 'shopAdditifs' },
+  { href: '/catalogue', ns: 'Footer', key: 'shopAllCategories' },
 ]
 
 const SERVICE_LINKS = [
-  { href: '/a-propos', label: 'À propos' },
-  { href: '/livraison', label: 'Livraison & Information' },
-  { href: '/retours', label: 'Retours & Remboursements' },
-  { href: '/cgv', label: 'Conditions Générales' },
-  { href: '/faq', label: 'FAQ' },
-  { href: '/contact', label: 'Nous contacter' },
+  { href: '/a-propos', ns: 'Footer', key: 'aboutUs' },
+  { href: '/livraison', ns: 'Shipping', key: 'title' },
+  { href: '/retours', ns: 'Returns', key: 'title' },
+  { href: '/cgv', ns: 'Footer', key: 'terms' },
+  { href: '/faq', ns: 'Footer', key: 'faq' },
+  { href: '/contact', ns: 'Footer', key: 'contactUs' },
 ]
 
 const ACCOUNT_LINKS = [
-  { href: '/compte/commandes', label: 'Mes Commandes' },
-  { href: '/compte/wishlist', label: 'Ma Wishlist' },
-  { href: '/compte', label: 'Suivi de commande' },
-  { href: '/compte/securite', label: 'Paramètres du compte' },
+  { href: '/compte/commandes', ns: 'Account', key: 'myOrders' },
+  { href: '/compte/wishlist', ns: 'Account', key: 'myWishlist' },
+  { href: '/compte', ns: 'Footer', key: 'accountTrackOrder' },
+  { href: '/compte/securite', ns: 'Footer', key: 'accountSettings' },
 ]
 
 export default function Footer() {
@@ -71,6 +71,15 @@ export default function Footer() {
   const tFooter = useTranslations('Footer')
   const tHome = useTranslations('Home')
   const tLayout = useTranslations('Layout')
+  const tAccount = useTranslations('Account')
+  const tShipping = useTranslations('Shipping')
+  const tReturns = useTranslations('Returns')
+  const linkLabel = (ns: string, key: string) => {
+    if (ns === 'Account') return tAccount(key)
+    if (ns === 'Shipping') return tShipping(key)
+    if (ns === 'Returns') return tReturns(key)
+    return tFooter(key)
+  }
   const siteLogo = '/logo.jpg'
 
   const handleNewsletter = (e: React.FormEvent) => {
@@ -137,13 +146,13 @@ export default function Footer() {
           {/* Col 2: Boutique */}
           <div>
             <h3 className="mb-5 text-xs font-bold tracking-[0.15em] text-white/30 uppercase">
-              Boutique
+              {tFooter('shopTitle')}
             </h3>
             <ul className="space-y-2.5 text-sm">
-              {SHOP_LINKS.map(({ href, label }) => (
+              {SHOP_LINKS.map(({ href, ns, key }) => (
                 <li key={href}>
                   <Link href={href} className="text-white/40 transition-colors hover:text-white">
-                    {label}
+                    {linkLabel(ns, key)}
                   </Link>
                 </li>
               ))}
@@ -153,13 +162,13 @@ export default function Footer() {
           {/* Col 3: Service Client */}
           <div>
             <h3 className="mb-5 text-xs font-bold tracking-[0.15em] text-white/30 uppercase">
-              Service Client
+              {tFooter('serviceTitle')}
             </h3>
             <ul className="space-y-2.5 text-sm">
-              {SERVICE_LINKS.map(({ href, label }) => (
+              {SERVICE_LINKS.map(({ href, ns, key }) => (
                 <li key={href}>
                   <Link href={href} className="text-white/40 transition-colors hover:text-white">
-                    {label}
+                    {linkLabel(ns, key)}
                   </Link>
                 </li>
               ))}
@@ -169,13 +178,13 @@ export default function Footer() {
           {/* Col 4: Mon Compte */}
           <div>
             <h3 className="mb-5 text-xs font-bold tracking-[0.15em] text-white/30 uppercase">
-              Mon Compte
+              {tFooter('myAccount')}
             </h3>
             <ul className="space-y-2.5 text-sm">
-              {ACCOUNT_LINKS.map(({ href, label }) => (
+              {ACCOUNT_LINKS.map(({ href, ns, key }) => (
                 <li key={href}>
                   <Link href={href} className="text-white/40 transition-colors hover:text-white">
-                    {label}
+                    {linkLabel(ns, key)}
                   </Link>
                 </li>
               ))}
@@ -185,12 +194,12 @@ export default function Footer() {
           {/* Col 5: Contact */}
           <div>
             <h3 className="mb-5 text-xs font-bold tracking-[0.15em] text-white/30 uppercase">
-              Contact
+              {tFooter('contact')}
             </h3>
             <ul className="space-y-4 text-sm">
               <li className="flex items-start gap-3">
                 <Clock size={15} className="text-brand-accent mt-0.5 shrink-0" />
-                <span className="text-white/40">Lun–Sam 8h–18h</span>
+                <span className="text-white/40">{tFooter('hours')}</span>
               </li>
               <li className="flex items-center gap-3">
                 <Phone size={15} className="text-brand-accent shrink-0" />
@@ -206,7 +215,7 @@ export default function Footer() {
               </li>
               <li className="flex items-start gap-3">
                 <MapPin size={15} className="text-brand-accent mt-0.5 shrink-0" />
-                <span className="text-white/40">Kalâa, Tunisie</span>
+                <span className="text-white/40">{tFooter('location')}</span>
               </li>
             </ul>
           </div>
