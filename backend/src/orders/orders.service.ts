@@ -154,8 +154,18 @@ export class OrdersService {
       include: {
         items: {
           include: {
-            product: { select: { nameFr: true, images: { take: 1 } } },
-            variant: { select: { volume: true } },
+            product: { select: { id: true, slug: true, nameFr: true, images: { take: 1 } } },
+            variant: {
+              select: {
+                id: true,
+                productId: true,
+                volume: true,
+                price: true,
+                stockQty: true,
+                skuVariant: true,
+                imageUrl: true,
+              },
+            },
           },
         },
       },

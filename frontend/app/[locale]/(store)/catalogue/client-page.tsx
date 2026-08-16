@@ -249,13 +249,8 @@ export default function CataloguePage() {
                 'auto-pieces-rechange',
                 'auto-filtres',
                 'auto-freinage',
-                'auto-moteur-distribution',
                 'auto-suspension-direction',
-                'auto-transmission-embrayage',
-                'auto-refroidissement-climatisation',
-                'auto-electricite-eclairage',
-                'auto-carrosserie-habitacle',
-                'auto-echappement'
+                'transmission'
               ]
               const requiresVehicle = categorySlug && STRICT_COMPATIBILITY_CATEGORIES.includes(categorySlug) && !isVehicleSearch
               

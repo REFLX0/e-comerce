@@ -71,3 +71,11 @@ audit_results.txt
 products_data.txt
 products_moto_data.txt
 backend/prisma/dump-products.cjs
+
+# ── Temp / work-in-progress files ─────────────────────────────────────────────
+.codex/
+IMAGES_MANQUANTES.txt
+products_0_ttc.txt
+backend/apply-prices.sql
+backend/pgtest.tmp.js
+backend/prices_import.csv

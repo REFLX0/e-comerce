@@ -17,6 +17,8 @@ interface CreateOrderPayload {
   shippingCost?: number
 }
 
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || '/api'
+
 export const ordersApi = {
   create: (payload: CreateOrderPayload, ) => apiPost<Order>('/orders', payload),
 
@@ -28,4 +30,13 @@ export const ordersApi = {
 
   getById: (id: string, ) =>
     apiGet<Order>(`/orders/${id}`, undefined),
+
+  cancel: (id: string) => apiPost<Order>(`/orders/${id}/cancel`, null),
+
+  /** Customer invoice — returns a Blob ready to download. */
+  async getInvoicePdf(id: string): Promise<Blob> {
+    const res = await fetch(`${API_BASE}/orders/${id}/pdf`, { credentials: 'include' })
+    if (!res.ok) throw new Error('PDF download failed')
+    return res.blob()
+  },
 }

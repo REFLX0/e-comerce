@@ -29,12 +29,12 @@ const nextConfig: NextConfig = {
       { protocol: 'https', hostname: 'images.unsplash.com' },
       // Cloudinary — uploaded product images
       { protocol: 'https', hostname: 'res.cloudinary.com' },
+      // Cloudflare Images — current product image CDN
+      { protocol: 'https', hostname: 'imagedelivery.net' },
       // Google OAuth profile pictures
       { protocol: 'https', hostname: 'lh3.googleusercontent.com' },
       // Wikimedia Commons — brand logos
       { protocol: 'https', hostname: 'upload.wikimedia.org' },
-      // Manufacturer product image CDNs (Reliable ones)
-      { protocol: 'https', hostname: 'cdn.autodoc.de' },
       // Amazon product images
       { protocol: 'https', hostname: 'm.media-amazon.com' },
       // Generic product stock photos

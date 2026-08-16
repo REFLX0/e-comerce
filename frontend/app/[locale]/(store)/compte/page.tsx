@@ -3,7 +3,7 @@
 import { useAuthStore } from '@/lib/store/auth.store'
 import { useQuery } from '@tanstack/react-query'
 import { ordersApi } from '@/lib/api/orders'
-import Link from 'next/link'
+import { Link } from '@/i18n/routing'
 import Image from 'next/image'
 import {
   Package, Heart, MapPin, Star, ArrowRight, ShoppingBag, Clock,

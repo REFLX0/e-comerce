@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { ticketsApi } from '@/lib/api/tickets'
 import { ordersApi } from '@/lib/api/orders'
+import { useSearchParams } from 'next/navigation'
 import { LifeBuoy, PackageSearch, Plus } from 'lucide-react'
 import { toast } from 'sonner'
 import { useTranslations } from 'next-intl'
@@ -12,8 +13,10 @@ export default function SupportPage() {
   const t = useTranslations('Support')
   const RETURN_REASONS = t.raw('reasons') as string[]
   const queryClient = useQueryClient()
-  const [tab, setTab] = useState<'tickets' | 'new-return'>('tickets')
-  const [selectedOrder, setSelectedOrder] = useState('')
+  const searchParams = useSearchParams()
+  const preselectedOrder = searchParams.get('orderId') ?? ''
+  const [tab, setTab] = useState<'tickets' | 'new-return'>(preselectedOrder ? 'new-return' : 'tickets')
+  const [selectedOrder, setSelectedOrder] = useState(preselectedOrder)
   const [selectedReason, setSelectedReason] = useState('')
   const [message, setMessage] = useState('')
 
@@ -29,8 +32,8 @@ export default function SupportPage() {
     enabled: true,
   })
 
-  const tickets = (ticketsData as any)?.data ?? []
-  const orders = (ordersData as any)?.data ?? []
+  const tickets = Array.isArray(ticketsData) ? ticketsData : (ticketsData as any)?.data ?? []
+  const orders = Array.isArray(ordersData) ? ordersData : (ordersData as any)?.data ?? []
 
   const createMutation = useMutation({
     mutationFn: () => ticketsApi.create({

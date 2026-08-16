@@ -1,0 +1,793 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import 'shadcn/tailwind.css';
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-inter);
+  --font-display: var(--font-inter);
+  --font-mono: var(--font-jetbrains-mono);
+  --font-heading: var(--font-inter);
+
+  /* ── Brand Design Tokens (Tomobile Style) ──────────────────────────── */
+  --color-brand-primary: #16254c;          /* Navy Blue */
+  --color-brand-primary-light: #1f356b;    /* Lighter Navy */
+  --color-brand-primary-dark: #0d162d;     /* Dark Navy */
+  
+  --color-brand-accent: #D4A76A;           /* Gold Accent */
+  --color-brand-accent-light: #DEBB85;
+  --color-brand-accent-hover: #C49A5E;
+  --color-brand-accent-glow: rgba(212, 167, 106, 0.15);
+  
+  --color-brand-promo: #93c5fd;            /* Light Blue for promo/badges (blue-300) */
+  --color-brand-promo-dark: #60a5fa;       /* Darker Light Blue (blue-400) */
+  
+  --color-brand-teal: #0f766e;
+  --color-brand-surface: #f5f5f5;          /* Light gray surface */
+  --color-brand-surface-dark: #e5e5e5;     /* Slightly darker surface */
+  --color-brand-border: rgba(0, 0, 0, 0.1);
+  --color-brand-muted: #6b7280;            /* Gray-500 muted text */
+  --color-brand-card: #ffffff;             /* White cards */
+
+  /* ── Glass / Light Surface System ──────────────────────────────────── */
+  --color-glass-light: rgba(0,0,0,0.03);
+  --color-glass-medium: rgba(0,0,0,0.06);
+  --color-glass-border: rgba(0,0,0,0.08);
+
+  /* ── Semantic Color Tokens ──────────────────────────────────────────── */
+  --color-semantic-success: #627D47;
+  --color-semantic-warning: #b86b06;
+  --color-semantic-danger: #b20000;
+  --color-semantic-info: #2563eb;
+
+  /* ── Typography Scale (12 / 14 / 16 / 20 / 24 / 32 / 48) ───────────── */
+  --text-h1: 3rem;          --leading-h1: 1.16;
+  --text-h2: 2rem;          --leading-h2: 1.2;
+  --text-h3: 1.5rem;        --leading-h3: 1.25;
+  --text-h4: 1.25rem;       --leading-h4: 1.3;
+  --text-body-lg: 1rem;     --leading-body-lg: 1.5;
+  --text-body: 1rem;        --leading-body: 1.5;
+  --text-caption: 0.875rem; --leading-caption: 1.45;
+  --text-small: 0.75rem;    --leading-small: 1.35;
+
+  /* ── Elevation / Shadows ────────────────────────────────────────────── */
+  --shadow-card: 0 1px 3px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.04);
+  --shadow-card-hover: 0 8px 24px rgba(0,0,0,0.1);
+  --shadow-soft: 0 4px 16px rgba(0,0,0,0.06);
+  --shadow-overlay: 0 16px 48px rgba(0,0,0,0.15);
+  --shadow-glow-accent: 0 0 0 3px rgba(249,157,39,0.15), 0 8px 24px rgba(249,157,39,0.2);
+  --shadow-glass: 0 8px 32px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.8);
+
+  /* shadcn tokens */
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   MÜLLER-BROCKMANN GRID SYSTEM — ONE SOURCE OF TRUTH
+   All grid parameters live here. The .guides overlay reads these exact
+   same variables and lives in the SAME content box as the content, so
+   its columns ARE the content columns at every viewport width.
+   ══════════════════════════════════════════════════════════════════════ */
+:root {
+  /* ── Grid parameters ─────────────────────────────────────────────── */
+  --cols: 12;
+  --bl: 8px;               /* baseline unit */
+  --lh: 24px;              /* leading = 3 × baseline */
+  --gutter: 24px;          /* column gap  (3 × bl) */
+  --margin: 40px;          /* outer margin (5 × bl) */
+  --pad: 80px;             /* spread top/bottom pad (10 × bl) */
+  --maxw: 1280px;          /* max content width */
+
+  /* ── Grid overlay colors ─────────────────────────────────────────── */
+  --g-col: rgba(250,204,21,.07);      /* column field fill */
+  --g-edge: rgba(250,204,21,.50);     /* column edge / margin line */
+  --g-base: rgba(0,150,140,.30);      /* major baseline (every --lh) */
+  --g-base-min: rgba(0,150,140,.10);  /* minor baseline (every --bl) */
+
+  /* ── shadcn light-mode tokens ─────────────────────────────────────────── */
+  --background: #ffffff;
+  --foreground: #111111;
+  --card: #ffffff;
+  --card-foreground: #111111;
+  --popover: #ffffff;
+  --popover-foreground: #111111;
+  --primary: #16254c;
+  --primary-foreground: #ffffff;
+  --secondary: #f5f5f5;
+  --secondary-foreground: #111111;
+  --muted: #f5f5f5;
+  --muted-foreground: #6b7280;
+  --accent: #f99d27;
+  --accent-foreground: #16254c;
+  --destructive: #b20000;
+  --border: rgba(0, 0, 0, 0.1);
+  --input: rgba(0, 0, 0, 0.1);
+  --ring: #D4A76A;
+  --chart-1: #16254c;
+  --chart-2: #0f766e;
+  --chart-3: #315b7c;
+  --chart-4: #b20000;
+  --chart-5: #667085;
+  --radius: 0.5rem;
+  --sidebar: #0a0a0a;
+  --sidebar-foreground: #ffffff;
+  --sidebar-primary: #f99d27;
+  --sidebar-primary-foreground: #16254c;
+  --sidebar-accent: #111111;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: rgba(255, 255, 255, 0.1);
+  --sidebar-ring: #f99d27;
+}
+
+.dark {
+  --background: #000000;
+  --foreground: #ffffff;
+  --card: #111111;
+  --card-foreground: #ffffff;
+  --popover: #111111;
+  --popover-foreground: #ffffff;
+  --primary: #f99d27;
+  --primary-foreground: #16254c;
+  --secondary: #1a1a1a;
+  --secondary-foreground: #ffffff;
+  --muted: #1a1a1a;
+  --muted-foreground: #888888;
+  --accent: #f99d27;
+  --accent-foreground: #16254c;
+  --destructive: #b20000;
+  --border: rgba(255, 255, 255, 0.1);
+  --input: rgba(255, 255, 255, 0.1);
+  --ring: #f99d27;
+  --chart-1: #f99d27;
+  --chart-2: #0f766e;
+  --chart-3: #315b7c;
+  --chart-4: #b20000;
+  --chart-5: #667085;
+  --sidebar: #0a0a0a;
+  --sidebar-foreground: #ffffff;
+  --sidebar-primary: #f99d27;
+  --sidebar-primary-foreground: #16254c;
+  --sidebar-accent: #111111;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: rgba(255, 255, 255, 0.1);
+  --sidebar-ring: #f99d27;
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   BASE LAYER
+   ══════════════════════════════════════════════════════════════════════ */
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    min-width: 320px;
+    text-rendering: geometricPrecision;
+  }
+  html {
+    @apply font-sans;
+    font-size: 16px;
+    line-height: 1.5;
+    scroll-behavior: smooth;
+  }
+
+  /* ── Typography Scale ─────────────────────────────────────────────── */
+  h1 {
+    font-size: var(--text-h1);
+    line-height: var(--leading-h1);
+    font-weight: 750;
+    letter-spacing: 0;
+  }
+  h2 {
+    font-size: var(--text-h2);
+    line-height: var(--leading-h2);
+    font-weight: 700;
+    letter-spacing: 0;
+  }
+  h3 {
+    font-size: var(--text-h3);
+    line-height: var(--leading-h3);
+    font-weight: 600;
+    letter-spacing: 0;
+  }
+  h4 {
+    font-size: var(--text-h4);
+    line-height: var(--leading-h4);
+    font-weight: 600;
+    letter-spacing: 0;
+  }
+  p {
+    font-size: var(--text-body);
+    line-height: var(--leading-body);
+  }
+  a,
+  button,
+  input,
+  select,
+  textarea {
+    font: inherit;
+  }
+  button,
+  [role='button'] {
+    cursor: pointer;
+  }
+  button:disabled,
+  [aria-disabled='true'] {
+    cursor: not-allowed;
+  }
+  ::selection {
+    background: rgba(15,118,110,0.20);
+    color: var(--color-brand-primary);
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   MÜLLER-BROCKMANN GRID STRUCTURAL CLASSES
+   ══════════════════════════════════════════════════════════════════════ */
+
+/* Full-width spread container */
+.spread {
+  position: relative;
+  width: 100%;
+}
+
+/* Centered content wrapper — SAME BOX as the overlay */
+.wrap {
+  position: relative;
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding-top: var(--pad);
+  padding-bottom: var(--pad);
+  padding-left: var(--margin);
+  padding-right: var(--margin);
+}
+
+@media (max-width: 1024px) {
+  :root {
+    --gutter: 20px;
+    --margin: 32px;
+    --pad: 64px;
+  }
+}
+
+@media (max-width: 640px) {
+  :root {
+    --gutter: 16px;
+    --margin: 20px;
+    --pad: 48px;
+    --text-h1: 2.5rem;
+    --text-h2: 1.75rem;
+    --text-h3: 1.375rem;
+  }
+}
+
+/* 12-column CSS grid */
+.grid-layout {
+  display: grid;
+  grid-template-columns: repeat(var(--cols), 1fr);
+  column-gap: var(--gutter);
+  row-gap: var(--lh);
+}
+
+/* Band: spans all columns and re-exposes them via subgrid so every child
+   placed with grid-column aligns to IDENTICAL lines as the parent grid. */
+.band {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: subgrid;
+  column-gap: var(--gutter);
+  row-gap: var(--lh);
+  align-items: start;
+}
+
+/* Fallback for browsers without subgrid support (Safari < 16, older Firefox) */
+@supports not (grid-template-columns: subgrid) {
+  .band {
+    grid-template-columns: repeat(var(--cols), 1fr);
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   GRID OVERLAY — lives INSIDE the .wrap so columns match exactly
+   ══════════════════════════════════════════════════════════════════════ */
+.guides {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 999;
+  opacity: 0;
+  transition: opacity 0.26s ease;
+}
+
+body.grid-on .guides {
+  opacity: 1;
+}
+
+/* Column field guides — same left/right as content */
+.guides .cols {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: grid;
+  grid-template-columns: repeat(var(--cols), 1fr);
+  column-gap: var(--gutter);
+  padding-left: var(--margin);
+  padding-right: var(--margin);
+}
+
+.guides .col {
+  background: var(--g-col);
+  box-shadow:
+    inset 1px 0 0 var(--g-edge),
+    inset -1px 0 0 var(--g-edge);
+  position: relative;
+}
+
+.guides .col span {
+  position: absolute;
+  top: 32px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-family: var(--font-mono), 'JetBrains Mono', monospace;
+  font-size: 10px;
+  line-height: 1;
+  color: var(--color-brand-accent);
+  opacity: 0.8;
+}
+
+/* Baseline grid — major (lh) and minor (bl) lines */
+.guides .rows {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background-image:
+    repeating-linear-gradient(
+      to bottom,
+      var(--g-base) 0 1px,
+      transparent 1px var(--lh)
+    ),
+    repeating-linear-gradient(
+      to bottom,
+      var(--g-base-min) 0 1px,
+      transparent 1px var(--bl)
+    );
+}
+
+/* Margin indicator lines */
+.guides .mline {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--g-edge);
+}
+.guides .mline.l { left: var(--margin); }
+.guides .mline.r { right: var(--margin); }
+
+/* Grid toggle button — fixed bottom-right */
+.grid-toggle {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--color-brand-primary);
+  color: var(--color-brand-surface);
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-mono), 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 10px 14px;
+  border-radius: 8px;
+  box-shadow: var(--shadow-soft);
+  transition: all 0.2s ease;
+  line-height: 1;
+  min-height: 44px;
+}
+
+.grid-toggle .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #555;
+  flex-shrink: 0;
+  transition: background 0.2s;
+}
+
+body.grid-on .grid-toggle {
+  background: var(--color-brand-accent-light);
+  color: var(--color-brand-primary-dark);
+}
+
+body.grid-on .grid-toggle .dot {
+  background: var(--color-brand-primary);
+}
+
+@media (max-width: 767px) {
+  .grid-toggle {
+    display: none;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   COMPONENT CLASSES
+   ══════════════════════════════════════════════════════════════════════ */
+
+@layer components {
+
+  /* ── Layout helpers ─────────────────────────────────────────────── */
+  .section-padding {
+    @apply mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8;
+  }
+
+  .surface-card {
+    @apply rounded-lg border border-brand-border bg-brand-card shadow-card;
+  }
+
+  .surface-panel {
+    @apply rounded-lg border border-brand-border bg-brand-surface/80 shadow-card;
+  }
+
+  /* ── Buttons ────────────────────────────────────────────────────── */
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-5
+           font-semibold text-brand-surface bg-brand-primary
+           transition-all duration-200 cursor-pointer select-none
+           hover:bg-brand-primary-light hover:shadow-card
+           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent/40 focus-visible:ring-offset-2
+           active:scale-[0.98]
+           disabled:cursor-not-allowed disabled:opacity-50 disabled:shadow-none;
+    min-height: 44px;
+    min-width: 112px;
+    font-size: var(--text-caption);
+    line-height: var(--leading-caption);
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-5
+           font-semibold text-brand-primary border border-brand-border
+           bg-brand-card transition-all duration-200 cursor-pointer select-none
+           hover:border-brand-primary/30 hover:bg-brand-surface-dark hover:shadow-card
+           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent/35 focus-visible:ring-offset-2
+           active:scale-[0.98]
+           disabled:cursor-not-allowed disabled:opacity-50;
+    min-height: 44px;
+    min-width: 112px;
+    font-size: var(--text-caption);
+    line-height: var(--leading-caption);
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-4
+           font-medium text-brand-primary bg-transparent
+           transition-all duration-200 cursor-pointer select-none
+           hover:bg-brand-primary/5
+           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent/35 focus-visible:ring-offset-2
+           active:scale-[0.98]
+           disabled:cursor-not-allowed disabled:opacity-40;
+    min-height: 40px;
+    font-size: var(--text-caption);
+  }
+
+  .btn-accent {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-5
+           font-semibold text-brand-primary bg-brand-accent
+           transition-all duration-200 cursor-pointer select-none
+           hover:bg-brand-accent-hover hover:shadow-card
+           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent/40 focus-visible:ring-offset-2
+           active:scale-[0.98]
+           disabled:cursor-not-allowed disabled:opacity-50 disabled:shadow-none;
+    min-height: 44px;
+    min-width: 112px;
+    font-size: var(--text-caption);
+    line-height: var(--leading-caption);
+  }
+
+  /* ── Pricing ────────────────────────────────────────────────────── */
+  .price-ht {
+    @apply text-brand-primary font-semibold;
+    font-size: var(--text-h4);
+    line-height: var(--leading-h4);
+  }
+
+  .price-ttc {
+    @apply text-brand-muted;
+    font-size: var(--text-caption);
+    line-height: var(--leading-caption);
+  }
+
+  /* ── Product Card ───────────────────────────────────────────────── */
+  .product-card {
+    @apply border-brand-border bg-brand-card rounded-lg border
+           transition-all duration-200
+           hover:border-brand-accent/35
+           hover:-translate-y-0.5;
+    box-shadow: var(--shadow-card);
+  }
+
+  .product-card:hover {
+    box-shadow: var(--shadow-card-hover);
+  }
+
+  /* ── Focus ring (global accessible default) ─────────────────────── */
+  .focus-ring {
+    @apply focus-visible:outline-none focus-visible:ring-2
+           focus-visible:ring-brand-accent/40 focus-visible:ring-offset-2;
+  }
+
+  /* ── Section title ──────────────────────────────────────────────── */
+  /* Standardized heading above content sections — baseline-locked */
+  .section-header {
+    margin-bottom: 40px;
+  }
+
+  .section-header h2 {
+    font-size: var(--text-h2);
+    line-height: var(--leading-h2);
+    font-weight: 700;
+    letter-spacing: 0;
+    @apply text-brand-primary;
+    margin-bottom: 12px;
+  }
+
+  .section-header p {
+    font-size: var(--text-body-lg);
+    line-height: var(--leading-body-lg);
+    @apply text-brand-muted;
+  }
+
+  /* ── Badge ──────────────────────────────────────────────────────── */
+  .badge {
+    @apply inline-flex items-center gap-1 rounded-md px-2.5 font-medium;
+    height: 24px;                  /* 3 × bl */
+    font-size: var(--text-small);
+    line-height: 1;
+  }
+
+  .badge-accent {
+    @apply inline-flex items-center gap-1 rounded-md px-2.5 font-medium bg-brand-accent/15 text-brand-primary;
+    height: 24px;
+    font-size: var(--text-small);
+    line-height: 1;
+  }
+
+  .badge-success {
+    @apply inline-flex items-center gap-1 rounded-md px-2.5 font-medium bg-green-100 text-green-700;
+    height: 24px;
+    font-size: var(--text-small);
+    line-height: 1;
+  }
+
+  .badge-warning {
+    @apply inline-flex items-center gap-1 rounded-md px-2.5 font-medium bg-amber-100 text-amber-700;
+    height: 24px;
+    font-size: var(--text-small);
+    line-height: 1;
+  }
+
+  .badge-danger {
+    @apply inline-flex items-center gap-1 rounded-md px-2.5 font-medium bg-red-100 text-red-600;
+    height: 24px;
+    font-size: var(--text-small);
+    line-height: 1;
+  }
+
+  .badge-info {
+    @apply inline-flex items-center gap-1 rounded-md px-2.5 font-medium bg-sky-100 text-sky-700;
+    height: 24px;
+    font-size: var(--text-small);
+    line-height: 1;
+  }
+
+  /* ── Microinteraction helpers ───────────────────────────────────── */
+  /*
+   * Use these utility classes to add consistent micro-animations
+   * without ad-hoc Tailwind strings scattered across components.
+   */
+
+  /* Lift on hover — cards, thumbnails */
+  .hover-lift {
+    @apply transition-transform duration-200 hover:-translate-y-1;
+  }
+
+  /* Fade + scale — icons, badges */
+  .hover-pop {
+    @apply transition-transform duration-150 hover:scale-110 active:scale-95;
+  }
+
+  /* Arrow slide — CTA text arrows */
+  .hover-arrow {
+    @apply transition-all duration-200;
+  }
+  .hover-arrow:hover .arrow-icon {
+    @apply translate-x-1;
+  }
+
+  /* ── Skeleton shimmer ────────────────────────────────────────────── */
+  .skeleton {
+    @apply bg-brand-surface-dark rounded-md animate-pulse;
+  }
+
+  .shimmer {
+    background: linear-gradient(
+      90deg,
+      var(--color-brand-surface-dark) 25%,
+      var(--color-brand-border) 50%,
+      var(--color-brand-surface-dark) 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+  }
+
+  .form-input {
+    @apply w-full rounded-lg border px-3.5 py-3 text-base outline-none transition-all duration-200 md:text-sm;
+    color: var(--color-brand-primary);
+    background-color: var(--color-brand-card);
+    border-color: var(--color-brand-border);
+  }
+
+  .form-input::placeholder {
+    color: var(--color-brand-muted);
+  }
+
+  .form-input:focus {
+    border-color: var(--color-brand-accent);
+    background-color: var(--color-brand-card);
+    box-shadow: 0 0 0 3px rgba(249,157,39,0.25);
+  }
+
+  :where(input:not([type='checkbox']):not([type='radio']), select, textarea):not(.form-input) {
+    color: var(--color-brand-primary);
+    background-color: var(--color-brand-card);
+    border-color: var(--color-brand-border);
+    border-radius: var(--radius);
+  }
+
+  :where(input:not([type='checkbox']):not([type='radio']), select, textarea):not(.form-input)::placeholder {
+    color: var(--color-brand-muted);
+  }
+
+  :where(input:not([type='checkbox']):not([type='radio']), select, textarea):not(.form-input):focus {
+    border-color: var(--color-brand-accent);
+    box-shadow: 0 0 0 3px rgba(249,157,39,0.25);
+    outline: none;
+  }
+
+  .custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-brand-border) transparent;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar {
+    height: 8px;
+    width: 8px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: var(--color-brand-border);
+    border-radius: 999px;
+  }
+
+  .safe-pb {
+    padding-bottom: max(8px, env(safe-area-inset-bottom));
+  }
+
+  /* Color overrides removed — components manage their own colors */
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   UTILITY ANIMATIONS
+   ══════════════════════════════════════════════════════════════════════ */
+
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+@keyframes marquee {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  33%       { transform: translateY(-12px) rotate(1deg); }
+  66%       { transform: translateY(-6px) rotate(-1deg); }
+}
+
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(245,197,24,0.2); }
+  50%       { box-shadow: 0 0 48px rgba(245,197,24,0.5), 0 0 80px rgba(245,197,24,0.15); }
+}
+
+@keyframes gradient-shift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes slide-in-left {
+  from { opacity: 0; transform: translateX(-24px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.95); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.animate-fade-in-up { animation: fade-in-up 0.4s ease-out both; }
+.animate-fade-in    { animation: fade-in 0.3s ease-out both; }
+.animate-scale-in   { animation: scale-in 0.25s ease-out both; }
+
+/* ── Scrollbar hide utility ─────────────────────────────────────────── */
+.hide-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.hide-scrollbar::-webkit-scrollbar { display: none; }
+
+.animate-marquee       { animation: marquee 30s linear infinite; }
+.animate-float         { animation: float 6s ease-in-out infinite; }
+.animate-glow-pulse    { animation: glow-pulse 2.5s ease-in-out infinite; }
+.animate-gradient      { animation: gradient-shift 6s ease infinite; background-size: 200% 200%; }
+.animate-slide-in-left { animation: slide-in-left 0.35s ease-out both; }
