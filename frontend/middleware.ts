@@ -138,9 +138,9 @@ export const config = {
      *   - Next.js image optimizer (_next/image)
      *   - favicon.ico
      *   - robots.txt and sitemap.xml (must not be locale-redirected)
-     *   - Public assets (.png, .jpg, .svg, .ico, .webp, .txt, .xml)
+     *   - Public assets (.png, .jpg, .svg, .ico, .webp, .avif, .txt, .xml)
      *   - The health check endpoint (must be unrestricted)
      */
-    '/((?!api(?:/|$)|_next/static|_next/image|favicon\.ico|robots\.txt|sitemap\.xml|.*\.(?:png|jpg|jpeg|gif|svg|ico|webp|woff2?|txt|xml)$).*)',
+    '/((?!api(?:/|$)|_next/static|_next/image|favicon\.ico|robots\.txt|sitemap\.xml|.*\.(?:png|jpg|jpeg|gif|svg|ico|webp|avif|woff2?|txt|xml)$).*)',
   ],
 }

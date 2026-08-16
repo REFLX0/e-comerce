@@ -14,6 +14,53 @@ const PRICE_TBD_VARIANT_SUFFIX = 'PRICE-TBD-5L'
 
 type CsvRow = Record<string, string>
 
+interface LubricantRow {
+  Brand: string
+  Product: string
+  Viscosity: string
+  API: string
+  ACEA: string
+  JASO: string
+  VehicleTypes: string
+  FuelTypes: string
+  minCylinders: string
+  maxCylinders: string
+  minPower: string
+  maxPower: string
+  DPFCompatible: string
+  TurboCompatible: string
+  HybridCompatible: string
+  OEMApprovals: string
+  Applications: string
+}
+
+interface SourcingRow {
+  Brand: string
+  Product: string
+  'Source URL': string
+  'Source title': string
+  Evidence: string
+  'Derived values': string
+  Confidence: string
+}
+
+interface CompatibilityRow {
+  make: string
+  model: string
+  engine: string
+  product_sku: string
+}
+
+interface UnmatchedVehicleRow {
+  make: string
+  model: string
+  engineCode: string
+  yearFrom: string
+  yearTo: string
+  requiredSpecification: string
+  source: string
+}
+
 function slugify(value: string): string {
   return value
     .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
@@ -22,7 +69,7 @@ function slugify(value: string): string {
     .replace(/^-+|-+$/g, '')
 }
 
-function parseCsv(content: string): CsvRow[] {
+function parseCsv<T = CsvRow>(content: string): T[] {
   const records: string[][] = []
   let record: string[] = []
   let field = ''
@@ -55,13 +102,16 @@ function parseCsv(content: string): CsvRow[] {
   if (record.some(Boolean)) records.push(record)
   if (records.length === 0) return []
 
-  const headers = records[0].map((header) => header.replace(/^\uFEFF/, '').trim())
+  const firstRow = records[0]
+  if (!firstRow) return []
+
+  const headers = firstRow.map((header) => header.replace(/^\uFEFF/, '').trim())
   return records.slice(1).map((values) => Object.fromEntries(
     headers.map((header, index) => [header, values[index] ?? '']),
-  ))
+  )) as T[]
 }
 
-function readCsv(dataDirectory: string, fileName: string): CsvRow[] {
+function readCsv<T = CsvRow>(dataDirectory: string, fileName: string): T[] {
   const filePath = path.join(dataDirectory, fileName)
   if (!fs.existsSync(filePath)) throw new Error(`Missing required data file: ${filePath}`)
   return parseCsv(fs.readFileSync(filePath, 'utf8'))
@@ -138,7 +188,7 @@ async function ensureCategory() {
 
 async function importProducts(dataDirectory: string) {
   const category = await ensureCategory()
-  const rows = readCsv(dataDirectory, 'lubricant-dataset.csv')
+  const rows = readCsv<LubricantRow>(dataDirectory, 'lubricant-dataset.csv')
   const productsBySourceName = new Map<string, string>()
 
   for (const row of rows) {
@@ -229,7 +279,7 @@ async function importProducts(dataDirectory: string) {
 }
 
 async function importSourcing(dataDirectory: string, productIds: Map<string, string>) {
-  for (const row of readCsv(dataDirectory, 'sourcing-log.csv')) {
+  for (const row of readCsv<SourcingRow>(dataDirectory, 'sourcing-log.csv')) {
     const productId = productIds.get(`${row.Brand.trim()}\u0000${row.Product.trim()}`)
     if (!productId) throw new Error(`Sourcing record has no product: ${row.Brand} / ${row.Product}`)
 
@@ -255,7 +305,7 @@ async function importSourcing(dataDirectory: string, productIds: Map<string, str
 }
 
 async function importCompatibility(dataDirectory: string) {
-  for (const row of readCsv(dataDirectory, 'vehicle-compat.csv')) {
+  for (const row of readCsv<CompatibilityRow>(dataDirectory, 'vehicle-compat.csv')) {
     const product = await prisma.product.findUnique({ where: { sku: row.product_sku } })
     if (!product) throw new Error(`Compatibility references unknown SKU: ${row.product_sku}`)
 
@@ -290,7 +340,7 @@ async function importCompatibility(dataDirectory: string) {
 }
 
 async function importUnmatchedVehicleSeeds(dataDirectory: string) {
-  for (const row of readCsv(dataDirectory, 'unmatched-engines.csv')) {
+  for (const row of readCsv<UnmatchedVehicleRow>(dataDirectory, 'unmatched-engines.csv')) {
     if (!row.make || !row.model) continue
     const existing = await prisma.unmatchedVehicleQuery.findFirst({
       where: {

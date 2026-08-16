@@ -52,7 +52,7 @@ async function main() {
   })
 
   // 2. Find or create the Moto category for products
-  const cMoto = await prisma.category.findFirstOrThrow({ where: { slug: 'moto' } })
+  const cMoto = await prisma.category.findFirstOrThrow({ where: { slug: 'moto-karting' } })
   const cAutoSynth = await prisma.category.findFirstOrThrow({ where: { slug: 'auto-synthese' } })
   const motul = await prisma.brand.findFirstOrThrow({ where: { slug: 'motul' } })
   const castrol = await prisma.brand.findFirstOrThrow({ where: { slug: 'castrol' } })

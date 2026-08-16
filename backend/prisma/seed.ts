@@ -46,7 +46,7 @@ async function main() {
 
   // 3. CATEGORIES
   const cAuto = await prisma.category.create({ data: { nameFr: 'Automobile', slug: 'automobile', imageUrl: 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?q=80&w=600' } })
-  const cMoto = await prisma.category.create({ data: { nameFr: 'Moto', slug: 'moto', imageUrl: 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?q=80&w=600' } })
+  const cMoto = await prisma.category.create({ data: { nameFr: 'Moto', slug: 'moto-karting', imageUrl: 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?q=80&w=600' } })
   const cHeavy = await prisma.category.create({ data: { nameFr: 'Poids Lourd & Agricole', slug: 'poids-lourd-agricole', imageUrl: 'https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?q=80&w=600' } })
   const cFilters = await prisma.category.create({ data: { nameFr: 'Filtres', slug: 'filtres', imageUrl: 'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?q=80&w=600' } })
   const cAdditives = await prisma.category.create({ data: { nameFr: 'Additifs & Entretien', slug: 'additifs', imageUrl: 'https://images.unsplash.com/photo-1530046339160-ce3e530c7d2f?q=80&w=600' } })

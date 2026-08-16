@@ -345,7 +345,7 @@ const PRODUCTS = [
     name: 'Motul 7100 4T 20W-50',
     sku: 'MOT-20W50-7100-4T',
     brand: 'motul',
-    category: 'moto',
+    category: 'moto-karting',
     desc: 'Huile moto 4T 100% synthèse pour moteurs à refroidissement par air et liquide. Excellente tenue à haute température.',
     isFeatured: false,
     specs: { viscosity: '20W-50', apiStandard: 'API SJ', isFullySynth: true },
