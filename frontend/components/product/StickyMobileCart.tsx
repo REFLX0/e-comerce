@@ -7,35 +7,12 @@ import type { Product, ProductVariant } from '@/lib/types'
 import { useCartStore } from '@/lib/store/cart.store'
 import { PriceDisplay } from '../common/PriceDisplay'
 import { toast } from 'sonner'
+import { buildProductMessage, buildWhatsAppUrl, isPartsCategory } from '@/lib/whatsapp'
 
 interface Props {
   product: Product
   variant: ProductVariant
 }
-
-const SENSITIVE_CATEGORIES = [
-  'auto-pieces-rechange',
-  'auto-filtres',
-  'auto-freinage',
-  'auto-moteur-distribution',
-  'auto-suspension-direction',
-  'auto-transmission-embrayage',
-  'auto-refroidissement-climatisation',
-  'auto-electricite-eclairage',
-  'auto-carrosserie-habitacle',
-  'auto-echappement',
-  'huiles-moteur',
-  'direction-assistee',
-  'transmission',
-  'refroidissement',
-  'adblue',
-  'additif-essence',
-  'additif-diesel',
-  'additif-huile',
-  'filtres'
-]
-
-const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '+21655555555'
 
 export function StickyMobileCart({ product, variant }: Props) {
   const t = useTranslations('ProductCard')
@@ -44,7 +21,7 @@ export function StickyMobileCart({ product, variant }: Props) {
 
   const isOutOfStock = variant.status === 'out_of_stock'
   const oldPrice = variant.priceTTC * 1.19
-  const isSensitive = product.category?.slug && SENSITIVE_CATEGORIES.includes(product.category.slug)
+  const isPart = isPartsCategory(product.category?.slug)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -56,13 +33,12 @@ export function StickyMobileCart({ product, variant }: Props) {
 
   const handleAddToCart = () => {
     if (isOutOfStock) return
-    if (isSensitive) {
-      const text = `Bonjour, je suis intéressé par la pièce "${product.name}" (Réf: ${variant.sku || product.slug}).\n\nVeuillez vérifier la disponibilité et la correspondance de cette pièce avec mon véhicule.\n\n[Insérez votre numéro de châssis / carte grise ici]`
-      const url = `https://wa.me/${WHATSAPP_NUMBER.replace(/\D/g, '')}?text=${encodeURIComponent(text)}`
-      window.open(url, '_blank')
+    addItem(product, variant, 1)
+    if (isPart) {
+      // Step 1 — hand the part off to WhatsApp for chassis verification
+      window.open(buildWhatsAppUrl(buildProductMessage(product, variant, 1)), '_blank', 'noopener')
       return
     }
-    addItem(product, variant, 1)
     toast.success('Produit ajouté au panier')
   }
 
@@ -90,11 +66,13 @@ export function StickyMobileCart({ product, variant }: Props) {
         <button
           onClick={handleAddToCart}
           disabled={isOutOfStock}
-          className={`flex h-12 shrink-0 items-center gap-2 px-6 shadow-lg rounded-xl font-bold text-white transition-colors ${isSensitive ? 'bg-[#25D366] hover:bg-[#20b858]' : 'btn-primary'}`}
+          className={`flex h-12 shrink-0 items-center gap-2 px-6 shadow-lg rounded-xl font-bold text-white transition-colors ${
+            isPart ? 'bg-[#25D366] hover:bg-[#20b858]' : 'btn-primary'
+          }`}
         >
-          {isSensitive ? <MessageCircle size={18} /> : <ShoppingCart size={18} />}
+          {isPart ? <MessageCircle size={18} /> : <ShoppingCart size={18} />}
           <span className="hidden sm:inline">
-            {isOutOfStock ? t('outOfStock') : (isSensitive ? 'Vérifier via WhatsApp' : t('addToCart'))}
+            {isOutOfStock ? t('outOfStock') : (isPart ? 'Vérifier via WhatsApp' : t('addToCart'))}
           </span>
         </button>
       </div>

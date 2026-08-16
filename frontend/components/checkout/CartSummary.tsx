@@ -7,6 +7,7 @@ import Image from 'next/image'
 import { Link } from '@/i18n/routing'
 import { FreeShippingProgress } from './FreeShippingProgress'
 import { CrossSellSuggestions } from '@/components/cart/CrossSellSuggestions'
+import { PartsWhatsAppCheckout } from '@/components/cart/PartsWhatsAppCheckout'
 import { useTranslations } from 'next-intl'
 
 export function CartSummary() {
@@ -148,6 +149,9 @@ export function CartSummary() {
               </span>
             </div>
           </div>
+
+          {/* WhatsApp parts handoff before checkout finalization */}
+          <PartsWhatsAppCheckout className="mb-4" />
 
           <Link
             href="/checkout"

@@ -10,6 +10,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useHasMounted } from '@/lib/hooks/useHasMounted'
 import { useTranslations } from 'next-intl'
 import { CrossSellSuggestions } from '@/components/cart/CrossSellSuggestions'
+import { PartsWhatsAppCheckout } from '@/components/cart/PartsWhatsAppCheckout'
 
 export default function MiniCart() {
   const { items, itemCount, totalTTC, updateQuantity, removeItem } = useCartStore()
@@ -211,6 +212,8 @@ export default function MiniCart() {
         {/* Footer — Total + CTAs */}
         {visibleItems.length > 0 && (
           <div className="bg-white border-t border-gray-100 px-4 pt-4 pb-5 shadow-[0_-4px_20px_rgba(0,0,0,0.06)]">
+            {/* WhatsApp parts handoff — appears as soon as the basket holds parts */}
+            <PartsWhatsAppCheckout className="mb-4" />
             {/* Summary line */}
             <div className="flex items-center justify-between mb-4">
               <span className="text-sm text-gray-500 font-medium">{t('totalTTC')}</span>

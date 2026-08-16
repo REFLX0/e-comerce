@@ -2,62 +2,31 @@
 
 import { useState } from 'react'
 import { useTranslations } from 'next-intl'
-import { ShoppingCart, Plus, Minus, MessageCircle, X } from 'lucide-react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { ShoppingCart, Plus, Minus, MessageCircle } from 'lucide-react'
+import { motion } from 'framer-motion'
 import type { Product, ProductVariant } from '@/lib/types'
 import { useCartStore } from '@/lib/store/cart.store'
 import { toast } from 'sonner'
+import { buildProductMessage, buildWhatsAppUrl, isPartsCategory } from '@/lib/whatsapp'
 
 interface Props {
   product: Product
   variant: ProductVariant
 }
 
-// Slugs of categories that require WhatsApp compatibility/stock check
-const SENSITIVE_CATEGORIES = [
-  'auto-pieces-rechange',
-  'auto-filtres',
-  'auto-freinage',
-  'auto-moteur-distribution',
-  'auto-suspension-direction',
-  'auto-transmission-embrayage',
-  'auto-refroidissement-climatisation',
-  'auto-electricite-eclairage',
-  'auto-carrosserie-habitacle',
-  'auto-echappement',
-  'huiles-moteur',
-  'direction-assistee',
-  'transmission',
-  'refroidissement',
-  'adblue',
-  'additif-essence',
-  'additif-diesel',
-  'additif-huile',
-  'filtres'
-]
-
-// The support WhatsApp number
-const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '+21655555555'
-
 export function AddToCartButton({ product, variant }: Props) {
   const t = useTranslations('Product')
   const [quantity, setQuantity] = useState(1)
-  const [showWhatsAppPrompt, setShowWhatsAppPrompt] = useState(false)
   const { addItem } = useCartStore()
 
   const stock = variant.stock ?? Number.POSITIVE_INFINITY
   const isOutOfStock = variant.status === 'out_of_stock' || stock <= 0
-  
-  // Check if the product belongs to a sensitive category
-  const isSensitive = product.category?.slug && SENSITIVE_CATEGORIES.includes(product.category.slug)
+
+  // Check if the product is a mechanical part requiring WhatsApp verification
+  const isPart = isPartsCategory(product.category?.slug)
 
   const handleAddToCart = () => {
     if (isOutOfStock) return
-    
-    if (isSensitive) {
-      setShowWhatsAppPrompt(true)
-      return
-    }
 
     const result = addItem(product, variant, quantity)
     if (!result.ok) {
@@ -80,14 +49,9 @@ export function AddToCartButton({ product, variant }: Props) {
       return prev + 1
     })
   }
-  
+
   const handleWhatsAppRedirect = () => {
-    const text = `Bonjour, veuillez ajouter votre numéro de châssis (carte grise) de votre voiture pour vérifier la disponibilité et la correspondance de la pièce avec votre voiture.\n\nPièce concernée: ${product.name} (Réf: ${variant.sku || product.slug})`
-    const url = `https://wa.me/${WHATSAPP_NUMBER.replace(/\D/g, '')}?text=${encodeURIComponent(text)}`
-    window.open(url, '_blank')
-    // Also add the item to cart so the customer doesn't lose their selection
-    addItem(product, variant, quantity)
-    setShowWhatsAppPrompt(false)
+    window.open(buildWhatsAppUrl(buildProductMessage(product, variant, quantity)), '_blank', 'noopener')
   }
 
   return (
@@ -119,59 +83,20 @@ export function AddToCartButton({ product, variant }: Props) {
           disabled={isOutOfStock}
           className="btn-primary flex h-14 flex-1 items-center justify-center gap-3 text-lg"
         >
-          {isSensitive ? <MessageCircle size={22} /> : <ShoppingCart size={22} />}
-          {isOutOfStock ? t('outOfStock') : (isSensitive ? 'Vérifier la disponibilité' : t('addToCart'))}
+          <ShoppingCart size={22} />
+          {isOutOfStock ? t('outOfStock') : t('addToCart')}
         </motion.button>
       </div>
 
-      <AnimatePresence>
-        {showWhatsAppPrompt && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-brand-primary/60 p-4 backdrop-blur-sm">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              className="relative w-full max-w-md overflow-hidden rounded-2xl bg-white shadow-2xl"
-            >
-              <button 
-                onClick={() => setShowWhatsAppPrompt(false)}
-                className="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200"
-              >
-                <X size={18} />
-              </button>
-              
-              <div className="bg-[#25D366] px-6 py-8 text-center text-white">
-                <MessageCircle size={48} className="mx-auto mb-4" />
-                <h3 className="text-xl font-bold">Vérification de compatibilité</h3>
-              </div>
-              
-              <div className="p-6">
-                <p className="mb-2 text-center text-slate-600 text-sm">
-                  Bonjour, veuillez ajouter votre numéro de châssis (carte grise) de votre voiture pour vérifier la disponibilité et la correspondance de la pièce avec votre voiture.
-                </p>
-                <p className="mb-6 text-center text-xs text-slate-400">
-                  Pièce: <strong className="text-brand-primary">{product.name}</strong>
-                </p>
-                
-                <button
-                  onClick={handleWhatsAppRedirect}
-                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#25D366] px-4 py-3.5 font-bold text-white transition-colors hover:bg-[#20b858]"
-                >
-                  <MessageCircle size={20} />
-                  Envoyer sur WhatsApp
-                </button>
-                
-                <button
-                  onClick={() => setShowWhatsAppPrompt(false)}
-                  className="mt-3 w-full text-center text-sm font-medium text-slate-500 hover:text-brand-primary"
-                >
-                  Annuler
-                </button>
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
+      {isPart && (
+        <button
+          onClick={handleWhatsAppRedirect}
+          className="mb-8 flex w-full items-center justify-center gap-2 rounded-2xl border-2 border-[#25D366]/30 bg-[#25D366]/5 px-4 py-3.5 text-sm font-bold text-[#128C4A] transition-all hover:bg-[#25D366] hover:text-white"
+        >
+          <MessageCircle size={20} />
+          Vérifier ma pièce via WhatsApp (compatibilité & châssis)
+        </button>
+      )}
     </>
   )
 }

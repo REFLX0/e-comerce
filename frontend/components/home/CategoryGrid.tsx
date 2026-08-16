@@ -30,7 +30,7 @@ const CATEGORY_META: Record<string, { icon: React.ElementType; color: string; bg
   'graisses':             { icon: Disc3,        color: 'text-yellow-600',  bg: 'bg-yellow-50',  desc: 'Protection maximale' },
   'refroidissement':      { icon: Thermometer,  color: 'text-teal-600',    bg: 'bg-teal-50',    desc: 'Liquides de refroidissement' },
   'frein':                { icon: CircleDot,    color: 'text-red-600',     bg: 'bg-red-50',     desc: 'Sécurité optimale' },
-  'moto':                 { icon: Bike,         color: 'text-orange-600',  bg: 'bg-orange-50',  desc: '2 roues & scooters' },
+  'moto-karting':         { icon: Bike,         color: 'text-orange-600',  bg: 'bg-orange-50',  desc: '2 roues & scooters' },
   'poids-lourd-agricole': { icon: Tractor,      color: 'text-green-600',   bg: 'bg-green-50',   desc: 'Camions & engins agricoles' },
   'filtres':              { icon: Filter,       color: 'text-purple-600',  bg: 'bg-purple-50',  desc: 'Tous types de filtration' },
   'additifs':             { icon: FlaskConical, color: 'text-pink-600',    bg: 'bg-pink-50',    desc: 'Traitements & entretien moteur' },
