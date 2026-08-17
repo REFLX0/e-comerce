@@ -21,6 +21,7 @@ import { WishlistModule } from './wishlist/wishlist.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { SettingsModule } from './settings/settings.module';
 import { ShippingModule } from './shipping/shipping.module';
+import { ChatModule } from './chat/chat.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
@@ -47,6 +48,7 @@ import { AppService } from './app.service';
     NotificationsModule,
     SettingsModule,
     ShippingModule,
+    ChatModule,
   ],
   controllers: [AppController],
   providers: [AppService],

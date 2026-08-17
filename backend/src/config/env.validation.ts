@@ -20,6 +20,8 @@ export const envSchema = Joi.object({
   SENTRY_DSN: Joi.string().allow('').optional(),
   REDIS_HOST: Joi.string().allow('').optional(),
   REDIS_PORT: Joi.number().optional(),
+  OPENROUTER_API_KEY: Joi.string().allow('').optional(),
+  OPENROUTER_MODEL: Joi.string().allow('').optional(),
   FRONTEND_URL: Joi.string().uri().allow('').optional(),
 });
 

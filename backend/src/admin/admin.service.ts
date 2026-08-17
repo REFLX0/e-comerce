@@ -826,4 +826,146 @@ export class AdminService {
   async deleteContactMessage(id: string) {
     return this.prisma.contactMessage.delete({ where: { id } });
   }
+
+  async importProducts(file: Express.Multer.File) {
+    const csvParser = require('csv-parser');
+    const { Readable } = require('stream');
+
+    return new Promise((resolve, reject) => {
+      const results: any[] = [];
+      const stream = Readable.from(file.buffer);
+
+      stream
+        .pipe(csvParser({ separator: ',' }))
+        .on('data', (data: any) => results.push(data))
+        .on('end', async () => {
+          let created = 0;
+          let updated = 0;
+          let errors = 0;
+
+          for (const row of results) {
+            try {
+              const sku = row.SKU || row.sku || row[Object.keys(row)[0]];
+              const nameFr = row.Nom || row.nameFr || row[Object.keys(row)[1]];
+              
+              if (!sku || !nameFr) {
+                errors++;
+                continue;
+              }
+
+              const slug = row.Slug || row.slug || nameFr.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+              const description = row.Description || row.description || nameFr;
+              const brandName = row.Marque || row.brand;
+              const catName = row['Catégorie'] || row.Categorie || row.category || row.Categorie;
+              const price = parseFloat(row['Prix TND'] || row.Prix || row.price || '0') || 0;
+              const stock = parseInt(row['Stock Total'] || row.Stock || row.stock || '0') || 0;
+              const isPublishedStr = (row['Publié'] || row.Publie || row.isPublished || '').toLowerCase();
+              const isPublished = isPublishedStr.startsWith('oui') || isPublishedStr === 'true' || isPublishedStr === '1';
+              const image = row.Image || row.image || row.images;
+
+              let brandId: string | null = null;
+              if (brandName) {
+                let b = await this.prisma.brand.findFirst({
+                  where: { name: { contains: brandName, mode: 'insensitive' } },
+                });
+                if (!b) {
+                  b = await this.prisma.brand.create({
+                    data: { name: brandName, slug: brandName.toLowerCase().replace(/[^a-z0-9]+/g, '-') },
+                  });
+                }
+                brandId = b.id;
+              }
+
+              let categoryId: string | null = null;
+              if (catName) {
+                let c = await this.prisma.category.findFirst({
+                  where: { nameFr: { contains: catName, mode: 'insensitive' } },
+                });
+                if (!c) {
+                  c = await this.prisma.category.create({
+                    data: { nameFr: catName, slug: catName.toLowerCase().replace(/[^a-z0-9]+/g, '-') },
+                  });
+                }
+                categoryId = c.id;
+              }
+
+              const existing = await this.prisma.product.findUnique({ where: { sku }, include: { variants: true } });
+              
+              if (existing) {
+                await this.prisma.product.update({
+                  where: { id: existing.id },
+                  data: {
+                    nameFr,
+                    slug,
+                    description,
+                    isPublished,
+                    ...(brandId ? { brandId } : {}),
+                    ...(categoryId ? { categoryId } : {}),
+                  }
+                });
+                
+                // Upsert default variant for price/stock
+                if (existing.variants.length > 0) {
+                  await this.prisma.productVariant.update({
+                    where: { id: existing.variants[0].id },
+                    data: { price, stockQty: stock }
+                  });
+                } else {
+                  await this.prisma.productVariant.create({
+                    data: {
+                      productId: existing.id,
+                      volume: 'default',
+                      price,
+                      stockQty: stock,
+                      skuVariant: `${sku}-default`,
+                    }
+                  });
+                }
+
+                if (image) {
+                   const existingImages = await this.prisma.productImage.findMany({ where: { productId: existing.id }});
+                   if (existingImages.length === 0) {
+                      await this.prisma.productImage.create({ data: { productId: existing.id, url: image, isPrimary: true, sortOrder: 0 }});
+                   }
+                }
+                updated++;
+              } else {
+                const prod = await this.prisma.product.create({
+                  data: {
+                    sku,
+                    nameFr,
+                    slug,
+                    description,
+                    isPublished,
+                    ...(brandId ? { brandId } : {}),
+                    ...(categoryId ? { categoryId } : {}),
+                    variants: {
+                      create: {
+                        volume: 'default',
+                        price,
+                        stockQty: stock,
+                        skuVariant: `${sku}-default`,
+                      }
+                    }
+                  }
+                });
+                if (image) {
+                  await this.prisma.productImage.create({ data: { productId: prod.id, url: image, isPrimary: true, sortOrder: 0 }});
+                }
+                created++;
+              }
+            } catch (err) {
+              console.error('Import row error:', err);
+              errors++;
+            }
+          }
+          
+          resolve({ ok: true, created, updated, errors, message: `Import terminé : ${created} créés, ${updated} mis à jour, ${errors} erreurs` });
+        })
+        .on('error', (err: any) => {
+          console.error('CSV parse error:', err);
+          reject(err);
+        });
+    });
+  }
 }

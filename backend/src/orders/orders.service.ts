@@ -139,7 +139,7 @@ export class OrdersService {
     await this.notifications
       .create({
         type: 'new_order',
-        title: `Nouvelle commande #${order.id.slice(0, 8)}`,
+        title: `Nouvelle commande #${order.id.slice(-8).toUpperCase()}`,
         message: `${totalAmount.toFixed(2)} TND — ${dto.shipping.fullName}`,
         link: `/admin/orders`,
       })

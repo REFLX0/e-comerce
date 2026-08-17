@@ -109,6 +109,14 @@ export const adminApi = {
   exportProducts: () =>
     api.get<{ csv: string }>('/admin/products/export'),
 
+  importProducts: (file: File) => {
+    const formData = new FormData()
+    formData.append('file', file)
+    return api.post<{ ok: boolean; created: number; updated: number; errors: number; message: string }>('/admin/products/import', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    })
+  },
+
   // Orders - export
   exportOrders: (status?: string) =>
     api.get<{ csv: string }>('/admin/orders/export', { params: status ? { status } : undefined }),

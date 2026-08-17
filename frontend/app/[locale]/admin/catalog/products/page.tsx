@@ -93,6 +93,7 @@ export default function AdminProductsPage() {
   const [selected, setSelected] = useState<string[]>([])
   const [showPublished, setShowPublished] = useState<'all' | 'published' | 'unpublished'>('all')
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null)
+  const [isImporting, setIsImporting] = useState(false)
   const limit = 50
 
   const { data: productsData, isLoading } = useQuery<any>({
@@ -152,44 +153,35 @@ export default function AdminProductsPage() {
   const importCsv = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
-    const text = await file.text()
+    setIsImporting(true)
+    const toastId = toast.loading('Importation en cours...')
     try {
-      const lines = text.split('\n').filter(Boolean)
-      const results: string[] = []
-      for (let i = 1; i < lines.length; i++) {
-        const line = lines[i]; if (!line) continue
-        const cols = parseCsvLine(line)
-        if (cols[0] && cols[1]) {
-          try {
-            const brand = findByName(brandsData, cols[4])
-            const category = findByName(categoriesData, cols[5])
-
-            if (!brand || !category) {
-              results.push(`✗ ${cols[1]} (marque/catégorie introuvable)`)
-              continue
-            }
-
-            const image = cols[9]?.trim()
-            await adminApi.createProduct({
-              sku: cols[0]!,
-              nameFr: cols[1]!,
-              slug: (cols[2] || cols[1]!.toLowerCase().replace(/[^a-z0-9]+/g, '-'))!,
-              description: cols[3] || cols[1]!,
-              brandId: (brand as any).id,
-              categoryId: (category as any).id,
-              isPublished: normalizeLookup(cols[8]).startsWith('oui'),
-              price: parseFloat(cols[6] ?? '0') || 0,
-              stock: parseInt(cols[7] ?? '0') || 0,
-              images: image ? [image] : undefined,
-            })
-            results.push(`✓ ${cols[1]}`)
-          } catch { results.push(`✗ ${cols[1]}`) }
-        }
+      const res = await adminApi.importProducts(file)
+      const data = res as unknown as { ok: boolean; created: number; updated: number; errors: number; message: string }
+      if (data.errors > 0) {
+        toast.warning(data.message, { id: toastId })
+      } else {
+        toast.success(data.message, { id: toastId })
       }
-      toast.success(`${results.filter((r) => r.startsWith('✓')).length} importés, ${results.filter((r) => r.startsWith('✗')).length} erreurs`)
       queryClient.invalidateQueries({ queryKey: ['admin-products'] })
-    } catch { toast.error('Erreur de lecture du fichier CSV') }
-    if (fileInputRef.current) fileInputRef.current.value = ''
+    } catch {
+      toast.error('Erreur lors de l\'importation', { id: toastId })
+    } finally {
+      setIsImporting(false)
+      if (fileInputRef.current) fileInputRef.current.value = ''
+    }
+  }
+
+  const downloadTemplate = () => {
+    const header = 'SKU,Nom,Slug,Description,Marque,Catégorie,Prix TND,Stock Total,Publié,Image\n';
+    const sample = 'SKU-EXEMPLE,Filtre à huile Premium,filtre-huile,Un excellent filtre à huile,Motul,Auto - Filtres,15.50,10,Oui,\n';
+    const blob = new Blob([header + sample], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `modele-import-produits.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
   }
 
   return (
@@ -200,10 +192,17 @@ export default function AdminProductsPage() {
           <p className="text-sm text-gray-500">{total} produits dans le catalogue</p>
         </div>
         <div className="flex flex-wrap gap-2">
-          <input ref={fileInputRef} type="file" accept=".csv" onChange={importCsv} className="hidden" />
-          <button onClick={() => fileInputRef.current?.click()} className="flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">
-            <Upload size={15} /> Importer CSV
+          <input ref={fileInputRef} type="file" accept=".csv" onChange={importCsv} className="hidden" disabled={isImporting} />
+          
+          <button onClick={downloadTemplate} className="flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">
+            Modèle CSV
           </button>
+          
+          <button onClick={() => fileInputRef.current?.click()} disabled={isImporting} className="flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors disabled:opacity-50">
+            {isImporting ? <div className="h-4 w-4 animate-spin rounded-full border-2 border-gray-600 border-t-transparent" /> : <Upload size={15} />}
+            {isImporting ? 'Import...' : 'Importer CSV'}
+          </button>
+          
           <button onClick={exportCsv} className="flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">
             <Download size={15} /> Exporter
           </button>

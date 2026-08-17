@@ -796,3 +796,28 @@ body.grid-on .grid-toggle .dot {
 .animate-glow-pulse    { animation: glow-pulse 2.5s ease-in-out infinite; }
 .animate-gradient      { animation: gradient-shift 6s ease infinite; background-size: 200% 200%; }
 .animate-slide-in-left { animation: slide-in-left 0.35s ease-out both; }
+
+/* ── Category Nav Flyout Animations ─────────────────────────────────── */
+@keyframes flyoutIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes subPanelIn {
+  from { opacity: 0; transform: translateX(-8px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* Flyout item hover state */
+.flyout-item:hover {
+  background: rgba(212, 167, 106, 0.07) !important;
+  color: #D4A76A !important;
+  border-left-color: #D4A76A !important;
+}
+.flyout-item:hover > span:first-child > span:first-child {
+  background: #D4A76A !important;
+}
+
+/* Sub-item hover state */
+.sub-item:hover {
+  background: rgba(212, 167, 106, 0.07);
+}

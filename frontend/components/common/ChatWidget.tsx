@@ -1,205 +1,526 @@
 'use client'
 
-import { useState } from 'react'
-import { MessageCircle, X, Send, User, Mail, Search, CheckCircle } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
+import { useSession } from 'next-auth/react'
+import {
+  Bot,
+  X,
+  Send,
+  HelpCircle,
+  MoreVertical,
+  RefreshCcw,
+  Headset,
+  Search,
+  ScanSearch,
+  Truck,
+  RotateCcw,
+  Paperclip,
+  Mic,
+  Zap,
+  ShieldCheck,
+  MessageCircle,
+  ChevronDown,
+} from 'lucide-react'
+
+interface ChatMessage {
+  role: 'user' | 'assistant'
+  content: string
+  time: string
+}
+
+const now = () =>
+  new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })
+
+const QUICK_ACTIONS = [
+  { label: 'Trouver une pièce', icon: Search },
+  { label: 'Identifier ma pièce', icon: ScanSearch },
+  { label: 'Suivre ma commande', icon: Truck },
+  { label: 'Retour & Remboursement', icon: RotateCcw },
+]
+
+const TRUST_ITEMS = [
+  { label: 'Réponse instantanée', icon: Zap },
+  { label: 'Service humain', icon: Headset },
+  { label: 'Données sécurisées', icon: ShieldCheck },
+]
+
+const WELCOME_MESSAGE =
+  'Bonjour ! 👋\nJe suis l\u2019assistant IA Specpart.\nJe peux vous aider à trouver une pièce, suivre votre commande ou répondre à vos questions.'
 
 export function ChatWidget() {
+  const { data: session } = useSession()
   const [isOpen, setIsOpen] = useState(false)
-  const [step, setStep] = useState<'intro' | 'form' | 'success'>('intro')
+  const [messages, setMessages] = useState<ChatMessage[]>([
+    { role: 'assistant', content: WELCOME_MESSAGE, time: now() },
+  ])
+  const [input, setInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
-  
-  const [formData, setFormData] = useState({
-    name: '',
-    contact: '',
-    part: ''
-  })
+  const [showActions, setShowActions] = useState(true)
+  const [menuOpen, setMenuOpen] = useState(false)
+  const [unread, setUnread] = useState(0)
+  const scrollRef = useRef<HTMLDivElement>(null)
+  const menuRef = useRef<HTMLDivElement>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  useEffect(() => {
+    scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' })
+  }, [messages, isLoading])
+
+  useEffect(() => {
+    if (isOpen) {
+      setUnread(0)
+      setTimeout(() => inputRef.current?.focus(), 300)
+    }
+  }, [isOpen])
+
+  useEffect(() => {
+    const closeMenu = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setMenuOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', closeMenu)
+    return () => document.removeEventListener('mousedown', closeMenu)
+  }, [])
+
+  const handleSend = async (e: React.FormEvent, preset?: string) => {
     e.preventDefault()
+    const content = (preset ?? input).trim()
+    if (!content || isLoading) return
+
+    const userMessage: ChatMessage = { role: 'user', content, time: now() }
+    const history = [...messages, userMessage]
+    setMessages(history)
+    setInput('')
+    setShowActions(false)
     setIsLoading(true)
 
     try {
-      const response = await fetch('/api/contact', {
+      const response = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          name: formData.name,
-          email: formData.contact.includes('@') ? formData.contact : 'no-email@chat.com',
-          phone: !formData.contact.includes('@') ? formData.contact : '',
-          subject: 'Demande de pièce via Chatbot',
-          message: `Recherche de pièce : ${formData.part}`,
-          isProfessional: false
-        })
+          messages: history.map((m) => ({ role: m.role, content: m.content })),
+          userEmail: session?.user?.email,
+        }),
       })
 
-      if (response.ok) {
-        setStep('success')
-      }
-    } catch (error) {
-      console.error('Failed to submit form', error)
+      if (!response.ok) throw new Error('Chat request failed')
+
+      const data = await response.json()
+      const botMsg: ChatMessage = { role: 'assistant', content: data.reply, time: now() }
+      setMessages([...history, botMsg])
+      if (!isOpen) setUnread((n) => n + 1)
+    } catch {
+      setMessages([
+        ...history,
+        {
+          role: 'assistant',
+          content: 'Désolé, je rencontre un problème technique. Réessayez dans un instant !',
+          time: now(),
+        },
+      ])
     } finally {
       setIsLoading(false)
     }
   }
 
-  return (
-    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end">
-      {/* Chat Window */}
-      {isOpen && (
-        <div className="mb-4 w-[340px] overflow-hidden rounded-2xl bg-white shadow-2xl ring-1 ring-black/5 animate-in slide-in-from-bottom-4 sm:w-[380px]">
-          {/* Header */}
-          <div className="flex items-center justify-between bg-brand-primary p-4 text-white">
-            <div className="flex items-center gap-3">
-              <div className="relative flex h-10 w-10 items-center justify-center rounded-full bg-white/20">
-                <MessageCircle size={20} className="text-white" />
-                <span className="absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-brand-primary bg-green-500"></span>
-              </div>
-              <div>
-                <h3 className="font-display font-semibold">Assistance Specpart</h3>
-                <p className="text-xs text-white/80">En ligne</p>
-              </div>
-            </div>
-            <button
-              onClick={() => setIsOpen(false)}
-              className="rounded-full p-2 hover:bg-white/20 transition-colors"
-            >
-              <X size={20} />
-            </button>
-          </div>
+  const resetConversation = () => {
+    setMessages([{ role: 'assistant', content: WELCOME_MESSAGE, time: now() }])
+    setShowActions(true)
+    setMenuOpen(false)
+  }
 
-          {/* Body */}
-          <div className="h-[380px] overflow-y-auto bg-gray-50 p-4">
-            {step === 'intro' && (
-              <div className="space-y-4">
-                <div className="flex items-start gap-3">
-                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand-primary text-white">
-                    <MessageCircle size={16} />
+  return (
+    <>
+      {/* ── Keyframes injected once ── */}
+      <style>{`
+        @keyframes chatSlideUp {
+          from { opacity: 0; transform: translateY(16px) scale(0.97); }
+          to   { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        @keyframes msgSlideIn {
+          from { opacity: 0; transform: translateY(6px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes pulseDot {
+          0%, 100% { transform: scale(1); opacity: 1; }
+          50%       { transform: scale(1.4); opacity: 0.6; }
+        }
+        .chat-window { animation: chatSlideUp 0.22s cubic-bezier(0.16,1,0.3,1) both; }
+        .msg-bubble  { animation: msgSlideIn 0.18s ease both; }
+        .dot-1 { animation: pulseDot 1.2s ease-in-out infinite; }
+        .dot-2 { animation: pulseDot 1.2s ease-in-out 0.2s infinite; }
+        .dot-3 { animation: pulseDot 1.2s ease-in-out 0.4s infinite; }
+        .chat-input:focus { outline: none; }
+        .quick-btn:hover { transform: translateY(-1px); }
+        .scroll-area::-webkit-scrollbar { width: 4px; }
+        .scroll-area::-webkit-scrollbar-track { background: transparent; }
+        .scroll-area::-webkit-scrollbar-thumb { background: rgba(22,37,76,0.15); border-radius: 4px; }
+      `}</style>
+
+      <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3">
+
+        {/* ── Chat Window ───────────────────────────────────── */}
+        {isOpen && (
+          <div
+            className="chat-window flex flex-col overflow-hidden"
+            style={{
+              width: 'min(400px, calc(100vw - 24px))',
+              height: 'min(600px, calc(100vh - 120px))',
+              borderRadius: 20,
+              background: '#fff',
+              boxShadow: '0 32px 80px -12px rgba(13,22,45,0.32), 0 0 0 1px rgba(22,37,76,0.08)',
+            }}
+          >
+            {/* ── Header ── */}
+            <div
+              style={{
+                background: 'linear-gradient(135deg, #0d162d 0%, #16254c 60%, #1f356b 100%)',
+                padding: '14px 16px 14px 16px',
+                flexShrink: 0,
+              }}
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  {/* Logo avatar in header */}
+                  <div
+                    className="relative overflow-hidden rounded-full"
+                    style={{
+                      width: 42, height: 42,
+                      background: '#fff',
+                      boxShadow: '0 0 0 2px rgba(212,167,106,0.5)',
+                    }}
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src="/logo.jpg" alt="Specpart" className="h-full w-full object-cover" />
+                    <span
+                      className="absolute bottom-0.5 right-0.5 h-2.5 w-2.5 rounded-full border-2"
+                      style={{ background: '#22c55e', borderColor: '#16254c' }}
+                    />
                   </div>
-                  <div className="rounded-2xl rounded-tl-none bg-white p-3 shadow-sm text-sm text-gray-700">
-                    Bonjour ! 👋
-                    <br /><br />
-                    Vous cherchez une pièce spécifique qui ne se trouve pas sur notre site ?
+                  <div>
+                    <h3 style={{ color: '#fff', fontSize: 14, fontWeight: 700, lineHeight: 1.2 }}>
+                      Assistant IA Specpart
+                    </h3>
+                    <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: 11, marginTop: 2, display: 'flex', alignItems: 'center', gap: 5 }}>
+                      <span style={{ display: 'inline-block', width: 6, height: 6, borderRadius: '50%', background: '#22c55e' }} />
+                      En ligne · Répond instantanément
+                    </p>
                   </div>
                 </div>
 
-                <div className="flex flex-col gap-2 pl-11 pt-2">
+                <div className="flex items-center gap-1">
                   <button
-                    onClick={() => setStep('form')}
-                    className="rounded-xl border border-brand-primary bg-brand-primary/5 px-4 py-2.5 text-sm font-medium text-brand-primary hover:bg-brand-primary hover:text-white transition-colors text-left"
+                    onClick={() => { setShowActions(true); setMenuOpen(false) }}
+                    style={{
+                      display: 'flex', alignItems: 'center', gap: 5,
+                      padding: '5px 10px', borderRadius: 20,
+                      border: '1px solid rgba(255,255,255,0.15)',
+                      background: 'rgba(255,255,255,0.08)',
+                      color: 'rgba(255,255,255,0.85)',
+                      fontSize: 11, fontWeight: 500, cursor: 'pointer',
+                      transition: 'background 0.15s',
+                    }}
                   >
-                    Oui, je veux commander une pièce
+                    <HelpCircle size={12} />
+                    Aide
                   </button>
+
+                  <div className="relative" ref={menuRef}>
+                    <button
+                      onClick={() => setMenuOpen((v) => !v)}
+                      style={{
+                        padding: 7, borderRadius: '50%', border: 'none',
+                        background: 'transparent', cursor: 'pointer',
+                        color: 'rgba(255,255,255,0.6)', transition: 'background 0.15s',
+                      }}
+                    >
+                      <MoreVertical size={15} />
+                    </button>
+                    {menuOpen && (
+                      <div style={{
+                        position: 'absolute', right: 0, top: 36, zIndex: 20,
+                        width: 200, borderRadius: 12, overflow: 'hidden',
+                        background: '#fff', border: '1px solid rgba(22,37,76,0.08)',
+                        boxShadow: '0 12px 32px rgba(22,37,76,0.15)',
+                      }}>
+                        <button
+                          onClick={resetConversation}
+                          style={{
+                            width: '100%', display: 'flex', alignItems: 'center', gap: 10,
+                            padding: '11px 14px', fontSize: 12, color: '#374151',
+                            background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left',
+                          }}
+                        >
+                          <RefreshCcw size={13} style={{ color: '#9ca3af' }} />
+                          Nouvelle conversation
+                        </button>
+                        <div style={{ height: 1, background: '#f3f4f6' }} />
+                        <button
+                          onClick={() => {
+                            setMenuOpen(false)
+                            handleSend({ preventDefault: () => {} } as React.FormEvent, 'Je souhaite parler à un conseiller humain.')
+                          }}
+                          style={{
+                            width: '100%', display: 'flex', alignItems: 'center', gap: 10,
+                            padding: '11px 14px', fontSize: 12, color: '#374151',
+                            background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left',
+                          }}
+                        >
+                          <Headset size={13} style={{ color: '#9ca3af' }} />
+                          Contacter un conseiller
+                        </button>
+                      </div>
+                    )}
+                  </div>
+
                   <button
                     onClick={() => setIsOpen(false)}
-                    className="rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors text-left"
+                    style={{
+                      padding: 7, borderRadius: '50%', border: 'none',
+                      background: 'rgba(255,255,255,0.08)', cursor: 'pointer',
+                      color: 'rgba(255,255,255,0.7)', transition: 'background 0.15s',
+                    }}
                   >
-                    Non, je regarde juste
+                    <ChevronDown size={16} />
                   </button>
                 </div>
               </div>
-            )}
+            </div>
 
-            {step === 'form' && (
-              <div className="space-y-4">
-                <div className="flex items-start gap-3">
-                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand-primary text-white">
-                    <MessageCircle size={16} />
-                  </div>
-                  <div className="rounded-2xl rounded-tl-none bg-white p-3 shadow-sm text-sm text-gray-700">
-                    Parfait ! Décrivez la pièce dont vous avez besoin ci-dessous.
+            {/* ── Messages ── */}
+            <div
+              ref={scrollRef}
+              className="scroll-area"
+              style={{
+                flex: 1, overflowY: 'auto',
+                padding: '16px 14px',
+                display: 'flex', flexDirection: 'column', gap: 12,
+                background: '#f8f9fc',
+              }}
+            >
+              {messages.map((msg, i) => (
+                <div
+                  key={i}
+                  className="msg-bubble"
+                  style={{
+                    display: 'flex',
+                    alignItems: 'flex-end',
+                    gap: 8,
+                    flexDirection: msg.role === 'user' ? 'row-reverse' : 'row',
+                  }}
+                >
+                  {/* Bot avatar in messages */}
+                  {msg.role === 'assistant' && (
+                    <div style={{
+                      width: 28, height: 28, borderRadius: '50%',
+                      overflow: 'hidden', flexShrink: 0,
+                      background: '#fff',
+                      boxShadow: '0 0 0 2px rgba(212,167,106,0.4)',
+                    }}>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src="/logo.jpg" alt="Specpart" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    </div>
+                  )}
+
+                  <div style={{
+                    display: 'flex', flexDirection: 'column',
+                    alignItems: msg.role === 'user' ? 'flex-end' : 'flex-start',
+                    maxWidth: '75%',
+                  }}>
+                    <div style={{
+                      padding: '10px 14px',
+                      borderRadius: msg.role === 'user' ? '18px 18px 4px 18px' : '18px 18px 18px 4px',
+                      fontSize: 13, lineHeight: 1.55,
+                      whiteSpace: 'pre-wrap',
+                      ...(msg.role === 'user'
+                        ? {
+                            background: 'linear-gradient(135deg, #16254c, #1f356b)',
+                            color: '#fff',
+                            boxShadow: '0 2px 8px rgba(22,37,76,0.2)',
+                          }
+                        : {
+                            background: '#fff',
+                            color: '#1f2937',
+                            boxShadow: '0 1px 4px rgba(0,0,0,0.07)',
+                            border: '1px solid rgba(22,37,76,0.06)',
+                          }),
+                    }}>
+                      {msg.content}
+                    </div>
+                    <span style={{ fontSize: 10, color: '#9ca3af', marginTop: 4, padding: '0 4px' }}>
+                      {msg.time}
+                    </span>
                   </div>
                 </div>
+              ))}
 
-                <form onSubmit={handleSubmit} className="ml-11 space-y-3 rounded-2xl bg-white p-4 shadow-sm">
-                  <div>
-                    <label className="mb-1 block text-xs font-medium text-gray-500">Votre nom</label>
-                    <div className="relative">
-                      <User size={14} className="absolute left-3 top-2.5 text-gray-400" />
-                      <input
-                        required
-                        type="text"
-                        value={formData.name}
-                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                        className="w-full rounded-lg border border-gray-200 py-2 pl-9 pr-3 text-sm focus:border-brand-primary focus:outline-none focus:ring-1 focus:ring-brand-primary"
-                        placeholder="Jean Dupont"
-                      />
-                    </div>
+              {/* Typing indicator */}
+              {isLoading && (
+                <div className="msg-bubble" style={{ display: 'flex', alignItems: 'flex-end', gap: 8 }}>
+                  <div style={{
+                    width: 28, height: 28, borderRadius: '50%',
+                    overflow: 'hidden', flexShrink: 0, background: '#fff',
+                    boxShadow: '0 0 0 2px rgba(212,167,106,0.4)',
+                  }}>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src="/logo.jpg" alt="Specpart" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                   </div>
-                  <div>
-                    <label className="mb-1 block text-xs font-medium text-gray-500">Email ou Téléphone</label>
-                    <div className="relative">
-                      <Mail size={14} className="absolute left-3 top-2.5 text-gray-400" />
-                      <input
-                        required
-                        type="text"
-                        value={formData.contact}
-                        onChange={(e) => setFormData({ ...formData, contact: e.target.value })}
-                        className="w-full rounded-lg border border-gray-200 py-2 pl-9 pr-3 text-sm focus:border-brand-primary focus:outline-none focus:ring-1 focus:ring-brand-primary"
-                        placeholder="jean@email.com"
-                      />
-                    </div>
+                  <div style={{
+                    background: '#fff', borderRadius: '18px 18px 18px 4px',
+                    padding: '12px 16px', display: 'flex', alignItems: 'center', gap: 5,
+                    boxShadow: '0 1px 4px rgba(0,0,0,0.07)',
+                    border: '1px solid rgba(22,37,76,0.06)',
+                  }}>
+                    <span className="dot-1" style={{ width: 7, height: 7, borderRadius: '50%', background: '#D4A76A', display: 'block' }} />
+                    <span className="dot-2" style={{ width: 7, height: 7, borderRadius: '50%', background: '#D4A76A', display: 'block' }} />
+                    <span className="dot-3" style={{ width: 7, height: 7, borderRadius: '50%', background: '#D4A76A', display: 'block' }} />
                   </div>
-                  <div>
-                    <label className="mb-1 block text-xs font-medium text-gray-500">Pièce recherchée (Véhicule, référence...)</label>
-                    <div className="relative">
-                      <Search size={14} className="absolute left-3 top-2.5 text-gray-400" />
-                      <textarea
-                        required
-                        value={formData.part}
-                        onChange={(e) => setFormData({ ...formData, part: e.target.value })}
-                        className="w-full rounded-lg border border-gray-200 py-2 pl-9 pr-3 text-sm focus:border-brand-primary focus:outline-none focus:ring-1 focus:ring-brand-primary min-h-[60px]"
-                        placeholder="Filtre à huile pour Golf 7 1.6 TDI..."
-                      />
-                    </div>
-                  </div>
+                </div>
+              )}
+
+              {/* Quick action chips */}
+              {showActions && !isLoading && (
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 7, paddingLeft: 36, paddingTop: 4 }}>
+                  {QUICK_ACTIONS.map(({ label, icon: Icon }) => (
+                    <button
+                      key={label}
+                      className="quick-btn"
+                      onClick={(e) => handleSend(e, label)}
+                      style={{
+                        display: 'flex', alignItems: 'center', gap: 6,
+                        padding: '7px 12px', borderRadius: 20,
+                        border: '1px solid rgba(22,37,76,0.12)',
+                        background: '#fff', color: '#16254c',
+                        fontSize: 11.5, fontWeight: 500, cursor: 'pointer',
+                        boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+                        transition: 'all 0.15s',
+                      }}
+                    >
+                      <Icon size={12} style={{ color: '#D4A76A' }} />
+                      {label}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* ── Composer ── */}
+            <div style={{
+              borderTop: '1px solid rgba(22,37,76,0.07)',
+              background: '#fff',
+              padding: '10px 12px 8px',
+              flexShrink: 0,
+            }}>
+              <form onSubmit={handleSend}>
+                <div style={{
+                  display: 'flex', alignItems: 'center', gap: 6,
+                  background: '#f4f5f9',
+                  borderRadius: 16, padding: '6px 6px 6px 12px',
+                  border: '1.5px solid transparent',
+                  transition: 'border-color 0.15s, box-shadow 0.15s',
+                }}
+                  onFocusCapture={(e) => {
+                    (e.currentTarget as HTMLDivElement).style.borderColor = '#D4A76A'
+                    ;(e.currentTarget as HTMLDivElement).style.boxShadow = '0 0 0 3px rgba(212,167,106,0.12)'
+                  }}
+                  onBlurCapture={(e) => {
+                    (e.currentTarget as HTMLDivElement).style.borderColor = 'transparent'
+                    ;(e.currentTarget as HTMLDivElement).style.boxShadow = 'none'
+                  }}
+                >
+                  <button type="button" style={{ padding: 5, borderRadius: 8, border: 'none', background: 'transparent', color: '#9ca3af', cursor: 'pointer' }}>
+                    <Paperclip size={15} />
+                  </button>
+                  <input
+                    ref={inputRef}
+                    className="chat-input"
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    placeholder="Écrivez votre message…"
+                    style={{
+                      flex: 1, background: 'transparent', border: 'none',
+                      fontSize: 13, color: '#1f2937', padding: '6px 0',
+                      outline: 'none',
+                    }}
+                  />
+                  <button type="button" style={{ padding: 5, borderRadius: 8, border: 'none', background: 'transparent', color: '#9ca3af', cursor: 'pointer' }}>
+                    <Mic size={15} />
+                  </button>
                   <button
                     type="submit"
-                    disabled={isLoading}
-                    className="flex w-full items-center justify-center gap-2 rounded-lg bg-brand-primary py-2.5 text-sm font-bold text-white hover:bg-brand-primary/90 transition-colors disabled:opacity-70"
+                    disabled={isLoading || !input.trim()}
+                    style={{
+                      width: 36, height: 36, borderRadius: 12, border: 'none',
+                      background: input.trim() ? 'linear-gradient(135deg, #16254c, #1f356b)' : '#e5e7eb',
+                      color: input.trim() ? '#fff' : '#9ca3af',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      cursor: input.trim() ? 'pointer' : 'not-allowed',
+                      transition: 'all 0.2s', flexShrink: 0,
+                      boxShadow: input.trim() ? '0 2px 8px rgba(22,37,76,0.25)' : 'none',
+                    }}
                   >
-                    {isLoading ? 'Envoi...' : 'Envoyer la demande'}
-                    <Send size={14} />
+                    <Send size={14} style={{ transform: 'translateX(1px)' }} />
                   </button>
-                </form>
-              </div>
-            )}
+                </div>
+              </form>
 
-            {step === 'success' && (
-              <div className="flex h-full flex-col items-center justify-center text-center space-y-4 px-4 py-8">
-                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-green-100 text-green-500">
-                  <CheckCircle size={32} />
-                </div>
-                <div>
-                  <h4 className="font-display text-lg font-bold text-gray-900">Demande envoyée !</h4>
-                  <p className="mt-2 text-sm text-gray-500">
-                    Merci ! Notre équipe va rechercher votre pièce et vous contacter très rapidement avec un devis.
-                  </p>
-                </div>
-                <button
-                  onClick={() => {
-                    setIsOpen(false)
-                    setTimeout(() => setStep('intro'), 300)
-                  }}
-                  className="mt-4 rounded-lg bg-gray-100 px-6 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-200 transition-colors"
-                >
-                  Fermer
-                </button>
+              {/* Trust bar */}
+              <div style={{ display: 'flex', justifyContent: 'center', gap: 16, marginTop: 8 }}>
+                {TRUST_ITEMS.map(({ label, icon: Icon }) => (
+                  <span key={label} style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 10, color: '#9ca3af' }}>
+                    <Icon size={10} style={{ color: '#D4A76A' }} />
+                    {label}
+                  </span>
+                ))}
               </div>
-            )}
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* Floating Button */}
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className={`${
-          isOpen ? 'bg-gray-900 rotate-90 scale-90' : 'bg-brand-primary hover:-translate-y-1 hover:shadow-lg'
-        } flex h-14 w-14 items-center justify-center rounded-full text-white shadow-md transition-all duration-300`}
-        aria-label="Ouvrir le chat"
-      >
-        {isOpen ? <X size={24} /> : <MessageCircle size={28} />}
-      </button>
-    </div>
+        {/* ── Floating Button ───────────────────────────────── */}
+        <div className="relative">
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+            style={{
+              width: 56, height: 56, borderRadius: '50%', border: 'none',
+              background: isOpen
+                ? '#374151'
+                : 'linear-gradient(135deg, #16254c 0%, #1f356b 100%)',
+              color: '#fff',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              cursor: 'pointer',
+              boxShadow: isOpen
+                ? '0 4px 16px rgba(0,0,0,0.25)'
+                : '0 8px 24px rgba(22,37,76,0.4)',
+              transform: isOpen ? 'rotate(0deg) scale(0.95)' : 'rotate(0deg) scale(1)',
+              transition: 'all 0.25s cubic-bezier(0.34,1.56,0.64,1)',
+            }}
+            aria-label="Ouvrir le chat"
+          >
+            {isOpen
+              ? <X size={22} />
+              : <MessageCircle size={24} style={{ color: '#D4A76A' }} />
+            }
+          </button>
+
+          {/* Unread badge */}
+          {!isOpen && unread > 0 && (
+            <span style={{
+              position: 'absolute', top: -4, right: -4,
+              width: 20, height: 20, borderRadius: '50%',
+              background: '#ef4444', color: '#fff',
+              fontSize: 11, fontWeight: 700,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              border: '2px solid #fff',
+              boxShadow: '0 2px 6px rgba(239,68,68,0.4)',
+            }}>
+              {unread}
+            </span>
+          )}
+        </div>
+      </div>
+    </>
   )
 }

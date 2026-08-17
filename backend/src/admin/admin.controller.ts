@@ -12,7 +12,10 @@ import {
   HttpStatus,
   BadRequestException,
   Res,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import type { Response } from 'express';
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
@@ -55,6 +58,14 @@ export class AdminController {
   @Get('products/export') exportProducts() {
     return this.adminService.exportProducts();
   }
+  
+  @Post('products/import')
+  @UseInterceptors(FileInterceptor('file'))
+  importProducts(@UploadedFile() file: Express.Multer.File) {
+    if (!file) throw new BadRequestException('Aucun fichier fourni');
+    return this.adminService.importProducts(file);
+  }
+
   @Get('products/:id') getProduct(@Param('id') id: string) {
     return this.adminService.getProduct(id);
   }
