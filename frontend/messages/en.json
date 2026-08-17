@@ -104,6 +104,7 @@
   "Product": {
     "ref": "Ref:",
     "compatibleVehicle": "100% Compatible with your vehicle",
+    "incompatibleVehicle": "Not compatible with your vehicle",
     "seeReviews": "See reviews",
     "otherPackaging": "Product available in other packaging.",
     "description": "Description",

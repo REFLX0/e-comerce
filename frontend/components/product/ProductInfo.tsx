@@ -8,7 +8,7 @@ import { StockIndicator } from '../common/StockIndicator'
 import { PriceDisplay } from '../common/PriceDisplay'
 import { VariantSelector } from './VariantSelector'
 import { AddToCartButton } from './AddToCartButton'
-import { Check } from 'lucide-react'
+import { Check, X } from 'lucide-react'
 import { Link } from '@/i18n/routing'
 import { TrustBadges } from '../common/TrustBadges'
 import { ShareDropdown } from './ShareDropdown'
@@ -25,7 +25,7 @@ export function ProductInfo({ product, selectedVariant: controlledVariant, onVar
   const [internalVariant, setInternalVariant] = useState(product.variants[0])
   const selectedVariant = controlledVariant ?? internalVariant
   const setSelectedVariant = onVariantChange ?? setInternalVariant
-  const { isCompatible, vehicleLabel } = useProductCompatibility(product)
+  const { isCompatible, vehicleLabel, hasCheckedVehicles, firstCheckedVehicleLabel } = useProductCompatibility(product)
 
   if (!selectedVariant) return null
 
@@ -52,16 +52,28 @@ export function ProductInfo({ product, selectedVariant: controlledVariant, onVar
       </h1>
 
       {/* Compatibility Banner */}
-      {isCompatible && vehicleLabel && (
-        <div className="mb-6 rounded-xl border-2 border-green-500 bg-green-50 p-4 flex items-center gap-4 animate-fade-in">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-green-500 text-white shadow-sm">
-            <Check size={20} strokeWidth={3} />
+      {hasCheckedVehicles && (
+        isCompatible && vehicleLabel ? (
+          <div className="mb-6 rounded-xl border-2 border-green-500 bg-green-50 p-4 flex items-center gap-4 animate-fade-in">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-green-500 text-white shadow-sm">
+              <Check size={20} strokeWidth={3} />
+            </div>
+            <div>
+              <p className="text-sm font-bold text-green-900">{t('compatibleVehicle')}</p>
+              <p className="text-xs text-green-700 mt-0.5">{vehicleLabel}</p>
+            </div>
           </div>
-          <div>
-            <p className="text-sm font-bold text-green-900">{t('compatibleVehicle')}</p>
-            <p className="text-xs text-green-700 mt-0.5">{vehicleLabel}</p>
+        ) : (
+          <div className="mb-6 rounded-xl border-2 border-red-500 bg-red-50 p-4 flex items-center gap-4 animate-fade-in">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-red-500 text-white shadow-sm">
+              <X size={20} strokeWidth={3} />
+            </div>
+            <div>
+              <p className="text-sm font-bold text-red-900">{t('incompatibleVehicle')}</p>
+              <p className="text-xs text-red-700 mt-0.5">{firstCheckedVehicleLabel}</p>
+            </div>
           </div>
-        </div>
+        )
       )}
 
       {/* Rating & Reviews Link */}

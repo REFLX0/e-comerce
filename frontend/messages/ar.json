@@ -104,7 +104,8 @@
   "Product": {
     "ref": "المرجع:",
     "compatibleVehicle": "متوافق 100% مع مركبتك",
-    "seeReviews": "عرض الآراء",
+    "incompatibleVehicle": "غير متوافق مع مركبتك",
+    "seeReviews": "عرض التقييمات",
     "otherPackaging": "المنتج متوفر بتعبئات أخرى.",
     "description": "الوصف",
     "specifications": "المواصفات",

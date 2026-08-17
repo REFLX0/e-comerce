@@ -892,16 +892,18 @@ export class AdminService {
               const existing = await this.prisma.product.findUnique({ where: { sku }, include: { variants: true } });
               
               if (existing) {
+                const updateData: any = {
+                  nameFr,
+                  slug,
+                  description,
+                  isPublished,
+                };
+                if (brandId) updateData.brandId = brandId;
+                if (categoryId) updateData.categoryId = categoryId;
+
                 await this.prisma.product.update({
                   where: { id: existing.id },
-                  data: {
-                    nameFr,
-                    slug,
-                    description,
-                    isPublished,
-                    ...(brandId ? { brandId } : {}),
-                    ...(categoryId ? { categoryId } : {}),
-                  }
+                  data: updateData
                 });
                 
                 // Upsert default variant for price/stock
@@ -930,24 +932,26 @@ export class AdminService {
                 }
                 updated++;
               } else {
-                const prod = await this.prisma.product.create({
-                  data: {
-                    sku,
-                    nameFr,
-                    slug,
-                    description,
-                    isPublished,
-                    ...(brandId ? { brandId } : {}),
-                    ...(categoryId ? { categoryId } : {}),
-                    variants: {
-                      create: {
-                        volume: 'default',
-                        price,
-                        stockQty: stock,
-                        skuVariant: `${sku}-default`,
-                      }
+                const createData: any = {
+                  sku,
+                  nameFr,
+                  slug,
+                  description,
+                  isPublished,
+                  variants: {
+                    create: {
+                      volume: 'default',
+                      price,
+                      stockQty: stock,
+                      skuVariant: `${sku}-default`,
                     }
                   }
+                };
+                if (brandId) createData.brandId = brandId;
+                if (categoryId) createData.categoryId = categoryId;
+
+                const prod = await this.prisma.product.create({
+                  data: createData
                 });
                 if (image) {
                   await this.prisma.productImage.create({ data: { productId: prod.id, url: image, isPrimary: true, sortOrder: 0 }});
