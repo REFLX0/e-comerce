@@ -17,7 +17,15 @@ export class CreateUserCarDto {
 
   @IsOptional()
   @IsString()
+  makeSlug?: string;
+
+  @IsOptional()
+  @IsString()
   model?: string;
+
+  @IsOptional()
+  @IsString()
+  modelSlug?: string;
 
   @IsOptional()
   @IsInt()

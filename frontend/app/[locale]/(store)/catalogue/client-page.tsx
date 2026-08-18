@@ -7,7 +7,9 @@ import { useLocale, useTranslations } from 'next-intl'
 import { Car, Search, Sparkles, X } from 'lucide-react'
 import Link from 'next/link'
 import { productsApi } from '@/lib/api/products'
+import { carsApi } from '@/lib/api/cars'
 import { useRouter } from '@/i18n/routing'
+import { useAuthStore } from '@/lib/store/auth.store'
 import { FilterSidebar } from '@/components/catalogue/FilterSidebar'
 import { MobileFiltersSheet } from '@/components/catalogue/MobileFiltersSheet'
 import { ActiveFilters } from '@/components/catalogue/ActiveFilters'
@@ -27,6 +29,16 @@ export default function CataloguePage() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [searchValue, setSearchValue] = useState(searchParams.get('search') || '')
+
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated)
+  
+  const { data: userCarsData } = useQuery({
+    queryKey: ['user-cars'],
+    queryFn: () => carsApi.getAll(),
+    enabled: isAuthenticated,
+  })
+
+  const validCars = userCarsData ? userCarsData.filter(car => car.make && car.model) : []
 
   const vehicleMake = searchParams.get('make')
   const vehicleModel = searchParams.get('model')
@@ -268,13 +280,41 @@ export default function CataloguePage() {
                         ? 'To view parts in this category (Filters, Brakes, Suspension, etc.), you must first select your vehicle to ensure 100% compatibility.' 
                         : 'Pour voir les pièces de cette catégorie (Filtres, Freinage, Suspension, etc.), veuillez d\'abord sélectionner votre véhicule afin de garantir une compatibilité à 100%.'}
                     </p>
-                    <Link 
-                      href={`/${locale}/#oil-finder`} 
-                      className="inline-flex min-h-12 items-center justify-center gap-2 bg-[#E10600] px-6 text-xs font-black uppercase tracking-[0.12em] text-white transition-colors hover:bg-[#bd0500]"
-                    >
-                      <Car size={16} />
-                      {locale === 'en' ? 'Select Vehicle' : 'Sélectionner un véhicule'}
-                    </Link>
+                    {validCars.length > 0 ? (
+                      <div className="flex flex-wrap items-center justify-center gap-3">
+                        {validCars.map(car => (
+                          <button
+                            key={car.id}
+                            onClick={() => {
+                              const params = new URLSearchParams(searchParams.toString())
+                              params.set('make', car.make!)
+                              params.set('model', car.model!)
+                              params.delete('page')
+                              router.push(`/catalogue?${params.toString()}`)
+                            }}
+                            className="inline-flex min-h-12 items-center justify-center gap-2 border border-[#E10600] bg-[#E10600] px-6 text-xs font-black uppercase tracking-[0.12em] text-white transition-colors hover:bg-[#bd0500]"
+                          >
+                            <Car size={16} />
+                            {car.name || `${car.make} ${car.model}`}
+                          </button>
+                        ))}
+                        <Link 
+                          href={`/${locale}/#oil-finder`} 
+                          className="inline-flex min-h-12 items-center justify-center gap-2 border border-[#111] bg-white px-6 text-xs font-black uppercase tracking-[0.12em] text-[#111] transition-colors hover:bg-neutral-50"
+                        >
+                          <Search size={16} />
+                          {locale === 'en' ? 'Other Vehicle' : 'Autre véhicule'}
+                        </Link>
+                      </div>
+                    ) : (
+                      <Link 
+                        href={`/${locale}/#oil-finder`} 
+                        className="inline-flex min-h-12 items-center justify-center gap-2 bg-[#E10600] px-6 text-xs font-black uppercase tracking-[0.12em] text-white transition-colors hover:bg-[#bd0500]"
+                      >
+                        <Car size={16} />
+                        {locale === 'en' ? 'Select Vehicle' : 'Sélectionner un véhicule'}
+                      </Link>
+                    )}
                   </div>
                 )
               }

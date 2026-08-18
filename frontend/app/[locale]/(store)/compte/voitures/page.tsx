@@ -15,14 +15,20 @@ import {
   Wrench,
 } from 'lucide-react'
 import { toast } from 'sonner'
+import { productsApi } from '@/lib/api/products'
 import { carsApi, type CarPayload } from '@/lib/api/cars'
 import type { UserCar } from '@/lib/types'
 
 type CarForm = {
   name: string
-  make: string
+  // slug from DB (used for catalogue URL filter)
+  make: string        // makeSlug
+  model: string       // modelSlug
+  // display names from DB (used for compatibility matching)
+  makeName: string
+  modelName: string
+  // custom free-text fallback
   customMake?: string
-  model: string
   customModel?: string
   year: string
   plateNumber: string
@@ -37,8 +43,10 @@ type CarForm = {
 const EMPTY_FORM: CarForm = {
   name: '',
   make: '',
-  customMake: '',
+  makeName: '',
   model: '',
+  modelName: '',
+  customMake: '',
   customModel: '',
   year: '',
   plateNumber: '',
@@ -50,18 +58,7 @@ const EMPTY_FORM: CarForm = {
   cabinFilterChanged: false,
 }
 
-const CAR_BRANDS: Record<string, string[]> = {
-  Renault: ['Clio', 'Megane', 'Symbol', 'Kangoo', 'Kadjar'],
-  Peugeot: ['208', '308', '2008', '3008', 'Partner', 'Expert'],
-  Volkswagen: ['Golf', 'Polo', 'Passat', 'Tiguan', 'Caddy'],
-  Kia: ['Picanto', 'Rio', 'Sportage', 'Cerato'],
-  Hyundai: ['i10', 'i20', 'Tucson', 'Elantra'],
-  Fiat: ['Punto', 'Fiorino', 'Doblo', '500', 'Ducato'],
-  Toyota: ['Yaris', 'Corolla', 'Hilux', 'Land Cruiser'],
-  Mercedes: ['Classe A', 'Classe C', 'Classe E', 'GLC'],
-  BMW: ['Série 1', 'Série 3', 'Série 5', 'X3', 'X5'],
-  Audi: ['A3', 'A4', 'Q3', 'Q5'],
-}
+
 
 function isValidTunisianPlate(plate: string) {
   if (!plate.trim()) return true // Allow empty as it's optional, or we can make it required later if needed. But the requirements say "validate against... show inline error if invalid"
@@ -115,13 +112,21 @@ function getReminder(car: UserCar) {
 }
 
 function buildPayload(form: CarForm): CarPayload {
-  const finalMake = (form.make === 'Autre' ? form.customMake : form.make)?.trim() || undefined
-  const finalModel = (form.model === 'Autre' ? form.customModel : form.model)?.trim() || undefined
+  // If custom make/model entered, use that as both name and slug (no DB slug available)
+  const isMakeCustom = form.make === 'Autre'
+  const isModelCustom = form.model === 'Autre'
+
+  const finalMakeName = isMakeCustom ? form.customMake?.trim() : form.makeName || undefined
+  const finalMakeSlug = isMakeCustom ? undefined : (form.make?.trim() || undefined)
+  const finalModelName = isModelCustom ? form.customModel?.trim() : form.modelName || undefined
+  const finalModelSlug = isModelCustom ? undefined : (form.model?.trim() || undefined)
 
   return {
     name: form.name.trim(),
-    make: finalMake,
-    model: finalModel,
+    make: finalMakeName,
+    makeSlug: finalMakeSlug,
+    model: finalModelName,
+    modelSlug: finalModelSlug,
     year: form.year ? toNumber(form.year) : undefined,
     plateNumber: form.plateNumber.trim() || undefined,
     currentMileage: toNumber(form.currentMileage),
@@ -372,6 +377,17 @@ export default function MesVoituresPage() {
     queryFn: carsApi.getAll,
   })
 
+  const { data: makes = [] } = useQuery({
+    queryKey: ['makes'],
+    queryFn: () => productsApi.getMakes(),
+  })
+
+  const { data: models = [] } = useQuery({
+    queryKey: ['models', form.make],
+    queryFn: () => form.make && form.make !== 'Autre' ? productsApi.getModels(form.make) : Promise.resolve([]),
+    enabled: !!form.make && form.make !== 'Autre',
+  })
+
   const cars = useMemo(() => data ?? [], [data])
 
   const createMutation = useMutation({
@@ -491,13 +507,21 @@ export default function MesVoituresPage() {
               <select
                 value={form.make}
                 onChange={(e) => {
-                  setForm((prev) => ({ ...prev, make: e.target.value, model: '' }))
+                  const slug = e.target.value
+                  const selectedMake = makes.find((m: any) => m.slug === slug)
+                  setForm((prev) => ({ 
+                    ...prev, 
+                    make: slug, 
+                    makeName: selectedMake?.name || '',
+                    model: '', 
+                    modelName: '',
+                  }))
                 }}
                 className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm outline-none transition-colors focus:border-brand-primary focus:bg-white"
               >
                 <option value="">Sélectionner une marque</option>
-                {Object.keys(CAR_BRANDS).map(brand => (
-                  <option key={brand} value={brand}>{brand}</option>
+                {makes.map((make: any) => (
+                  <option key={make.slug} value={make.slug}>{make.name}</option>
                 ))}
                 <option value="Autre">Autre...</option>
               </select>
@@ -522,13 +546,21 @@ export default function MesVoituresPage() {
               ) : (
                 <select
                   value={form.model}
-                  onChange={(e) => setForm((prev) => ({ ...prev, model: e.target.value }))}
+                  onChange={(e) => {
+                    const slug = e.target.value
+                    const selectedModel = models.find((m: any) => m.slug === slug)
+                    setForm((prev) => ({ 
+                      ...prev, 
+                      model: slug, 
+                      modelName: selectedModel?.name || '',
+                    }))
+                  }}
                   disabled={!form.make}
                   className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm outline-none transition-colors focus:border-brand-primary focus:bg-white disabled:opacity-50"
                 >
                   <option value="">Sélectionner un modèle</option>
-                  {(CAR_BRANDS[form.make] || []).map(model => (
-                    <option key={model} value={model}>{model}</option>
+                  {models.map((model: any) => (
+                    <option key={model.slug} value={model.slug}>{model.name}</option>
                   ))}
                   <option value="Autre">Autre...</option>
                 </select>

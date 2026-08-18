@@ -172,8 +172,10 @@ export interface Address {
 export interface UserCar {
   id: string
   name: string
-  make?: string | null
-  model?: string | null
+  make?: string | null        // display name e.g. "Renault" — used for compatibility matching
+  model?: string | null       // display name e.g. "Clio IV" — used for compatibility matching
+  makeSlug?: string | null    // slug e.g. "renault" — used for catalogue URL filter
+  modelSlug?: string | null   // slug e.g. "clio-iv" — used for catalogue URL filter
   year?: number | null
   plateNumber?: string | null
   currentMileage: number

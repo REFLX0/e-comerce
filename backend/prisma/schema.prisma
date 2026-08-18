@@ -158,8 +158,10 @@ model UserCar {
   userId               String
   user                 User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   name                 String
-  make                 String?
-  model                String?
+  make                 String?  // display name e.g. "Renault" — used for compatibility matching
+  model                String?  // display name e.g. "Clio IV" — used for compatibility matching
+  makeSlug             String?  // slug e.g. "renault" — used for catalogue URL filter
+  modelSlug            String?  // slug e.g. "clio-iv" — used for catalogue URL filter
   year                 Int?
   plateNumber          String?
   currentMileage       Int      @default(0)

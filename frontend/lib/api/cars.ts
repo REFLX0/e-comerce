@@ -3,8 +3,10 @@ import type { UserCar } from '@/lib/types'
 
 export type CarPayload = {
   name: string
-  make?: string
-  model?: string
+  make?: string        // display name e.g. "Renault" — for compatibility matching
+  makeSlug?: string   // slug e.g. "renault" — for catalogue URL filter
+  model?: string       // display name e.g. "Clio IV" — for compatibility matching
+  modelSlug?: string  // slug e.g. "clio-iv" — for catalogue URL filter
   year?: number
   plateNumber?: string
   currentMileage: number
