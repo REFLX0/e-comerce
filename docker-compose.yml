@@ -209,8 +209,38 @@ services:
       mc anonymous set-json /tmp/policy.json myminio/specpart-images;
       exit 0;
       "
+  # ── OpenSearch (Product Search Engine) ───────────────────────────
+  opensearch:
+    image: opensearchproject/opensearch:2.13.0
+    container_name: specpart-opensearch
+    environment:
+      - cluster.name=specpart-cluster
+      - node.name=specpart-node1
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m
+      # Disable security plugin for internal-only access (no public exposure)
+      - plugins.security.disabled=true
+      - OPENSEARCH_INITIAL_ADMIN_PASSWORD=${OPENSEARCH_ADMIN_PASSWORD:-Specpart@2024!}
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    volumes:
+      - opensearch_data:/usr/share/opensearch/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:9200/_cluster/health | grep -E '\"status\":\"(green|yellow)\"'"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    networks:
+      - backend-net
 
-# ── Networks ──────────────────────────────────────────────────────
 networks:
   frontend-net:
     driver: bridge
@@ -224,3 +254,4 @@ volumes:
   certbot-etc:
   certbot-var:
   minio_data:
+  opensearch_data:

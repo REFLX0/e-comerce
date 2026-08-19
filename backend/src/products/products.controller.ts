@@ -31,6 +31,8 @@ export class ProductsController {
       sortBy: query.sortBy,
       page: query.page ? +query.page : 1,
       limit: query.limit ? +query.limit : 24,
+      // Cursor-based keyset pagination — pass nextCursor from previous response
+      cursor: query.cursor || undefined,
       type: query.type,
       api: query.api,
       acea: query.acea,

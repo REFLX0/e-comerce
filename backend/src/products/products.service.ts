@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { CacheService } from '../cache/cache.service';
 import { Prisma } from '@prisma/client';
 import { OilRecommendationsDto } from './dto/oil-recommendations.dto';
 import { calcSpecificity } from '../specificity';
@@ -17,8 +18,11 @@ export interface ProductFilters {
   isNew?: boolean;
   search?: string;
   sortBy?: string;
+  // Offset-based pagination (admin, legacy)
   page?: number;
   limit?: number;
+  // Cursor-based (keyset) pagination — preferred for storefront
+  cursor?: string;
   type?: string;
   api?: string;
   acea?: string;
@@ -27,7 +31,10 @@ export interface ProductFilters {
 
 @Injectable()
 export class ProductsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly cache: CacheService,
+  ) {}
 
   /** Include every descendant when a catalogue group is selected. */
   async resolveCategoryIds(slug: string) {
@@ -74,7 +81,35 @@ export class ProductsService {
     };
   }
 
+  /** Stable cache key from filters object — sorted keys prevent key ordering mismatches. */
+  private cacheKeyForFilters(filters: ProductFilters): string {
+    const relevant = {
+      categorySlug: filters.categorySlug,
+      brandSlug: filters.brandSlug,
+      brands: filters.brands?.sort().join(','),
+      viscosity: filters.viscosity,
+      priceMin: filters.priceMin,
+      priceMax: filters.priceMax,
+      inStockOnly: filters.inStockOnly,
+      isFeatured: filters.isFeatured,
+      search: filters.search,
+      sortBy: filters.sortBy,
+      page: filters.page ?? 1,
+      cursor: filters.cursor,
+      limit: filters.limit ?? 24,
+      type: filters.type,
+      api: filters.api,
+      acea: filters.acea,
+      volume: filters.volume,
+    };
+    return `products:list:${JSON.stringify(relevant)}`;
+  }
+
   async findAll(filters: ProductFilters) {
+    const cacheKey = this.cacheKeyForFilters(filters);
+    const cached = await this.cache.get(cacheKey);
+    if (cached) return cached;
+
     const page = Math.max(filters.page ?? 1, 1);
     const limit = Math.min(filters.limit ?? 24, 100);
     const skip = (page - 1) * limit;
@@ -169,57 +204,101 @@ export class ProductsService {
 
     let data: any[];
     let total: number;
+    let nextCursor: string | null = null;
 
-    if (needsManualSort) {
-      const all = await this.prisma.product.findMany({
+    // ── Cursor/Keyset pagination (preferred for storefront) ──────────────────
+    if (filters.cursor && !needsManualSort) {
+      const orderBy = this.buildOrderBy(filters.sortBy);
+      data = await this.prisma.product.findMany({
         where,
         include: this.buildInclude(),
+        orderBy,
+        take: limit + 1, // fetch one extra to determine if there is a next page
+        cursor: { id: filters.cursor },
+        skip: 1,         // skip the cursor item itself
       });
+      // If we got an extra item, there's a next page
+      if (data.length > limit) {
+        data.pop();
+        nextCursor = data[data.length - 1].id;
+      }
+      total = -1; // total is not calculated for cursor pagination (expensive)
+    }
+    // ── Offset pagination (admin panel / backwards compat) ────────────────────
+    else if (needsManualSort) {
+      const all = await this.prisma.product.findMany({ where, include: this.buildInclude() });
       total = all.length;
       all.sort((a, b) => {
         const pa = a.variants?.[0]?.price ?? 0;
         const pb = b.variants?.[0]?.price ?? 0;
         return filters.sortBy === 'price_asc' ? pa - pb : pb - pa;
       });
+      const skip = (Math.max(filters.page ?? 1, 1) - 1) * limit;
       data = all.slice(skip, skip + limit);
     } else {
+      const page = Math.max(filters.page ?? 1, 1);
+      const skip = (page - 1) * limit;
       const orderBy = this.buildOrderBy(filters.sortBy);
       [data, total] = await Promise.all([
-        this.prisma.product.findMany({
-          where,
-          include: this.buildInclude(),
-          orderBy,
-          skip,
-          take: limit,
-        }),
+        this.prisma.product.findMany({ where, include: this.buildInclude(), orderBy, skip, take: limit }),
         this.prisma.product.count({ where }),
       ]);
     }
 
-    return {
+    const page = filters.cursor ? 1 : Math.max(filters.page ?? 1, 1);
+    const result: any = {
       data: data.map(this.serialize),
       total,
       page,
       limit,
-      totalPages: Math.ceil(total / limit),
+      totalPages: total > 0 ? Math.ceil(total / limit) : null,
+      // Cursor for next page — null means no more pages
+      nextCursor,
     };
+    await this.cache.set(cacheKey, result, CacheService.TTL.PRODUCT_LIST);
+    return result;
   }
 
   async findBySlug(slug: string) {
-    const product = await this.prisma.product.findUnique({
-      where: { slug },
-      include: {
-        ...this.buildInclude(),
-        compatibilities: {
-          include: { vehicleModel: { include: { make: true } } },
-        },
+    return this.cache.wrap(
+      `products:slug:${slug}`,
+      async () => {
+        const product = await this.prisma.product.findUnique({
+          where: { slug },
+          include: {
+            ...this.buildInclude(),
+            compatibilities: {
+              include: { vehicleModel: { include: { make: true } } },
+            },
+          },
+        });
+        if (!product) return null;
+        return this.serialize(product);
       },
-    });
-    if (!product) return null;
-    return this.serialize(product);
+      CacheService.TTL.PRODUCT_SLUG,
+    );
+  }
+
+  /** Call after any admin write to this product to purge stale cache. */
+  async invalidateProduct(slug: string) {
+    await Promise.all([
+      this.cache.del(`products:slug:${slug}`),
+      this.cache.delPattern('products:list:*'),
+      this.cache.delPattern('products:best-sellers:*'),
+      this.cache.delPattern('products:new:*'),
+      this.cache.delPattern('products:facets:*'),
+    ]);
   }
 
   async findBestSellers(limit = 8) {
+    return this.cache.wrap(
+      `products:best-sellers:${limit}`,
+      () => this._findBestSellers(limit),
+      CacheService.TTL.BEST_SELLERS,
+    );
+  }
+
+  private async _findBestSellers(limit = 8) {
     const ninetyDaysAgo = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000);
 
     const topProductIds: string[] = [];
@@ -281,13 +360,19 @@ export class ProductsService {
   }
 
   async findNew(limit = 8) {
-    const products = await this.prisma.product.findMany({
-      where: { isPublished: true },
-      include: this.buildInclude(),
-      take: limit,
-      orderBy: { createdAt: 'desc' },
-    });
-    return products.map(this.serialize);
+    return this.cache.wrap(
+      `products:new:${limit}`,
+      async () => {
+        const products = await this.prisma.product.findMany({
+          where: { isPublished: true },
+          include: this.buildInclude(),
+          take: limit,
+          orderBy: { createdAt: 'desc' },
+        });
+        return products.map(this.serialize);
+      },
+      CacheService.TTL.NEW_ARRIVALS,
+    );
   }
 
   async findRelated(id: string, limit = 6) {
@@ -310,6 +395,15 @@ export class ProductsService {
   }
 
   async getFacets(filters: ProductFilters) {
+    const cacheKey = `products:facets:${JSON.stringify({ cat: filters.categorySlug, search: filters.search })}`;
+    return this.cache.wrap(
+      cacheKey,
+      () => this._getFacets(filters),
+      CacheService.TTL.FACETS,
+    );
+  }
+
+  private async _getFacets(filters: ProductFilters) {
     const where: Prisma.ProductWhereInput = { isPublished: true };
     if (filters.categorySlug) {
       const categoryIds = await this.resolveCategoryIds(filters.categorySlug);

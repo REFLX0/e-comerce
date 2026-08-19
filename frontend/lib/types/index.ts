@@ -262,7 +262,9 @@ export interface PaginatedResponse<T> {
   total: number
   page: number
   limit: number
-  totalPages: number
+  totalPages: number | null
+  /** Keyset cursor for the next page. null = no more pages. */
+  nextCursor: string | null
 }
 
 export interface ApiError {
@@ -314,4 +316,6 @@ export interface ProductFilters {
   sortBy?: 'relevance' | 'price_asc' | 'price_desc' | 'newest' | 'rating'
   page?: number
   limit?: number
+  /** Cursor for keyset pagination (returned as nextCursor from previous response) */
+  cursor?: string
 }
