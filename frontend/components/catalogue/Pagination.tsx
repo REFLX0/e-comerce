@@ -1,7 +1,7 @@
 "use client"
 
-import { useRouter } from '@/i18n/routing'
-import { usePathname, useSearchParams } from 'next/navigation'
+import { usePathname, useRouter } from '@/i18n/routing'
+import { useSearchParams } from 'next/navigation'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 
 interface Props {

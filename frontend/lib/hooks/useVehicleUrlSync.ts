@@ -1,8 +1,8 @@
 'use client'
 
 import { useEffect } from 'react'
-import { usePathname, useSearchParams } from 'next/navigation'
-import { useRouter } from '@/i18n/routing'
+import { useSearchParams } from 'next/navigation'
+import { usePathname, useRouter } from '@/i18n/routing'
 import { useVehicleStore } from '@/lib/store/vehicle.store'
 
 const VEHICLE_PARAM_KEYS = ['make', 'model', 'engine']

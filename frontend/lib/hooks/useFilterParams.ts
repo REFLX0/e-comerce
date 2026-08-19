@@ -1,8 +1,8 @@
 'use client'
 
 import { useCallback, useMemo } from 'react'
-import { usePathname, useSearchParams } from 'next/navigation'
-import { useRouter } from '@/i18n/routing'
+import { useSearchParams } from 'next/navigation'
+import { usePathname, useRouter } from '@/i18n/routing'
 
 /**
  * Keys that are read from the URL but are not "filters" for the purposes

@@ -1,7 +1,7 @@
 "use client"
 
-import { useRouter } from '@/i18n/routing'
-import { usePathname, useSearchParams } from 'next/navigation'
+import { usePathname, useRouter } from '@/i18n/routing'
+import { useSearchParams } from 'next/navigation'
 import { ArrowDownUp } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
