@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useState } from 'react'
-import Link from 'next/link'
+import { Link } from '@/i18n/routing'
 import { AlertCircle, RefreshCw, Home } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 
 export default function Error({
   error,
@@ -11,6 +12,8 @@ export default function Error({
   error: Error & { digest?: string }
   reset: () => void
 }) {
+  const t = useTranslations('Common')
+  const notFoundT = useTranslations('NotFound')
   const [requestId, setRequestId] = useState<string | null>(null)
 
   useEffect(() => {
@@ -53,17 +56,16 @@ export default function Error({
 
         {/* Copy */}
         <h1 className="font-display text-brand-primary mb-4 text-3xl font-bold tracking-tight sm:text-4xl">
-          Une erreur inattendue s&apos;est produite
+          {t('errorTitle')}
         </h1>
         <p className="mx-auto mb-2 max-w-md text-base leading-relaxed text-gray-500">
-          Quelque chose s&apos;est mal passé de notre côté. Notre équipe a été
-          notifiée automatiquement et travaille à résoudre le problème.
+          {t('errorDesc')}
         </p>
         <p className="mb-10 text-sm text-gray-400">
-          Veuillez réessayer ou revenir à l&apos;accueil.
+          {t('errorHint')}
           {(error.digest || requestId) && (
             <span className="text-brand-primary/40 mt-2 block font-mono text-xs">
-              Réf: {error.digest} {requestId ? ` / Req: ${requestId.slice(0,8)}` : ''}
+              {t('refPrefix')} {error.digest} {requestId ? ` / ${t('reqPrefix')} ${requestId.slice(0,8)}` : ''}
             </span>
           )}
         </p>
@@ -76,21 +78,21 @@ export default function Error({
             type="button"
           >
             <RefreshCw size={16} />
-            Réessayer
+            {t('retry')}
           </button>
           <Link
             href="/"
             className="border-brand-primary/20 text-brand-primary hover:bg-brand-primary/5 inline-flex items-center gap-2 rounded-full border px-6 py-3 text-sm font-semibold transition-all duration-200 active:scale-[0.98]"
           >
             <Home size={16} />
-            Retour à l&apos;accueil
+            {notFoundT('goHome')}
           </Link>
         </div>
 
         {/* Status indicator */}
         <div className="mt-12 flex items-center justify-center gap-2">
           <div className="h-2 w-2 animate-pulse rounded-full bg-orange-400" />
-          <p className="text-xs text-gray-400">Nos équipes ont été alertées</p>
+          <p className="text-xs text-gray-400">{t('teamsNotified')}</p>
         </div>
       </div>
     </main>

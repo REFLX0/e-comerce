@@ -1,10 +1,13 @@
 "use client";
 
 import { CheckCircle, Package, ArrowRight } from 'lucide-react'
-import Link from 'next/link'
+import { Link } from '@/i18n/routing'
 import { useSearchParams } from 'next/navigation'
+import { useLocale, useTranslations } from 'next-intl'
 
 export default function CheckoutSuccessPage() {
+  const t = useTranslations('Checkout')
+  const locale = useLocale()
   const searchParams = useSearchParams()
   const orderId = searchParams.get('orderId')
 
@@ -16,33 +19,32 @@ export default function CheckoutSuccessPage() {
         </div>
 
         <h1 className="font-display text-brand-primary mb-4 text-3xl font-bold md:text-4xl">
-          Commande Validée !
+          {t('title')}
         </h1>
 
         <p className="mx-auto mb-8 max-w-lg text-lg text-gray-600">
-          Merci pour votre confiance. Votre commande a été enregistrée avec succès et sera traitée
-          dans les plus brefs délais.
+          {t('thanks')}
         </p>
 
         <div className="bg-brand-surface mx-auto mb-10 flex max-w-sm items-center justify-center gap-4 rounded-xl p-6">
           <Package className="text-brand-primary" size={24} />
           <div className="text-left">
-            <p className="text-sm text-gray-500">Numéro de commande</p>
+            <p className="text-sm text-gray-500">{t('orderNumber')}</p>
             <p className="text-brand-primary text-lg font-bold">
-              {orderId || 'En cours de génération'}
+              {orderId || t('generating')}
             </p>
           </div>
         </div>
 
         <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
           <Link href="/compte/commandes" className="btn-secondary w-full sm:w-auto">
-            Suivre ma commande
+            {t('trackOrder')}
           </Link>
           <Link
             href="/catalogue"
             className="btn-primary flex w-full items-center justify-center gap-2 sm:w-auto"
           >
-            Continuer mes achats
+            {t('continueShopping')}
             <ArrowRight size={18} />
           </Link>
         </div>

@@ -27,10 +27,10 @@ export function CartSummary() {
           {t('emptyCart')}
         </h2>
         <p className="mx-auto mb-8 max-w-md text-gray-500">
-          Découvrez notre catalogue et trouvez l'huile idéale pour votre moteur.
+          {tCart('emptyCartDescription')}
         </p>
         <Link href="/catalogue" className="btn-primary inline-flex">
-          Parcourir le catalogue
+          {tCart('viewCatalog')}
         </Link>
       </div>
     )
@@ -41,7 +41,7 @@ export function CartSummary() {
       {/* Cart Items */}
       <div className="border-brand-surface-dark flex-1 rounded-2xl border bg-white p-6 shadow-sm">
         <h2 className="font-display text-brand-primary mb-6 border-b border-gray-100 pb-4 text-xl font-bold">
-          {t('cartDetail')} ({items.length} produit{items.length > 1 ? 's' : ''})
+          {t('cartDetail')} ({tCart('itemsLabel', { count: items.length })})
         </h2>
 
         <div className="space-y-6">
@@ -69,12 +69,12 @@ export function CartSummary() {
                     <h3 className="text-brand-primary hover:text-brand-primary/70 font-semibold transition-colors">
                       <Link href={`/produit/${item.product.slug}`}>{item.product.name}</Link>
                     </h3>
-                    <p className="mt-1 text-sm text-gray-500">Volume : {item.variant.volume}</p>
+                    <p className="mt-1 text-sm text-gray-500">{tCart('volume', { volume: item.variant.volume })}</p>
                   </div>
                   <button
                     onClick={() => removeItem(item.variantId)}
                     className="-mr-2 p-2 text-gray-400 transition-colors hover:text-red-500"
-                    title="Supprimer"
+                    title={tCart('remove')}
                   >
                     <Trash2 size={20} />
                   </button>
@@ -88,7 +88,7 @@ export function CartSummary() {
                       }}
                       disabled={item.quantity <= 1}
                       className="hover:text-brand-primary flex h-8 w-8 items-center justify-center text-gray-500 disabled:cursor-not-allowed disabled:opacity-30"
-                      aria-label="Diminuer la quantité"
+                      aria-label={tCart('decreaseQty')}
                     >
                       <Minus size={16} />
                     </button>
@@ -99,7 +99,7 @@ export function CartSummary() {
                       }}
                       disabled={item.quantity >= item.variant.stock}
                       className="hover:text-brand-primary flex h-8 w-8 items-center justify-center text-gray-500 disabled:cursor-not-allowed disabled:opacity-30"
-                      aria-label="Augmenter la quantité"
+                      aria-label={tCart('increaseQty')}
                     >
                       <Plus size={16} />
                     </button>
@@ -109,7 +109,7 @@ export function CartSummary() {
                       {formatPrice(item.variant.priceTTC * item.quantity)}
                     </div>
                     <div className="text-xs text-gray-400">
-                      {formatPrice(item.variant.priceTTC)} / unité
+                      {tCart('perUnit', { price: formatPrice(item.variant.priceTTC) })}
                     </div>
                   </div>
                 </div>
@@ -126,7 +126,7 @@ export function CartSummary() {
 
           <div className="mb-6 space-y-4">
             <div className="flex justify-between text-sm text-gray-600">
-              <span>Total TTC</span>
+              <span>{tCart('totalTTC')}</span>
               <span>{formatPrice(totalTTC)}</span>
             </div>
             <div className="flex justify-between text-sm text-gray-600">
@@ -143,7 +143,7 @@ export function CartSummary() {
             <CrossSellSuggestions variant="sidebar" />
 
             <div className="flex items-center justify-between border-t border-gray-100 pt-4">
-              <span className="text-brand-primary font-bold">Total</span>
+              <span className="text-brand-primary font-bold">{tCart('total')}</span>
               <span className="font-display text-brand-primary text-2xl font-bold">
                 {formatPrice(totalTTC)}
               </span>
@@ -162,7 +162,7 @@ export function CartSummary() {
           </Link>
 
           <div className="mt-4 flex items-center justify-center gap-2 text-xs text-gray-400">
-            <span>🔒</span> Paiement sécurisé à la livraison
+            <span>🔒</span> {t('securePayment')}
           </div>
         </div>
       </div>

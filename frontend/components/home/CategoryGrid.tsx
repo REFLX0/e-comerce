@@ -5,6 +5,7 @@ import { useQuery } from '@tanstack/react-query'
 import { categoriesApi } from '@/lib/api/categories'
 import { Link } from '@/i18n/routing'
 import Image from 'next/image'
+import { useTranslations } from 'next-intl'
 import {
   ArrowRight,
   Droplets, Car, Gauge, CircleDot, Thermometer,
@@ -21,17 +22,17 @@ const LOCAL_CATEGORY_IMAGES: Record<string, string> = {
   'marine':         'https://images.unsplash.com/photo-1569263979104-865ab7cd8d13?q=80&w=600',
 }
 
-const CATEGORY_META: Record<string, { icon: React.ElementType; color: string; bg: string; desc: string }> = {
-  'huiles-moteur':        { icon: Droplets,     color: 'text-amber-600',   bg: 'bg-amber-50',   desc: 'Haute performance, toutes viscosités' },
+const CATEGORY_META: Record<string, { icon: React.ElementType; color: string; bg: string; desc?: string; descKey?: string }> = {
+  'huiles-moteur':        { icon: Droplets,     color: 'text-amber-600',   bg: 'bg-amber-50',   descKey: 'catOilDesc' },
   'automobile':           { icon: Car,          color: 'text-blue-600',    bg: 'bg-blue-50',    desc: 'Voitures de tourisme & SUV' },
-  'transmission':         { icon: Gauge,        color: 'text-cyan-600',    bg: 'bg-cyan-50',    desc: 'Boîtes manuelles & automatiques' },
-  'hydraulique':          { icon: CircleDot,    color: 'text-sky-600',     bg: 'bg-sky-50',     desc: 'Systèmes hydrauliques industriels' },
+  'transmission':         { icon: Gauge,        color: 'text-cyan-600',    bg: 'bg-cyan-50',    descKey: 'catTransmissionDesc' },
+  'hydraulique':          { icon: CircleDot,    color: 'text-sky-600',     bg: 'bg-sky-50',     descKey: 'catHydraulicDesc' },
   'graisses':             { icon: Disc3,        color: 'text-yellow-600',  bg: 'bg-yellow-50',  desc: 'Protection maximale' },
   'refroidissement':      { icon: Thermometer,  color: 'text-teal-600',    bg: 'bg-teal-50',    desc: 'Liquides de refroidissement' },
-  'frein':                { icon: CircleDot,    color: 'text-red-600',     bg: 'bg-red-50',     desc: 'Sécurité optimale' },
+  'frein':                { icon: CircleDot,    color: 'text-red-600',     bg: 'bg-red-50',     descKey: 'catBrakeDesc' },
   'moto-karting':         { icon: Bike,         color: 'text-orange-600',  bg: 'bg-orange-50',  desc: '2 roues & scooters' },
   'poids-lourd-agricole': { icon: Tractor,      color: 'text-green-600',   bg: 'bg-green-50',   desc: 'Camions & engins agricoles' },
-  'filtres':              { icon: Filter,       color: 'text-purple-600',  bg: 'bg-purple-50',  desc: 'Tous types de filtration' },
+  'filtres':              { icon: Filter,       color: 'text-purple-600',  bg: 'bg-purple-50',  descKey: 'catFiltersDesc' },
   'additifs':             { icon: FlaskConical, color: 'text-pink-600',    bg: 'bg-pink-50',    desc: 'Traitements & entretien moteur' },
 }
 
@@ -75,6 +76,7 @@ export function CategoryGrid() {
     queryKey: ['categories-all'],
     queryFn: categoriesApi.getAll,
   })
+  const t = useTranslations('Home')
 
   // Show up to 6 root categories
   const roots = categories?.filter((c) => !c.parentId)?.slice(0, 6) ?? []
@@ -102,7 +104,7 @@ export function CategoryGrid() {
             Notre catalogue
           </p>
           <h2 className="text-3xl font-black uppercase tracking-tight text-brand-primary md:text-4xl">
-            Acheter par catégorie
+            {t('shopByCategory')}
           </h2>
           <p className="mt-3 text-sm text-gray-500">
             Trouvez exactement ce qu&apos;il vous faut
@@ -131,9 +133,9 @@ export function CategoryGrid() {
                   <h3 className="text-xs font-bold leading-tight text-gray-800 group-hover:text-brand-accent transition-colors">
                     {cat.name}
                   </h3>
-                  {meta?.desc && (
+                  {(meta?.descKey || meta?.desc) && (
                     <p className="mt-1 text-[10px] text-gray-400 leading-tight line-clamp-2">
-                      {meta.desc}
+                      {meta?.descKey ? t(meta.descKey) : meta.desc}
                     </p>
                   )}
                 </div>
@@ -148,7 +150,7 @@ export function CategoryGrid() {
             href="/catalogue"
             className="inline-flex items-center gap-2 rounded-lg border-2 border-brand-primary px-8 py-3 text-sm font-bold uppercase tracking-widest text-brand-primary transition-all duration-200 hover:bg-brand-primary hover:text-white"
           >
-            Parcourir toutes les catégories
+            {t('explore')}
             <ArrowRight size={16} />
           </Link>
         </div>

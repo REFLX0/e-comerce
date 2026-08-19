@@ -1,10 +1,14 @@
 import { Suspense } from 'react'
+import { getTranslations } from 'next-intl/server'
 import LoginFormWrapper from '@/components/auth/LoginFormWrapper'
 import { LoginSkeleton } from '@/components/auth/LoginSkeleton'
 
-export const metadata = {
-  title: 'Connexion | specpart',
-  description: 'Connectez-vous pour accéder à votre espace specpart',
+export async function generateMetadata() {
+  const t = await getTranslations('Auth')
+  return {
+    title: `${t('login')} | specpart`,
+    description: t('loginMetaDesc'),
+  }
 }
 
 export default function LoginPage() {

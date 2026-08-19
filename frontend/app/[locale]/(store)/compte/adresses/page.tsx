@@ -4,14 +4,16 @@ import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { addressesApi } from '@/lib/api/addresses'
 import { MapPin, Plus, Trash2, Home, Briefcase } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
 export default function AddressesPage() {
-    const queryClient = useQueryClient()
+  const t = useTranslations('Account')
+  const queryClient = useQueryClient()
   const [showForm, setShowForm] = useState(false)
   
   const [formData, setFormData] = useState({
-    name: 'Domicile',
+    name: t('home'),
     street: '',
     city: '',
     state: '',
@@ -32,45 +34,45 @@ export default function AddressesPage() {
     mutationFn: (data: any) => addressesApi.create(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['my-addresses'] })
-      toast.success('Adresse ajoutée')
+      toast.success(t('addressAdded'))
       setShowForm(false)
-      setFormData({ name: 'Domicile', street: '', city: '', state: '', zipCode: '', country: 'Tunisie', isDefault: false })
+      setFormData({ name: t('home'), street: '', city: '', state: '', zipCode: '', country: 'Tunisie', isDefault: false })
     },
-    onError: () => toast.error('Erreur lors de l\'ajout'),
+    onError: () => toast.error(t('addressAddError')),
   })
 
   const deleteMutation = useMutation({
     mutationFn: (id: string) => addressesApi.delete(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['my-addresses'] })
-      toast.success('Adresse supprimée')
+      toast.success(t('addressRemoved'))
     },
-    onError: () => toast.error('Erreur lors de la suppression'),
+    onError: () => toast.error(t('addressRemoveError')),
   })
 
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-brand-primary">Carnet d'adresses</h1>
-          <p className="text-sm text-gray-500">Gérez vos adresses de livraison et facturation</p>
+          <h1 className="text-2xl font-bold text-brand-primary">{t('myAddresses')}</h1>
+          <p className="text-sm text-gray-500">{t('myAddressesDesc')}</p>
         </div>
         {!showForm && (
           <button
             onClick={() => setShowForm(true)}
             className="flex items-center gap-2 rounded-xl bg-brand-primary px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-primary-light transition-colors"
           >
-            <Plus size={16} /> Ajouter une adresse
+            <Plus size={16} /> {t('addAddress')}
           </button>
         )}
       </div>
 
       {showForm ? (
         <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm max-w-2xl">
-          <h2 className="mb-4 text-lg font-bold text-brand-primary">Nouvelle adresse</h2>
+          <h2 className="mb-4 text-lg font-bold text-brand-primary">{t('newAddress')}</h2>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="sm:col-span-2">
-              <label className="mb-1.5 block text-sm font-medium text-gray-700">Nom de l'adresse (ex: Domicile, Bureau)</label>
+              <label className="mb-1.5 block text-sm font-medium text-gray-700">{t('addressNameLabel')}</label>
               <input
                 type="text"
                 value={formData.name}
@@ -79,7 +81,7 @@ export default function AddressesPage() {
               />
             </div>
             <div className="sm:col-span-2">
-              <label className="mb-1.5 block text-sm font-medium text-gray-700">Adresse complète</label>
+              <label className="mb-1.5 block text-sm font-medium text-gray-700">{t('fullAddress')}</label>
               <input
                 type="text"
                 value={formData.street}
@@ -89,7 +91,7 @@ export default function AddressesPage() {
               />
             </div>
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-gray-700">Ville</label>
+              <label className="mb-1.5 block text-sm font-medium text-gray-700">{t('city')}</label>
               <input
                 type="text"
                 value={formData.city}
@@ -98,7 +100,7 @@ export default function AddressesPage() {
               />
             </div>
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-gray-700">Code postal</label>
+              <label className="mb-1.5 block text-sm font-medium text-gray-700">{t('postalCode')}</label>
               <input
                 type="text"
                 value={formData.zipCode}
@@ -115,7 +117,7 @@ export default function AddressesPage() {
                 className="h-4 w-4 rounded border-gray-300 text-brand-primary focus:ring-brand-primary/30"
               />
               <label htmlFor="isDefault" className="text-sm font-medium text-gray-700">
-                Définir comme adresse par défaut
+                {t('setDefaultAddress')}
               </label>
             </div>
           </div>
@@ -124,32 +126,32 @@ export default function AddressesPage() {
               onClick={() => setShowForm(false)}
               className="rounded-xl px-4 py-2 text-sm font-semibold text-gray-500 hover:bg-gray-50 transition-colors"
             >
-              Annuler
+              {t('cancel')}
             </button>
             <button
               onClick={() => createMutation.mutate(formData)}
               disabled={createMutation.isPending || !formData.street || !formData.city}
               className="rounded-xl bg-brand-primary px-4 py-2 text-sm font-semibold text-white hover:bg-brand-primary-light transition-colors disabled:opacity-50"
             >
-              Enregistrer l'adresse
+              {t('saveAddress')}
             </button>
           </div>
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {isLoading ? (
-            <div className="col-span-full py-12 text-center text-gray-400">Chargement...</div>
+            <div className="col-span-full py-12 text-center text-gray-400">{t('loading')}</div>
           ) : addresses.length === 0 ? (
             <div className="col-span-full rounded-2xl border-2 border-dashed border-gray-200 py-12 text-center">
               <MapPin size={40} className="mx-auto mb-3 text-gray-200" />
-              <p className="text-sm font-medium text-gray-500">Vous n'avez pas encore d'adresse</p>
+              <p className="text-sm font-medium text-gray-500">{t('noAddresses')}</p>
             </div>
           ) : (
             addresses.map((address: any) => (
               <div key={address.id} className="relative rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
                 {address.isDefault && (
                   <span className="absolute right-4 top-4 rounded bg-green-100 px-2 py-0.5 text-[10px] font-bold uppercase text-green-700">
-                    Défaut
+                    {t('default')}
                   </span>
                 )}
                 <div className="flex items-center gap-2 mb-3 text-brand-primary">
@@ -178,4 +180,3 @@ export default function AddressesPage() {
     </div>
   )
 }
-

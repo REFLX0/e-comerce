@@ -33,7 +33,7 @@ export function HeroBanner() {
           </h1>
 
           <p className="mt-6 max-w-lg text-base leading-relaxed text-white/70">
-            Pièces auto de qualité premium pour des performances maximales et une fiabilité à toute épreuve.
+            {t('heroSubtitle')}
           </p>
 
           {/* CTAs */}
@@ -76,7 +76,7 @@ export function HeroBanner() {
               <Truck className="text-brand-accent h-6 w-6" strokeWidth={1.5} />
               <div>
                 <p className="text-sm font-black text-white leading-tight">24H</p>
-                <p className="text-[10px] text-white/60 uppercase tracking-widest">Livraison</p>
+                <p className="text-[10px] text-white/60 uppercase tracking-widest">{t('deliveryEyebrow')}</p>
               </div>
             </div>
             

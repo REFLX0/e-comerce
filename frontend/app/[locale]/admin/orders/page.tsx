@@ -4,27 +4,28 @@ import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { adminApi } from '@/lib/api/admin'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
 import { toast } from 'sonner'
+import { useLocale, useTranslations } from 'next-intl'
 import {
   Search, Download, Clock, CheckCircle2, Truck,
-  XCircle, Filter, ChevronDown, Package, Edit2, Eye, AlertTriangle, Printer, PackageX
+  XCircle, Filter, Package, Eye, AlertTriangle, Printer, PackageX
 } from 'lucide-react'
 import { downloadOrderPdf } from '@/lib/api/admin'
 
-const STATUS_CONFIG = {
-  PENDING:   { label: 'En attente', icon: Clock,        cls: 'text-yellow-600 bg-yellow-50',     border: 'border-yellow-100' },
-  CONFIRMED: { label: 'Confirmée',  icon: CheckCircle2, cls: 'text-blue-600 bg-blue-50',         border: 'border-blue-100' },
-  SHIPPED:   { label: 'Expédiée',   icon: Truck,        cls: 'text-brand-primary bg-brand-primary/10', border: 'border-brand-primary/20' },
-  DELIVERED: { label: 'Livrée',     icon: CheckCircle2, cls: 'text-green-600 bg-green-50',       border: 'border-green-100' },
-  CANCELLED: { label: 'Annulée',    icon: XCircle,      cls: 'text-red-600 bg-red-50',           border: 'border-red-100' },
-  RETURNED:  { label: 'En retour',  icon: PackageX,     cls: 'text-orange-600 bg-orange-50',     border: 'border-orange-100' }
-}
-
 export default function AdminOrdersPage() {
-  const pathname = usePathname()
-  const locale = pathname?.split('/')[1] === 'en' ? 'en' : 'fr'
+  const t = useTranslations('Admin')
+  const locale = useLocale()
   const queryClient = useQueryClient()
+
+  const STATUS_CONFIG = {
+    PENDING:   { labelKey: 'statusPending', icon: Clock,        cls: 'text-yellow-600 bg-yellow-50',     border: 'border-yellow-100' },
+    CONFIRMED: { labelKey: 'statusConfirmed', icon: CheckCircle2, cls: 'text-blue-600 bg-blue-50',         border: 'border-blue-100' },
+    SHIPPED:   { labelKey: 'statusShipped', icon: Truck,        cls: 'text-brand-primary bg-brand-primary/10', border: 'border-brand-primary/20' },
+    DELIVERED: { labelKey: 'statusDelivered', icon: CheckCircle2, cls: 'text-green-600 bg-green-50',       border: 'border-green-100' },
+    CANCELLED: { labelKey: 'statusCancelled', icon: XCircle,      cls: 'text-red-600 bg-red-50',           border: 'border-red-100' },
+    RETURNED:  { labelKey: 'statusReturned', icon: PackageX,     cls: 'text-orange-600 bg-orange-50',     border: 'border-orange-100' }
+  }
+
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState<string>('ALL')
   const [selected, setSelected] = useState<string[]>([])
@@ -52,10 +53,10 @@ export default function AdminOrdersPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-orders'] })
       queryClient.invalidateQueries({ queryKey: ['admin-dashboard'] })
-      toast.success('Statut mis à jour')
+      toast.success(t('statusUpdated'))
       setSelected([])
     },
-    onError: () => toast.error('Erreur lors de la mise à jour'),
+    onError: () => toast.error(t('updateError')),
   })
 
   if (isError) {
@@ -63,8 +64,8 @@ export default function AdminOrdersPage() {
       <div className="p-4 sm:p-6">
         <div className="rounded-2xl border border-red-100 bg-red-50 p-6 text-center">
           <AlertTriangle size={32} className="mx-auto mb-3 text-red-400" />
-          <p className="text-sm font-semibold text-red-700">Erreur de chargement des commandes</p>
-          <button onClick={() => refetch()} className="mt-3 rounded-xl bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700">Réessayer</button>
+          <p className="text-sm font-semibold text-red-700">{t('ordersLoadError')}</p>
+          <button onClick={() => refetch()} className="mt-3 rounded-xl bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700">{t('retry')}</button>
         </div>
       </div>
     )
@@ -92,22 +93,24 @@ export default function AdminOrdersPage() {
       const res = await adminApi.exportOrders(statusFilter === 'ALL' ? undefined : statusFilter); const csv = (res as any).csv
       const blob = new Blob([csv as any], { type: 'text/csv;charset=utf-8;' })
       const url = URL.createObjectURL(blob)
-      const a = document.createElement('a'); a.href = url; a.download = `commandes-${new Date().toISOString().split('T')[0]}.csv`
+      const a = document.createElement('a'); a.href = url; a.download = `orders-${new Date().toISOString().split('T')[0]}.csv`
       a.click(); URL.revokeObjectURL(url)
-      toast.success('Export CSV téléchargé')
-    } catch { toast.error("Erreur lors de l'export") }
+      toast.success(t('csvDownloaded'))
+    } catch { toast.error(t('exportError')) }
   }
+
+  const statusLabel = (key: string) => t(STATUS_CONFIG[key as keyof typeof STATUS_CONFIG]?.labelKey ?? 'statusPending')
 
   return (
     <div className="p-4 sm:p-6 space-y-5">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-brand-primary">Commandes</h1>
-          <p className="text-sm text-gray-500">{orders.length} commandes trouvées</p>
+          <h1 className="text-2xl font-bold text-brand-primary">{t('orders')}</h1>
+          <p className="text-sm text-gray-500">{t('ordersFound', { count: orders.length })}</p>
         </div>
         <div className="flex gap-2">
           <button onClick={exportCsv} className="flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">
-            <Download size={15} /> Exporter CSV
+            <Download size={15} /> {t('exportCsv')}
           </button>
         </div>
       </div>
@@ -116,19 +119,19 @@ export default function AdminOrdersPage() {
         {['ALL', ...Object.keys(STATUS_CONFIG)].map((s) => (
           <button key={s} onClick={() => setStatusFilter(s)}
             className={`rounded-lg px-4 py-2 text-sm font-semibold whitespace-nowrap transition-all ${statusFilter === s ? 'bg-brand-primary text-white shadow-sm' : 'text-gray-500 hover:text-gray-800'}`}>
-            {s === 'ALL' ? 'Toutes les commandes' : STATUS_CONFIG[s as keyof typeof STATUS_CONFIG].label}
+            {s === 'ALL' ? t('allOrders') : statusLabel(s)}
           </button>
         ))}
       </div>
 
       {selected.length > 0 && (
         <div className="flex flex-wrap items-center gap-2 rounded-xl bg-brand-primary p-3 text-sm text-white">
-          <span className="font-semibold">{selected.length} sélectionnée(s)</span>
+          <span className="font-semibold">{t('selectedCount', { count: selected.length })}</span>
           <div className="flex flex-wrap gap-2 ml-auto">
-            <button onClick={() => bulkUpdateStatus('CONFIRMED')} className="rounded-lg bg-blue-500/20 px-3 py-1.5 font-medium hover:bg-blue-500/40 text-blue-200">Confirmer</button>
-            <button onClick={() => bulkUpdateStatus('SHIPPED')} className="rounded-lg bg-purple-500/20 px-3 py-1.5 font-medium hover:bg-purple-500/40 text-purple-200">Expédier</button>
-            <button onClick={() => bulkUpdateStatus('DELIVERED')} className="rounded-lg bg-green-500/20 px-3 py-1.5 font-medium hover:bg-green-500/40 text-green-200">Livrer</button>
-            <button onClick={() => setSelected([])} className="rounded-lg bg-white/10 px-3 py-1.5 font-medium hover:bg-white/20">Annuler</button>
+            <button onClick={() => bulkUpdateStatus('CONFIRMED')} className="rounded-lg bg-blue-500/20 px-3 py-1.5 font-medium hover:bg-blue-500/40 text-blue-200">{t('confirmAction')}</button>
+            <button onClick={() => bulkUpdateStatus('SHIPPED')} className="rounded-lg bg-purple-500/20 px-3 py-1.5 font-medium hover:bg-purple-500/40 text-purple-200">{t('shipAction')}</button>
+            <button onClick={() => bulkUpdateStatus('DELIVERED')} className="rounded-lg bg-green-500/20 px-3 py-1.5 font-medium hover:bg-green-500/40 text-green-200">{t('deliverAction')}</button>
+            <button onClick={() => setSelected([])} className="rounded-lg bg-white/10 px-3 py-1.5 font-medium hover:bg-white/20">{t('cancelAction')}</button>
           </div>
         </div>
       )}
@@ -137,25 +140,25 @@ export default function AdminOrdersPage() {
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
           <input type="search" value={search} onChange={(e) => setSearch(e.target.value)}
-            placeholder="Rechercher par numéro, client..."
+            placeholder={t('searchByNumber')}
             className="w-full rounded-xl border border-gray-200 bg-white py-2.5 pr-4 pl-10 text-sm outline-none focus:border-brand-accent transition-all" />
         </div>
         <button onClick={() => setShowAdvanced(!showAdvanced)}
           className="flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">
-          <Filter size={15} /> Filtres avancés
+          <Filter size={15} /> {t('advancedFilters')}
         </button>
       </div>
 
       {showAdvanced && (
         <div className="rounded-xl border border-gray-200 bg-gray-50 p-4 space-y-3">
-          <p className="text-xs font-semibold text-gray-500 uppercase">Filtres avancés</p>
+          <p className="text-xs font-semibold text-gray-500 uppercase">{t('advancedFilters')}</p>
           <div className="flex flex-wrap gap-3">
-            <div className="space-y-1"><label className="text-xs text-gray-400">Du</label><input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} className="rounded-lg border border-gray-200 px-3 py-2 text-sm w-40" /></div>
-            <div className="space-y-1"><label className="text-xs text-gray-400">Au</label><input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} className="rounded-lg border border-gray-200 px-3 py-2 text-sm w-40" /></div>
-            <div className="space-y-1"><label className="text-xs text-gray-400">Montant min</label><input type="number" value={amountMin} onChange={e => setAmountMin(e.target.value)} placeholder="0" className="rounded-lg border border-gray-200 px-3 py-2 text-sm w-32" /></div>
-            <div className="space-y-1"><label className="text-xs text-gray-400">Montant max</label><input type="number" value={amountMax} onChange={e => setAmountMax(e.target.value)} placeholder="0" className="rounded-lg border border-gray-200 px-3 py-2 text-sm w-32" /></div>
+            <div className="space-y-1"><label className="text-xs text-gray-400">{t('fromDate')}</label><input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} className="rounded-lg border border-gray-200 px-3 py-2 text-sm w-40" /></div>
+            <div className="space-y-1"><label className="text-xs text-gray-400">{t('toDate')}</label><input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} className="rounded-lg border border-gray-200 px-3 py-2 text-sm w-40" /></div>
+            <div className="space-y-1"><label className="text-xs text-gray-400">{t('minAmount')}</label><input type="number" value={amountMin} onChange={e => setAmountMin(e.target.value)} placeholder="0" className="rounded-lg border border-gray-200 px-3 py-2 text-sm w-32" /></div>
+            <div className="space-y-1"><label className="text-xs text-gray-400">{t('maxAmount')}</label><input type="number" value={amountMax} onChange={e => setAmountMax(e.target.value)} placeholder="0" className="rounded-lg border border-gray-200 px-3 py-2 text-sm w-32" /></div>
             {(dateFrom || dateTo || amountMin || amountMax) && (
-              <button onClick={() => { setDateFrom(''); setDateTo(''); setAmountMin(''); setAmountMax('') }} className="self-end rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs font-medium text-gray-500 hover:bg-gray-100">Réinitialiser</button>
+              <button onClick={() => { setDateFrom(''); setDateTo(''); setAmountMin(''); setAmountMax('') }} className="self-end rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs font-medium text-gray-500 hover:bg-gray-100">{t('resetFilters')}</button>
             )}
           </div>
         </div>
@@ -171,21 +174,21 @@ export default function AdminOrdersPage() {
                     onChange={(e) => setSelected(e.target.checked ? filtered.map((o: any) => o.id) : [])}
                     checked={selected.length === filtered.length && filtered.length > 0} />
                 </th>
-                <th className="px-2 py-3 text-xs font-semibold text-gray-500">Commande</th>
-                <th className="px-2 py-3 text-xs font-semibold text-gray-500">Date</th>
-                <th className="px-2 py-3 text-xs font-semibold text-gray-500">Client</th>
-                <th className="px-2 py-3 text-xs font-semibold text-gray-500">Total</th>
-                <th className="px-2 py-3 text-xs font-semibold text-gray-500">Statut</th>
-                <th className="py-3 pl-2 pr-4 text-xs font-semibold text-gray-500">Actions</th>
+                <th className="px-2 py-3 text-xs font-semibold text-gray-500">{t('orderColumn')}</th>
+                <th className="px-2 py-3 text-xs font-semibold text-gray-500">{t('dateColumn')}</th>
+                <th className="px-2 py-3 text-xs font-semibold text-gray-500">{t('customerColumn')}</th>
+                <th className="px-2 py-3 text-xs font-semibold text-gray-500">{t('totalColumn')}</th>
+                <th className="px-2 py-3 text-xs font-semibold text-gray-500">{t('statusColumn')}</th>
+                <th className="py-3 pl-2 pr-4 text-xs font-semibold text-gray-500">{t('actionsColumn')}</th>
               </tr>
             </thead>
             <tbody>
               {isLoading ? (
-                <tr><td colSpan={7} className="py-8 text-center text-gray-400">Chargement...</td></tr>
+                <tr><td colSpan={7} className="py-8 text-center text-gray-400">{t('loading')}</td></tr>
               ) : filtered.length === 0 ? (
                 <tr><td colSpan={7} className="py-16 text-center">
                   <Package size={40} className="mx-auto mb-3 text-gray-200" />
-                  <p className="text-sm text-gray-400">Aucune commande trouvée</p>
+                  <p className="text-sm text-gray-400">{t('noOrders')}</p>
                 </td></tr>
               ) : filtered.map((order: any) => {
                 const s = STATUS_CONFIG[order.status as keyof typeof STATUS_CONFIG] ?? STATUS_CONFIG.PENDING
@@ -197,44 +200,44 @@ export default function AdminOrdersPage() {
                     </td>
                     <td className="px-2 py-3">
                       <p className="font-mono text-sm font-semibold text-brand-primary">#{(order.id ?? '').slice(-8).toUpperCase()}</p>
-                      <p className="text-xs text-gray-400">{order.items?.length ?? 0} articles</p>
+                      <p className="text-xs text-gray-400">{order.items?.length ?? 0} {t('itemsCount')}</p>
                     </td>
                     <td className="px-2 py-3 text-sm text-gray-500">
-                      {order.createdAt ? new Date(order.createdAt).toLocaleDateString('fr-TN') : '—'}
+                      {order.createdAt ? new Date(order.createdAt).toLocaleDateString(locale) : '—'}
                     </td>
                     <td className="px-2 py-3">
                       <p className="text-sm font-medium text-gray-800">{order.user?.firstName ? `${order.user.firstName} ${order.user.lastName}` : order.shipFullName}</p>
                     </td>
                     <td className="px-2 py-3 font-semibold text-brand-primary whitespace-nowrap">
-                      {order.totalAmount?.toLocaleString('fr-TN', { minimumFractionDigits: 2 })} TND
+                      {order.totalAmount?.toLocaleString(locale, { minimumFractionDigits: 2 })} TND
                     </td>
                     <td className="px-2 py-3">
                       <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-bold ${s.cls}`}>
-                        <s.icon size={12} /> {s.label}
+                        <s.icon size={12} /> {t(s.labelKey)}
                       </span>
                     </td>
                     <td className="py-3 pl-2 pr-4">
                       <div className="flex gap-1">
                         {order.status === 'PENDING' && (
                           <button onClick={() => updateMutation.mutate({ id: order.id, status: 'CONFIRMED' })}
-                            className="rounded-lg p-1.5 text-gray-400 hover:bg-blue-50 hover:text-blue-600" title="Confirmer">
+                            className="rounded-lg p-1.5 text-gray-400 hover:bg-blue-50 hover:text-blue-600" title={t('confirmAction')}>
                             <CheckCircle2 size={15} />
                           </button>
                         )}
                         {order.status === 'CONFIRMED' && (
                           <button onClick={() => updateMutation.mutate({ id: order.id, status: 'SHIPPED' })}
-                            className="rounded-lg p-1.5 text-gray-400 hover:bg-purple-50 hover:text-purple-600" title="Expédier">
+                            className="rounded-lg p-1.5 text-gray-400 hover:bg-purple-50 hover:text-purple-600" title={t('shipAction')}>
                             <Truck size={15} />
                           </button>
                         )}
                         <Link href={`/${locale}/admin/orders/${order.id}`}
-                          className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-700 transition-colors" title="Détails">
+                          className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-700 transition-colors" title={t('detailsAction')}>
                           <Eye size={15} />
                         </Link>
                         <button
                           onClick={() => downloadOrderPdf(order.id)}
                           className="rounded-lg p-1.5 text-gray-400 hover:bg-brand-primary/10 hover:text-brand-primary transition-colors"
-                          title="Télécharger la facture"
+                          title={t('downloadInvoiceTitle')}
                         >
                           <Printer size={15} />
                         </button>
@@ -251,11 +254,11 @@ export default function AdminOrdersPage() {
       {/* Mobile view */}
       <div className="md:hidden space-y-4">
         {isLoading ? (
-          <div className="py-8 text-center text-gray-400">Chargement...</div>
+          <div className="py-8 text-center text-gray-400">{t('loading')}</div>
         ) : filtered.length === 0 ? (
           <div className="rounded-2xl border border-gray-100 bg-white py-12 text-center shadow-sm">
             <Package size={40} className="mx-auto mb-3 text-gray-200" />
-            <p className="text-sm text-gray-400">Aucune commande trouvée</p>
+            <p className="text-sm text-gray-400">{t('noOrders')}</p>
           </div>
         ) : (
           filtered.map((order: any) => {
@@ -268,25 +271,25 @@ export default function AdminOrdersPage() {
                       checked={selected.includes(order.id)} onChange={() => toggleSelect(order.id)} />
                     <div>
                       <p className="font-mono text-sm font-bold text-brand-primary">#{(order.id ?? '').slice(-8).toUpperCase()}</p>
-                      <p className="text-xs text-gray-400">{order.items?.length ?? 0} articles</p>
+                      <p className="text-xs text-gray-400">{order.items?.length ?? 0} {t('itemsCount')}</p>
                     </div>
                   </div>
                   <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-bold ${s.cls}`}>
-                    <s.icon size={12} /> {s.label}
+                    <s.icon size={12} /> {t(s.labelKey)}
                   </span>
                 </div>
                 
                 <div className="mb-4 grid grid-cols-2 gap-4">
                   <div>
-                    <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400">Date</p>
-                    <p className="text-sm font-medium text-gray-800">{order.createdAt ? new Date(order.createdAt).toLocaleDateString('fr-TN') : '—'}</p>
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400">{t('dateColumn')}</p>
+                    <p className="text-sm font-medium text-gray-800">{order.createdAt ? new Date(order.createdAt).toLocaleDateString(locale) : '—'}</p>
                   </div>
                   <div>
-                    <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400">Total</p>
-                    <p className="text-sm font-bold text-brand-primary">{order.totalAmount?.toLocaleString('fr-TN', { minimumFractionDigits: 2 })} TND</p>
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400">{t('totalColumn')}</p>
+                    <p className="text-sm font-bold text-brand-primary">{order.totalAmount?.toLocaleString(locale, { minimumFractionDigits: 2 })} TND</p>
                   </div>
                   <div className="col-span-2">
-                    <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400">Client</p>
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400">{t('customerColumn')}</p>
                     <p className="text-sm font-medium text-gray-800">{order.user?.firstName ? `${order.user.firstName} ${order.user.lastName}` : order.shipFullName}</p>
                   </div>
                 </div>
@@ -294,24 +297,24 @@ export default function AdminOrdersPage() {
                 <div className="flex items-center gap-2 pt-2">
                   <Link href={`/${locale}/admin/orders/${order.id}`}
                     className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-gray-50 py-2.5 text-sm font-semibold text-gray-600 hover:bg-gray-100 hover:text-brand-primary transition-colors">
-                    <Eye size={16} /> Détails
+                    <Eye size={16} /> {t('detailsAction')}
                   </Link>
                   <button
                     onClick={() => downloadOrderPdf(order.id)}
                     className="flex items-center justify-center rounded-xl border border-gray-200 bg-white p-2.5 text-gray-500 hover:bg-brand-primary/10 hover:text-brand-primary hover:border-brand-primary transition-colors"
-                    title="Télécharger la facture"
+                    title={t('downloadInvoiceTitle')}
                   >
                     <Printer size={16} />
                   </button>
                   {order.status === 'PENDING' && (
                     <button onClick={() => updateMutation.mutate({ id: order.id, status: 'CONFIRMED' })}
-                      className="flex items-center justify-center rounded-xl bg-blue-50 p-2.5 text-blue-600 hover:bg-blue-100 transition-colors" title="Confirmer">
+                      className="flex items-center justify-center rounded-xl bg-blue-50 p-2.5 text-blue-600 hover:bg-blue-100 transition-colors" title={t('confirmAction')}>
                       <CheckCircle2 size={16} />
                     </button>
                   )}
                   {order.status === 'CONFIRMED' && (
                     <button onClick={() => updateMutation.mutate({ id: order.id, status: 'SHIPPED' })}
-                      className="flex items-center justify-center rounded-xl bg-purple-50 p-2.5 text-purple-600 hover:bg-purple-100 transition-colors" title="Expédier">
+                      className="flex items-center justify-center rounded-xl bg-purple-50 p-2.5 text-purple-600 hover:bg-purple-100 transition-colors" title={t('shipAction')}>
                       <Truck size={16} />
                     </button>
                   )}

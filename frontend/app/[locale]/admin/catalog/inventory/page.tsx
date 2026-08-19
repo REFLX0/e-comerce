@@ -5,6 +5,7 @@ import { useQuery } from '@tanstack/react-query'
 import { adminApi } from '@/lib/api/admin'
 import { toast } from 'sonner'
 import { Search, AlertTriangle, TrendingDown, Package, Edit2, Download } from 'lucide-react'
+import { useTranslations, useLocale } from 'next-intl'
 
 function StockBar({ qty, max = 200 }: { qty: number; max?: number }) {
   const pct = Math.min((qty / max) * 100, 100)
@@ -22,10 +23,11 @@ function StockBar({ qty, max = 200 }: { qty: number; max?: number }) {
 }
 
 function StatusTag({ qty }: { qty: number }) {
-  if (qty === 0)  return <span className="inline-flex items-center gap-1.5 rounded-full bg-red-100 px-2.5 py-1 text-xs font-bold text-red-600"><AlertTriangle size={10} /> Rupture</span>
-  if (qty <= 5)   return <span className="inline-flex items-center gap-1.5 rounded-full bg-yellow-100 px-2.5 py-1 text-xs font-bold text-yellow-600"><TrendingDown size={10} /> Critique</span>
-  if (qty <= 20)  return <span className="rounded-full bg-blue-100 px-2.5 py-1 text-xs font-bold text-blue-600">Faible</span>
-  return <span className="rounded-full bg-green-100 px-2.5 py-1 text-xs font-bold text-green-600">Normal</span>
+  const t = useTranslations('Admin')
+  if (qty === 0)  return <span className="inline-flex items-center gap-1.5 rounded-full bg-red-100 px-2.5 py-1 text-xs font-bold text-red-600"><AlertTriangle size={10} /> {t('stockOut')}</span>
+  if (qty <= 5)   return <span className="inline-flex items-center gap-1.5 rounded-full bg-yellow-100 px-2.5 py-1 text-xs font-bold text-yellow-600"><TrendingDown size={10} /> {t('stockCritical')}</span>
+  if (qty <= 20)  return <span className="rounded-full bg-blue-100 px-2.5 py-1 text-xs font-bold text-blue-600">{t('stockLow')}</span>
+  return <span className="rounded-full bg-green-100 px-2.5 py-1 text-xs font-bold text-green-600">{t('stockNormal')}</span>
 }
 
 // Inline editable qty cell
@@ -43,6 +45,7 @@ function QtyCell({
   const [editing, setEditing] = useState(false)
   const [val, setVal] = useState(qty)
   const [saving, setSaving] = useState(false)
+  const t = useTranslations('Admin')
 
   useEffect(() => {
     setVal(qty)
@@ -63,7 +66,7 @@ function QtyCell({
           onSaved()
         } catch {
           setVal(qty)
-          toast.error('Erreur lors de la mise à jour du stock')
+          toast.error(t('stockUpdateError'))
         } finally {
           setSaving(false)
         }
@@ -86,7 +89,7 @@ function QtyCell({
     <button
       onClick={() => setEditing(true)}
       className="group flex items-center gap-1.5 rounded-lg px-2 py-1 hover:bg-gray-100 transition-colors"
-      title="Cliquer pour modifier"
+      title={t('clickToEdit')}
     >
       <span className="text-sm font-semibold text-brand-primary">{val}</span>
       <Edit2 size={12} className="text-gray-300 group-hover:text-gray-500 transition-colors" />
@@ -105,6 +108,8 @@ interface InventoryItem {
 }
 
 export default function AdminInventoryPage() {
+  const t = useTranslations('Admin')
+  const locale = useLocale()
   const [search, setSearch] = useState('')
   const [filter, setFilter] = useState<'all' | 'critical' | 'rupture'>('all')
 
@@ -120,8 +125,8 @@ export default function AdminInventoryPage() {
       <div className="p-4 sm:p-6">
         <div className="rounded-2xl border border-red-100 bg-red-50 p-6 text-center">
           <AlertTriangle size={32} className="mx-auto mb-3 text-red-400" />
-          <p className="text-sm font-semibold text-red-700">Erreur de chargement des stocks</p>
-          <button onClick={() => refetch()} className="mt-3 rounded-xl bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700">Réessayer</button>
+          <p className="text-sm font-semibold text-red-700">{t('stockLoadError')}</p>
+          <button onClick={() => refetch()} className="mt-3 rounded-xl bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700">{t('retry')}</button>
         </div>
       </div>
     )
@@ -162,15 +167,15 @@ export default function AdminInventoryPage() {
       {/* Header */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-brand-primary">Inventaire</h1>
-          <p className="text-sm text-gray-500">Gérez les niveaux de stock en temps réel</p>
+          <h1 className="text-2xl font-bold text-brand-primary">{t('inventory')}</h1>
+          <p className="text-sm text-gray-500">{t('inventorySubtitle')}</p>
         </div>
         <div className="flex gap-2">
           <button onClick={() => {
-            const header = 'Produit,SKU,Volume,Prix TND,Stock,Statut\n'
+            const header = `${t('productColumn')},SKU,${t('volumeHeader')},${t('priceHeader')} TND,${t('stockEditHeader')},${t('statusHeader')}\n`
             const rows = filtered.map((item: any) =>
               [item.productName, item.sku, item.volume, (item.price ?? 0).toFixed(2), item.qty,
-                item.qty === 0 ? 'Rupture' : item.qty <= 5 ? 'Critique' : 'Normal'
+                item.qty === 0 ? t('stockOut') : item.qty <= 5 ? t('stockCritical') : t('stockNormal')
               ].join(',')
             ).join('\n')
             const blob = new Blob([header + rows], { type: 'text/csv;charset=utf-8;' })
@@ -178,7 +183,7 @@ export default function AdminInventoryPage() {
             const a = document.createElement('a'); a.href = url; a.download = `inventaire-${new Date().toISOString().split('T')[0]}.csv`
             a.click(); URL.revokeObjectURL(url)
           }} className="flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">
-            <Download size={15} /> Exporter CSV
+            <Download size={15} /> {t('exportCsv')}
           </button>
         </div>
       </div>
@@ -186,13 +191,13 @@ export default function AdminInventoryPage() {
       {/* Summary cards */}
       <div className="grid grid-cols-3 gap-3">
         {[
-          { label: 'Variantes totales', value: summary.total, color: 'bg-blue-50 text-blue-700' },
-          { label: 'Rupture de stock', value: summary.rupture, color: 'bg-red-50 text-red-700' },
-          { label: 'Stock critique (≤5)', value: summary.critical, color: 'bg-yellow-50 text-yellow-700' },
+          { labelKey: 'totalVariants', value: summary.total, color: 'bg-blue-50 text-blue-700' },
+          { labelKey: 'outOfStock', value: summary.rupture, color: 'bg-red-50 text-red-700' },
+          { labelKey: 'criticalStock', value: summary.critical, color: 'bg-yellow-50 text-yellow-700' },
         ].map((s) => (
-          <div key={s.label} className={`rounded-2xl ${s.color} p-4 text-center`}>
+          <div key={s.labelKey} className={`rounded-2xl ${s.color} p-4 text-center`}>
             <p className="text-2xl font-bold">{s.value}</p>
-            <p className="mt-0.5 text-xs font-medium">{s.label}</p>
+            <p className="mt-0.5 text-xs font-medium">{t(s.labelKey)}</p>
           </div>
         ))}
       </div>
@@ -205,15 +210,15 @@ export default function AdminInventoryPage() {
             type="search"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Produit, SKU..."
+            placeholder={t('searchProductSku')}
             className="w-full rounded-xl border border-gray-200 bg-white py-2.5 pr-4 pl-10 text-sm outline-none focus:border-brand-accent transition-all"
           />
         </div>
         <div className="flex gap-1 rounded-xl border border-gray-200 bg-white p-1">
           {([
-            { key: 'all', label: 'Tous' },
-            { key: 'rupture', label: 'Rupture' },
-            { key: 'critical', label: 'Critique' },
+            { key: 'all', labelKey: 'allFilter' },
+            { key: 'rupture', labelKey: 'rupture' },
+            { key: 'critical', labelKey: 'critical' },
           ] as const).map((f) => (
             <button
               key={f.key}
@@ -222,7 +227,7 @@ export default function AdminInventoryPage() {
                 filter === f.key ? 'bg-brand-primary text-white' : 'text-gray-500 hover:text-gray-800'
               }`}
             >
-              {f.label}
+              {t(f.labelKey)}
             </button>
           ))}
         </div>
@@ -231,7 +236,7 @@ export default function AdminInventoryPage() {
       {/* Tip - inline editing */}
       <div className="flex items-center gap-2 rounded-xl border border-blue-100 bg-blue-50 px-4 py-2.5 text-sm text-blue-600">
         <Edit2 size={14} className="shrink-0" />
-        <span>Cliquez sur un chiffre de stock pour le modifier directement sans changer de page.</span>
+        <span>{t('stockTip')}</span>
       </div>
 
       {/* Table */}
@@ -240,11 +245,11 @@ export default function AdminInventoryPage() {
           <table className="w-full">
             <thead>
               <tr className="bg-gray-50 border-b border-gray-100 text-left">
-                <th className="py-3 pl-4 pr-2 text-xs font-semibold text-gray-500">Produit / SKU</th>
-                <th className="hidden px-2 py-3 text-xs font-semibold text-gray-500 sm:table-cell">Volume</th>
-                <th className="hidden px-2 py-3 text-xs font-semibold text-gray-500 md:table-cell">Prix</th>
-                <th className="px-2 py-3 text-xs font-semibold text-gray-500">Stock (clic pour éditer)</th>
-                <th className="py-3 pl-2 pr-4 text-xs font-semibold text-gray-500">Statut</th>
+                <th className="py-3 pl-4 pr-2 text-xs font-semibold text-gray-500">{t('productSkuHeader')}</th>
+                <th className="hidden px-2 py-3 text-xs font-semibold text-gray-500 sm:table-cell">{t('volumeHeader')}</th>
+                <th className="hidden px-2 py-3 text-xs font-semibold text-gray-500 md:table-cell">{t('priceHeader')}</th>
+                <th className="px-2 py-3 text-xs font-semibold text-gray-500">{t('stockEditHeader')}</th>
+                <th className="py-3 pl-2 pr-4 text-xs font-semibold text-gray-500">{t('statusHeader')}</th>
               </tr>
             </thead>
             <tbody>
@@ -260,7 +265,7 @@ export default function AdminInventoryPage() {
                 <tr>
                   <td colSpan={5} className="py-16 text-center">
                     <Package size={40} className="mx-auto mb-3 text-gray-200" />
-                    <p className="text-sm text-gray-400">Aucun produit trouvé</p>
+                    <p className="text-sm text-gray-400">{t('noProductsFound')}</p>
                   </td>
                 </tr>
               ) : (
@@ -272,7 +277,7 @@ export default function AdminInventoryPage() {
                     </td>
                     <td className="hidden px-2 py-3 text-xs text-gray-500 sm:table-cell">{item.volume}</td>
                     <td className="hidden px-2 py-3 text-sm font-medium text-gray-700 md:table-cell whitespace-nowrap">
-                      {(item.price ?? 0).toLocaleString('fr-TN', { minimumFractionDigits: 2 })} TND
+                      {(item.price ?? 0).toLocaleString(locale, { minimumFractionDigits: 2 })} TND
                     </td>
                     <td className="px-2 py-3">
                       <div className="max-w-xs space-y-1">

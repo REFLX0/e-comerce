@@ -3,14 +3,15 @@
 import { useState, useEffect } from 'react'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { adminApi } from '@/lib/api/admin'
-import { useRouter, useParams, usePathname } from 'next/navigation'
+import { useRouter, useParams } from 'next/navigation'
 import { toast } from 'sonner'
 import { Save, ArrowLeft, Upload, X, Trash2, Plus, Info } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
+import { useLocale, useTranslations } from 'next-intl'
 
 function categoryLabel(category: any) {
-  const name = category.nameFr ?? category.name ?? 'Catégorie'
+  const name = category.nameFr ?? category.name ?? 'Category'
   return category.parent?.nameFr ? `${category.parent.nameFr} / ${name}` : name
 }
 
@@ -25,11 +26,11 @@ interface VariantForm {
 }
 
 export default function EditProductPage() {
+  const t = useTranslations('Admin')
   const router = useRouter()
   const params = useParams()
-  const pathname = usePathname()
+  const locale = useLocale()
   const id = params.id as string
-  const locale = pathname?.split('/')[1] === 'en' ? 'en' : 'fr'
   const localizedHref = (href: string) => `/${locale}${href}`
 
   const [nameFr, setNameFr] = useState('')
@@ -78,10 +79,10 @@ export default function EditProductPage() {
   const updateMutation = useMutation({
     mutationFn: (body: any) => adminApi.updateProduct(id, body),
     onSuccess: () => {
-      toast.success('Produit mis à jour avec succès')
+      toast.success(t('productUpdated'))
       router.push(localizedHref('/admin/catalog/products'))
     },
-    onError: (err: any) => toast.error(err?.message || 'Erreur lors de la mise à jour'),
+    onError: (err: any) => toast.error(err?.message || t('productUpdateError')),
   })
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -122,7 +123,7 @@ export default function EditProductPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!nameFr || !slug || !brandId || !categoryId) {
-      toast.error('Veuillez remplir tous les champs obligatoires')
+      toast.error(t('requiredFields'))
       return
     }
 
@@ -165,7 +166,7 @@ export default function EditProductPage() {
 
       updateMutation.mutate(payload)
     } catch {
-      toast.error("Erreur lors de l'upload de l'image")
+      toast.error(t('uploadError'))
       setIsUploading(false)
     }
   }
@@ -182,8 +183,8 @@ export default function EditProductPage() {
   if (!product) {
     return (
       <div className="p-4 sm:p-6 text-center py-16">
-        <h2 className="text-xl font-bold text-brand-primary mb-2">Produit introuvable</h2>
-        <Link href={localizedHref('/admin/catalog/products')} className="text-sm text-brand-accent hover:underline">Retour à la liste</Link>
+        <h2 className="text-xl font-bold text-brand-primary mb-2">{t('productNotFound')}</h2>
+        <Link href={localizedHref('/admin/catalog/products')} className="text-sm text-brand-accent hover:underline">{t('backToList')}</Link>
       </div>
     )
   }
@@ -196,7 +197,7 @@ export default function EditProductPage() {
             <ArrowLeft size={20} />
           </Link>
           <div>
-            <h1 className="text-2xl font-bold text-brand-primary">Modifier le produit</h1>
+            <h1 className="text-2xl font-bold text-brand-primary">{t('editProductTitle')}</h1>
             <p className="text-sm text-gray-500">{product.nameFr}</p>
           </div>
         </div>
@@ -205,35 +206,35 @@ export default function EditProductPage() {
       <form onSubmit={handleSubmit} className="max-w-2xl space-y-6">
         <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm space-y-5">
           <div className="space-y-1.5">
-            <label className="text-sm font-semibold text-gray-700">Nom du produit *</label>
+            <label className="text-sm font-semibold text-gray-700">{t('productNameLabel')}</label>
             <input type="text" value={nameFr} onChange={e => setNameFr(e.target.value)} className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-brand-accent transition-all" required />
           </div>
           <div className="space-y-1.5">
-            <label className="text-sm font-semibold text-gray-700">Slug *</label>
+            <label className="text-sm font-semibold text-gray-700">{t('productSlugLabel')}</label>
             <input type="text" value={slug} onChange={e => setSlug(e.target.value)} className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-brand-accent transition-all" required />
           </div>
           <div className="space-y-1.5">
-            <label className="text-sm font-semibold text-gray-700">SKU</label>
+            <label className="text-sm font-semibold text-gray-700">{t('productSkuLabel')}</label>
             <input type="text" value={sku} onChange={e => setSku(e.target.value)} className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-brand-accent transition-all" />
           </div>
           <div className="space-y-1.5">
-            <label className="text-sm font-semibold text-gray-700">Description</label>
+            <label className="text-sm font-semibold text-gray-700">{t('productDescLabel')}</label>
             <textarea value={description} onChange={e => setDescription(e.target.value)} rows={3} className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-brand-accent transition-all resize-none" />
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1.5">
-              <label className="text-sm font-semibold text-gray-700">Marque *</label>
+              <label className="text-sm font-semibold text-gray-700">{t('brandLabel')}</label>
               <select value={brandId} onChange={e => setBrandId(e.target.value)} className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-brand-accent transition-all" required>
-                <option value="">Sélectionner une marque</option>
+                <option value="">{t('selectBrand')}</option>
                 {brandsData.map((b: any) => (
                   <option key={b.id} value={b.id}>{b.name || b.nameFr}</option>
                 ))}
               </select>
             </div>
             <div className="space-y-1.5">
-              <label className="text-sm font-semibold text-gray-700">Catégorie *</label>
+              <label className="text-sm font-semibold text-gray-700">{t('categoryLabel')}</label>
               <select value={categoryId} onChange={e => setCategoryId(e.target.value)} className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-brand-accent transition-all" required>
-                <option value="">Sélectionner une catégorie</option>
+                <option value="">{t('selectCategory')}</option>
                 {categoriesData.map((c: any) => (
                   <option key={c.id} value={c.id}>{categoryLabel(c)}</option>
                 ))}
@@ -243,21 +244,21 @@ export default function EditProductPage() {
 
           {/* Variants */}
           <div className="space-y-3">
-            <label className="text-sm font-semibold text-gray-700">Conditionnements</label>
+            <label className="text-sm font-semibold text-gray-700">{t('packagings')}</label>
             <div className="rounded-xl border border-gray-200 bg-gray-50 p-4 space-y-3">
               <div className="grid grid-cols-[1fr_1fr_1fr_1fr_auto] gap-3 mb-2 px-1">
-                <span className="text-xs font-semibold text-gray-500 uppercase">Volume</span>
-                <span className="text-xs font-semibold text-gray-500 uppercase">Prix (TND)</span>
-                <span className="text-xs font-semibold text-gray-500 uppercase">Stock</span>
-                <span className="text-xs font-semibold text-gray-500 uppercase flex items-center gap-1" title="Photo optionnelle propre à ce conditionnement. Remplace l'image principale sur la page produit quand cette variante est sélectionnée.">
-                    Photo (Optionnelle)
+                <span className="text-xs font-semibold text-gray-500 uppercase">{t('volumeHeader')}</span>
+                <span className="text-xs font-semibold text-gray-500 uppercase">{t('priceTndHeader')}</span>
+                <span className="text-xs font-semibold text-gray-500 uppercase">{t('stockHeader')}</span>
+                <span className="text-xs font-semibold text-gray-500 uppercase flex items-center gap-1" title={t('photoOptionalTip')}>
+                    {t('photoOptional')}
                     <Info size={11} className="text-brand-accent" />
                   </span>
                 <span className="w-8"></span>
               </div>
               {variants.map((v, idx) => (
                 <div key={idx} className="grid grid-cols-[1fr_1fr_1fr_1fr_auto] gap-3 items-center">
-                  <input type="text" value={v.volume} onChange={e => updateVariant(idx, 'volume', e.target.value)} className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:border-brand-accent" placeholder="Ex: 5L" required />
+                  <input type="text" value={v.volume} onChange={e => updateVariant(idx, 'volume', e.target.value)} className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:border-brand-accent" placeholder={t('volumePlaceholder')} required />
                   <input type="number" value={v.price} onChange={e => updateVariant(idx, 'price', e.target.value)} min={0} step={0.01} className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:border-brand-accent" placeholder="0.00" required />
                   <input type="number" value={v.stockQty} onChange={e => updateVariant(idx, 'stockQty', e.target.value)} min={0} className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:border-brand-accent" placeholder="0" required />
                   <div className="flex items-center gap-2">
@@ -275,14 +276,14 @@ export default function EditProductPage() {
                 </div>
               ))}
               <p className="mt-3 text-xs text-gray-500">
-                <span className="font-semibold text-brand-primary">Astuce :</span> Vous pouvez uploader une photo spécifique pour chaque conditionnement (ex: bidon 1L vs 5L). Si vous n'en mettez pas, l'image principale du produit sera utilisée.
+                <span className="font-semibold text-brand-primary">{t('tipColon')}</span> {t('variantPhotoTip')}
               </p>
             </div>
           </div>
 
           {/* Product images */}
           <div className="space-y-1.5">
-            <label className="text-sm font-semibold text-gray-700">Images du produit</label>
+            <label className="text-sm font-semibold text-gray-700">{t('productImages')}</label>
             <div className="flex flex-wrap gap-3">
               {existingImages.map((url, i) => (
                 <div key={i} className="relative h-20 w-20 rounded-lg overflow-hidden border border-gray-200">
@@ -297,7 +298,7 @@ export default function EditProductPage() {
               ) : (
                 <label className="flex h-20 w-20 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-200 bg-gray-50 hover:border-brand-accent hover:bg-brand-accent/5 transition-colors">
                   <Upload size={16} className="text-gray-400" />
-                  <span className="mt-1 text-[10px] text-gray-400">Ajouter</span>
+                  <span className="mt-1 text-[10px] text-gray-400">{t('addImage')}</span>
                   <input type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
                 </label>
               )}
@@ -306,16 +307,16 @@ export default function EditProductPage() {
 
           <label className="flex items-center gap-3 cursor-pointer">
             <input type="checkbox" checked={isPublished} onChange={e => setIsPublished(e.target.checked)} className="rounded border-gray-300" />
-            <span className="text-sm font-medium text-gray-700">Publié</span>
+            <span className="text-sm font-medium text-gray-700">{t('publishedTag')}</span>
           </label>
         </div>
 
         <div className="flex justify-end gap-3">
           <Link href={localizedHref('/admin/catalog/products')} className="rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">
-            Annuler
+            {t('cancel')}
           </Link>
           <button type="submit" disabled={updateMutation.isPending || isUploading} className="flex items-center gap-2 rounded-xl bg-brand-accent px-4 py-2.5 text-sm font-semibold text-black hover:bg-brand-accent-hover transition-colors disabled:opacity-50">
-            <Save size={16} /> {isUploading ? 'Upload...' : updateMutation.isPending ? 'Enregistrement...' : 'Enregistrer les modifications'}
+            <Save size={16} /> {isUploading ? t('uploading') : updateMutation.isPending ? t('savingChanges') : t('saveChanges')}
           </button>
         </div>
       </form>

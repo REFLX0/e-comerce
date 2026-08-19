@@ -33,6 +33,7 @@ export function CategoryNav() {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null)
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const t = useTranslations('Navigation')
+  const tTax = useTranslations('Taxonomy')
   const locale = useLocale()
   const isRtl = locale === 'ar'
 
@@ -75,7 +76,7 @@ export function CategoryNav() {
           {NAVIGATION_TAXONOMY.map((item) => {
             const Icon = NAVIGATION_ICONS[item.slug] ?? Package
             const root = findNode(categories, item.slug)
-            const rootLabel = root?.name ?? item.label ?? item.slug
+            const rootLabel = item.labelKey ? tTax(item.labelKey) : (root?.name ?? item.label ?? item.slug)
             const isOpen = activeDropdown === item.slug
 
             return (
@@ -187,6 +188,7 @@ function FlyoutPanel({
   allProductsLabel: string
 }) {
   const [activeChild, setActiveChild] = useState<string | null>(null)
+  const tTax = useTranslations('Taxonomy')
 
   // Find which child is hovered (to show its sub-panel)
   const activeNode = item.children.find((c) => c.slug === activeChild)
@@ -235,7 +237,8 @@ function FlyoutPanel({
         <ul className="flex flex-col py-2">
           {item.children.map((child) => {
             const dbNode = findNode(categories, child.slug)
-            const label = dbNode?.name ?? child.label ?? child.slug
+            const label = child.labelKey ? tTax(child.labelKey) : (dbNode?.name ?? child.label ?? child.slug)
+            const hint = child.hintKey ? tTax(child.hintKey) : child.hint
             const hasSubs = (child.children?.length ?? 0) > 0
             const isActive = activeChild === child.slug
 
@@ -286,9 +289,9 @@ function FlyoutPanel({
                       style={{ background: 'rgba(22,37,76,0.25)' }}
                     />
                     <span>{label}</span>
-                    {child.hint && (
+                    {hint && (
                       <span className="ms-auto text-[11px]" style={{ color: 'rgba(22,37,76,0.4)' }}>
-                        {child.hint}
+                        {hint}
                       </span>
                     )}
                   </Link>
@@ -306,7 +309,7 @@ function FlyoutPanel({
             className="flex items-center gap-1.5 text-xs font-semibold transition-opacity hover:opacity-70"
             style={{ color: '#D4A76A' }}
           >
-            <span>Voir tout {rootLabel}</span>
+            <span>{tTax('seeAll', { category: rootLabel })}</span>
             <ChevronRight size={12} className={isRtl ? 'rotate-180' : ''} />
           </Link>
         </div>
@@ -345,7 +348,8 @@ function SubPanel({
   isRtl: boolean
   allProductsLabel: string
 }) {
-  const label = dbNode?.name ?? node.label ?? node.slug
+  const tTax = useTranslations('Taxonomy')
+  const label = node.labelKey ? tTax(node.labelKey) : (dbNode?.name ?? node.label ?? node.slug)
 
   return (
     <div
@@ -373,7 +377,7 @@ function SubPanel({
       <ul className="flex flex-col py-2">
         {(node.children ?? []).map((subChild) => {
           const subDbNode = dbNode?.children?.find((c) => c.slug === subChild.slug)
-          const subLabel = subDbNode?.name ?? subChild.label ?? subChild.slug
+          const subLabel = subChild.labelKey ? tTax(subChild.labelKey) : (subDbNode?.name ?? subChild.label ?? subChild.slug)
 
           return (
             <li key={subChild.slug} role="none">

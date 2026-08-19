@@ -1,23 +1,25 @@
+import { getTranslations } from 'next-intl/server'
 import { categoriesApi } from '@/lib/api/categories'
 import type { Metadata } from 'next'
 
 interface Props {
-  params: Promise<{ slug: string }>
+  params: Promise<{ slug: string; locale: string }>
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug, locale } = await params
+  const t = await getTranslations({ locale, namespace: 'Catalogue' })
   try {
-    const { slug } = await params
     const category = await categoriesApi.getBySlug(slug)
     return {
       title: `${category.name} | specpart`,
       description:
         category.description?.substring(0, 160) ||
-        `Découvrez nos produits dans la catégorie ${category.name}`,
+        t('categoryMetaDescription', { name: category.name }),
     }
   } catch {
     return {
-      title: 'Catégorie introuvable | specpart',
+      title: `${t('categoryNotFound')} | specpart`,
     }
   }
 }

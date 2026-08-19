@@ -1,6 +1,9 @@
 /**
  * Skeleton components use a soft shimmer for perceived speed.
  */
+"use client"
+
+import { useTranslations } from 'next-intl'
 
 function SkeletonBlock({
   className = '',
@@ -13,8 +16,9 @@ function SkeletonBlock({
 }
 
 export function ProductCardSkeleton() {
+  const t = useTranslations('Common')
   return (
-    <div className="product-card p-4" aria-busy="true" aria-label="Chargement du produit...">
+    <div className="product-card p-4" aria-busy="true" aria-label={t('loadingProduct')}>
       {/* Image placeholder: aspect-square = height matched to width */}
       <SkeletonBlock className="mb-4 aspect-square w-full rounded-xl" />
       {/* Brand tag */}
@@ -104,11 +108,12 @@ export function BlogCardSkeleton() {
 }
 
 export function CategoryGridSkeleton({ count = 6 }: { count?: number }) {
+  const t = useTranslations('Common')
   return (
     <div
       className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6"
       role="status"
-      aria-label={`Chargement des catégories...`}
+      aria-label={t('loadingCategories')}
     >
       {Array.from({ length: count }).map((_, i) => (
         <div key={i} className="product-card p-6 text-center" aria-busy="true">

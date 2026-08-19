@@ -8,11 +8,13 @@ import { ArrowLeft, Package, Truck, CheckCircle, CreditCard, MapPin } from 'luci
 import { Link, useRouter } from '@/i18n/routing'
 import { useParams } from 'next/navigation'
 import Image from 'next/image'
+import { useTranslations } from 'next-intl'
 import { useEffect } from 'react'
 
 export default function OrderDetailsPage() {
   const params = useParams()
   const router = useRouter()
+  const t = useTranslations('Account')
   const id = params.id as string
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
   const isHydrated = useAuthStore((s) => s.isHydrated)
@@ -37,7 +39,7 @@ export default function OrderDetailsPage() {
     return (
       <div className="py-12 text-center">
         <div className="border-brand-surface-dark border-t-brand-primary mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-4"></div>
-        <p className="font-medium text-gray-500">Chargement des détails de la commande...</p>
+        <p className="font-medium text-gray-500">{t('loadingOrderDetails')}</p>
       </div>
     )
   }
@@ -45,12 +47,12 @@ export default function OrderDetailsPage() {
   if (isError || !order) {
     return (
       <div className="border-brand-surface-dark rounded-2xl border bg-white py-12 text-center">
-        <h2 className="text-brand-primary mb-2 text-2xl font-bold">Commande introuvable</h2>
+        <h2 className="text-brand-primary mb-2 text-2xl font-bold">{t('orderNotFound')}</h2>
         <p className="mb-6 text-gray-500">
-          Nous n'avons pas pu charger les détails de cette commande.
+          {t('orderLoadError')}
         </p>
         <Link href="/compte/commandes" className="btn-primary inline-flex">
-          Retour à mes commandes
+          {t('backToOrders')}
         </Link>
       </div>
     )
@@ -65,7 +67,7 @@ export default function OrderDetailsPage() {
         >
           <ArrowLeft size={20} />
         </Link>
-        <h1 className="font-display text-brand-primary text-2xl font-bold">Commande #{order.id.slice(-8).toUpperCase()}</h1>
+        <h1 className="font-display text-brand-primary text-2xl font-bold">{t('order')} #{order.id.slice(-8).toUpperCase()}</h1>
         <span
           className={`ml-auto rounded-full px-3 py-1 text-sm font-bold ${
             order.status === 'DELIVERED'
@@ -77,20 +79,20 @@ export default function OrderDetailsPage() {
                   : 'bg-yellow-100 text-yellow-700'
           }`}
         >
-          {order.status === 'PENDING' && 'En attente'}
-          {order.status === 'PROCESSING' && 'En cours'}
-          {order.status === 'CONFIRMED' && 'Confirmée'}
-          {order.status === 'SHIPPED' && 'Expédiée'}
-          {order.status === 'DELIVERED' && 'Livrée'}
-          {order.status === 'CANCELLED' && 'Annulée'}
+          {order.status === 'PENDING' && t('pending')}
+          {order.status === 'PROCESSING' && t('processing')}
+          {order.status === 'CONFIRMED' && t('confirmed')}
+          {order.status === 'SHIPPED' && t('shipped')}
+          {order.status === 'DELIVERED' && t('delivered')}
+          {order.status === 'CANCELLED' && t('cancelled')}
         </span>
       </div>
 
-      <p className="mb-8 text-gray-500">Passée le {formatDate(order.createdAt)}</p>
+      <p className="mb-8 text-gray-500">{t('placedOn', { date: formatDate(order.createdAt) })}</p>
 
       {order.timeline && order.timeline.length > 0 && (
         <div className="border-brand-surface-dark mb-8 rounded-2xl border bg-white p-6 shadow-sm">
-          <h3 className="text-brand-primary mb-6 font-bold">Suivi de la commande</h3>
+          <h3 className="text-brand-primary mb-6 font-bold">{t('orderTracking')}</h3>
           <div className="relative">
             <div className="absolute top-4 bottom-4 left-6 w-0.5 bg-gray-100"></div>
             <div className="space-y-8">
@@ -134,7 +136,7 @@ export default function OrderDetailsPage() {
         <div className="space-y-8 lg:col-span-2">
           <div className="border-brand-surface-dark rounded-2xl border bg-white p-6 shadow-sm">
             <h3 className="text-brand-primary mb-6 border-b border-gray-100 pb-4 font-bold">
-              Articles commandés
+              {t('orderedItems')}
             </h3>
             <div className="space-y-6">
               {order.items.map((item: any) => (
@@ -153,10 +155,10 @@ export default function OrderDetailsPage() {
                   </div>
                   <div className="min-w-0 flex-1">
                     <h4 className="text-brand-primary line-clamp-1 font-bold">
-                      {item.product?.nameFr ?? 'Produit'}
+                      {item.product?.nameFr ?? t('article')}
                     </h4>
-                    <p className="mt-1 text-sm text-gray-500">Volume: {item.variant?.volume ?? '-'}</p>
-                    <p className="mt-1 text-sm text-gray-500">Quantité: {item.quantity}</p>
+                    <p className="mt-1 text-sm text-gray-500">{t('volume')}: {item.variant?.volume ?? '-'}</p>
+                    <p className="mt-1 text-sm text-gray-500">{t('quantityLabel')}: {item.quantity}</p>
                   </div>
                   <div className="text-right">
                     <div className="text-brand-primary font-bold">
@@ -172,11 +174,11 @@ export default function OrderDetailsPage() {
         <div className="space-y-8">
           <div className="bg-brand-surface border-brand-surface-dark rounded-2xl border p-6 shadow-sm">
             <h3 className="text-brand-primary border-brand-surface-dark mb-4 border-b pb-4 font-bold">
-              Résumé financier
+              {t('financialSummary')}
             </h3>
             <div className="mb-6 space-y-3">
               <div className="flex justify-between text-sm text-gray-600">
-                <span>Total</span>
+                <span>{t('total')}</span>
                 <span>{formatPrice(order.totalAmount)}</span>
               </div>
             </div>
@@ -186,7 +188,7 @@ export default function OrderDetailsPage() {
             <div className="mb-6 flex items-start gap-3">
               <MapPin className="mt-1 text-gray-400" size={20} />
               <div>
-                <h3 className="text-brand-primary mb-1 font-bold">Adresse de livraison</h3>
+                <h3 className="text-brand-primary mb-1 font-bold">{t('deliveryAddress')}</h3>
                 <p className="text-sm text-gray-600">{order.shipFullName}</p>
                 <p className="text-sm text-gray-600">
                   {order.shipCity}, {order.shipWilaya}
@@ -198,8 +200,8 @@ export default function OrderDetailsPage() {
             <div className="flex items-start gap-3 border-t border-gray-100 pt-6">
               <CreditCard className="mt-1 text-gray-400" size={20} />
               <div>
-                <h3 className="text-brand-primary mb-1 font-bold">Mode de paiement</h3>
-                <p className="text-sm text-gray-600">Paiement à la livraison</p>
+                <h3 className="text-brand-primary mb-1 font-bold">{t('paymentMethod')}</h3>
+                <p className="text-sm text-gray-600">{t('cod')}</p>
               </div>
             </div>
           </div>

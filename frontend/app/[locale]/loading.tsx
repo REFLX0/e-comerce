@@ -1,9 +1,13 @@
+import { useTranslations } from 'next-intl'
+
 export default function Loading() {
+  const t = useTranslations('Common')
+
   return (
     <div
       className="flex min-h-[60vh] flex-1 items-center justify-center"
       role="status"
-      aria-label="Chargement en cours"
+      aria-label={t('loadingAria')}
     >
       <div className="flex flex-col items-center gap-6">
         {/* Animated oil drop */}
@@ -47,7 +51,7 @@ export default function Loading() {
         </div>
 
         <p className="text-xs font-medium tracking-widest text-gray-400 uppercase animate-pulse">
-          Chargement...
+          {t('loading')}
         </p>
       </div>
     </div>

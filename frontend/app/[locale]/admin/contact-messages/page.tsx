@@ -8,21 +8,22 @@ import {
   Search, Phone, MessageSquare, Inbox, ArrowUpDown, Clock,
 } from 'lucide-react'
 import { toast } from 'sonner'
+import { useLocale, useTranslations } from 'next-intl'
 
 const FILTERS = [
-  { key: 'all', label: 'Tous' },
-  { key: 'unread', label: 'Non lus' },
-  { key: 'withPhone', label: 'Avec téléphone' },
+  { key: 'all', labelKey: 'allFilter' },
+  { key: 'unread', labelKey: 'unreadFilter' },
+  { key: 'withPhone', labelKey: 'withPhoneFilter' },
 ] as const
 
 const SORTS = [
-  { key: 'recent', label: 'Plus récent' },
-  { key: 'oldest', label: 'Plus ancien' },
-  { key: 'unread', label: 'Non lus d\'abord' },
+  { key: 'recent', labelKey: 'sortRecent' },
+  { key: 'oldest', labelKey: 'sortOldest' },
+  { key: 'unread', labelKey: 'sortUnread' },
 ] as const
 
-function formatDate(iso: string) {
-  return new Date(iso).toLocaleDateString('fr-FR', {
+function formatDate(iso: string, locale: string) {
+  return new Date(iso).toLocaleDateString(locale, {
     day: 'numeric', month: 'short', year: 'numeric',
     hour: '2-digit', minute: '2-digit',
   })
@@ -30,6 +31,8 @@ function formatDate(iso: string) {
 
 export default function AdminContactMessagesPage() {
   const queryClient = useQueryClient()
+  const locale = useLocale()
+  const t = useTranslations('Admin')
   const [page, setPage] = useState(1)
   const [selected, setSelected] = useState<string | null>(null)
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null)
@@ -71,14 +74,14 @@ export default function AdminContactMessagesPage() {
     mutationFn: (id: string) => adminApi.deleteContactMessage(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-contact-messages'] })
-      toast.success('Message supprimé', {
-        action: { label: 'Annuler', onClick: () => {} },
+      toast.success(t('messageDeleted'), {
+        action: { label: t('cancel'), onClick: () => {} },
         duration: 4000,
       })
       setDeleteTarget(null)
       if (selected === deleteTarget) setSelected(null)
     },
-    onError: () => toast.error('Erreur lors de la suppression'),
+    onError: () => toast.error(t('genericError')),
   })
 
   const handleCardClick = (msg: any) => {
@@ -97,11 +100,11 @@ export default function AdminContactMessagesPage() {
       {/* Header */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-brand-primary">Messages de contact</h1>
+          <h1 className="text-2xl font-bold text-brand-primary">{t('contactMessagesTitle')}</h1>
           <p className="text-sm text-gray-500">
-            {total} message{total !== 1 ? 's' : ''}
+            {t('messagesCount', { count: total })}
             {unreadCount > 0 && (
-              <span className="ml-1.5 font-medium text-brand-accent">· {unreadCount} non lu{unreadCount !== 1 ? 's' : ''}</span>
+              <span className="ml-1.5 font-medium text-brand-accent">· {t('unreadCountLabel', { count: unreadCount })}</span>
             )}
           </p>
         </div>
@@ -121,7 +124,7 @@ export default function AdminContactMessagesPage() {
                   : 'text-gray-500 hover:text-gray-700'
               }`}
             >
-              {f.label}
+              {t(f.labelKey)}
             </button>
           ))}
         </div>
@@ -136,7 +139,7 @@ export default function AdminContactMessagesPage() {
               className="appearance-none rounded-xl border border-gray-200 bg-white py-2 pl-9 pr-8 text-xs font-medium text-gray-600 outline-none focus:border-brand-accent focus:ring-1 focus:ring-brand-accent"
             >
               {SORTS.map((s) => (
-                <option key={s.key} value={s.key}>{s.label}</option>
+                <option key={s.key} value={s.key}>{t(s.labelKey)}</option>
               ))}
             </select>
           </div>
@@ -148,7 +151,7 @@ export default function AdminContactMessagesPage() {
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Rechercher par nom, email ou message…"
+              placeholder={t('searchContactPlaceholder')}
               className="w-56 rounded-xl border border-gray-200 bg-white py-2 pl-9 pr-3 text-xs text-gray-600 outline-none placeholder:text-gray-400 focus:border-brand-accent focus:ring-1 focus:ring-brand-accent"
             />
           </div>
@@ -159,12 +162,12 @@ export default function AdminContactMessagesPage() {
       {deleteTarget && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40" onClick={() => setDeleteTarget(null)}>
           <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-xl max-w-sm w-full mx-4" onClick={e => e.stopPropagation()}>
-            <h3 className="text-lg font-bold text-brand-primary mb-2">Confirmer la suppression</h3>
-            <p className="text-sm text-gray-500 mb-6">Voulez-vous vraiment supprimer ce message définitivement ? Cette action est irréversible.</p>
+            <h3 className="text-lg font-bold text-brand-primary mb-2">{t('confirmDeleteTitle')}</h3>
+            <p className="text-sm text-gray-500 mb-6">{t('deleteMessageDesc')}</p>
             <div className="flex justify-end gap-3">
-              <button onClick={() => setDeleteTarget(null)} className="rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">Annuler</button>
+              <button onClick={() => setDeleteTarget(null)} className="rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">{t('cancel')}</button>
               <button onClick={() => deleteMutation.mutate(deleteTarget!)} disabled={deleteMutation.isPending} className="rounded-xl bg-red-500 px-4 py-2 text-sm font-semibold text-white hover:bg-red-600 transition-colors disabled:opacity-50">
-                {deleteMutation.isPending ? 'Suppression...' : 'Supprimer'}
+                {deleteMutation.isPending ? t('deleting') : t('delete')}
               </button>
             </div>
           </div>
@@ -172,26 +175,26 @@ export default function AdminContactMessagesPage() {
       )}
 
       {isError && (
-        <div className="rounded-2xl border border-red-100 bg-red-50 p-4 text-center text-sm text-red-700">Erreur de chargement. <button onClick={() => window.location.reload()} className="font-semibold underline">Réessayer</button></div>
+        <div className="rounded-2xl border border-red-100 bg-red-50 p-4 text-center text-sm text-red-700">{t('loadError')} <button onClick={() => window.location.reload()} className="font-semibold underline">{t('retry')}</button></div>
       )}
 
       {/* Message list */}
       <div className="space-y-3">
         {isLoading ? (
-          <div className="py-12 text-center text-gray-400">Chargement...</div>
+          <div className="py-12 text-center text-gray-400">{t('loading')}</div>
         ) : filtered.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-gray-400">
             <Inbox size={48} className="mb-4 text-gray-300" />
-            <p className="text-sm font-medium">Aucun message pour le moment</p>
+            <p className="text-sm font-medium">{t('noMessagesYet')}</p>
             <p className="mt-1 text-xs text-gray-400">
-              {search ? 'Essayez de modifier vos filtres ou votre recherche.' : 'Les messages envoyés depuis le formulaire de contact apparaîtront ici.'}
+              {search ? t('noMessagesHintSearch') : t('noMessagesHintEmpty')}
             </p>
           </div>
         ) : filtered.map((msg) => {
           const isOpen = selected === msg.id
           const statusPill = msg.isRead
-            ? { label: 'Traité', classes: 'bg-green-100 text-green-700' }
-            : { label: 'Nouveau', classes: 'bg-brand-accent/15 text-brand-accent' }
+            ? { labelKey: 'processedTag', classes: 'bg-green-100 text-green-700' }
+            : { labelKey: 'newTag', classes: 'bg-brand-accent/15 text-brand-accent' }
 
           return (
             <div
@@ -212,14 +215,14 @@ export default function AdminContactMessagesPage() {
                       <span className={`text-sm ${msg.isRead ? 'font-medium text-gray-600' : 'font-bold text-brand-primary'}`}>
                         {msg.name}
                       </span>
-                      <span className="text-[11px] text-gray-400 whitespace-nowrap">{formatDate(msg.createdAt)}</span>
+                      <span className="text-[11px] text-gray-400 whitespace-nowrap">{formatDate(msg.createdAt, locale)}</span>
                       {msg.isProfessional && (
                         <span className="inline-flex items-center gap-1 rounded-full bg-blue-100 px-2 py-0.5 text-[10px] font-semibold text-blue-700">
                           <Briefcase size={10} />Pro
                         </span>
                       )}
                       <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold ${statusPill.classes}`}>
-                        {statusPill.label}
+                        {t(statusPill.labelKey)}
                       </span>
                     </div>
                     <p className="text-sm font-medium text-gray-700 mt-0.5">{msg.subject}</p>
@@ -229,7 +232,7 @@ export default function AdminContactMessagesPage() {
                       <button
                         onClick={(e) => { e.stopPropagation(); readMutation.mutate(msg.id) }}
                         className="rounded-lg p-2 text-gray-400 hover:bg-brand-accent/10 hover:text-brand-accent transition-colors"
-                        title="Marquer comme lu"
+                        title={t('markAsRead')}
                       >
                         <CheckCheck size={18} />
                       </button>
@@ -237,7 +240,7 @@ export default function AdminContactMessagesPage() {
                     <button
                       onClick={(e) => { e.stopPropagation(); showDeleteConfirm(msg.id) }}
                       className="rounded-lg p-2 text-gray-400 hover:bg-red-50 hover:text-red-500 transition-colors"
-                      title="Supprimer"
+                      title={t('delete')}
                     >
                       <Trash2 size={18} />
                     </button>
@@ -274,7 +277,7 @@ export default function AdminContactMessagesPage() {
       {totalPages > 1 && !search && (
         <div className="flex items-center justify-center gap-2">
           <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page <= 1} className="rounded-xl border border-gray-200 bg-white p-2 text-gray-500 hover:bg-gray-50 disabled:opacity-40"><ChevronLeft size={16} /></button>
-          <span className="text-sm font-medium text-gray-600">Page {page} / {totalPages}</span>
+          <span className="text-sm font-medium text-gray-600">{t('pageOf', { current: page, total: totalPages })}</span>
           <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page >= totalPages} className="rounded-xl border border-gray-200 bg-white p-2 text-gray-500 hover:bg-gray-50 disabled:opacity-40"><ChevronRight size={16} /></button>
         </div>
       )}

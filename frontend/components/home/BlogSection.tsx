@@ -1,32 +1,36 @@
+"use client";
+
 import { ArrowRight } from 'lucide-react'
 import { Link } from '@/i18n/routing'
 import Image from 'next/image'
+import { useTranslations } from 'next-intl'
 
 const ARTICLES = [
   {
     slug: 'choisir-huile-moteur',
     title: 'Comment choisir la bonne huile moteur ?',
-    excerpt: 'Synthétique, semi-synthétique ou minérale : guide complet pour faire le bon choix selon votre voiture.',
+    excerptKey: 'blogPost1Excerpt',
     image: 'https://images.unsplash.com/photo-1600712242805-5f78671f7c4b?q=80&w=600',
     category: 'Conseils',
   },
   {
     slug: 'quand-changer-huile',
     title: 'Quand faut-il changer l\'huile de sa voiture ?',
-    excerpt: 'Fréquence, signes d\'alerte, intervalles recommandés par les constructeurs — tout ce qu\'il faut savoir.',
+    excerptKey: 'blogPost2Excerpt',
     image: 'https://images.unsplash.com/photo-1626201850129-5a4e9a3e1b80?q=80&w=600',
     category: 'Entretien',
   },
   {
     slug: 'prolonger-vie-moteur',
     title: '5 astuces pour prolonger la vie de votre moteur',
-    excerpt: 'Des gestes simples et réguliers qui peuvent doubler la durée de vie de votre moteur.',
+    excerptKey: 'blogPost3Excerpt',
     image: 'https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?q=80&w=600',
     category: 'Astuces',
   },
 ]
 
 export function BlogSection() {
+  const t = useTranslations('Home')
   return (
     <section className="bg-gray-50 py-16 md:py-20">
       <div className="section-padding">
@@ -44,7 +48,7 @@ export function BlogSection() {
             href="/blog"
             className="hidden items-center gap-1 text-sm font-bold text-brand-primary/60 transition-colors hover:text-brand-primary sm:inline-flex"
           >
-            Voir tous les articles <ArrowRight size={14} />
+            {t('viewAllArticles')} <ArrowRight size={14} />
           </Link>
         </div>
 
@@ -75,7 +79,7 @@ export function BlogSection() {
                   {article.title}
                 </h3>
                 <p className="text-xs leading-relaxed text-gray-400 line-clamp-2">
-                  {article.excerpt}
+                  {t(article.excerptKey)}
                 </p>
                 <span className="mt-auto inline-flex items-center gap-1 text-xs font-bold text-brand-accent">
                   Lire la suite <ArrowRight size={12} />

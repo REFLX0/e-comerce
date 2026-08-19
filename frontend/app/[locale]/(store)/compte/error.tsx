@@ -3,6 +3,7 @@
 import { useEffect } from 'react'
 import { Link } from '@/i18n/routing'
 import { AlertCircle, RefreshCw, User } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 
 export default function CompteError({
   error,
@@ -11,6 +12,8 @@ export default function CompteError({
   error: Error & { digest?: string; requestId?: string }
   reset: () => void
 }) {
+  const t = useTranslations('Account')
+
   useEffect(() => {
     console.error('[Compte Error Boundary]', error, { requestId: error?.requestId || null })
   }, [error])
@@ -22,13 +25,13 @@ export default function CompteError({
           <AlertCircle size={32} />
         </div>
         <h1 className="mb-2 text-2xl font-bold text-gray-900">
-          Une erreur s'est produite
+          {t('errorTitle')}
         </h1>
         <p className="mb-8 text-sm text-gray-500">
-          Votre espace client a rencontré un problème inattendu.
+          {t('errorDesc')}
           {(error.digest || error.requestId) && (
             <span className="mt-2 block font-mono text-xs text-gray-400">
-              Réf: {error.digest} {error.requestId ? ` / Req: ${error.requestId.slice(0,8)}` : ''}
+              {t('refPrefix')} {error.digest} {error.requestId ? ` / ${t('reqPrefix')} ${error.requestId.slice(0,8)}` : ''}
             </span>
           )}
         </p>
@@ -38,14 +41,14 @@ export default function CompteError({
             className="flex items-center gap-2 rounded-xl bg-brand-primary px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand-primary-light transition-all"
           >
             <RefreshCw size={16} />
-            Réessayer
+            {t('retry')}
           </button>
           <Link
             href="/compte"
             className="flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-all"
           >
             <User size={16} />
-            Mon compte
+            {t('myAccount')}
           </Link>
         </div>
       </div>

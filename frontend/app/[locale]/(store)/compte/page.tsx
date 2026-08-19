@@ -58,8 +58,8 @@ export default function CompteDashboardPage() {
       </section>
 
       <section>
-        <p className="text-xs font-bold uppercase tracking-[0.18em] text-brand-accent">Raccourcis</p>
-        <h2 className="mt-1 text-xl font-bold text-brand-primary">Gérez votre compte</h2>
+        <p className="text-xs font-bold uppercase tracking-[0.18em] text-brand-accent">{t('shortcuts')}</p>
+        <h2 className="mt-1 text-xl font-bold text-brand-primary">{t('manageAccount')}</h2>
         <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-5">
           {QUICK_LINKS.map((link) => (
             <Link key={link.href} href={link.href} className="group relative min-h-40 overflow-hidden rounded-2xl border border-slate-200 bg-white p-4 transition-all hover:-translate-y-1 hover:border-brand-primary/30 hover:shadow-[0_14px_26px_rgba(22,37,76,0.1)]">
@@ -78,7 +78,7 @@ export default function CompteDashboardPage() {
       <section className="overflow-hidden rounded-3xl border border-slate-200 bg-white">
         <div className="flex flex-col gap-3 border-b border-slate-100 px-5 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-6">
           <div>
-            <p className="text-xs font-bold uppercase tracking-[0.18em] text-brand-accent">Suivi</p>
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-brand-accent">{t('tracking')}</p>
             <h2 className="mt-1 text-xl font-bold text-brand-primary">{t('recentOrders')}</h2>
           </div>
           <Link href="/compte/commandes" className="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-primary/70 transition-colors hover:text-brand-primary">

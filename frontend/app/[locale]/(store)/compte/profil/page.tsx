@@ -4,9 +4,11 @@ import { useState } from 'react'
 import { useAuthStore } from '@/lib/store/auth.store'
 import { authApi } from '@/lib/api/auth'
 import { Save, User, Mail, Phone, Calendar } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
 export default function ProfilPage() {
+  const t = useTranslations('Account')
   const user = useAuthStore((s) => s.user)
   const updateUser = useAuthStore((s) => s.updateUser)
   const [form, setForm] = useState({
@@ -30,9 +32,9 @@ export default function ProfilPage() {
         ...(form.birthday ? { birthday: form.birthday } : {}),
       })
       updateUser(updatedUser)
-      toast.success('Profil mis à jour avec succès !')
+      toast.success(t('profileUpdated'))
     } catch {
-      toast.error('Erreur lors de la mise à jour du profil.')
+      toast.error(t('profileUpdateError'))
     } finally {
       setSaving(false)
     }
@@ -44,8 +46,8 @@ export default function ProfilPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-brand-primary">Mon Profil</h1>
-        <p className="text-sm text-gray-500">Gérez vos informations personnelles</p>
+        <h1 className="text-2xl font-bold text-brand-primary">{t('myProfile')}</h1>
+        <p className="text-sm text-gray-500">{t('myProfileDesc')}</p>
       </div>
 
       {/* Avatar */}
@@ -62,10 +64,10 @@ export default function ProfilPage() {
       {/* Form */}
       <form onSubmit={handleSubmit} className="space-y-4">
         {[
-          { id: 'name', label: 'Nom complet', icon: User, type: 'text', placeholder: 'Votre nom', key: 'name' as const },
-          { id: 'email', label: 'Email', icon: Mail, type: 'email', placeholder: 'votre@email.com', key: 'email' as const },
-          { id: 'phone', label: 'Téléphone', icon: Phone, type: 'tel', placeholder: '+216 XX XXX XXX', key: 'phone' as const },
-          { id: 'birthday', label: 'Date de naissance', icon: Calendar, type: 'date', placeholder: '', key: 'birthday' as const },
+          { id: 'name', label: t('fullName'), icon: User, type: 'text', placeholder: '', key: 'name' as const },
+          { id: 'email', label: 'Email', icon: Mail, type: 'email', placeholder: 'your@email.com', key: 'email' as const },
+          { id: 'phone', label: t('phone'), icon: Phone, type: 'tel', placeholder: '+216 XX XXX XXX', key: 'phone' as const },
+          { id: 'birthday', label: t('birthday'), icon: Calendar, type: 'date', placeholder: '', key: 'birthday' as const },
         ].map((field) => (
           <div key={field.id}>
             <label htmlFor={field.id} className="mb-1.5 block text-sm font-medium text-gray-700">
@@ -91,7 +93,7 @@ export default function ProfilPage() {
           className="flex items-center gap-2 rounded-xl bg-brand-primary px-6 py-3 text-sm font-semibold text-white hover:bg-brand-primary-light transition-colors disabled:opacity-60"
         >
           <Save size={16} />
-          {saving ? 'Enregistrement…' : 'Sauvegarder les modifications'}
+          {saving ? t('saving') : t('saveChanges')}
         </button>
       </form>
     </div>

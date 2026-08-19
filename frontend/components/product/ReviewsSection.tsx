@@ -13,16 +13,6 @@ import * as z from 'zod'
 import { toast } from 'sonner'
 import { useAuthStore } from '@/lib/store/auth.store'
 
-const reviewSchema = z.object({
-  rating: z.number().min(1, 'Veuillez sélectionner une note').max(5),
-  comment: z
-    .string()
-    .min(10, 'Votre avis doit contenir au moins 10 caractères')
-    .max(500, 'Votre avis est trop long'),
-})
-
-type ReviewFormData = z.infer<typeof reviewSchema>
-
 interface Props {
   productId: string
   rating: number
@@ -31,6 +21,15 @@ interface Props {
 
 export function ReviewsSection({ productId, rating, reviewCount }: Props) {
   const t = useTranslations('Product')
+  const reviewSchema = z.object({
+    rating: z.number().min(1, t('ratingRequired')).max(5),
+    comment: z
+      .string()
+      .min(10, t('reviewMinLength'))
+      .max(500, t('reviewTooLong')),
+  })
+
+  type ReviewFormData = z.infer<typeof reviewSchema>
   const [showForm, setShowForm] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated)
@@ -65,7 +64,7 @@ export function ReviewsSection({ productId, rating, reviewCount }: Props) {
     try {
       await reviewsApi.create(productId, data)
       
-      toast.success('Votre avis a été envoyé pour modération.')
+      toast.success(t('reviewSubmitted'))
       setShowForm(false)
       reset()
       refetch()
@@ -89,7 +88,7 @@ export function ReviewsSection({ productId, rating, reviewCount }: Props) {
           </div>
         </div>
 
-        <p className="mb-8 text-sm leading-6 text-gray-500">Seuls les clients ayant reçu ce produit peuvent publier un avis. Chaque avis est modéré avant publication.</p>
+        <p className="mb-8 text-sm leading-6 text-gray-500">{t('verifiedOnly')}</p>
 
         {!showForm ? (
           <button
@@ -97,7 +96,7 @@ export function ReviewsSection({ productId, rating, reviewCount }: Props) {
               if (isAuthenticated) {
                 setShowForm(true)
               } else {
-                toast.error('Vous devez être connecté pour rédiger un avis.')
+                toast.error(t('loginRequired'))
               }
             }}
             className="btn-secondary w-full"
@@ -149,7 +148,7 @@ export function ReviewsSection({ productId, rating, reviewCount }: Props) {
                       ? 'border-red-500 focus:border-red-500'
                       : 'border-gray-300 focus:border-transparent'
                   }`}
-                  placeholder="Partagez votre expérience..."
+                  placeholder={t('reviewPlaceholder')}
                 />
                 {errors.comment && (
                   <span className="mt-1 block text-xs text-red-500">{errors.comment.message}</span>

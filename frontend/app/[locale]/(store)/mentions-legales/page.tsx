@@ -1,104 +1,91 @@
+import { useTranslations } from 'next-intl'
+import { getTranslations } from 'next-intl/server'
 import { Breadcrumb } from '@/components/common/Breadcrumb'
+import type { Metadata } from 'next'
 
-export const metadata = {
-  title: 'Mentions Légales | specpart',
-  description: 'Mentions légales du site specpart.tn.',
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}): Promise<Metadata> {
+  const { locale } = await params
+  const t = await getTranslations({ locale, namespace: 'Legal' })
+  return {
+    title: t('metaTitle'),
+    description: t('metaDescription'),
+  }
 }
 
 export default function MentionsLegalesPage() {
+  const t = useTranslations('Legal')
+
   return (
     <>
       <section className="from-brand-primary to-brand-primary-dark bg-gradient-to-br py-16 text-white">
         <div className="section-padding text-center">
-          <h1 className="font-display mb-4 text-4xl font-bold md:text-5xl">Mentions Légales</h1>
-          <p className="text-white/70">Informations légales relatives au site specpart.tn</p>
+          <h1 className="font-display mb-4 text-4xl font-bold md:text-5xl">{t('title')}</h1>
+          <p className="text-white/70">{t('subtitle')}</p>
         </div>
       </section>
 
       <div className="section-padding mx-auto max-w-4xl py-12">
-        <Breadcrumb items={[{ label: 'Mentions légales' }]} />
+        <Breadcrumb items={[{ label: t('breadcrumb') }]} />
 
         <div className="prose prose-lg mt-10 space-y-8 text-gray-600">
           <section>
-            <h2 className="text-brand-primary font-display">Éditeur du site</h2>
+            <h2 className="text-brand-primary font-display">{t('editor')}</h2>
             <p>
               <strong>specpart</strong>
               <br />
-              Forme juridique : SARL
+              {t('editorContent')}
               <br />
-              Siège social : Zone Industrielle, Megrine, Ben Arous, Tunisie
+              {t('seat')}
               <br />
-              Téléphone : +216 71 123 456
+              {t('phone')}
               <br />
-              Email : specpart@hotmail.com
+              {t('email')}
               <br />
-              Registre du commerce : [Numéro RC]
+              {t('rcLabel')} {t('rcValue')}
               <br />
-              Matricule fiscal : [Numéro MF]
+              {t('mfLabel')} {t('mfValue')}
             </p>
           </section>
 
           <section>
-            <h2 className="text-brand-primary font-display">Directeur de la publication</h2>
+            <h2 className="text-brand-primary font-display">{t('director')}</h2>
+            <p>{t('directorContent')}</p>
+          </section>
+
+          <section>
+            <h2 className="text-brand-primary font-display">{t('hosting')}</h2>
             <p>
-              Le directeur de la publication est le représentant légal de la société specpart
-              Tunisie.
+              {t.rich('hostingContent', {
+                strong: (chunks) => <strong>{chunks}</strong>,
+                br: () => <br />,
+              })}
             </p>
           </section>
 
           <section>
-            <h2 className="text-brand-primary font-display">Hébergement</h2>
-            <p>
-              Le site est hébergé par :<br />
-              <strong>Vercel Inc.</strong>
-              <br />
-              340 S Lemon Ave #4133, Walnut, CA 91789, USA
-              <br />
-              Site web : vercel.com
-            </p>
+            <h2 className="text-brand-primary font-display">{t('intellectual')}</h2>
+            <p>{t('intellectualContent1')}</p>
+            <p>{t('intellectualContent2')}</p>
           </section>
 
           <section>
-            <h2 className="text-brand-primary font-display">Propriété intellectuelle</h2>
-            <p>
-              L&apos;ensemble du contenu de ce site (textes, images, logos, graphismes, icônes,
-              etc.) est protégé par les lois relatives à la propriété intellectuelle. Toute
-              reproduction, représentation, modification ou exploitation de tout ou partie du
-              contenu de ce site, par quelque procédé que ce soit, sans autorisation préalable
-              écrite de specpart, est strictement interdite.
-            </p>
+            <h2 className="text-brand-primary font-display">{t('personalData')}</h2>
+            <p>{t('personalDataContent1')}</p>
+            <p>{t('personalDataContent2')}</p>
           </section>
 
           <section>
-            <h2 className="text-brand-primary font-display">Données personnelles</h2>
-            <p>
-              specpart s&apos;engage à protéger la vie privée de ses utilisateurs. Les données
-              personnelles collectées sur ce site sont traitées conformément à la législation
-              tunisienne en vigueur relative à la protection des données personnelles. Elles ne sont
-              en aucun cas cédées à des tiers.
-            </p>
-            <p>
-              Vous disposez d&apos;un droit d&apos;accès, de rectification et de suppression de vos
-              données personnelles. Pour exercer ce droit, contactez-nous à : specpart@hotmail.com.
-            </p>
+            <h2 className="text-brand-primary font-display">{t('cookies')}</h2>
+            <p>{t('cookiesContent')}</p>
           </section>
 
           <section>
-            <h2 className="text-brand-primary font-display">Cookies</h2>
-            <p>
-              Ce site utilise des cookies pour améliorer l&apos;expérience utilisateur, mesurer
-              l&apos;audience et personnaliser les contenus. En poursuivant votre navigation, vous
-              acceptez l&apos;utilisation de cookies.
-            </p>
-          </section>
-
-          <section>
-            <h2 className="text-brand-primary font-display">Limitation de responsabilité</h2>
-            <p>
-              specpart s&apos;efforce de fournir des informations aussi précises que possible.
-              Toutefois, la société ne pourra être tenue responsable des omissions, inexactitudes ou
-              carences dans la mise à jour du contenu du site.
-            </p>
+            <h2 className="text-brand-primary font-display">{t('limitation')}</h2>
+            <p>{t('limitationContent')}</p>
           </section>
         </div>
       </div>

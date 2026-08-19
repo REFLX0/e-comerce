@@ -4,6 +4,7 @@ import { useCartStore } from '@/lib/store/cart.store'
 import { buildPartsMessage, buildWhatsAppUrl, isPartsCategory } from '@/lib/whatsapp'
 import { useHasMounted } from '@/lib/hooks/useHasMounted'
 import { MessageCircle } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 
 interface PartsWhatsAppCheckoutProps {
   className?: string
@@ -18,6 +19,7 @@ interface PartsWhatsAppCheckoutProps {
 export function PartsWhatsAppCheckout({ className = '' }: PartsWhatsAppCheckoutProps) {
   const { items } = useCartStore()
   const hasMounted = useHasMounted()
+  const t = useTranslations('Cart')
 
   const parts = hasMounted
     ? items.filter((item) => isPartsCategory(item.product.category?.slug))
@@ -36,10 +38,10 @@ export function PartsWhatsAppCheckout({ className = '' }: PartsWhatsAppCheckoutP
       >
         <span className="flex items-center gap-2">
           <MessageCircle size={18} className="transition-transform group-hover:scale-110" />
-          <span className="text-sm font-bold">Vérifier ma commande via WhatsApp</span>
+          <span className="text-sm font-bold">{t('verifyViaWhatsApp')}</span>
         </span>
         <span className="text-[11px] font-medium text-white/85">
-          {parts.length} pièce{parts.length > 1 ? 's' : ''} — vérification du châssis avant finalisation
+          {t('partsChassisCheck', { count: parts.length })}
         </span>
       </button>
     </div>

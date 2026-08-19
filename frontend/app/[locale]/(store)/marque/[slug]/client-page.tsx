@@ -19,11 +19,13 @@ import { use } from 'react'
 import type { ProductFilters } from '@/lib/types'
 import Image from 'next/image'
 import { useTranslations } from 'next-intl'
+import { useRouter } from '@/i18n/routing'
 
 export default function BrandPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params)
   const searchParams = useSearchParams()
   const t = useTranslations('Catalogue')
+  const router = useRouter()
 
   const { data: brand, isLoading: brandLoading } = useQuery<any>({
     queryKey: ['brand', slug],
@@ -56,11 +58,11 @@ export default function BrandPage({ params }: { params: Promise<{ slug: string }
   })
 
   if (brandLoading) {
-    return <div className="section-padding py-20 text-center">Chargement de la marque...</div>
+    return <div className="section-padding py-20 text-center">{t('loadingBrand')}</div>
   }
 
   if (!brand && !brandLoading) {
-    return <div className="section-padding py-20 text-center">Marque introuvable.</div>
+    return <div className="section-padding py-20 text-center">{t('brandNotFound')}</div>
   }
 
   return (
@@ -90,7 +92,7 @@ export default function BrandPage({ params }: { params: Promise<{ slug: string }
 
       <div className="section-padding py-8">
         <Breadcrumb
-          items={[{ label: 'Marques', href: '/marques' }, { label: brand?.name || slug }]}
+          items={[{ label: t('brands'), href: '/marques' }, { label: brand?.name || slug }]}
         />
 
         <div className="mt-6 flex flex-col gap-8 md:flex-row">
@@ -104,10 +106,10 @@ export default function BrandPage({ params }: { params: Promise<{ slug: string }
             <div className="mb-6 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
               <div>
                 <h2 className="font-display text-brand-primary text-2xl font-bold">
-                  Produits {brand?.name}
+                  {t('productsInBrand', { brandName: brand?.name })}
                 </h2>
                 <p className="mt-1 flex items-center gap-2 text-gray-500">
-                  {productsData?.total || 0} produits trouvés
+                  {t('productsFound', { count: productsData?.total || 0 })}
                   {isFetching && !productsLoading && (
                     <Loader2 size={13} className="animate-spin text-[#E10600]" aria-label={t('updating')} />
                   )}
@@ -133,10 +135,10 @@ export default function BrandPage({ params }: { params: Promise<{ slug: string }
               </>
             ) : (
               <EmptyState
-                message="Aucun produit ne correspond à vos critères de recherche pour cette marque."
+                message={t('brandNoResults')}
                 action={{
-                  label: 'Effacer les filtres',
-                  onClick: () => (window.location.href = `/marque/${slug}`),
+                  label: t('clearAllFilters'),
+                  onClick: () => router.push(`/marque/${slug}`),
                 }}
               />
             )}

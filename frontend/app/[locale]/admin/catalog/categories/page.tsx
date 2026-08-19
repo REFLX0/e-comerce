@@ -108,6 +108,7 @@ function ModalForm({
   onSave: (data: { name: string; slug: string }) => void
   onClose: () => void
 }) {
+  const t = useTranslations('Admin')
   const [name, setName] = useState(initial?.name ?? '')
   const [slug, setSlug] = useState(initial?.slug ?? '')
   const [saving, setSaving] = useState(false)
@@ -126,36 +127,36 @@ function ModalForm({
 
         <div className="space-y-4">
           <div>
-            <label className="mb-1.5 block text-xs font-semibold text-gray-500 uppercase tracking-wider">Nom</label>
+            <label className="mb-1.5 block text-xs font-semibold text-gray-500 uppercase tracking-wider">{t('nameLabel')}</label>
             <input
               type="text"
               value={name}
               onChange={(e) => { setName(e.target.value); if (!initial) setSlug(generateSlug(e.target.value)) }}
               className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm outline-none focus:border-brand-accent focus:ring-2 focus:ring-brand-accent/20"
-              placeholder="Nom de la catégorie"
+              placeholder={t('categoryNamePlaceholder')}
               autoFocus
             />
           </div>
           <div>
-            <label className="mb-1.5 block text-xs font-semibold text-gray-500 uppercase tracking-wider">Slug</label>
+            <label className="mb-1.5 block text-xs font-semibold text-gray-500 uppercase tracking-wider">{t('slugLabel')}</label>
             <input
               type="text"
               value={slug}
               onChange={(e) => setSlug(generateSlug(e.target.value))}
               className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm outline-none focus:border-brand-accent focus:ring-2 focus:ring-brand-accent/20"
-              placeholder="slug-de-la-categorie"
+              placeholder={t('slugPlaceholder')}
             />
           </div>
           <div className="flex gap-3 pt-2">
             <button onClick={onClose} className="flex-1 rounded-xl border border-gray-200 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">
-              Annuler
+              {t('cancel')}
             </button>
             <button
               onClick={async () => { setSaving(true); await onSave({ name, slug }); setSaving(false) }}
               disabled={!name || !slug || saving}
               className="flex-1 rounded-xl bg-brand-accent py-2.5 text-sm font-semibold text-black hover:bg-brand-accent-hover transition-colors disabled:opacity-50"
             >
-              {saving ? <Loader2 size={16} className="mx-auto animate-spin" /> : 'Enregistrer'}
+              {saving ? <Loader2 size={16} className="mx-auto animate-spin" /> : t('save')}
             </button>
           </div>
         </div>
@@ -165,16 +166,17 @@ function ModalForm({
 }
 
 function ConfirmDialog({ message, onConfirm, onClose }: { message: string; onConfirm: () => void; onClose: () => void }) {
+  const t = useTranslations('Admin')
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm" onClick={onClose}>
       <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-2xl" onClick={(e) => e.stopPropagation()}>
         <p className="text-sm text-gray-700">{message}</p>
         <div className="mt-5 flex gap-3">
           <button onClick={onClose} className="flex-1 rounded-xl border border-gray-200 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">
-            Annuler
+            {t('cancel')}
           </button>
           <button onClick={onConfirm} className="flex-1 rounded-xl bg-red-500 py-2.5 text-sm font-semibold text-white hover:bg-red-600 transition-colors">
-            Supprimer
+            {t('delete')}
           </button>
         </div>
       </div>
@@ -254,8 +256,8 @@ export default function AdminCategoriesPage() {
       <div className="p-4 sm:p-6">
         <div className="rounded-2xl border border-red-100 bg-red-50 p-6 text-center">
           <AlertTriangle size={32} className="mx-auto mb-3 text-red-400" />
-          <p className="text-sm font-semibold text-red-700">Erreur de chargement des catégories</p>
-          <button onClick={() => refetch()} className="mt-3 rounded-xl bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700">Réessayer</button>
+          <p className="text-sm font-semibold text-red-700">{t('categoriesLoadError')}</p>
+          <button onClick={() => refetch()} className="mt-3 rounded-xl bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700">{t('retry')}</button>
         </div>
       </div>
     )
@@ -274,20 +276,20 @@ export default function AdminCategoriesPage() {
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold text-brand-primary">{t('categories')}</h1>
-          <p className="text-sm text-gray-500">{categories.length} catégories parentes</p>
+          <p className="text-sm text-gray-500">{t('parentCategoriesCount', { count: categories.length })}</p>
         </div>
         <button
           onClick={() => setModal({ type: 'create' })}
           className="flex items-center gap-2 self-start rounded-xl bg-brand-accent px-4 py-2.5 text-sm font-semibold text-black hover:bg-brand-accent-hover transition-colors"
         >
-          <Plus size={16} /> Nouvelle catégorie
+          <Plus size={16} /> {t('newCategory')}
         </button>
       </div>
 
       <div className="rounded-2xl border border-gray-100 bg-white shadow-sm overflow-hidden">
         <div className="border-b border-gray-50 bg-gray-50 px-4 py-3">
           <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
-            Arborescence des catégories — glisser-déposer pour réorganiser les catégories parentes
+            {t('categoryTreeLabel')}
           </p>
         </div>
 
@@ -299,8 +301,8 @@ export default function AdminCategoriesPage() {
           ) : categories.length === 0 ? (
             <div className="py-16 text-center">
               <FolderOpen size={40} className="mx-auto mb-3 text-gray-200" />
-              <p className="text-sm font-semibold text-gray-400">Aucune catégorie</p>
-              <p className="text-xs text-gray-300 mt-1">Créez votre première catégorie pour commencer</p>
+              <p className="text-sm font-semibold text-gray-400">{t('noCategories')}</p>
+              <p className="text-xs text-gray-300 mt-1">{t('firstCategoryHint')}</p>
             </div>
           ) : (
             <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
@@ -343,15 +345,15 @@ export default function AdminCategoriesPage() {
       </div>
 
       <div className="rounded-xl border border-blue-100 bg-blue-50 p-4 text-sm text-blue-700">
-        <p className="font-semibold mb-1">Astuce</p>
+        <p className="font-semibold mb-1">{t('tip')}</p>
         <p className="text-xs leading-relaxed text-blue-600">
-          Faites glisser les catégories parentes pour les réorganiser. Cliquez sur <strong>+</strong> pour ajouter des sous-catégories. Les catégories vides n'apparaissent pas dans le catalogue client.
+          {t('tipText')}
         </p>
       </div>
 
       {modal && (
         <ModalForm
-          title={modal.type === 'create' ? 'Nouvelle catégorie' : 'Modifier la catégorie'}
+          title={modal.type === 'create' ? t('newCategory') : t('editCategoryTitle')}
           initial={modal.cat ? { name: modal.cat.name, slug: modal.cat.slug } : undefined}
           onSave={(data) => {
             if (modal.type === 'create') saveMutation.mutate({ ...data, parentId: modal.parentId })
@@ -363,7 +365,7 @@ export default function AdminCategoriesPage() {
 
       {deleteTarget && (
         <ConfirmDialog
-          message={`Supprimer "${deleteTarget.name}" ? Les sous-catégories seront déplacées au niveau supérieur.`}
+          message={t('deleteCategoryMessage', { name: deleteTarget.name })}
           onConfirm={() => deleteMutation.mutate(deleteTarget.id)}
           onClose={() => setDeleteTarget(null)}
         />

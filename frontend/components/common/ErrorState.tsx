@@ -1,4 +1,7 @@
+"use client";
+
 import { AlertTriangle, RefreshCw } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 
 interface Props {
   title?: string
@@ -9,11 +12,12 @@ interface Props {
 }
 
 export function ErrorState({
-  title = 'Oups ! Quelque chose s\'est mal passé',
-  message = 'Une erreur est survenue lors du chargement des données. Veuillez réessayer.',
+  title,
+  message,
   onRetry,
   detail,
 }: Props) {
+  const t = useTranslations('Common')
   return (
     <div
       className="flex flex-col items-center justify-center py-24 text-center"
@@ -30,17 +34,17 @@ export function ErrorState({
 
       {/* Text */}
       <h3 className="font-display text-brand-primary mb-2 text-xl font-semibold tracking-tight">
-        {title}
+        {title ?? t('errorTitle')}
       </h3>
       <p className="mb-8 max-w-sm text-sm leading-relaxed text-gray-500">
-        {message}
+        {message ?? t('errorMessage')}
       </p>
 
       {/* Technical detail (collapsed by default) */}
       {detail && (
         <details className="mb-6 max-w-sm">
           <summary className="cursor-pointer text-xs text-gray-400 hover:text-gray-600">
-            Afficher les détails techniques
+            {t('showTechDetails')}
           </summary>
           <p className="mt-2 rounded-lg bg-gray-50 px-4 py-3 text-left font-mono text-xs break-all text-gray-500">
             {detail}
@@ -56,7 +60,7 @@ export function ErrorState({
           type="button"
         >
           <RefreshCw size={15} />
-          Réessayer
+          {t('retry')}
         </button>
       )}
     </div>

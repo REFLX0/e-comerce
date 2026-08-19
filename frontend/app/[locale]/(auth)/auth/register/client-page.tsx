@@ -8,32 +8,29 @@ import { useAuthStore } from '@/lib/store/auth.store'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { useTranslations } from 'next-intl'
 import { ArrowRight, Mail, Lock, User, Phone, Eye, EyeOff, Loader2, CheckCircle2, XCircle } from 'lucide-react'
 
-const passwordRules = [
-  { label: 'Au moins 8 caractères', test: (v: string) => v.length >= 8 },
-  { label: 'Une lettre majuscule', test: (v: string) => /[A-Z]/.test(v) },
-  { label: 'Un chiffre', test: (v: string) => /[0-9]/.test(v) },
-]
+type RegisterFormData = z.infer<ReturnType<typeof buildRegisterSchema>>
 
-const registerSchema = z
-  .object({
-    firstName: z.string().min(2, 'Le prénom doit contenir au moins 2 caractères'),
-    lastName: z.string().min(2, 'Le nom doit contenir au moins 2 caractères'),
-    email: z.string().email('Adresse email invalide'),
-    phone: z.string().optional(),
-    password: z.string()
-      .min(8, 'Le mot de passe doit contenir au moins 8 caractères')
-      .regex(/[A-Z]/, 'Le mot de passe doit contenir au moins une majuscule')
-      .regex(/[0-9]/, 'Le mot de passe doit contenir au moins un chiffre'),
-    confirmPassword: z.string(),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: 'Les mots de passe ne correspondent pas',
-    path: ['confirmPassword'],
-  })
-
-type RegisterFormData = z.infer<typeof registerSchema>
+function buildRegisterSchema(t: (k: string) => string) {
+  return z
+    .object({
+      firstName: z.string().min(2, t('firstNameMin')),
+      lastName: z.string().min(2, t('lastNameMin')),
+      email: z.string().email(t('emailInvalid')),
+      phone: z.string().optional(),
+      password: z.string()
+        .min(8, t('passwordMinMsg'))
+        .regex(/[A-Z]/, t('passwordUpperMsg'))
+        .regex(/[0-9]/, t('passwordDigitMsg')),
+      confirmPassword: z.string(),
+    })
+    .refine((data) => data.password === data.confirmPassword, {
+      message: t('passwordMismatch'),
+      path: ['confirmPassword'],
+    })
+}
 
 function FieldError({ message }: { message: string | undefined }) {
   if (!message) return null
@@ -44,11 +41,16 @@ function FieldError({ message }: { message: string | undefined }) {
   )
 }
 
-function PasswordStrength({ value }: { value: string }) {
+function PasswordStrength({ value, t }: { value: string; t: (k: string) => string }) {
+  const rules = [
+    { label: t('passwordMin'), test: (v: string) => v.length >= 8 },
+    { label: t('passwordUpper'), test: (v: string) => /[A-Z]/.test(v) },
+    { label: t('passwordDigit'), test: (v: string) => /[0-9]/.test(v) },
+  ]
   if (!value) return null
   return (
-    <ul className="mt-2 space-y-1" aria-label="Critères du mot de passe">
-      {passwordRules.map((rule) => {
+    <ul className="mt-2 space-y-1" aria-label={t('passwordCriteriaAria')}>
+      {rules.map((rule) => {
         const passed = rule.test(value)
         return (
           <li
@@ -71,6 +73,7 @@ function PasswordStrength({ value }: { value: string }) {
 }
 
 export default function RegisterPage() {
+  const t = useTranslations('Auth')
   const router = useRouter()
   const registerUser = useAuthStore((s) => s.register)
   const isLoading = useAuthStore((s) => s.isLoading)
@@ -83,7 +86,7 @@ export default function RegisterPage() {
     handleSubmit,
     formState: { errors },
   } = useForm<RegisterFormData>({
-    resolver: zodResolver(registerSchema),
+    resolver: zodResolver(buildRegisterSchema(t)),
   })
 
   const onSubmit = async (data: RegisterFormData) => {
@@ -95,19 +98,19 @@ export default function RegisterPage() {
         password: data.password,
         ...(data.phone ? { phone: data.phone } : {}),
       })
-      toast.success('Compte créé avec succès !', {
-        description: 'Bienvenue chez specpart. Vous êtes maintenant connecté.',
+      toast.success(t('accountCreated'), {
+        description: t('accountCreatedDesc'),
       })
       router.push('/compte')
     } catch (error) {
       const message = error instanceof Error ? error.message : undefined
       if (message?.toLowerCase().includes('email')) {
-        toast.error('Adresse email déjà utilisée', {
-          description: 'Essayez de vous connecter ou utilisez une autre adresse.',
+        toast.error(t('emailAlreadyUsed'), {
+          description: t('emailAlreadyUsedDesc'),
         })
       } else {
-        toast.error('Erreur lors de la création du compte', {
-          description: message || 'Veuillez réessayer dans un instant.',
+        toast.error(t('registerError'), {
+          description: message || t('tryAgainLater'),
         })
       }
     }
@@ -126,10 +129,10 @@ export default function RegisterPage() {
         {/* Header */}
         <div className="mb-8 text-center">
           <h1 className="font-display text-brand-primary mb-2 text-3xl font-bold">
-            Créer un compte
+            {t('createAccountTitle')}
           </h1>
           <p className="text-gray-500">
-            Rejoignez specpart et profitez d&apos;une expérience d&apos;achat simplifiée.
+            {t('createAccountSubtitle')}
           </p>
         </div>
 
@@ -137,14 +140,14 @@ export default function RegisterPage() {
           onSubmit={handleSubmit(onSubmit)}
           className="space-y-5"
           noValidate
-          aria-label="Formulaire de création de compte"
+          aria-label={t('registerFormAria')}
         >
           {/* Name row */}
           <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
             {/* First name */}
             <div className="space-y-1.5">
               <label htmlFor="reg-firstName" className="text-sm font-medium text-gray-700">
-                Prénom <span className="text-red-500" aria-hidden="true">*</span>
+                {t('firstName')} <span className="text-red-500" aria-hidden="true">*</span>
               </label>
               <div className="relative">
                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400">
@@ -158,7 +161,7 @@ export default function RegisterPage() {
                   aria-invalid={!!errors.firstName}
                   aria-describedby={errors.firstName ? 'firstName-error' : undefined}
                   className={inputClass(!!errors.firstName)}
-                  placeholder="Prénom"
+                  placeholder={t('firstName')}
                 />
               </div>
               <FieldError message={errors.firstName?.message ?? undefined} />
@@ -167,7 +170,7 @@ export default function RegisterPage() {
             {/* Last name */}
             <div className="space-y-1.5">
               <label htmlFor="reg-lastName" className="text-sm font-medium text-gray-700">
-                Nom <span className="text-red-500" aria-hidden="true">*</span>
+                {t('lastName')} <span className="text-red-500" aria-hidden="true">*</span>
               </label>
               <div className="relative">
                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400">
@@ -179,7 +182,7 @@ export default function RegisterPage() {
                   autoComplete="family-name"
                   aria-invalid={!!errors.lastName}
                   className={inputClass(!!errors.lastName)}
-                  placeholder="Nom"
+                  placeholder={t('lastName')}
                 />
               </div>
               <FieldError message={errors.lastName?.message ?? undefined} />
@@ -189,7 +192,7 @@ export default function RegisterPage() {
           {/* Email */}
           <div className="space-y-1.5">
             <label htmlFor="reg-email" className="text-sm font-medium text-gray-700">
-              Email <span className="text-red-500" aria-hidden="true">*</span>
+              {t('email')} <span className="text-red-500" aria-hidden="true">*</span>
             </label>
             <div className="relative">
               <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400">
@@ -211,8 +214,8 @@ export default function RegisterPage() {
           {/* Phone (optional) */}
           <div className="space-y-1.5">
             <label htmlFor="reg-phone" className="flex items-center gap-1.5 text-sm font-medium text-gray-700">
-              Téléphone
-              <span className="text-xs font-normal text-gray-400">(Optionnel)</span>
+              {t('phone')}
+              <span className="text-xs font-normal text-gray-400">({t('optional')})</span>
             </label>
             <div className="relative">
               <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400">
@@ -235,7 +238,7 @@ export default function RegisterPage() {
             {/* Password */}
             <div className="space-y-1.5">
               <label htmlFor="reg-password" className="text-sm font-medium text-gray-700">
-                Mot de passe <span className="text-red-500" aria-hidden="true">*</span>
+                {t('password')} <span className="text-red-500" aria-hidden="true">*</span>
               </label>
               <div className="relative">
                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400">
@@ -256,19 +259,19 @@ export default function RegisterPage() {
                   type="button"
                   onClick={() => setShowPassword((v) => !v)}
                   className="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-400 hover:text-gray-600 transition-colors"
-                  aria-label={showPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe'}
+                  aria-label={showPassword ? t('hidePassword') : t('showPassword')}
                 >
                   {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
               </div>
               <FieldError message={errors.password?.message ?? undefined} />
-              <PasswordStrength value={passwordValue} />
+              <PasswordStrength value={passwordValue} t={t} />
             </div>
 
             {/* Confirm password */}
             <div className="space-y-1.5">
               <label htmlFor="reg-confirmPassword" className="text-sm font-medium text-gray-700">
-                Confirmer <span className="text-red-500" aria-hidden="true">*</span>
+                {t('confirm')} <span className="text-red-500" aria-hidden="true">*</span>
               </label>
               <div className="relative">
                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400">
@@ -287,7 +290,7 @@ export default function RegisterPage() {
                   type="button"
                   onClick={() => setShowConfirm((v) => !v)}
                   className="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-400 hover:text-gray-600 transition-colors"
-                  aria-label={showConfirm ? 'Masquer la confirmation' : 'Afficher la confirmation'}
+                  aria-label={showConfirm ? t('hideConfirm') : t('showConfirm')}
                 >
                   {showConfirm ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
@@ -306,11 +309,11 @@ export default function RegisterPage() {
             {isLoading ? (
               <>
                 <Loader2 size={18} className="animate-spin" aria-hidden="true" />
-                Création en cours...
+                {t('creating')}
               </>
             ) : (
               <>
-                Créer mon compte
+                {t('createMyAccount')}
                 <ArrowRight size={18} aria-hidden="true" />
               </>
             )}
@@ -319,12 +322,12 @@ export default function RegisterPage() {
 
         {/* Footer */}
         <div className="mt-8 border-t border-gray-100 pt-6 text-center text-sm text-gray-500">
-          Déjà un compte ?{' '}
+          {t('alreadyHaveAccount')}{' '}
           <Link
             href="/auth/login"
             className="text-brand-primary hover:text-brand-primary/70 font-bold transition-colors"
           >
-            Se connecter
+            {t('signInLink')}
           </Link>
         </div>
       </div>

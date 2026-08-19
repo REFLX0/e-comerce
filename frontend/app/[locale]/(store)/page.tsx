@@ -5,8 +5,11 @@ import { TrustBadges } from '@/components/common/TrustBadges'
 import { BrandsBar } from '@/components/home/BrandsBar'
 import { WhySpecpart } from '@/components/home/WhySpecpart'
 import { OilFinderTabs } from '@/features/oil-finder/components/OilFinderTabs'
+import { useTranslations } from 'next-intl'
 
 export default function Home() {
+  const t = useTranslations('Home')
+
   return (
     <>
       {/* 1. Hero */}
@@ -19,13 +22,13 @@ export default function Home() {
         <div className="section-padding">
           <div className="relative mb-10 text-center">
             <p className="mb-3 text-xs font-bold uppercase tracking-[0.25em] text-brand-accent">
-              Outil de recherche
+              {t('searchTool')}
             </p>
             <h2 className="text-3xl font-black tracking-tight text-brand-primary md:text-5xl">
-              Trouver mon huile
+              {t('findMyOil')}
             </h2>
             <p className="mx-auto mt-4 max-w-xl text-sm leading-6 text-gray-500 md:text-base">
-              Trouvez l&apos;huile parfaitement adaptée à votre véhicule en quelques clics
+              {t('oilFinderDescription')}
             </p>
           </div>
           <OilFinderTabs />

@@ -26,7 +26,7 @@ export function NewsletterForm() {
       toast.success(t('thankYou'))
       setEmail('')
     } catch (err) {
-      toast.error('Erreur lors de l\'inscription')
+      toast.error(t('newsletterError'))
     } finally {
       setIsLoading(false)
     }
@@ -36,10 +36,10 @@ export function NewsletterForm() {
     <form
       onSubmit={handleSubmit}
       className="surface-card border-white/[0.10] bg-white/[0.08] p-4 backdrop-blur md:p-5"
-      aria-label="Inscription newsletter"
+      aria-label={t('newsletterAria')}
     >
       <label htmlFor="newsletter-email" className="sr-only">
-        Adresse email
+        {t('emailAria')}
       </label>
       <div className="flex flex-col gap-3 sm:flex-row">
         <input
@@ -51,15 +51,15 @@ export function NewsletterForm() {
           autoComplete="email"
           disabled={isLoading}
           className="min-h-12 flex-1 rounded-lg border border-white/[0.18] bg-white/[0.10] px-4 text-brand-surface placeholder:text-brand-surface/50 transition-all duration-200 focus:border-white/40 focus:bg-white/[0.15] focus:ring-2 focus:ring-white/20 disabled:opacity-50"
-          aria-label="Adresse email"
+          aria-label={t('emailAria')}
         />
         <button
           type="submit"
           disabled={isLoading}
           className="btn-accent shrink-0 disabled:opacity-70 disabled:cursor-wait"
-          aria-label="S'inscrire à la newsletter"
+          aria-label={t('subscribeAria')}
         >
-          {isLoading ? 'Inscription...' : t('subscribe')}
+          {isLoading ? t('subscribing') : t('subscribe')}
           <ArrowRight size={16} aria-hidden="true" />
         </button>
       </div>

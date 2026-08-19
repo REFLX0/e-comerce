@@ -15,24 +15,6 @@ import { useTranslations } from 'next-intl'
 import { WILAYAS_TN } from '@/lib/utils/format'
 import { FormInput, FormSelect, FormTextarea } from '@/components/common/FormInput'
 
-const checkoutSchema = z.object({
-  firstName: z.string().min(2, 'Prénom trop court'),
-  lastName: z.string().min(2, 'Nom trop court'),
-  email: z.string().email('Email invalide'),
-  phone: z.string().regex(/^[0-9]{8}$/, 'Numéro tunisien 8 chiffres'),
-  address: z.string().min(5, 'Adresse trop courte'),
-  city: z.string().min(2, 'Ville requise'),
-  wilaya: z.string().min(1, 'Wilaya requise'),
-  postalCode: z.string().min(4, 'Code postal requis'),
-  vehicleVin: z.string().trim().refine(
-    (value) => value === '' || /^[A-HJ-NPR-Z0-9]{17}$/i.test(value),
-    'Le VIN doit contenir 17 caractères alphanumériques (sans I, O ni Q)'
-  ).optional(),
-  notes: z.string().optional(),
-})
-
-type CheckoutFormData = z.infer<typeof checkoutSchema>
-
 export function CheckoutForm() {
   const t = useTranslations('Checkout')
   const router = useRouter()
@@ -41,6 +23,24 @@ export function CheckoutForm() {
   const [promoLoading, setPromoLoading] = useState(false)
   const [promoError, setPromoError] = useState('')
   const { items, shippingCost, promoCode, promoDiscount, clearCart, applyPromo, removePromo } = useCartStore()
+
+  const checkoutSchema = z.object({
+    firstName: z.string().min(2, t('firstNameTooShort')),
+    lastName: z.string().min(2, t('lastNameTooShort')),
+    email: z.string().email(t('emailInvalid')),
+    phone: z.string().regex(/^[0-9]{8}$/, t('phoneInvalid')),
+    address: z.string().min(5, t('addressTooShort')),
+    city: z.string().min(2, t('cityRequired')),
+    wilaya: z.string().min(1, t('wilayaRequired')),
+    postalCode: z.string().min(4, t('postalCodeRequired')),
+    vehicleVin: z.string().trim().refine(
+      (value) => value === '' || /^[A-HJ-NPR-Z0-9]{17}$/i.test(value),
+      t('invalidVin')
+    ).optional(),
+    notes: z.string().optional(),
+  })
+
+  type CheckoutFormData = z.infer<typeof checkoutSchema>
 
   const {
     register,
@@ -65,9 +65,9 @@ export function CheckoutForm() {
         applyPromo(code, res.discount)
       }
       setPromoInput('')
-      toast.success('Code promo appliqué !')
+      toast.success(t('promoApplied'))
     } catch (err: any) {
-      setPromoError(err?.response?.data?.message || err?.message || 'Code promo invalide')
+      setPromoError(err?.response?.data?.message || err?.message || t('invalidPromo'))
     } finally {
       setPromoLoading(false)
     }
@@ -75,7 +75,7 @@ export function CheckoutForm() {
 
   const handleRemovePromo = () => {
     removePromo()
-    toast.success('Code promo retiré')
+    toast.success(t('promoRemoved'))
   }
 
   const onSubmit = async (data: CheckoutFormData) => {
@@ -106,11 +106,11 @@ export function CheckoutForm() {
       )
 
       clearCart()
-      toast.success('Commande validée avec succès !')
+      toast.success(t('orderPlaced'))
       router.push(`/checkout/success?orderId=${order.id}`)
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : 'Une erreur est survenue lors de la validation'
+        error instanceof Error ? error.message : t('orderError')
       )
     } finally {
       setIsLoading(false)
@@ -130,18 +130,18 @@ export function CheckoutForm() {
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <FormInput
             id="firstName"
-            label="Prénom"
+            label={t('firstName')}
             required
-            placeholder="Votre prénom"
+            placeholder={t('firstNamePlaceholder')}
             error={errors.firstName?.message}
             {...register('firstName')}
           />
 
           <FormInput
             id="lastName"
-            label="Nom"
+            label={t('lastName')}
             required
-            placeholder="Votre nom"
+            placeholder={t('lastNamePlaceholder')}
             error={errors.lastName?.message}
             {...register('lastName')}
           />
@@ -151,16 +151,16 @@ export function CheckoutForm() {
             label="Email"
             required
             type="email"
-            placeholder="votre@email.com"
+            placeholder={t('emailPlaceholder')}
             error={errors.email?.message}
             {...register('email')}
           />
 
           <FormInput
             id="phone"
-            label="Téléphone"
+            label={t('phone')}
             required
-            placeholder="Ex: 98765432"
+            placeholder={t('phonePlaceholder')}
             error={errors.phone?.message}
             {...register('phone')}
           />
@@ -168,9 +168,9 @@ export function CheckoutForm() {
           <div className="md:col-span-2">
             <FormInput
               id="address"
-              label="Adresse de livraison"
+              label={t('addressLabel')}
               required
-              placeholder="Numéro, rue, appartement..."
+              placeholder={t('addressPlaceholder')}
               error={errors.address?.message}
               {...register('address')}
             />
@@ -178,9 +178,9 @@ export function CheckoutForm() {
 
           <FormSelect
             id="wilaya"
-            label="Gouvernorat (Wilaya)"
+            label={t('wilayaLabel')}
             required
-            placeholder="Sélectionner..."
+            placeholder={t('selectPlaceholder')}
             options={WILAYAS_TN.map((w) => ({ value: w, label: w }))}
             error={errors.wilaya?.message}
             {...register('wilaya')}
@@ -188,18 +188,18 @@ export function CheckoutForm() {
 
           <FormInput
             id="city"
-            label="Ville"
+            label={t('cityLabel')}
             required
-            placeholder="Votre ville"
+            placeholder={t('cityPlaceholder')}
             error={errors.city?.message}
             {...register('city')}
           />
 
           <FormInput
             id="postalCode"
-            label="Code Postal"
+            label={t('postalCodeLabel')}
             required
-            placeholder="Ex: 1000"
+            placeholder={t('postalCodePlaceholder')}
             error={errors.postalCode?.message}
             {...register('postalCode')}
           />
@@ -207,21 +207,21 @@ export function CheckoutForm() {
           <div className="md:col-span-2">
             <FormInput
               id="vehicleVin"
-              label="VIN du véhicule (facultatif)"
-              placeholder="17 caractères, ex. VF1..."
+              label={t('vin')}
+              placeholder={t('vinPlaceholder')}
               maxLength={17}
               autoCapitalize="characters"
               error={errors.vehicleVin?.message}
               {...register('vehicleVin')}
             />
-            <p className="mt-1 text-xs text-gray-500">Ajoutez-le uniquement si vous souhaitez faciliter la vérification de compatibilité.</p>
+            <p className="mt-1 text-xs text-gray-500">{t('vinHint')}</p>
           </div>
 
           <div className="md:col-span-2">
             <FormTextarea
               id="notes"
-              label="Notes de livraison (Optionnel)"
-              placeholder="Instructions particulières pour le livreur..."
+              label={t('notesLabel')}
+              placeholder={t('deliveryInstructions')}
               error={errors.notes?.message}
               {...register('notes')}
             />
@@ -234,7 +234,7 @@ export function CheckoutForm() {
           <div className="bg-brand-primary flex h-8 w-8 items-center justify-center rounded-full text-sm text-white">
             2
           </div>
-          Code promo
+          {t('promoCodeTitle')}
         </h2>
         {promoCode ? (
           <div className="bg-brand-primary/10 flex items-center justify-between rounded-xl p-4">
@@ -245,7 +245,7 @@ export function CheckoutForm() {
                 <p className="text-sm text-gray-600">
                   {promoDiscount > 0
                     ? `-${promoDiscount.toFixed(3)} TND`
-                    : 'Livraison offerte'}
+                    : t('freeShipping')}
                 </p>
               </div>
             </div>
@@ -264,7 +264,7 @@ export function CheckoutForm() {
                 type="text"
                 value={promoInput}
                 onChange={(e) => setPromoInput(e.target.value)}
-                placeholder="Saisissez votre code promo"
+                placeholder={t('promoPlaceholder')}
                 className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm outline-none transition-colors focus:border-gray-400"
                 onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleApplyPromo())}
               />
@@ -276,7 +276,7 @@ export function CheckoutForm() {
               disabled={promoLoading || !promoInput.trim()}
               className="bg-brand-primary rounded-xl px-6 py-3 text-sm font-bold text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
             >
-              {promoLoading ? '...' : 'Appliquer'}
+              {promoLoading ? '...' : t('apply')}
             </button>
           </div>
         )}
@@ -299,8 +299,7 @@ export function CheckoutForm() {
           <div>
             <h3 className="text-brand-primary font-bold">{t('cod')}</h3>
             <p className="mt-1 text-sm text-gray-600">
-              Payez en espèces lorsque vous recevez votre commande. C'est simple, rapide et 100%
-              sécurisé.
+              {t('codDescription')}
             </p>
           </div>
         </div>

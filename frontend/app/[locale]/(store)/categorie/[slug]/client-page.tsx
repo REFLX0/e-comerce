@@ -18,6 +18,7 @@ import { EmptyState } from '@/components/common/EmptyState'
 import { useSearchParams } from 'next/navigation'
 import { Loader2 } from 'lucide-react'
 import { useTranslations } from 'next-intl'
+import { useRouter } from '@/i18n/routing'
 import { use } from 'react'
 import { useVehicleUrlSync } from '@/lib/hooks/useVehicleUrlSync'
 
@@ -26,6 +27,7 @@ const VEHICLE_QUERY_KEYS = ['make', 'model', 'engine']
 export default function CategoryPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params)
   const searchParams = useSearchParams()
+  const router = useRouter()
   const t = useTranslations('Catalogue')
 
   useVehicleUrlSync(true)
@@ -97,7 +99,7 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
       <Breadcrumb
         items={[
           { label: 'Catalogue', href: '/catalogue' },
-          { label: category?.name || 'Chargement...' },
+          { label: category?.name || t('loading') },
         ]}
       />
 
@@ -113,7 +115,7 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
             <div className="bg-gray-100 mb-6 h-10 w-1/3 animate-pulse rounded" />
           ) : catError ? (
             <div className="mb-6 text-red-500">
-              Impossible de charger les informations de la catégorie.
+              {t('categoryLoadError')}
             </div>
           ) : (
             category && (
@@ -135,7 +137,7 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
 
           <div className="mb-6 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
             <p className="flex items-center gap-2 text-gray-500" aria-live="polite">
-              {data?.total || 0} produits trouvés
+              {t('productsFound', { count: data?.total || 0 })}
               {isFetching && !isLoading && (
                 <Loader2 size={13} className="animate-spin text-[#E10600]" aria-label={t('updating')} />
               )}
@@ -165,14 +167,14 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
               message={
                 isVehicleSearch
                   ? t('emptyVehicleMessage')
-                  : 'Aucun produit ne correspond à vos critères dans cette catégorie.'
+                  : t('noProductsInCategory')
               }
               action={
                 isVehicleSearch
-                  ? { label: t('searchAllCatalog'), onClick: () => (window.location.href = `/catalogue`)}
+                  ? { label: t('searchAllCatalog'), onClick: () => router.replace(`/catalogue`)}
                   : {
-                      label: 'Effacer les filtres',
-                      onClick: () => (window.location.href = `/categorie/${slug}`),
+                      label: t('clearFilters'),
+                      onClick: () => router.replace(`/categorie/${slug}`),
                     }
               }
             />

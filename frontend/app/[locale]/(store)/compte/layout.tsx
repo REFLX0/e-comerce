@@ -69,6 +69,7 @@ function SidebarContent({
 
 export default function CompteLayout({ children }: { children: React.ReactNode }) {
   const t = useTranslations('Account')
+  const layoutT = useTranslations('Layout')
 
   const NAV_ITEMS = [
     { href: '/compte',           icon: LayoutDashboard, label: t('dashboard'),     exact: true },
@@ -176,7 +177,7 @@ export default function CompteLayout({ children }: { children: React.ReactNode }
         <button
           onClick={() => setMobileOpen(true)}
           className="rounded-xl p-2 text-gray-600 hover:bg-gray-100 transition-colors"
-          aria-label="Ouvrir le menu"
+          aria-label={layoutT('openMenu')}
         >
           <Menu size={20} />
         </button>

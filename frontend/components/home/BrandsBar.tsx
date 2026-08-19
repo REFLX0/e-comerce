@@ -4,6 +4,7 @@ import { useRef, useState, useEffect } from 'react'
 import Image from 'next/image'
 import { Link } from '@/i18n/routing'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 
 // Static list of brands with confirmed local PNG logos
 const KNOWN_BRANDS = [
@@ -21,6 +22,7 @@ const KNOWN_BRANDS = [
 export function BrandsBar() {
   const scrollRef = useRef<HTMLDivElement>(null)
   const [isPaused, setIsPaused] = useState(false)
+  const t = useTranslations('Home')
 
   useEffect(() => {
     if (isPaused || !scrollRef.current) return
@@ -57,14 +59,14 @@ export function BrandsBar() {
             <button
               onClick={() => scroll('left')}
               className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 text-gray-400 transition-all hover:border-brand-primary hover:text-brand-primary"
-              aria-label="Précédent"
+              aria-label={t('previous')}
             >
               <ChevronLeft size={18} />
             </button>
             <button
               onClick={() => scroll('right')}
               className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 text-gray-400 transition-all hover:border-brand-primary hover:text-brand-primary"
-              aria-label="Suivant"
+              aria-label={t('next')}
             >
               <ChevronRight size={18} />
             </button>

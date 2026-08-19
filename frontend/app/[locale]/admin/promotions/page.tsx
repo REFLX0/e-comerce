@@ -6,8 +6,11 @@ import { couponsApi } from '@/lib/api/coupons'
 import { useAuthStore } from '@/lib/store/auth.store'
 import { Plus, Percent, Banknote, Gift, Trash2, ToggleLeft, ToggleRight, Edit2, ChevronLeft, ChevronRight } from 'lucide-react'
 import { toast } from 'sonner'
+import { useLocale, useTranslations } from 'next-intl'
 
 export default function AdminPromotionsPage() {
+    const t = useTranslations('Admin')
+    const locale = useLocale()
     const queryClient = useQueryClient()
   const [showCreate, setShowCreate] = useState(false)
   const [newCode, setNewCode] = useState('')
@@ -50,11 +53,11 @@ export default function AdminPromotionsPage() {
     mutationFn: (body: any) => couponsApi.create(body),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-coupons'] })
-      toast.success('Coupon créé')
+      toast.success(t('couponCreated'))
       setShowCreate(false)
       setNewCode(''); setNewValue(''); setNewMinAmount(''); setNewMaxUses(''); setNewExpiryDate('')
     },
-    onError: () => toast.error('Erreur lors de la création'),
+    onError: () => toast.error(t('couponCreateError')),
   })
 
   const toggleMutation = useMutation({
@@ -62,32 +65,32 @@ export default function AdminPromotionsPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-coupons'] })
     },
-    onError: () => toast.error('Erreur lors de la mise à jour'),
+    onError: () => toast.error(t('updateError')),
   })
 
   const deleteMutation = useMutation({
     mutationFn: (id: string) => couponsApi.delete(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-coupons'] })
-      toast.success('Coupon supprimé')
+      toast.success(t('couponDeleted'))
     },
-    onError: () => toast.error('Erreur lors de la suppression'),
+    onError: () => toast.error(t('couponDeleteError')),
   })
 
   const updateMutation = useMutation({
     mutationFn: ({ id, data }: { id: string; data: any }) => couponsApi.update(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-coupons'] })
-      toast.success('Coupon mis à jour')
+      toast.success(t('couponUpdated'))
       setEditingCoupon(null)
     },
-    onError: () => toast.error('Erreur lors de la mise à jour'),
+    onError: () => toast.error(t('updateError')),
   })
 
   const handleCreate = (e: React.FormEvent) => {
     e.preventDefault()
     if (!newCode || !newValue) {
-      toast.error('Code et valeur requis')
+      toast.error(t('codeValueRequired'))
       return
     }
     createMutation.mutate({
@@ -104,11 +107,11 @@ export default function AdminPromotionsPage() {
     <div className="p-4 sm:p-6 space-y-5">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-brand-primary">Promotions & Coupons</h1>
-          <p className="text-sm text-gray-500">{coupons.filter((c: any) => c.isActive).length} coupons actifs</p>
+          <h1 className="text-2xl font-bold text-brand-primary">{t('promotionsTitle')}</h1>
+          <p className="text-sm text-gray-500">{t('activeCoupons', { count: coupons.filter((c: any) => c.isActive).length })}</p>
         </div>
         <button onClick={() => setShowCreate(true)} className="flex items-center gap-2 self-start rounded-xl bg-brand-accent px-4 py-2.5 text-sm font-semibold text-black hover:bg-brand-accent-hover transition-colors">
-          <Plus size={16} /> Nouveau coupon
+          <Plus size={16} /> {t('newCoupon')}
         </button>
       </div>
 
@@ -116,7 +119,7 @@ export default function AdminPromotionsPage() {
       <div className="flex gap-2">
         {(['ALL', 'ACTIVE', 'INACTIVE', 'EXPIRED'] as const).map(status => (
           <button key={status} onClick={() => { setStatusFilter(status); setPage(1) }} className={`rounded-xl px-4 py-2 text-sm font-semibold transition-all ${statusFilter === status ? 'bg-brand-primary text-white' : 'bg-white text-gray-500 hover:text-brand-primary border border-gray-200'}`}>
-            {status === 'ALL' ? 'Tous' : status === 'ACTIVE' ? 'Actifs' : status === 'INACTIVE' ? 'Inactifs' : 'Expirés'}
+            {status === 'ALL' ? t('allFilter') : status === 'ACTIVE' ? t('activeFilter') : status === 'INACTIVE' ? t('inactiveFilter') : t('expiredFilter')}
           </button>
         ))}
       </div>
@@ -125,43 +128,43 @@ export default function AdminPromotionsPage() {
       {showCreate && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
           <form onSubmit={handleCreate} className="rounded-2xl border border-gray-100 bg-white p-6 shadow-xl max-w-md w-full mx-4 space-y-4">
-            <h3 className="text-lg font-bold text-brand-primary">Nouveau coupon</h3>
+            <h3 className="text-lg font-bold text-brand-primary">{t('newCoupon')}</h3>
             <div className="space-y-1.5">
-              <label className="text-sm font-semibold text-gray-700">Code *</label>
+              <label className="text-sm font-semibold text-gray-700">{t('codeRequired')}</label>
               <input type="text" value={newCode} onChange={e => setNewCode(e.target.value)} className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-brand-accent transition-all font-mono uppercase" placeholder="PROMO20" required />
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1.5">
-                <label className="text-sm font-semibold text-gray-700">Type</label>
+                <label className="text-sm font-semibold text-gray-700">{t('typeLabel')}</label>
                 <select value={newType} onChange={e => setNewType(e.target.value as any)} className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-brand-accent transition-all">
-                  <option value="PERCENT">Pourcentage</option>
-                  <option value="FIXED">Montant fixe</option>
-                  <option value="SHIPPING">Livraison gratuite</option>
+                  <option value="PERCENT">{t('percentOption')}</option>
+                  <option value="FIXED">{t('fixedOption')}</option>
+                  <option value="SHIPPING">{t('freeShippingOption')}</option>
                 </select>
               </div>
               <div className="space-y-1.5">
-                <label className="text-sm font-semibold text-gray-700">Valeur *</label>
+                <label className="text-sm font-semibold text-gray-700">{t('valueRequired')}</label>
                 <input type="number" value={newValue} onChange={e => setNewValue(e.target.value)} min={0} step={newType === 'PERCENT' ? '1' : '0.01'} className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-brand-accent transition-all" placeholder={newType === 'PERCENT' ? '20' : '10.00'} required />
               </div>
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1.5">
-                <label className="text-sm font-semibold text-gray-700">Montant min.</label>
+                <label className="text-sm font-semibold text-gray-700">{t('minAmountLabel')}</label>
                 <input type="number" value={newMinAmount} onChange={e => setNewMinAmount(e.target.value)} min={0} step="0.01" className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-brand-accent transition-all" placeholder="50.00" />
               </div>
               <div className="space-y-1.5">
-                <label className="text-sm font-semibold text-gray-700">Utilisations max.</label>
+                <label className="text-sm font-semibold text-gray-700">{t('maxUsesLabel')}</label>
                 <input type="number" value={newMaxUses} onChange={e => setNewMaxUses(e.target.value)} min={1} className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-brand-accent transition-all" placeholder="100" />
               </div>
             </div>
             <div className="space-y-1.5">
-              <label className="text-sm font-semibold text-gray-700">Date d'expiration</label>
+              <label className="text-sm font-semibold text-gray-700">{t('expiryDateLabel')}</label>
               <input type="date" value={newExpiryDate} onChange={e => setNewExpiryDate(e.target.value)} className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-brand-accent transition-all" />
             </div>
             <div className="flex justify-end gap-3 pt-2">
-              <button type="button" onClick={() => setShowCreate(false)} className="rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">Annuler</button>
+              <button type="button" onClick={() => setShowCreate(false)} className="rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">{t('cancel')}</button>
               <button type="submit" disabled={createMutation.isPending} className="rounded-xl bg-brand-accent px-4 py-2 text-sm font-semibold text-black hover:bg-brand-accent-hover transition-colors disabled:opacity-50">
-                {createMutation.isPending ? 'Création...' : 'Créer'}
+                {createMutation.isPending ? t('creating') : t('create')}
               </button>
             </div>
           </form>
@@ -172,43 +175,43 @@ export default function AdminPromotionsPage() {
       {editingCoupon && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
           <form onSubmit={(e) => { e.preventDefault(); updateMutation.mutate({ id: editingCoupon.id, data: { code: editCode.toUpperCase(), type: editType, value: parseFloat(editValue), minAmount: editMinAmount ? parseFloat(editMinAmount) : undefined, maxUses: editMaxUses ? parseInt(editMaxUses, 10) : undefined, expiryDate: editExpiryDate || undefined } }) }} className="rounded-2xl border border-gray-100 bg-white p-6 shadow-xl max-w-md w-full mx-4 space-y-4">
-            <h3 className="text-lg font-bold text-brand-primary">Modifier le coupon</h3>
+            <h3 className="text-lg font-bold text-brand-primary">{t('editCouponTitle')}</h3>
             <div className="space-y-1.5">
-              <label className="text-sm font-semibold text-gray-700">Code</label>
+              <label className="text-sm font-semibold text-gray-700">{t('codeLabel')}</label>
               <input type="text" value={editCode} onChange={e => setEditCode(e.target.value)} className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-brand-accent transition-all font-mono uppercase" required />
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1.5">
-                <label className="text-sm font-semibold text-gray-700">Type</label>
+                <label className="text-sm font-semibold text-gray-700">{t('typeLabel')}</label>
                 <select value={editType} onChange={e => setEditType(e.target.value as any)} className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-brand-accent transition-all">
-                  <option value="PERCENT">Pourcentage</option>
-                  <option value="FIXED">Montant fixe</option>
-                  <option value="SHIPPING">Livraison gratuite</option>
+                  <option value="PERCENT">{t('percentOption')}</option>
+                  <option value="FIXED">{t('fixedOption')}</option>
+                  <option value="SHIPPING">{t('freeShippingOption')}</option>
                 </select>
               </div>
               <div className="space-y-1.5">
-                <label className="text-sm font-semibold text-gray-700">Valeur</label>
+                <label className="text-sm font-semibold text-gray-700">{t('valueLabel')}</label>
                 <input type="number" value={editValue} onChange={e => setEditValue(e.target.value)} min={0} step={editType === 'PERCENT' ? '1' : '0.01'} className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-brand-accent transition-all" required />
               </div>
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1.5">
-                <label className="text-sm font-semibold text-gray-700">Montant min.</label>
+                <label className="text-sm font-semibold text-gray-700">{t('minAmountLabel')}</label>
                 <input type="number" value={editMinAmount} onChange={e => setEditMinAmount(e.target.value)} min={0} step="0.01" className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-brand-accent transition-all" />
               </div>
               <div className="space-y-1.5">
-                <label className="text-sm font-semibold text-gray-700">Utilisations max.</label>
+                <label className="text-sm font-semibold text-gray-700">{t('maxUsesLabel')}</label>
                 <input type="number" value={editMaxUses} onChange={e => setEditMaxUses(e.target.value)} min={1} className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-brand-accent transition-all" />
               </div>
             </div>
             <div className="space-y-1.5">
-              <label className="text-sm font-semibold text-gray-700">Date d'expiration</label>
+              <label className="text-sm font-semibold text-gray-700">{t('expiryDateLabel')}</label>
               <input type="date" value={editExpiryDate} onChange={e => setEditExpiryDate(e.target.value)} className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-brand-accent transition-all" />
             </div>
             <div className="flex justify-end gap-3 pt-2">
-              <button type="button" onClick={() => setEditingCoupon(null)} className="rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">Annuler</button>
+              <button type="button" onClick={() => setEditingCoupon(null)} className="rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">{t('cancel')}</button>
               <button type="submit" disabled={updateMutation.isPending} className="rounded-xl bg-brand-accent px-4 py-2 text-sm font-semibold text-black hover:bg-brand-accent-hover transition-colors disabled:opacity-50">
-                {updateMutation.isPending ? 'Enregistrement...' : 'Enregistrer'}
+                {updateMutation.isPending ? t('savingChanges') : t('save')}
               </button>
             </div>
           </form>
@@ -219,12 +222,12 @@ export default function AdminPromotionsPage() {
       {deleteConfirm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
           <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-xl max-w-sm w-full mx-4">
-            <h3 className="text-lg font-bold text-brand-primary mb-2">Confirmer la suppression</h3>
-            <p className="text-sm text-gray-500 mb-6">Voulez-vous vraiment supprimer ce coupon ? Cette action est irréversible.</p>
+            <h3 className="text-lg font-bold text-brand-primary mb-2">{t('confirmDeleteTitle')}</h3>
+            <p className="text-sm text-gray-500 mb-6">{t('deleteCouponDesc')}</p>
             <div className="flex justify-end gap-3">
-              <button onClick={() => setDeleteConfirm(null)} className="rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">Annuler</button>
+              <button onClick={() => setDeleteConfirm(null)} className="rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">{t('cancel')}</button>
               <button onClick={() => { deleteMutation.mutate(deleteConfirm); setDeleteConfirm(null) }} disabled={deleteMutation.isPending} className="rounded-xl bg-red-500 px-4 py-2 text-sm font-semibold text-white hover:bg-red-600 transition-colors disabled:opacity-50">
-                {deleteMutation.isPending ? 'Suppression...' : 'Supprimer'}
+                {deleteMutation.isPending ? t('deleting') : t('deleteAction')}
               </button>
             </div>
           </div>
@@ -233,14 +236,14 @@ export default function AdminPromotionsPage() {
 
       {/* Coupon list */}
       {isError && (
-        <div className="rounded-2xl border border-red-100 bg-red-50 p-4 text-center text-sm text-red-700">Erreur de chargement. Essayez de rafraîchir la page.</div>
+        <div className="rounded-2xl border border-red-100 bg-red-50 p-4 text-center text-sm text-red-700">{t('loadRefreshError')}</div>
       )}
 
       <div className="space-y-3">
         {isLoading ? (
-          <div className="py-8 text-center text-gray-400">Chargement...</div>
+          <div className="py-8 text-center text-gray-400">{t('loading')}</div>
         ) : coupons.length === 0 ? (
-          <div className="py-12 text-center text-gray-400">Aucun coupon trouvé</div>
+          <div className="py-12 text-center text-gray-400">{t('noCoupons')}</div>
         ) : (
           coupons.map((c: any) => (
             <div key={c.id} className={`rounded-2xl border bg-white p-4 shadow-sm transition-opacity ${!c.isActive ? 'opacity-60' : ''}`}>
@@ -254,10 +257,10 @@ export default function AdminPromotionsPage() {
                   <div className="min-w-0">
                     <p className="font-mono text-base font-bold text-brand-primary">{c.code}</p>
                     <p className="text-xs text-gray-400">
-                      {c.type === 'PERCENT' ? `${c.value}% de réduction`
-                      : c.type === 'FIXED' ? `${c.value} TND de réduction`
-                      : 'Livraison gratuite'}
-                      {c.expiryDate && ` · Expire le ${new Date(c.expiryDate).toLocaleDateString('fr-TN')}`}
+                      {c.type === 'PERCENT' ? t('percentDiscount', { value: c.value })
+                      : c.type === 'FIXED' ? t('fixedDiscount', { value: c.value })
+                      : t('freeShipping')}
+                      {c.expiryDate && ` · ${t('expiresOn', { date: new Date(c.expiryDate).toLocaleDateString(locale) })}`}
                     </p>
                   </div>
                 </div>
@@ -267,7 +270,7 @@ export default function AdminPromotionsPage() {
                   {c.maxUses && (
                     <div className="text-center">
                       <p className="text-sm font-bold text-brand-primary">{c.currentUses} / {c.maxUses}</p>
-                      <p className="text-xs text-gray-400">Utilisations</p>
+                      <p className="text-xs text-gray-400">{t('usageLabel')}</p>
                       <div className="mt-1 h-1.5 w-20 overflow-hidden rounded-full bg-gray-100">
                         <div
                           className="h-full rounded-full bg-brand-accent"
@@ -290,21 +293,21 @@ export default function AdminPromotionsPage() {
                         setEditExpiryDate(c.expiryDate ? c.expiryDate.split('T')[0] : '')
                       }}
                       className="rounded-xl p-2 text-gray-400 hover:bg-blue-50 hover:text-blue-600 transition-colors"
-                      title="Modifier"
+                      title={t('editAction')}
                     >
                       <Edit2 size={16} />
                     </button>
                     <button
                       onClick={() => toggleMutation.mutate(c.id)}
                       className={`rounded-xl p-2 transition-colors ${c.isActive ? 'text-green-600 hover:bg-green-50' : 'text-gray-400 hover:bg-gray-100'}`}
-                      title={c.isActive ? 'Désactiver' : 'Activer'}
+                      title={c.isActive ? t('deactivate') : t('activate')}
                     >
                       {c.isActive ? <ToggleRight size={22} /> : <ToggleLeft size={22} />}
                     </button>
                     <button
                       onClick={() => setDeleteConfirm(c.id)}
                       className="rounded-xl p-2 text-gray-400 hover:bg-red-50 hover:text-red-500 transition-colors"
-                      title="Supprimer"
+                      title={t('deleteAction')}
                     >
                       <Trash2 size={16} />
                     </button>
@@ -319,7 +322,7 @@ export default function AdminPromotionsPage() {
       {totalPages > 1 && (
         <div className="flex items-center justify-center gap-2">
           <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page <= 1} className="rounded-xl border border-gray-200 bg-white p-2 text-gray-500 hover:bg-gray-50 disabled:opacity-40"><ChevronLeft size={16} /></button>
-          <span className="text-sm font-medium text-gray-600">Page {page} / {totalPages}</span>
+          <span className="text-sm font-medium text-gray-600">{t('pageSimple', { current: page, total: totalPages })}</span>
           <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page >= totalPages} className="rounded-xl border border-gray-200 bg-white p-2 text-gray-500 hover:bg-gray-50 disabled:opacity-40"><ChevronRight size={16} /></button>
         </div>
       )}

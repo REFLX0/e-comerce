@@ -3,6 +3,7 @@
 import { useEffect, useRef } from 'react'
 import { toast } from 'sonner'
 import { WifiOff, Wifi, ServerCrash } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 
 const HEALTH_CHECK_URL = '/api/health'
 const HEALTH_CHECK_INTERVAL = 30_000 // 30 seconds
@@ -13,6 +14,7 @@ export function OfflineIndicator() {
   const serverDownRef = useRef(false)
   const offlineRef = useRef(false)
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const t = useTranslations('Common')
 
   const checkServerHealth = async () => {
     // Don't check server if we know we're offline
@@ -35,15 +37,15 @@ export function OfflineIndicator() {
         // Try to get Request ID from the response for tracing
         const reqId = response.headers.get('x-request-id')
 
-        toast.error('Problème de connexion au serveur', {
+        toast.error(t('offlineServerTitle'), {
           id: SERVER_DOWN_TOAST_ID,
           description: reqId
-            ? `Notre serveur rencontre des difficultés (Réf: ${reqId.slice(0, 8)}). Veuillez patienter.`
-            : 'Notre serveur rencontre des difficultés. Veuillez patienter.',
+            ? t('offlineServerDesc', { ref: reqId.slice(0, 8) })
+            : t('offlineDesc'),
           duration: Infinity,
           icon: <ServerCrash size={18} />,
           action: {
-            label: 'Réessayer',
+            label: t('retry'),
             onClick: () => {
               serverDownRef.current = false
               toast.dismiss(SERVER_DOWN_TOAST_ID)
@@ -54,8 +56,8 @@ export function OfflineIndicator() {
       } else if (response.ok && serverDownRef.current) {
         serverDownRef.current = false
         toast.dismiss(SERVER_DOWN_TOAST_ID)
-        toast.success('Serveur de nouveau disponible', {
-          description: 'La connexion au serveur a été rétablie.',
+        toast.success(t('serverBackTitle'), {
+          description: t('serverBackDesc'),
           duration: 4000,
           icon: <Wifi size={18} />,
         })
@@ -64,14 +66,13 @@ export function OfflineIndicator() {
       // Network error or aborted (timeout) — treat as server down
       if (!serverDownRef.current && navigator.onLine) {
         serverDownRef.current = true
-        toast.error('Problème de connexion au serveur', {
+        toast.error(t('offlineServerTitle'), {
           id: SERVER_DOWN_TOAST_ID,
-          description:
-            'Impossible de joindre nos serveurs. Veuillez réessayer dans quelques instants.',
+          description: t('serverUnreachableDesc'),
           duration: Infinity,
           icon: <ServerCrash size={18} />,
           action: {
-            label: 'Réessayer',
+            label: t('retry'),
             onClick: () => {
               serverDownRef.current = false
               toast.dismiss(SERVER_DOWN_TOAST_ID)
@@ -91,10 +92,9 @@ export function OfflineIndicator() {
       // Clear any server-down toast when we know the real issue is offline
       toast.dismiss(SERVER_DOWN_TOAST_ID)
 
-      toast.error('Connexion internet perdue', {
+      toast.error(t('offlineTitle'), {
         id: OFFLINE_TOAST_ID,
-        description:
-          'Vérifiez votre connexion internet. Les modifications ne seront pas sauvegardées.',
+        description: t('offlineDesc2'),
         duration: Infinity,
         icon: <WifiOff size={18} />,
       })
@@ -111,9 +111,8 @@ export function OfflineIndicator() {
       offlineRef.current = false
 
       toast.dismiss(OFFLINE_TOAST_ID)
-      toast.success('Connexion rétablie', {
-        description:
-          'Votre connexion internet est de nouveau active.',
+      toast.success(t('connectionRestored'), {
+        description: t('connectionActiveDesc'),
         duration: 4000,
         icon: <Wifi size={18} />,
       })

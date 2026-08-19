@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { AlertCircle, RefreshCw, LayoutDashboard } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 
 export default function AdminError({
   error,
@@ -11,6 +12,7 @@ export default function AdminError({
   error: Error & { digest?: string }
   reset: () => void
 }) {
+  const t = useTranslations('Admin')
   const [requestId, setRequestId] = useState<string | null>(null)
 
   useEffect(() => {
@@ -26,13 +28,13 @@ export default function AdminError({
           <AlertCircle size={32} />
         </div>
         <h1 className="mb-2 text-2xl font-bold text-gray-900">
-          Une erreur s'est produite
+          {t('errorTitle')}
         </h1>
         <p className="mb-8 text-sm text-gray-500">
-          L'interface d'administration a rencontré un problème inattendu.
+          {t('errorDesc')}
           {(error.digest || requestId) && (
             <span className="mt-2 block font-mono text-xs text-gray-400">
-              Réf: {error.digest} {requestId ? ` / Req: ${requestId.slice(0,8)}` : ''}
+              {t('refPrefix')}: {error.digest} {requestId ? ` / ${t('reqPrefix')}: ${requestId.slice(0,8)}` : ''}
             </span>
           )}
         </p>
@@ -42,14 +44,14 @@ export default function AdminError({
             className="flex items-center gap-2 rounded-xl bg-brand-primary px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand-primary-light transition-all"
           >
             <RefreshCw size={16} />
-            Réessayer
+            {t('retry')}
           </button>
           <Link
             href="/admin"
             className="flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-all"
           >
             <LayoutDashboard size={16} />
-            Tableau de bord
+            {t('dashboardBack')}
           </Link>
         </div>
       </div>

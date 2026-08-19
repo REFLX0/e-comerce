@@ -39,7 +39,7 @@ export function StickyMobileCart({ product, variant }: Props) {
       window.open(buildWhatsAppUrl(buildProductMessage(product, variant, 1)), '_blank', 'noopener')
       return
     }
-    toast.success('Produit ajouté au panier')
+    toast.success(t('addedToCart'))
   }
 
   return (
@@ -59,7 +59,7 @@ export function StickyMobileCart({ product, variant }: Props) {
             promoPercent={product.promoPercent}
             oldPriceTTC={oldPrice}
           />
-          <p className="mt-0.5 text-[10px] font-medium text-gray-500 italic">+ Frais de livraison (non inclus)</p>
+          <p className="mt-0.5 text-[10px] font-medium text-gray-500 italic">{t('shippingNotIncluded')}</p>
         </div>
 
         {/* CTA */}
@@ -72,7 +72,7 @@ export function StickyMobileCart({ product, variant }: Props) {
         >
           {isPart ? <MessageCircle size={18} /> : <ShoppingCart size={18} />}
           <span className="hidden sm:inline">
-            {isOutOfStock ? t('outOfStock') : (isPart ? 'Vérifier via WhatsApp' : t('addToCart'))}
+            {isOutOfStock ? t('outOfStock') : (isPart ? t('checkViaWhatsApp') : t('addToCart'))}
           </span>
         </button>
       </div>

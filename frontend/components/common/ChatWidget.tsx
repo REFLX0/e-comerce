@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { useSession } from 'next-auth/react'
+import { useTranslations, useLocale } from 'next-intl'
 import {
   Bot,
   X,
@@ -28,30 +29,30 @@ interface ChatMessage {
   time: string
 }
 
-const now = () =>
-  new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })
+const now = (locale: string) =>
+  new Date().toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })
 
 const QUICK_ACTIONS = [
-  { label: 'Trouver une pièce', icon: Search },
-  { label: 'Identifier ma pièce', icon: ScanSearch },
-  { label: 'Suivre ma commande', icon: Truck },
-  { label: 'Retour & Remboursement', icon: RotateCcw },
+  { labelKey: 'findPart', icon: Search },
+  { labelKey: 'identifyPart', icon: ScanSearch },
+  { labelKey: 'trackOrder', icon: Truck },
+  { labelKey: 'returnsRefunds', icon: RotateCcw },
 ]
 
 const TRUST_ITEMS = [
-  { label: 'Réponse instantanée', icon: Zap },
-  { label: 'Service humain', icon: Headset },
-  { label: 'Données sécurisées', icon: ShieldCheck },
+  { labelKey: 'instantReply', icon: Zap },
+  { labelKey: 'humanService', icon: Headset },
+  { labelKey: 'secureData', icon: ShieldCheck },
 ]
-
-const WELCOME_MESSAGE =
-  'Bonjour ! 👋\nJe suis l\u2019assistant IA Specpart.\nJe peux vous aider à trouver une pièce, suivre votre commande ou répondre à vos questions.'
 
 export function ChatWidget() {
   const { data: session } = useSession()
+  const t = useTranslations('Chat')
+  const locale = useLocale()
+  const welcomeMessage = t('welcomeMessage')
   const [isOpen, setIsOpen] = useState(false)
   const [messages, setMessages] = useState<ChatMessage[]>([
-    { role: 'assistant', content: WELCOME_MESSAGE, time: now() },
+    { role: 'assistant', content: welcomeMessage, time: now(locale) },
   ])
   const [input, setInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
@@ -88,7 +89,7 @@ export function ChatWidget() {
     const content = (preset ?? input).trim()
     if (!content || isLoading) return
 
-    const userMessage: ChatMessage = { role: 'user', content, time: now() }
+    const userMessage: ChatMessage = { role: 'user', content, time: now(locale) }
     const history = [...messages, userMessage]
     setMessages(history)
     setInput('')

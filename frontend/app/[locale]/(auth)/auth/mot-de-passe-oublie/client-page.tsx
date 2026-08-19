@@ -7,15 +7,19 @@ import { useState } from 'react'
 import { authApi } from '@/lib/api/auth'
 import { toast } from 'sonner'
 import Link from 'next/link'
+import { useTranslations } from 'next-intl'
 import { ArrowLeft, Mail, CheckCircle } from 'lucide-react'
 
-const forgotSchema = z.object({
-  email: z.string().email('Email invalide'),
-})
+type ForgotFormData = z.infer<ReturnType<typeof buildForgotSchema>>
 
-type ForgotFormData = z.infer<typeof forgotSchema>
+function buildForgotSchema(t: (k: string) => string) {
+  return z.object({
+    email: z.string().email(t('emailInvalid')),
+  })
+}
 
 export default function ForgotPasswordPage() {
+  const t = useTranslations('Auth')
   const [isLoading, setIsLoading] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
 
@@ -24,7 +28,7 @@ export default function ForgotPasswordPage() {
     handleSubmit,
     formState: { errors },
   } = useForm<ForgotFormData>({
-    resolver: zodResolver(forgotSchema),
+    resolver: zodResolver(buildForgotSchema(t)),
   })
 
   const onSubmit = async (data: ForgotFormData) => {
@@ -32,9 +36,9 @@ export default function ForgotPasswordPage() {
     try {
       await authApi.forgotPassword(data.email)
       setIsSuccess(true)
-      toast.success('Email de réinitialisation envoyé')
+      toast.success(t('resetEmailSent'))
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Une erreur est survenue')
+      toast.error(error instanceof Error ? error.message : t('errorOccurred'))
     } finally {
       setIsLoading(false)
     }
@@ -49,7 +53,7 @@ export default function ForgotPasswordPage() {
             className="hover:text-brand-primary inline-flex items-center gap-2 text-sm text-gray-500 transition-colors"
           >
             <ArrowLeft size={16} />
-            Retour à la connexion
+            {t('backToLogin')}
           </Link>
         </div>
 
@@ -59,32 +63,32 @@ export default function ForgotPasswordPage() {
               <CheckCircle size={32} />
             </div>
             <h1 className="font-display text-brand-primary mb-4 text-2xl font-bold">
-              Vérifiez votre boîte mail
+              {t('checkYourInbox')}
             </h1>
             <p className="mb-8 text-gray-500">
-              Nous avons envoyé un lien de réinitialisation de mot de passe à votre adresse email.
+              {t('resetLinkSentDesc')}
             </p>
             <button
               onClick={() => setIsSuccess(false)}
               className="text-brand-primary text-sm font-medium hover:underline"
             >
-              Je n'ai pas reçu l'email, réessayer
+              {t('resendEmail')}
             </button>
           </div>
         ) : (
           <>
             <div className="mb-8 text-center">
               <h1 className="font-display text-brand-primary mb-2 text-3xl font-bold">
-                Mot de passe oublié
+                {t('forgotTitle')}
               </h1>
               <p className="text-gray-500">
-                Entrez votre email pour recevoir un lien de réinitialisation.
+                {t('forgotSubtitle')}
               </p>
             </div>
 
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
               <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">Email</label>
+                <label className="text-sm font-medium text-gray-700">{t('email')}</label>
                 <div className="relative">
                   <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400">
                     <Mail size={18} />
@@ -110,7 +114,7 @@ export default function ForgotPasswordPage() {
                 disabled={isLoading}
                 className="btn-primary mt-2 flex w-full items-center justify-center gap-2 py-4 text-lg disabled:opacity-50"
               >
-                {isLoading ? 'Envoi en cours...' : 'Envoyer le lien'}
+                {isLoading ? t('sending') : t('sendLink')}
               </button>
             </form>
           </>

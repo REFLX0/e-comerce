@@ -34,7 +34,7 @@ export default function SecuritePage() {
       toast.success(t('success'))
       setForm({ oldPassword: '', newPassword: '', confirmPassword: '' })
     } catch (err: any) {
-      toast.error(err.message || 'Erreur lors de la modification')
+      toast.error(err.message || t('updateError'))
     } finally {
       setSaving(false)
     }

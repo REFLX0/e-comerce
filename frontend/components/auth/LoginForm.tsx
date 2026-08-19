@@ -5,27 +5,26 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
 import { useState, useEffect } from 'react'
 import { signIn } from 'next-auth/react'
-import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { Link } from '@/i18n/routing'
 import { ArrowRight, Mail, Lock, Loader2 } from 'lucide-react'
 import { toast } from 'sonner'
-import { useTranslations } from 'next-intl'
+import { useTranslations, useLocale } from 'next-intl'
 import { useAuthStore } from '@/lib/store/auth.store'
 import { FormInput } from '@/components/common/FormInput'
-
-const loginSchema = z.object({
-  email: z.string().email('Adresse email invalide'),
-  password: z.string().min(1, 'Mot de passe requis'),
-})
-
-type LoginFormData = z.infer<typeof loginSchema>
 
 export default function LoginForm() {
   const t = useTranslations('Auth')
   const router = useRouter()
-  const pathname = usePathname()
   const searchParams = useSearchParams()
-  const currentLocale = pathname?.split('/')[1] === 'en' ? 'en' : 'fr'
+  const currentLocale = useLocale()
+
+  const loginSchema = z.object({
+    email: z.string().email(t('emailInvalid')),
+    password: z.string().min(1, t('passwordRequired')),
+  })
+
+  type LoginFormData = z.infer<typeof loginSchema>
   const urlError = searchParams.get('error')
   const callbackUrl = searchParams.get('callbackUrl') || `/${currentLocale}/compte`
   const [isLoading, setIsLoading] = useState(false)
@@ -33,8 +32,8 @@ export default function LoginForm() {
 
   useEffect(() => {
     if (urlError === 'CredentialsSignin') {
-      toast.error('Échec de connexion', {
-        description: 'Email ou mot de passe incorrect.',
+      toast.error(t('loginErrorTitle'), {
+        description: t('loginFailed'),
       })
     }
   }, [urlError])
@@ -53,7 +52,7 @@ export default function LoginForm() {
       await login(data)
 
       toast.success(t('loginSuccess'), {
-        description: 'Bienvenue sur votre espace.',
+        description: t('loginWelcomeDesc'),
       })
 
       // Small delay to ensure persist middleware has saved to localStorage
@@ -71,9 +70,9 @@ export default function LoginForm() {
         window.location.href = callbackUrl
       }
     } catch (err) {
-      const msg = err instanceof Error ? err.message : 'Email ou mot de passe incorrect'
+      const msg = err instanceof Error ? err.message : t('loginFailed')
       toast.error(msg, {
-        description: 'Vérifiez vos identifiants et réessayez.',
+        description: t('loginFailedDesc'),
       })
       console.error('[LoginForm] Login failed:', err)
     } finally {
@@ -86,7 +85,7 @@ export default function LoginForm() {
       <div className="shadow-card border-brand-surface-dark w-full max-w-md rounded-3xl border bg-white p-8">
         <div className="mb-2 text-center">
            <Link href="/" className="inline-flex items-center gap-1 text-sm text-gray-400 hover:text-brand-primary transition-colors mb-4">
-            <ArrowRight size={14} className="rotate-180" /> Retour au site
+            <ArrowRight size={14} className="rotate-180" /> {t('backToSite')}
           </Link>
           <h1 className="font-display text-brand-primary mb-2 text-3xl font-bold">
             {t('welcomeBack')}
@@ -106,7 +105,7 @@ export default function LoginForm() {
 
         <div className="relative mb-6 flex items-center">
           <div className="flex-grow border-t border-gray-200" />
-          <span className="mx-4 text-xs font-semibold uppercase text-gray-400">Ou</span>
+          <span className="mx-4 text-xs font-semibold uppercase text-gray-400">{t('or')}</span>
           <div className="flex-grow border-t border-gray-200" />
         </div>
 
@@ -148,7 +147,7 @@ export default function LoginForm() {
             className="btn-primary mt-2 flex w-full justify-center gap-2"
           >
             {isLoading ? (
-              <><Loader2 size={18} className="animate-spin" /> Connexion en cours...</>
+              <><Loader2 size={18} className="animate-spin" /> {t('loggingIn')}</>
             ) : (
               <>{t('login')} <ArrowRight size={18} /></>
             )}
@@ -156,7 +155,7 @@ export default function LoginForm() {
         </form>
 
         <p className="mt-8 text-center text-sm text-gray-500">
-          Pas encore de compte ?{' '}
+          {t('noAccountYet')}{' '}
           <Link href="/auth/register" className="text-brand-primary hover:text-brand-primary/70 font-bold transition-colors">
             {t('createAccount')}
           </Link>

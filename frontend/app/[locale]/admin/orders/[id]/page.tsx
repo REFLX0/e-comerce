@@ -3,46 +3,47 @@
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { adminApi, downloadOrderPdf } from '@/lib/api/admin'
-import { useParams, usePathname } from 'next/navigation'
+import { useParams } from 'next/navigation'
 import { ArrowLeft, Package, Truck, CheckCircle2, Clock, XCircle, MapPin, Printer, Loader2, Car } from 'lucide-react'
 import Link from 'next/link'
 import { toast } from 'sonner'
-
-const STATUS = {
-  PENDING: { label: 'En attente', icon: Clock, cls: 'text-yellow-600 bg-yellow-50' },
-  CONFIRMED: { label: 'Confirmée', icon: CheckCircle2, cls: 'text-blue-600 bg-blue-50' },
-  SHIPPED: { label: 'Expédiée', icon: Truck, cls: 'text-brand-primary bg-brand-primary/10' },
-  DELIVERED: { label: 'Livrée', icon: CheckCircle2, cls: 'text-green-600 bg-green-50' },
-  CANCELLED: { label: 'Annulée', icon: XCircle, cls: 'text-red-600 bg-red-50' },
-  RETURNED: { label: 'En retour', icon: Package, cls: 'text-orange-600 bg-orange-50' },
-}
-
-const NEXT_STATUS: Record<string, { label: string; status: string; cls: string }[]> = {
-  PENDING: [{ label: 'Confirmer', status: 'CONFIRMED', cls: 'bg-blue-500 hover:bg-blue-600' }],
-  CONFIRMED: [{ label: 'Expédier', status: 'SHIPPED', cls: 'bg-brand-primary hover:bg-brand-primary/90' }],
-  SHIPPED: [
-    { label: 'Livrer', status: 'DELIVERED', cls: 'bg-green-500 hover:bg-green-600' },
-    { label: 'Marquer retourné', status: 'RETURNED', cls: 'bg-orange-500 hover:bg-orange-600 mt-2' }
-  ],
-  DELIVERED: [
-    { label: 'Marquer retourné', status: 'RETURNED', cls: 'bg-orange-500 hover:bg-orange-600' }
-  ]
-}
+import { useLocale, useTranslations } from 'next-intl'
 
 export default function OrderDetailPage() {
+  const t = useTranslations('Admin')
+  const locale = useLocale()
   const params = useParams()
-  const pathname = usePathname()
-  const locale = pathname?.split('/')[1] === 'en' ? 'en' : 'fr'
   const queryClient = useQueryClient()
   const [isDownloading, setIsDownloading] = useState(false)
+
+  const STATUS = {
+    PENDING: { labelKey: 'statusPending', icon: Clock, cls: 'text-yellow-600 bg-yellow-50' },
+    CONFIRMED: { labelKey: 'statusConfirmed', icon: CheckCircle2, cls: 'text-blue-600 bg-blue-50' },
+    SHIPPED: { labelKey: 'statusShipped', icon: Truck, cls: 'text-brand-primary bg-brand-primary/10' },
+    DELIVERED: { labelKey: 'statusDelivered', icon: CheckCircle2, cls: 'text-green-600 bg-green-50' },
+    CANCELLED: { labelKey: 'statusCancelled', icon: XCircle, cls: 'text-red-600 bg-red-50' },
+    RETURNED: { labelKey: 'statusReturned', icon: Package, cls: 'text-orange-600 bg-orange-50' },
+  }
+
+  const NEXT_STATUS: Record<string, { labelKey: string; status: string; cls: string }[]> = {
+    PENDING: [{ labelKey: 'confirmAction', status: 'CONFIRMED', cls: 'bg-blue-500 hover:bg-blue-600' }],
+    CONFIRMED: [{ labelKey: 'shipAction', status: 'SHIPPED', cls: 'bg-brand-primary hover:bg-brand-primary/90' }],
+    SHIPPED: [
+      { labelKey: 'deliverAction', status: 'DELIVERED', cls: 'bg-green-500 hover:bg-green-600' },
+      { labelKey: 'markReturnedAction', status: 'RETURNED', cls: 'bg-orange-500 hover:bg-orange-600 mt-2' }
+    ],
+    DELIVERED: [
+      { labelKey: 'markReturnedAction', status: 'RETURNED', cls: 'bg-orange-500 hover:bg-orange-600' }
+    ]
+  }
 
   const handleDownloadPdf = async (orderId: string) => {
     try {
       setIsDownloading(true)
       await downloadOrderPdf(orderId)
-      toast.success('Facture téléchargée avec succès')
+      toast.success(t('invoiceDownloaded'))
     } catch {
-      toast.error('Erreur lors du téléchargement')
+      toast.error(t('invoiceDownloadError'))
     } finally {
       setIsDownloading(false)
     }
@@ -60,13 +61,13 @@ export default function OrderDetailPage() {
       queryClient.invalidateQueries({ queryKey: ['admin-order', params.id] })
       queryClient.invalidateQueries({ queryKey: ['admin-orders'] })
       queryClient.invalidateQueries({ queryKey: ['admin-dashboard'] })
-      toast.success('Statut mis à jour')
+      toast.success(t('statusUpdated'))
     },
-    onError: () => toast.error('Erreur lors de la mise à jour'),
+    onError: () => toast.error(t('updateError')),
   })
 
-  if (isLoading) return <div className="p-6 text-gray-400">Chargement...</div>
-  if (isError || !order) return <div className="p-6 text-center text-gray-400">Commande introuvable</div>
+  if (isLoading) return <div className="p-6 text-gray-400">{t('loading')}</div>
+  if (isError || !order) return <div className="p-6 text-center text-gray-400">{t('orderNotFound')}</div>
 
   const s = STATUS[order.status as keyof typeof STATUS] || STATUS.PENDING
   const Icon = s.icon
@@ -79,8 +80,8 @@ export default function OrderDetailPage() {
           <ArrowLeft size={20} />
         </Link>
         <div className="flex-1">
-          <h1 className="text-2xl font-bold text-brand-primary">Commande #{(order.id ?? '').slice(-8).toUpperCase() || 'N/A'}</h1>
-          <p className="text-sm text-gray-500">{order.createdAt ? new Date(order.createdAt).toLocaleDateString('fr-TN') : '—'}</p>
+          <h1 className="text-2xl font-bold text-brand-primary">{t('orderLabel')} #{(order.id ?? '').slice(-8).toUpperCase() || 'N/A'}</h1>
+          <p className="text-sm text-gray-500">{order.createdAt ? new Date(order.createdAt).toLocaleDateString(locale) : '—'}</p>
         </div>
         <button
           onClick={() => handleDownloadPdf(order.id)}
@@ -88,19 +89,19 @@ export default function OrderDetailPage() {
           className="flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 hover:border-brand-primary hover:text-brand-primary transition-all disabled:opacity-50"
         >
           {isDownloading ? <Loader2 size={15} className="animate-spin" /> : <Printer size={15} />}
-          Facture PDF
+          {t('invoicePdf')}
         </button>
       </div>
 
       <div className="grid gap-4 lg:grid-cols-3">
         <div className="lg:col-span-2 space-y-4">
           <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
-            <h2 className="font-bold text-brand-primary mb-4">Articles</h2>
+            <h2 className="font-bold text-brand-primary mb-4">{t('orderItems')}</h2>
             <div className="space-y-3">
               {(order.items || []).map((item: any, i: number) => (
                 <div key={i} className="flex items-center justify-between rounded-xl bg-gray-50 px-4 py-3">
                   <div>
-                    <p className="text-sm font-medium text-gray-800">{item.product?.nameFr || item.productName || `Produit #${item.productId?.slice(-6) || '?'}`}</p>
+                    <p className="text-sm font-medium text-gray-800">{item.product?.nameFr || item.productName || `${t('productColumn')} #${item.productId?.slice(-6) || '?'}`}</p>
                     <p className="text-xs text-gray-400">{item.quantity} x {item.unitPrice?.toFixed(2) || '0.00'} TND{item.variant?.volume ? ` (${item.variant.volume})` : ''}</p>
                   </div>
                   <span className="text-sm font-bold text-brand-primary">{(item.quantity * (item.unitPrice || 0)).toFixed(2)} TND</span>
@@ -108,18 +109,18 @@ export default function OrderDetailPage() {
               ))}
             </div>
             <div className="mt-4 border-t border-gray-100 pt-4 space-y-2">
-              <div className="flex justify-between text-sm"><span className="text-gray-500">Sous-total</span><span>{((order.totalAmount || 0) - (order.shippingCost || 0)).toFixed(2)} TND</span></div>
-              <div className="flex justify-between text-sm"><span className="text-gray-500">Livraison</span><span>{order.shippingCost?.toFixed(2) || '0.00'} TND</span></div>
-              <div className="flex justify-between text-lg font-bold"><span>Total</span><span className="text-brand-primary">{order.totalAmount?.toFixed(2)} TND</span></div>
+              <div className="flex justify-between text-sm"><span className="text-gray-500">{t('subtotalColumn')}</span><span>{((order.totalAmount || 0) - (order.shippingCost || 0)).toFixed(2)} TND</span></div>
+              <div className="flex justify-between text-sm"><span className="text-gray-500">{t('shippingLabel')}</span><span>{order.shippingCost?.toFixed(2) || '0.00'} TND</span></div>
+              <div className="flex justify-between text-lg font-bold"><span>{t('orderTotal')}</span><span className="text-brand-primary">{order.totalAmount?.toFixed(2)} TND</span></div>
             </div>
           </div>
         </div>
 
         <div className="space-y-4">
           <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
-            <h2 className="font-bold text-brand-primary mb-4">Statut</h2>
+            <h2 className="font-bold text-brand-primary mb-4">{t('statusColumn')}</h2>
             <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-bold ${s.cls}`}>
-              <Icon size={16} /> {s.label}
+              <Icon size={16} /> {t(s.labelKey)}
             </span>
             {nextActions.length > 0 && (
               <div className="mt-4 space-y-2">
@@ -130,7 +131,7 @@ export default function OrderDetailPage() {
                     disabled={updateMutation.isPending}
                     className={`w-full rounded-xl px-4 py-2 text-sm font-semibold text-white transition-colors disabled:opacity-50 ${action.cls}`}
                   >
-                    {updateMutation.isPending ? '...' : action.label}
+                    {updateMutation.isPending ? '...' : t(action.labelKey)}
                   </button>
                 ))}
               </div>
@@ -138,7 +139,7 @@ export default function OrderDetailPage() {
           </div>
 
           <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
-            <h2 className="font-bold text-brand-primary mb-4">Client</h2>
+            <h2 className="font-bold text-brand-primary mb-4">{t('customerColumn')}</h2>
             <div className="space-y-1 text-sm">
               <p className="font-medium text-gray-800">{order.user?.name || order.shipFullName || '—'}</p>
               <p className="text-gray-500">{order.user?.email}</p>
@@ -146,13 +147,13 @@ export default function OrderDetailPage() {
           </div>
 
           <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
-            <h2 className="font-bold text-brand-primary mb-4">Livraison</h2>
+            <h2 className="font-bold text-brand-primary mb-4">{t('deliveryAddress')}</h2>
             <div className="space-y-2 text-sm">
-              <p className="font-medium text-gray-800">{order.shipFullName || 'Non renseigné'}</p>
+              <p className="font-medium text-gray-800">{order.shipFullName || t('notSpecified')}</p>
               <p className="text-gray-500">{order.shipPhone}</p>
-              <p className="flex items-center gap-1 text-gray-500"><MapPin size={14} /> {[order.shipCity, order.shipWilaya].filter(Boolean).join(', ') || 'Adresse non définie'}</p>
+              <p className="flex items-center gap-1 text-gray-500"><MapPin size={14} /> {[order.shipCity, order.shipWilaya].filter(Boolean).join(', ') || t('addressUndefined')}</p>
               {order.vehicleVin && <p className="flex items-center gap-1 break-all text-gray-500"><Car size={14} /> VIN : <span className="font-mono text-xs">{order.vehicleVin}</span></p>}
-              {order.promoCode && <p className="text-xs text-gray-400">Code promo: {order.promoCode}</p>}
+              {order.promoCode && <p className="text-xs text-gray-400">{t('promoCode')}: {order.promoCode}</p>}
             </div>
           </div>
         </div>

@@ -49,7 +49,7 @@ export function CrossSellSuggestions({ variant = 'compact' }: Props) {
         <div className="flex items-center gap-2 mb-3">
           <Sparkles size={14} className="text-amber-400" />
           <h4 className="text-xs font-bold uppercase tracking-wider text-gray-500">
-            Souvent acheté avec
+            {t('frequentlyBoughtWith')}
           </h4>
         </div>
         <div className="space-y-2.5">
@@ -83,7 +83,7 @@ export function CrossSellSuggestions({ variant = 'compact' }: Props) {
                 <button
                   onClick={() => handleQuickAdd(product)}
                   className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-brand-primary text-white transition-all hover:bg-brand-primary-light hover:shadow-md active:scale-90"
-                  aria-label="Ajouter au panier"
+                  aria-label={t('addToCart')}
                 >
                   <Plus size={14} />
                 </button>
@@ -108,7 +108,7 @@ export function CrossSellSuggestions({ variant = 'compact' }: Props) {
           <Sparkles size={13} className="text-amber-400" />
         </div>
         <h4 className="text-xs font-bold uppercase tracking-wider text-gray-400">
-          Souvent acheté avec
+          {t('frequentlyBoughtWith')}
         </h4>
       </div>
 
@@ -151,7 +151,7 @@ export function CrossSellSuggestions({ variant = 'compact' }: Props) {
               <button
                 onClick={() => handleQuickAdd(product)}
                 className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-brand-primary text-white shadow-sm transition-all hover:bg-brand-primary-light hover:shadow-md active:scale-90"
-                aria-label="Ajouter au panier"
+                aria-label={t('addToCart')}
               >
                 <Plus size={15} />
               </button>

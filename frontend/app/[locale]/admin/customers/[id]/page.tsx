@@ -2,15 +2,16 @@
 
 import { useQuery } from '@tanstack/react-query'
 import { adminApi } from '@/lib/api/admin'
-import { useParams, usePathname } from 'next/navigation'
+import { useParams } from 'next/navigation'
 import { ArrowLeft, Mail, Phone, ShoppingBag, Calendar, ShieldCheck } from 'lucide-react'
 import Link from 'next/link'
+import { useLocale, useTranslations } from 'next-intl'
 
 export default function CustomerDetailPage() {
+  const t = useTranslations('Admin')
+  const locale = useLocale()
   const params = useParams()
-  const pathname = usePathname()
   const id = params.id as string
-  const locale = pathname?.split('/')[1] === 'en' ? 'en' : 'fr'
   const localizedHref = (href: string) => `/${locale}${href}`
 
   const { data: user, isLoading } = useQuery<any>({
@@ -31,13 +32,13 @@ export default function CustomerDetailPage() {
   if (!user) {
     return (
       <div className="p-4 sm:p-6 text-center py-16">
-        <h2 className="text-xl font-bold text-brand-primary mb-2">Client introuvable</h2>
-        <Link href={localizedHref('/admin/customers')} className="text-sm text-brand-accent hover:underline">Retour à la liste</Link>
+        <h2 className="text-xl font-bold text-brand-primary mb-2">{t('customerNotFound')}</h2>
+        <Link href={localizedHref('/admin/customers')} className="text-sm text-brand-accent hover:underline">{t('backToList')}</Link>
       </div>
     )
   }
 
-  const S = { PENDING: 'En attente', CONFIRMED: 'Confirmée', SHIPPED: 'Expédiée', DELIVERED: 'Livrée', CANCELLED: 'Annulée' } as any
+  const S = { PENDING: 'statusPending', CONFIRMED: 'statusConfirmed', SHIPPED: 'statusShipped', DELIVERED: 'statusDelivered', CANCELLED: 'statusCancelled', RETURNED: 'statusReturned' } as any
 
   return (
     <div className="p-4 sm:p-6 space-y-5">
@@ -45,7 +46,7 @@ export default function CustomerDetailPage() {
         <Link href={localizedHref('/admin/customers')} className="rounded-lg p-2 text-gray-400 hover:bg-gray-100 hover:text-brand-primary transition-colors">
           <ArrowLeft size={20} />
         </Link>
-        <h1 className="text-2xl font-bold text-brand-primary">{user.name ?? 'Client'}</h1>
+        <h1 className="text-2xl font-bold text-brand-primary">{user.name ?? t('userFallback')}</h1>
       </div>
 
       {/* Info cards */}
@@ -53,29 +54,29 @@ export default function CustomerDetailPage() {
         <div className="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm flex items-center gap-3">
           <Mail size={18} className="text-gray-400" />
           <div>
-            <p className="text-xs text-gray-400">Email</p>
+            <p className="text-xs text-gray-400">{t('emailLabel')}</p>
             <p className="text-sm font-semibold text-brand-primary">{user.email}</p>
           </div>
         </div>
         <div className="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm flex items-center gap-3">
           <Phone size={18} className="text-gray-400" />
           <div>
-            <p className="text-xs text-gray-400">Téléphone</p>
+            <p className="text-xs text-gray-400">{t('phoneLabel')}</p>
             <p className="text-sm font-semibold text-brand-primary">{user.phone ?? '—'}</p>
           </div>
         </div>
         <div className="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm flex items-center gap-3">
           <ShoppingBag size={18} className="text-gray-400" />
           <div>
-            <p className="text-xs text-gray-400">Commandes</p>
+            <p className="text-xs text-gray-400">{t('ordersLabel')}</p>
             <p className="text-sm font-semibold text-brand-primary">{user.ordersCount ?? 0}</p>
           </div>
         </div>
         <div className="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm flex items-center gap-3">
           <Calendar size={18} className="text-gray-400" />
           <div>
-            <p className="text-xs text-gray-400">Inscrit le</p>
-            <p className="text-sm font-semibold text-brand-primary">{user.createdAt ? new Date(user.createdAt).toLocaleDateString('fr-TN') : '—'}</p>
+            <p className="text-xs text-gray-400">{t('registeredOnColumn')}</p>
+            <p className="text-sm font-semibold text-brand-primary">{user.createdAt ? new Date(user.createdAt).toLocaleDateString(locale) : '—'}</p>
           </div>
         </div>
       </div>
@@ -83,8 +84,8 @@ export default function CustomerDetailPage() {
       {/* LTV + Role */}
       <div className="flex flex-wrap gap-4">
         <div className="rounded-xl bg-brand-accent/10 px-4 py-2 text-sm">
-          <span className="text-gray-500">Total dépensé : </span>
-          <span className="font-bold text-brand-primary">{(user.ltv ?? 0).toLocaleString('fr-TN', { minimumFractionDigits: 2 })} TND</span>
+          <span className="text-gray-500">{t('totalSpentColon')}</span>
+          <span className="font-bold text-brand-primary">{(user.ltv ?? 0).toLocaleString(locale, { minimumFractionDigits: 2 })} TND</span>
         </div>
         <div className="rounded-xl bg-gray-100 px-4 py-2 text-sm flex items-center gap-1.5">
           <ShieldCheck size={14} className="text-gray-400" />
@@ -94,10 +95,10 @@ export default function CustomerDetailPage() {
 
       {/* Order history */}
       <div>
-        <h2 className="text-lg font-bold text-brand-primary mb-4">Historique des commandes</h2>
+        <h2 className="text-lg font-bold text-brand-primary mb-4">{t('orderHistory')}</h2>
         {(user.orders ?? []).length === 0 ? (
           <div className="rounded-2xl border-2 border-dashed border-gray-200 py-12 text-center text-sm text-gray-400">
-            Aucune commande
+            {t('noOrders')}
           </div>
         ) : (
           <div className="space-y-3">
@@ -107,10 +108,10 @@ export default function CustomerDetailPage() {
                   <div>
                     <p className="font-mono text-xs text-gray-400">{order.id ? `#${order.id.slice(-8).toUpperCase()}` : 'N/A'}</p>
                     <p className="text-sm font-semibold text-brand-primary">
-                      {(order.totalAmount ?? 0).toLocaleString('fr-TN', { minimumFractionDigits: 2 })} TND
+                      {(order.totalAmount ?? 0).toLocaleString(locale, { minimumFractionDigits: 2 })} TND
                     </p>
                     <p className="text-xs text-gray-400">
-                      {order.items?.length ?? 0} article(s) · {order.createdAt ? new Date(order.createdAt).toLocaleDateString('fr-TN') : '—'}
+                      {t('articleCount', { count: order.items?.length ?? 0 })} · {order.createdAt ? new Date(order.createdAt).toLocaleDateString(locale) : '—'}
                     </p>
                   </div>
                   <div className="flex items-center gap-2">
@@ -120,10 +121,10 @@ export default function CustomerDetailPage() {
                       : order.status === 'CANCELLED' ? 'bg-red-100 text-red-700'
                       : 'bg-yellow-100 text-yellow-700'
                     }`}>
-                      {S[order.status] ?? order.status}
+                      {S[order.status] ? t(S[order.status]) : order.status}
                     </span>
                     <Link href={localizedHref(`/admin/orders`)} className="text-xs text-brand-accent hover:underline">
-                      Voir
+                      {t('viewLabel')}
                     </Link>
                   </div>
                 </div>
@@ -131,7 +132,7 @@ export default function CustomerDetailPage() {
                   <div className="mt-3 flex flex-wrap gap-2 border-t border-gray-50 pt-3">
                     {order.items.map((item: any) => (
                       <span key={item.id} className="rounded-lg bg-gray-50 px-2 py-1 text-xs text-gray-500">
-                        {item.product?.nameFr ?? 'Produit'} × {item.quantity}
+                        {item.product?.nameFr ?? t('productFallback')} × {item.quantity}
                       </span>
                     ))}
                   </div>
@@ -145,7 +146,7 @@ export default function CustomerDetailPage() {
       {/* Delivery addresses from orders */}
       {(user.orders ?? []).some((o: any) => o.shipFullName) && (
         <div>
-          <h2 className="text-lg font-bold text-brand-primary mb-4">Adresses de livraison</h2>
+          <h2 className="text-lg font-bold text-brand-primary mb-4">{t('deliveryAddresses')}</h2>
           <div className="space-y-3">
             {(Array.from(new Set((user.orders ?? []).filter((o: any) => o.shipFullName).map((o: any) => `${o.shipFullName}|${o.shipPhone}|${o.shipWilaya}|${o.shipCity}`))) as string[]).map((key: string) => {
               const [name, phone, wilaya, city] = key.split('|')

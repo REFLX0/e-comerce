@@ -6,7 +6,7 @@ import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { useAuthStore } from '@/lib/store/auth.store'
-import { useTranslations } from 'next-intl'
+import { useTranslations, useLocale } from 'next-intl'
 import { authApi } from '@/lib/api/auth'
 import { NotificationDropdown } from '@/components/admin/NotificationDropdown'
 
@@ -141,11 +141,10 @@ function Sidebar({
   nav: NavItemShape[]
 }) {
   const t = useTranslations('Admin')
+  const locale = useLocale()
   const user = useAuthStore((s) => s.user)
   const logout = useAuthStore((s) => s.logout)
   const router = useRouter()
-  const pathname = usePathname()
-  const locale = pathname?.split('/')[1] === 'en' ? 'en' : 'fr'
 
   const handleLogout = () => {
     logout()
@@ -233,7 +232,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 
   const NAV: NavItemShape[] = [
     { label: t('dashboard'), icon: LayoutDashboard, href: '/admin', exact: true },
-    { label: t('orders'), icon: ShoppingCart, href: '/admin/orders', badge: 'new' },
+    { label: t('orders'), icon: ShoppingCart, href: '/admin/orders', badge: t('badgeNew') },
     {
       label: t('catalog'),
       icon: Package,
@@ -268,7 +267,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   const [isCheckingServerAuth, setIsCheckingServerAuth] = useState(true)
   const pathname = usePathname()
   const { data: nextAuthSession, status: nextAuthStatus } = useSession()
-  const locale = pathname?.split('/')[1] === 'en' ? 'en' : 'fr'
+  const locale = useLocale()
   const adminPathname = stripLocale(pathname)
 
   // Close mobile menu on route change
@@ -437,26 +436,27 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 }
 
 function SearchModal({ locale }: { locale: string }) {
+  const t = useTranslations('Admin')
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState('')
   const inputRef = useRef<HTMLInputElement>(null)
   const router = useRouter()
 
   const pages = [
-    { label: 'Tableau de bord', href: '/admin', icon: LayoutDashboard },
-    { label: 'Commandes', href: '/admin/orders', icon: ShoppingCart },
-    { label: 'Produits', href: '/admin/catalog/products', icon: Package },
-    { label: 'Catégories', href: '/admin/catalog/categories', icon: FolderTree },
-    { label: 'Inventaire', href: '/admin/catalog/inventory', icon: Layers },
-    { label: 'Clients', href: '/admin/customers', icon: Users },
-    { label: 'Promotions', href: '/admin/promotions', icon: Tag },
-    { label: 'Messages', href: '/admin/contact-messages', icon: Mail },
-    { label: 'Support', href: '/admin/tickets', icon: LifeBuoy },
-    { label: 'Livraison', href: '/admin/shipping', icon: Truck },
-    { label: 'Paiements', href: '/admin/payments', icon: CreditCard },
-    { label: 'Avis', href: '/admin/reviews', icon: Star },
-    { label: 'Analytique', href: '/admin/analytics', icon: BarChart2 },
-    { label: 'Paramètres', href: '/admin/settings', icon: Settings },
+    { label: t('dashboard'), href: '/admin', icon: LayoutDashboard },
+    { label: t('orders'), href: '/admin/orders', icon: ShoppingCart },
+    { label: t('products'), href: '/admin/catalog/products', icon: Package },
+    { label: t('categories'), href: '/admin/catalog/categories', icon: FolderTree },
+    { label: t('inventory'), href: '/admin/catalog/inventory', icon: Layers },
+    { label: t('customers'), href: '/admin/customers', icon: Users },
+    { label: t('promotions'), href: '/admin/promotions', icon: Tag },
+    { label: t('contactMessages'), href: '/admin/contact-messages', icon: Mail },
+    { label: t('supportTickets'), href: '/admin/tickets', icon: LifeBuoy },
+    { label: t('shipping'), href: '/admin/shipping', icon: Truck },
+    { label: t('payments'), href: '/admin/payments', icon: CreditCard },
+    { label: t('reviews'), href: '/admin/reviews', icon: Star },
+    { label: t('analytics'), href: '/admin/analytics', icon: BarChart2 },
+    { label: t('settings'), href: '/admin/settings', icon: Settings },
   ]
 
   const filtered = query ? pages.filter(p => p.label.toLowerCase().includes(query.toLowerCase())) : pages
@@ -482,12 +482,12 @@ function SearchModal({ locale }: { locale: string }) {
       <div className="relative w-full max-w-lg rounded-2xl border border-gray-200 bg-white shadow-2xl overflow-hidden" onClick={e => e.stopPropagation()}>
         <div className="flex items-center gap-3 border-b border-gray-100 px-4 py-3">
           <Search size={16} className="text-gray-400 shrink-0" />
-          <input ref={inputRef} type="text" value={query} onChange={e => setQuery(e.target.value)} placeholder="Rechercher une page..." className="flex-1 text-sm outline-none placeholder:text-gray-400" />
+          <input ref={inputRef} type="text" value={query} onChange={e => setQuery(e.target.value)} placeholder={t('searchPlaceholder')} className="flex-1 text-sm outline-none placeholder:text-gray-400" />
           <kbd className="rounded-md border border-gray-200 bg-gray-50 px-1.5 py-0.5 text-[10px] text-gray-400">ESC</kbd>
         </div>
         <div className="max-h-72 overflow-y-auto p-2 space-y-0.5">
           {filtered.length === 0 ? (
-            <p className="py-6 text-center text-sm text-gray-400">Aucun résultat</p>
+            <p className="py-6 text-center text-sm text-gray-400">{t('noResults')}</p>
           ) : (
             filtered.map(p => (
               <button key={p.href} onClick={() => { router.push(`/${locale}${p.href}`); setOpen(false) }} className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-gray-600 hover:bg-gray-50 transition-colors text-left">

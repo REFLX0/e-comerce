@@ -16,6 +16,7 @@ import { EmptyState } from '@/components/common/EmptyState'
 import { useSearchParams } from 'next/navigation'
 import { Search } from 'lucide-react'
 import { useTranslations } from 'next-intl'
+import { useRouter } from '@/i18n/routing'
 import type { ProductFilters } from '@/lib/types'
 import { useVehicleUrlSync } from '@/lib/hooks/useVehicleUrlSync'
 
@@ -23,6 +24,7 @@ const VEHICLE_QUERY_KEYS = ['make', 'model', 'engine']
 
 export default function SearchPage() {
   const searchParams = useSearchParams()
+  const router = useRouter()
   const q = searchParams.get('q') || ''
   const t = useTranslations('Catalogue')
 
@@ -86,7 +88,7 @@ export default function SearchPage() {
 
   return (
     <div className="section-padding py-8">
-      <Breadcrumb items={[{ label: 'Recherche' }]} />
+      <Breadcrumb items={[{ label: t('searchTitle') }]} />
 
       <div className="mt-6 flex flex-col gap-8 md:flex-row">
         {/* Desktop Sidebar */}
@@ -99,9 +101,9 @@ export default function SearchPage() {
           <div className="mb-6 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
             <div>
               <h1 className="font-display text-brand-primary text-2xl font-bold md:text-3xl">
-                Résultats pour "{q}"
+                {t('resultsFor', { q })}
               </h1>
-              <p className="mt-1 text-gray-500">{data?.total || 0} résultats trouvés</p>
+              <p className="mt-1 text-gray-500">{t('resultsFound', { count: data?.total || 0 })}</p>
               {isVehicleSearch && !isLoading && (
                 <p className="mt-1 text-sm font-medium text-[#16254c]">
                   {t('compatiblePartsHint', { vehicle: vehicleLabel })}
@@ -122,8 +124,8 @@ export default function SearchPage() {
           {!q && Object.keys(filters).length <= 1 ? (
             <div className="bg-brand-surface border-brand-surface-dark rounded-2xl border py-20 text-center">
               <Search className="mx-auto mb-4 h-12 w-12 text-gray-400" />
-              <h3 className="text-brand-primary text-lg font-bold">Aucune recherche</h3>
-              <p className="mt-2 text-gray-500">Veuillez entrer un terme de recherche.</p>
+              <h3 className="text-brand-primary text-lg font-bold">{t('noSearchTitle')}</h3>
+              <p className="mt-2 text-gray-500">{t('noSearchMessage')}</p>
             </div>
           ) : isLoading ? (
             <ProductGridSkeleton count={12} />
@@ -139,17 +141,17 @@ export default function SearchPage() {
               message={
                 isVehicleSearch
                   ? t('emptyVehicleMessage')
-                  : `Aucun produit ne correspond à la recherche "${q}".`
+                  : t('noResultsFor', { q })
               }
               action={
                 isVehicleSearch
                   ? {
                       label: t('searchAllCatalog'),
-                      onClick: () => (window.location.href = `/recherche?q=${encodeURIComponent(q)}`),
+                      onClick: () => router.replace(`/recherche?q=${encodeURIComponent(q)}`),
                     }
                   : {
-                      label: 'Effacer les filtres',
-                      onClick: () => (window.location.href = `/recherche?q=${q}`),
+                      label: t('clearFilters'),
+                      onClick: () => router.replace(`/recherche?q=${q}`),
                     }
               }
             />

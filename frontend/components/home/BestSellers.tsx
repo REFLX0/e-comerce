@@ -10,8 +10,8 @@ import { useTranslations } from 'next-intl'
 const HELP_CARDS = [
   {
     icon: HelpCircle,
-    title: "Pas sûr de l'huile ?",
-    desc: "Utilisez notre outil pour trouver l'huile parfaite adaptée à votre véhicule.",
+    labelKey: 'notSureTitle',
+    descKey: 'notSureDesc',
     cta: "Trouver mon huile →",
     href: "#oil-finder",
     accent: 'border-amber-200 hover:border-amber-400',
@@ -20,8 +20,8 @@ const HELP_CARDS = [
   },
   {
     icon: Phone,
-    title: "Besoin d'aide ?",
-    desc: "Notre équipe d'experts est disponible du Lundi au Samedi de 8h à 18h.",
+    labelKey: 'expertHelpTitle',
+    descKey: 'expertHelpDesc',
     cta: "Nous contacter →",
     href: "/contact",
     accent: 'border-blue-200 hover:border-blue-400',
@@ -30,8 +30,8 @@ const HELP_CARDS = [
   },
   {
     icon: Package2,
-    title: "Commandes en gros",
-    desc: "Des prix spéciaux pour les ateliers, garages et entreprises. Demandez un devis.",
+    labelKey: 'specialPricesTitle',
+    descKey: 'specialPricesDesc',
     cta: "En savoir plus →",
     href: "/contact",
     accent: 'border-green-200 hover:border-green-400',
@@ -71,7 +71,7 @@ export function BestSellers() {
         <div className="mb-10 flex items-end justify-between gap-4">
           <div>
             <p className="mb-1 text-xs font-bold uppercase tracking-[0.25em] text-brand-accent">
-              Nos meilleures ventes
+              {t('bestSellers')}
             </p>
             <h2 className="text-3xl font-black uppercase tracking-tight text-brand-primary md:text-4xl">
               Top Produits
@@ -81,7 +81,7 @@ export function BestSellers() {
             href="/catalogue?sort=popular"
             className="hidden items-center gap-1 text-sm font-bold text-brand-primary/60 transition-colors hover:text-brand-primary sm:inline-flex"
           >
-            Voir tous les produits <ArrowRight size={14} />
+            {t('viewAll')} <ArrowRight size={14} />
           </Link>
         </div>
 
@@ -98,7 +98,7 @@ export function BestSellers() {
             href="/catalogue?sort=popular"
             className="inline-flex items-center gap-1 text-sm font-bold text-brand-primary"
           >
-            Voir tous les produits <ArrowRight size={14} />
+            {t('viewAll')} <ArrowRight size={14} />
           </Link>
         </div>
 
@@ -108,7 +108,7 @@ export function BestSellers() {
             const Icon = card.icon
             return (
               <Link
-                key={card.title}
+                key={card.labelKey}
                 href={card.href}
                 className={`group flex items-start gap-4 rounded-2xl border-2 bg-white p-5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md ${card.accent}`}
               >
@@ -117,9 +117,9 @@ export function BestSellers() {
                 </div>
                 <div>
                   <h3 className="font-bold text-gray-900 group-hover:text-brand-primary transition-colors">
-                    {card.title}
+                    {t(card.labelKey)}
                   </h3>
-                  <p className="mt-1 text-xs leading-relaxed text-gray-500">{card.desc}</p>
+                  <p className="mt-1 text-xs leading-relaxed text-gray-500">{t(card.descKey)}</p>
                   <span className="mt-2 inline-block text-xs font-bold text-brand-primary">
                     {card.cta}
                   </span>

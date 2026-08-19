@@ -6,8 +6,11 @@ import { adminApi } from '@/lib/api/admin'
 import { Star, CheckCircle2, XCircle, Trash2, ChevronLeft, ChevronRight } from 'lucide-react'
 import { toast } from 'sonner'
 import Image from 'next/image'
+import { useLocale, useTranslations } from 'next-intl'
 
 export default function AdminReviewsPage() {
+  const t = useTranslations('Admin')
+  const locale = useLocale()
   const queryClient = useQueryClient()
   const [page, setPage] = useState(1)
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null)
@@ -28,39 +31,39 @@ export default function AdminReviewsPage() {
       adminApi.updateReviewStatus(id, isApproved),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-reviews'] })
-      toast.success('Statut mis à jour')
+      toast.success(t('statusUpdated'))
     },
-    onError: () => toast.error('Erreur lors de la mise à jour'),
+    onError: () => toast.error(t('updateError')),
   })
 
   const deleteMutation = useMutation({
     mutationFn: (id: string) => adminApi.deleteReview(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-reviews'] })
-      toast.success('Avis supprimé')
+      toast.success(t('reviewDeleted'))
       setDeleteTarget(null)
     },
-    onError: () => toast.error('Erreur lors de la suppression'),
+    onError: () => toast.error(t('reviewDeleteError')),
   })
 
   return (
     <div className="p-4 sm:p-6 space-y-5">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-brand-primary">Avis Clients</h1>
-          <p className="text-sm text-gray-500">{total} avis reçus</p>
+          <h1 className="text-2xl font-bold text-brand-primary">{t('reviewsTitle')}</h1>
+          <p className="text-sm text-gray-500">{t('reviewsReceived', { count: total })}</p>
         </div>
       </div>
 
       {deleteTarget && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40" onClick={() => setDeleteTarget(null)}>
           <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-xl max-w-sm w-full mx-4" onClick={e => e.stopPropagation()}>
-            <h3 className="text-lg font-bold text-brand-primary mb-2">Confirmer la suppression</h3>
-            <p className="text-sm text-gray-500 mb-6">Voulez-vous vraiment supprimer cet avis définitivement ? Cette action est irréversible.</p>
+            <h3 className="text-lg font-bold text-brand-primary mb-2">{t('confirmDeleteTitle')}</h3>
+            <p className="text-sm text-gray-500 mb-6">{t('deleteReviewDesc')}</p>
             <div className="flex justify-end gap-3">
-              <button onClick={() => setDeleteTarget(null)} className="rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">Annuler</button>
+              <button onClick={() => setDeleteTarget(null)} className="rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">{t('cancel')}</button>
               <button onClick={() => deleteMutation.mutate(deleteTarget)} disabled={deleteMutation.isPending} className="rounded-xl bg-red-500 px-4 py-2 text-sm font-semibold text-white hover:bg-red-600 transition-colors disabled:opacity-50">
-                {deleteMutation.isPending ? 'Suppression...' : 'Supprimer'}
+                {deleteMutation.isPending ? t('deleting') : t('deleteAction')}
               </button>
             </div>
           </div>
@@ -68,14 +71,14 @@ export default function AdminReviewsPage() {
       )}
 
       {isError && (
-        <div className="rounded-2xl border border-red-100 bg-red-50 p-4 text-center text-sm text-red-700">Erreur de chargement. <button onClick={() => window.location.reload()} className="font-semibold underline">Réessayer</button></div>
+        <div className="rounded-2xl border border-red-100 bg-red-50 p-4 text-center text-sm text-red-700">{t('loadError')} <button onClick={() => window.location.reload()} className="font-semibold underline">{t('retry')}</button></div>
       )}
 
       <div className="space-y-3">
         {isLoading ? (
-          <div className="py-12 text-center text-gray-400">Chargement...</div>
+          <div className="py-12 text-center text-gray-400">{t('loading')}</div>
         ) : reviews.length === 0 ? (
-          <div className="py-16 text-center text-gray-400">Aucun avis trouvé</div>
+          <div className="py-16 text-center text-gray-400">{t('noReviews')}</div>
         ) : (
           reviews.map((review) => (
             <div key={review.id} className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm transition-all hover:shadow-md">
@@ -102,20 +105,20 @@ export default function AdminReviewsPage() {
                       ))}
                     </div>
                     <span className="text-sm font-bold text-brand-primary ml-2">{review.authorName}</span>
-                    <span className="text-xs text-gray-400">• {review.createdAt ? new Date(review.createdAt).toLocaleDateString('fr-TN') : '—'}</span>
+                    <span className="text-xs text-gray-400">• {review.createdAt ? new Date(review.createdAt).toLocaleDateString(locale) : '—'}</span>
                     {review.user?.email && <span className="text-xs text-gray-400">• {review.user.email}</span>}
                   </div>
                   <p className="text-sm text-gray-600 mt-2">"{review.comment}"</p>
                 </div>
                 <div className="flex flex-col sm:flex-row items-center gap-3 shrink-0">
                   <span className={`rounded-full px-3 py-1 text-xs font-bold ${review.isApproved ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
-                    {review.isApproved ? 'Approuvé' : 'En attente'}
+                    {review.isApproved ? t('approvedTag') : t('pendingTag')}
                   </span>
                   <div className="flex items-center gap-1 border-l border-gray-100 pl-3">
-                    <button onClick={() => updateStatusMutation.mutate({ id: review.id, isApproved: !review.isApproved })} disabled={updateStatusMutation.isPending} className={`rounded-lg p-2 transition-colors ${review.isApproved ? 'text-yellow-500 hover:bg-yellow-50' : 'text-green-600 hover:bg-green-50'}`} title={review.isApproved ? 'Masquer' : 'Approuver'}>
+                    <button onClick={() => updateStatusMutation.mutate({ id: review.id, isApproved: !review.isApproved })} disabled={updateStatusMutation.isPending} className={`rounded-lg p-2 transition-colors ${review.isApproved ? 'text-yellow-500 hover:bg-yellow-50' : 'text-green-600 hover:bg-green-50'}`} title={review.isApproved ? t('hideAction') : t('approveAction')}>
                       {review.isApproved ? <XCircle size={18} /> : <CheckCircle2 size={18} />}
                     </button>
-                    <button onClick={() => setDeleteTarget(review.id)} disabled={deleteMutation.isPending} className="rounded-lg p-2 text-gray-400 hover:bg-red-50 hover:text-red-500 transition-colors" title="Supprimer">
+                    <button onClick={() => setDeleteTarget(review.id)} disabled={deleteMutation.isPending} className="rounded-lg p-2 text-gray-400 hover:bg-red-50 hover:text-red-500 transition-colors" title={t('deleteAction')}>
                       <Trash2 size={18} />
                     </button>
                   </div>
@@ -129,7 +132,7 @@ export default function AdminReviewsPage() {
       {totalPages > 1 && (
         <div className="flex items-center justify-center gap-2">
           <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page <= 1} className="rounded-xl border border-gray-200 bg-white p-2 text-gray-500 hover:bg-gray-50 disabled:opacity-40"><ChevronLeft size={16} /></button>
-          <span className="text-sm font-medium text-gray-600">Page {page} / {totalPages}</span>
+          <span className="text-sm font-medium text-gray-600">{t('pageSimple', { current: page, total: totalPages })}</span>
           <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page >= totalPages} className="rounded-xl border border-gray-200 bg-white p-2 text-gray-500 hover:bg-gray-50 disabled:opacity-40"><ChevronRight size={16} /></button>
         </div>
       )}

@@ -183,7 +183,7 @@ export function ProductCard({ product }: Props) {
         {/* Price */}
         <div className="mt-3 border-t border-gray-100 pt-3">
           {isPriceTbd ? (
-            <span className="text-sm font-semibold text-brand-primary">Prix sur demande</span>
+            <span className="text-sm font-semibold text-brand-primary">{t('priceNa')}</span>
           ) : defaultVariant ? (
             <div className="flex flex-wrap items-baseline gap-1.5">
               <span className="text-base font-black text-brand-primary">
