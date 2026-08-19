@@ -1,6 +1,7 @@
 "use client";
 
 import { useLocale, useTranslations } from 'next-intl'
+import { useSearchParams } from 'next/navigation'
 import { useRouter, usePathname } from '@/i18n/routing'
 
 /**
@@ -28,13 +29,15 @@ export function LanguageSwitcher() {
     : 'fr'
   const router = useRouter()
   const pathname = usePathname()
+  const searchParams = useSearchParams()
   const t = useTranslations('Layout')
 
   const currentIndex = LOCALE_CYCLE.indexOf(locale)
   const nextLocale: 'fr' | 'en' | 'ar' = LOCALE_CYCLE[(currentIndex + 1) % LOCALE_CYCLE.length] ?? 'fr'
 
   const toggleLanguage = () => {
-    router.replace(pathname, { locale: nextLocale })
+    const qs = searchParams.toString()
+    router.replace(qs ? `${pathname}?${qs}` : pathname, { locale: nextLocale })
   }
 
   return (
