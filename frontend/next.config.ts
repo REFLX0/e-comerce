@@ -22,7 +22,9 @@ const nextConfig: NextConfig = {
     // resolve the /product-images route from its own filesystem.
     unoptimized: true,
     remotePatterns: [
+      { protocol: 'http', hostname: 'localhost' },
       { protocol: 'https', hostname: 'www.specpart.tn' },
+      { protocol: 'https', hostname: 'specpart.tn' },
       // autopart.tn — original source of product images (fallback for un-migrated URLs)
       { protocol: 'https', hostname: 'autopart.tn' },
       // Unsplash (fallback product photos)

@@ -16,7 +16,8 @@ async function getBackendAuth(req: NextRequest) {
   if (!token) return null
 
   try {
-    const secret = new TextEncoder().encode(process.env.JWT_SECRET || 'fallback-dev-secret')
+    const secret = new TextEncoder().encode(process.env.JWT_SECRET)
+    if (!process.env.JWT_SECRET) return null // Refuse auth without a real secret
     const { payload } = await jwtVerify(token, secret)
     return { role: typeof payload.role === 'string' ? payload.role : undefined }
   } catch {
@@ -41,7 +42,7 @@ export default auth(async (req: NextRequest & { auth?: unknown }) => {
     `font-src 'self' https://fonts.gstatic.com`,
     `img-src 'self' blob: data: https://res.cloudinary.com https://images.unsplash.com https://www.google.com https://imagedelivery.net`,
     `media-src 'self' data: blob:`,
-    `connect-src 'self' ${env.NEXT_PUBLIC_API_URL ? new URL(env.NEXT_PUBLIC_API_URL, 'http://localhost').origin : ''} http://localhost:4000 https://api.cloudinary.com https://www.upstash.io https://www.google-analytics.com`,
+    `connect-src 'self' ${env.NEXT_PUBLIC_API_URL ? new URL(env.NEXT_PUBLIC_API_URL, env.NEXT_PUBLIC_SITE_URL).origin : ''} ${isDev ? 'http://localhost:4000' : ''} https://api.cloudinary.com https://www.upstash.io https://www.google-analytics.com`.trim(),
     `object-src 'none'`,
     `base-uri 'self'`,
     `form-action 'self'`,

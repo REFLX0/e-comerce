@@ -1,5 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { v2 as cloudinary } from 'cloudinary';
+import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -7,8 +8,12 @@ import * as path from 'path';
 export class UploadsService {
   private readonly logger = new Logger(UploadsService.name);
   private readonly useCloudinary: boolean;
+  private readonly useMinio: boolean;
+  private readonly s3Client: S3Client | null = null;
+  private readonly minioBucket: string;
 
   constructor() {
+    // Cloudinary init
     this.useCloudinary = !!(
       process.env.CLOUDINARY_CLOUD_NAME &&
       process.env.CLOUDINARY_API_KEY &&
@@ -21,13 +26,48 @@ export class UploadsService {
         api_secret: process.env.CLOUDINARY_API_SECRET,
       });
     }
+
+    // MinIO init
+    this.useMinio = !!process.env.MINIO_ENDPOINT;
+    this.minioBucket = process.env.MINIO_BUCKET || 'specpart-images';
+    if (this.useMinio) {
+      this.s3Client = new S3Client({
+        region: process.env.MINIO_REGION || 'us-east-1',
+        endpoint: process.env.MINIO_ENDPOINT,
+        forcePathStyle: true, // Needed for MinIO
+        credentials: {
+          accessKeyId: process.env.MINIO_ACCESS_KEY || 'admin',
+          secretAccessKey: process.env.MINIO_SECRET_KEY || 'changemechangeme',
+        },
+      });
+    }
   }
 
   async uploadImage(file: Express.Multer.File): Promise<string> {
+    if (this.useMinio) {
+      return this.uploadToMinio(file);
+    }
     if (this.useCloudinary) {
       return this.uploadToCloudinary(file);
     }
     return this.uploadToLocalDisk(file);
+  }
+
+  private async uploadToMinio(file: Express.Multer.File): Promise<string> {
+    const ext = path.extname(file.originalname) || '.jpg';
+    const filename = `${Date.now()}-${Math.round(Math.random() * 1e9)}${ext}`;
+    
+    await this.s3Client!.send(
+      new PutObjectCommand({
+        Bucket: this.minioBucket,
+        Key: filename,
+        Body: file.buffer,
+        ContentType: file.mimetype,
+      })
+    );
+    
+    this.logger.log(`File uploaded to MinIO: ${filename}`);
+    return `/storage/${this.minioBucket}/${filename}`;
   }
 
   private async uploadToCloudinary(file: Express.Multer.File): Promise<string> {
