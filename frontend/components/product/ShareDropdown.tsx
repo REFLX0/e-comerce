@@ -39,7 +39,7 @@ export function ShareDropdown({ productName, productDescription, className }: Sh
 
   const handleShare = (platform: string) => {
     const url = encodeURIComponent(window.location.href)
-    const text = encodeURIComponent(`Découvrez ${productName} sur specpart !`)
+    const text = encodeURIComponent(t('shareText', { name: productName }))
     
     let shareUrl = ''
     switch (platform) {

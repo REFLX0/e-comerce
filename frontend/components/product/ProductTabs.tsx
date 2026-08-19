@@ -66,9 +66,9 @@ function splitProductDetails(description?: string) {
   return { description: descriptionText, technicalDetails }
 }
 
-function humanizeSpec(key: string) {
+function humanizeSpec(key: string, t?: (k: string) => string) {
   const labels: Record<string, string> = {
-    viscosity: 'Viscosité',
+    viscosity: t?.(`viscosityLabel`) ?? 'Viscosité',
     apiSpec: 'Norme API',
     aceaSpec: 'Norme ACEA',
     jasoSpec: 'Norme JASO',
@@ -81,12 +81,12 @@ function humanizeSpec(key: string) {
   return labels[key] || key.replace(/([A-Z])/g, ' $1').replace(/^./, (value) => value.toUpperCase())
 }
 
-function toSpecRows(specs?: Product['specs']): DetailRow[] {
+function toSpecRows(specs?: Product['specs'], t?: (k: string) => string): DetailRow[] {
   if (!specs) return []
   return Object.entries(specs)
     .filter(([, value]) => value !== undefined && value !== null && value !== '' && value !== false)
     .map(([key, value]) => ({
-      label: humanizeSpec(key),
+      label: humanizeSpec(key, t),
       value: Array.isArray(value) ? value.join(', ') : value === true ? 'Oui' : String(value),
     }))
 }
@@ -94,7 +94,7 @@ function toSpecRows(specs?: Product['specs']): DetailRow[] {
 export function ProductTabs({ product }: Props) {
   const t = useTranslations('Product')
   const details = useMemo(() => splitProductDetails(product.description), [product.description])
-  const specRows = useMemo(() => [...toSpecRows(product.specs), ...details.technicalDetails], [product.specs, details.technicalDetails])
+  const specRows = useMemo(() => [...toSpecRows(product.specs, t), ...details.technicalDetails], [product.specs, details.technicalDetails, t])
 
   return (
     <div className="border-brand-surface-dark mt-16 rounded-2xl border bg-white p-6 shadow-sm md:p-10">

@@ -124,7 +124,9 @@ export default function AdminPaymentsPage() {
               ) : filtered.length === 0 ? (
                 <tr><td colSpan={7} className="px-6 py-12 text-center text-gray-400">{t('noTransactions')}</td></tr>
               ) : (
-                filtered.map(tx => (
+                filtered.map(tx => {
+                  const statusConf = STATUS_LABELS[tx.status]
+                  return (
                   <tr key={tx.id} className="hover:bg-gray-50/50 transition-colors">
                     <td className="px-6 py-4">
                       <div className="font-mono font-medium text-brand-primary">{sliceId(tx.id)}</div>
@@ -151,8 +153,8 @@ export default function AdminPaymentsPage() {
                     </td>
                     <td className="px-6 py-4 text-center">
                       <div className="inline-flex items-center gap-1">
-                        <span className={`rounded-full px-2.5 py-0.5 text-xs font-bold ${STATUS_LABELS[tx.status]?.className ?? 'bg-gray-100 text-gray-600'}`}>
-                          {STATUS_LABELS[tx.status] ? t(STATUS_LABELS[tx.status].labelKey) : tx.status}
+                        <span className={`rounded-full px-2.5 py-0.5 text-xs font-bold ${statusConf?.className ?? 'bg-gray-100 text-gray-600'}`}>
+                          {statusConf ? t(statusConf.labelKey) : tx.status}
                         </span>
                         {tx.status === 'PENDING' && (
                           <button onClick={() => updateStatusMutation.mutate({ id: tx.id, status: 'COMPLETED' })} disabled={updateStatusMutation.isPending} className="ml-1 rounded-lg p-1 text-green-600 hover:bg-green-50 transition-colors" title={t('markCollected')}>
@@ -162,7 +164,8 @@ export default function AdminPaymentsPage() {
                       </div>
                     </td>
                   </tr>
-                ))
+                  )
+                })
               )}
             </tbody>
           </table>

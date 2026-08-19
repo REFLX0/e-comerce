@@ -36,11 +36,12 @@ export function ProductCardSkeleton() {
 }
 
 export function ProductGridSkeleton({ count = 12 }: { count?: number }) {
+  const t = useTranslations('Common')
   return (
     <div
       className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
       role="status"
-      aria-label={`Chargement de ${count} produits...`}
+      aria-label={t('loadingProducts', { count })}
     >
       {Array.from({ length: count }).map((_, i) => (
         <ProductCardSkeleton key={i} />
@@ -50,8 +51,9 @@ export function ProductGridSkeleton({ count = 12 }: { count?: number }) {
 }
 
 export function ProductPageSkeleton() {
+  const t = useTranslations('Common')
   return (
-    <div className="section-padding py-8" role="status" aria-label="Chargement du produit...">
+    <div className="section-padding py-8" role="status" aria-label={t('loadingProduct')}>
       {/* Breadcrumb */}
       <SkeletonBlock className="mb-8" style={{ height: 16, width: '33%' }} />
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
@@ -126,8 +128,9 @@ export function CategoryGridSkeleton({ count = 6 }: { count?: number }) {
 }
 
 export function FilterSidebarSkeleton() {
+  const t = useTranslations('Common')
   return (
-    <div className="space-y-6" role="status" aria-label="Chargement des filtres...">
+    <div className="space-y-6" role="status" aria-label={t('loadingFilters')}>
       {Array.from({ length: 4 }).map((_, i) => (
         <div key={i} className="space-y-3">
           <SkeletonBlock style={{ height: 20, width: '50%' }} />
@@ -141,8 +144,9 @@ export function FilterSidebarSkeleton() {
 }
 
 export function TableSkeleton({ rows = 5, cols = 4 }: { rows?: number; cols?: number }) {
+  const t = useTranslations('Common')
   return (
-    <div className="space-y-2" role="status" aria-label="Chargement du tableau...">
+    <div className="space-y-2" role="status" aria-label={t('loadingTable')}>
       {/* Header */}
       <div className="flex gap-4 border-b border-gray-100 pb-3">
         {Array.from({ length: cols }).map((_, i) => (

@@ -36,7 +36,7 @@ export default function LoginForm() {
         description: t('loginFailed'),
       })
     }
-  }, [urlError])
+  }, [urlError, t])
 
   const {
     register,

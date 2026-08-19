@@ -94,7 +94,7 @@ export function AddToCartButton({ product, variant }: Props) {
           className="mb-8 flex w-full items-center justify-center gap-2 rounded-2xl border-2 border-[#25D366]/30 bg-[#25D366]/5 px-4 py-3.5 text-sm font-bold text-[#128C4A] transition-all hover:bg-[#25D366] hover:text-white"
         >
           <MessageCircle size={20} />
-          Vérifier ma pièce via WhatsApp (compatibilité & châssis)
+          {t('checkViaWhatsApp')}
         </button>
       )}
     </>

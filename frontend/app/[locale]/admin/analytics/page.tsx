@@ -166,7 +166,7 @@ export default function AdminAnalyticsPage() {
                   <div
                     className="w-full rounded-t-lg bg-blue-500 transition-all"
                     style={{ height: `${day.pct}%` }}
-                    title={money(day.value)}
+                    title={money(day.value, locale)}
                   />
                 </div>
                 <span className="text-xs font-semibold text-gray-400">{day.label}</span>

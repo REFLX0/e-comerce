@@ -24,7 +24,7 @@ type ShippingOrder = {
 
 type Zone = { id: string; name: string; price: number; eta: string; sortOrder: number; isActive: boolean }
 
-const STATUS: Record<string, { labelKey: string; className: string; icon: any }> = {
+const STATUS: Record<'PENDING' | 'CONFIRMED' | 'SHIPPED' | 'DELIVERED' | 'CANCELLED', { labelKey: string; className: string; icon: any }> = {
   CONFIRMED: { labelKey: 'toPrepare', className: 'bg-blue-100 text-blue-700', icon: PackageCheck },
   SHIPPED: { labelKey: 'inDelivery', className: 'bg-purple-100 text-purple-700', icon: Truck },
   DELIVERED: { labelKey: 'deliveredX', className: 'bg-green-100 text-green-700', icon: CheckCircle2 },
@@ -154,7 +154,7 @@ export default function AdminShippingPage() {
               {(['ALL', 'CONFIRMED', 'SHIPPED', 'DELIVERED'] as const).map((v) => (
                 <button key={v} onClick={() => setStatus(v)}
                   className={`rounded-lg px-3 py-1.5 text-xs font-semibold whitespace-nowrap transition-all ${status === v ? 'bg-brand-primary text-white' : 'text-gray-500 hover:text-gray-800'}`}>
-                  {v === 'ALL' ? t('allStatuses') : t(STATUS[v].labelKey)}
+                  {v === 'ALL' ? t('allStatuses') : t((STATUS[v] ?? STATUS.CONFIRMED).labelKey)}
                 </button>
               ))}
             </div>
@@ -177,7 +177,7 @@ export default function AdminShippingPage() {
                 )) : filtered.length === 0 ? (
                   <tr><td colSpan={4} className="py-14 text-center text-sm text-gray-400">{t('noExpeditions')}</td></tr>
                 ) : filtered.map((order) => {
-                  const s = STATUS[order.status]; const Icon = s.icon
+                  const s = STATUS[order.status] ?? STATUS.PENDING; const Icon = s.icon
                   return (
                     <tr key={order.id} className="border-t border-gray-50 hover:bg-gray-50/50 transition-colors">
                       <td className="px-4 py-3">

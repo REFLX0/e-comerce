@@ -109,7 +109,7 @@ export function ChatWidget() {
       if (!response.ok) throw new Error('Chat request failed')
 
       const data = await response.json()
-      const botMsg: ChatMessage = { role: 'assistant', content: data.reply, time: now() }
+      const botMsg: ChatMessage = { role: 'assistant', content: data.reply, time: now(locale) }
       setMessages([...history, botMsg])
       if (!isOpen) setUnread((n) => n + 1)
     } catch {
@@ -117,8 +117,8 @@ export function ChatWidget() {
         ...history,
         {
           role: 'assistant',
-          content: 'Désolé, je rencontre un problème technique. Réessayez dans un instant !',
-          time: now(),
+          content: t('errorMessage'),
+          time: now(locale),
         },
       ])
     } finally {
@@ -127,7 +127,7 @@ export function ChatWidget() {
   }
 
   const resetConversation = () => {
-    setMessages([{ role: 'assistant', content: WELCOME_MESSAGE, time: now() }])
+    setMessages([{ role: 'assistant', content: welcomeMessage, time: now(locale) }])
     setShowActions(true)
     setMenuOpen(false)
   }
@@ -202,11 +202,11 @@ export function ChatWidget() {
                   </div>
                   <div>
                     <h3 style={{ color: '#fff', fontSize: 14, fontWeight: 700, lineHeight: 1.2 }}>
-                      Assistant IA Specpart
+                      {t('headerTitle')}
                     </h3>
                     <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: 11, marginTop: 2, display: 'flex', alignItems: 'center', gap: 5 }}>
                       <span style={{ display: 'inline-block', width: 6, height: 6, borderRadius: '50%', background: '#22c55e' }} />
-                      En ligne · Répond instantanément
+                      {t('onlineStatus')}
                     </p>
                   </div>
                 </div>
@@ -225,7 +225,7 @@ export function ChatWidget() {
                     }}
                   >
                     <HelpCircle size={12} />
-                    Aide
+                    {t('help')}
                   </button>
 
                   <div className="relative" ref={menuRef}>
@@ -255,7 +255,7 @@ export function ChatWidget() {
                           }}
                         >
                           <RefreshCcw size={13} style={{ color: '#9ca3af' }} />
-                          Nouvelle conversation
+                          {t('newConversation')}
                         </button>
                         <div style={{ height: 1, background: '#f3f4f6' }} />
                         <button
@@ -270,7 +270,7 @@ export function ChatWidget() {
                           }}
                         >
                           <Headset size={13} style={{ color: '#9ca3af' }} />
-                          Contacter un conseiller
+                          {t('contactAdvisor')}
                         </button>
                       </div>
                     )}
@@ -384,11 +384,11 @@ export function ChatWidget() {
               {/* Quick action chips */}
               {showActions && !isLoading && (
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 7, paddingLeft: 36, paddingTop: 4 }}>
-                  {QUICK_ACTIONS.map(({ label, icon: Icon }) => (
+                  {QUICK_ACTIONS.map(({ labelKey, icon: Icon }) => (
                     <button
-                      key={label}
+                      key={labelKey}
                       className="quick-btn"
-                      onClick={(e) => handleSend(e, label)}
+                      onClick={(e) => handleSend(e, t(labelKey))}
                       style={{
                         display: 'flex', alignItems: 'center', gap: 6,
                         padding: '7px 12px', borderRadius: 20,
@@ -400,7 +400,7 @@ export function ChatWidget() {
                       }}
                     >
                       <Icon size={12} style={{ color: '#D4A76A' }} />
-                      {label}
+                      {t(labelKey)}
                     </button>
                   ))}
                 </div>
@@ -439,7 +439,7 @@ export function ChatWidget() {
                     className="chat-input"
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
-                    placeholder="Écrivez votre message…"
+                    placeholder={t('inputPlaceholder')}
                     style={{
                       flex: 1, background: 'transparent', border: 'none',
                       fontSize: 13, color: '#1f2937', padding: '6px 0',
@@ -469,10 +469,10 @@ export function ChatWidget() {
 
               {/* Trust bar */}
               <div style={{ display: 'flex', justifyContent: 'center', gap: 16, marginTop: 8 }}>
-                {TRUST_ITEMS.map(({ label, icon: Icon }) => (
-                  <span key={label} style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 10, color: '#9ca3af' }}>
+                {TRUST_ITEMS.map(({ labelKey, icon: Icon }) => (
+                  <span key={labelKey} style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 10, color: '#9ca3af' }}>
                     <Icon size={10} style={{ color: '#D4A76A' }} />
-                    {label}
+                    {t(labelKey)}
                   </span>
                 ))}
               </div>
@@ -498,7 +498,7 @@ export function ChatWidget() {
               transform: isOpen ? 'rotate(0deg) scale(0.95)' : 'rotate(0deg) scale(1)',
               transition: 'all 0.25s cubic-bezier(0.34,1.56,0.64,1)',
             }}
-            aria-label="Ouvrir le chat"
+            aria-label={t('openChat')}
           >
             {isOpen
               ? <X size={22} />

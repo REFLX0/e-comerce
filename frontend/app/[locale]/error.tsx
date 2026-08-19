@@ -56,7 +56,7 @@ export default function Error({
 
         {/* Copy */}
         <h1 className="font-display text-brand-primary mb-4 text-3xl font-bold tracking-tight sm:text-4xl">
-          {t('errorTitle')}
+          {t('errorBoundaryTitle')}
         </h1>
         <p className="mx-auto mb-2 max-w-md text-base leading-relaxed text-gray-500">
           {t('errorDesc')}

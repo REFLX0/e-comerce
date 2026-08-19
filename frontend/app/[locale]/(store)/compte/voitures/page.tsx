@@ -90,7 +90,7 @@ function formatKm(value: number) {
   return value.toLocaleString('fr-TN')
 }
 
-function getReminder(car: UserCar, t: (k: string, values?: Record<string, unknown>) => string) {
+function getReminder(car: UserCar, t: (k: string, values?: Record<string, string | number>) => string) {
   const nextMileage = car.lastOilChangeMileage + car.oilChangeIntervalKm
   const remainingKm = nextMileage - car.currentMileage
 

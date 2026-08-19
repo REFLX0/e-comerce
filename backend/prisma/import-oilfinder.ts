@@ -22,7 +22,7 @@
 // to lowercase/trimmed so lookups and the conflicts report join cleanly.
 // ---------------------------------------------------------------------------
 
-import { PrismaClient } from '@prisma/client'
+import { Prisma, PrismaClient } from '@prisma/client'
 import * as fs from 'fs'
 import * as path from 'path'
 
@@ -30,8 +30,9 @@ const prisma = new PrismaClient()
 
 const APPLY = process.argv.includes('--apply')
 const DIR_ARG = process.argv.indexOf('--dir')
-const DATA_DIR = DIR_ARG > -1 && process.argv[DIR_ARG + 1]
-  ? path.resolve(process.argv[DIR_ARG + 1])
+const DIR_VALUE = DIR_ARG > -1 ? process.argv[DIR_ARG + 1] : undefined
+const DATA_DIR = DIR_VALUE
+  ? path.resolve(DIR_VALUE)
   : path.join(__dirname, 'oilfinder-data')
 
 type MatchAmbiguity = Record<string, string> | null
@@ -118,9 +119,10 @@ async function loadVehicles(skipped: string[]) {
       const powerHp = asInt(e.powerHp, label, skipped)
       const yearFrom = asInt(e.yearFrom, label, skipped)
       const yearTo = asInt(e.yearTo, label, skipped)
-      const capacityLiters = e.oilCapacityLiters == null || e.oilCapacityLiters === ''
+      const capacityRaw = e.oilCapacityLiters as unknown
+      const capacityLiters = capacityRaw == null || capacityRaw === ''
         ? null
-        : Number(e.oilCapacityLiters)
+        : Number(capacityRaw)
       if (capacityLiters != null && Number.isNaN(capacityLiters)) {
         skipped.push(`${label}: oilCapacityLiters must be numeric, got ${JSON.stringify(e.oilCapacityLiters)}`)
         continue
@@ -221,7 +223,7 @@ async function main() {
       const seen = new Map<string, string>() // fingerprint → specId (within run)
 
       for (const v of vehicles) {
-        const fingerprint = specFingerprint(v.oilViscosity, v.oilSpecAPI, v.oilSpecACEA, v.oilSpecOEM)
+        const fingerprint = specFingerprint(v.oilViscosity, v.oilSpecAPI ?? null, v.oilSpecACEA ?? null, v.oilSpecOEM ?? null)
         let specId = seen.get(fingerprint)
         if (!specId) {
           const existing = await tx.oilFinderOilSpec.findUnique({ where: { fingerprint }, select: { id: true } })
@@ -249,7 +251,7 @@ async function main() {
           seen.set(fingerprint, specId)
         }
 
-        const key = { make: v.make, model: v.model, generation: v.generation, engineCode: v.engineCode, source: v.source }
+        const key = { make: v.make, model: v.model, generation: v.generation ?? '', engineCode: v.engineCode ?? '', source: v.source }
         const existingVehicle = await tx.oilFinderVehicle.findUnique({
           where: { make_model_generation_engineCode_source: key },
           select: { id: true, oilSpecId: true },
@@ -263,7 +265,7 @@ async function main() {
           fuelType: v.fuelType,
           oilSpecId: specId,
           confidence: v.confidence,
-          matchAmbiguity: v.matchAmbiguity ?? null,
+          matchAmbiguity: v.matchAmbiguity ?? Prisma.JsonNull,
         }
         if (existingVehicle) {
           await tx.oilFinderVehicle.update({ where: { id: existingVehicle.id }, data })
