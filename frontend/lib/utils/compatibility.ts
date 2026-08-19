@@ -27,6 +27,14 @@ const KNOWN_ENGINE_TOKENS = [
   'bluehdi',
 ]
 
+const FUEL_ALIASES: Record<string, string[]> = {
+  essence: ['essence', 'petrol', 'benzine', 'gasoline'],
+  diesel: ['diesel', 'gazole', 'dci', 'tdi', 'hdi', 'cdi', 'jtd'],
+  hybride: ['hybride', 'hybrid', 'hybrides'],
+  electrique: ['electrique', 'electric', 'ev', 'electro'],
+  gpl: ['gpl', 'lpg', 'lpgf'],
+}
+
 function decodeHtmlEntities(value: string) {
   return value
     .replace(/&nbsp;/gi, ' ')
@@ -67,7 +75,23 @@ function getModel(vehicle: CompatibilityVehicle) {
 }
 
 function getEngine(vehicle: CompatibilityVehicle) {
-  return 'engineCode' in vehicle ? vehicle.engineCode : undefined
+  return 'engineCode' in vehicle ? vehicle.engineCode : vehicle.engine
+}
+
+function getFuel(vehicle: CompatibilityVehicle) {
+  return 'fuel' in vehicle ? vehicle.fuel : undefined
+}
+
+function getCylinders(vehicle: CompatibilityVehicle) {
+  return 'cylinders' in vehicle ? vehicle.cylinders : undefined
+}
+
+function getPower(vehicle: CompatibilityVehicle) {
+  return 'power' in vehicle ? vehicle.power : undefined
+}
+
+function getYear(vehicle: CompatibilityVehicle) {
+  return 'year' in vehicle ? vehicle.year : undefined
 }
 
 function getMakeAliases(make?: string | null) {
@@ -150,7 +174,55 @@ function engineMatches(compatibilityText: string, engine?: string | null) {
   return alphaTokens.length > 0
 }
 
-function vehicleMatchesText(compatibilityText: string, vehicle: CompatibilityVehicle) {
+function fuelMatches(fuel?: string | null, acceptedFuels?: string[] | null) {
+  const normalizedFuel = normalizeText(fuel)
+  if (!normalizedFuel) return true
+  if (!acceptedFuels || acceptedFuels.length === 0) return true
+
+  const normalizedAccepted = acceptedFuels.map(normalizeText).filter(Boolean)
+  if (normalizedAccepted.length === 0) return true
+
+  if (normalizedAccepted.includes(normalizedFuel)) return true
+
+  const aliasGroups = Object.entries(FUEL_ALIASES)
+  const vehicleGroup = aliasGroups.find(([, aliases]) =>
+    aliases.includes(normalizedFuel)
+  )
+  if (vehicleGroup) {
+    return normalizedAccepted.some((accepted) =>
+      vehicleGroup[1].includes(accepted) ||
+      accepted === vehicleGroup[0]
+    )
+  }
+
+  return false
+}
+
+function cylindersMatch(cylinders?: number | null, minCylinders?: number | null, maxCylinders?: number | null) {
+  if (!cylinders) return true
+  if (minCylinders != null && cylinders < minCylinders) return false
+  if (maxCylinders != null && cylinders > maxCylinders) return false
+  return true
+}
+
+function powerMatches(power?: number | null, minPower?: number | null, maxPower?: number | null) {
+  if (!power) return true
+  if (minPower != null && power < minPower) return false
+  if (maxPower != null && power > maxPower) return false
+  return true
+}
+
+function yearInRange(year?: number | null, yearFrom?: number | null, yearTo?: number | null) {
+  if (!year) return true
+  if (yearFrom != null && year < yearFrom) return false
+  if (yearTo != null && year > yearTo) return false
+  return true
+}
+
+function vehicleMatchesStructured(
+  compatibilityText: string,
+  vehicle: CompatibilityVehicle
+) {
   const make = getMake(vehicle)
   const model = getModel(vehicle)
   if (!make || !model) return false
@@ -166,6 +238,26 @@ function vehicleMatchesText(compatibilityText: string, vehicle: CompatibilityVeh
   if (!modelMatches) return false
 
   return engineMatches(compatibilityText, getEngine(vehicle))
+}
+
+function vehicleMatchesSpecs(product: Product, vehicle: CompatibilityVehicle) {
+  const specs = product.specs
+  if (!specs) return false
+
+  const hasFuelConstraint = specs.fuelTypes && specs.fuelTypes.length > 0
+  const hasCylindersConstraint =
+    specs.minCylinders != null || specs.maxCylinders != null
+  const hasPowerConstraint = specs.minPower != null || specs.maxPower != null
+
+  if (!hasFuelConstraint && !hasCylindersConstraint && !hasPowerConstraint) {
+    return false
+  }
+
+  if (hasFuelConstraint && !fuelMatches(getFuel(vehicle), specs.fuelTypes)) return false
+  if (hasCylindersConstraint && !cylindersMatch(getCylinders(vehicle), specs.minCylinders, specs.maxCylinders)) return false
+  if (hasPowerConstraint && !powerMatches(getPower(vehicle), specs.minPower, specs.maxPower)) return false
+
+  return true
 }
 
 function getCompatibilitySection(description?: string) {
@@ -197,9 +289,46 @@ export function getVehicleCompatibilityLabel(vehicle: CompatibilityVehicle) {
   const make = getMake(vehicle)
   const model = getModel(vehicle)
   const engine = getEngine(vehicle)
-  const year = 'year' in vehicle ? vehicle.year : undefined
+  const year = getYear(vehicle)
 
-  return [make, model, engine, year].filter(Boolean).join(' ')
+  const parts = [make, model, engine, year]
+  if ('fuel' in vehicle && vehicle.fuel) parts.push(vehicle.fuel)
+  if ('power' in vehicle && vehicle.power) parts.push(`${vehicle.power} ch`)
+
+  return parts.filter(Boolean).join(' ')
+}
+
+function matchByStructuredEntries(product: Product, vehicle: CompatibilityVehicle) {
+  const entries = product.compatibility ?? []
+  if (entries.length === 0) return false
+
+  const make = getMake(vehicle)
+  const model = getModel(vehicle)
+  if (!make || !model) return false
+
+  const makeAliases = getMakeAliases(make)
+  const modelCandidates = getModelCandidates(model, make)
+  const engine = getEngine(vehicle)
+  const year = getYear(vehicle)
+
+  for (const entry of entries) {
+    const entryMakeMatches = makeAliases.some((alias) =>
+      containsTerm(normalizeText(entry.make), alias)
+    )
+    if (!entryMakeMatches) continue
+
+    const entryModelMatches = modelCandidates.some((candidate) =>
+      containsTerm(normalizeText(entry.model), candidate)
+    )
+    if (!entryModelMatches) continue
+
+    if (!engineMatches(normalizeText(entry.engine ?? ''), engine)) continue
+    if (!yearInRange(year, entry.yearFrom, entry.yearTo)) continue
+
+    return true
+  }
+
+  return false
 }
 
 export function findProductCompatibilityMatch(
@@ -209,14 +338,32 @@ export function findProductCompatibilityMatch(
   const structuredText = getStructuredCompatibilityText(product)
   const descriptionText = getCompatibilitySection(product.description)
   const compatibilityText = [structuredText, descriptionText].filter(Boolean).join(' ')
-  if (!compatibilityText) return null
+  const hasCompatibilityData = Boolean(compatibilityText)
 
   for (const vehicle of vehicles) {
     if (!vehicle) continue
-    if (vehicleMatchesText(compatibilityText, vehicle)) {
+
+    if (matchByStructuredEntries(product, vehicle)) {
       return {
         vehicle,
         label: getVehicleCompatibilityLabel(vehicle),
+        source: 'structured' as const,
+      }
+    }
+
+    if (hasCompatibilityData && vehicleMatchesStructured(compatibilityText, vehicle)) {
+      return {
+        vehicle,
+        label: getVehicleCompatibilityLabel(vehicle),
+        source: 'text' as const,
+      }
+    }
+
+    if (vehicleMatchesSpecs(product, vehicle)) {
+      return {
+        vehicle,
+        label: getVehicleCompatibilityLabel(vehicle),
+        source: 'specs' as const,
       }
     }
   }

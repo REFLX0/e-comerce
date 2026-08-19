@@ -39,8 +39,31 @@ export const productsApi = {
 
   search: (query: string, limit = 10) => apiGet<Product[]>('/search/products', { q: query, limit }),
 
-  getCompatible: (make: string, model: string, engine?: string, specification?: string) =>
-    apiGet<Product[]>('/vehicles/compatible', { make, model, engine, specification }),
+  getCompatible: (params: {
+    make: string
+    model: string
+    engine?: string
+    categorySlug?: string
+    brands?: string
+    viscosity?: string
+    priceMin?: number
+    priceMax?: number
+    inStockOnly?: boolean
+    isNew?: boolean
+    isFeatured?: boolean
+    search?: string
+    type?: string
+    api?: string
+    acea?: string
+    volume?: string
+    sortBy?: string
+    page?: number
+    limit?: number
+  }) =>
+    apiGet<PaginatedResponse<Product & { compatLevel?: 'confirmed' | 'check' }>>(
+      '/vehicles/compatible/page',
+      params as Record<string, string | number | boolean | undefined>
+    ),
 
   getOilRecommendations: (params: { vehicleType: string; cylinders: number; power: number; fuelType: FuelType; make?: string }) =>
     apiGet<{ data: Product[]; total: number }>('/products/oil-recommendations', params),

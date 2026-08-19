@@ -31,7 +31,15 @@ type CarForm = {
   customMake?: string
   customModel?: string
   year: string
-  plateNumber: string
+  vin: string
+  engine: string
+  displacement: string
+  cylinders: string
+  fuel: string
+  power: string
+  transmission: string
+  trim: string
+  productionDate: string
   currentMileage: string
   lastOilChangeMileage: string
   oilChangeIntervalKm: string
@@ -49,7 +57,15 @@ const EMPTY_FORM: CarForm = {
   customMake: '',
   customModel: '',
   year: '',
-  plateNumber: '',
+  vin: '',
+  engine: '',
+  displacement: '',
+  cylinders: '',
+  fuel: '',
+  power: '',
+  transmission: '',
+  trim: '',
+  productionDate: '',
   currentMileage: '',
   lastOilChangeMileage: '',
   oilChangeIntervalKm: '10000',
@@ -58,17 +74,15 @@ const EMPTY_FORM: CarForm = {
   cabinFilterChanged: false,
 }
 
-
-
-function isValidTunisianPlate(plate: string) {
-  if (!plate.trim()) return true // Allow empty as it's optional, or we can make it required later if needed. But the requirements say "validate against... show inline error if invalid"
-  const clean = plate.toUpperCase().replace(/\s+/g, '')
-  return /^\d{2,4}(TU|TUN|TN)\d{1,4}$/.test(clean)
-}
-
 function toNumber(value: string, fallback = 0) {
   const parsed = Number(value)
   return Number.isFinite(parsed) ? parsed : fallback
+}
+
+function toOptionalNumber(value: string) {
+  if (!value.trim()) return undefined
+  const parsed = Number(value)
+  return Number.isFinite(parsed) ? parsed : undefined
 }
 
 function formatKm(value: number) {
@@ -128,7 +142,15 @@ function buildPayload(form: CarForm): CarPayload {
     model: finalModelName,
     modelSlug: finalModelSlug,
     year: form.year ? toNumber(form.year) : undefined,
-    plateNumber: form.plateNumber.trim() || undefined,
+    vin: form.vin.trim().toUpperCase() || undefined,
+    engine: form.engine.trim() || undefined,
+    displacement: toOptionalNumber(form.displacement),
+    cylinders: toOptionalNumber(form.cylinders),
+    fuel: form.fuel || undefined,
+    power: toOptionalNumber(form.power),
+    transmission: form.transmission || undefined,
+    trim: form.trim.trim() || undefined,
+    productionDate: form.productionDate || undefined,
     currentMileage: toNumber(form.currentMileage),
     lastOilChangeMileage: toNumber(form.lastOilChangeMileage),
     oilChangeIntervalKm: toNumber(form.oilChangeIntervalKm, 10000),
@@ -240,14 +262,14 @@ function CarCard({ car }: { car: UserCar }) {
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
             <h2 className="text-base font-bold text-brand-primary">{car.name}</h2>
-            {car.plateNumber && (
-              <span className="rounded-lg bg-white px-2 py-1 font-mono text-[11px] font-semibold text-gray-500">
-                {car.plateNumber}
+            {car.trim && (
+              <span className="rounded-lg bg-white px-2 py-1 text-[11px] font-semibold text-gray-500">
+                {car.trim}
               </span>
             )}
           </div>
           <p className="mt-0.5 text-sm text-gray-500">
-            {[car.make, car.model, car.year].filter(Boolean).join(' ') || 'Voiture client'}
+            {[car.make, car.model, car.year, car.engine, car.fuel, car.power ? `${car.power} ch` : null, car.transmission].filter(Boolean).join(' · ') || 'Voiture client'}
           </p>
         </div>
         <button
@@ -406,13 +428,26 @@ export default function MesVoituresPage() {
     const newErrors: Record<string, string> = {}
     if (!form.name.trim()) newErrors.name = 'Le nom est requis'
     
-    if (form.plateNumber && !isValidTunisianPlate(form.plateNumber)) {
-      newErrors.plateNumber = 'Format invalide (ex: 123 TU 4567)'
+    const vinClean = form.vin.trim().toUpperCase()
+    if (vinClean && !/^[A-HJ-NPR-Z0-9]{17}$/.test(vinClean)) {
+      newErrors.vin = 'Le VIN doit contenir exactement 17 caractères'
     }
-    
+
     const yearNum = toNumber(form.year)
     if (form.year && (yearNum < 1980 || yearNum > new Date().getFullYear())) {
       newErrors.year = `Annee entre 1980 et ${new Date().getFullYear()}`
+    }
+
+    if (form.displacement && (toNumber(form.displacement) < 0.5 || toNumber(form.displacement) > 10)) {
+      newErrors.displacement = 'Cylindree entre 0.5 et 10 L'
+    }
+
+    if (form.cylinders && (toNumber(form.cylinders) < 2 || toNumber(form.cylinders) > 16)) {
+      newErrors.cylinders = 'Entre 2 et 16 cylindres'
+    }
+
+    if (form.power && (toNumber(form.power) < 20 || toNumber(form.power) > 2000)) {
+      newErrors.power = 'Puissance entre 20 et 2000 ch'
     }
 
     const currentKm = toNumber(form.currentMileage)
@@ -490,17 +525,18 @@ export default function MesVoituresPage() {
               {errors.name && <p className="mt-1 text-xs text-red-500">{errors.name}</p>}
             </label>
             <label className="block">
-              <span className="mb-1.5 block text-sm font-medium text-gray-700">Matricule</span>
+              <span className="mb-1.5 block text-sm font-medium text-gray-700">VIN / Numéro de châssis</span>
               <input
-                value={form.plateNumber}
+                value={form.vin}
+                maxLength={17}
                 onChange={(e) => {
-                  setForm((prev) => ({ ...prev, plateNumber: e.target.value }))
-                  if (errors.plateNumber) setErrors(prev => ({ ...prev, plateNumber: '' }))
+                  setForm((prev) => ({ ...prev, vin: e.target.value.toUpperCase() }))
+                  if (errors.vin) setErrors(prev => ({ ...prev, vin: '' }))
                 }}
-                placeholder="123 TU 4567"
-                className={`w-full rounded-xl border bg-gray-50 px-3 py-2.5 text-sm outline-none transition-colors focus:bg-white ${errors.plateNumber ? 'border-red-300 focus:border-red-500' : 'border-gray-200 focus:border-brand-primary'}`}
+                placeholder="17 caractères (ex: VF1RFA004...)"
+                className={`w-full rounded-xl border bg-gray-50 px-3 py-2.5 text-sm font-mono uppercase outline-none transition-colors focus:bg-white ${errors.vin ? 'border-red-300 focus:border-red-500' : 'border-gray-200 focus:border-brand-primary'}`}
               />
-              {errors.plateNumber && <p className="mt-1 text-xs text-red-500">{errors.plateNumber}</p>}
+              {errors.vin && <p className="mt-1 text-xs text-red-500">{errors.vin}</p>}
             </label>
             <label className="block">
               <span className="mb-1.5 block text-sm font-medium text-gray-700">Marque</span>
@@ -589,6 +625,115 @@ export default function MesVoituresPage() {
                 className={`w-full rounded-xl border bg-gray-50 px-3 py-2.5 text-sm outline-none transition-colors focus:bg-white ${errors.year ? 'border-red-300 focus:border-red-500' : 'border-gray-200 focus:border-brand-primary'}`}
               />
               {errors.year && <p className="mt-1 text-xs text-red-500">{errors.year}</p>}
+            </label>
+            <label className="block">
+              <span className="mb-1.5 block text-sm font-medium text-gray-700">Motorisation / Engine</span>
+              <input
+                value={form.engine}
+                onChange={(e) => {
+                  setForm((prev) => ({ ...prev, engine: e.target.value }))
+                }}
+                placeholder="Ex: 1.5 dCi 90"
+                className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm outline-none transition-colors focus:border-brand-primary focus:bg-white"
+              />
+            </label>
+            <label className="block">
+              <span className="mb-1.5 block text-sm font-medium text-gray-700">Cylindrée (L)</span>
+              <input
+                type="number"
+                min="0.5"
+                max="10"
+                step="0.1"
+                value={form.displacement}
+                onChange={(e) => {
+                  setForm((prev) => ({ ...prev, displacement: e.target.value }))
+                  if (errors.displacement) setErrors(prev => ({ ...prev, displacement: '' }))
+                }}
+                placeholder="1.6"
+                className={`w-full rounded-xl border bg-gray-50 px-3 py-2.5 text-sm outline-none transition-colors focus:bg-white ${errors.displacement ? 'border-red-300 focus:border-red-500' : 'border-gray-200 focus:border-brand-primary'}`}
+              />
+              {errors.displacement && <p className="mt-1 text-xs text-red-500">{errors.displacement}</p>}
+            </label>
+            <label className="block">
+              <span className="mb-1.5 block text-sm font-medium text-gray-700">Nombre de cylindres</span>
+              <select
+                value={form.cylinders}
+                onChange={(e) => {
+                  setForm((prev) => ({ ...prev, cylinders: e.target.value }))
+                  if (errors.cylinders) setErrors(prev => ({ ...prev, cylinders: '' }))
+                }}
+                className={`w-full rounded-xl border bg-gray-50 px-3 py-2.5 text-sm outline-none transition-colors focus:bg-white ${errors.cylinders ? 'border-red-300 focus:border-red-500' : 'border-gray-200 focus:border-brand-primary'}`}
+              >
+                <option value="">Sélectionner</option>
+                <option value="3">3 cylindres</option>
+                <option value="4">4 cylindres</option>
+                <option value="5">5 cylindres</option>
+                <option value="6">6 cylindres</option>
+                <option value="8">8 cylindres</option>
+                <option value="12">12 cylindres</option>
+              </select>
+              {errors.cylinders && <p className="mt-1 text-xs text-red-500">{errors.cylinders}</p>}
+            </label>
+            <label className="block">
+              <span className="mb-1.5 block text-sm font-medium text-gray-700">Carburant</span>
+              <select
+                value={form.fuel}
+                onChange={(e) => setForm((prev) => ({ ...prev, fuel: e.target.value }))}
+                className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm outline-none transition-colors focus:border-brand-primary focus:bg-white"
+              >
+                <option value="">Sélectionner</option>
+                <option value="essence">Essence</option>
+                <option value="diesel">Diesel</option>
+                <option value="hybride">Hybride</option>
+                <option value="electrique">Électrique</option>
+                <option value="gpl">GPL</option>
+              </select>
+            </label>
+            <label className="block">
+              <span className="mb-1.5 block text-sm font-medium text-gray-700">Puissance (ch)</span>
+              <input
+                type="number"
+                min="20"
+                max="2000"
+                value={form.power}
+                onChange={(e) => {
+                  setForm((prev) => ({ ...prev, power: e.target.value }))
+                  if (errors.power) setErrors(prev => ({ ...prev, power: '' }))
+                }}
+                placeholder="90"
+                className={`w-full rounded-xl border bg-gray-50 px-3 py-2.5 text-sm outline-none transition-colors focus:bg-white ${errors.power ? 'border-red-300 focus:border-red-500' : 'border-gray-200 focus:border-brand-primary'}`}
+              />
+              {errors.power && <p className="mt-1 text-xs text-red-500">{errors.power}</p>}
+            </label>
+            <label className="block">
+              <span className="mb-1.5 block text-sm font-medium text-gray-700">Boîte de vitesse</span>
+              <select
+                value={form.transmission}
+                onChange={(e) => setForm((prev) => ({ ...prev, transmission: e.target.value }))}
+                className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm outline-none transition-colors focus:border-brand-primary focus:bg-white"
+              >
+                <option value="">Sélectionner</option>
+                <option value="manuelle">Manuelle</option>
+                <option value="automatique">Automatique</option>
+              </select>
+            </label>
+            <label className="block">
+              <span className="mb-1.5 block text-sm font-medium text-gray-700">Version / Finition</span>
+              <input
+                value={form.trim}
+                onChange={(e) => setForm((prev) => ({ ...prev, trim: e.target.value }))}
+                placeholder="Ex: Zen, GT-Line, Sport"
+                className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm outline-none transition-colors focus:border-brand-primary focus:bg-white"
+              />
+            </label>
+            <label className="block">
+              <span className="mb-1.5 block text-sm font-medium text-gray-700">Date de production</span>
+              <input
+                type="month"
+                value={form.productionDate}
+                onChange={(e) => setForm((prev) => ({ ...prev, productionDate: e.target.value }))}
+                className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm outline-none transition-colors focus:border-brand-primary focus:bg-white"
+              />
             </label>
             <label className="block">
               <span className="mb-1.5 block text-sm font-medium text-gray-700">Km actuel</span>

@@ -31,4 +31,31 @@ export class VehiclesController {
   ) {
     return this.vehiclesService.getCompatibleProducts(make, model, engine, specification);
   }
+
+  @Get('compatible/page')
+  getCompatiblePage(
+    @Query('make') make: string,
+    @Query('model') model: string,
+    @Query('engine') engine?: string,
+    @Query() filters: Record<string, string> = {},
+  ) {
+    return this.vehiclesService.getCompatiblePage(make, model, engine, {
+      categorySlug: filters.categorySlug || undefined,
+      brands: filters.brands || undefined,
+      viscosity: filters.viscosity || undefined,
+      priceMin: filters.priceMin !== undefined ? Number(filters.priceMin) : undefined,
+      priceMax: filters.priceMax !== undefined ? Number(filters.priceMax) : undefined,
+      inStockOnly: filters.inStockOnly === 'true' ? true : undefined,
+      isNew: filters.isNew === 'true' ? true : undefined,
+      isFeatured: filters.isFeatured === 'true' ? true : undefined,
+      search: filters.search || undefined,
+      type: filters.type || undefined,
+      api: filters.api || undefined,
+      acea: filters.acea || undefined,
+      volume: filters.volume || undefined,
+      sortBy: filters.sortBy || undefined,
+      page: filters.page !== undefined ? Number(filters.page) : undefined,
+      limit: filters.limit !== undefined ? Number(filters.limit) : undefined,
+    });
+  }
 }

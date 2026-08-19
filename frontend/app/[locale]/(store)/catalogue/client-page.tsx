@@ -7,15 +7,16 @@ import { useLocale, useTranslations } from 'next-intl'
 import { Car, Search, Sparkles, X } from 'lucide-react'
 import Link from 'next/link'
 import { productsApi } from '@/lib/api/products'
-import { carsApi } from '@/lib/api/cars'
 import { useRouter } from '@/i18n/routing'
-import { useAuthStore } from '@/lib/store/auth.store'
+import { useVehicleStore } from '@/lib/store/vehicle.store'
+import { useVehicleUrlSync } from '@/lib/hooks/useVehicleUrlSync'
 import { FilterSidebar } from '@/components/catalogue/FilterSidebar'
 import { MobileFiltersSheet } from '@/components/catalogue/MobileFiltersSheet'
 import { ActiveFilters } from '@/components/catalogue/ActiveFilters'
 import { SortDropdown } from '@/components/catalogue/SortDropdown'
 import { ProductGrid } from '@/components/catalogue/ProductGrid'
 import { Pagination } from '@/components/catalogue/Pagination'
+import { VehicleContextBar } from '@/components/catalogue/VehicleContextBar'
 import { Breadcrumb } from '@/components/common/Breadcrumb'
 import { ProductGridSkeleton } from '@/components/common/Skeleton'
 import { ErrorState } from '@/components/common/ErrorState'
@@ -30,15 +31,9 @@ export default function CataloguePage() {
   const searchParams = useSearchParams()
   const [searchValue, setSearchValue] = useState(searchParams.get('search') || '')
 
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated)
-  
-  const { data: userCarsData } = useQuery({
-    queryKey: ['user-cars'],
-    queryFn: () => carsApi.getAll(),
-    enabled: isAuthenticated,
-  })
+  const storedVehicle = useVehicleStore((state) => state.vehicle)
 
-  const validCars = userCarsData ? userCarsData.filter(car => car.make && car.model) : []
+  useVehicleUrlSync(true)
 
   const vehicleMake = searchParams.get('make')
   const vehicleModel = searchParams.get('model')
@@ -69,14 +64,47 @@ export default function CataloguePage() {
     return nextFilters
   }, [searchParams])
 
+  // Fall back to the persisted store vehicle when the URL carries none
+  // (e.g. after refreshing, or arriving from a plain /catalogue link).
+  const activeVehicle = isVehicleSearch
+    ? {
+        makeSlug: vehicleMake!,
+        modelSlug: vehicleModel!,
+        engineCode: vehicleEngine ?? undefined,
+        makeName: vehicleMake!,
+        modelName: vehicleModel!,
+      }
+    : storedVehicle
+
   const { data, isLoading, isError, refetch } = useQuery<any>({
     queryKey: isVehicleSearch
-      ? ['compatible-products', vehicleMake, vehicleModel, vehicleEngine]
+      ? ['compatible-products', vehicleMake, vehicleModel, vehicleEngine, filters]
       : isSpecSearch
         ? ['oil-recommendations', specType, specCylinders, specPower, specFuelType, searchParams.get('make') || undefined]
         : ['products', filters],
     queryFn: () => {
-      if (isVehicleSearch) return productsApi.getCompatible(vehicleMake!, vehicleModel!, vehicleEngine || undefined)
+      if (isVehicleSearch) {
+        return productsApi.getCompatible({
+          make: vehicleMake!,
+          model: vehicleModel!,
+          engine: vehicleEngine || undefined,
+          categorySlug: filters.categorySlug as string | undefined,
+          search: filters.search as string | undefined,
+          brands: filters.brands as string | undefined,
+          viscosity: filters.viscosity as string | undefined,
+          priceMin: filters.priceMin as number | undefined,
+          priceMax: filters.priceMax as number | undefined,
+          inStockOnly: filters.inStockOnly as boolean | undefined,
+          isNew: filters.isNew as boolean | undefined,
+          isFeatured: filters.isFeatured as boolean | undefined,
+          type: filters.type as string | undefined,
+          api: filters.api as string | undefined,
+          acea: filters.acea as string | undefined,
+          volume: filters.volume as string | undefined,
+          sortBy: filters.sortBy as string | undefined,
+          page: filters.page as number | undefined,
+        })
+      }
       if (isSpecSearch) {
         return productsApi.getOilRecommendations({
           vehicleType: specType!,
@@ -92,30 +120,26 @@ export default function CataloguePage() {
 
   const products = useMemo(() => {
     if (!data) return []
-    let list: any[] = isVehicleSearch ? (Array.isArray(data) ? data : []) : isSpecSearch ? (data.data ?? []) : (data.data ?? [])
-
-    if (isSearchMode && searchParams.get('sortBy')) {
-      const sort = searchParams.get('sortBy')
-      list = [...list].sort((a, b) => {
-        const priceA = a.variants?.[0]?.priceHT || 0
-        const priceB = b.variants?.[0]?.priceHT || 0
-        if (sort === 'price_asc') return priceA - priceB
-        if (sort === 'price_desc') return priceB - priceA
-        if (sort === 'newest') return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-        return 0
-      })
-    }
-    return list
-  }, [data, isVehicleSearch, isSpecSearch, isSearchMode, searchParams])
+    if (isVehicleSearch) return data.data ?? []
+    if (isSpecSearch) return data.data ?? []
+    return data.data ?? []
+  }, [data, isVehicleSearch, isSpecSearch])
 
   const productCount = useMemo(() => {
     if (!data) return 0
-    if (isVehicleSearch) return Array.isArray(data) ? data.length : 0
-    if (isSpecSearch) return data.total ?? 0
+    if (isVehicleSearch) return data.total ?? 0
     return data.total ?? 0
-  }, [data, isVehicleSearch, isSpecSearch])
+  }, [data, isVehicleSearch])
 
-  const vehicleLabel = `${vehicleMake ?? ''} ${vehicleModel ?? ''}${vehicleEngine ? ` ${vehicleEngine}` : ''}`.trim()
+  const vehicleLabel = activeVehicle
+    ? [activeVehicle.makeName, activeVehicle.modelName, activeVehicle.engineCode]
+        .filter(Boolean)
+        .join(' ')
+    : ''
+
+  const categorySlug = searchParams.get('categorySlug')
+  const categoryName = categorySlug ? (data?.categoryName || categorySlug) : null
+
   const pageTitle = isVehicleSearch
     ? t('compatibleOilsTitle', { vehicle: vehicleLabel })
     : isSpecSearch
@@ -145,12 +169,23 @@ export default function CataloguePage() {
     updateFilter('search', searchValue.trim() || null)
   }
 
+  const clearVehicle = () => {
+    useVehicleStore.getState().clearVehicle()
+    const params = new URLSearchParams(searchParams.toString())
+    ;['make', 'model', 'engine'].forEach((key) => params.delete(key))
+    params.delete('page')
+    router.push(`/catalogue?${params.toString()}`)
+  }
+
   const emptyTitle = isVehicleSearch ? t('emptyVehicleTitle') : isSpecSearch ? t('emptySpecTitle') : t('emptyDefaultTitle')
   const emptyMessage = isVehicleSearch ? t('emptyVehicleMessage') : isSpecSearch ? t('emptySpecMessage') : t('emptyDefaultMessage')
   const emptyAction = isVehicleSearch
-    ? undefined
+    ? {
+        label: t('searchAllCatalog'),
+        onClick: clearVehicle,
+      }
     : {
-        label: isSpecSearch ? t('searchByVehicleAction') : t('clearAllFilters'),
+        label: t('clearAllFilters'),
         onClick: () => router.push('/catalogue'),
       }
 
@@ -190,7 +225,7 @@ export default function CataloguePage() {
             </Link>
           </div>
 
-          {!isSearchMode && (
+          {!isSpecSearch && (
             <div className="mt-9 max-w-4xl">
               <form onSubmit={handleSearchSubmit} className="flex border border-white/25 bg-white p-1.5 shadow-[0_18px_44px_rgba(0,0,0,0.28)]">
                 <Search className="ml-3 shrink-0 self-center text-[#0B0B0C]" size={19} />
@@ -238,95 +273,39 @@ export default function CataloguePage() {
           <div>
             <p className="text-xl font-black tracking-[-0.03em] text-[#111]">{t('productsFound', { count: productCount })}</p>
             {!isLoading && !isSearchMode && <p className="mt-1 text-sm text-neutral-500">{t('catalogueHint')}</p>}
+            {isVehicleSearch && !isLoading && (
+              <p className="mt-1 text-sm font-medium text-[#16254c]">
+                {t('compatiblePartsHint', { vehicle: vehicleLabel })}
+              </p>
+            )}
           </div>
           <div className="flex w-full items-center gap-2 sm:w-auto">
-            {!isSearchMode && <MobileFiltersSheet />}
+            {!isSpecSearch && <MobileFiltersSheet />}
             <SortDropdown />
           </div>
         </div>
 
         <div className="flex flex-col gap-8 lg:flex-row">
-          {!isSearchMode && (
+          {!isSpecSearch && (
             <aside className="hidden w-[276px] shrink-0 lg:block">
               <div className="sticky top-24"><FilterSidebar /></div>
             </aside>
           )}
 
           <div className="min-w-0 flex-1">
-            {!isSearchMode && <ActiveFilters />}
-            
-            {(() => {
-              const categorySlug = searchParams.get('categorySlug')
-              const STRICT_COMPATIBILITY_CATEGORIES = [
-                'auto-pieces-rechange',
-                'auto-filtres',
-                'auto-freinage',
-                'auto-suspension-direction',
-                'transmission'
-              ]
-              const requiresVehicle = categorySlug && STRICT_COMPATIBILITY_CATEGORIES.includes(categorySlug) && !isVehicleSearch
-              
-              if (requiresVehicle) {
-                return (
-                  <div className="border border-black/10 bg-neutral-50 px-5 py-12 text-center sm:px-8">
-                    <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#E10600]/10 mb-4">
-                      <Car className="text-[#E10600]" size={32} />
-                    </div>
-                    <h3 className="mb-2 text-xl font-black uppercase tracking-[-0.03em] text-[#111]">
-                      {locale === 'en' ? 'Select your vehicle' : 'Sélectionnez votre véhicule'}
-                    </h3>
-                    <p className="mx-auto mb-6 max-w-md text-sm text-neutral-500">
-                      {locale === 'en' 
-                        ? 'To view parts in this category (Filters, Brakes, Suspension, etc.), you must first select your vehicle to ensure 100% compatibility.' 
-                        : 'Pour voir les pièces de cette catégorie (Filtres, Freinage, Suspension, etc.), veuillez d\'abord sélectionner votre véhicule afin de garantir une compatibilité à 100%.'}
-                    </p>
-                    {validCars.length > 0 ? (
-                      <div className="flex flex-wrap items-center justify-center gap-3">
-                        {validCars.map(car => (
-                          <button
-                            key={car.id}
-                            onClick={() => {
-                              const params = new URLSearchParams(searchParams.toString())
-                              params.set('make', car.make!)
-                              params.set('model', car.model!)
-                              params.delete('page')
-                              router.push(`/catalogue?${params.toString()}`)
-                            }}
-                            className="inline-flex min-h-12 items-center justify-center gap-2 border border-[#E10600] bg-[#E10600] px-6 text-xs font-black uppercase tracking-[0.12em] text-white transition-colors hover:bg-[#bd0500]"
-                          >
-                            <Car size={16} />
-                            {car.name || `${car.make} ${car.model}`}
-                          </button>
-                        ))}
-                        <Link 
-                          href={`/${locale}/#oil-finder`} 
-                          className="inline-flex min-h-12 items-center justify-center gap-2 border border-[#111] bg-white px-6 text-xs font-black uppercase tracking-[0.12em] text-[#111] transition-colors hover:bg-neutral-50"
-                        >
-                          <Search size={16} />
-                          {locale === 'en' ? 'Other Vehicle' : 'Autre véhicule'}
-                        </Link>
-                      </div>
-                    ) : (
-                      <Link 
-                        href={`/${locale}/#oil-finder`} 
-                        className="inline-flex min-h-12 items-center justify-center gap-2 bg-[#E10600] px-6 text-xs font-black uppercase tracking-[0.12em] text-white transition-colors hover:bg-[#bd0500]"
-                      >
-                        <Car size={16} />
-                        {locale === 'en' ? 'Select Vehicle' : 'Sélectionner un véhicule'}
-                      </Link>
-                    )}
-                  </div>
-                )
-              }
+            {!isSpecSearch && <ActiveFilters />}
 
+            {isVehicleSearch && <VehicleContextBar />}
+
+            {(() => {
               if (isLoading) return <ProductGridSkeleton count={12} />
               if (isError) return <ErrorState onRetry={() => refetch()} />
-              
+
               if (products.length > 0) {
                 return (
                   <>
                     <ProductGrid products={products} />
-                    <Pagination currentPage={isSearchMode ? 1 : (data?.page ?? 1)} totalPages={isSearchMode ? 1 : (data?.totalPages ?? 1)} />
+                    <Pagination currentPage={data?.page ?? 1} totalPages={data?.totalPages ?? 1} />
                   </>
                 )
               }

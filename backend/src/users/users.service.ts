@@ -95,7 +95,15 @@ export class UsersService {
         make: this.optionalString(dto.make),
         model: this.optionalString(dto.model),
         year: dto.year,
-        plateNumber: this.optionalString(dto.plateNumber),
+        vin: this.optionalString(dto.vin),
+        engine: this.optionalString(dto.engine),
+        displacement: dto.displacement,
+        cylinders: dto.cylinders,
+        fuel: this.optionalString(dto.fuel),
+        power: dto.power,
+        transmission: this.optionalString(dto.transmission),
+        trim: this.optionalString(dto.trim),
+        productionDate: this.optionalString(dto.productionDate),
         currentMileage: dto.currentMileage,
         lastOilChangeMileage: dto.lastOilChangeMileage,
         oilChangeIntervalKm: dto.oilChangeIntervalKm ?? 10000,
@@ -134,10 +142,24 @@ export class UsersService {
         model:
           dto.model === undefined ? undefined : this.optionalString(dto.model),
         year: dto.year,
-        plateNumber:
-          dto.plateNumber === undefined
+        vin: dto.vin === undefined ? undefined : this.optionalString(dto.vin),
+        engine:
+          dto.engine === undefined ? undefined : this.optionalString(dto.engine),
+        displacement: dto.displacement,
+        cylinders: dto.cylinders,
+        fuel:
+          dto.fuel === undefined ? undefined : this.optionalString(dto.fuel),
+        power: dto.power,
+        transmission:
+          dto.transmission === undefined
             ? undefined
-            : this.optionalString(dto.plateNumber),
+            : this.optionalString(dto.transmission),
+        trim:
+          dto.trim === undefined ? undefined : this.optionalString(dto.trim),
+        productionDate:
+          dto.productionDate === undefined
+            ? undefined
+            : this.optionalString(dto.productionDate),
         currentMileage,
         lastOilChangeMileage,
         oilChangeIntervalKm: dto.oilChangeIntervalKm,

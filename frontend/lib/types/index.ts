@@ -177,7 +177,15 @@ export interface UserCar {
   makeSlug?: string | null    // slug e.g. "renault" — used for catalogue URL filter
   modelSlug?: string | null   // slug e.g. "clio-iv" — used for catalogue URL filter
   year?: number | null
-  plateNumber?: string | null
+  vin?: string | null         // 17-char VIN / chassis number
+  engine?: string | null      // motorisation e.g. "1.5 dCi 90"
+  displacement?: number | null // cylinder capacity in litres
+  cylinders?: number | null   // number of cylinders
+  fuel?: string | null        // essence | diesel | hybride | electrique | gpl
+  power?: number | null       // horsepower
+  transmission?: string | null // manuelle | automatique
+  trim?: string | null        // version / finition
+  productionDate?: string | null // "YYYY-MM"
   currentMileage: number
   lastOilChangeMileage: number
   oilChangeIntervalKm: number

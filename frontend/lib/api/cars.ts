@@ -8,7 +8,15 @@ export type CarPayload = {
   model?: string       // display name e.g. "Clio IV" — for compatibility matching
   modelSlug?: string  // slug e.g. "clio-iv" — for catalogue URL filter
   year?: number
-  plateNumber?: string
+  vin?: string         // 17-char VIN / chassis number
+  engine?: string      // motorisation e.g. "1.5 dCi 90"
+  displacement?: number // cylinder capacity in litres
+  cylinders?: number   // number of cylinders
+  fuel?: string        // essence | diesel | hybride | electrique | gpl
+  power?: number       // horsepower
+  transmission?: string // manuelle | automatique
+  trim?: string        // version / finition
+  productionDate?: string // "YYYY-MM"
   currentMileage: number
   lastOilChangeMileage: number
   oilChangeIntervalKm?: number

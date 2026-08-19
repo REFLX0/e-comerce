@@ -1,10 +1,13 @@
 import {
   IsBoolean,
   IsInt,
+  IsNumber,
   IsOptional,
   IsString,
   Max,
+  MaxLength,
   Min,
+  MinLength,
 } from 'class-validator';
 
 export class CreateUserCarDto {
@@ -35,7 +38,47 @@ export class CreateUserCarDto {
 
   @IsOptional()
   @IsString()
-  plateNumber?: string;
+  @MinLength(17)
+  @MaxLength(17)
+  vin?: string;
+
+  @IsOptional()
+  @IsString()
+  engine?: string;
+
+  @IsOptional()
+  @IsNumber()
+  @Min(0.5)
+  @Max(10)
+  displacement?: number;
+
+  @IsOptional()
+  @IsInt()
+  @Min(2)
+  @Max(16)
+  cylinders?: number;
+
+  @IsOptional()
+  @IsString()
+  fuel?: string;
+
+  @IsOptional()
+  @IsNumber()
+  @Min(20)
+  @Max(2000)
+  power?: number;
+
+  @IsOptional()
+  @IsString()
+  transmission?: string;
+
+  @IsOptional()
+  @IsString()
+  trim?: string;
+
+  @IsOptional()
+  @IsString()
+  productionDate?: string;
 
   @IsInt()
   @Min(0)

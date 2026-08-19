@@ -30,7 +30,7 @@ export class ProductsService {
   constructor(private readonly prisma: PrismaService) {}
 
   /** Include every descendant when a catalogue group is selected. */
-  private async resolveCategoryIds(slug: string) {
+  async resolveCategoryIds(slug: string) {
     const category = await this.prisma.category.findUnique({
       where: { slug },
       select: { id: true },
@@ -60,7 +60,7 @@ export class ProductsService {
     return match ? `${match[1]}-${match[2]}` : compact;
   }
 
-  private buildInclude() {
+  buildInclude() {
     return {
       brand: true,
       category: true,
@@ -487,7 +487,7 @@ export class ProductsService {
     }
   }
 
-  private serialize(product: any) {
+  serialize(product: any) {
     const primaryImage =
       product.images?.find((img: any) => img.isPrimary) ?? product.images?.[0];
     return {
@@ -543,6 +543,16 @@ export class ProductsService {
             dpfCompatible: product.specs.DPFCompatible,
             turboCompatible: product.specs.TurboCompatible,
             hybridCompatible: product.specs.HybridCompatible,
+            vehicleTypes: product.specs.vehicleTypes
+              ? product.specs.vehicleTypes.map((t: string) => t.toLowerCase())
+              : undefined,
+            fuelTypes: product.specs.fuelTypes
+              ? product.specs.fuelTypes.map((f: string) => f.toLowerCase())
+              : undefined,
+            minCylinders: product.specs.minCylinders,
+            maxCylinders: product.specs.maxCylinders,
+            minPower: product.specs.minPower,
+            maxPower: product.specs.maxPower,
             type: product.specs.isFullySynth
               ? 'full_synth'
               : product.specs.isSemiSynth

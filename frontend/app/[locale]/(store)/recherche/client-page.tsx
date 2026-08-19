@@ -8,22 +8,35 @@ import { ActiveFilters } from '@/components/catalogue/ActiveFilters'
 import { SortDropdown } from '@/components/catalogue/SortDropdown'
 import { ProductGrid } from '@/components/catalogue/ProductGrid'
 import { Pagination } from '@/components/catalogue/Pagination'
+import { VehicleContextBar } from '@/components/catalogue/VehicleContextBar'
 import { Breadcrumb } from '@/components/common/Breadcrumb'
 import { ProductGridSkeleton } from '@/components/common/Skeleton'
 import { ErrorState } from '@/components/common/ErrorState'
 import { EmptyState } from '@/components/common/EmptyState'
 import { useSearchParams } from 'next/navigation'
 import { Search } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import type { ProductFilters } from '@/lib/types'
+import { useVehicleUrlSync } from '@/lib/hooks/useVehicleUrlSync'
+
+const VEHICLE_QUERY_KEYS = ['make', 'model', 'engine']
 
 export default function SearchPage() {
   const searchParams = useSearchParams()
   const q = searchParams.get('q') || ''
+  const t = useTranslations('Catalogue')
+
+  useVehicleUrlSync(true)
+
+  const vehicleMake = searchParams.get('make')
+  const vehicleModel = searchParams.get('model')
+  const vehicleEngine = searchParams.get('engine')
+  const isVehicleSearch = Boolean(vehicleMake && vehicleModel)
 
   // Construct filters object from URLSearchParams
   const filters: ProductFilters = { search: q }
   searchParams.forEach((value, key) => {
-    if (key === 'q') return
+    if (key === 'q' || VEHICLE_QUERY_KEYS.includes(key)) return
     const k = key as keyof ProductFilters
     if (value === 'true') (filters as Record<string, unknown>)[k] = true
     else if (value === 'false') (filters as Record<string, unknown>)[k] = false
@@ -36,10 +49,40 @@ export default function SearchPage() {
   filters.page = Number(filters.page) || 1
 
   const { data, isLoading, isError, refetch } = useQuery<any>({
-    queryKey: ['products', 'search', filters],
-    queryFn: () => productsApi.getAll(filters),
+    queryKey: isVehicleSearch
+      ? ['products', 'search-vehicle', vehicleMake, vehicleModel, vehicleEngine, filters]
+      : ['products', 'search', filters],
+    queryFn: () => {
+      if (isVehicleSearch) {
+        return productsApi.getCompatible({
+          make: vehicleMake!,
+          model: vehicleModel!,
+          engine: vehicleEngine || undefined,
+          search: q || undefined,
+          categorySlug: filters.categorySlug as string | undefined,
+          brands: filters.brands as string | undefined,
+          viscosity: filters.viscosity as string | undefined,
+          priceMin: filters.priceMin as number | undefined,
+          priceMax: filters.priceMax as number | undefined,
+          inStockOnly: filters.inStockOnly as boolean | undefined,
+          isNew: filters.isNew as boolean | undefined,
+          isFeatured: filters.isFeatured as boolean | undefined,
+          type: filters.type as string | undefined,
+          api: filters.api as string | undefined,
+          acea: filters.acea as string | undefined,
+          volume: filters.volume as string | undefined,
+          sortBy: filters.sortBy as string | undefined,
+          page: filters.page as number | undefined,
+        })
+      }
+      return productsApi.getAll(filters)
+    },
     enabled: !!q || Object.keys(filters).length > 1, // Don't fetch if completely empty
   })
+
+  const vehicleLabel = isVehicleSearch
+    ? [vehicleMake, vehicleModel, vehicleEngine].filter(Boolean).join(' ')
+    : ''
 
   return (
     <div className="section-padding py-8">
@@ -59,6 +102,11 @@ export default function SearchPage() {
                 Résultats pour "{q}"
               </h1>
               <p className="mt-1 text-gray-500">{data?.total || 0} résultats trouvés</p>
+              {isVehicleSearch && !isLoading && (
+                <p className="mt-1 text-sm font-medium text-[#16254c]">
+                  {t('compatiblePartsHint', { vehicle: vehicleLabel })}
+                </p>
+              )}
             </div>
 
             <div className="flex w-full items-center gap-3 sm:w-auto">
@@ -68,6 +116,8 @@ export default function SearchPage() {
           </div>
 
           <ActiveFilters />
+
+          {isVehicleSearch && <VehicleContextBar />}
 
           {!q && Object.keys(filters).length <= 1 ? (
             <div className="bg-brand-surface border-brand-surface-dark rounded-2xl border py-20 text-center">
@@ -86,11 +136,22 @@ export default function SearchPage() {
             </>
           ) : (
             <EmptyState
-              message={`Aucun produit ne correspond à la recherche "${q}".`}
-              action={{
-                label: 'Effacer les filtres',
-                onClick: () => (window.location.href = `/recherche?q=${q}`),
-              }}
+              message={
+                isVehicleSearch
+                  ? t('emptyVehicleMessage')
+                  : `Aucun produit ne correspond à la recherche "${q}".`
+              }
+              action={
+                isVehicleSearch
+                  ? {
+                      label: t('searchAllCatalog'),
+                      onClick: () => (window.location.href = `/recherche?q=${encodeURIComponent(q)}`),
+                    }
+                  : {
+                      label: 'Effacer les filtres',
+                      onClick: () => (window.location.href = `/recherche?q=${q}`),
+                    }
+              }
             />
           )}
         </div>

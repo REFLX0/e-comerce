@@ -1,715 +1,721 @@
 {
-  "Index": {
-    "title": "specpart — Engine Oil & Lubricants in Tunisia",
-    "description": "specpart, the specialist for lubricants and engine oil in Tunisia. Fast delivery, authentic products from Total, Shell, Castrol, Motul."
-  },
-  "Nav": {
-    "home": "Home",
-    "catalog": "Catalog",
-    "about": "About Us",
-    "contact": "Contact"
-  },
-  "Navigation": {
-    "home": "Home",
-    "catalog": "Catalog",
-    "about": "About Us",
-    "contact": "Contact",
-    "search": "Search",
-    "cart": "Cart",
-    "account": "My Account",
-    "signIn": "Sign in",
-    "findMyOil": "Find My Oil",
-    "allProducts": "All Products",
-    "viewAllCatalog": "View Full Catalog",
-    "bestSellers": "Best Sellers",
-    "fullCatalog": "Full Catalog →"
-  },
-  "Layout": {
-    "freeShipping": "Free shipping on orders over <bold>100 DT</bold> — Authentic products guaranteed",
-    "announcementShipping": "Free delivery from 250 DT (batteries excluded) across Tunisia",
-    "openMenu": "Open menu",
-    "menu": "Menu",
-    "home": "Home",
-    "catalog": "Catalog",
-    "cart": "Cart",
-    "account": "Account",
-    "about": "About",
-    "changeLanguage": "Change language",
-    "skipToContent": "Skip to main content",
-    "madeBy": "Made by Mohamed Harbi & Mohamed Aziz Jlassi",
-    "allRightsReserved": "All rights reserved."
-  },
-  "Search": {
-    "placeholder": "Search for a product, brand...",
-    "ariaLabel": "Search",
-    "suggestedProducts": "Suggested products",
-    "viewAllResults": "View all results",
-    "noResultsFor": "No results for \"{query}\"",
-    "tryOtherKeywords": "Try other keywords",
-    "popularProducts": "Popular products",
-    "suggestedResults": "Suggested results",
-    "noResult": "No results",
-    "minChars": "Enter at least 3 characters to start searching"
-  },
-  "Footer": {
-    "description": "Specialist in lubricants and auto parts for passenger, commercial and industrial vehicles for over 15 years.",
-    "newsletterPlaceholder": "your@email.com",
-    "subscribe": "Subscribe",
-    "information": "Information",
-    "aboutUs": "About Us",
-    "terms": "Terms & Conditions",
-    "legalNotice": "Legal Notice",
-    "faq": "FAQ",
-    "contactUs": "Contact Us",
-    "myAccount": "My Account",
-    "dashboard": "Dashboard",
-    "myOrders": "My Orders",
-    "wishlist": "Wishlist",
-    "signIn": "Sign In",
-    "contact": "Contact",
-    "followUs": "Follow Us",
-    "shopTitle": "Shop",
-    "serviceTitle": "Customer Service",
-    "hours": "Mon–Sat 8am–6pm",
-    "location": "Kalaa, Tunisia",
-    "shopHuilesMoteur": "Engine Oils",
-    "shopLiquides": "Liquids",
-    "shopFiltres": "Filters",
-    "shopAdditifs": "Additives",
-    "shopAllCategories": "All categories",
-    "accountTrackOrder": "Track my order",
-    "accountSettings": "Account settings"
-  },
-  "Home": {
-    "findYourOil": "Find Your Engine Oil",
-    "rightLubricant": "The right lubricant for your engine",
-    "highPerformance": "High Performance Engine Oils",
-    "maxProtection": "Maximum protection for your engine — premium lubricants for all driving conditions.",
-    "shopNow": "Shop Now",
-    "heroDescription": "Discover our complete range of high-performance lubricants for all engine types. Professional quality, competitive prices.",
-    "findMyOil": "Find my oil",
-    "bestSellers": "Best Sellers",
-    "viewAll": "View All",
-    "addedToCart": "Added to cart",
-    "shopByCategory": "Shop by Category",
-    "explore": "Explore",
-    "newsletterTitle": "Stay Informed",
-    "newsletterSubtitle": "Receive our offers and news",
-    "newsletterPlaceholder": "your@email.com",
-    "subscribe": "Subscribe",
-    "thankYou": "Thank you for subscribing!",
-    "noSpam": "No spam, unsubscribe at any time.",
-    "validEmail": "Please enter a valid email"
-  },
-  "Product": {
-    "ref": "Ref:",
-    "compatibleVehicle": "100% Compatible with your vehicle",
-    "incompatibleVehicle": "Not compatible with your vehicle",
-    "seeReviews": "See reviews",
-    "otherPackaging": "Product available in other packaging.",
-    "description": "Description",
-    "specifications": "Specifications",
-    "compatibility": "Compatibility",
-    "reviews": "Reviews ({count})",
-    "techDocs": "Technical Documents",
-    "tds": "Technical Data Sheet (TDS)",
-    "sds": "Safety Data Sheet (SDS)",
-    "noSpecs": "No specifications available.",
-    "noDescription": "No detailed description is available.",
-    "today": "Today",
-    "noCompat": "No compatibility information available.",
-    "outOfStock": "Out of stock",
-    "addToCart": "Add to cart",
-    "clientReviews": "Customer Reviews",
-    "basedOn": "Based on {count} reviews",
-    "stars": "{count} stars",
-    "writeReview": "Write a review",
-    "yourReview": "Your review",
-    "rating": "Rating",
-    "comment": "Comment",
-    "cancel": "Cancel",
-    "sending": "Sending...",
-    "publish": "Publish",
-    "noReviews": "No reviews for this product yet.",
-    "frequentlyBought": "Frequently bought together",
-    "share": "Share",
-    "linkCopied": "Link copied to clipboard",
-    "copyLink": "Copy link",
-    "copied": "Copied!",
-    "imageNotAvailable": "Image not available",
-    "volume": "Volume",
-    "notFound": "Product not found",
-    "addedToCart": "Product added to cart",
-    "stockLimit": "Maximum available stock reached"
-  },
-  "ProductCard": {
-    "promo": "PROMO",
-    "new": "NEW",
-    "compatible": "COMPATIBLE",
-    "imageNotAvailable": "Image not available",
-    "priceNa": "Price N/A",
-    "inStock": "In stock",
-    "outOfStock": "Out of stock",
-    "addToCart": "Add to cart",
-    "addToWishlist": "Add to wishlist",
-    "addedToCart": "Product added to cart",
-    "addedToWishlist": "Added to wishlist",
-    "stockLimit": "Maximum available stock reached",
-    "wishlistError": "Sign in to manage your wishlist"
-  },
-  "Catalogue": {
-    "filters": "Filters",
-    "clear": "Clear",
-    "categories": "Categories",
-    "brands": "Brands",
-    "viscosity": "Viscosity",
-    "oilType": "Oil Type",
-    "apiStandards": "API Standards",
-    "aceaStandards": "ACEA Standards",
-    "oemApprovals": "OEM Approvals",
-    "packaging": "Packaging",
-    "options": "Options",
-    "inStockOnly": "In stock only",
-    "onSale": "On sale",
-    "searchProducts": "Search for a product, brand...",
-    "filterByBrand": "Filter by brand",
-    "selectBrand": "All brands",
-    "allCategories": "All categories",
-    "volumes": "Volumes",
-    "catalogTitle": "Product Catalog",
-    "compatibleOilsTitle": "Compatible oils for {vehicle}",
-    "specOilsTitle": "{fuel} oils — {cylinders} cyl., {power} HP",
-    "bySpecs": "By specifications",
-    "searchByVehicle": "Search by vehicle",
-    "searchBySpecs": "Search by engine specifications",
-    "productsFound": "{count, plural, =0 {No products found} one {# product found} other {# products found}}",
-    "showResults": "Show results",
-    "emptyVehicleTitle": "No oil found for this vehicle",
-    "emptyVehicleMessage": "We have not yet referenced a compatible oil for this vehicle in our database.",
-    "emptySpecTitle": "No oil matches these specifications",
-    "emptySpecMessage": "The catalog has not been populated for these specifications yet. Check back soon, product data is being added.",
-    "emptyDefaultTitle": "Oops! No products found",
-    "emptyDefaultMessage": "We couldn't find any products matching your search criteria.",
-    "searchByVehicleAction": "Search by vehicle",
-    "clearAllFilters": "Clear all filters",
-    "vehicleNotFoundHint": "Can't find your vehicle? Try searching by engine specifications.",
-    "diesel": "Diesel",
-    "petrol": "Petrol",
-    "catalogEyebrow": "Technical selection",
-    "catalogIntro": "Find the lubricant that fits with precise filters for vehicle, standard, viscosity and package size.",
-    "precisionSearch": "Targeted results",
-    "searchModeIntro": "These products were selected using the details from your search.",
-    "vehicleFinderLabel": "Guided search",
-    "findMyOil": "Find oil for my vehicle",
-    "searchAction": "Search",
-    "clearSearch": "Clear search",
-    "quickFilters": "Quick filters",
-    "catalogueHint": "Refine your selection using the filters or search above.",
-    "filtersActive": "{count, plural, one {# active filter} other {# active filters}}",
-    "price": "Budget",
-    "priceMin": "Min.",
-    "priceMax": "Max.",
-    "availability": "Availability",
-    "newArrivals": "New arrivals",
-    "featuredProducts": "Specpart picks",
-    "activeFilters": "Applied filters",
-    "categoryFilter": "Category",
-    "brandFilter": "Brand",
-    "viscosityFilter": "Viscosity",
-    "volumeFilter": "Size",
-    "oilTypeFilter": "Type",
-    "apiFilter": "API",
-    "aceaFilter": "ACEA",
-    "minPriceFilter": "Min. price",
-    "maxPriceFilter": "Max. price",
-    "searchFilter": "Search",
-    "searchBrands": "Search for a brand…",
-    "noResults": "No results",
-    "showMore": "Show more",
-    "showLess": "Show less",
-    "viscosityEngine": "Engine viscosity",
-    "viscosityTransmission": "Transmission viscosity",
-    "applyFilters": "Apply filters",
-    "removeFilter": "Remove this filter",
-    "updating": "Updating…",
-    "sortBy": "Sort",
-    "sortRelevance": "Relevance",
-    "sortNewest": "Newest",
-    "sortPriceAsc": "Price: low to high",
-    "sortPriceDesc": "Price: high to low"
-  },
-  "Cart": {
-    "myCart": "My Cart ({count})",
-    "empty": "Your cart is empty",
-    "totalTTC": "Total TTC",
-    "viewCart": "View Cart",
-    "checkout": "Checkout",
-    "decreaseQty": "Decrease quantity",
-    "increaseQty": "Increase quantity",
-    "remove": "Remove from cart",
-    "volume": "Volume: {volume}",
-    "free": "Free",
-    "freeShipping": "Free shipping!",
-    "freeShippingProgress": "Add <amount>{remaining}</amount> more for free shipping",
-    "openCart": "Open cart",
-    "title": "Cart",
-    "metaTitle": "Your Cart",
-    "metaDescription": "View and edit the items in your cart.",
-    "itemsLabel": "{count, plural, one {# item} other {# items}}",
-    "freeShippingUnlocked": "✓ Free shipping unlocked!",
-    "addProductsToStart": "Add products to get started",
-    "viewCatalog": "Browse catalog"
-  },
-  "Checkout": {
-    "shippingInfo": "Shipping Information",
-    "payment": "Payment",
-    "cod": "Cash on Delivery",
-    "emptyCart": "Your cart is empty",
-    "cartDetail": "Cart Details",
-    "summary": "Summary",
-    "subtotalHT": "Subtotal (excl. tax)",
-    "vat": "VAT (19%)",
-    "shipping": "Shipping",
-    "placeOrder": "Place Order",
-    "orderSummary": "Order Summary",
-    "totalHT": "Total (excl. tax)",
-    "delivery": "Delivery",
-    "confirmOrder": "Confirm Order",
-    "cgv": "Terms & Conditions",
-    "acceptCgv": "I accept the {cgv}",
-    "metaTitle": "Checkout",
-    "metaDescription": "Complete your order securely.",
-    "securePayment": "100% Secure Payment",
-    "freeDelivery": "Free 24H Delivery",
-    "authenticProducts": "Authentic Products",
-    "finalizeOrder": "Complete your order",
-    "breadcrumbCart": "Cart"
-  },
-  "Auth": {
-    "welcomeBack": "Welcome back",
-    "loginSubtitle": "Sign in to your account",
-    "loginSuccess": "Login successful!",
-    "forgotPassword": "Forgot password?",
-    "login": "Sign in",
-    "createAccount": "Create account",
-    "googleLogin": "Continue with Google",
-    "email": "Email",
-    "password": "Password",
-    "firstName": "First Name",
-    "lastName": "Last Name",
-    "register": "Register"
-  },
-  "Common": {
-    "inStock": "In stock",
-    "lowStock": "Low stock",
-    "onOrder": "On order",
-    "outOfStock": "Out of stock",
-    "authentic": "100% Authentic",
-    "fastDelivery": "Fast Delivery",
-    "easyReturns": "Easy Returns",
-    "securePayment": "Secure Payment"
-  },
-  "Account": {
-    "dashboard": "Dashboard",
-    "myOrders": "My Orders",
-    "myWishlist": "My Wishlist",
-    "myCars": "My Cars",
-    "myProfile": "My Profile",
-    "myAddresses": "My Addresses",
-    "myReviews": "My Reviews",
-    "support": "Support & Returns",
-    "security": "Security",
-    "notifications": "Notifications",
-    "mySpace": "My Space",
-    "myAccount": "My Account",
-    "logout": "Logout",
-    "pending": "Pending",
-    "confirmed": "Confirmed",
-    "shipped": "Shipped",
-    "delivered": "Delivered",
-    "cancelled": "Cancelled",
-    "myOrdersDesc": "Track and manage your purchases",
-    "myWishlistDesc": "Saved products",
-    "myCarsDesc": "Track oil changes",
-    "myAddressesDesc": "Manage your addresses",
-    "myReviewsDesc": "Your published reviews",
-    "myProfileDesc": "Manage your personal information",
-    "hello": "Hello, {name} 👋",
-    "dearCustomer": "dear customer",
-    "welcome": "Welcome to your specpart personal space",
-    "recentOrders": "Recent Orders",
-    "viewAll": "View all",
-    "noOrders": "No orders yet",
-    "discoverCatalog": "Discover catalog",
-    "items": "item(s)",
-    "details": "Details"
-  },
-  "Admin": {
-    "dashboard": "Dashboard",
-    "orders": "Orders",
-    "catalog": "Catalog",
-    "products": "Products",
-    "categories": "Categories",
-    "inventory": "Inventory",
-    "customers": "Customers",
-    "promotions": "Promotions",
-    "supportTickets": "Support & Returns",
-    "contactMessages": "Contact Messages",
-    "shipping": "Shipping",
-    "payments": "Payments",
-    "reviews": "Reviews",
-    "analytics": "Analytics",
-    "settings": "Settings",
-    "quickSearch": "Quick search...",
-    "logout": "Logout",
-    "adminLabel": "ADMIN",
-    "openMenu": "Open menu",
-    "admin": "Admin"
-  },
-  "Contact": {
-    "title": "Contact Us",
-    "subtitle": "A question? Need advice? Our team is here to listen.",
-    "phone": "Phone",
-    "phoneSub": "Mon-Fri 8am-6pm | Sat 8am-2pm",
-    "email": "Email",
-    "emailSub": "Response within 24h",
-    "address": "Address",
-    "address1": "Route Manzel Chaker Km 1",
-    "address2": "Tunis, Tunisia",
-    "hours": "Hours",
-    "hours1": "Mon-Fri: 8am-6pm",
-    "hours2": "Sat: 8am-2pm | Sun: Closed",
-    "formTitle": "Send us a message",
-    "fullName": "Full Name",
-    "fullNamePlaceholder": "Your name",
-    "emailLabel": "Email",
-    "emailPlaceholder": "your@email.com",
-    "phoneLabel": "Phone",
-    "phonePlaceholder": "+216 XX XXX XXX",
-    "subject": "Subject",
-    "subjectPlaceholder": "Subject of your message",
-    "message": "Message",
-    "messagePlaceholder": "Your message...",
-    "isPro": "I am a professional",
-    "sending": "Sending...",
-    "send": "Send message",
-    "success": "Message sent successfully! We will get back to you shortly.",
-    "error": "An error occurred.",
-    "errors": {
-      "nameMin": "Name must contain at least 2 characters",
-      "emailInvalid": "Invalid email",
-      "subjectMin": "Subject is too short",
-      "messageMin": "Message must contain at least 10 characters"
-    }
-  },
-  "Faq": {
-    "metaTitle": "FAQ",
-    "metaDescription": "Find answers to frequently asked questions.",
-    "helpCenter": "Help Center",
-    "title": "Frequently Asked Questions",
-    "subtitle": "Find answers to our customers' most common questions.",
-    "breadcrumb": "FAQ",
-    "sections": [
-      {
-        "category": "Orders & Shipping",
-        "items": [
-          {
-            "q": "What are the delivery times?",
-            "a": "We deliver anywhere in Tunisia within 24 to 48 business hours. Orders placed before 2 PM are shipped the same day."
-          },
-          {
-            "q": "Is shipping free?",
-            "a": "Yes, shipping is free for all orders over 100 TND. Below this amount, a shipping fee of 7 TND applies."
-          },
-          {
-            "q": "How can I track my order?",
-            "a": "You will receive an email with a tracking number once your order is shipped. You can also track your order from your customer account."
-          },
-          {
-            "q": "Can I cancel my order?",
-            "a": "You can cancel your order as long as it hasn't been shipped by contacting us via phone or email."
-          }
-        ]
-      },
-      {
-        "category": "Payment",
-        "items": [
-          {
-            "q": "What payment methods do you accept?",
-            "a": "We accept cash on delivery, bank transfers, and online credit card payments."
-          },
-          {
-            "q": "Is online payment secure?",
-            "a": "Absolutely. All our online transactions are protected by 256-bit SSL encryption."
-          }
-        ]
-      },
-      {
-        "category": "Products",
-        "items": [
-          {
-            "q": "Are your products authentic?",
-            "a": "Yes, 100% of our products are original and sourced directly from authorized distributors of the brands (Castrol, Shell, Total, Mobil, Motul...)."
-          },
-          {
-            "q": "How do I choose the right oil for my vehicle?",
-            "a": "Use our 'Find My Oil' tool: indicate the vehicle type, number of cylinders, horsepower (CV), and fuel type to get suitable recommendations."
-          },
-          {
-            "q": "Do you offer professional rates?",
-            "a": "Yes! Create a professional account from our Pro Space page to benefit from preferential rates and adapted conditions."
-          }
-        ]
-      },
-      {
-        "category": "Returns & Support",
-        "items": [
-          {
-            "q": "Can I return a product?",
-            "a": "You have 14 days to return an unopened product in its original packaging. Return shipping costs are your responsibility."
-          },
-          {
-            "q": "How can I contact customer support?",
-            "a": "You can reach us by phone at +216 29 294 195, by email at specpart@hotmail.com, or via the contact form on our website."
-          }
-        ]
-      }
-    ]
-  },
-  "Cgv": {
-    "metaTitle": "Terms and Conditions of Sale",
-    "metaDescription": "Read our terms and conditions of sale.",
-    "title": "Terms and Conditions of Sale",
-    "date": "Last updated: June 2026",
-    "breadcrumb": "Terms of Sale",
-    "articles": [
-      {
-        "title": "Article 1 – Purpose",
-        "content": "These general conditions of sale (CGV) govern all transactions carried out on the specpart.tn website. Any order implies unconditional acceptance of these CGV."
-      },
-      {
-        "title": "Article 2 – Products",
-        "content": "The products offered for sale are described as accurately as possible. The product photographs are not contractual. specpart is committed to offering only 100% authentic products certified by partner brands."
-      },
-      {
-        "title": "Article 3 – Prices",
-        "content": "Prices are given in Tunisian Dinar (DT) including all taxes (TTC). specpart reserves the right to modify its prices at any time, but products will be billed based on the rates in effect at the time of order validation."
-      },
-      {
-        "title": "Article 4 – Orders",
-        "content": "The customer places an order on the specpart.tn website. Validating the order implies acceptance of these CGV and constitutes a sales contract. specpart will confirm the order by email."
-      },
-      {
-        "title": "Article 5 – Shipping",
-        "content": "Delivery is made to the address indicated during the order. Delivery times are 24 to 48 business hours throughout Tunisia. Delivery is free for all orders over 100 DT."
-      },
-      {
-        "title": "Article 6 – Payment",
-        "content": "Payment can be made by: cash on delivery, bank transfer, or online credit card. All online transactions are secure."
-      },
-      {
-        "title": "Article 7 – Right of Withdrawal",
-        "content": "In accordance with current legislation, the customer has a period of 14 days from receipt of their order to exercise their right of withdrawal, without having to justify reasons. The product must be returned in its original packaging, unopened and unused."
-      },
-      {
-        "title": "Article 8 – Complaints",
-        "content": "For any complaint, the customer can contact customer service by email at specpart@hotmail.com or by phone at +216 29 294 195."
-      }
-    ]
-  },
-  "About": {
-    "metaTitle": "About us",
-    "metaDescription": "Discover the specialist in lubricants and engine oils in Tunisia.",
-    "title1": "About",
-    "title2": "specpart",
-    "subtitle": "Your trusted partner for all your lubricant and engine oil needs in Tunisia.",
-    "breadcrumb": "About",
-    "historyTitle": "Our History",
-    "historyP1": "Founded in Tunisia, <strong>specpart</strong> has established itself as the leading distributor of premium lubricants and engine oils. Our mission is simple: to make the best lubrication products accessible to all Tunisian motorists and professionals.",
-    "historyP2": "We work in partnership with the world's leading brands — Castrol, Shell, Total, Mobil, Motul — to guarantee our customers 100% authentic products, delivered quickly anywhere in Tunisia.",
-    "historyP3": "Our team of experts is passionate about cars and is at your disposal to advise and assist you in choosing the right lubricant for your vehicle.",
-    "valuesTitle": "Our Values",
-    "values": [
-      {
-        "title": "Authenticity",
-        "desc": "All our products are 100% original and certified by the brands."
-      },
-      {
-        "title": "Quality",
-        "desc": "We select only the best references on the market."
-      },
-      {
-        "title": "Speed",
-        "desc": "Delivery anywhere in Tunisia within 24 to 48 hours."
-      },
-      {
-        "title": "Expertise",
-        "desc": "A team of specialists at your service to advise you."
-      },
-      {
-        "title": "Proximity",
-        "desc": "A Tunisian customer service, available and responsive."
-      },
-      {
-        "title": "Reliability",
-        "desc": "Thousands of satisfied customers trust us every day."
-      }
-    ],
-    "stats": [
-      {
-        "value": "10K+",
-        "label": "Satisfied Customers"
-      },
-      {
-        "value": "500+",
-        "label": "Listed Products"
-      },
-      {
-        "value": "24/48h",
-        "label": "Delivery Time"
-      },
-      {
-        "value": "100%",
-        "label": "Original Products"
-      }
-    ]
-  },
-  "Security": {
-    "title": "Security",
-    "subtitle": "Manage your password and active sessions",
-    "changePassword": "Change Password",
-    "oldPassword": "Current Password",
-    "newPassword": "New Password",
-    "confirmPassword": "Confirm New Password",
-    "updatePassword": "Update Password",
-    "saving": "Saving...",
-    "passwordsMismatch": "Passwords do not match.",
-    "success": "Password successfully updated!",
-    "activeSessions": "Active Sessions",
-    "currentSession": "Current Session",
-    "disconnect": "Disconnect"
-  },
-  "Support": {
-    "title": "Support & Returns",
-    "subtitle": "Manage your return and support requests",
-    "myTickets": "My tickets",
-    "newReturn": "Request a return",
-    "loading": "Loading...",
-    "noTickets": "No open tickets",
-    "order": "Order",
-    "openedOn": "Opened on",
-    "resolved": "Resolved",
-    "inProgress": "In progress",
-    "openTicket": "Open a support ticket",
-    "returnPolicy": "Return Policy",
-    "returnPolicyDesc": "Returns are accepted within 14 days of receipt. The product must be in its original packaging.",
-    "concernedOrder": "Concerned Order",
-    "selectOrder": "Select an order...",
-    "returnReason": "Return Reason",
-    "selectReason": "Select a reason...",
-    "reasons": [
-      "Defective product",
-      "Product not as described",
-      "Wrong delivery",
-      "Incomplete order",
-      "Other"
-    ],
-    "description": "Description (optional)",
-    "descriptionPlaceholder": "Describe the problem in detail...",
-    "submitReturn": "Submit return request",
-    "sending": "Sending...",
-    "success": "Request successfully sent!",
-    "error": "Error sending request"
-  },
-  "NotFound": {
-    "title": "This page has evaporated",
-    "subtitle": "The page you are looking for does not exist or has been moved. Return to the home page to find what you need.",
-    "errorCode": "Error code: 404 — Page not found",
-    "goHome": "Back to Home",
-    "viewCatalog": "View Catalog",
-    "usefulLinks": "Useful Links",
-    "goBack": "Go Back",
-    "links": {
-      "catalog": "Catalog",
-      "contact": "Contact",
-      "faq": "FAQ",
-      "account": "My Account"
-    }
-  },
-  "Shipping": {
-    "metaTitle": "Delivery & Information | specpart",
-    "metaDescription": "Delivery zones, times and rates across the whole of Tunisia.",
-    "title": "Delivery & Information",
-    "subtitle": "Delivery zones, times and rates across the whole of Tunisia",
-    "features": [
-      {
-        "icon": "timer",
-        "title": "Fast delivery",
-        "desc": "Delivery within 24 to 48 business hours, anywhere in Tunisia."
-      },
-      {
-        "icon": "truck",
-        "title": "Free delivery",
-        "desc": "Free from 100 DT of purchase. 7 DT below that amount."
-      },
-      {
-        "icon": "credit-card",
-        "title": "Flexible payment",
-        "desc": "Pay on delivery, bank transfer or online card payment."
-      }
-    ],
-    "zonesTitle": "Delivery zones",
-    "zones": [
-      {
-        "label": "Tunis, Ariana, Ben Arous, Manouba",
-        "desc": "24 business hours"
-      },
-      {
-        "label": "Nabeul, Bizerte, Sousse, Monastir, Zaghouan",
-        "desc": "24–48 business hours"
-      },
-      {
-        "label": "Other governorates",
-        "desc": "48 business hours"
-      }
-    ],
-    "contactNote": "For any question about order tracking, contact us at +216 29 294 195 or via the contact page."
-  },
-  "Returns": {
-    "metaTitle": "Returns & Refunds | specpart",
-    "metaDescription": "14-day return policy: conditions, process and refund timelines.",
-    "title": "Returns & Refunds",
-    "subtitle": "Returns are accepted within 14 days of receiving your order",
-    "windowTitle": "Return window",
-    "windowDesc": "Returns are accepted within 14 days of receiving your order. After this period, no return request can be processed.",
-    "eligibilityTitle": "Product condition",
-    "eligibilityDesc": "The product must be unused, in its original packaging, and accompanied by the invoice or order confirmation.",
-    "conditionsTitle": "Return conditions",
-    "conditions": [
-      "Defective or non-compliant products: return or exchange at our expense.",
-      "Products damaged during transport: photograph the item on receipt and contact us within 48 hours.",
-      "Change of mind: accepted if the product has not been opened; return shipping costs are at your expense.",
-      "Opened, used or customer-damaged products are not eligible for a refund."
-    ],
-    "stepsTitle": "How does it work?",
-    "steps": [
-      {
-        "title": "Request the return",
-        "desc": "Log into your account, open Support & Returns, and select the relevant order and reason."
-      },
-      {
-        "title": "Confirmation",
-        "desc": "Our team validates your request within 48 business hours and tells you what to do next."
-      },
-      {
-        "title": "Send the product back",
-        "desc": "Return the product in its original packaging. Return shipping is covered depending on the reason."
-      },
-      {
-        "title": "Refund",
-        "desc": "The refund is issued within 7 days after receipt and inspection of the product, using your original payment method."
-      }
-    ],
-    "cta": "Request a return"
-  }
+    "Index":  {
+                  "title":  "specpart — Engine Oil \u0026 Lubricants in Tunisia",
+                  "description":  "specpart, the specialist for lubricants and engine oil in Tunisia. Fast delivery, authentic products from Total, Shell, Castrol, Motul."
+              },
+    "Nav":  {
+                "home":  "Home",
+                "catalog":  "Catalog",
+                "about":  "About Us",
+                "contact":  "Contact"
+            },
+    "Navigation":  {
+                       "home":  "Home",
+                       "catalog":  "Catalog",
+                       "about":  "About Us",
+                       "contact":  "Contact",
+                       "search":  "Search",
+                       "cart":  "Cart",
+                       "account":  "My Account",
+                       "signIn":  "Sign in",
+                       "findMyOil":  "Find My Oil",
+                       "allProducts":  "All Products",
+                       "viewAllCatalog":  "View Full Catalog",
+                       "bestSellers":  "Best Sellers",
+                       "fullCatalog":  "Full Catalog →"
+                   },
+    "Layout":  {
+                   "freeShipping":  "Free shipping on orders over \u003cbold\u003e100 DT\u003c/bold\u003e — Authentic products guaranteed",
+                   "announcementShipping":  "Free delivery from 250 DT (batteries excluded) across Tunisia",
+                   "openMenu":  "Open menu",
+                   "menu":  "Menu",
+                   "home":  "Home",
+                   "catalog":  "Catalog",
+                   "cart":  "Cart",
+                   "account":  "Account",
+                   "about":  "About",
+                   "changeLanguage":  "Change language",
+                   "skipToContent":  "Skip to main content",
+                   "madeBy":  "Made by Mohamed Harbi \u0026 Mohamed Aziz Jlassi",
+                   "allRightsReserved":  "All rights reserved."
+               },
+    "Search":  {
+                   "placeholder":  "Search for a product, brand...",
+                   "ariaLabel":  "Search",
+                   "suggestedProducts":  "Suggested products",
+                   "viewAllResults":  "View all results",
+                   "noResultsFor":  "No results for \"{query}\"",
+                   "tryOtherKeywords":  "Try other keywords",
+                   "popularProducts":  "Popular products",
+                   "suggestedResults":  "Suggested results",
+                   "noResult":  "No results",
+                   "minChars":  "Enter at least 3 characters to start searching"
+               },
+    "Footer":  {
+                   "description":  "Specialist in lubricants and auto parts for passenger, commercial and industrial vehicles for over 15 years.",
+                   "newsletterPlaceholder":  "your@email.com",
+                   "subscribe":  "Subscribe",
+                   "information":  "Information",
+                   "aboutUs":  "About Us",
+                   "terms":  "Terms \u0026 Conditions",
+                   "legalNotice":  "Legal Notice",
+                   "faq":  "FAQ",
+                   "contactUs":  "Contact Us",
+                   "myAccount":  "My Account",
+                   "dashboard":  "Dashboard",
+                   "myOrders":  "My Orders",
+                   "wishlist":  "Wishlist",
+                   "signIn":  "Sign In",
+                   "contact":  "Contact",
+                   "followUs":  "Follow Us",
+                   "shopTitle":  "Shop",
+                   "serviceTitle":  "Customer Service",
+                   "hours":  "Mon–Sat 8am–6pm",
+                   "location":  "Kalaa, Tunisia",
+                   "shopHuilesMoteur":  "Engine Oils",
+                   "shopLiquides":  "Liquids",
+                   "shopFiltres":  "Filters",
+                   "shopAdditifs":  "Additives",
+                   "shopAllCategories":  "All categories",
+                   "accountTrackOrder":  "Track my order",
+                   "accountSettings":  "Account settings"
+               },
+    "Home":  {
+                 "findYourOil":  "Find Your Engine Oil",
+                 "rightLubricant":  "The right lubricant for your engine",
+                 "highPerformance":  "High Performance Engine Oils",
+                 "maxProtection":  "Maximum protection for your engine — premium lubricants for all driving conditions.",
+                 "shopNow":  "Shop Now",
+                 "heroDescription":  "Discover our complete range of high-performance lubricants for all engine types. Professional quality, competitive prices.",
+                 "findMyOil":  "Find my oil",
+                 "bestSellers":  "Best Sellers",
+                 "viewAll":  "View All",
+                 "addedToCart":  "Added to cart",
+                 "shopByCategory":  "Shop by Category",
+                 "explore":  "Explore",
+                 "newsletterTitle":  "Stay Informed",
+                 "newsletterSubtitle":  "Receive our offers and news",
+                 "newsletterPlaceholder":  "your@email.com",
+                 "subscribe":  "Subscribe",
+                 "thankYou":  "Thank you for subscribing!",
+                 "noSpam":  "No spam, unsubscribe at any time.",
+                 "validEmail":  "Please enter a valid email"
+             },
+    "Product":  {
+                    "ref":  "Ref:",
+                    "compatibleVehicle":  "100% Compatible with your vehicle",
+                    "incompatibleVehicle":  "Not compatible with your vehicle",
+                    "seeReviews":  "See reviews",
+                    "otherPackaging":  "Product available in other packaging.",
+                    "description":  "Description",
+                    "specifications":  "Specifications",
+                    "compatibility":  "Compatibility",
+                    "reviews":  "Reviews ({count})",
+                    "techDocs":  "Technical Documents",
+                    "tds":  "Technical Data Sheet (TDS)",
+                    "sds":  "Safety Data Sheet (SDS)",
+                    "noSpecs":  "No specifications available.",
+                    "noDescription":  "No detailed description is available.",
+                    "today":  "Today",
+                    "noCompat":  "No compatibility information available.",
+                    "outOfStock":  "Out of stock",
+                    "addToCart":  "Add to cart",
+                    "clientReviews":  "Customer Reviews",
+                    "basedOn":  "Based on {count} reviews",
+                    "stars":  "{count} stars",
+                    "writeReview":  "Write a review",
+                    "yourReview":  "Your review",
+                    "rating":  "Rating",
+                    "comment":  "Comment",
+                    "cancel":  "Cancel",
+                    "sending":  "Sending...",
+                    "publish":  "Publish",
+                    "noReviews":  "No reviews for this product yet.",
+                    "frequentlyBought":  "Frequently bought together",
+                    "share":  "Share",
+                    "linkCopied":  "Link copied to clipboard",
+                    "copyLink":  "Copy link",
+                    "copied":  "Copied!",
+                    "imageNotAvailable":  "Image not available",
+                    "volume":  "Volume",
+                    "notFound":  "Product not found",
+                    "addedToCart":  "Product added to cart",
+                    "stockLimit":  "Maximum available stock reached"
+                },
+    "ProductCard":  {
+                        "promo":  "PROMO",
+                        "new":  "NEW",
+                        "compatible":  "COMPATIBLE",
+                        "incompatible":  "NOT COMPATIBLE",
+                        "imageNotAvailable":  "Image not available",
+                        "priceNa":  "Price N/A",
+                        "inStock":  "In stock",
+                        "outOfStock":  "Out of stock",
+                        "addToCart":  "Add to cart",
+                        "addToWishlist":  "Add to wishlist",
+                        "addedToCart":  "Product added to cart",
+                        "addedToWishlist":  "Added to wishlist",
+                        "stockLimit":  "Maximum available stock reached",
+                        "wishlistError":  "Sign in to manage your wishlist",
+                        "compatToVerify":  "Compatibility to verify"
+                    },
+    "Catalogue":  {
+                      "filters":  "Filters",
+                      "clear":  "Clear",
+                      "categories":  "Categories",
+                      "brands":  "Brands",
+                      "viscosity":  "Viscosity",
+                      "oilType":  "Oil Type",
+                      "apiStandards":  "API Standards",
+                      "aceaStandards":  "ACEA Standards",
+                      "oemApprovals":  "OEM Approvals",
+                      "packaging":  "Packaging",
+                      "options":  "Options",
+                      "inStockOnly":  "In stock only",
+                      "onSale":  "On sale",
+                      "searchProducts":  "Search for a product, brand...",
+                      "filterByBrand":  "Filter by brand",
+                      "selectBrand":  "All brands",
+                      "allCategories":  "All categories",
+                      "volumes":  "Volumes",
+                      "catalogTitle":  "Product Catalog",
+                      "compatibleOilsTitle":  "Compatible oils for {vehicle}",
+                      "yourVehicle":  "Your vehicle",
+                      "editVehicle":  "Edit",
+                      "specOilsTitle":  "{fuel} oils — {cylinders} cyl., {power} HP",
+                      "bySpecs":  "By specifications",
+                      "searchByVehicle":  "Search by vehicle",
+                      "searchBySpecs":  "Search by engine specifications",
+                      "productsFound":  "{count, plural, =0 {No products found} one {# product found} other {# products found}}",
+                      "showResults":  "Show results",
+                      "emptyVehicleTitle":  "No oil found for this vehicle",
+                      "emptyVehicleMessage":  "We have not yet referenced a compatible oil for this vehicle in our database.",
+                      "emptySpecTitle":  "No oil matches these specifications",
+                      "emptySpecMessage":  "The catalog has not been populated for these specifications yet. Check back soon, product data is being added.",
+                      "emptyDefaultTitle":  "Oops! No products found",
+                      "emptyDefaultMessage":  "We couldn\u0027t find any products matching your search criteria.",
+                      "searchByVehicleAction":  "Search by vehicle",
+                      "clearAllFilters":  "Clear all filters",
+                      "vehicleNotFoundHint":  "Can\u0027t find your vehicle? Try searching by engine specifications.",
+                      "diesel":  "Diesel",
+                      "petrol":  "Petrol",
+                      "catalogEyebrow":  "Technical selection",
+                      "catalogIntro":  "Find the lubricant that fits with precise filters for vehicle, standard, viscosity and package size.",
+                      "precisionSearch":  "Targeted results",
+                      "searchModeIntro":  "These products were selected using the details from your search.",
+                      "vehicleFinderLabel":  "Guided search",
+                      "findMyOil":  "Find oil for my vehicle",
+                      "searchAction":  "Search",
+                      "clearSearch":  "Clear search",
+                      "quickFilters":  "Quick filters",
+                      "catalogueHint":  "Refine your selection using the filters or search above.",
+                      "filtersActive":  "{count, plural, one {# active filter} other {# active filters}}",
+                      "price":  "Budget",
+                      "priceMin":  "Min.",
+                      "priceMax":  "Max.",
+                      "availability":  "Availability",
+                      "newArrivals":  "New arrivals",
+                      "featuredProducts":  "Specpart picks",
+                      "activeFilters":  "Applied filters",
+                      "categoryFilter":  "Category",
+                      "brandFilter":  "Brand",
+                      "viscosityFilter":  "Viscosity",
+                      "volumeFilter":  "Size",
+                      "oilTypeFilter":  "Type",
+                      "apiFilter":  "API",
+                      "aceaFilter":  "ACEA",
+                      "minPriceFilter":  "Min. price",
+                      "maxPriceFilter":  "Max. price",
+                      "searchFilter":  "Search",
+                      "searchBrands":  "Search for a brand…",
+                      "noResults":  "No results",
+                      "showMore":  "Show more",
+                      "showLess":  "Show less",
+                      "viscosityEngine":  "Engine viscosity",
+                      "viscosityTransmission":  "Transmission viscosity",
+                      "applyFilters":  "Apply filters",
+                      "removeFilter":  "Remove this filter",
+                      "updating":  "Updating…",
+                      "sortBy":  "Sort",
+                      "sortRelevance":  "Relevance",
+                      "sortNewest":  "Newest",
+                      "sortPriceAsc":  "Price: low to high",
+                      "sortPriceDesc":  "Price: high to low",
+                      "searchAllCatalog":  "Search the full catalog",
+                      "compatiblePartsHint":  "Parts compatible with your {vehicle}"
+                  },
+    "Cart":  {
+                 "myCart":  "My Cart ({count})",
+                 "empty":  "Your cart is empty",
+                 "totalTTC":  "Total TTC",
+                 "viewCart":  "View Cart",
+                 "checkout":  "Checkout",
+                 "decreaseQty":  "Decrease quantity",
+                 "increaseQty":  "Increase quantity",
+                 "remove":  "Remove from cart",
+                 "volume":  "Volume: {volume}",
+                 "free":  "Free",
+                 "freeShipping":  "Free shipping!",
+                 "freeShippingProgress":  "Add \u003camount\u003e{remaining}\u003c/amount\u003e more for free shipping",
+                 "openCart":  "Open cart",
+                 "title":  "Cart",
+                 "metaTitle":  "Your Cart",
+                 "metaDescription":  "View and edit the items in your cart.",
+                 "itemsLabel":  "{count, plural, one {# item} other {# items}}",
+                 "freeShippingUnlocked":  "✓ Free shipping unlocked!",
+                 "addProductsToStart":  "Add products to get started",
+                 "viewCatalog":  "Browse catalog"
+             },
+    "Checkout":  {
+                     "shippingInfo":  "Shipping Information",
+                     "payment":  "Payment",
+                     "cod":  "Cash on Delivery",
+                     "emptyCart":  "Your cart is empty",
+                     "cartDetail":  "Cart Details",
+                     "summary":  "Summary",
+                     "subtotalHT":  "Subtotal (excl. tax)",
+                     "vat":  "VAT (19%)",
+                     "shipping":  "Shipping",
+                     "placeOrder":  "Place Order",
+                     "orderSummary":  "Order Summary",
+                     "totalHT":  "Total (excl. tax)",
+                     "delivery":  "Delivery",
+                     "confirmOrder":  "Confirm Order",
+                     "cgv":  "Terms \u0026 Conditions",
+                     "acceptCgv":  "I accept the {cgv}",
+                     "metaTitle":  "Checkout",
+                     "metaDescription":  "Complete your order securely.",
+                     "securePayment":  "100% Secure Payment",
+                     "freeDelivery":  "Free 24H Delivery",
+                     "authenticProducts":  "Authentic Products",
+                     "finalizeOrder":  "Complete your order",
+                     "breadcrumbCart":  "Cart"
+                 },
+    "Auth":  {
+                 "welcomeBack":  "Welcome back",
+                 "loginSubtitle":  "Sign in to your account",
+                 "loginSuccess":  "Login successful!",
+                 "forgotPassword":  "Forgot password?",
+                 "login":  "Sign in",
+                 "createAccount":  "Create account",
+                 "googleLogin":  "Continue with Google",
+                 "email":  "Email",
+                 "password":  "Password",
+                 "firstName":  "First Name",
+                 "lastName":  "Last Name",
+                 "register":  "Register"
+             },
+    "Common":  {
+                   "inStock":  "In stock",
+                   "lowStock":  "Low stock",
+                   "onOrder":  "On order",
+                   "outOfStock":  "Out of stock",
+                   "authentic":  "100% Authentic",
+                   "fastDelivery":  "Fast Delivery",
+                   "easyReturns":  "Easy Returns",
+                   "securePayment":  "Secure Payment"
+               },
+    "Account":  {
+                    "dashboard":  "Dashboard",
+                    "myOrders":  "My Orders",
+                    "myWishlist":  "My Wishlist",
+                    "myCars":  "My Cars",
+                    "myProfile":  "My Profile",
+                    "myAddresses":  "My Addresses",
+                    "myReviews":  "My Reviews",
+                    "support":  "Support \u0026 Returns",
+                    "security":  "Security",
+                    "notifications":  "Notifications",
+                    "mySpace":  "My Space",
+                    "myAccount":  "My Account",
+                    "logout":  "Logout",
+                    "pending":  "Pending",
+                    "confirmed":  "Confirmed",
+                    "shipped":  "Shipped",
+                    "delivered":  "Delivered",
+                    "cancelled":  "Cancelled",
+                    "myOrdersDesc":  "Track and manage your purchases",
+                    "myWishlistDesc":  "Saved products",
+                    "myCarsDesc":  "Track oil changes",
+                    "myAddressesDesc":  "Manage your addresses",
+                    "myReviewsDesc":  "Your published reviews",
+                    "myProfileDesc":  "Manage your personal information",
+                    "hello":  "Hello, {name} 👋",
+                    "dearCustomer":  "dear customer",
+                    "welcome":  "Welcome to your specpart personal space",
+                    "recentOrders":  "Recent Orders",
+                    "viewAll":  "View all",
+                    "noOrders":  "No orders yet",
+                    "discoverCatalog":  "Discover catalog",
+                    "items":  "item(s)",
+                    "details":  "Details"
+                },
+    "Admin":  {
+                  "dashboard":  "Dashboard",
+                  "orders":  "Orders",
+                  "catalog":  "Catalog",
+                  "products":  "Products",
+                  "categories":  "Categories",
+                  "inventory":  "Inventory",
+                  "customers":  "Customers",
+                  "promotions":  "Promotions",
+                  "supportTickets":  "Support \u0026 Returns",
+                  "contactMessages":  "Contact Messages",
+                  "shipping":  "Shipping",
+                  "payments":  "Payments",
+                  "reviews":  "Reviews",
+                  "analytics":  "Analytics",
+                  "settings":  "Settings",
+                  "quickSearch":  "Quick search...",
+                  "logout":  "Logout",
+                  "adminLabel":  "ADMIN",
+                  "openMenu":  "Open menu",
+                  "admin":  "Admin"
+              },
+    "Contact":  {
+                    "title":  "Contact Us",
+                    "subtitle":  "A question? Need advice? Our team is here to listen.",
+                    "phone":  "Phone",
+                    "phoneSub":  "Mon-Fri 8am-6pm | Sat 8am-2pm",
+                    "email":  "Email",
+                    "emailSub":  "Response within 24h",
+                    "address":  "Address",
+                    "address1":  "Route Manzel Chaker Km 1",
+                    "address2":  "Tunis, Tunisia",
+                    "hours":  "Hours",
+                    "hours1":  "Mon-Fri: 8am-6pm",
+                    "hours2":  "Sat: 8am-2pm | Sun: Closed",
+                    "formTitle":  "Send us a message",
+                    "fullName":  "Full Name",
+                    "fullNamePlaceholder":  "Your name",
+                    "emailLabel":  "Email",
+                    "emailPlaceholder":  "your@email.com",
+                    "phoneLabel":  "Phone",
+                    "phonePlaceholder":  "+216 XX XXX XXX",
+                    "subject":  "Subject",
+                    "subjectPlaceholder":  "Subject of your message",
+                    "message":  "Message",
+                    "messagePlaceholder":  "Your message...",
+                    "isPro":  "I am a professional",
+                    "sending":  "Sending...",
+                    "send":  "Send message",
+                    "success":  "Message sent successfully! We will get back to you shortly.",
+                    "error":  "An error occurred.",
+                    "errors":  {
+                                   "nameMin":  "Name must contain at least 2 characters",
+                                   "emailInvalid":  "Invalid email",
+                                   "subjectMin":  "Subject is too short",
+                                   "messageMin":  "Message must contain at least 10 characters"
+                               }
+                },
+    "Faq":  {
+                "metaTitle":  "FAQ",
+                "metaDescription":  "Find answers to frequently asked questions.",
+                "helpCenter":  "Help Center",
+                "title":  "Frequently Asked Questions",
+                "subtitle":  "Find answers to our customers\u0027 most common questions.",
+                "breadcrumb":  "FAQ",
+                "sections":  [
+                                 {
+                                     "category":  "Orders \u0026 Shipping",
+                                     "items":  [
+                                                   {
+                                                       "q":  "What are the delivery times?",
+                                                       "a":  "We deliver anywhere in Tunisia within 24 to 48 business hours. Orders placed before 2 PM are shipped the same day."
+                                                   },
+                                                   {
+                                                       "q":  "Is shipping free?",
+                                                       "a":  "Yes, shipping is free for all orders over 100 TND. Below this amount, a shipping fee of 7 TND applies."
+                                                   },
+                                                   {
+                                                       "q":  "How can I track my order?",
+                                                       "a":  "You will receive an email with a tracking number once your order is shipped. You can also track your order from your customer account."
+                                                   },
+                                                   {
+                                                       "q":  "Can I cancel my order?",
+                                                       "a":  "You can cancel your order as long as it hasn\u0027t been shipped by contacting us via phone or email."
+                                                   }
+                                               ]
+                                 },
+                                 {
+                                     "category":  "Payment",
+                                     "items":  [
+                                                   {
+                                                       "q":  "What payment methods do you accept?",
+                                                       "a":  "We accept cash on delivery, bank transfers, and online credit card payments."
+                                                   },
+                                                   {
+                                                       "q":  "Is online payment secure?",
+                                                       "a":  "Absolutely. All our online transactions are protected by 256-bit SSL encryption."
+                                                   }
+                                               ]
+                                 },
+                                 {
+                                     "category":  "Products",
+                                     "items":  [
+                                                   {
+                                                       "q":  "Are your products authentic?",
+                                                       "a":  "Yes, 100% of our products are original and sourced directly from authorized distributors of the brands (Castrol, Shell, Total, Mobil, Motul...)."
+                                                   },
+                                                   {
+                                                       "q":  "How do I choose the right oil for my vehicle?",
+                                                       "a":  "Use our \u0027Find My Oil\u0027 tool: indicate the vehicle type, number of cylinders, horsepower (CV), and fuel type to get suitable recommendations."
+                                                   },
+                                                   {
+                                                       "q":  "Do you offer professional rates?",
+                                                       "a":  "Yes! Create a professional account from our Pro Space page to benefit from preferential rates and adapted conditions."
+                                                   }
+                                               ]
+                                 },
+                                 {
+                                     "category":  "Returns \u0026 Support",
+                                     "items":  [
+                                                   {
+                                                       "q":  "Can I return a product?",
+                                                       "a":  "You have 14 days to return an unopened product in its original packaging. Return shipping costs are your responsibility."
+                                                   },
+                                                   {
+                                                       "q":  "How can I contact customer support?",
+                                                       "a":  "You can reach us by phone at +216 29 294 195, by email at specpart@hotmail.com, or via the contact form on our website."
+                                                   }
+                                               ]
+                                 }
+                             ]
+            },
+    "Cgv":  {
+                "metaTitle":  "Terms and Conditions of Sale",
+                "metaDescription":  "Read our terms and conditions of sale.",
+                "title":  "Terms and Conditions of Sale",
+                "date":  "Last updated: June 2026",
+                "breadcrumb":  "Terms of Sale",
+                "articles":  [
+                                 {
+                                     "title":  "Article 1 – Purpose",
+                                     "content":  "These general conditions of sale (CGV) govern all transactions carried out on the specpart.tn website. Any order implies unconditional acceptance of these CGV."
+                                 },
+                                 {
+                                     "title":  "Article 2 – Products",
+                                     "content":  "The products offered for sale are described as accurately as possible. The product photographs are not contractual. specpart is committed to offering only 100% authentic products certified by partner brands."
+                                 },
+                                 {
+                                     "title":  "Article 3 – Prices",
+                                     "content":  "Prices are given in Tunisian Dinar (DT) including all taxes (TTC). specpart reserves the right to modify its prices at any time, but products will be billed based on the rates in effect at the time of order validation."
+                                 },
+                                 {
+                                     "title":  "Article 4 – Orders",
+                                     "content":  "The customer places an order on the specpart.tn website. Validating the order implies acceptance of these CGV and constitutes a sales contract. specpart will confirm the order by email."
+                                 },
+                                 {
+                                     "title":  "Article 5 – Shipping",
+                                     "content":  "Delivery is made to the address indicated during the order. Delivery times are 24 to 48 business hours throughout Tunisia. Delivery is free for all orders over 100 DT."
+                                 },
+                                 {
+                                     "title":  "Article 6 – Payment",
+                                     "content":  "Payment can be made by: cash on delivery, bank transfer, or online credit card. All online transactions are secure."
+                                 },
+                                 {
+                                     "title":  "Article 7 – Right of Withdrawal",
+                                     "content":  "In accordance with current legislation, the customer has a period of 14 days from receipt of their order to exercise their right of withdrawal, without having to justify reasons. The product must be returned in its original packaging, unopened and unused."
+                                 },
+                                 {
+                                     "title":  "Article 8 – Complaints",
+                                     "content":  "For any complaint, the customer can contact customer service by email at specpart@hotmail.com or by phone at +216 29 294 195."
+                                 }
+                             ]
+            },
+    "About":  {
+                  "metaTitle":  "About us",
+                  "metaDescription":  "Discover the specialist in lubricants and engine oils in Tunisia.",
+                  "title1":  "About",
+                  "title2":  "specpart",
+                  "subtitle":  "Your trusted partner for all your lubricant and engine oil needs in Tunisia.",
+                  "breadcrumb":  "About",
+                  "historyTitle":  "Our History",
+                  "historyP1":  "Founded in Tunisia, \u003cstrong\u003especpart\u003c/strong\u003e has established itself as the leading distributor of premium lubricants and engine oils. Our mission is simple: to make the best lubrication products accessible to all Tunisian motorists and professionals.",
+                  "historyP2":  "We work in partnership with the world\u0027s leading brands — Castrol, Shell, Total, Mobil, Motul — to guarantee our customers 100% authentic products, delivered quickly anywhere in Tunisia.",
+                  "historyP3":  "Our team of experts is passionate about cars and is at your disposal to advise and assist you in choosing the right lubricant for your vehicle.",
+                  "valuesTitle":  "Our Values",
+                  "values":  [
+                                 {
+                                     "title":  "Authenticity",
+                                     "desc":  "All our products are 100% original and certified by the brands."
+                                 },
+                                 {
+                                     "title":  "Quality",
+                                     "desc":  "We select only the best references on the market."
+                                 },
+                                 {
+                                     "title":  "Speed",
+                                     "desc":  "Delivery anywhere in Tunisia within 24 to 48 hours."
+                                 },
+                                 {
+                                     "title":  "Expertise",
+                                     "desc":  "A team of specialists at your service to advise you."
+                                 },
+                                 {
+                                     "title":  "Proximity",
+                                     "desc":  "A Tunisian customer service, available and responsive."
+                                 },
+                                 {
+                                     "title":  "Reliability",
+                                     "desc":  "Thousands of satisfied customers trust us every day."
+                                 }
+                             ],
+                  "stats":  [
+                                {
+                                    "value":  "10K+",
+                                    "label":  "Satisfied Customers"
+                                },
+                                {
+                                    "value":  "500+",
+                                    "label":  "Listed Products"
+                                },
+                                {
+                                    "value":  "24/48h",
+                                    "label":  "Delivery Time"
+                                },
+                                {
+                                    "value":  "100%",
+                                    "label":  "Original Products"
+                                }
+                            ]
+              },
+    "Security":  {
+                     "title":  "Security",
+                     "subtitle":  "Manage your password and active sessions",
+                     "changePassword":  "Change Password",
+                     "oldPassword":  "Current Password",
+                     "newPassword":  "New Password",
+                     "confirmPassword":  "Confirm New Password",
+                     "updatePassword":  "Update Password",
+                     "saving":  "Saving...",
+                     "passwordsMismatch":  "Passwords do not match.",
+                     "success":  "Password successfully updated!",
+                     "activeSessions":  "Active Sessions",
+                     "currentSession":  "Current Session",
+                     "disconnect":  "Disconnect"
+                 },
+    "Support":  {
+                    "title":  "Support \u0026 Returns",
+                    "subtitle":  "Manage your return and support requests",
+                    "myTickets":  "My tickets",
+                    "newReturn":  "Request a return",
+                    "loading":  "Loading...",
+                    "noTickets":  "No open tickets",
+                    "order":  "Order",
+                    "openedOn":  "Opened on",
+                    "resolved":  "Resolved",
+                    "inProgress":  "In progress",
+                    "openTicket":  "Open a support ticket",
+                    "returnPolicy":  "Return Policy",
+                    "returnPolicyDesc":  "Returns are accepted within 14 days of receipt. The product must be in its original packaging.",
+                    "concernedOrder":  "Concerned Order",
+                    "selectOrder":  "Select an order...",
+                    "returnReason":  "Return Reason",
+                    "selectReason":  "Select a reason...",
+                    "reasons":  [
+                                    "Defective product",
+                                    "Product not as described",
+                                    "Wrong delivery",
+                                    "Incomplete order",
+                                    "Other"
+                                ],
+                    "description":  "Description (optional)",
+                    "descriptionPlaceholder":  "Describe the problem in detail...",
+                    "submitReturn":  "Submit return request",
+                    "sending":  "Sending...",
+                    "success":  "Request successfully sent!",
+                    "error":  "Error sending request"
+                },
+    "NotFound":  {
+                     "title":  "This page has evaporated",
+                     "subtitle":  "The page you are looking for does not exist or has been moved. Return to the home page to find what you need.",
+                     "errorCode":  "Error code: 404 — Page not found",
+                     "goHome":  "Back to Home",
+                     "viewCatalog":  "View Catalog",
+                     "usefulLinks":  "Useful Links",
+                     "goBack":  "Go Back",
+                     "links":  {
+                                   "catalog":  "Catalog",
+                                   "contact":  "Contact",
+                                   "faq":  "FAQ",
+                                   "account":  "My Account"
+                               }
+                 },
+    "Shipping":  {
+                     "metaTitle":  "Delivery \u0026 Information | specpart",
+                     "metaDescription":  "Delivery zones, times and rates across the whole of Tunisia.",
+                     "title":  "Delivery \u0026 Information",
+                     "subtitle":  "Delivery zones, times and rates across the whole of Tunisia",
+                     "features":  [
+                                      {
+                                          "icon":  "timer",
+                                          "title":  "Fast delivery",
+                                          "desc":  "Delivery within 24 to 48 business hours, anywhere in Tunisia."
+                                      },
+                                      {
+                                          "icon":  "truck",
+                                          "title":  "Free delivery",
+                                          "desc":  "Free from 100 DT of purchase. 7 DT below that amount."
+                                      },
+                                      {
+                                          "icon":  "credit-card",
+                                          "title":  "Flexible payment",
+                                          "desc":  "Pay on delivery, bank transfer or online card payment."
+                                      }
+                                  ],
+                     "zonesTitle":  "Delivery zones",
+                     "zones":  [
+                                   {
+                                       "label":  "Tunis, Ariana, Ben Arous, Manouba",
+                                       "desc":  "24 business hours"
+                                   },
+                                   {
+                                       "label":  "Nabeul, Bizerte, Sousse, Monastir, Zaghouan",
+                                       "desc":  "24–48 business hours"
+                                   },
+                                   {
+                                       "label":  "Other governorates",
+                                       "desc":  "48 business hours"
+                                   }
+                               ],
+                     "contactNote":  "For any question about order tracking, contact us at +216 29 294 195 or via the contact page."
+                 },
+    "Returns":  {
+                    "metaTitle":  "Returns \u0026 Refunds | specpart",
+                    "metaDescription":  "14-day return policy: conditions, process and refund timelines.",
+                    "title":  "Returns \u0026 Refunds",
+                    "subtitle":  "Returns are accepted within 14 days of receiving your order",
+                    "windowTitle":  "Return window",
+                    "windowDesc":  "Returns are accepted within 14 days of receiving your order. After this period, no return request can be processed.",
+                    "eligibilityTitle":  "Product condition",
+                    "eligibilityDesc":  "The product must be unused, in its original packaging, and accompanied by the invoice or order confirmation.",
+                    "conditionsTitle":  "Return conditions",
+                    "conditions":  [
+                                       "Defective or non-compliant products: return or exchange at our expense.",
+                                       "Products damaged during transport: photograph the item on receipt and contact us within 48 hours.",
+                                       "Change of mind: accepted if the product has not been opened; return shipping costs are at your expense.",
+                                       "Opened, used or customer-damaged products are not eligible for a refund."
+                                   ],
+                    "stepsTitle":  "How does it work?",
+                    "steps":  [
+                                  {
+                                      "title":  "Request the return",
+                                      "desc":  "Log into your account, open Support \u0026 Returns, and select the relevant order and reason."
+                                  },
+                                  {
+                                      "title":  "Confirmation",
+                                      "desc":  "Our team validates your request within 48 business hours and tells you what to do next."
+                                  },
+                                  {
+                                      "title":  "Send the product back",
+                                      "desc":  "Return the product in its original packaging. Return shipping is covered depending on the reason."
+                                  },
+                                  {
+                                      "title":  "Refund",
+                                      "desc":  "The refund is issued within 7 days after receipt and inspection of the product, using your original payment method."
+                                  }
+                              ],
+                    "cta":  "Request a return"
+                }
 }

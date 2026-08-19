@@ -49,7 +49,7 @@ interface Props { product: Product }
 export function ProductCard({ product }: Props) {
   const t = useTranslations('ProductCard')
   const { addItem } = useCartStore()
-  const { isCompatible } = useProductCompatibility(product)
+  const { isCompatible, hasCheckedVehicles } = useProductCompatibility(product)
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault()
@@ -104,9 +104,19 @@ export function ProductCard({ product }: Props) {
               {t('promo')}{product.promoPercent ? ` -${product.promoPercent}%` : ''}
             </span>
           )}
-          {isCompatible && (
+          {hasCheckedVehicles && isCompatible && (
             <span className="flex items-center gap-1 rounded bg-green-500 px-2 py-0.5 text-[9px] font-black uppercase tracking-wider text-white shadow-sm">
               <Check size={8} strokeWidth={3} /> {t('compatible')}
+            </span>
+          )}
+          {hasCheckedVehicles && !isCompatible && (
+            <span className="flex items-center gap-1 rounded bg-red-500 px-2 py-0.5 text-[9px] font-black uppercase tracking-wider text-white shadow-sm">
+              <X size={8} strokeWidth={3} /> {t('incompatible')}
+            </span>
+          )}
+          {'compatLevel' in product && (product as { compatLevel?: string }).compatLevel === 'check' && (
+            <span className="flex items-center gap-1 rounded bg-amber-500 px-2 py-0.5 text-[9px] font-black uppercase tracking-wider text-white shadow-sm">
+              ⚠ {t('compatToVerify')}
             </span>
           )}
         </div>

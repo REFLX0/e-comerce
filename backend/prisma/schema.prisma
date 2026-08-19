@@ -154,25 +154,33 @@ model Address {
 // ─────────────────────────────────────────
 
 model UserCar {
-  id                   String   @id @default(cuid())
+  id                   String    @id @default(cuid())
   userId               String
-  user                 User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user                 User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   name                 String
-  make                 String?  // display name e.g. "Renault" — used for compatibility matching
-  model                String?  // display name e.g. "Clio IV" — used for compatibility matching
-  makeSlug             String?  // slug e.g. "renault" — used for catalogue URL filter
-  modelSlug            String?  // slug e.g. "clio-iv" — used for catalogue URL filter
+  make                 String?   // display name e.g. "Renault" — used for compatibility matching
+  model                String?   // display name e.g. "Clio IV" — used for compatibility matching
+  makeSlug             String?   // slug e.g. "renault" — used for catalogue URL filter
+  modelSlug            String?   // slug e.g. "clio-iv" — used for catalogue URL filter
   year                 Int?
-  plateNumber          String?
-  currentMileage       Int      @default(0)
-  lastOilChangeMileage Int      @default(0)
-  oilChangeIntervalKm  Int      @default(10000)
-  oilChangeDone        Boolean  @default(false)
-  oilFilterChanged     Boolean  @default(false)
-  airFilterChanged     Boolean  @default(false)
-  cabinFilterChanged   Boolean  @default(false)
-  createdAt            DateTime @default(now())
-  updatedAt            DateTime @updatedAt
+  vin                  String?   // 17-character VIN / chassis number
+  engine               String?   // motorisation e.g. "1.5 dCi 90" — used for compatibility matching
+  displacement         Float?    // cylinder capacity in litres e.g. 1.2, 1.5, 2.0
+  cylinders            Int?      // number of cylinders e.g. 3, 4, 6
+  fuel                 String?   // "essence" | "diesel" | "hybride" | "electrique" | "gpl"
+  power                Float?    // horsepower e.g. 90
+  transmission         String?   // "manuelle" | "automatique"
+  trim                 String?   // version / finition e.g. "Zen", "GT-Line"
+  productionDate       String?   // "YYYY-MM" production month/year
+  currentMileage       Int       @default(0)
+  lastOilChangeMileage Int       @default(0)
+  oilChangeIntervalKm  Int       @default(10000)
+  oilChangeDone        Boolean   @default(false)
+  oilFilterChanged     Boolean   @default(false)
+  airFilterChanged     Boolean   @default(false)
+  cabinFilterChanged   Boolean   @default(false)
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
 
   @@index([userId])
 }

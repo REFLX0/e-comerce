@@ -1,7 +1,7 @@
 "use client"
 
 import { useRouter } from '@/i18n/routing'
-import { useSearchParams } from 'next/navigation'
+import { usePathname, useSearchParams } from 'next/navigation'
 import { ArrowDownUp } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -16,6 +16,7 @@ const SORT_OPTIONS = [
 export function SortDropdown() {
   const t = useTranslations('Catalogue')
   const router = useRouter()
+  const pathname = usePathname()
   const searchParams = useSearchParams()
   const currentSort = searchParams.get('sortBy') || 'relevance'
 
@@ -25,7 +26,8 @@ export function SortDropdown() {
     if (value === 'relevance') params.delete('sortBy')
     else params.set('sortBy', value)
     params.delete('page')
-    router.push(`/catalogue?${params.toString()}`)
+    const qs = params.toString()
+    router.push(qs ? `${pathname}?${qs}` : pathname)
   }
 
   return (
