@@ -1,6 +1,7 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../prisma/prisma.service';
+import { PrismaReadService } from '../prisma/prisma-read.service';
 import { Client } from '@opensearch-project/opensearch';
 import { Prisma } from '@prisma/client';
 
@@ -23,7 +24,7 @@ export class SearchService implements OnModuleInit {
 
   constructor(
     private readonly config: ConfigService,
-    private readonly prisma: PrismaService,
+    private readonly prismaRead: PrismaReadService,
   ) {}
 
   async onModuleInit() {
@@ -342,14 +343,14 @@ export class SearchService implements OnModuleInit {
     const q = query.trim();
 
     const [categories, brands] = await Promise.all([
-      this.prisma.category.findMany({ where: { nameFr: { contains: q, mode: 'insensitive' } }, take: 5 }),
-      this.prisma.brand.findMany({ where: { name: { contains: q, mode: 'insensitive' } }, take: 5 }),
+      this.prismaRead.db.category.findMany({ where: { nameFr: { contains: q, mode: 'insensitive' } }, take: 5 }),
+      this.prismaRead.db.brand.findMany({ where: { name: { contains: q, mode: 'insensitive' } }, take: 5 }),
     ]);
 
     // Try OpenSearch first
     const osSlugs = await this.getSuggestions(q, 10);
     if (osSlugs) {
-      const products = await this.prisma.product.findMany({
+      const products = await this.prismaRead.db.product.findMany({
         where: { slug: { in: osSlugs } },
         include: { images: { take: 1 }, variants: { take: 1 }, brand: true },
       });
@@ -364,7 +365,7 @@ export class SearchService implements OnModuleInit {
 
     // Fallback to PostgreSQL
     const where = this.buildPrismaSearchWhere(q);
-    const products = await this.prisma.product.findMany({ where, include: { images: { take: 1 }, variants: { take: 1 }, brand: true }, take: 10 });
+    const products = await this.prismaRead.db.product.findMany({ where, include: { images: { take: 1 }, variants: { take: 1 }, brand: true }, take: 10 });
     return {
       products: products.map((p) => ({ id: p.id, name: p.nameFr, slug: p.slug, image: p.images[0]?.url, price: p.variants[0]?.price, brandName: p.brand?.name })),
       categories: categories.map((c) => ({ id: c.id, name: c.nameFr, slug: c.slug })),
@@ -378,7 +379,7 @@ export class SearchService implements OnModuleInit {
 
     const osResult = await this.search({ query: q, page, limit });
     if (osResult) {
-      const products = await this.prisma.product.findMany({
+      const products = await this.prismaRead.db.product.findMany({
         where: { id: { in: osResult.ids } },
         include: this.buildInclude(),
       });
@@ -390,8 +391,8 @@ export class SearchService implements OnModuleInit {
     // Fallback
     const where = this.buildPrismaSearchWhere(q);
     const [products, total] = await Promise.all([
-      this.prisma.product.findMany({ where, include: this.buildInclude(), skip: (page - 1) * limit, take: limit }),
-      this.prisma.product.count({ where }),
+      this.prismaRead.db.product.findMany({ where, include: this.buildInclude(), skip: (page - 1) * limit, take: limit }),
+      this.prismaRead.db.product.count({ where }),
     ]);
     return { products: products.map((p) => this.serializeSearch(p)), total };
   }
@@ -402,13 +403,13 @@ export class SearchService implements OnModuleInit {
 
     const osSlugs = await this.getSuggestions(q, limit);
     if (osSlugs) {
-      const products = await this.prisma.product.findMany({ where: { slug: { in: osSlugs } }, include: this.buildInclude() });
+      const products = await this.prismaRead.db.product.findMany({ where: { slug: { in: osSlugs } }, include: this.buildInclude() });
       const map = new Map(products.map((p) => [p.slug, p]));
       return osSlugs.map((s) => map.get(s)).filter(Boolean).map((p) => this.serializeSearch(p));
     }
 
     const where = this.buildPrismaSearchWhere(q);
-    const products = await this.prisma.product.findMany({ where, include: this.buildInclude(), take: limit });
+    const products = await this.prismaRead.db.product.findMany({ where, include: this.buildInclude(), take: limit });
     return products.map((p) => this.serializeSearch(p));
   }
 }

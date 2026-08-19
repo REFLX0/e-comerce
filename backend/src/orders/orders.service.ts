@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { NotificationsService } from '../notifications/notifications.service';
+import { KafkaService } from '../kafka/kafka.service';
 import { CouponsService } from '../coupons/coupons.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import * as crypto from 'crypto';
@@ -14,7 +14,7 @@ import { generateDeliveryNotePDF } from '../admin/invoice-pdf';
 export class OrdersService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly notifications: NotificationsService,
+    private readonly kafka: KafkaService,
     private readonly couponsService: CouponsService,
   ) {}
 
@@ -135,15 +135,13 @@ export class OrdersService {
       return created;
     });
 
-    // Notify admins about new order
-    await this.notifications
-      .create({
-        type: 'new_order',
-        title: `Nouvelle commande #${order.id.slice(-8).toUpperCase()}`,
-        message: `${totalAmount.toFixed(2)} TND — ${dto.shipping.fullName}`,
-        link: `/admin/orders`,
-      })
-      .catch(() => {});
+    // Emit async event via Kafka
+    await this.kafka.produce('order.created', order.id, {
+      orderId: order.id,
+      userId: order.userId,
+      totalAmount,
+      customerName: dto.shipping.fullName,
+    });
 
     return order;
   }

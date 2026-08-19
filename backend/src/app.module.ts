@@ -4,6 +4,7 @@ import { validateEnv } from './config/env.validation';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { PrismaModule } from './prisma/prisma.module';
 import { CacheModule } from './cache/cache.module';
+import { KafkaModule } from './kafka/kafka.module';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { ProductsModule } from './products/products.module';
@@ -32,6 +33,7 @@ import { AppService } from './app.service';
     ThrottlerModule.forRoot([{ ttl: 60000, limit: 100 }]),
     PrismaModule,
     CacheModule,  // ← Global Redis cache
+    KafkaModule,  // ← Global Kafka Message Broker
     AuthModule,
     UsersModule,
     ProductsModule,

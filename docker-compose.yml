@@ -133,7 +133,7 @@ services:
       - frontend-net
       - backend-net
 
-  # ── PostgreSQL ────────────────────────────────────────────────────
+  # ── PostgreSQL Primary ────────────────────────────────────────────
   db:
     image: postgres:16-alpine
     container_name: specpart-db
@@ -142,9 +142,40 @@ services:
       POSTGRES_USER: ${POSTGRES_USER:?POSTGRES_USER is required}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
       POSTGRES_DB: ${POSTGRES_DB:?POSTGRES_DB is required}
-    # NOTE: Do NOT expose port 5432 externally in production.
+    # Configure Postgres for streaming replication
+    command: ["postgres", "-c", "wal_level=replica", "-c", "max_wal_senders=3", "-c", "max_replication_slots=3", "-c", "hot_standby=on"]
     volumes:
       - specpart_pgdata:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - backend-net
+
+  # ── PostgreSQL Replica (Hot Standby) ──────────────────────────────
+  db-replica:
+    image: postgres:16-alpine
+    container_name: specpart-db-replica
+    env_file: .env
+    environment:
+      PGPASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+    # If the data dir is empty, take a base backup from 'db', then start postgres
+    command: >
+      sh -c "
+      if [ ! -s /var/lib/postgresql/data/PG_VERSION ]; then
+        echo 'Initializing replica from primary...'
+        pg_basebackup -h db -D /var/lib/postgresql/data -U ${POSTGRES_USER} -Fp -Xs -R
+      fi
+      exec postgres
+      "
+    volumes:
+      - specpart_pgdata_replica:/var/lib/postgresql/data
+    depends_on:
+      db:
+        condition: service_healthy
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
@@ -241,6 +272,43 @@ services:
     networks:
       - backend-net
 
+  # ── Kafka (Message Broker - KRaft Mode) ──────────────────────────
+  kafka:
+    image: apache/kafka:3.7.0
+    container_name: specpart-kafka
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@localhost:9093
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+    volumes:
+      - kafka_data:/var/lib/kafka/data
+    restart: unless-stopped
+    networks:
+      - backend-net
+
+  # ── Kafka UI (Web Interface for Kafka) ────────────────────────────
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: specpart-kafka-ui
+    ports:
+      - "8080:8080"
+    environment:
+      KAFKA_CLUSTERS_0_NAME: specpart
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
+    depends_on:
+      - kafka
+    restart: unless-stopped
+    networks:
+      - backend-net
+
 networks:
   frontend-net:
     driver: bridge
@@ -250,8 +318,10 @@ networks:
 # ── Volumes ───────────────────────────────────────────────────────
 volumes:
   specpart_pgdata:
+  specpart_pgdata_replica:
   specpart_redis:
   certbot-etc:
   certbot-var:
   minio_data:
   opensearch_data:
+  kafka_data:

@@ -4,13 +4,17 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { KafkaService } from '../kafka/kafka.service';
 import { Prisma } from '@prisma/client';
 import { CreateProductDto } from './dto/create-product.dto';
 import { generateDeliveryNotePDF } from './invoice-pdf';
 
 @Injectable()
 export class AdminService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly kafka: KafkaService,
+  ) {}
 
   // ─── Dashboard Stats ───────────────────────────────────────────────────────
   async getDashboardStats() {
@@ -293,10 +297,19 @@ export class AdminService {
       }
     }
 
-    return this.prisma.product.findUnique({
+    const updatedProduct = await this.prisma.product.findUnique({
       where: { id },
       include: { brand: true, category: true, variants: true, images: true },
     });
+
+    if (updatedProduct) {
+      await this.kafka.produce('product.updated', updatedProduct.id, {
+        productId: updatedProduct.id,
+        slug: updatedProduct.slug,
+      });
+    }
+
+    return updatedProduct;
   }
 
   async deleteProduct(id: string) {

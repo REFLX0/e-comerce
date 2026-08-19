@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
+import { PrismaReadService } from '../prisma/prisma-read.service';
 import { CacheService } from '../cache/cache.service';
 import { Prisma } from '@prisma/client';
 import { OilRecommendationsDto } from './dto/oil-recommendations.dto';
@@ -32,19 +32,19 @@ export interface ProductFilters {
 @Injectable()
 export class ProductsService {
   constructor(
-    private readonly prisma: PrismaService,
+    private readonly prismaRead: PrismaReadService,
     private readonly cache: CacheService,
   ) {}
 
   /** Include every descendant when a catalogue group is selected. */
   async resolveCategoryIds(slug: string) {
-    const category = await this.prisma.category.findUnique({
+    const category = await this.prismaRead.db.category.findUnique({
       where: { slug },
       select: { id: true },
     });
     if (!category) return [];
 
-    const categories = await this.prisma.category.findMany({
+    const categories = await this.prismaRead.db.category.findMany({
       select: { id: true, parentId: true },
     });
     const ids = new Set([category.id]);
@@ -209,7 +209,7 @@ export class ProductsService {
     // ── Cursor/Keyset pagination (preferred for storefront) ──────────────────
     if (filters.cursor && !needsManualSort) {
       const orderBy = this.buildOrderBy(filters.sortBy);
-      data = await this.prisma.product.findMany({
+      data = await this.prismaRead.db.product.findMany({
         where,
         include: this.buildInclude(),
         orderBy,
@@ -226,7 +226,7 @@ export class ProductsService {
     }
     // ── Offset pagination (admin panel / backwards compat) ────────────────────
     else if (needsManualSort) {
-      const all = await this.prisma.product.findMany({ where, include: this.buildInclude() });
+      const all = await this.prismaRead.db.product.findMany({ where, include: this.buildInclude() });
       total = all.length;
       all.sort((a, b) => {
         const pa = a.variants?.[0]?.price ?? 0;
@@ -240,8 +240,8 @@ export class ProductsService {
       const skip = (page - 1) * limit;
       const orderBy = this.buildOrderBy(filters.sortBy);
       [data, total] = await Promise.all([
-        this.prisma.product.findMany({ where, include: this.buildInclude(), orderBy, skip, take: limit }),
-        this.prisma.product.count({ where }),
+        this.prismaRead.db.product.findMany({ where, include: this.buildInclude(), orderBy, skip, take: limit }),
+        this.prismaRead.db.product.count({ where }),
       ]);
     }
 
@@ -263,7 +263,7 @@ export class ProductsService {
     return this.cache.wrap(
       `products:slug:${slug}`,
       async () => {
-        const product = await this.prisma.product.findUnique({
+        const product = await this.prismaRead.db.product.findUnique({
           where: { slug },
           include: {
             ...this.buildInclude(),
@@ -304,7 +304,7 @@ export class ProductsService {
     const topProductIds: string[] = [];
 
     if (limit > 0) {
-      const rows = await this.prisma.$queryRaw<Array<{ productid: string }>>`
+      const rows = await this.prismaRead.db.$queryRaw<Array<{ productid: string }>>`
         SELECT oi."productId" AS productid, SUM(oi.quantity)::int AS totalsold
         FROM "OrderItem" oi
         INNER JOIN "Order" o ON oi."orderId" = o.id
@@ -323,7 +323,7 @@ export class ProductsService {
 
     if (topProductIds.length < limit) {
       const fallbackLimit = limit - topProductIds.length;
-      const fallback = await this.prisma.product.findMany({
+      const fallback = await this.prismaRead.db.product.findMany({
         where: {
           isPublished: true,
           isFeatured: true,
@@ -337,7 +337,7 @@ export class ProductsService {
     }
 
     if (topProductIds.length === 0) {
-      const newest = await this.prisma.product.findMany({
+      const newest = await this.prismaRead.db.product.findMany({
         where: { isPublished: true },
         include: this.buildInclude(),
         take: limit,
@@ -346,7 +346,7 @@ export class ProductsService {
       return newest.map(this.serialize);
     }
 
-    const products = await this.prisma.product.findMany({
+    const products = await this.prismaRead.db.product.findMany({
       where: { id: { in: topProductIds }, isPublished: true },
       include: this.buildInclude(),
     });
@@ -363,7 +363,7 @@ export class ProductsService {
     return this.cache.wrap(
       `products:new:${limit}`,
       async () => {
-        const products = await this.prisma.product.findMany({
+        const products = await this.prismaRead.db.product.findMany({
           where: { isPublished: true },
           include: this.buildInclude(),
           take: limit,
@@ -376,12 +376,12 @@ export class ProductsService {
   }
 
   async findRelated(id: string, limit = 6) {
-    const product = await this.prisma.product.findUnique({
+    const product = await this.prismaRead.db.product.findUnique({
       where: { id },
       select: { categoryId: true, brandId: true },
     });
     if (!product) return [];
-    const related = await this.prisma.product.findMany({
+    const related = await this.prismaRead.db.product.findMany({
       where: {
         isPublished: true,
         id: { not: id },
@@ -429,7 +429,7 @@ export class ProductsService {
       where.variants = { some: variantSome };
     }
 
-    const variantGroups = await this.prisma.productVariant.groupBy({
+    const variantGroups = await this.prismaRead.db.productVariant.groupBy({
       by: ['volume'],
       where: {
         product: where,
@@ -449,7 +449,7 @@ export class ProductsService {
         return numA - numB;
       });
 
-    const viscosityGroups = await this.prisma.productSpecs.groupBy({
+    const viscosityGroups = await this.prismaRead.db.productSpecs.groupBy({
       by: ['viscosity'],
       where: { product: where },
       _count: { viscosity: true },
@@ -467,7 +467,7 @@ export class ProductsService {
         return numA - numB || a.value.localeCompare(b.value);
       });
 
-    const brandGroups = await this.prisma.product.groupBy({
+    const brandGroups = await this.prismaRead.db.product.groupBy({
       by: ['brandId'],
       where,
       _count: { brandId: true },
@@ -476,7 +476,7 @@ export class ProductsService {
       brandGroups.map((group) => [group.brandId, group._count.brandId]),
     );
 
-    const availableBrands = await this.prisma.brand.findMany({
+    const availableBrands = await this.prismaRead.db.brand.findMany({
       orderBy: { name: 'asc' },
     });
     const seenBrandNames = new Set<string>();
@@ -499,7 +499,7 @@ export class ProductsService {
         count: brandCounts.get(brand.id) ?? 0,
       }));
 
-    const priceAgg = await this.prisma.productVariant.aggregate({
+    const priceAgg = await this.prismaRead.db.productVariant.aggregate({
       _min: { price: true },
       _max: { price: true },
       where: { product: where },
@@ -547,7 +547,7 @@ export class ProductsService {
       specsWhere.AND = andConditions;
     }
 
-    const products = await this.prisma.product.findMany({
+    const products = await this.prismaRead.db.product.findMany({
       where: {
         isPublished: true,
         specs: specsWhere,
