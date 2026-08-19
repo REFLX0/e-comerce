@@ -59,10 +59,12 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    env_file: .env
+    env_file: backend/.env
     environment:
       - NODE_ENV=production
       - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}?schema=public
+      - DATABASE_REPLICA_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db-replica:5432/${POSTGRES_DB}?schema=public
+      - KAFKA_BROKERS=kafka:9092
       - REDIS_HOST=redis
       - REDIS_PORT=6379
       - FRONTEND_URL=${NEXTAUTH_URL:?NEXTAUTH_URL is required}
@@ -87,7 +89,7 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    env_file: .env
+    env_file: backend/.env
     environment:
       - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}?schema=public
     command: ["npx", "prisma", "migrate", "deploy"]
@@ -108,7 +110,7 @@ services:
         - NEXT_PUBLIC_API_URL=/api
         - NEXT_PUBLIC_SITE_URL=${NEXTAUTH_URL}
     container_name: specpart-frontend
-    env_file: .env
+    env_file: backend/.env
     environment:
       - NODE_ENV=production
       # Internal API proxy: Next.js rewrites /api/* → nginx → backend
@@ -137,7 +139,7 @@ services:
   db:
     image: postgres:16-alpine
     container_name: specpart-db
-    env_file: .env
+    env_file: backend/.env
     environment:
       POSTGRES_USER: ${POSTGRES_USER:?POSTGRES_USER is required}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
@@ -159,7 +161,7 @@ services:
   db-replica:
     image: postgres:16-alpine
     container_name: specpart-db-replica
-    env_file: .env
+    env_file: backend/.env
     environment:
       PGPASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
     # If the data dir is empty, take a base backup from 'db', then start postgres
