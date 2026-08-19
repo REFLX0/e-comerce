@@ -344,6 +344,62 @@ model UnmatchedVehicleQuery {
 }
 
 // ─────────────────────────────────────────
+//  OIL FINDER — STAGING DATASET
+//  Vehicle→oil specification lookup data imported from the verified
+//  automobile-{brand}.json files + characteristics-lookup-conflicts.json.
+//  Kept separate from the catalogue (ProductSpecs) and the product
+//  compatibility matcher (VehicleMake/VehicleModel/VehicleCompatibility).
+// ─────────────────────────────────────────
+
+model OilFinderOilSpec {
+  id               String             @id @default(cuid())
+  viscosity        String // e.g. "5W-40"
+  apiStandard      String? // e.g. "API SN"
+  aceaStandard     String? // e.g. "ACEA A3/B4"
+  oemApproval      String? // e.g. "VW 502.00"
+  capacityLiters   Float? // from oilCapacityLiters
+  changeIntervalKm Int? // from oilChangeIntervalKm
+  fingerprint      String             @unique // canonical key: normalized JSON of (viscosity|api|acea|oem)
+  vehicles         OilFinderVehicle[]
+}
+
+model OilFinderVehicle {
+  id              String             @id @default(cuid())
+  make            String
+  model           String
+  generation      String             @default("") // "" = not specified (keeps the natural key non-null → idempotent import)
+  yearFrom        Int?
+  yearTo          Int?
+  engineCode      String             @default("") // "" = not specified
+  displacementCc  Int?
+  powerKw         Int?
+  powerHp         Int?
+  fuelType        String // String, not the ESSENCE/DIESEL enum — staging may hold hybride/gpl
+  oilSpecId       String
+  oilSpec         OilFinderOilSpec   @relation(fields: [oilSpecId], references: [id], onDelete: Restrict)
+  source          String // provenance, preserved for support/audit
+  confidence      String // "high" | "medium" | "low" — preserved, queryable
+  matchAmbiguity  Json? // null | { field: "major"|"minor" } — verbatim from input
+
+  @@unique([make, model, generation, engineCode, source]) // same vehicle from N sources = N rows
+  @@index([make, model, engineCode])
+  @@index([displacementCc, powerHp, fuelType])
+}
+
+model OilFinderLookupConflict {
+  id              String @id @default(cuid())
+  displacementCc  Int
+  powerHp         Int
+  fuelType        String
+  highestSeverity String // "MAJOR" | "MINOR" (derived: any major field → MAJOR)
+  fieldSeverities Json // { oilViscosity: "major", ... } — verbatim from report
+  candidateCount  Int
+  rawReport       Json? // full report line, for audit
+
+  @@unique([displacementCc, powerHp, fuelType])
+}
+
+// ─────────────────────────────────────────
 //  ORDERS
 // ─────────────────────────────────────────
 
