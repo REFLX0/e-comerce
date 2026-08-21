@@ -4,14 +4,13 @@ import { useState } from 'react'
 import { useTranslations } from 'next-intl'
 import Image from 'next/image'
 import { Link } from '@/i18n/routing'
-import { Heart, Check, X, ShoppingCart } from 'lucide-react'
+import { Heart, Check, X, ShoppingCart, AlertTriangle, ShieldCheck } from 'lucide-react'
 import { motion } from 'framer-motion'
 import type { Product } from '@/lib/types'
 import { useCartStore } from '@/lib/store/cart.store'
 import { wishlistApi } from '@/lib/api/wishlist'
-import { RatingStars } from '../common/RatingStars'
 import { toast } from 'sonner'
-import { formatPrice } from '@/lib/utils/format'
+import { formatPrice, formatSKU } from '@/lib/utils/format'
 import { useProductCompatibility } from '@/lib/hooks/useProductCompatibility'
 
 /* ── Lazy image with skeleton + error fallback ───────────────────────── */
@@ -22,7 +21,7 @@ function CardImage({ src, alt, t }: { src: string; alt: string; t: any }) {
   if (error) {
     return (
       <div className="flex h-full w-full items-center justify-center bg-gray-50">
-        <span className="text-[10px] text-gray-300 text-center px-3">{t('imageNotAvailable')}</span>
+        <span className="px-3 text-center text-[10px] text-gray-400">{t('imageNotAvailable')}</span>
       </div>
     )
   }
@@ -35,7 +34,7 @@ function CardImage({ src, alt, t }: { src: string; alt: string; t: any }) {
         alt={alt}
         fill
         sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-        className={`object-contain p-3 transition-transform duration-300 ease-out group-hover:scale-[1.04] ${loading ? 'opacity-0' : 'opacity-100'}`}
+        className={`object-contain p-4 transition-transform duration-300 ease-out group-hover:scale-105 ${loading ? 'opacity-0' : 'opacity-100'}`}
         onLoad={() => setLoading(false)}
         onError={() => { setError(true); setLoading(false) }}
       />
@@ -44,12 +43,15 @@ function CardImage({ src, alt, t }: { src: string; alt: string; t: any }) {
 }
 
 /* ── Main card ───────────────────────────────────────────────────────── */
-interface Props { product: Product }
+interface Props { 
+  product: Product
+  viewMode?: 'grid' | 'list'
+}
 
-export function ProductCard({ product }: Props) {
+export function ProductCard({ product, viewMode = 'grid' }: Props) {
   const t = useTranslations('ProductCard')
   const { addItem } = useCartStore()
-  const { isCompatible, hasCheckedVehicles } = useProductCompatibility(product)
+  const { isCompatible, hasCheckedVehicles, vehicleLabel } = useProductCompatibility(product)
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault()
@@ -82,41 +84,190 @@ export function ProductCard({ product }: Props) {
     defaultVariant
       ? defaultVariant.priceTTC / (1 - product.promoPercent / 100)
       : 0
+  
+  const hasCompatCheck = 'compatLevel' in product && (product as any).compatLevel === 'check'
 
+  // Compatibility Banner Component
+  const CompatibilityStatus = ({ compact = false }: { compact?: boolean }) => {
+    if (!hasCheckedVehicles && !hasCompatCheck) return null;
+
+    if (hasCheckedVehicles) {
+      if (isCompatible) {
+        return (
+          <div className="mt-2 flex items-start gap-1.5 rounded bg-green-50 px-2 py-1.5 text-green-700">
+            <ShieldCheck size={14} className="mt-0.5 shrink-0" />
+            <span className="text-[11px] font-medium leading-tight">
+              {compact ? t('compatible') : `Compatible avec votre ${vehicleLabel}`}
+            </span>
+          </div>
+        )
+      }
+      return (
+        <div className="mt-2 flex items-start gap-1.5 rounded bg-red-50 px-2 py-1.5 text-red-600">
+          <X size={14} className="mt-0.5 shrink-0" />
+          <span className="text-[11px] font-medium leading-tight">
+            {compact ? t('incompatible') : `Incompatible avec votre ${vehicleLabel}`}
+          </span>
+        </div>
+      )
+    }
+
+    if (hasCompatCheck) {
+      return (
+        <div className="mt-2 flex items-start gap-1.5 rounded bg-amber-50 px-2 py-1.5 text-amber-700">
+          <AlertTriangle size={14} className="mt-0.5 shrink-0" />
+          <span className="text-[11px] font-medium leading-tight">
+            {t('compatToVerify')}
+          </span>
+        </div>
+      )
+    }
+    return null;
+  }
+
+  if (viewMode === 'list') {
+    return (
+      <div className="group relative flex flex-col bg-white border border-gray-200 shadow-sm transition-shadow hover:shadow-md hover:border-brand-primary/30 sm:flex-row sm:items-stretch">
+        {/* Image */}
+        <div className="relative aspect-square w-full shrink-0 border-b border-gray-100 bg-white sm:w-48 sm:border-b-0 sm:border-r">
+          <Link href={`/produit/${product.slug}`} className="absolute inset-0 z-0">
+            {product.images?.[0] ? (
+              <CardImage src={product.images[0]} alt={product.name} t={t} />
+            ) : (
+              <div className="flex h-full w-full items-center justify-center bg-gray-50">
+                <span className="text-[10px] text-gray-300">{t('imageNotAvailable')}</span>
+              </div>
+            )}
+          </Link>
+          
+          {/* Top-right: Wishlist (Mobile absolute, Desktop hidden as we'll put it in actions) */}
+          <motion.button
+            whileTap={{ scale: 0.88 }}
+            className="absolute top-2 right-2 z-10 flex h-7 w-7 items-center justify-center rounded-full bg-white text-gray-400 shadow-sm border border-gray-200 sm:hidden"
+            onClick={handleAddToWishlist}
+            aria-label={t('addToWishlist')}
+          >
+            <Heart size={14} />
+          </motion.button>
+        </div>
+
+        {/* Content */}
+        <div className="flex flex-1 flex-col p-4 sm:p-5">
+          <div className="flex items-center gap-2">
+            {product.brand && (
+              <span className="text-[11px] font-black uppercase tracking-wider text-[#16254c]/70">
+                {product.brand.name}
+              </span>
+            )}
+            <span className="text-[11px] font-medium text-gray-400">•</span>
+            <span className="text-[11px] font-semibold tracking-wider text-gray-500 uppercase">
+              Réf: {formatSKU(defaultVariant?.sku)}
+            </span>
+          </div>
+
+          <Link href={`/produit/${product.slug}`} className="mt-1 focus:outline-none">
+            <h3 className="text-sm font-bold text-gray-900 group-hover:text-[#E10600] transition-colors sm:text-base">
+              {product.name}
+            </h3>
+          </Link>
+
+          <CompatibilityStatus />
+
+          {/* Quick Specs */}
+          <div className="mt-3 flex flex-wrap items-center gap-2">
+            {defaultVariant?.volume && (
+              <span className="rounded bg-gray-100 px-2 py-0.5 text-[11px] font-semibold text-gray-600">
+                {defaultVariant.volume}
+              </span>
+            )}
+            {product.specs?.viscosity && (
+              <span className="rounded bg-gray-100 px-2 py-0.5 text-[11px] font-semibold text-gray-600">
+                {product.specs.viscosity}
+              </span>
+            )}
+          </div>
+        </div>
+
+        {/* Actions Sidebar (List View) */}
+        <div className="flex w-full shrink-0 flex-col justify-between border-t border-gray-100 bg-gray-50/50 p-4 sm:w-[220px] sm:border-l sm:border-t-0 sm:p-5">
+          <div>
+            {/* Stock indicator */}
+            <div className="mb-3">
+              {!isOutOfStock ? (
+                <span className="flex items-center gap-1.5 text-xs font-bold text-green-600">
+                  <Check size={14} strokeWidth={3} /> {t('inStock')}
+                </span>
+              ) : (
+                <span className="flex items-center gap-1.5 text-xs font-bold text-[#E10600]">
+                  <X size={14} strokeWidth={3} /> {t('outOfStock')}
+                </span>
+              )}
+            </div>
+
+            {/* Price */}
+            <div className="flex flex-col">
+              {isPriceTbd ? (
+                <span className="text-lg font-bold text-[#16254c]">{t('priceNa')}</span>
+              ) : defaultVariant ? (
+                <>
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-xl font-black text-[#16254c]">{formatPrice(defaultVariant.priceTTC)}</span>
+                    <span className="text-xs font-bold text-gray-500 uppercase tracking-wide">TTC</span>
+                  </div>
+                  {product.isPromo && oldPrice > 0 && (
+                    <span className="text-sm text-gray-400 line-through mt-0.5">
+                      {formatPrice(oldPrice)}
+                    </span>
+                  )}
+                </>
+              ) : (
+                <span className="text-sm text-gray-400">{t('priceNa')}</span>
+              )}
+            </div>
+          </div>
+
+          <div className="mt-5 flex gap-2">
+            <motion.button
+              whileTap={{ scale: 0.97 }}
+              onClick={handleAddToCart}
+              disabled={isOutOfStock}
+              className="flex min-h-[40px] flex-1 items-center justify-center gap-2 bg-[#E10600] text-xs font-black uppercase tracking-wider text-white transition-colors hover:bg-[#bd0500] disabled:cursor-not-allowed disabled:bg-gray-300"
+              aria-label={t('addToCart')}
+            >
+              <ShoppingCart size={15} />
+              {t('addToCart')}
+            </motion.button>
+            <motion.button
+              whileTap={{ scale: 0.9 }}
+              onClick={handleAddToWishlist}
+              className="hidden h-10 w-10 shrink-0 items-center justify-center border border-gray-200 bg-white text-gray-400 transition-colors hover:border-[#E10600] hover:text-[#E10600] sm:flex"
+              aria-label={t('addToWishlist')}
+            >
+              <Heart size={16} />
+            </motion.button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // ── Grid View ─────────────────────────────────────────────────────────
   return (
-    <motion.div
-      whileHover={{ y: -3 }}
-      transition={{ type: 'spring', stiffness: 320, damping: 24 }}
-      className="group relative flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition-shadow duration-300 hover:border-brand-primary/20 hover:shadow-lg"
-    >
+    <div className="group relative flex h-full flex-col bg-white border border-gray-200 shadow-sm transition-all duration-300 hover:shadow-lg hover:border-brand-primary/20">
+      
       {/* ── Image zone ─────────────────────────────────────────────── */}
-      <div className="relative aspect-square overflow-hidden bg-white">
-
-        {/* Top-left badges */}
-        <div className="absolute top-2.5 left-2.5 z-10 flex flex-col gap-1.5 items-start">
+      <div className="relative aspect-square overflow-hidden bg-white border-b border-gray-100">
+        
+        {/* Top Badges */}
+        <div className="absolute top-2 left-2 z-10 flex flex-col gap-1">
           {product.isNew && (
-            <span className="rounded bg-brand-primary px-2 py-0.5 text-[9px] font-black uppercase tracking-wider text-white shadow-sm">
+            <span className="bg-[#16254c] px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-white">
               {t('new')}
             </span>
           )}
           {product.isPromo && (
-            <span className="rounded bg-brand-accent px-2 py-0.5 text-[9px] font-black uppercase tracking-wider text-brand-primary-dark shadow-sm">
+            <span className="bg-[#E10600] px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-white">
               {t('promo')}{product.promoPercent ? ` -${product.promoPercent}%` : ''}
-            </span>
-          )}
-          {hasCheckedVehicles && isCompatible && (
-            <span className="flex items-center gap-1 rounded bg-green-500 px-2 py-0.5 text-[9px] font-black uppercase tracking-wider text-white shadow-sm">
-              <Check size={8} strokeWidth={3} /> {t('compatible')}
-            </span>
-          )}
-          {hasCheckedVehicles && !isCompatible && (
-            <span className="flex items-center gap-1 rounded bg-red-500 px-2 py-0.5 text-[9px] font-black uppercase tracking-wider text-white shadow-sm">
-              <X size={8} strokeWidth={3} /> {t('incompatible')}
-            </span>
-          )}
-          {'compatLevel' in product && (product as { compatLevel?: string }).compatLevel === 'check' && (
-            <span className="flex items-center gap-1 rounded bg-amber-500 px-2 py-0.5 text-[9px] font-black uppercase tracking-wider text-white shadow-sm">
-              ⚠ {t('compatToVerify')}
             </span>
           )}
         </div>
@@ -124,11 +275,11 @@ export function ProductCard({ product }: Props) {
         {/* Top-right: Wishlist */}
         <motion.button
           whileTap={{ scale: 0.88 }}
-          className="absolute top-2.5 right-2.5 z-10 flex h-8 w-8 items-center justify-center rounded-full border border-gray-200 bg-white/90 text-gray-400 shadow-sm backdrop-blur transition-all duration-200 hover:border-red-200 hover:bg-white hover:text-red-400"
+          className="absolute top-2 right-2 z-10 flex h-7 w-7 items-center justify-center rounded-full bg-white/90 text-gray-400 shadow-sm border border-gray-100 backdrop-blur transition-colors hover:text-[#E10600]"
           onClick={handleAddToWishlist}
           aria-label={t('addToWishlist')}
         >
-          <Heart size={15} />
+          <Heart size={14} />
         </motion.button>
 
         {/* Clickable image */}
@@ -145,98 +296,68 @@ export function ProductCard({ product }: Props) {
 
       {/* ── Content zone ───────────────────────────────────────────── */}
       <div className="flex flex-1 flex-col p-3.5">
-
-        {/* Brand */}
-        {product.brand && (
-          <span className="text-[10px] font-black uppercase tracking-[0.12em] text-brand-primary/70">
-            {product.brand.name}
+        
+        {/* Brand & SKU */}
+        <div className="flex items-center justify-between gap-2">
+          {product.brand ? (
+            <span className="text-[10px] font-black uppercase tracking-[0.1em] text-[#16254c]/70">
+              {product.brand.name}
+            </span>
+          ) : <span />}
+          <span className="text-[9px] font-semibold uppercase text-gray-400 tracking-wider">
+            Réf: {formatSKU(defaultVariant?.sku)}
           </span>
-        )}
+        </div>
 
         {/* Product name */}
-        <Link href={`/produit/${product.slug}`} className="mt-0.5 focus:outline-none">
-          <h3 className="line-clamp-2 min-h-[2.5rem] text-[13px] font-bold leading-snug text-gray-800 transition-colors duration-150 group-hover:text-brand-primary">
+        <Link href={`/produit/${product.slug}`} className="mt-1 focus:outline-none">
+          <h3 className="line-clamp-2 min-h-[2.5rem] text-xs font-bold leading-relaxed text-gray-900 transition-colors group-hover:text-[#E10600] sm:text-[13px]">
             {product.name}
           </h3>
         </Link>
 
-        {/* Stars + review count */}
-        <div className="mt-1.5 flex items-center gap-1">
-          <RatingStars rating={product.rating} count={product.reviewCount} size={13} />
-          <span className="text-[11px] text-gray-400">({product.reviewCount})</span>
+        {/* Compatibility */}
+        <div className="mt-1 flex-1">
+          <CompatibilityStatus compact />
         </div>
 
-        {/* Spec tags: volume + viscosity */}
-        <div className="mt-2 flex flex-wrap items-center gap-1.5">
-          {defaultVariant?.volume && (
-            <span className="rounded bg-gray-100 px-2 py-0.5 text-[10px] font-semibold text-gray-500">
-              {defaultVariant.volume}
-            </span>
-          )}
-          {product.specs?.viscosity && (
-            <span className="rounded bg-gray-100 px-2 py-0.5 text-[10px] font-semibold text-gray-500">
-              {product.specs.viscosity}
-            </span>
-          )}
-        </div>
-
-        {/* Price */}
-        <div className="mt-3 border-t border-gray-100 pt-3">
-          {isPriceTbd ? (
-            <span className="text-sm font-semibold text-brand-primary">{t('priceNa')}</span>
-          ) : defaultVariant ? (
-            <div className="flex flex-wrap items-baseline gap-1.5">
-              <span className="text-base font-black text-brand-primary">
-                {formatPrice(defaultVariant.priceTTC)}
-              </span>
-              <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide">TTC</span>
-              {product.isPromo && oldPrice > 0 && (
-                <span className="text-[11px] text-gray-400 line-through">
-                  {formatPrice(oldPrice)}
-                </span>
+        <div className="mt-3 flex items-end justify-between border-t border-gray-100 pt-3">
+          {/* Price */}
+          <div className="flex flex-col">
+            <span className="mb-0.5 flex items-center gap-1 text-[10px] font-bold">
+              {!isOutOfStock ? (
+                <span className="text-green-600">{t('inStock')}</span>
+              ) : (
+                <span className="text-[#E10600]">{t('outOfStock')}</span>
               )}
-            </div>
-          ) : (
-            <span className="text-sm text-gray-400">{t('priceNa')}</span>
-          )}
-
-          {/* Stock indicator */}
-          <div className="mt-1.5">
-            {!isOutOfStock ? (
-              <span className="flex items-center gap-1 text-[11px] font-semibold text-green-600">
-                <Check size={11} strokeWidth={3} /> {t('inStock')}
-              </span>
+            </span>
+            
+            {isPriceTbd ? (
+              <span className="text-sm font-bold text-[#16254c]">{t('priceNa')}</span>
+            ) : defaultVariant ? (
+              <div className="flex items-baseline gap-1">
+                <span className="text-base font-black text-[#16254c] sm:text-lg">
+                  {formatPrice(defaultVariant.priceTTC)}
+                </span>
+                <span className="text-[9px] font-bold text-gray-500 uppercase tracking-widest">TTC</span>
+              </div>
             ) : (
-              <span className="flex items-center gap-1 text-[11px] font-semibold text-red-500">
-                <X size={11} /> {t('outOfStock')}
-              </span>
+              <span className="text-sm text-gray-400">{t('priceNa')}</span>
             )}
           </div>
-        </div>
 
-        {/* CTA row — full-width "ADD TO CART" + small cart icon */}
-        <div className="mt-3 flex gap-2">
-          <motion.button
-            whileTap={{ scale: 0.97 }}
-            onClick={handleAddToCart}
-            disabled={isOutOfStock}
-            className="flex min-h-[44px] flex-1 items-center justify-center rounded-lg bg-brand-primary text-[11px] font-black uppercase tracking-widest text-white transition-all duration-200 hover:bg-brand-primary-dark disabled:cursor-not-allowed disabled:opacity-50"
-            aria-label={t('addToCart')}
-          >
-            {t('addToCart')}
-          </motion.button>
-
+          {/* Quick Add Button (Icon only to save space) */}
           <motion.button
             whileTap={{ scale: 0.9 }}
             onClick={handleAddToCart}
             disabled={isOutOfStock}
-            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border-2 border-brand-primary/20 bg-white text-brand-primary transition-all duration-200 hover:border-brand-primary hover:bg-brand-primary/5 disabled:cursor-not-allowed disabled:opacity-50"
+            className="flex h-9 w-9 shrink-0 items-center justify-center bg-[#E10600] text-white transition-colors hover:bg-[#bd0500] disabled:cursor-not-allowed disabled:bg-gray-300 sm:h-10 sm:w-10"
             aria-label={t('addToCart')}
           >
-            <ShoppingCart size={17} />
+            <ShoppingCart size={16} />
           </motion.button>
         </div>
       </div>
-    </motion.div>
+    </div>
   )
 }

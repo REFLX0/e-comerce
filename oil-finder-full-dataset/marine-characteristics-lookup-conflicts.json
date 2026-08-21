@@ -1,0 +1,304 @@
+{
+  "_meta": {
+    "description": "Marine characteristics lookup conflicts (informational only — marine uses Par véhicule, not Par caractéristiques). Generated for cross-category consistency.",
+    "lookupKeyDefinition": "(displacementCc, powerHp, fuelType) — NOT used for marine lookup, documented for reference.",
+    "marineSpecificFields": [
+      "engineType",
+      "oilSpecMarine",
+      "gearOilSpec",
+      "gearOilCapacityLiters",
+      "oilChangeIntervalHours",
+      "coolingSystem"
+    ],
+    "specFieldsCompared": [
+      "oilViscosity",
+      "oilSpecMarine",
+      "oilSpecOEM"
+    ],
+    "totalEntries": 54,
+    "totalUniqueKeys": 45,
+    "totalConflictGroups": 7,
+    "totalAmbiguousEntries": 15,
+    "brandsIncluded": [
+      "yamaha",
+      "tohatsu",
+      "parsun",
+      "mercury",
+      "honda",
+      "suzuki",
+      "yanmar",
+      "selva"
+    ],
+    "generatedFrom": [
+      "marine-yamaha.json",
+      "marine-tohatsu.json",
+      "marine-parsun.json",
+      "marine-mercury.json",
+      "marine-honda.json",
+      "marine-suzuki.json",
+      "marine-yanmar.json",
+      "marine-selva.json"
+    ]
+  },
+  "dataCorrections": [
+    {
+      "type": "schema_fix",
+      "description": "v1→v2: engineOilViscosity→oilViscosity, engineOilSpecFCW→oilSpecMarine, engineOilCapacityLiters→oilCapacityLiters, lowerUnitGearLubeSpec→gearOilSpec, lowerUnitGearLubeCapacityLiters→gearOilCapacityLiters, engineOilChangeIntervalHours→oilChangeIntervalHours. Added engineType. Removed engineOilSpecAPI/ACEA (not in marine schema).",
+      "entriesAffected": 54
+    }
+  ],
+  "conflicts": [
+    {
+      "groupId": "G1",
+      "lookupKey": {
+        "displacementCc": 209,
+        "powerHp": 10,
+        "fuelType": "essence"
+      },
+      "entries": [
+        {
+          "make": "TOHATSU",
+          "model": "MFS 9.8",
+          "engineCode": "209cc 2-cyl SOHC",
+          "confidence": "high"
+        },
+        {
+          "make": "SELVA",
+          "model": "E 9.9",
+          "engineCode": "209cc 2-cyl OHV",
+          "confidence": "low"
+        }
+      ],
+      "fieldDifferences": [
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "None",
+            "Tohatsu 4-Stroke Outboard Motor Oil"
+          ]
+        }
+      ],
+      "overallSeverity": "minor"
+    },
+    {
+      "groupId": "G2",
+      "lookupKey": {
+        "displacementCc": 246,
+        "powerHp": 10,
+        "fuelType": "essence"
+      },
+      "entries": [
+        {
+          "make": "YAMAHA MARINE",
+          "model": "F9.9",
+          "engineCode": "246cc 2-cyl OHV",
+          "confidence": "high"
+        },
+        {
+          "make": "PARSUN",
+          "model": "T9.8",
+          "engineCode": "246cc 2-cyl OHV",
+          "confidence": "medium"
+        }
+      ],
+      "fieldDifferences": [
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "None",
+            "Yamaha Yamalube 4M"
+          ]
+        }
+      ],
+      "overallSeverity": "minor"
+    },
+    {
+      "groupId": "G3",
+      "lookupKey": {
+        "displacementCc": 362,
+        "powerHp": 15,
+        "fuelType": "essence"
+      },
+      "entries": [
+        {
+          "make": "YAMAHA MARINE",
+          "model": "F15",
+          "engineCode": "362cc 2-cyl OHV",
+          "confidence": "high"
+        },
+        {
+          "make": "PARSUN",
+          "model": "T15",
+          "engineCode": "362cc 2-cyl OHV",
+          "confidence": "medium"
+        }
+      ],
+      "fieldDifferences": [
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "None",
+            "Yamaha Yamalube 4M"
+          ]
+        }
+      ],
+      "overallSeverity": "minor"
+    },
+    {
+      "groupId": "G4",
+      "lookupKey": {
+        "displacementCc": 496,
+        "powerHp": 25,
+        "fuelType": "essence"
+      },
+      "entries": [
+        {
+          "make": "YAMAHA MARINE",
+          "model": "F25",
+          "engineCode": "496cc 2-cyl DOHC",
+          "confidence": "high"
+        },
+        {
+          "make": "PARSUN",
+          "model": "T25",
+          "engineCode": "496cc 2-cyl DOHC",
+          "confidence": "medium"
+        },
+        {
+          "make": "SELVA",
+          "model": "E 25",
+          "engineCode": "496cc 2-cyl DOHC",
+          "confidence": "low"
+        }
+      ],
+      "fieldDifferences": [
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "None",
+            "Yamaha Yamalube 4M"
+          ]
+        }
+      ],
+      "overallSeverity": "minor"
+    },
+    {
+      "groupId": "G5",
+      "lookupKey": {
+        "displacementCc": 1832,
+        "powerHp": 90,
+        "fuelType": "essence"
+      },
+      "entries": [
+        {
+          "make": "YAMAHA MARINE",
+          "model": "F90",
+          "engineCode": "1832cc 4-cyl DOHC",
+          "confidence": "high"
+        },
+        {
+          "make": "PARSUN",
+          "model": "T90",
+          "engineCode": "1832cc 4-cyl DOHC",
+          "confidence": "medium"
+        }
+      ],
+      "fieldDifferences": [
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "None",
+            "Yamaha Yamalube 4M"
+          ]
+        }
+      ],
+      "overallSeverity": "minor"
+    },
+    {
+      "groupId": "G6",
+      "lookupKey": {
+        "displacementCc": 1832,
+        "powerHp": 115,
+        "fuelType": "essence"
+      },
+      "entries": [
+        {
+          "make": "YAMAHA MARINE",
+          "model": "F115",
+          "engineCode": "1832cc 4-cyl DOHC",
+          "confidence": "high"
+        },
+        {
+          "make": "PARSUN",
+          "model": "T115",
+          "engineCode": "1832cc 4-cyl DOHC",
+          "confidence": "medium"
+        }
+      ],
+      "fieldDifferences": [
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "None",
+            "Yamaha Yamalube 4M"
+          ]
+        }
+      ],
+      "overallSeverity": "minor"
+    },
+    {
+      "groupId": "G7",
+      "lookupKey": {
+        "displacementCc": 2785,
+        "powerHp": 200,
+        "fuelType": "essence"
+      },
+      "entries": [
+        {
+          "make": "YAMAHA MARINE",
+          "model": "F200",
+          "engineCode": "2785cc V6 DOHC",
+          "confidence": "high"
+        },
+        {
+          "make": "MERCURY",
+          "model": "200 Verado",
+          "engineCode": "2785cc L4 supercharged DOHC",
+          "confidence": "high"
+        }
+      ],
+      "fieldDifferences": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "10W-30",
+            "25W-40"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "Mercury Verado Oil (25W-40 FC-W)",
+            "Yamaha Yamalube 4M"
+          ]
+        }
+      ],
+      "overallSeverity": "major"
+    }
+  ],
+  "summary": {
+    "safeEntries": 39,
+    "ambiguousEntries": 15,
+    "majorConflicts": 1,
+    "minorConflicts": 6,
+    "recommendation": "Marine uses Par véhicule only — this conflicts file is informational. No action needed unless marine ever adds characteristics lookup."
+  }
+}

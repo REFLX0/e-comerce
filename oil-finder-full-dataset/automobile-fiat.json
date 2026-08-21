@@ -1,0 +1,626 @@
+[
+  {
+    "make": "FIAT",
+    "model": "500",
+    "generation": "312 (Hybrid)",
+    "yearFrom": 2021,
+    "yearTo": 9999,
+    "engineCode": "199A3000",
+    "displacementCc": 999,
+    "fuelType": "essence",
+    "powerKw": 51,
+    "powerHp": 70,
+    "oilViscosity": "0W-20",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C5",
+    "oilSpecOEM": "Fiat 9.55535-DM1",
+    "oilCapacityLiters": 2.5,
+    "oilChangeIntervalKm": 15000,
+    "source": "fiat-official.tn, iFixit, buycarparts.co.uk, fiatworkshop.co.uk",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "FIAT",
+    "model": "500",
+    "generation": "312 (1.2 Fire)",
+    "yearFrom": 2007,
+    "yearTo": 2020,
+    "engineCode": "169A4.000",
+    "displacementCc": 1242,
+    "fuelType": "essence",
+    "powerKw": 51,
+    "powerHp": 69,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": "SP",
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": "Fiat 9.55535-S1",
+    "oilCapacityLiters": 2.8,
+    "oilChangeIntervalKm": 15000,
+    "source": "autodoc.parts, auto-data.net, fiatforum.com, automobile.tn",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "FIAT",
+    "model": "Tipo",
+    "generation": "356 (Sedan 5-door)",
+    "yearFrom": 2016,
+    "yearTo": 9999,
+    "engineCode": "843A1.000",
+    "displacementCc": 1368,
+    "fuelType": "essence",
+    "powerKw": 70,
+    "powerHp": 95,
+    "oilViscosity": "5W-40",
+    "oilSpecAPI": "SN",
+    "oilSpecACEA": "C3",
+    "oilSpecOEM": "Fiat 9.55535-S2",
+    "oilCapacityLiters": 2.95,
+    "oilChangeIntervalKm": 15000,
+    "source": "autodoc.parts, buycarparts.co.uk, reddit.com/r/Fiat, fiatworkshop.co.uk, automoto.tn",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "FIAT",
+    "model": "Tipo",
+    "generation": "356 (1.4 T-Jet)",
+    "yearFrom": 2016,
+    "yearTo": 2021,
+    "engineCode": "940B7.000",
+    "displacementCc": 1368,
+    "fuelType": "essence",
+    "powerKw": 88,
+    "powerHp": 120,
+    "oilViscosity": "5W-40",
+    "oilSpecAPI": "SN",
+    "oilSpecACEA": "C3",
+    "oilSpecOEM": "Fiat 9.55535-S2",
+    "oilCapacityLiters": 3.4,
+    "oilChangeIntervalKm": 15000,
+    "source": "autodoc24.fr, whatoil.co.uk, kroon-oil.com, buycarparts.co.uk",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "FIAT",
+    "model": "Tipo",
+    "generation": "356 (1.3 MultiJet)",
+    "yearFrom": 2016,
+    "yearTo": 2018,
+    "engineCode": "199B1.000",
+    "displacementCc": 1248,
+    "fuelType": "diesel",
+    "powerKw": 70,
+    "powerHp": 95,
+    "oilViscosity": "0W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": "Fiat 9.55535-S1",
+    "oilCapacityLiters": 3.2,
+    "oilChangeIntervalKm": 15000,
+    "source": "kroon-oil.com, autodoc.parts, buycarparts.co.uk, choise.ravenol.com",
+    "confidence": "high",
+    "matchAmbiguity": {
+      "conflictGroup": 12,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 1248,
+        "powerHp": 95,
+        "fuelType": "diesel"
+      },
+      "differingFields": [
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "C2",
+            "C3"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "FIAT 500L (330A1.000): 0W-30"
+      ]
+    }
+  },
+  {
+    "make": "FIAT",
+    "model": "Tipo",
+    "generation": "356 (1.6 MultiJet 120)",
+    "yearFrom": 2016,
+    "yearTo": 2018,
+    "engineCode": "937AM5000",
+    "displacementCc": 1598,
+    "fuelType": "diesel",
+    "powerKw": 88,
+    "powerHp": 120,
+    "oilViscosity": "0W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": "Fiat 9.55535-S1",
+    "oilCapacityLiters": 4.8,
+    "oilChangeIntervalKm": 15000,
+    "source": "autodoc.parts, buycarparts.co.uk, automoto.tn, addinol.de",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "FIAT",
+    "model": "Tipo",
+    "generation": "357 (1.6 MultiJet 130 AdBlue)",
+    "yearFrom": 2018,
+    "yearTo": 9999,
+    "engineCode": "937AM5000",
+    "displacementCc": 1598,
+    "fuelType": "diesel",
+    "powerKw": 96,
+    "powerHp": 130,
+    "oilViscosity": "0W-20",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C5",
+    "oilSpecOEM": "Fiat 9.55535-DSX",
+    "oilCapacityLiters": 4.8,
+    "oilChangeIntervalKm": 15000,
+    "source": "mycarusermanual.com, autodoc.parts, auto-doc.ie, kroon-oil.com",
+    "confidence": "high",
+    "matchAmbiguity": {
+      "conflictGroup": 27,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 1598,
+        "powerHp": 130,
+        "fuelType": "diesel"
+      },
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "0W-20",
+            "0W-30"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "C2",
+            "C5"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "Fiat 9.55535-DSX",
+            "Fiat 9.55535-S1"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "JEEP Renegade (937AM5000): 0W-30",
+        "JEEP Compass (937AM5000): 0W-30"
+      ]
+    }
+  },
+  {
+    "make": "FIAT",
+    "model": "500X",
+    "generation": "334 (1.4 MultiAir)",
+    "yearFrom": 2014,
+    "yearTo": 2018,
+    "engineCode": "199A4000",
+    "displacementCc": 1368,
+    "fuelType": "essence",
+    "powerKw": 103,
+    "powerHp": 140,
+    "oilViscosity": "0W-30",
+    "oilSpecAPI": "SN",
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": "Fiat 9.55535-GS1",
+    "oilCapacityLiters": 3.8,
+    "oilChangeIntervalKm": 15000,
+    "source": "fiatforum.com, buycarparts.co.uk, fiat500usa.com, automobile.tn",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "FIAT",
+    "model": "500X",
+    "generation": "334 (1.6 MultiJet)",
+    "yearFrom": 2014,
+    "yearTo": 2018,
+    "engineCode": "937AM5000",
+    "displacementCc": 1598,
+    "fuelType": "diesel",
+    "powerKw": 88,
+    "powerHp": 120,
+    "oilViscosity": "0W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": "Fiat 9.55535-S1",
+    "oilCapacityLiters": 4.8,
+    "oilChangeIntervalKm": 15000,
+    "source": "buycarparts.co.uk, autodoc.parts, fiatworkshop.co.uk, automobile.tn",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "FIAT",
+    "model": "500X",
+    "generation": "334 (1.3 Firefly T4)",
+    "yearFrom": 2019,
+    "yearTo": 9999,
+    "engineCode": "332A2000",
+    "displacementCc": 1332,
+    "fuelType": "essence",
+    "powerKw": 110,
+    "powerHp": 150,
+    "oilViscosity": "0W-30",
+    "oilSpecAPI": "SN",
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": "Fiat 9.55535-GS1",
+    "oilCapacityLiters": 4.3,
+    "oilChangeIntervalKm": 15000,
+    "source": "oil-select.com, amsoil.com, buycarparts.co.uk, costaoils.com",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "FIAT",
+    "model": "Doblo",
+    "generation": "263 (1.3 MultiJet)",
+    "yearFrom": 2010,
+    "yearTo": 2022,
+    "engineCode": "199A2.000",
+    "displacementCc": 1248,
+    "fuelType": "diesel",
+    "powerKw": 66,
+    "powerHp": 90,
+    "oilViscosity": "0W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": "Fiat 9.55535-S1",
+    "oilCapacityLiters": 3.2,
+    "oilChangeIntervalKm": 15000,
+    "source": "kroon-oil.com, buycarparts.co.uk, fiatforum.com, ato24.de",
+    "confidence": "high",
+    "matchAmbiguity": {
+      "conflictGroup": 11,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 1248,
+        "powerHp": 90,
+        "fuelType": "diesel"
+      },
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "0W-30",
+            "5W-30"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "C2",
+            "C3"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "Fiat 9.55535-S1",
+            "Suzuki RO-2"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "SUZUKI Vitara (D13AA): 5W-30",
+        "SUZUKI S-Cross (D13AA): 5W-30"
+      ]
+    }
+  },
+  {
+    "make": "FIAT",
+    "model": "Doblo",
+    "generation": "263 (1.6 HDI)",
+    "yearFrom": 2015,
+    "yearTo": 2024,
+    "engineCode": "DV6DTED",
+    "displacementCc": 1560,
+    "fuelType": "diesel",
+    "powerKw": 68,
+    "powerHp": 92,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": "PSA B71 2290",
+    "oilCapacityLiters": 4.5,
+    "oilChangeIntervalKm": 15000,
+    "source": "automobile.tn, tunisieauto.tn, autodoc24.fr, facebook.com (TotalEnergies 5W-30 vidange TN)",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "FIAT",
+    "model": "Doblo",
+    "generation": "K9 (III 1.5 BlueHDi 100)",
+    "yearFrom": 2023,
+    "yearTo": 9999,
+    "engineCode": "DV5RC",
+    "displacementCc": 1499,
+    "fuelType": "diesel",
+    "powerKw": 75,
+    "powerHp": 102,
+    "oilViscosity": "0W-20",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": "PSA B71 2010",
+    "oilCapacityLiters": 4.0,
+    "oilChangeIntervalKm": 15000,
+    "source": "autodoc.co.uk, whatoil.co.uk, frenchcarforum.co.uk, motors.tn, zmorda.tn",
+    "confidence": "medium",
+    "matchAmbiguity": {
+      "conflictGroup": 20,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 1499,
+        "powerHp": 102,
+        "fuelType": "diesel"
+      },
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "0W-20",
+            "5W-30"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "C2",
+            "C5"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "GM Dexos2",
+            "PSA B71 2010"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "OPEL Crossland X (A15DTH): 5W-30",
+        "Peugeot 2008 (DV5RD): 0W-20",
+        "Peugeot Rifter (DV5RD): 0W-20"
+      ]
+    }
+  },
+  {
+    "make": "FIAT",
+    "model": "Doblo",
+    "generation": "K9 (III 1.5 BlueHDi 130)",
+    "yearFrom": 2023,
+    "yearTo": 9999,
+    "engineCode": "DV5RC",
+    "displacementCc": 1499,
+    "fuelType": "diesel",
+    "powerKw": 96,
+    "powerHp": 131,
+    "oilViscosity": "0W-20",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": "PSA B71 2010",
+    "oilCapacityLiters": 4.0,
+    "oilChangeIntervalKm": 15000,
+    "source": "autodoc.co.uk, zmorda.tn, greenncap.com, motors.tn",
+    "confidence": "medium",
+    "matchAmbiguity": {
+      "conflictGroup": 23,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 1499,
+        "powerHp": 131,
+        "fuelType": "diesel"
+      },
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "0W-20",
+            "0W-30",
+            "5W-30"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "C2",
+            "C3"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "PSA B71 2010",
+            "PSA B71 2290",
+            "PSA B71 2312"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "CITROEN C5 Aircross (DV5RC): 0W-30",
+        "DS AUTOMOBILES DS 3 Crossback (DV5RC): 0W-30",
+        "DS AUTOMOBILES DS 3 (DV5RC): 0W-30",
+        "DS AUTOMOBILES DS 4 (DV5RC): 0W-30",
+        "DS AUTOMOBILES DS 7 Crossback (DV5RC): 0W-30",
+        "JEEP Renegade (DV5RC): 0W-30",
+        "JEEP Compass (DV5RC): 0W-30",
+        "MITSUBISHI ASX (DV5RC): 0W-30",
+        "OPEL Combo (D15DTH): 5W-30"
+      ]
+    }
+  },
+  {
+    "make": "FIAT",
+    "model": "Fiorino",
+    "generation": "225 (1.3 MultiJet)",
+    "yearFrom": 2008,
+    "yearTo": 9999,
+    "engineCode": "199A2.000",
+    "displacementCc": 1248,
+    "fuelType": "diesel",
+    "powerKw": 59,
+    "powerHp": 80,
+    "oilViscosity": "0W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": "Fiat 9.55535-S1",
+    "oilCapacityLiters": 3.9,
+    "oilChangeIntervalKm": 15000,
+    "source": "kroon-oil.com, autodoc.co.uk, buycarparts.co.uk, fiat-official.tn, automoli.com",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "FIAT",
+    "model": "Ducato",
+    "generation": "250 (2.3 MultiJet 130)",
+    "yearFrom": 2014,
+    "yearTo": 2022,
+    "engineCode": "F1AGL411C",
+    "displacementCc": 2287,
+    "fuelType": "diesel",
+    "powerKw": 96,
+    "powerHp": 131,
+    "oilViscosity": "0W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": "Fiat 9.55535-S1",
+    "oilCapacityLiters": 6.5,
+    "oilChangeIntervalKm": 30000,
+    "source": "buycarparts.co.uk, fiatforum.com, augustin-group.com, fiat-official.tn",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "FIAT",
+    "model": "Ducato",
+    "generation": "250 (2.3 MultiJet 150)",
+    "yearFrom": 2014,
+    "yearTo": 2022,
+    "engineCode": "F1AGL413C",
+    "displacementCc": 2287,
+    "fuelType": "diesel",
+    "powerKw": 110,
+    "powerHp": 150,
+    "oilViscosity": "0W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": "Fiat 9.55535-S1",
+    "oilCapacityLiters": 7.2,
+    "oilChangeIntervalKm": 30000,
+    "source": "buycarparts.co.uk, fiatforum.com, kroon-oil.com, fiat-official.tn",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "FIAT",
+    "model": "Ducato",
+    "generation": "250 (2.2 MultiJet 140)",
+    "yearFrom": 2014,
+    "yearTo": 2022,
+    "engineCode": "F1AE0481C",
+    "displacementCc": 2198,
+    "fuelType": "diesel",
+    "powerKw": 100,
+    "powerHp": 136,
+    "oilViscosity": "0W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": "Fiat 9.55535-S1",
+    "oilCapacityLiters": 6.1,
+    "oilChangeIntervalKm": 30000,
+    "source": "buycarparts.co.uk, oil-select.com, choise.ravenol.com",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "FIAT",
+    "model": "Ducato",
+    "generation": "290 (2.2 MultiJet3 140)",
+    "yearFrom": 2022,
+    "yearTo": 9999,
+    "engineCode": "F1AE481H",
+    "displacementCc": 2198,
+    "fuelType": "diesel",
+    "powerKw": 103,
+    "powerHp": 140,
+    "oilViscosity": "0W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": "Fiat 9.55535-DS1",
+    "oilCapacityLiters": 6.1,
+    "oilChangeIntervalKm": 30000,
+    "source": "oil-select.com, buycarparts.co.uk, karavaanarit.fi, motorhomefun.co.uk",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "FIAT",
+    "model": "500L",
+    "generation": "352 (1.3 MultiJet)",
+    "yearFrom": 2012,
+    "yearTo": 2020,
+    "engineCode": "330A1.000",
+    "displacementCc": 1248,
+    "fuelType": "diesel",
+    "powerKw": 70,
+    "powerHp": 95,
+    "oilViscosity": "0W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C3",
+    "oilSpecOEM": "Fiat 9.55535-S1",
+    "oilCapacityLiters": 3.9,
+    "oilChangeIntervalKm": 15000,
+    "source": "auto-data.net, autodoc.co.uk, costaoils.com, wikipedia.org",
+    "confidence": "medium",
+    "matchAmbiguity": {
+      "conflictGroup": 12,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 1248,
+        "powerHp": 95,
+        "fuelType": "diesel"
+      },
+      "differingFields": [
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "C2",
+            "C3"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "FIAT Tipo (199B1.000): 0W-30"
+      ]
+    }
+  }
+]

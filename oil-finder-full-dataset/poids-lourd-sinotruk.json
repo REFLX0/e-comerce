@@ -1,0 +1,313 @@
+[
+  {
+    "make": "SINOTRUK",
+    "model": "Howo 7 336",
+    "generation": "Euro III",
+    "yearFrom": 2005,
+    "yearTo": 2018,
+    "engineCode": "WD615.47",
+    "displacementCc": 9726,
+    "fuelType": "diesel",
+    "powerKw": 247,
+    "powerHp": 336,
+    "oilViscosity": "15W-40",
+    "oilSpecAPI": "CH-4",
+    "oilSpecACEA": null,
+    "oilSpecOEM": null,
+    "oilCapacityLiters": 20.0,
+    "gearboxOilSeparate": true,
+    "gearboxOilSpec": "85W-90 GL-5",
+    "oilChangeIntervalKm": 20000,
+    "emissionStandard": "Euro III",
+    "source": "SINOTRUK WD615 Workshop Manual (scribd, 20L oil sump); sinotruks.biz maintenance instructions (CH-4 Grade)",
+    "confidence": "high",
+    "matchAmbiguity": {
+      "conflictGroup": 50,
+      "severity": "minor",
+      "lookupKey": {
+        "displacementCc": 9726,
+        "powerHp": 336,
+        "fuelType": "diesel"
+      },
+      "differingFields": [
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "CH-4",
+            "CI-4"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "SINOTRUK Howo A7 336 (Euro IV): 15W-40 ACEA None"
+      ]
+    }
+  },
+  {
+    "make": "SINOTRUK",
+    "model": "Howo 7 371",
+    "generation": "Euro III",
+    "yearFrom": 2005,
+    "yearTo": 2018,
+    "engineCode": "WD615.50",
+    "displacementCc": 9726,
+    "fuelType": "diesel",
+    "powerKw": 273,
+    "powerHp": 371,
+    "oilViscosity": "15W-40",
+    "oilSpecAPI": "CH-4",
+    "oilSpecACEA": null,
+    "oilSpecOEM": null,
+    "oilCapacityLiters": 20.0,
+    "gearboxOilSeparate": true,
+    "gearboxOilSpec": "85W-90 GL-5",
+    "oilChangeIntervalKm": 20000,
+    "emissionStandard": "Euro III",
+    "source": "SINOTRUK WD615 Workshop Manual (scribd, 20L oil sump); sinotruks.biz maintenance instructions (CH-4 Grade)",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "SINOTRUK",
+    "model": "Howo 380",
+    "generation": "Euro IV",
+    "yearFrom": 2008,
+    "yearTo": 2016,
+    "engineCode": "WD615.56",
+    "displacementCc": 9726,
+    "fuelType": "diesel",
+    "powerKw": 280,
+    "powerHp": 380,
+    "oilViscosity": "15W-40",
+    "oilSpecAPI": "CI-4",
+    "oilSpecACEA": "E7",
+    "oilSpecOEM": null,
+    "oilCapacityLiters": 22.0,
+    "gearboxOilSeparate": true,
+    "gearboxOilSpec": "85W-90 GL-5",
+    "oilChangeIntervalKm": 30000,
+    "emissionStandard": "Euro IV",
+    "source": "SINOTRUK WD615 EGR variant specs; typical WD615.56 380hp export configuration; oil capacity estimated from WD615 base 20L plus cooler circuit",
+    "confidence": "medium",
+    "matchAmbiguity": {
+      "conflictGroup": 52,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 9726,
+        "powerHp": 380,
+        "fuelType": "diesel"
+      },
+      "differingFields": [
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "CH-4",
+            "CI-4"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "E5",
+            "E7"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "SHACMAN F3000 380 (Euro III): 15W-40 ACEA E5"
+      ]
+    }
+  },
+  {
+    "make": "SINOTRUK",
+    "model": "Howo A7 336",
+    "generation": "Euro IV",
+    "yearFrom": 2009,
+    "yearTo": 2016,
+    "engineCode": "WD615.338",
+    "displacementCc": 9726,
+    "fuelType": "diesel",
+    "powerKw": 247,
+    "powerHp": 336,
+    "oilViscosity": "15W-40",
+    "oilSpecAPI": "CI-4",
+    "oilSpecACEA": null,
+    "oilSpecOEM": null,
+    "oilCapacityLiters": 20.0,
+    "gearboxOilSeparate": true,
+    "gearboxOilSpec": "85W-90 GL-5",
+    "oilChangeIntervalKm": 25000,
+    "emissionStandard": "Euro IV",
+    "source": "SINOTRUK WD615.338 Howo A7 early variant; WD615 Workshop Manual (scribd) 20L oil sump; heavytruk.com WD615 engine specs",
+    "confidence": "medium",
+    "matchAmbiguity": {
+      "conflictGroup": 50,
+      "severity": "minor",
+      "lookupKey": {
+        "displacementCc": 9726,
+        "powerHp": 336,
+        "fuelType": "diesel"
+      },
+      "differingFields": [
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "CH-4",
+            "CI-4"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "SINOTRUK Howo 7 336 (Euro III): 15W-40 ACEA None"
+      ]
+    }
+  },
+  {
+    "make": "SINOTRUK",
+    "model": "Howo A7 380",
+    "generation": "Euro V",
+    "yearFrom": 2012,
+    "yearTo": 9999,
+    "engineCode": "MC11.36-40",
+    "displacementCc": 10860,
+    "fuelType": "diesel",
+    "powerKw": 280,
+    "powerHp": 380,
+    "oilViscosity": "15W-40",
+    "oilSpecAPI": "CI-4",
+    "oilSpecACEA": "E7",
+    "oilSpecOEM": null,
+    "oilCapacityLiters": 28.0,
+    "gearboxOilSeparate": true,
+    "gearboxOilSpec": "85W-90 GL-5",
+    "oilChangeIntervalKm": 40000,
+    "emissionStandard": "Euro V",
+    "source": "sinotrukinternation.com MC11 series specs; chinaheavytruckparts.com MC11 engine page; SINOTRUK export documentation",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "SINOTRUK",
+    "model": "Howo A7 400",
+    "generation": "Euro V",
+    "yearFrom": 2012,
+    "yearTo": 9999,
+    "engineCode": "MC11.40-50",
+    "displacementCc": 10860,
+    "fuelType": "diesel",
+    "powerKw": 294,
+    "powerHp": 400,
+    "oilViscosity": "15W-40",
+    "oilSpecAPI": "CI-4",
+    "oilSpecACEA": "E7",
+    "oilSpecOEM": null,
+    "oilCapacityLiters": 28.0,
+    "gearboxOilSeparate": true,
+    "gearboxOilSpec": "85W-90 GL-5",
+    "oilChangeIntervalKm": 40000,
+    "emissionStandard": "Euro V",
+    "source": "sinotrukinternation.com MC11.40-50 specs (294kW/400hp); chinaheavytruckparts.com MC11 engine page",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "SINOTRUK",
+    "model": "T7H 440",
+    "generation": "Euro V",
+    "yearFrom": 2014,
+    "yearTo": 9999,
+    "engineCode": "MC11.44-50",
+    "displacementCc": 10860,
+    "fuelType": "diesel",
+    "powerKw": 324,
+    "powerHp": 440,
+    "oilViscosity": "15W-40",
+    "oilSpecAPI": "CI-4",
+    "oilSpecACEA": "E7",
+    "oilSpecOEM": null,
+    "oilCapacityLiters": 28.0,
+    "gearboxOilSeparate": true,
+    "gearboxOilSpec": "85W-90 GL-5",
+    "oilChangeIntervalKm": 40000,
+    "emissionStandard": "Euro V",
+    "source": "sinotrukinternation.com MC11.44-50 specs (324kW/440hp); chinaheavytruckparts.com MC11 max 440ps; SINOTRUK T7H export brochure",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "SINOTRUK",
+    "model": "T7H 420",
+    "generation": "Euro V",
+    "yearFrom": 2014,
+    "yearTo": 9999,
+    "engineCode": "MC13.42-50",
+    "displacementCc": 13000,
+    "fuelType": "diesel",
+    "powerKw": 309,
+    "powerHp": 420,
+    "oilViscosity": "15W-40",
+    "oilSpecAPI": "CI-4",
+    "oilSpecACEA": "E7",
+    "oilSpecOEM": null,
+    "oilCapacityLiters": 30.0,
+    "gearboxOilSeparate": true,
+    "gearboxOilSpec": "85W-90 GL-5",
+    "oilChangeIntervalKm": 50000,
+    "emissionStandard": "Euro V",
+    "source": "SINOTRUK T7H 420hp variant with MC13 engine; MC13 based on MAN D26 13L; SINOTRUK export configuration for Africa/Tunisia market",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "SINOTRUK",
+    "model": "Howo 480",
+    "generation": "Euro V",
+    "yearFrom": 2014,
+    "yearTo": 9999,
+    "engineCode": "MC13.48-50",
+    "displacementCc": 13000,
+    "fuelType": "diesel",
+    "powerKw": 353,
+    "powerHp": 480,
+    "oilViscosity": "15W-40",
+    "oilSpecAPI": "CI-4",
+    "oilSpecACEA": "E7",
+    "oilSpecOEM": null,
+    "oilCapacityLiters": 30.0,
+    "gearboxOilSeparate": true,
+    "gearboxOilSpec": "85W-90 GL-5",
+    "oilChangeIntervalKm": 50000,
+    "emissionStandard": "Euro V",
+    "source": "chinaheavytruckparts.com MC13.48-60 specs; sinotruksgroup.com MC13 up to 540HP; MC13 13L MAN D26-based engine documentation",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "SINOTRUK",
+    "model": "Howo 540",
+    "generation": "Euro V",
+    "yearFrom": 2014,
+    "yearTo": 9999,
+    "engineCode": "MC13.50-50",
+    "displacementCc": 13000,
+    "fuelType": "diesel",
+    "powerKw": 397,
+    "powerHp": 540,
+    "oilViscosity": "15W-40",
+    "oilSpecAPI": "CJ-4",
+    "oilSpecACEA": "E7",
+    "oilSpecOEM": null,
+    "oilCapacityLiters": 32.0,
+    "gearboxOilSeparate": true,
+    "gearboxOilSpec": "85W-90 GL-5",
+    "oilChangeIntervalKm": 50000,
+    "emissionStandard": "Euro V",
+    "source": "sinotruksgroup.com MC13 13L up to 540HP; chinaheavytruckparts.com MC13.50-60 specs; SINOTRUK heavy-haul export configuration",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  }
+]

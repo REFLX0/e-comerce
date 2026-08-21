@@ -38,6 +38,7 @@ const DATA_DIR = DIR_VALUE
 type MatchAmbiguity = Record<string, string> | null
 
 interface VehicleEntry {
+  category: string
   make: string
   model: string
   generation?: string | null
@@ -54,6 +55,9 @@ interface VehicleEntry {
   oilSpecOEM?: string | null
   oilCapacityLiters?: number | null
   oilChangeIntervalKm?: number | null
+  hydraulicTransmissionOilType?: string | null
+  hydraulicOilSpecOEM?: string | null
+  hydraulicOilCapacityLiters?: number | null
   source: string
   confidence: string
   matchAmbiguity?: MatchAmbiguity
@@ -87,6 +91,16 @@ function asInt(value: unknown, rowLabel: string, skipped: string[]): number | nu
   return n
 }
 
+function asFloat(value: unknown, rowLabel: string, skipped: string[]): number | null {
+  if (value == null || value === '') return null
+  const n = Number(value)
+  if (Number.isNaN(n)) {
+    skipped.push(`${rowLabel}: field must be a number, got ${JSON.stringify(value)}`)
+    return null
+  }
+  return n
+}
+
 /** Canonical spec key — lowercase, trimmed, ordered, JSON-encoded. */
 function specFingerprint(viscosity: string, api: string | null, acea: string | null, oem: string | null): string {
   return JSON.stringify([normStr(viscosity), norm(api), norm(acea), norm(oem)])
@@ -97,9 +111,9 @@ function highestSeverity(fieldSeverities: Record<string, string>): string {
 }
 
 async function loadVehicles(skipped: string[]) {
-  const files = fs.readdirSync(DATA_DIR).filter((f) => /^automobile-.+\.json$/i.test(f))
+  const files = fs.readdirSync(DATA_DIR).filter((f) => /^(automobile|moto|poids-lourd|agricole|marine)-.+\.json$/i.test(f) && !f.includes('conflicts'))
   if (files.length === 0) {
-    throw new Error(`No automobile-*.json files found in ${DATA_DIR} — expected 21 brand files.`)
+    throw new Error(`No category-brand.json files found in ${DATA_DIR}`)
   }
   const vehicles: VehicleEntry[] = []
   for (const file of files.sort()) {
@@ -109,14 +123,22 @@ async function loadVehicles(skipped: string[]) {
     }
     for (const [i, entry] of raw.entries()) {
       const label = `${file}[${i}]`
+      // For agricole files, fields might be prefixed with "engine"
+      if (entry && typeof entry === 'object') {
+        const _e = entry as Record<string, unknown>
+        if (!('oilViscosity' in _e) && 'engineOilViscosity' in _e) _e.oilViscosity = _e.engineOilViscosity
+        if (!('oilCapacityLiters' in _e) && 'engineOilCapacityLiters' in _e) _e.oilCapacityLiters = _e.engineOilCapacityLiters
+        if (!('oilSpecAPI' in _e) && 'engineOilSpecAPI' in _e) _e.oilSpecAPI = _e.engineOilSpecAPI
+        if (!('oilSpecACEA' in _e) && 'engineOilSpecACEA' in _e) _e.oilSpecACEA = _e.engineOilSpecACEA
+      }
       const e = entry as Partial<VehicleEntry>
       if (!e.make || !e.model || !e.fuelType || !e.oilViscosity || !e.source || !e.confidence) {
         skipped.push(`${label}: missing required field (make/model/fuelType/oilViscosity/source/confidence)`)
         continue
       }
       const displacementCc = asInt(e.displacementCc, label, skipped)
-      const powerKw = asInt(e.powerKw, label, skipped)
-      const powerHp = asInt(e.powerHp, label, skipped)
+      const powerKw = asFloat(e.powerKw, label, skipped)
+      const powerHp = asFloat(e.powerHp, label, skipped)
       const yearFrom = asInt(e.yearFrom, label, skipped)
       const yearTo = asInt(e.yearTo, label, skipped)
       const capacityRaw = e.oilCapacityLiters as unknown
@@ -128,7 +150,18 @@ async function loadVehicles(skipped: string[]) {
         continue
       }
       const changeIntervalKm = asInt(e.oilChangeIntervalKm, label, skipped)
+      const hydCapacityRaw = e.hydraulicOilCapacityLiters as unknown
+      const hydCapacityLiters = hydCapacityRaw == null || hydCapacityRaw === ''
+        ? null
+        : Number(hydCapacityRaw)
+      if (hydCapacityLiters != null && Number.isNaN(hydCapacityLiters)) {
+        skipped.push(`${label}: hydraulicOilCapacityLiters must be numeric, got ${JSON.stringify(e.hydraulicOilCapacityLiters)}`)
+        continue
+      }
+      const categoryMatch = file.match(/^(.*?)-/);
+      const category = categoryMatch ? categoryMatch[1].toLowerCase() : 'automobile';
       vehicles.push({
+        category,
         make: String(e.make).trim(),
         model: String(e.model).trim(),
         generation: e.generation ? String(e.generation).trim() : '',
@@ -145,6 +178,9 @@ async function loadVehicles(skipped: string[]) {
         oilSpecOEM: e.oilSpecOEM ? String(e.oilSpecOEM).trim() : null,
         oilCapacityLiters: capacityLiters,
         oilChangeIntervalKm: changeIntervalKm,
+        hydraulicTransmissionOilType: e.hydraulicTransmissionOilType ? String(e.hydraulicTransmissionOilType).trim() : null,
+        hydraulicOilSpecOEM: e.hydraulicOilSpecOEM ? String(e.hydraulicOilSpecOEM).trim() : null,
+        hydraulicOilCapacityLiters: hydCapacityLiters,
         source: String(e.source).trim(),
         confidence: String(e.confidence).trim().toLowerCase(),
         matchAmbiguity: e.matchAmbiguity ?? null,
@@ -155,32 +191,37 @@ async function loadVehicles(skipped: string[]) {
 }
 
 async function loadConflicts(skipped: string[]) {
-  const filePath = path.join(DATA_DIR, 'characteristics-lookup-conflicts.json')
-  if (!fs.existsSync(filePath)) {
-    throw new Error(`Missing ${filePath}`)
-  }
-  const raw = JSON.parse(fs.readFileSync(filePath, 'utf8')) as unknown
-  const list = Array.isArray(raw) ? raw : (raw as { conflicts?: unknown[] }).conflicts
-  if (!Array.isArray(list)) {
-    throw new Error('characteristics-lookup-conflicts.json: expected an array (or {conflicts: []})')
-  }
+  const files = fs.readdirSync(DATA_DIR).filter(f => f.includes('conflicts'))
   const conflicts: ConflictEntry[] = []
-  for (const [i, entry] of list.entries()) {
-    const label = `characteristics-lookup-conflicts.json[${i}]`
-    const e = entry as Partial<ConflictEntry>
-    const displacementCc = asInt(e.displacementCc, label, skipped)
-    const powerHp = asInt(e.powerHp, label, skipped)
-    if (displacementCc == null || powerHp == null || !e.fuelType || !e.fieldSeverities) {
-      skipped.push(`${label}: missing/invalid displacementCc|powerHp|fuelType|fieldSeverities`)
-      continue
+  
+  if (files.length === 0) {
+    return conflicts
+  }
+
+  for (const file of files) {
+    const filePath = path.join(DATA_DIR, file)
+    const raw = JSON.parse(fs.readFileSync(filePath, 'utf8')) as unknown
+    const list = Array.isArray(raw) ? raw : (raw as { conflicts?: unknown[] }).conflicts
+    if (!Array.isArray(list)) {
+      throw new Error(`${file}: expected an array (or {conflicts: []})`)
     }
-    conflicts.push({
-      displacementCc,
-      powerHp,
-      fuelType: normStr(e.fuelType),
-      fieldSeverities: e.fieldSeverities,
-      candidates: e.candidates ?? null,
-    })
+    for (const [i, entry] of list.entries()) {
+      const label = `${file}[${i}]`
+      const e = entry as Partial<ConflictEntry>
+      const displacementCc = asInt(e.displacementCc, label, skipped)
+      const powerHp = asFloat(e.powerHp, label, skipped)
+      if (displacementCc == null || powerHp == null || !e.fuelType || !e.fieldSeverities) {
+        skipped.push(`${label}: missing/invalid displacementCc|powerHp|fuelType|fieldSeverities`)
+        continue
+      }
+      conflicts.push({
+        displacementCc,
+        powerHp,
+        fuelType: normStr(e.fuelType),
+        fieldSeverities: e.fieldSeverities,
+        candidates: e.candidates ?? null,
+      })
+    }
   }
   return conflicts
 }
@@ -257,6 +298,7 @@ async function main() {
           select: { id: true, oilSpecId: true },
         })
         const data = {
+          category: v.category,
           yearFrom: v.yearFrom,
           yearTo: v.yearTo,
           displacementCc: v.displacementCc,
@@ -264,6 +306,9 @@ async function main() {
           powerHp: v.powerHp,
           fuelType: v.fuelType,
           oilSpecId: specId,
+          hydraulicTransmissionOilType: v.hydraulicTransmissionOilType ?? null,
+          hydraulicOilSpecOEM: v.hydraulicOilSpecOEM ?? null,
+          hydraulicOilCapacityLiters: v.hydraulicOilCapacityLiters ?? null,
           confidence: v.confidence,
           matchAmbiguity: v.matchAmbiguity ?? Prisma.JsonNull,
         }

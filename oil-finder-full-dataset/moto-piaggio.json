@@ -1,0 +1,140 @@
+[
+  {
+    "make": "PIAGGIO",
+    "model": "Liberty 125",
+    "generation": "LIB125",
+    "yearFrom": 2016,
+    "yearTo": 9999,
+    "engineCode": "LIB125",
+    "displacementCc": 124,
+    "fuelType": "essence",
+    "engineType": "4T",
+    "powerKw": 8.1,
+    "powerHp": 11,
+    "clutchType": "sans embrayage / scooter automatique",
+    "oilViscosity": "10W-40",
+    "oilSpecAPI": "SM",
+    "oilSpecACEA": null,
+    "oilSpecOEM": null,
+    "oilSpecJASO": "MB",
+    "oilCapacityLiters": 0.9,
+    "gearboxOilSeparate": false,
+    "oilChangeIntervalKm": 10000,
+    "source": "Piaggio Liberty 125 owner's manual; AMSOIL; Motul",
+    "confidence": "medium",
+    "matchAmbiguity": {
+      "conflictGroup": 4,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 124,
+        "powerHp": 11,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilSpecJASO",
+          "severity": "major",
+          "values": [
+            "MA",
+            "MB"
+          ]
+        },
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "10W-30",
+            "10W-40"
+          ]
+        },
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "SG",
+            "SM"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "HONDA SH125i (NF13): 10W-30 JASO MB",
+        "HONDA CB125F (NXB125): 10W-30 JASO MA",
+        "SYM Jet 14 125 (JET14): 10W-30 JASO MB",
+        "VESPA Primavera 125 (PRM125): 10W-40 JASO MB",
+        "VESPA Sprint 125 (SPR125): 10W-40 JASO MB"
+      ]
+    }
+  },
+  {
+    "make": "PIAGGIO",
+    "model": "Medley 125",
+    "generation": "MED125",
+    "yearFrom": 2019,
+    "yearTo": 9999,
+    "engineCode": "MED125",
+    "displacementCc": 124,
+    "fuelType": "essence",
+    "engineType": "4T",
+    "powerKw": 11.0,
+    "powerHp": 15,
+    "clutchType": "sans embrayage / scooter automatique",
+    "oilViscosity": "10W-40",
+    "oilSpecAPI": "SM",
+    "oilSpecACEA": null,
+    "oilSpecOEM": null,
+    "oilSpecJASO": "MB",
+    "oilCapacityLiters": 0.9,
+    "gearboxOilSeparate": false,
+    "oilChangeIntervalKm": 10000,
+    "source": "Piaggio Medley 125 owner's manual; AMSOIL; Motul",
+    "confidence": "medium",
+    "matchAmbiguity": {
+      "conflictGroup": 7,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 124,
+        "powerHp": 15,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilSpecJASO",
+          "severity": "major",
+          "values": [
+            "MA2",
+            "MB"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "KAWASAKI Ninja 125 (BK250): 10W-40 JASO MA2",
+        "KAWASAKI Z125 (BK250): 10W-40 JASO MA2"
+      ]
+    }
+  },
+  {
+    "make": "PIAGGIO",
+    "model": "Beverly 350",
+    "generation": "BEV350",
+    "yearFrom": 2019,
+    "yearTo": 9999,
+    "engineCode": "BEV350",
+    "displacementCc": 342,
+    "fuelType": "essence",
+    "engineType": "4T",
+    "powerKw": 24.0,
+    "powerHp": 33,
+    "clutchType": "sans embrayage / scooter automatique",
+    "oilViscosity": "10W-40",
+    "oilSpecAPI": "SM",
+    "oilSpecACEA": null,
+    "oilSpecOEM": null,
+    "oilSpecJASO": "MB",
+    "oilCapacityLiters": 1.3,
+    "gearboxOilSeparate": false,
+    "oilChangeIntervalKm": 10000,
+    "source": "Piaggio Beverly 350 owner's manual; AMSOIL; Motul",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  }
+]

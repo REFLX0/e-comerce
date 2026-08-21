@@ -1,0 +1,380 @@
+[
+  {
+    "make": "MAN",
+    "model": "TGX 29.510",
+    "generation": "Euro VI D",
+    "yearFrom": 2020,
+    "yearTo": 9999,
+    "engineCode": "D2676LF78",
+    "displacementCc": 12419,
+    "fuelType": "diesel",
+    "powerKw": 375,
+    "powerHp": 510,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": "CK-4",
+    "oilSpecACEA": "E6/E9",
+    "oilSpecOEM": "MAN M 3477",
+    "oilCapacityLiters": 41.5,
+    "gearboxOilSeparate": true,
+    "gearboxOilSpec": "SAE 75W-80 MAN M 3375",
+    "oilChangeIntervalKm": 120000,
+    "emissionStandard": "Euro VI D",
+    "source": "namu.wiki MAN TGX Gen 2 engine table; kroon-oil.com TGX D2676 oil capacity 41.5L; MAN press release 2025 D26 interval adjustment; Castrol MAN OEM spec page M 3477=E6/E9",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "MAN",
+    "model": "TGX 29.500",
+    "generation": "Euro VI C",
+    "yearFrom": 2016,
+    "yearTo": 2020,
+    "engineCode": "D2676LF51",
+    "displacementCc": 12419,
+    "fuelType": "diesel",
+    "powerKw": 368,
+    "powerHp": 500,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": "CK-4",
+    "oilSpecACEA": "E6/E9",
+    "oilSpecOEM": "MAN M 3477",
+    "oilCapacityLiters": 41.5,
+    "gearboxOilSeparate": true,
+    "gearboxOilSpec": "SAE 75W-80 MAN M 3375",
+    "oilChangeIntervalKm": 90000,
+    "emissionStandard": "Euro VI C",
+    "source": "namu.wiki MAN TGX 1st gen 2nd F/L 2016 engine table; denebsupply.co.nz D2676 LF51=500hp; MAN press Nov 2025 D26 Euro 6c interval shortened 25% (120k->90k); autoline.info D2676LF51 500HP",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "MAN",
+    "model": "TGX 18.440",
+    "generation": "Euro VI",
+    "yearFrom": 2012,
+    "yearTo": 2016,
+    "engineCode": "D2676LF26",
+    "displacementCc": 12419,
+    "fuelType": "diesel",
+    "powerKw": 324,
+    "powerHp": 440,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": "CJ-4",
+    "oilSpecACEA": "E6",
+    "oilSpecOEM": "MAN M 3477",
+    "oilCapacityLiters": 41.5,
+    "gearboxOilSeparate": true,
+    "gearboxOilSpec": "SAE 75W-80 MAN M 3375",
+    "oilChangeIntervalKm": 100000,
+    "emissionStandard": "Euro VI",
+    "source": "kroon-oil.com TGX 18.440 D2676 LF26/EGR SCR Euro 6 capacity 41.5L; Scribd D2676 spec doc; Mascus D2676 LF26 440hp Euro 6",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "MAN",
+    "model": "TGX 18.420",
+    "generation": "Euro VI C",
+    "yearFrom": 2016,
+    "yearTo": 2020,
+    "engineCode": "D2676LF53",
+    "displacementCc": 12419,
+    "fuelType": "diesel",
+    "powerKw": 309,
+    "powerHp": 420,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": "CK-4",
+    "oilSpecACEA": "E6/E9",
+    "oilSpecOEM": "MAN M 3477",
+    "oilCapacityLiters": 40.0,
+    "gearboxOilSeparate": true,
+    "gearboxOilSpec": "SAE 75W-80 MAN M 3375",
+    "oilChangeIntervalKm": 90000,
+    "emissionStandard": "Euro VI C",
+    "source": "namu.wiki TGX 2nd F/L 2016 D2676 LF53=420hp; kroon-oil.com TGS D26 420 Euro 6 capacity 40L; MAN press 2025 D26 Euro 6c interval 90k km",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "MAN",
+    "model": "TGX 18.480",
+    "generation": "Euro V",
+    "yearFrom": 2007,
+    "yearTo": 2012,
+    "engineCode": "D2676LF07",
+    "displacementCc": 12419,
+    "fuelType": "diesel",
+    "powerKw": 353,
+    "powerHp": 480,
+    "oilViscosity": "10W-40",
+    "oilSpecAPI": "CI-4",
+    "oilSpecACEA": "E7",
+    "oilSpecOEM": "MAN M 3275-1",
+    "oilCapacityLiters": 41.5,
+    "gearboxOilSeparate": true,
+    "gearboxOilSpec": "SAE 75W-80 MAN M 3375",
+    "oilChangeIntervalKm": 100000,
+    "emissionStandard": "Euro V",
+    "source": "namu.wiki TGX Gen 1 D2676 LF07=480hp Euro 5; truck1.eu D2676 LF07 480HP Euro 5 TGX TGS; kroon-oil.com TGS 26.480 D2676 LF21 41.5L; Castrol M 3275-1=10W-40 E4/E7",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "MAN",
+    "model": "TGS 26.360",
+    "generation": "Euro VI C",
+    "yearFrom": 2016,
+    "yearTo": 9999,
+    "engineCode": "D2066LF85",
+    "displacementCc": 10518,
+    "fuelType": "diesel",
+    "powerKw": 265,
+    "powerHp": 360,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": "CK-4",
+    "oilSpecACEA": "E6/E9",
+    "oilSpecOEM": "MAN M 3477",
+    "oilCapacityLiters": 40.0,
+    "gearboxOilSeparate": true,
+    "gearboxOilSpec": "SAE 75W-80 MAN M 3375",
+    "oilChangeIntervalKm": 100000,
+    "emissionStandard": "Euro VI C",
+    "source": "namu.wiki TGX 2nd F/L 2016 D2066 LF85=360hp Euro 6C; amsoil.com TGS 18.360 D2066 LF85 capacity 42.27qt=40L; kroon-oil.com TGS D26 420 Euro 6=40L; oilguide.bizol.com TGS Euro 6D listing",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "MAN",
+    "model": "TGS 24.440",
+    "generation": "Euro V",
+    "yearFrom": 2007,
+    "yearTo": 2012,
+    "engineCode": "D2066LF17",
+    "displacementCc": 10518,
+    "fuelType": "diesel",
+    "powerKw": 324,
+    "powerHp": 440,
+    "oilViscosity": "10W-40",
+    "oilSpecAPI": "CI-4",
+    "oilSpecACEA": "E7",
+    "oilSpecOEM": "MAN M 3275-1",
+    "oilCapacityLiters": 42.0,
+    "gearboxOilSeparate": true,
+    "gearboxOilSpec": "SAE 75W-80 MAN M 3375",
+    "oilChangeIntervalKm": 100000,
+    "emissionStandard": "Euro V",
+    "source": "namu.wiki TGX Gen 1 D2066 LF17=440hp Euro 5; kroon-oil.com TGS 35.360 D2066 LF19 SCR capacity 42L; kroon-oil.com TGX 24.440 D2066 LF36 EGR capacity 42L; Castrol M 3275-1=10W-40 E4/E7",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "MAN",
+    "model": "TGS 18.360",
+    "generation": "Euro VI D",
+    "yearFrom": 2020,
+    "yearTo": 9999,
+    "engineCode": "D1556LF08",
+    "displacementCc": 9000,
+    "fuelType": "diesel",
+    "powerKw": 265,
+    "powerHp": 360,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": "CK-4",
+    "oilSpecACEA": "E6/E9",
+    "oilSpecOEM": "MAN M 3477",
+    "oilCapacityLiters": 39.0,
+    "gearboxOilSeparate": true,
+    "gearboxOilSpec": "SAE 75W-80 MAN M 3375",
+    "oilChangeIntervalKm": 120000,
+    "emissionStandard": "Euro VI D",
+    "source": "namu.wiki TGX Gen 2 D1556 LF08=360hp Euro 6D; amsoil.com TGS 18.360 D1556 LF08 capacity 41.21qt=39L; ravenol.com TGS 33.360 volume 39L; MAN EU TGS specs D1556 9.0L 294kW(400hp)",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "MAN",
+    "model": "TGM 26.330",
+    "generation": "Euro VI D",
+    "yearFrom": 2020,
+    "yearTo": 9999,
+    "engineCode": "D1556LF09",
+    "displacementCc": 9000,
+    "fuelType": "diesel",
+    "powerKw": 243,
+    "powerHp": 330,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": "CK-4",
+    "oilSpecACEA": "E6/E9",
+    "oilSpecOEM": "MAN M 3477",
+    "oilCapacityLiters": 39.0,
+    "gearboxOilSeparate": true,
+    "gearboxOilSpec": "SAE 75W-80 MAN M 3375",
+    "oilChangeIntervalKm": 120000,
+    "emissionStandard": "Euro VI D",
+    "source": "namu.wiki TGX Gen 2 D1556 LF09=330hp Euro 6D; amsoil.com TGS D1556 LF08=39L used as reference for LF09 same block; MAN EU TGS specs D1556 9.0L",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "MAN",
+    "model": "TGM 26.340",
+    "generation": "Euro VI",
+    "yearFrom": 2012,
+    "yearTo": 9999,
+    "engineCode": "D0836LFL68",
+    "displacementCc": 6871,
+    "fuelType": "diesel",
+    "powerKw": 250,
+    "powerHp": 340,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": "CJ-4",
+    "oilSpecACEA": "E6",
+    "oilSpecOEM": "MAN M 3477",
+    "oilCapacityLiters": 27.5,
+    "gearboxOilSeparate": true,
+    "gearboxOilSpec": "SAE 75W-80 MAN M 3375",
+    "oilChangeIntervalKm": 60000,
+    "emissionStandard": "Euro VI",
+    "source": "kroon-oil.com TGM 26.340 D0836 LFL68/Euro 6 capacity 27.5L filter 1.5L; truckstar.com.ua D0836 LFL67/68 max 26L min 21L M 3377/M 3677; kroon-oil oil change 60000 km/12 months",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "MAN",
+    "model": "TGM 18.250",
+    "generation": "Euro VI",
+    "yearFrom": 2012,
+    "yearTo": 9999,
+    "engineCode": "D0836LFL66",
+    "displacementCc": 6871,
+    "fuelType": "diesel",
+    "powerKw": 184,
+    "powerHp": 250,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": "CJ-4",
+    "oilSpecACEA": "E6",
+    "oilSpecOEM": "MAN M 3477",
+    "oilCapacityLiters": 21.5,
+    "gearboxOilSeparate": true,
+    "gearboxOilSpec": "SAE 75W-80 MAN M 3375",
+    "oilChangeIntervalKm": 60000,
+    "emissionStandard": "Euro VI",
+    "source": "kroon-oil.com TGM 18.250 D0836 LFL66/Euro 6 capacity 21.5L filter 1.5L; truckstar.com.ua D0836 LFL66/75 max 20L min 16L M 3377/M 3677 for Euro 6 SCR+CRT; kroon-oil oil change 60000 km/12 months",
+    "confidence": "high",
+    "matchAmbiguity": {
+      "conflictGroup": 22,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 6871,
+        "powerHp": 250,
+        "fuelType": "diesel"
+      },
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "10W-40",
+            "5W-30"
+          ]
+        },
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "CI-4",
+            "CJ-4"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "E6",
+            "E7"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "MAN M 3275-1",
+            "MAN M 3477"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "MAN TGM 18.250 (Euro V): 10W-40 ACEA E7"
+      ]
+    }
+  },
+  {
+    "make": "MAN",
+    "model": "TGM 18.250",
+    "generation": "Euro V",
+    "yearFrom": 2006,
+    "yearTo": 2012,
+    "engineCode": "D0836LFL50",
+    "displacementCc": 6871,
+    "fuelType": "diesel",
+    "powerKw": 184,
+    "powerHp": 250,
+    "oilViscosity": "10W-40",
+    "oilSpecAPI": "CI-4",
+    "oilSpecACEA": "E7",
+    "oilSpecOEM": "MAN M 3275-1",
+    "oilCapacityLiters": 21.5,
+    "gearboxOilSeparate": true,
+    "gearboxOilSpec": "SAE 75W-80 MAN M 3375",
+    "oilChangeIntervalKm": 60000,
+    "emissionStandard": "Euro V",
+    "source": "kroon-oil.com TGM 18.240 D0836 LFL50/Euro 4 capacity 21.5L; truckstar.com.ua D0836 LFL50/53 max 20L min 16L M 3277/M 3377 for Euro 4 PM-Kat; ravenol.com TGM Euro 5 ACEA E6/E7/E8/E9 5W-30",
+    "confidence": "medium",
+    "matchAmbiguity": {
+      "conflictGroup": 22,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 6871,
+        "powerHp": 250,
+        "fuelType": "diesel"
+      },
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "10W-40",
+            "5W-30"
+          ]
+        },
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "CI-4",
+            "CJ-4"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "E6",
+            "E7"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "MAN M 3275-1",
+            "MAN M 3477"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "MAN TGM 18.250 (Euro VI): 5W-30 ACEA E6"
+      ]
+    }
+  }
+]

@@ -1,0 +1,723 @@
+[
+  {
+    "make": "DACIA",
+    "model": "Sandero",
+    "generation": "III",
+    "yearFrom": 2020,
+    "yearTo": 9999,
+    "engineCode": "H4D 470",
+    "displacementCc": 999,
+    "fuelType": "essence",
+    "powerKw": 67,
+    "powerHp": 91,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C3",
+    "oilSpecOEM": "RN17",
+    "oilCapacityLiters": 4.1,
+    "oilChangeIntervalKm": 15000,
+    "source": "auto-data.net, autodoc.co.uk, user-manual.dacia.com",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "DACIA",
+    "model": "Sandero Stepway",
+    "generation": "III",
+    "yearFrom": 2021,
+    "yearTo": 9999,
+    "engineCode": "H4D 470",
+    "displacementCc": 999,
+    "fuelType": "essence",
+    "powerKw": 67,
+    "powerHp": 91,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C3",
+    "oilSpecOEM": "RN17",
+    "oilCapacityLiters": 4.1,
+    "oilChangeIntervalKm": 15000,
+    "source": "auto-data.net, autodoc.co.uk",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "DACIA",
+    "model": "Logan",
+    "generation": "III",
+    "yearFrom": 2020,
+    "yearTo": 9999,
+    "engineCode": "H4D 450",
+    "displacementCc": 999,
+    "fuelType": "essence",
+    "powerKw": 74,
+    "powerHp": 101,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C3",
+    "oilSpecOEM": "RN17",
+    "oilCapacityLiters": 4.1,
+    "oilChangeIntervalKm": 15000,
+    "source": "auto-data.net, dacia.tn, autodoc.co.uk",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "DACIA",
+    "model": "Duster",
+    "generation": "III",
+    "yearFrom": 2024,
+    "yearTo": 9999,
+    "engineCode": "H5Ft",
+    "displacementCc": 1197,
+    "fuelType": "essence",
+    "powerKw": 96,
+    "powerHp": 131,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C3",
+    "oilSpecOEM": "RN17",
+    "oilCapacityLiters": 4.25,
+    "oilChangeIntervalKm": 15000,
+    "source": "auto-data.net, autodoc.co.uk, ravenol.com",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "DACIA",
+    "model": "Duster",
+    "generation": "III",
+    "yearFrom": 2024,
+    "yearTo": 9999,
+    "engineCode": "H4D 470",
+    "displacementCc": 999,
+    "fuelType": "essence",
+    "powerKw": 67,
+    "powerHp": 91,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C3",
+    "oilSpecOEM": "RN17",
+    "oilCapacityLiters": 4.1,
+    "oilChangeIntervalKm": 15000,
+    "source": "autodoc.co.uk, auto-data.net",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "DACIA",
+    "model": "Jogger",
+    "generation": "I",
+    "yearFrom": 2022,
+    "yearTo": 9999,
+    "engineCode": "H5D 490",
+    "displacementCc": 999,
+    "fuelType": "essence",
+    "powerKw": 81,
+    "powerHp": 110,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C3",
+    "oilSpecOEM": "RN17",
+    "oilCapacityLiters": 4.1,
+    "oilChangeIntervalKm": 15000,
+    "source": "auto-data.net, automoli.com, autodoc.co.uk",
+    "confidence": "high",
+    "matchAmbiguity": {
+      "conflictGroup": 4,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 999,
+        "powerHp": 110,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "0W-20",
+            "5W-30"
+          ]
+        },
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "None",
+            "SP"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "C3",
+            "C5"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "RN17",
+            "VW 508.00"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "SKODA Scala (DLAA): 0W-20"
+      ]
+    }
+  },
+  {
+    "make": "DACIA",
+    "model": "Jogger",
+    "generation": "I",
+    "yearFrom": 2022,
+    "yearTo": 9999,
+    "engineCode": "H4D 470",
+    "displacementCc": 999,
+    "fuelType": "essence",
+    "powerKw": 67,
+    "powerHp": 91,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C3",
+    "oilSpecOEM": "RN17",
+    "oilCapacityLiters": 4.1,
+    "oilChangeIntervalKm": 15000,
+    "source": "auto-data.net, autodoc.co.uk",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "DACIA",
+    "model": "Sandero",
+    "generation": "II",
+    "yearFrom": 2012,
+    "yearTo": 2020,
+    "engineCode": "H4B 400",
+    "displacementCc": 898,
+    "fuelType": "essence",
+    "powerKw": 66,
+    "powerHp": 90,
+    "oilViscosity": "5W-40",
+    "oilSpecAPI": "SN",
+    "oilSpecACEA": "A3/B4",
+    "oilSpecOEM": "RN0710",
+    "oilCapacityLiters": 4.1,
+    "oilChangeIntervalKm": 15000,
+    "source": "auto-data.net, daciaforum.co.uk, autodoc.co.uk",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "DACIA",
+    "model": "Sandero Stepway",
+    "generation": "II",
+    "yearFrom": 2018,
+    "yearTo": 2020,
+    "engineCode": "H4D 450",
+    "displacementCc": 999,
+    "fuelType": "essence",
+    "powerKw": 74,
+    "powerHp": 101,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C3",
+    "oilSpecOEM": "RN17",
+    "oilCapacityLiters": 4.1,
+    "oilChangeIntervalKm": 15000,
+    "source": "autodoc.co.uk, buycarparts.co.uk",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "DACIA",
+    "model": "Logan",
+    "generation": "II",
+    "yearFrom": 2014,
+    "yearTo": 2020,
+    "engineCode": "B4D",
+    "displacementCc": 999,
+    "fuelType": "essence",
+    "powerKw": 55,
+    "powerHp": 75,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C3",
+    "oilSpecOEM": "RN0710",
+    "oilCapacityLiters": 4.0,
+    "oilChangeIntervalKm": 15000,
+    "source": "autodoc.co.uk, auto-doc.ie, buycarparts.co.uk",
+    "confidence": "medium",
+    "matchAmbiguity": {
+      "conflictGroup": 2,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 999,
+        "powerHp": 75,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "None",
+            "SN"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "A5/B5",
+            "C3"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "RN0710",
+            "VW 502.00"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "SEAT Ibiza (CHYB): 5W-30",
+        "SKODA Fabia (CHYB): 5W-30"
+      ]
+    }
+  },
+  {
+    "make": "DACIA",
+    "model": "Duster",
+    "generation": "II",
+    "yearFrom": 2019,
+    "yearTo": 2024,
+    "engineCode": "H5Ht 480",
+    "displacementCc": 1332,
+    "fuelType": "essence",
+    "powerKw": 96,
+    "powerHp": 131,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C3",
+    "oilSpecOEM": "RN17",
+    "oilCapacityLiters": 4.8,
+    "oilChangeIntervalKm": 15000,
+    "source": "auto-data.net, autodoc.co.uk, auto-doc.ie, scribd.com",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "DACIA",
+    "model": "Duster",
+    "generation": "II",
+    "yearFrom": 2019,
+    "yearTo": 2024,
+    "engineCode": "H4D 470",
+    "displacementCc": 999,
+    "fuelType": "essence",
+    "powerKw": 67,
+    "powerHp": 91,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C3",
+    "oilSpecOEM": "RN17",
+    "oilCapacityLiters": 4.1,
+    "oilChangeIntervalKm": 15000,
+    "source": "auto-data.net, autodoc.co.uk, auto-doc.ie",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "DACIA",
+    "model": "Duster",
+    "generation": "II",
+    "yearFrom": 2018,
+    "yearTo": 2024,
+    "engineCode": "H4M 738",
+    "displacementCc": 1598,
+    "fuelType": "essence",
+    "powerKw": 84,
+    "powerHp": 114,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "A3/B4",
+    "oilSpecOEM": "RN17",
+    "oilCapacityLiters": 4.2,
+    "oilChangeIntervalKm": 15000,
+    "source": "auto-data.net, autodoc.co.uk, daciaforum.co.uk",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "DACIA",
+    "model": "Duster",
+    "generation": "I",
+    "yearFrom": 2010,
+    "yearTo": 2018,
+    "engineCode": "K4M 606",
+    "displacementCc": 1598,
+    "fuelType": "essence",
+    "powerKw": 77,
+    "powerHp": 105,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": "SN",
+    "oilSpecACEA": "A3/B4",
+    "oilSpecOEM": "RN0700",
+    "oilCapacityLiters": 4.1,
+    "oilChangeIntervalKm": 15000,
+    "source": "autodoc.co.uk, auto-doc.ie, bobistheoilguy.com",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "DACIA",
+    "model": "Sandero",
+    "generation": "I",
+    "yearFrom": 2008,
+    "yearTo": 2012,
+    "engineCode": "K7M 800",
+    "displacementCc": 1598,
+    "fuelType": "essence",
+    "powerKw": 62,
+    "powerHp": 85,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "A3/B4",
+    "oilSpecOEM": "RN0700",
+    "oilCapacityLiters": 3.3,
+    "oilChangeIntervalKm": 15000,
+    "source": "auto-data.net, autodoc.parts, auto-abc.eu",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "DACIA",
+    "model": "Sandero",
+    "generation": "III",
+    "yearFrom": 2020,
+    "yearTo": 9999,
+    "engineCode": "K9K 872",
+    "displacementCc": 1461,
+    "fuelType": "diesel",
+    "powerKw": 70,
+    "powerHp": 95,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C3",
+    "oilSpecOEM": "RN17",
+    "oilCapacityLiters": 5.7,
+    "oilChangeIntervalKm": 15000,
+    "source": "auto-data.net, buycarparts.co.uk, daciaforum.co.uk",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "DACIA",
+    "model": "Logan",
+    "generation": "III",
+    "yearFrom": 2020,
+    "yearTo": 9999,
+    "engineCode": "K9K 872",
+    "displacementCc": 1461,
+    "fuelType": "diesel",
+    "powerKw": 70,
+    "powerHp": 95,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C3",
+    "oilSpecOEM": "RN17",
+    "oilCapacityLiters": 5.7,
+    "oilChangeIntervalKm": 15000,
+    "source": "auto-data.net, auto-doc.ie, daciaforum.co.uk",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "DACIA",
+    "model": "Duster",
+    "generation": "III",
+    "yearFrom": 2024,
+    "yearTo": 9999,
+    "engineCode": "K9K 872",
+    "displacementCc": 1461,
+    "fuelType": "diesel",
+    "powerKw": 85,
+    "powerHp": 116,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C3",
+    "oilSpecOEM": "RN17",
+    "oilCapacityLiters": 5.7,
+    "oilChangeIntervalKm": 15000,
+    "source": "auto-data.net, autodoc.co.uk, buycarparts.co.uk",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "DACIA",
+    "model": "Duster",
+    "generation": "II",
+    "yearFrom": 2018,
+    "yearTo": 2024,
+    "engineCode": "K9K 656",
+    "displacementCc": 1461,
+    "fuelType": "diesel",
+    "powerKw": 66,
+    "powerHp": 90,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C3",
+    "oilSpecOEM": "RN17",
+    "oilCapacityLiters": 4.5,
+    "oilChangeIntervalKm": 15000,
+    "source": "autodoc.co.uk, daciaforum.co.uk, auto-doc.ie",
+    "confidence": "medium",
+    "matchAmbiguity": {
+      "conflictGroup": 16,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 1461,
+        "powerHp": 90,
+        "fuelType": "diesel"
+      },
+      "differingFields": [
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "C3",
+            "C4"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "RN0720",
+            "RN17"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "DACIA Sandero (K9K 626): 5W-30",
+        "DACIA Dokker (K9K 626): 5W-30",
+        "NISSAN Micra (K9K): 5W-30"
+      ]
+    }
+  },
+  {
+    "make": "DACIA",
+    "model": "Sandero",
+    "generation": "II",
+    "yearFrom": 2012,
+    "yearTo": 2020,
+    "engineCode": "K9K 626",
+    "displacementCc": 1461,
+    "fuelType": "diesel",
+    "powerKw": 66,
+    "powerHp": 90,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C4",
+    "oilSpecOEM": "RN0720",
+    "oilCapacityLiters": 4.5,
+    "oilChangeIntervalKm": 15000,
+    "source": "auto-data.net, auto-doc.ie, daciaforum.co.uk",
+    "confidence": "high",
+    "matchAmbiguity": {
+      "conflictGroup": 16,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 1461,
+        "powerHp": 90,
+        "fuelType": "diesel"
+      },
+      "differingFields": [
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "C3",
+            "C4"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "RN0720",
+            "RN17"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "DACIA Duster (K9K 656): 5W-30",
+        "DACIA Dokker (K9K 626): 5W-30",
+        "NISSAN Micra (K9K): 5W-30"
+      ]
+    }
+  },
+  {
+    "make": "DACIA",
+    "model": "Duster",
+    "generation": "I",
+    "yearFrom": 2010,
+    "yearTo": 2018,
+    "engineCode": "K9K 898",
+    "displacementCc": 1461,
+    "fuelType": "diesel",
+    "powerKw": 80,
+    "powerHp": 109,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C4",
+    "oilSpecOEM": "RN0720",
+    "oilCapacityLiters": 5.0,
+    "oilChangeIntervalKm": 15000,
+    "source": "auto-data.net, daciaforum.co.uk, auto-doc.ie, 4x4community.co.za",
+    "confidence": "high",
+    "matchAmbiguity": {
+      "conflictGroup": 17,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 1461,
+        "powerHp": 109,
+        "fuelType": "diesel"
+      },
+      "differingFields": [
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "C3",
+            "C4"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "RN0710",
+            "RN0720",
+            "RN17"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "DACIA Lodgy (K9K 846): 5W-30",
+        "Renault Duster (K9K): 5W-30"
+      ]
+    }
+  },
+  {
+    "make": "DACIA",
+    "model": "Lodgy",
+    "generation": "I",
+    "yearFrom": 2013,
+    "yearTo": 2022,
+    "engineCode": "K9K 846",
+    "displacementCc": 1461,
+    "fuelType": "diesel",
+    "powerKw": 80,
+    "powerHp": 109,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C3",
+    "oilSpecOEM": "RN0710",
+    "oilCapacityLiters": 4.4,
+    "oilChangeIntervalKm": 15000,
+    "source": "autodoc.parts, auto-doc.ie, buycarparts.co.uk",
+    "confidence": "medium",
+    "matchAmbiguity": {
+      "conflictGroup": 17,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 1461,
+        "powerHp": 109,
+        "fuelType": "diesel"
+      },
+      "differingFields": [
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "C3",
+            "C4"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "RN0710",
+            "RN0720",
+            "RN17"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "DACIA Duster (K9K 898): 5W-30",
+        "Renault Duster (K9K): 5W-30"
+      ]
+    }
+  },
+  {
+    "make": "DACIA",
+    "model": "Dokker",
+    "generation": "I",
+    "yearFrom": 2013,
+    "yearTo": 2021,
+    "engineCode": "K9K 626",
+    "displacementCc": 1461,
+    "fuelType": "diesel",
+    "powerKw": 66,
+    "powerHp": 90,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C4",
+    "oilSpecOEM": "RN0720",
+    "oilCapacityLiters": 4.5,
+    "oilChangeIntervalKm": 15000,
+    "source": "autodoc.parts, auto-doc.ie, daciaforum.co.uk, reddit.com",
+    "confidence": "medium",
+    "matchAmbiguity": {
+      "conflictGroup": 16,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 1461,
+        "powerHp": 90,
+        "fuelType": "diesel"
+      },
+      "differingFields": [
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "C3",
+            "C4"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "RN0720",
+            "RN17"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "DACIA Duster (K9K 656): 5W-30",
+        "DACIA Sandero (K9K 626): 5W-30",
+        "NISSAN Micra (K9K): 5W-30"
+      ]
+    }
+  }
+]

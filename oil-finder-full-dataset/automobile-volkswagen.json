@@ -1,0 +1,714 @@
+[
+  {
+    "make": "VOLKSWAGEN",
+    "model": "T-Cross",
+    "generation": "A11",
+    "yearFrom": 2020,
+    "yearTo": 9999,
+    "engineCode": "DLAA",
+    "displacementCc": 999,
+    "fuelType": "essence",
+    "powerKw": 85,
+    "powerHp": 116,
+    "oilViscosity": "0W-20",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C5",
+    "oilSpecOEM": "VW 508.00",
+    "oilCapacityLiters": 4.0,
+    "oilChangeIntervalKm": 15000,
+    "source": "buycarparts.eu oil lookup, VW T-Cross owner manual, volkswagen.tn model listing",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "VOLKSWAGEN",
+    "model": "T-Cross",
+    "generation": "A11",
+    "yearFrom": 2020,
+    "yearTo": 9999,
+    "engineCode": "CHZB",
+    "displacementCc": 999,
+    "fuelType": "essence",
+    "powerKw": 70,
+    "powerHp": 95,
+    "oilViscosity": "0W-20",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C5",
+    "oilSpecOEM": "VW 508.00",
+    "oilCapacityLiters": 4.0,
+    "oilChangeIntervalKm": 15000,
+    "source": "buycarparts.eu oil lookup, VW T-Cross owner manual, volkswagen.tn model listing",
+    "confidence": "medium",
+    "matchAmbiguity": {
+      "conflictGroup": 3,
+      "severity": "minor",
+      "lookupKey": {
+        "displacementCc": 999,
+        "powerHp": 95,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "None",
+            "SN",
+            "SP"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "SEAT Ibiza (CHZB): 0W-20",
+        "SEAT Arona (CHZB): 0W-20",
+        "SKODA Fabia (CHZB): 0W-20",
+        "SKODA Kamiq (CHZB): 0W-20",
+        "VOLKSWAGEN Polo (CHYB): 0W-20"
+      ]
+    }
+  },
+  {
+    "make": "VOLKSWAGEN",
+    "model": "Polo",
+    "generation": "AW1",
+    "yearFrom": 2018,
+    "yearTo": 9999,
+    "engineCode": "CHYB",
+    "displacementCc": 999,
+    "fuelType": "essence",
+    "powerKw": 70,
+    "powerHp": 95,
+    "oilViscosity": "0W-20",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C5",
+    "oilSpecOEM": "VW 508.00",
+    "oilCapacityLiters": 3.2,
+    "oilChangeIntervalKm": 15000,
+    "source": "ATO24 oil finder, VW Polo owner manual, volkswagen.tn new polo listing",
+    "confidence": "medium",
+    "matchAmbiguity": {
+      "conflictGroup": 3,
+      "severity": "minor",
+      "lookupKey": {
+        "displacementCc": 999,
+        "powerHp": 95,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "None",
+            "SN",
+            "SP"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "SEAT Ibiza (CHZB): 0W-20",
+        "SEAT Arona (CHZB): 0W-20",
+        "SKODA Fabia (CHZB): 0W-20",
+        "SKODA Kamiq (CHZB): 0W-20",
+        "VOLKSWAGEN T-Cross (CHZB): 0W-20"
+      ]
+    }
+  },
+  {
+    "make": "VOLKSWAGEN",
+    "model": "Polo",
+    "generation": "AW",
+    "yearFrom": 2015,
+    "yearTo": 2023,
+    "engineCode": "CFNA",
+    "displacementCc": 1598,
+    "fuelType": "essence",
+    "powerKw": 81,
+    "powerHp": 110,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": "SN",
+    "oilSpecACEA": "A3/B4",
+    "oilSpecOEM": "VW 502.00",
+    "oilCapacityLiters": 4.0,
+    "oilChangeIntervalKm": 15000,
+    "source": "buycarparts.eu CFNA oil lookup, VW Polo 6R owner manual, automax.tn VW Polo listings",
+    "confidence": "high",
+    "matchAmbiguity": {
+      "conflictGroup": 26,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 1598,
+        "powerHp": 110,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "A3/B4",
+            "A5/B5"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "SEAT Arona (CWVB): 5W-30",
+        "SKODA Scala (CWVB): 5W-30"
+      ]
+    }
+  },
+  {
+    "make": "VOLKSWAGEN",
+    "model": "Golf",
+    "generation": "MK8",
+    "yearFrom": 2020,
+    "yearTo": 9999,
+    "engineCode": "DKTA",
+    "displacementCc": 1498,
+    "fuelType": "essence",
+    "powerKw": 96,
+    "powerHp": 131,
+    "oilViscosity": "0W-20",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C5",
+    "oilSpecOEM": "VW 508.00",
+    "oilCapacityLiters": 4.7,
+    "oilChangeIntervalKm": 15000,
+    "source": "OilChooser.com 1.5 TSI guide, VW Golf 8 owner manual, volkswagen.tn golf listing",
+    "confidence": "high",
+    "matchAmbiguity": {
+      "conflictGroup": 18,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 1498,
+        "powerHp": 131,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "None",
+            "SP"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "C5",
+            "None"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "Honda HTO-06",
+            "VW 508.00"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "HONDA HR-V (L15BG): 0W-20",
+        "HONDA HR-V (L15BE): 0W-20",
+        "VOLKSWAGEN Golf Variant (DPBA): 0W-20"
+      ]
+    }
+  },
+  {
+    "make": "VOLKSWAGEN",
+    "model": "Golf",
+    "generation": "MK7.5",
+    "yearFrom": 2017,
+    "yearTo": 2020,
+    "engineCode": "CZCA",
+    "displacementCc": 1395,
+    "fuelType": "essence",
+    "powerKw": 92,
+    "powerHp": 125,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": "SN",
+    "oilSpecACEA": "A3/B4",
+    "oilSpecOEM": "VW 502.00",
+    "oilCapacityLiters": 4.0,
+    "oilChangeIntervalKm": 15000,
+    "source": "AUTODOC UK CZCA oil spec, GOLFMK7 forum, VW Golf MK7 owner manual",
+    "confidence": "high",
+    "matchAmbiguity": {
+      "conflictGroup": 15,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 1395,
+        "powerHp": 125,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "A3/B4",
+            "C3"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "SEAT Leon (CZCA): 5W-30",
+        "SKODA Octavia (CZCA): 5W-30",
+        "VOLKSWAGEN Golf Variant (CZCA): 5W-30"
+      ]
+    }
+  },
+  {
+    "make": "VOLKSWAGEN",
+    "model": "Golf",
+    "generation": "MK7",
+    "yearFrom": 2013,
+    "yearTo": 2017,
+    "engineCode": "CKRA",
+    "displacementCc": 1598,
+    "fuelType": "diesel",
+    "powerKw": 77,
+    "powerHp": 105,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C3",
+    "oilSpecOEM": "VW 504.00/507.00",
+    "oilCapacityLiters": 4.3,
+    "oilChangeIntervalKm": 15000,
+    "source": "BobIsTheOilGuy forum, VW Passat CKRA oil capacity data, TDIClub forums",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "VOLKSWAGEN",
+    "model": "Golf Variant",
+    "generation": "MK8",
+    "yearFrom": 2020,
+    "yearTo": 9999,
+    "engineCode": "DPBA",
+    "displacementCc": 1498,
+    "fuelType": "essence",
+    "powerKw": 96,
+    "powerHp": 131,
+    "oilViscosity": "0W-20",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C5",
+    "oilSpecOEM": "VW 508.00",
+    "oilCapacityLiters": 4.0,
+    "oilChangeIntervalKm": 15000,
+    "source": "buycarparts.eu DPBA oil lookup, VW Golf VIII Variant owner manual",
+    "confidence": "medium",
+    "matchAmbiguity": {
+      "conflictGroup": 18,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 1498,
+        "powerHp": 131,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "None",
+            "SP"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "C5",
+            "None"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "Honda HTO-06",
+            "VW 508.00"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "HONDA HR-V (L15BG): 0W-20",
+        "HONDA HR-V (L15BE): 0W-20",
+        "VOLKSWAGEN Golf (DKTA): 0W-20"
+      ]
+    }
+  },
+  {
+    "make": "VOLKSWAGEN",
+    "model": "Golf Variant",
+    "generation": "MK7",
+    "yearFrom": 2014,
+    "yearTo": 2020,
+    "engineCode": "CZCA",
+    "displacementCc": 1395,
+    "fuelType": "essence",
+    "powerKw": 92,
+    "powerHp": 125,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": "SN",
+    "oilSpecACEA": "A3/B4",
+    "oilSpecOEM": "VW 502.00",
+    "oilCapacityLiters": 4.0,
+    "oilChangeIntervalKm": 15000,
+    "source": "GOLFMK7 forum 1.4 TSI 140HP oil liters, AUTODOC UK CZCA oil spec",
+    "confidence": "high",
+    "matchAmbiguity": {
+      "conflictGroup": 15,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 1395,
+        "powerHp": 125,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "A3/B4",
+            "C3"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "SEAT Leon (CZCA): 5W-30",
+        "SKODA Octavia (CZCA): 5W-30",
+        "VOLKSWAGEN Golf (CZCA): 5W-30"
+      ]
+    }
+  },
+  {
+    "make": "VOLKSWAGEN",
+    "model": "T-Roc",
+    "generation": "A11",
+    "yearFrom": 2018,
+    "yearTo": 9999,
+    "engineCode": "DADA",
+    "displacementCc": 1498,
+    "fuelType": "essence",
+    "powerKw": 110,
+    "powerHp": 150,
+    "oilViscosity": "0W-20",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C5",
+    "oilSpecOEM": "VW 508.00",
+    "oilCapacityLiters": 4.3,
+    "oilChangeIntervalKm": 15000,
+    "source": "buycarparts.eu DADA oil lookup, motorz.tn T-Roc listing, Tunisian classified ads",
+    "confidence": "medium",
+    "matchAmbiguity": {
+      "conflictGroup": 19,
+      "severity": "minor",
+      "lookupKey": {
+        "displacementCc": 1498,
+        "powerHp": 150,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "None",
+            "SP"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "CUPRA Formentor (DKTA): 0W-20",
+        "CUPRA Leon Sportstourer (DKTA): 0W-20",
+        "SEAT Leon (DKTA): 0W-20",
+        "SKODA Octavia (DKTA): 0W-20",
+        "SKODA Karoq (DKTA): 0W-20",
+        "VOLKSWAGEN Tiguan (DKTA): 0W-20"
+      ]
+    }
+  },
+  {
+    "make": "VOLKSWAGEN",
+    "model": "Tiguan",
+    "generation": "Typ 5N",
+    "yearFrom": 2008,
+    "yearTo": 2017,
+    "engineCode": "CCZB",
+    "displacementCc": 1984,
+    "fuelType": "essence",
+    "powerKw": 155,
+    "powerHp": 210,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": "SN",
+    "oilSpecACEA": "A3/B4",
+    "oilSpecOEM": "VW 502.00",
+    "oilCapacityLiters": 4.7,
+    "oilChangeIntervalKm": 15000,
+    "source": "OilChooser.com 2.0 TSI guide, VW Tiguan Oil Types 2024 guide, autobeeb.com Tunisia listings",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "VOLKSWAGEN",
+    "model": "Tiguan",
+    "generation": "Typ 5N",
+    "yearFrom": 2008,
+    "yearTo": 2017,
+    "engineCode": "CGLC",
+    "displacementCc": 1968,
+    "fuelType": "diesel",
+    "powerKw": 103,
+    "powerHp": 140,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C3",
+    "oilSpecOEM": "VW 504.00/507.00",
+    "oilCapacityLiters": 4.9,
+    "oilChangeIntervalKm": 15000,
+    "source": "Tiguan 2 TDI Oil Change forum, VW Tiguan Oil Types 2024 guide, autobeeb.com Tunisia",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "VOLKSWAGEN",
+    "model": "Tiguan",
+    "generation": "Typ AD1",
+    "yearFrom": 2017,
+    "yearTo": 9999,
+    "engineCode": "DKTA",
+    "displacementCc": 1498,
+    "fuelType": "essence",
+    "powerKw": 110,
+    "powerHp": 150,
+    "oilViscosity": "0W-20",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C5",
+    "oilSpecOEM": "VW 508.00",
+    "oilCapacityLiters": 4.7,
+    "oilChangeIntervalKm": 15000,
+    "source": "buycarparts.eu oil lookup, VW Tiguan 2021 service manual, volkswagen.tn tiguan listing",
+    "confidence": "medium",
+    "matchAmbiguity": {
+      "conflictGroup": 19,
+      "severity": "minor",
+      "lookupKey": {
+        "displacementCc": 1498,
+        "powerHp": 150,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "None",
+            "SP"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "CUPRA Formentor (DKTA): 0W-20",
+        "CUPRA Leon Sportstourer (DKTA): 0W-20",
+        "SEAT Leon (DKTA): 0W-20",
+        "SKODA Octavia (DKTA): 0W-20",
+        "SKODA Karoq (DKTA): 0W-20",
+        "VOLKSWAGEN T-Roc (DADA): 0W-20"
+      ]
+    }
+  },
+  {
+    "make": "VOLKSWAGEN",
+    "model": "Tiguan",
+    "generation": "Typ AD1",
+    "yearFrom": 2017,
+    "yearTo": 9999,
+    "engineCode": "DFGA",
+    "displacementCc": 1968,
+    "fuelType": "diesel",
+    "powerKw": 110,
+    "powerHp": 150,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C3",
+    "oilSpecOEM": "VW 504.00/507.00",
+    "oilCapacityLiters": 4.7,
+    "oilChangeIntervalKm": 15000,
+    "source": "buycarparts.eu DFGA oil lookup, Tiguan II 2.0 TDI Oil Change forum, volkswagen.tn",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "VOLKSWAGEN",
+    "model": "Touareg",
+    "generation": "Typ CR",
+    "yearFrom": 2018,
+    "yearTo": 9999,
+    "engineCode": "DKVA",
+    "displacementCc": 1984,
+    "fuelType": "essence",
+    "powerKw": 185,
+    "powerHp": 252,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": "SN",
+    "oilSpecACEA": "A3/B4",
+    "oilSpecOEM": "VW 502.00",
+    "oilCapacityLiters": 5.7,
+    "oilChangeIntervalKm": 15000,
+    "source": "OilChooser.com 2.0 TSI guide, motorz.tn Touareg listing, VW Touareg EA888 Gen3B oil data",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "VOLKSWAGEN",
+    "model": "Touareg",
+    "generation": "Typ CR",
+    "yearFrom": 2018,
+    "yearTo": 9999,
+    "engineCode": "CRCA",
+    "displacementCc": 2967,
+    "fuelType": "diesel",
+    "powerKw": 190,
+    "powerHp": 258,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C3",
+    "oilSpecOEM": "VW 504.00/507.00",
+    "oilCapacityLiters": 7.5,
+    "oilChangeIntervalKm": 15000,
+    "source": "Mobil 1 ESP Formula 5W-30 recommendation, VW Touareg 3.0 TDI oil kit, TDIClub forum",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "VOLKSWAGEN",
+    "model": "Touareg",
+    "generation": "Typ CR",
+    "yearFrom": 2018,
+    "yearTo": 9999,
+    "engineCode": "CZDB",
+    "displacementCc": 2967,
+    "fuelType": "diesel",
+    "powerKw": 210,
+    "powerHp": 286,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C3",
+    "oilSpecOEM": "VW 504.00/507.00",
+    "oilCapacityLiters": 7.5,
+    "oilChangeIntervalKm": 15000,
+    "source": "Mobil 1 ESP Formula 5W-30 recommendation, VW Touareg 3.0 TDI oil kit, motorz.tn",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "VOLKSWAGEN",
+    "model": "Passat",
+    "generation": "B8 (3G)",
+    "yearFrom": 2015,
+    "yearTo": 2023,
+    "engineCode": "CRLB",
+    "displacementCc": 1968,
+    "fuelType": "diesel",
+    "powerKw": 110,
+    "powerHp": 150,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C3",
+    "oilSpecOEM": "VW 504.00/507.00",
+    "oilCapacityLiters": 5.5,
+    "oilChangeIntervalKm": 15000,
+    "source": "buycarparts.eu CRLB oil lookup, VW Passat B8 service manual, vente-voiture-tunisie.com listings",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "VOLKSWAGEN",
+    "model": "Caddy",
+    "generation": "Typ SB (MK4)",
+    "yearFrom": 2020,
+    "yearTo": 9999,
+    "engineCode": "DFSD",
+    "displacementCc": 1968,
+    "fuelType": "diesel",
+    "powerKw": 75,
+    "powerHp": 102,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C3",
+    "oilSpecOEM": "VW 504.00/507.00",
+    "oilCapacityLiters": 4.6,
+    "oilChangeIntervalKm": 15000,
+    "source": "YouTube VW Caddy MK4 2.0 TDI DFSD oil change, buycarparts.eu DFSD oil lookup, volkswagen.tn caddy listing",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "VOLKSWAGEN",
+    "model": "Caddy",
+    "generation": "Typ 2K (MK3)",
+    "yearFrom": 2005,
+    "yearTo": 2020,
+    "engineCode": "CAYD",
+    "displacementCc": 1598,
+    "fuelType": "diesel",
+    "powerKw": 55,
+    "powerHp": 75,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C3",
+    "oilSpecOEM": "VW 504.00/507.00",
+    "oilCapacityLiters": 4.3,
+    "oilChangeIntervalKm": 15000,
+    "source": "buycarparts.eu CAYD oil lookup, TotalEnergies Quartz VW oil recommendation",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "VOLKSWAGEN",
+    "model": "Transporter",
+    "generation": "Typ SG (T6)",
+    "yearFrom": 2015,
+    "yearTo": 2024,
+    "engineCode": "CXHA",
+    "displacementCc": 1968,
+    "fuelType": "diesel",
+    "powerKw": 110,
+    "powerHp": 150,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C3",
+    "oilSpecOEM": "VW 504.00/507.00",
+    "oilCapacityLiters": 7.4,
+    "oilChangeIntervalKm": 15000,
+    "source": "buycarparts.eu T6 oil lookup, VW T6 Transporter forum, volkswagen.tn transporter listing",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "VOLKSWAGEN",
+    "model": "Transporter",
+    "generation": "Typ 7H (T5)",
+    "yearFrom": 2010,
+    "yearTo": 2016,
+    "engineCode": "CFCA",
+    "displacementCc": 1968,
+    "fuelType": "diesel",
+    "powerKw": 132,
+    "powerHp": 180,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C3",
+    "oilSpecOEM": "VW 504.00/507.00",
+    "oilCapacityLiters": 7.0,
+    "oilChangeIntervalKm": 15000,
+    "source": "VW California Owners Club CFCA oil capacity, buycarparts.eu CFCA oil lookup, TDIClub forum",
+    "confidence": "high",
+    "matchAmbiguity": null
+  }
+]

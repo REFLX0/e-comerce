@@ -1,0 +1,168 @@
+[
+  {
+    "make": "SYM",
+    "model": "Jet 14 125",
+    "generation": "JET14",
+    "yearFrom": 2019,
+    "yearTo": 9999,
+    "engineCode": "JET14",
+    "displacementCc": 124,
+    "fuelType": "essence",
+    "engineType": "4T",
+    "powerKw": 8.2,
+    "powerHp": 11,
+    "clutchType": "sans embrayage / scooter automatique",
+    "oilViscosity": "10W-30",
+    "oilSpecAPI": "SM",
+    "oilSpecACEA": null,
+    "oilSpecOEM": null,
+    "oilSpecJASO": "MB",
+    "oilCapacityLiters": 0.9,
+    "gearboxOilSeparate": false,
+    "oilChangeIntervalKm": 6000,
+    "source": "SYM Jet 14 manual; AMSOIL; Motul",
+    "confidence": "medium",
+    "matchAmbiguity": {
+      "conflictGroup": 4,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 124,
+        "powerHp": 11,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilSpecJASO",
+          "severity": "major",
+          "values": [
+            "MA",
+            "MB"
+          ]
+        },
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "10W-30",
+            "10W-40"
+          ]
+        },
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "SG",
+            "SM"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "HONDA SH125i (NF13): 10W-30 JASO MB",
+        "HONDA CB125F (NXB125): 10W-30 JASO MA",
+        "PIAGGIO Liberty 125 (LIB125): 10W-40 JASO MB",
+        "VESPA Primavera 125 (PRM125): 10W-40 JASO MB",
+        "VESPA Sprint 125 (SPR125): 10W-40 JASO MB"
+      ]
+    }
+  },
+  {
+    "make": "SYM",
+    "model": "Symphony 125",
+    "generation": "SYM125",
+    "yearFrom": 2016,
+    "yearTo": 9999,
+    "engineCode": "SYM125",
+    "displacementCc": 125,
+    "fuelType": "essence",
+    "engineType": "4T",
+    "powerKw": 7.0,
+    "powerHp": 10,
+    "clutchType": "sans embrayage / scooter automatique",
+    "oilViscosity": "10W-30",
+    "oilSpecAPI": "SM",
+    "oilSpecACEA": null,
+    "oilSpecOEM": null,
+    "oilSpecJASO": "MB",
+    "oilCapacityLiters": 0.9,
+    "gearboxOilSeparate": false,
+    "oilChangeIntervalKm": 6000,
+    "source": "SYM Symphony 125 manual; AMSOIL; Motul",
+    "confidence": "medium",
+    "matchAmbiguity": {
+      "conflictGroup": 10,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 125,
+        "powerHp": 10,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilSpecJASO",
+          "severity": "major",
+          "values": [
+            "MA2",
+            "MB"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "KYMCO Agility 125 (AGL125): 10W-30 JASO MB",
+        "SENKE SK 125 (SK125): 10W-30 JASO MA2",
+        "SLC SLC 125 (SLC125): 10W-30 JASO MA2",
+        "SMT SMT 125 (SMT125): 10W-30 JASO MA2",
+        "ZIMOTA ZM 125 (ZM125): 10W-30 JASO MA2"
+      ]
+    }
+  },
+  {
+    "make": "SYM",
+    "model": "NH-T 200",
+    "generation": "NH200",
+    "yearFrom": 2020,
+    "yearTo": 9999,
+    "engineCode": "NH200",
+    "displacementCc": 171,
+    "fuelType": "essence",
+    "engineType": "4T",
+    "powerKw": 12.0,
+    "powerHp": 16,
+    "clutchType": "sans embrayage / scooter automatique",
+    "oilViscosity": "10W-30",
+    "oilSpecAPI": "SM",
+    "oilSpecACEA": null,
+    "oilSpecOEM": null,
+    "oilSpecJASO": "MB",
+    "oilCapacityLiters": 1.0,
+    "gearboxOilSeparate": false,
+    "oilChangeIntervalKm": 6000,
+    "source": "SYM NH-T 200 manual; AMSOIL; Motul",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "SYM",
+    "model": "GTS 300",
+    "generation": "GTS300",
+    "yearFrom": 2018,
+    "yearTo": 9999,
+    "engineCode": "GTS300",
+    "displacementCc": 278,
+    "fuelType": "essence",
+    "engineType": "4T",
+    "powerKw": 18.5,
+    "powerHp": 25,
+    "clutchType": "sans embrayage / scooter automatique",
+    "oilViscosity": "10W-40",
+    "oilSpecAPI": "SM",
+    "oilSpecACEA": null,
+    "oilSpecOEM": null,
+    "oilSpecJASO": "MB",
+    "oilCapacityLiters": 1.2,
+    "gearboxOilSeparate": false,
+    "oilChangeIntervalKm": 8000,
+    "source": "SYM GTS 300 manual; AMSOIL; Motul",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  }
+]

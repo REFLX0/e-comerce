@@ -1,0 +1,159 @@
+[
+  {
+    "make": "VESPA",
+    "model": "Primavera 125",
+    "generation": "PRM125",
+    "yearFrom": 2014,
+    "yearTo": 9999,
+    "engineCode": "PRM125",
+    "displacementCc": 124,
+    "fuelType": "essence",
+    "engineType": "4T",
+    "powerKw": 8.1,
+    "powerHp": 11,
+    "clutchType": "sans embrayage / scooter automatique",
+    "oilViscosity": "10W-40",
+    "oilSpecAPI": "SM",
+    "oilSpecACEA": null,
+    "oilSpecOEM": null,
+    "oilSpecJASO": "MB",
+    "oilCapacityLiters": 0.9,
+    "gearboxOilSeparate": false,
+    "oilChangeIntervalKm": 10000,
+    "source": "Vespa Primavera 125 owner's manual; AMSOIL; Motul",
+    "confidence": "medium",
+    "matchAmbiguity": {
+      "conflictGroup": 4,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 124,
+        "powerHp": 11,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilSpecJASO",
+          "severity": "major",
+          "values": [
+            "MA",
+            "MB"
+          ]
+        },
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "10W-30",
+            "10W-40"
+          ]
+        },
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "SG",
+            "SM"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "HONDA SH125i (NF13): 10W-30 JASO MB",
+        "HONDA CB125F (NXB125): 10W-30 JASO MA",
+        "PIAGGIO Liberty 125 (LIB125): 10W-40 JASO MB",
+        "SYM Jet 14 125 (JET14): 10W-30 JASO MB",
+        "VESPA Sprint 125 (SPR125): 10W-40 JASO MB"
+      ]
+    }
+  },
+  {
+    "make": "VESPA",
+    "model": "Sprint 125",
+    "generation": "SPR125",
+    "yearFrom": 2017,
+    "yearTo": 9999,
+    "engineCode": "SPR125",
+    "displacementCc": 124,
+    "fuelType": "essence",
+    "engineType": "4T",
+    "powerKw": 8.1,
+    "powerHp": 11,
+    "clutchType": "sans embrayage / scooter automatique",
+    "oilViscosity": "10W-40",
+    "oilSpecAPI": "SM",
+    "oilSpecACEA": null,
+    "oilSpecOEM": null,
+    "oilSpecJASO": "MB",
+    "oilCapacityLiters": 0.9,
+    "gearboxOilSeparate": false,
+    "oilChangeIntervalKm": 10000,
+    "source": "Vespa Sprint 125 owner's manual; AMSOIL; Motul",
+    "confidence": "medium",
+    "matchAmbiguity": {
+      "conflictGroup": 4,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 124,
+        "powerHp": 11,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilSpecJASO",
+          "severity": "major",
+          "values": [
+            "MA",
+            "MB"
+          ]
+        },
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "10W-30",
+            "10W-40"
+          ]
+        },
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "SG",
+            "SM"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "HONDA SH125i (NF13): 10W-30 JASO MB",
+        "HONDA CB125F (NXB125): 10W-30 JASO MA",
+        "PIAGGIO Liberty 125 (LIB125): 10W-40 JASO MB",
+        "SYM Jet 14 125 (JET14): 10W-30 JASO MB",
+        "VESPA Primavera 125 (PRM125): 10W-40 JASO MB"
+      ]
+    }
+  },
+  {
+    "make": "VESPA",
+    "model": "GTS 300",
+    "generation": "GTS300",
+    "yearFrom": 2019,
+    "yearTo": 9999,
+    "engineCode": "GTS300",
+    "displacementCc": 278,
+    "fuelType": "essence",
+    "engineType": "4T",
+    "powerKw": 17.5,
+    "powerHp": 24,
+    "clutchType": "sans embrayage / scooter automatique",
+    "oilViscosity": "10W-40",
+    "oilSpecAPI": "SM",
+    "oilSpecACEA": null,
+    "oilSpecOEM": null,
+    "oilSpecJASO": "MB",
+    "oilCapacityLiters": 1.2,
+    "gearboxOilSeparate": false,
+    "oilChangeIntervalKm": 10000,
+    "source": "Vespa GTS 300 owner's manual; AMSOIL; Motul",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  }
+]

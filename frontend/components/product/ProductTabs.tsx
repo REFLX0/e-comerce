@@ -131,20 +131,19 @@ export function ProductTabs({ product }: Props) {
 
         <TabsContent value="compatibility" className="mt-0">
           {product.compatibility?.length ? (
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            <ul className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
               {product.compatibility.map((compatibility) => (
-                <div key={compatibility.id} className="flex items-start gap-3 border border-gray-100 bg-brand-surface p-4">
-                  <Check size={18} className="mt-0.5 shrink-0 text-green-600" />
+                <li key={compatibility.id} className="flex items-start gap-2 text-sm text-brand-primary">
+                  <Check size={16} className="mt-0.5 shrink-0 text-green-600" />
                   <div>
-                    <h4 className="font-semibold text-brand-primary">{compatibility.make} {compatibility.model}</h4>
-                    <p className="mt-1 text-sm text-gray-500">
-                      {compatibility.yearFrom || '—'} – {compatibility.yearTo || t('today')}
-                      {compatibility.engine ? ` · ${compatibility.engine}` : ''}
-                    </p>
+                    <span className="font-semibold">{compatibility.make} {compatibility.model}</span>
+                    <span className="ml-1 text-gray-500">
+                      ({compatibility.yearFrom || '—'} – {compatibility.yearTo || t('today')}{compatibility.engine ? ` · ${compatibility.engine}` : ''})
+                    </span>
                   </div>
-                </div>
+                </li>
               ))}
-            </div>
+            </ul>
           ) : (
             <p className="text-gray-500">{t('noCompat')}</p>
           )}

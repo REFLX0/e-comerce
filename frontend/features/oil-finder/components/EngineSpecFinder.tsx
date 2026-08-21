@@ -15,12 +15,7 @@ const VEHICLE_TYPES = [
   { id: 'agricole' as const, icon: Tractor, label: 'Agricole', sub: 'Tracteurs & engins' },
 ]
 
-const CYLINDER_OPTIONS: Record<VehicleType, number[]> = {
-  automobile: [3, 4, 6, 8],
-  moto: [1, 2, 3, 4, 6],
-  poids_lourd: [4, 6, 8],
-  agricole: [3, 4, 6],
-}
+const LITER_OPTIONS = [1.0, 1.2, 1.4, 1.5, 1.6, 1.9, 2.0, 2.2, 2.5, 3.0]
 
 const FUEL_OPTIONS: { id: FuelType; label: string; desc: string }[] = [
   { id: 'essence', label: 'Essence', desc: 'Moteur à essence' },
@@ -40,12 +35,11 @@ export function EngineSpecFinder({ onClose, initialVehicleType }: EngineSpecFind
   const [step, setStep] = useState(initialVehicleType ? 2 : 1)
   const [direction, setDirection] = useState(1)
   const [vehicleType, setVehicleType] = useState<VehicleType | ''>(initialVehicleType ?? '')
-  const [cylinders, setCylinders] = useState<number | ''>('')
+  const [displacementLiters, setDisplacementLiters] = useState<number | ''>('')
   const [power, setPower] = useState<number | ''>('')
   const [fuelType, setFuelType] = useState<FuelType | ''>('')
 
-  const cylinderChoices = vehicleType ? CYLINDER_OPTIONS[vehicleType] : []
-  const canSubmit = vehicleType && fuelType && cylinders !== '' && power !== ''
+  const canSubmit = vehicleType && fuelType && displacementLiters && power !== ''
 
   const navigateToStep = (newStep: number) => {
     setDirection(newStep > step ? 1 : -1)
@@ -54,14 +48,14 @@ export function EngineSpecFinder({ onClose, initialVehicleType }: EngineSpecFind
 
   const selectType = (type: VehicleType) => {
     setVehicleType(type)
-    setCylinders('')
+    setDisplacementLiters('')
     setPower('')
     setFuelType('')
     navigateToStep(2)
   }
 
-  const selectCylinders = (value: number) => {
-    setCylinders(value)
+  const selectDisplacement = (value: number) => {
+    setDisplacementLiters(value)
     if (step === 2) navigateToStep(3)
   }
 
@@ -70,12 +64,12 @@ export function EngineSpecFinder({ onClose, initialVehicleType }: EngineSpecFind
     navigateToStep(targetStep)
     if (targetStep <= 1) {
       setVehicleType('')
-      setCylinders('')
+      setDisplacementLiters('')
       setPower('')
       setFuelType('')
     }
     if (targetStep <= 2) {
-      setCylinders('')
+      setDisplacementLiters('')
       setPower('')
       setFuelType('')
     }
@@ -85,7 +79,7 @@ export function EngineSpecFinder({ onClose, initialVehicleType }: EngineSpecFind
     if (!canSubmit) return
     const params = new URLSearchParams()
     params.set('vehicleType', vehicleType)
-    params.set('cylinders', String(cylinders))
+    if (displacementLiters) params.set('displacementCc', String(Number(displacementLiters) * 1000))
     params.set('power', String(power))
     params.set('fuelType', fuelType)
     if (onClose) onClose()
@@ -111,7 +105,7 @@ export function EngineSpecFinder({ onClose, initialVehicleType }: EngineSpecFind
     }),
   }
 
-  const STEPS = ['Type', 'Cylindres', 'Puissance']
+  const STEPS = ['Type', 'Cylindrée', 'Puissance']
 
   return (
     <div
@@ -228,7 +222,7 @@ export function EngineSpecFinder({ onClose, initialVehicleType }: EngineSpecFind
             </motion.div>
           )}
 
-          {/* STEP 2: Cylinders */}
+          {/* STEP 2: Displacement */}
           {step === 2 && (
             <motion.div
               key="step2"
@@ -247,7 +241,7 @@ export function EngineSpecFinder({ onClose, initialVehicleType }: EngineSpecFind
                 </button>
                 <div>
                   <p className="text-sm font-medium text-gray-600">
-                    Combien de cylindres ?
+                    Quelle est la cylindrée ?
                   </p>
                   {selectedVehicleConfig && (
                     <p className="text-xs text-gray-400">{selectedVehicleConfig.label}</p>
@@ -255,30 +249,47 @@ export function EngineSpecFinder({ onClose, initialVehicleType }: EngineSpecFind
                 </div>
               </div>
               
-              <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                {cylinderChoices.map(cyl => {
-                  const isSelected = cylinders === cyl
+              <div className="grid grid-cols-3 gap-3 sm:grid-cols-5">
+                {LITER_OPTIONS.map(liters => {
+                  const isSelected = displacementLiters === liters
                   return (
                     <button
-                      key={cyl}
-                      onClick={() => selectCylinders(cyl)}
+                      key={liters}
+                      onClick={() => selectDisplacement(liters)}
                       className={`
-                        relative flex min-h-[90px] flex-col items-center justify-center gap-1 rounded-xl transition-all duration-200
+                        relative flex min-h-[70px] flex-col items-center justify-center gap-1 rounded-xl transition-all duration-200
                         ${isSelected
                           ? 'bg-brand-primary/5 ring-1 ring-red-500/40'
                           : 'bg-white ring-1 ring-gray-200 hover:bg-gray-100'
                         }
                       `}
                     >
-                      <span className={`text-2xl font-bold tabular-nums ${isSelected ? 'text-gray-900' : 'text-gray-500'}`}>
-                        {cyl}
+                      <span className={`text-xl font-bold tabular-nums ${isSelected ? 'text-gray-900' : 'text-gray-500'}`}>
+                        {liters}
                       </span>
                       <span className={`text-[10px] font-semibold uppercase tracking-wider ${isSelected ? 'text-brand-primary' : 'text-gray-300'}`}>
-                        cylindres
+                        Litres
                       </span>
                     </button>
                   )
                 })}
+              </div>
+              
+              <div className="mt-6 flex items-center gap-3">
+                <span className="text-xs font-semibold uppercase tracking-wider text-gray-400">Autre :</span>
+                <input
+                  type="number"
+                  step="0.1"
+                  min="0.1"
+                  value={!LITER_OPTIONS.includes(displacementLiters as number) && displacementLiters ? displacementLiters : ''}
+                  onChange={e => setDisplacementLiters(e.target.value ? Number(e.target.value) : '')}
+                  placeholder="Ex: 1.6"
+                  className="w-24 rounded-lg bg-gray-50 px-3 py-2 text-sm font-semibold text-gray-900 placeholder-neutral-400 outline-none ring-1 ring-gray-200 focus:ring-red-500/40"
+                />
+                <span className="text-sm font-semibold text-gray-500">L</span>
+                {(displacementLiters && !LITER_OPTIONS.includes(displacementLiters as number)) && (
+                   <button onClick={() => navigateToStep(3)} className="ml-auto rounded-lg bg-brand-primary/10 px-4 py-2 text-sm font-semibold text-brand-primary">Suivant</button>
+                )}
               </div>
             </motion.div>
           )}
@@ -306,7 +317,7 @@ export function EngineSpecFinder({ onClose, initialVehicleType }: EngineSpecFind
                   </p>
                   {selectedVehicleConfig && (
                     <p className="text-xs text-gray-400">
-                      {selectedVehicleConfig.label} — {cylinders} cyl.
+                      {selectedVehicleConfig.label} — {displacementLiters}L
                     </p>
                   )}
                 </div>

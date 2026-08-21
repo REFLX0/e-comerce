@@ -1,0 +1,142 @@
+[
+  {
+    "make": "HYUNDAI",
+    "model": "Xcient 410",
+    "generation": "Euro V",
+    "yearFrom": 2018,
+    "yearTo": 9999,
+    "engineCode": "D6CB",
+    "displacementCc": 12742,
+    "fuelType": "diesel",
+    "powerKw": 302,
+    "powerHp": 410,
+    "oilViscosity": "15W-40",
+    "oilSpecAPI": "CJ-4",
+    "oilSpecACEA": "E7",
+    "oilSpecOEM": null,
+    "oilCapacityLiters": 38.0,
+    "gearboxOilSeparate": true,
+    "gearboxOilSpec": null,
+    "oilChangeIntervalKm": 60000,
+    "emissionStandard": "Euro V",
+    "source": "Hyundai CE lubricants page (hyundai-ce.eu), Kroon-oil Xcient D6HA 38L service fill, AMSOIL lookup 42.27qt dry fill, KoreaSpare D6CB 410hp, chinatrucks.org D6CF 12.742L",
+    "confidence": "high",
+    "matchAmbiguity": {
+      "conflictGroup": 88,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 12742,
+        "powerHp": 410,
+        "fuelType": "diesel"
+      },
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "10W-40",
+            "15W-40"
+          ]
+        },
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "CJ-4",
+            "CK-4"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "E7",
+            "E9"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "Scania LDF-4"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "SCANIA G410 (Euro VI): 10W-40 ACEA E9"
+      ]
+    }
+  },
+  {
+    "make": "HYUNDAI",
+    "model": "Xcient 380",
+    "generation": "Euro V",
+    "yearFrom": 2018,
+    "yearTo": 9999,
+    "engineCode": "D6CC",
+    "displacementCc": 12344,
+    "fuelType": "diesel",
+    "powerKw": 280,
+    "powerHp": 380,
+    "oilViscosity": "15W-40",
+    "oilSpecAPI": "CJ-4",
+    "oilSpecACEA": "E7",
+    "oilSpecOEM": null,
+    "oilCapacityLiters": 36.0,
+    "gearboxOilSeparate": true,
+    "gearboxOilSpec": null,
+    "oilChangeIntervalKm": 60000,
+    "emissionStandard": "Euro V",
+    "source": "truck1.eu D6CC 12344cc, namu.wiki L-engine 380-540hp range, oil capacity estimated from D6CB family proportionally to displacement",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "HYUNDAI",
+    "model": "HD78 150",
+    "generation": "Euro IV",
+    "yearFrom": 2004,
+    "yearTo": 9999,
+    "engineCode": "D4GA",
+    "displacementCc": 3933,
+    "fuelType": "diesel",
+    "powerKw": 110,
+    "powerHp": 150,
+    "oilViscosity": "15W-40",
+    "oilSpecAPI": "CH-4",
+    "oilSpecACEA": "E4",
+    "oilSpecOEM": null,
+    "oilCapacityLiters": 14.0,
+    "gearboxOilSeparate": true,
+    "gearboxOilSpec": null,
+    "oilChangeIntervalKm": 20000,
+    "emissionStandard": "Euro IV",
+    "source": "Kroon-oil HD78 D4GA 14L, AMSOIL HD78 D4GA 14.79qt, hmm.mn D4GA 3933cc 150ps, Ravenol D4GA 14L+0.5L filter",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "HYUNDAI",
+    "model": "HD170 290",
+    "generation": "Euro IV",
+    "yearFrom": 2008,
+    "yearTo": 9999,
+    "engineCode": "D6AB",
+    "displacementCc": 11149,
+    "fuelType": "diesel",
+    "powerKw": 213,
+    "powerHp": 290,
+    "oilViscosity": "15W-40",
+    "oilSpecAPI": "CI-4",
+    "oilSpecACEA": "E5",
+    "oilSpecOEM": null,
+    "oilCapacityLiters": 24.0,
+    "gearboxOilSeparate": true,
+    "gearboxOilSpec": null,
+    "oilChangeIntervalKm": 40000,
+    "emissionStandard": "Euro IV",
+    "source": "AMSOIL HD170 D6AB-d 21.13-25.36qt, lecturaspecs.com D6AB 213kW, Scribd HD170 spec 11149cc 6-cyl",
+    "confidence": "high",
+    "matchAmbiguity": null
+  }
+]

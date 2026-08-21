@@ -1,0 +1,156 @@
+[
+  {
+    "make": "KYMCO",
+    "model": "Like 125",
+    "generation": "LKE125",
+    "yearFrom": 2015,
+    "yearTo": 9999,
+    "engineCode": "LKE125",
+    "displacementCc": 125,
+    "fuelType": "essence",
+    "engineType": "4T",
+    "powerKw": 6.8,
+    "powerHp": 9,
+    "clutchType": "sans embrayage / scooter automatique",
+    "oilViscosity": "10W-30",
+    "oilSpecAPI": "SM",
+    "oilSpecACEA": null,
+    "oilSpecOEM": null,
+    "oilSpecJASO": "MB",
+    "oilCapacityLiters": 0.8,
+    "gearboxOilSeparate": false,
+    "oilChangeIntervalKm": 6000,
+    "source": "KYMCO Like 125 manual; AMSOIL; Motul",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "KYMCO",
+    "model": "Agility 125",
+    "generation": "AGL125",
+    "yearFrom": 2016,
+    "yearTo": 9999,
+    "engineCode": "AGL125",
+    "displacementCc": 125,
+    "fuelType": "essence",
+    "engineType": "4T",
+    "powerKw": 7.3,
+    "powerHp": 10,
+    "clutchType": "sans embrayage / scooter automatique",
+    "oilViscosity": "10W-30",
+    "oilSpecAPI": "SM",
+    "oilSpecACEA": null,
+    "oilSpecOEM": null,
+    "oilSpecJASO": "MB",
+    "oilCapacityLiters": 0.9,
+    "gearboxOilSeparate": false,
+    "oilChangeIntervalKm": 6000,
+    "source": "KYMCO Agility 125 manual; AMSOIL; Motul",
+    "confidence": "medium",
+    "matchAmbiguity": {
+      "conflictGroup": 10,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 125,
+        "powerHp": 10,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilSpecJASO",
+          "severity": "major",
+          "values": [
+            "MA2",
+            "MB"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "SENKE SK 125 (SK125): 10W-30 JASO MA2",
+        "SLC SLC 125 (SLC125): 10W-30 JASO MA2",
+        "SMT SMT 125 (SMT125): 10W-30 JASO MA2",
+        "SYM Symphony 125 (SYM125): 10W-30 JASO MB",
+        "ZIMOTA ZM 125 (ZM125): 10W-30 JASO MA2"
+      ]
+    }
+  },
+  {
+    "make": "KYMCO",
+    "model": "DT X 125",
+    "generation": "DTX125",
+    "yearFrom": 2019,
+    "yearTo": 9999,
+    "engineCode": "DTX125",
+    "displacementCc": 125,
+    "fuelType": "essence",
+    "engineType": "4T",
+    "powerKw": 10.2,
+    "powerHp": 14,
+    "clutchType": "sans embrayage / scooter automatique",
+    "oilViscosity": "10W-30",
+    "oilSpecAPI": "SM",
+    "oilSpecACEA": null,
+    "oilSpecOEM": null,
+    "oilSpecJASO": "MB",
+    "oilCapacityLiters": 0.9,
+    "gearboxOilSeparate": false,
+    "oilChangeIntervalKm": 6000,
+    "source": "KYMCO DT X 125 manual; AMSOIL; Motul",
+    "confidence": "medium",
+    "matchAmbiguity": {
+      "conflictGroup": 12,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 125,
+        "powerHp": 14,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "10W-30",
+            "10W-40"
+          ]
+        },
+        {
+          "field": "oilSpecJASO",
+          "severity": "major",
+          "values": [
+            "MA2",
+            "MB"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "ZONTES G125 (G125): 10W-40 JASO MA2"
+      ]
+    }
+  },
+  {
+    "make": "KYMCO",
+    "model": "AK 550",
+    "generation": "AK550",
+    "yearFrom": 2018,
+    "yearTo": 9999,
+    "engineCode": "AK550",
+    "displacementCc": 550,
+    "fuelType": "essence",
+    "engineType": "4T",
+    "powerKw": 28.6,
+    "powerHp": 39,
+    "clutchType": "sans embrayage / scooter automatique",
+    "oilViscosity": "10W-40",
+    "oilSpecAPI": "SM",
+    "oilSpecACEA": null,
+    "oilSpecOEM": null,
+    "oilSpecJASO": "MB",
+    "oilCapacityLiters": 2.4,
+    "gearboxOilSeparate": false,
+    "oilChangeIntervalKm": 8000,
+    "source": "KYMCO AK 550 owner's manual; AMSOIL; Motul",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  }
+]

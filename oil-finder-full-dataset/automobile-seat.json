@@ -1,0 +1,602 @@
+[
+  {
+    "make": "SEAT",
+    "model": "Ibiza",
+    "generation": "MK5",
+    "yearFrom": 2017,
+    "yearTo": 9999,
+    "engineCode": "CHZB",
+    "displacementCc": 999,
+    "fuelType": "essence",
+    "powerKw": 70,
+    "powerHp": 95,
+    "oilViscosity": "0W-20",
+    "oilSpecAPI": "SN",
+    "oilSpecACEA": "C5",
+    "oilSpecOEM": "VW 508.00",
+    "oilCapacityLiters": 4.0,
+    "oilChangeIntervalKm": 15000,
+    "source": "automobile.tn, buycarparts.co.uk, VW EA211 TSI specs",
+    "confidence": "high",
+    "matchAmbiguity": {
+      "conflictGroup": 3,
+      "severity": "minor",
+      "lookupKey": {
+        "displacementCc": 999,
+        "powerHp": 95,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "None",
+            "SN",
+            "SP"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "SEAT Arona (CHZB): 0W-20",
+        "SKODA Fabia (CHZB): 0W-20",
+        "SKODA Kamiq (CHZB): 0W-20",
+        "VOLKSWAGEN T-Cross (CHZB): 0W-20",
+        "VOLKSWAGEN Polo (CHYB): 0W-20"
+      ]
+    }
+  },
+  {
+    "make": "SEAT",
+    "model": "Ibiza",
+    "generation": "MK5",
+    "yearFrom": 2017,
+    "yearTo": 9999,
+    "engineCode": "DLAA",
+    "displacementCc": 999,
+    "fuelType": "essence",
+    "powerKw": 85,
+    "powerHp": 115,
+    "oilViscosity": "0W-20",
+    "oilSpecAPI": "SP",
+    "oilSpecACEA": "C5",
+    "oilSpecOEM": "VW 508.00",
+    "oilCapacityLiters": 4.0,
+    "oilChangeIntervalKm": 15000,
+    "source": "automobile.tn, buycarparts.co.uk",
+    "confidence": "high",
+    "matchAmbiguity": {
+      "conflictGroup": 5,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 999,
+        "powerHp": 115,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "SN",
+            "SP"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "C5",
+            "None"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "GM Dexos1 Gen2",
+            "VW 508.00"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "CHEVROLET Tracker (LI6): 0W-20",
+        "OPEL Corsa (F10XHL): 0W-20",
+        "SEAT Arona (DLAA): 0W-20",
+        "SKODA Kamiq (DLAA): 0W-20",
+        "SKODA Kushaq (DLAA): 0W-20"
+      ]
+    }
+  },
+  {
+    "make": "SEAT",
+    "model": "Ibiza",
+    "generation": "MK5",
+    "yearFrom": 2017,
+    "yearTo": 2022,
+    "engineCode": "CHYB",
+    "displacementCc": 999,
+    "fuelType": "essence",
+    "powerKw": 55,
+    "powerHp": 75,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": "SN",
+    "oilSpecACEA": "A5/B5",
+    "oilSpecOEM": "VW 502.00",
+    "oilCapacityLiters": 3.7,
+    "oilChangeIntervalKm": 15000,
+    "source": "buycarparts.co.uk, SEAT Ibiza specs",
+    "confidence": "medium",
+    "matchAmbiguity": {
+      "conflictGroup": 2,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 999,
+        "powerHp": 75,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "None",
+            "SN"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "A5/B5",
+            "C3"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "RN0710",
+            "VW 502.00"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "DACIA Logan (B4D): 5W-30",
+        "SKODA Fabia (CHYB): 5W-30"
+      ]
+    }
+  },
+  {
+    "make": "SEAT",
+    "model": "Arona",
+    "generation": "MK1",
+    "yearFrom": 2018,
+    "yearTo": 9999,
+    "engineCode": "CHZB",
+    "displacementCc": 999,
+    "fuelType": "essence",
+    "powerKw": 70,
+    "powerHp": 95,
+    "oilViscosity": "0W-20",
+    "oilSpecAPI": "SN",
+    "oilSpecACEA": "C5",
+    "oilSpecOEM": "VW 508.00",
+    "oilCapacityLiters": 4.0,
+    "oilChangeIntervalKm": 15000,
+    "source": "automobile.tn, buycarparts.co.uk",
+    "confidence": "high",
+    "matchAmbiguity": {
+      "conflictGroup": 3,
+      "severity": "minor",
+      "lookupKey": {
+        "displacementCc": 999,
+        "powerHp": 95,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "None",
+            "SN",
+            "SP"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "SEAT Ibiza (CHZB): 0W-20",
+        "SKODA Fabia (CHZB): 0W-20",
+        "SKODA Kamiq (CHZB): 0W-20",
+        "VOLKSWAGEN T-Cross (CHZB): 0W-20",
+        "VOLKSWAGEN Polo (CHYB): 0W-20"
+      ]
+    }
+  },
+  {
+    "make": "SEAT",
+    "model": "Arona",
+    "generation": "MK1",
+    "yearFrom": 2018,
+    "yearTo": 9999,
+    "engineCode": "DLAA",
+    "displacementCc": 999,
+    "fuelType": "essence",
+    "powerKw": 85,
+    "powerHp": 115,
+    "oilViscosity": "0W-20",
+    "oilSpecAPI": "SP",
+    "oilSpecACEA": "C5",
+    "oilSpecOEM": "VW 508.00",
+    "oilCapacityLiters": 4.0,
+    "oilChangeIntervalKm": 15000,
+    "source": "automobile.tn, buycarparts.co.uk",
+    "confidence": "high",
+    "matchAmbiguity": {
+      "conflictGroup": 5,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 999,
+        "powerHp": 115,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "SN",
+            "SP"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "C5",
+            "None"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "GM Dexos1 Gen2",
+            "VW 508.00"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "CHEVROLET Tracker (LI6): 0W-20",
+        "OPEL Corsa (F10XHL): 0W-20",
+        "SEAT Ibiza (DLAA): 0W-20",
+        "SKODA Kamiq (DLAA): 0W-20",
+        "SKODA Kushaq (DLAA): 0W-20"
+      ]
+    }
+  },
+  {
+    "make": "SEAT",
+    "model": "Arona",
+    "generation": "MK1",
+    "yearFrom": 2018,
+    "yearTo": 2022,
+    "engineCode": "CWVB",
+    "displacementCc": 1598,
+    "fuelType": "essence",
+    "powerKw": 81,
+    "powerHp": 110,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": "SN",
+    "oilSpecACEA": "A5/B5",
+    "oilSpecOEM": "VW 502.00",
+    "oilCapacityLiters": 4.0,
+    "oilChangeIntervalKm": 15000,
+    "source": "buycarparts.co.uk, VW EA211 MPI specs",
+    "confidence": "medium",
+    "matchAmbiguity": {
+      "conflictGroup": 26,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 1598,
+        "powerHp": 110,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "A3/B4",
+            "A5/B5"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "SKODA Scala (CWVB): 5W-30",
+        "VOLKSWAGEN Polo (CFNA): 5W-30"
+      ]
+    }
+  },
+  {
+    "make": "SEAT",
+    "model": "Leon",
+    "generation": "MK3",
+    "yearFrom": 2013,
+    "yearTo": 2020,
+    "engineCode": "CZCA",
+    "displacementCc": 1395,
+    "fuelType": "essence",
+    "powerKw": 92,
+    "powerHp": 125,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": "SN",
+    "oilSpecACEA": "C3",
+    "oilSpecOEM": "VW 502.00",
+    "oilCapacityLiters": 4.0,
+    "oilChangeIntervalKm": 15000,
+    "source": "buycarparts.co.uk, SEATCUPRA.NET oil forum",
+    "confidence": "high",
+    "matchAmbiguity": {
+      "conflictGroup": 15,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 1395,
+        "powerHp": 125,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "A3/B4",
+            "C3"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "SKODA Octavia (CZCA): 5W-30",
+        "VOLKSWAGEN Golf (CZCA): 5W-30",
+        "VOLKSWAGEN Golf Variant (CZCA): 5W-30"
+      ]
+    }
+  },
+  {
+    "make": "SEAT",
+    "model": "Leon",
+    "generation": "MK3",
+    "yearFrom": 2015,
+    "yearTo": 2020,
+    "engineCode": "DGTE",
+    "displacementCc": 1598,
+    "fuelType": "diesel",
+    "powerKw": 85,
+    "powerHp": 115,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C3",
+    "oilSpecOEM": "VW 504.00/507.00",
+    "oilCapacityLiters": 4.6,
+    "oilChangeIntervalKm": 15000,
+    "source": "buycarparts.co.uk, oilspec.eu",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "SEAT",
+    "model": "Leon",
+    "generation": "MK4",
+    "yearFrom": 2020,
+    "yearTo": 9999,
+    "engineCode": "DKTA",
+    "displacementCc": 1498,
+    "fuelType": "essence",
+    "powerKw": 110,
+    "powerHp": 150,
+    "oilViscosity": "0W-20",
+    "oilSpecAPI": "SP",
+    "oilSpecACEA": "C5",
+    "oilSpecOEM": "VW 508.00",
+    "oilCapacityLiters": 4.5,
+    "oilChangeIntervalKm": 15000,
+    "source": "VW EA211 evo specs, SEATCUPRA.NET",
+    "confidence": "high",
+    "matchAmbiguity": {
+      "conflictGroup": 19,
+      "severity": "minor",
+      "lookupKey": {
+        "displacementCc": 1498,
+        "powerHp": 150,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "None",
+            "SP"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "CUPRA Formentor (DKTA): 0W-20",
+        "CUPRA Leon Sportstourer (DKTA): 0W-20",
+        "SKODA Octavia (DKTA): 0W-20",
+        "SKODA Karoq (DKTA): 0W-20",
+        "VOLKSWAGEN T-Roc (DADA): 0W-20",
+        "VOLKSWAGEN Tiguan (DKTA): 0W-20"
+      ]
+    }
+  },
+  {
+    "make": "SEAT",
+    "model": "Ateca",
+    "generation": "MK1",
+    "yearFrom": 2017,
+    "yearTo": 9999,
+    "engineCode": "CZDA",
+    "displacementCc": 1395,
+    "fuelType": "essence",
+    "powerKw": 110,
+    "powerHp": 150,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": "SN",
+    "oilSpecACEA": "C3",
+    "oilSpecOEM": "VW 502.00",
+    "oilCapacityLiters": 4.5,
+    "oilChangeIntervalKm": 15000,
+    "source": "automobile.tn, buycarparts.co.uk",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "SEAT",
+    "model": "Ateca",
+    "generation": "MK1",
+    "yearFrom": 2017,
+    "yearTo": 9999,
+    "engineCode": "DFFA",
+    "displacementCc": 1968,
+    "fuelType": "diesel",
+    "powerKw": 110,
+    "powerHp": 150,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C3",
+    "oilSpecOEM": "VW 504.00/507.00",
+    "oilCapacityLiters": 4.6,
+    "oilChangeIntervalKm": 15000,
+    "source": "buycarparts.co.uk, oilspec.eu",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "SEAT",
+    "model": "Ateca",
+    "generation": "MK1",
+    "yearFrom": 2018,
+    "yearTo": 9999,
+    "engineCode": "DKZA",
+    "displacementCc": 1984,
+    "fuelType": "essence",
+    "powerKw": 140,
+    "powerHp": 190,
+    "oilViscosity": "0W-20",
+    "oilSpecAPI": "SP",
+    "oilSpecACEA": "C5",
+    "oilSpecOEM": "VW 508.00",
+    "oilCapacityLiters": 5.7,
+    "oilChangeIntervalKm": 15000,
+    "source": "buycarparts.co.uk, Seat Ateca 2.0 TSI oil specs",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "SEAT",
+    "model": "Tarraco",
+    "generation": "MK1",
+    "yearFrom": 2020,
+    "yearTo": 9999,
+    "engineCode": "DFGA",
+    "displacementCc": 1968,
+    "fuelType": "diesel",
+    "powerKw": 110,
+    "powerHp": 150,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C3",
+    "oilSpecOEM": "VW 504.00/507.00",
+    "oilCapacityLiters": 5.3,
+    "oilChangeIntervalKm": 15000,
+    "source": "automobile.tn, buycarparts.co.uk",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "SEAT",
+    "model": "Tarraco",
+    "generation": "MK1",
+    "yearFrom": 2020,
+    "yearTo": 9999,
+    "engineCode": "DDAA",
+    "displacementCc": 1968,
+    "fuelType": "diesel",
+    "powerKw": 140,
+    "powerHp": 190,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C3",
+    "oilSpecOEM": "VW 504.00/507.00",
+    "oilCapacityLiters": 5.3,
+    "oilChangeIntervalKm": 15000,
+    "source": "buycarparts.co.uk, Seat Tarraco 2.0 TDI",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "SEAT",
+    "model": "Tarraco",
+    "generation": "MK1",
+    "yearFrom": 2020,
+    "yearTo": 9999,
+    "engineCode": "CZDA",
+    "displacementCc": 1395,
+    "fuelType": "essence",
+    "powerKw": 110,
+    "powerHp": 150,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": "SN",
+    "oilSpecACEA": "C3",
+    "oilSpecOEM": "VW 502.00",
+    "oilCapacityLiters": 4.5,
+    "oilChangeIntervalKm": 15000,
+    "source": "buycarparts.co.uk, Seat Tarraco specs",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "SEAT",
+    "model": "Alhambra",
+    "generation": "MK2",
+    "yearFrom": 2015,
+    "yearTo": 2020,
+    "engineCode": "CRLB",
+    "displacementCc": 1968,
+    "fuelType": "diesel",
+    "powerKw": 110,
+    "powerHp": 150,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C3",
+    "oilSpecOEM": "VW 504.00/507.00",
+    "oilCapacityLiters": 4.6,
+    "oilChangeIntervalKm": 15000,
+    "source": "buycarparts.co.uk, Seat Alhambra specs",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "SEAT",
+    "model": "Alhambra",
+    "generation": "MK2",
+    "yearFrom": 2015,
+    "yearTo": 2020,
+    "engineCode": "DDAA",
+    "displacementCc": 1968,
+    "fuelType": "diesel",
+    "powerKw": 140,
+    "powerHp": 190,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C3",
+    "oilSpecOEM": "VW 504.00/507.00",
+    "oilCapacityLiters": 5.3,
+    "oilChangeIntervalKm": 15000,
+    "source": "buycarparts.co.uk, Seat Alhambra specs",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  }
+]

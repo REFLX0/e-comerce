@@ -236,6 +236,7 @@ export function VehicleFinder({ onClose, initialVehicleType }: VehicleFinderProp
       modelSlug: selectedModel.slug,
       engineCode: selectedEngine ?? '',
     })
+    params.set('isOilFinder', 'true')
     if (onClose) onClose()
     router.push(`/${locale}/catalogue?${params.toString()}`)
   }

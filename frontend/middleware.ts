@@ -162,7 +162,7 @@ export default auth(async (req: NextRequest & { auth?: unknown }) => {
 
   // Cross-Origin isolation
   response.headers.set('Cross-Origin-Opener-Policy', 'same-origin')
-  response.headers.set('Cross-Origin-Embedder-Policy', 'require-corp')
+  // Removed Cross-Origin-Embedder-Policy because it blocks third-party images (like imagedelivery.net) without CORP headers
 
   // Remove fingerprinting header
   response.headers.delete('x-powered-by')

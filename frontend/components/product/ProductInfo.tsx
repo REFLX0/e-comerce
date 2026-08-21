@@ -13,6 +13,7 @@ import { Link } from '@/i18n/routing'
 import { TrustBadges } from '../common/TrustBadges'
 import { ShareDropdown } from './ShareDropdown'
 import { useProductCompatibility } from '@/lib/hooks/useProductCompatibility'
+import { formatSKU } from '@/lib/utils/format'
 
 interface Props {
   product: Product
@@ -43,7 +44,7 @@ export function ProductInfo({ product, selectedVariant: controlledVariant, onVar
             {product.brand.name}
           </Link>
         )}
-        <span className="font-mono text-xs text-gray-400">{t('ref')} {selectedVariant.sku}</span>
+        <span className="font-mono text-xs text-gray-400">{t('ref')} {formatSKU(selectedVariant.sku)}</span>
       </div>
 
       {/* Title */}

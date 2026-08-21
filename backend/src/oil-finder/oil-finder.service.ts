@@ -71,10 +71,10 @@ export class OilFinderService {
    */
   async findByVehicle(make: string, model: string, engineCode?: string | null): Promise<OilFinderResult> {
     const where = {
-      make: make.trim(),
-      model: model.trim(),
+      make: { equals: make.trim(), mode: 'insensitive' as const },
+      model: { equals: model.trim(), mode: 'insensitive' as const },
       // null/undefined/'' = wildcard (engine code was optional in the dataset)
-      ...(engineCode ? { engineCode: engineCode.trim() } : {}),
+      ...(engineCode ? { engineCode: { equals: engineCode.trim(), mode: 'insensitive' as const } } : {}),
     }
 
     const rows = await this.prisma.oilFinderVehicle.findMany({

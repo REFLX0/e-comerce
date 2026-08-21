@@ -1,0 +1,957 @@
+[
+  {
+    "make": "Peugeot",
+    "model": "208",
+    "generation": "II",
+    "yearFrom": 2019,
+    "yearTo": 2024,
+    "engineCode": "EB2ADTD",
+    "displacementCc": 1199,
+    "fuelType": "essence",
+    "powerKw": 74,
+    "powerHp": 100,
+    "oilViscosity": "0W-20",
+    "oilSpecAPI": "SP",
+    "oilSpecACEA": "C5",
+    "oilSpecOEM": "PSA B71 2010",
+    "oilCapacityLiters": 3.5,
+    "oilChangeIntervalKm": 15000,
+    "source": "auto-data.net (Peugeot 208 II 1.2 PureTech 100hp EB2ADTD, 0W-20, ACEA C5, PSA B71 2010, 3.5L)",
+    "confidence": "medium",
+    "matchAmbiguity": {
+      "conflictGroup": 6,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 1199,
+        "powerHp": 100,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "0W-20",
+            "0W-30",
+            "5W-30"
+          ]
+        },
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "None",
+            "SP"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "C2",
+            "C3",
+            "C5"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "GM Dexos1 Gen3",
+            "PSA B71 2010",
+            "PSA B71 2290",
+            "PSA B71 2312"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "CITROEN C3 (HNF): 5W-30",
+        "OPEL Corsa (F12XHL): 0W-20",
+        "OPEL Mokka (F12XHL): 0W-30"
+      ]
+    }
+  },
+  {
+    "make": "Peugeot",
+    "model": "208",
+    "generation": "II",
+    "yearFrom": 2019,
+    "yearTo": 2024,
+    "engineCode": "EB2ADTS",
+    "displacementCc": 1199,
+    "fuelType": "essence",
+    "powerKw": 96,
+    "powerHp": 130,
+    "oilViscosity": "0W-20",
+    "oilSpecAPI": "SP",
+    "oilSpecACEA": "C5",
+    "oilSpecOEM": "PSA B71 2010",
+    "oilCapacityLiters": 3.5,
+    "oilChangeIntervalKm": 15000,
+    "source": "auto-data.net (Peugeot 208 II 1.2 PureTech 130hp EB2ADTS, 0W-20, ACEA C5, PSA B71 2010, 3.5L)",
+    "confidence": "medium",
+    "matchAmbiguity": {
+      "conflictGroup": 8,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 1199,
+        "powerHp": 130,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "0W-20",
+            "0W-30"
+          ]
+        },
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "None",
+            "SP"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "C2",
+            "C5"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "GM Dexos1 Gen3",
+            "PSA B71 2010",
+            "PSA B71 2312"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "OPEL Corsa (F12XHL): 0W-20",
+        "OPEL Mokka (F12XHL): 0W-30",
+        "OPEL Grandland X (F12XHL): 0W-30",
+        "Peugeot 2008 (EB2ADTS): 0W-30",
+        "Peugeot 308 (EB2ADTS): 0W-20"
+      ]
+    }
+  },
+  {
+    "make": "Peugeot",
+    "model": "2008",
+    "generation": "I",
+    "yearFrom": 2015,
+    "yearTo": 2019,
+    "engineCode": "DV6FC",
+    "displacementCc": 1560,
+    "fuelType": "diesel",
+    "powerKw": 88,
+    "powerHp": 120,
+    "oilViscosity": "0W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": "PSA B71 2312",
+    "oilCapacityLiters": 3.75,
+    "oilChangeIntervalKm": 15000,
+    "source": "buycarparts.co.uk (Peugeot 2008 I 1.6 BlueHDi 120 DV6FC, 0W-30, ACEA C2, PSA B71 2312, 3.75L)",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "Peugeot",
+    "model": "2008",
+    "generation": "II",
+    "yearFrom": 2019,
+    "yearTo": 2024,
+    "engineCode": "EB2ADTS",
+    "displacementCc": 1199,
+    "fuelType": "essence",
+    "powerKw": 96,
+    "powerHp": 130,
+    "oilViscosity": "0W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": "PSA B71 2312",
+    "oilCapacityLiters": 4.0,
+    "oilChangeIntervalKm": 15000,
+    "source": "autodoc.parts (Peugeot 2008 II 1.2 PureTech 130 EB2ADTS, 0W-30, ACEA C2, PSA B71 2312, 4.0L); same EB2ADTS as 208 II but 2008 SUV uses 0W-30/C2/B71 2312 per PSA vehicle-specific recommendation",
+    "confidence": "medium",
+    "matchAmbiguity": {
+      "conflictGroup": 8,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 1199,
+        "powerHp": 130,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "0W-20",
+            "0W-30"
+          ]
+        },
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "None",
+            "SP"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "C2",
+            "C5"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "GM Dexos1 Gen3",
+            "PSA B71 2010",
+            "PSA B71 2312"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "OPEL Corsa (F12XHL): 0W-20",
+        "OPEL Mokka (F12XHL): 0W-30",
+        "OPEL Grandland X (F12XHL): 0W-30",
+        "Peugeot 208 (EB2ADTS): 0W-20",
+        "Peugeot 308 (EB2ADTS): 0W-20"
+      ]
+    }
+  },
+  {
+    "make": "Peugeot",
+    "model": "2008",
+    "generation": "II",
+    "yearFrom": 2019,
+    "yearTo": 2024,
+    "engineCode": "DV5RD",
+    "displacementCc": 1499,
+    "fuelType": "diesel",
+    "powerKw": 75,
+    "powerHp": 102,
+    "oilViscosity": "0W-20",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C5",
+    "oilSpecOEM": "PSA B71 2010",
+    "oilCapacityLiters": 4.0,
+    "oilChangeIntervalKm": 15000,
+    "source": "autodoc.co.uk (Peugeot 2008 II 1.5 BlueHDi 102 DV5RD, 0W-20, ACEA C5, PSA B71 2010, 4.0L)",
+    "confidence": "medium",
+    "matchAmbiguity": {
+      "conflictGroup": 20,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 1499,
+        "powerHp": 102,
+        "fuelType": "diesel"
+      },
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "0W-20",
+            "5W-30"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "C2",
+            "C5"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "GM Dexos2",
+            "PSA B71 2010"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "FIAT Doblo (DV5RC): 0W-20",
+        "OPEL Crossland X (A15DTH): 5W-30",
+        "Peugeot Rifter (DV5RD): 0W-20"
+      ]
+    }
+  },
+  {
+    "make": "Peugeot",
+    "model": "301",
+    "generation": "I",
+    "yearFrom": 2012,
+    "yearTo": 2017,
+    "engineCode": "EB2",
+    "displacementCc": 1198,
+    "fuelType": "essence",
+    "powerKw": 53,
+    "powerHp": 72,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": null,
+    "oilSpecOEM": "PSA B71 2290",
+    "oilCapacityLiters": 3.25,
+    "oilChangeIntervalKm": 15000,
+    "source": "auto-data.net (Peugeot 301 1.2 VTi 72hp EB2, 5W-30, PSA B71 2290, 3.25L)",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "Peugeot",
+    "model": "301",
+    "generation": "I",
+    "yearFrom": 2012,
+    "yearTo": 2022,
+    "engineCode": "EC5",
+    "displacementCc": 1587,
+    "fuelType": "essence",
+    "powerKw": 85,
+    "powerHp": 115,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": "PSA B71 2290",
+    "oilCapacityLiters": 3.25,
+    "oilChangeIntervalKm": 15000,
+    "source": "auto-data.net + autodoc.parts (Peugeot 301 1.6 VTi 115 EC5, 5W-30, ACEA C2, PSA B71 2290, 3.25L)",
+    "confidence": "medium",
+    "matchAmbiguity": {
+      "conflictGroup": 24,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 1587,
+        "powerHp": 115,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "5W-30",
+            "5W-40"
+          ]
+        },
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "None",
+            "SN"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "A3/B4",
+            "C2"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "CITROEN C-Elysee (EC5): 5W-40"
+      ]
+    }
+  },
+  {
+    "make": "Peugeot",
+    "model": "301",
+    "generation": "I",
+    "yearFrom": 2013,
+    "yearTo": 2022,
+    "engineCode": "DV6DTED",
+    "displacementCc": 1560,
+    "fuelType": "diesel",
+    "powerKw": 68,
+    "powerHp": 92,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": "PSA B71 2290",
+    "oilCapacityLiters": 3.75,
+    "oilChangeIntervalKm": 15000,
+    "source": "automoli.com + autodoc.co.uk (Peugeot 301 1.6 HDi 92 DV6DTED, 5W-30, ACEA C2, PSA B71 2290, 3.75L)",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "Peugeot",
+    "model": "308",
+    "generation": "II",
+    "yearFrom": 2017,
+    "yearTo": 2021,
+    "engineCode": "EB2ADTS",
+    "displacementCc": 1199,
+    "fuelType": "essence",
+    "powerKw": 96,
+    "powerHp": 130,
+    "oilViscosity": "0W-20",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C5",
+    "oilSpecOEM": "PSA B71 2010",
+    "oilCapacityLiters": 3.5,
+    "oilChangeIntervalKm": 15000,
+    "source": "auto-data.net (Peugeot 308 II 1.2 PureTech 130hp EB2ADTS, 0W-20, ACEA C5, PSA B71 2010, 3.5L)",
+    "confidence": "medium",
+    "matchAmbiguity": {
+      "conflictGroup": 8,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 1199,
+        "powerHp": 130,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "0W-20",
+            "0W-30"
+          ]
+        },
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "None",
+            "SP"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "C2",
+            "C5"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "GM Dexos1 Gen3",
+            "PSA B71 2010",
+            "PSA B71 2312"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "OPEL Corsa (F12XHL): 0W-20",
+        "OPEL Mokka (F12XHL): 0W-30",
+        "OPEL Grandland X (F12XHL): 0W-30",
+        "Peugeot 208 (EB2ADTS): 0W-20",
+        "Peugeot 2008 (EB2ADTS): 0W-30"
+      ]
+    }
+  },
+  {
+    "make": "Peugeot",
+    "model": "308",
+    "generation": "II",
+    "yearFrom": 2014,
+    "yearTo": 2021,
+    "engineCode": "DV6FC",
+    "displacementCc": 1560,
+    "fuelType": "diesel",
+    "powerKw": 88,
+    "powerHp": 120,
+    "oilViscosity": "0W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": "PSA B71 2312",
+    "oilCapacityLiters": 3.75,
+    "oilChangeIntervalKm": 15000,
+    "source": "kroon-oil.com + automobile-catalog.com (Peugeot 308 II 1.6 BlueHDi 120 DV6FC, 0W-30, ACEA C2, PSA B71 2312, 3.75L)",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "Peugeot",
+    "model": "3008",
+    "generation": "II",
+    "yearFrom": 2016,
+    "yearTo": 2021,
+    "engineCode": "EP6FDT",
+    "displacementCc": 1598,
+    "fuelType": "essence",
+    "powerKw": 121,
+    "powerHp": 165,
+    "oilViscosity": "0W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": "PSA B71 2312",
+    "oilCapacityLiters": 4.25,
+    "oilChangeIntervalKm": 15000,
+    "source": "buycarparts.co.uk + auto-data.net (Peugeot 3008 II 1.6 THP 165 EP6FDT, 0W-30, ACEA C2, PSA B71 2312, 4.25L)",
+    "confidence": "medium",
+    "matchAmbiguity": {
+      "conflictGroup": 28,
+      "severity": "minor",
+      "lookupKey": {
+        "displacementCc": 1598,
+        "powerHp": 165,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "None",
+            "SN"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "PSA B71 2290",
+            "PSA B71 2312"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "CITROEN C5 Aircross (EP6FDT): 0W-30",
+        "Peugeot 5008 (EP6FDT): 0W-30"
+      ]
+    }
+  },
+  {
+    "make": "Peugeot",
+    "model": "3008",
+    "generation": "II",
+    "yearFrom": 2016,
+    "yearTo": 2021,
+    "engineCode": "DW10CTED",
+    "displacementCc": 1997,
+    "fuelType": "diesel",
+    "powerKw": 150,
+    "powerHp": 204,
+    "oilViscosity": "0W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": "PSA B71 2312",
+    "oilCapacityLiters": 5.0,
+    "oilChangeIntervalKm": 15000,
+    "source": "auto-data.net (Peugeot 3008 II 2.0 BlueHDi 180/204hp DW10CTED, 0W-30, ACEA C2, PSA B71 2312, 5.0L); corrected power from 150hp to 204hp (150kW) per DW10CTED high-output tune in 3008 GT",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "Peugeot",
+    "model": "3008",
+    "generation": "II",
+    "yearFrom": 2020,
+    "yearTo": 2024,
+    "engineCode": "DV5RC",
+    "displacementCc": 1499,
+    "fuelType": "diesel",
+    "powerKw": 96,
+    "powerHp": 130,
+    "oilViscosity": "0W-20",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C5",
+    "oilSpecOEM": "PSA B71 2010",
+    "oilCapacityLiters": 4.0,
+    "oilChangeIntervalKm": 15000,
+    "source": "auto-data.net (Peugeot 3008 II 1.5 BlueHDi 130 DV5RC, 0W-20, ACEA C5, PSA B71 2010, 4.0L)",
+    "confidence": "medium",
+    "matchAmbiguity": {
+      "conflictGroup": 22,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 1499,
+        "powerHp": 130,
+        "fuelType": "diesel"
+      },
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "0W-20",
+            "5W-30"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "C2",
+            "C5"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "GM Dexos2",
+            "PSA B71 2010"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "OPEL Grandland X (A15DTH): 5W-30",
+        "Peugeot 5008 (DV5RC): 0W-20"
+      ]
+    }
+  },
+  {
+    "make": "Peugeot",
+    "model": "5008",
+    "generation": "II",
+    "yearFrom": 2017,
+    "yearTo": 2021,
+    "engineCode": "EP6FDT",
+    "displacementCc": 1598,
+    "fuelType": "essence",
+    "powerKw": 121,
+    "powerHp": 165,
+    "oilViscosity": "0W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": "PSA B71 2312",
+    "oilCapacityLiters": 4.25,
+    "oilChangeIntervalKm": 15000,
+    "source": "buycarparts.co.uk (Peugeot 5008 II 1.6 THP 165 EP6FDT, 0W-30, ACEA C2, PSA B71 2312, 4.25L)",
+    "confidence": "medium",
+    "matchAmbiguity": {
+      "conflictGroup": 28,
+      "severity": "minor",
+      "lookupKey": {
+        "displacementCc": 1598,
+        "powerHp": 165,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "None",
+            "SN"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "PSA B71 2290",
+            "PSA B71 2312"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "CITROEN C5 Aircross (EP6FDT): 0W-30",
+        "Peugeot 3008 (EP6FDT): 0W-30"
+      ]
+    }
+  },
+  {
+    "make": "Peugeot",
+    "model": "5008",
+    "generation": "II",
+    "yearFrom": 2017,
+    "yearTo": 2022,
+    "engineCode": "DW10FC",
+    "displacementCc": 1997,
+    "fuelType": "diesel",
+    "powerKw": 110,
+    "powerHp": 150,
+    "oilViscosity": "0W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": "PSA B71 2312",
+    "oilCapacityLiters": 5.0,
+    "oilChangeIntervalKm": 15000,
+    "source": "auto-data.net (Peugeot 5008 II 2.0 BlueHDi 150 DW10FC, 0W-30, ACEA C2, PSA B71 2312, 5.0L)",
+    "confidence": "medium",
+    "matchAmbiguity": {
+      "conflictGroup": 29,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 1997,
+        "powerHp": 150,
+        "fuelType": "diesel"
+      },
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "0W-30",
+            "5W-30"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "PSA B71 2312",
+            "WSS-M2C950-A"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "FORD Focus (XWFA): 5W-30",
+        "FORD Kuga (XWKA): 5W-30",
+        "FORD Kuga (XWFA): 5W-30"
+      ]
+    }
+  },
+  {
+    "make": "Peugeot",
+    "model": "5008",
+    "generation": "II",
+    "yearFrom": 2020,
+    "yearTo": 2024,
+    "engineCode": "DV5RC",
+    "displacementCc": 1499,
+    "fuelType": "diesel",
+    "powerKw": 96,
+    "powerHp": 130,
+    "oilViscosity": "0W-20",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C5",
+    "oilSpecOEM": "PSA B71 2010",
+    "oilCapacityLiters": 4.0,
+    "oilChangeIntervalKm": 15000,
+    "source": "auto-data.net (Peugeot 5008 II 1.5 BlueHDi 130 DV5RC, 0W-20, ACEA C5, PSA B71 2010, 4.0L)",
+    "confidence": "medium",
+    "matchAmbiguity": {
+      "conflictGroup": 22,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 1499,
+        "powerHp": 130,
+        "fuelType": "diesel"
+      },
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "0W-20",
+            "5W-30"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "C2",
+            "C5"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "GM Dexos2",
+            "PSA B71 2010"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "OPEL Grandland X (A15DTH): 5W-30",
+        "Peugeot 3008 (DV5RC): 0W-20"
+      ]
+    }
+  },
+  {
+    "make": "Peugeot",
+    "model": "Partner",
+    "generation": "III",
+    "yearFrom": 2018,
+    "yearTo": 2024,
+    "engineCode": "DV6FC",
+    "displacementCc": 1560,
+    "fuelType": "diesel",
+    "powerKw": 73,
+    "powerHp": 99,
+    "oilViscosity": "0W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": "PSA B71 2312",
+    "oilCapacityLiters": 3.75,
+    "oilChangeIntervalKm": 15000,
+    "source": "auto-data.net (Peugeot Partner III 1.6 BlueHDi 99 DV6FC, 0W-30, ACEA C2, PSA B71 2312, 3.75L)",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "Peugeot",
+    "model": "Expert",
+    "generation": "III",
+    "yearFrom": 2016,
+    "yearTo": 2024,
+    "engineCode": "DW10FDDU",
+    "displacementCc": 1997,
+    "fuelType": "diesel",
+    "powerKw": 107,
+    "powerHp": 145,
+    "oilViscosity": "0W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": "PSA B71 2312",
+    "oilCapacityLiters": 5.8,
+    "oilChangeIntervalKm": 15000,
+    "source": "autodoc.co.uk + autodoc.parts + kroon-oil.com (Peugeot Expert III 2.0 BlueHDi 145 DW10FDDU, 0W-30, ACEA C2, PSA B71 2312, 5.8L)",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "Peugeot",
+    "model": "Rifter",
+    "generation": "I",
+    "yearFrom": 2018,
+    "yearTo": 2024,
+    "engineCode": "EB2DTS",
+    "displacementCc": 1199,
+    "fuelType": "essence",
+    "powerKw": 96,
+    "powerHp": 131,
+    "oilViscosity": "0W-20",
+    "oilSpecAPI": "SP",
+    "oilSpecACEA": "C5",
+    "oilSpecOEM": "PSA B71 2010",
+    "oilCapacityLiters": 4.0,
+    "oilChangeIntervalKm": 15000,
+    "source": "zeusauto.lt + auto-data.net (Peugeot Rifter 1.2 PureTech 131 EB2DTS, 0W-20, ACEA C5, PSA B71 2010, 4.0L)",
+    "confidence": "medium",
+    "matchAmbiguity": {
+      "conflictGroup": 9,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 1199,
+        "powerHp": 131,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "0W-20",
+            "0W-30",
+            "5W-30"
+          ]
+        },
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "None",
+            "SN",
+            "SP"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "C2",
+            "C5"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "PSA B71 2010",
+            "PSA B71 2290"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "CITROEN C4 Cactus (EB2ADTS): 5W-30",
+        "CITROEN C4 X (EB2ADTS): 5W-30",
+        "CITROEN C5 Aircross (EB2ADTS): 5W-30",
+        "DS AUTOMOBILES DS 3 Crossback (EB2ADTS): 0W-30",
+        "DS AUTOMOBILES DS 3 (EB2ADTS): 0W-30",
+        "DS AUTOMOBILES DS 4 (EB2ADTS): 0W-30"
+      ]
+    }
+  },
+  {
+    "make": "Peugeot",
+    "model": "Rifter",
+    "generation": "I",
+    "yearFrom": 2018,
+    "yearTo": 2024,
+    "engineCode": "DV5RD",
+    "displacementCc": 1499,
+    "fuelType": "diesel",
+    "powerKw": 75,
+    "powerHp": 102,
+    "oilViscosity": "0W-20",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C5",
+    "oilSpecOEM": "PSA B71 2010",
+    "oilCapacityLiters": 4.0,
+    "oilChangeIntervalKm": 15000,
+    "source": "auto-data.net + frenchcarforum.co.uk (Peugeot Rifter 1.5 BlueHDi 102 DV5RD, 0W-20, ACEA C5, PSA B71 2010, 4.0L)",
+    "confidence": "medium",
+    "matchAmbiguity": {
+      "conflictGroup": 20,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 1499,
+        "powerHp": 102,
+        "fuelType": "diesel"
+      },
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "0W-20",
+            "5W-30"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "C2",
+            "C5"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "GM Dexos2",
+            "PSA B71 2010"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "FIAT Doblo (DV5RC): 0W-20",
+        "OPEL Crossland X (A15DTH): 5W-30",
+        "Peugeot 2008 (DV5RD): 0W-20"
+      ]
+    }
+  }
+]

@@ -1,0 +1,94 @@
+[
+  {
+    "make": "FAW",
+    "model": "Jiefang JH6 390",
+    "generation": "Euro V",
+    "yearFrom": 2015,
+    "yearTo": 9999,
+    "engineCode": "CA6DM2-39E3F",
+    "displacementCc": 11050,
+    "fuelType": "diesel",
+    "powerKw": 287,
+    "powerHp": 390,
+    "oilViscosity": "15W-40",
+    "oilSpecAPI": "CI-4",
+    "oilSpecACEA": "E7",
+    "oilSpecOEM": null,
+    "oilCapacityLiters": 30.0,
+    "gearboxOilSeparate": true,
+    "gearboxOilSpec": null,
+    "oilChangeIntervalKm": 50000,
+    "emissionStandard": "Euro V",
+    "source": "FAW CA6DM2 spec (elecmama.com / Scribd): displacement 11.05L, oil capacity incl filter 38L (genset sump); FAW J6L Facebook post: CA6DM2-39E3F in Jiefang dump truck; truck oil capacity estimated lower than genset at ~30L; FAWDE recommends 15W-40 CI-4",
+    "confidence": "low",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "FAW",
+    "model": "Jiefang J5 320",
+    "generation": "Euro III",
+    "yearFrom": 2008,
+    "yearTo": 9999,
+    "engineCode": "CA6DL1-32",
+    "displacementCc": 7700,
+    "fuelType": "diesel",
+    "powerKw": 235,
+    "powerHp": 320,
+    "oilViscosity": "15W-40",
+    "oilSpecAPI": "CH-4",
+    "oilSpecACEA": "E5",
+    "oilSpecOEM": null,
+    "oilCapacityLiters": 28.0,
+    "gearboxOilSeparate": true,
+    "gearboxOilSpec": null,
+    "oilChangeIntervalKm": 30000,
+    "emissionStandard": "Euro III",
+    "source": "CA6DL1 workshop manual (Scribd): oil sump ~23L; Ravenol/choise.ravenol.com: FAW J5 CA6DL1-32 liquid volume 30L; chinafawtruk.com: CA6DL1 7.7L 260-320PS; Ravenol recommends 10W-40 but 15W-40 is standard for export climates",
+    "confidence": "low",
+    "matchAmbiguity": {
+      "conflictGroup": 33,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 7700,
+        "powerHp": 320,
+        "fuelType": "diesel"
+      },
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "10W-40",
+            "15W-40"
+          ]
+        },
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "CH-4",
+            "CK-4"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "E5",
+            "E9"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "Volvo VDS-4.5"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "VOLVO TRUCKS FE 320 (Euro VI): 10W-40 ACEA E9"
+      ]
+    }
+  }
+]

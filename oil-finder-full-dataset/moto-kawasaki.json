@@ -1,0 +1,275 @@
+[
+  {
+    "make": "KAWASAKI",
+    "model": "Ninja 125",
+    "generation": "BK250",
+    "yearFrom": 2019,
+    "yearTo": 9999,
+    "engineCode": "BK250A",
+    "displacementCc": 124,
+    "fuelType": "essence",
+    "engineType": "4T",
+    "powerKw": 11.0,
+    "powerHp": 15,
+    "clutchType": "embrayage humide",
+    "oilViscosity": "10W-40",
+    "oilSpecAPI": "SM",
+    "oilSpecACEA": null,
+    "oilSpecOEM": null,
+    "oilSpecJASO": "MA2",
+    "oilCapacityLiters": 1.5,
+    "gearboxOilSeparate": false,
+    "oilChangeIntervalKm": 12000,
+    "source": "Kawasaki Ninja 125 owner's manual; AMSOIL; Motul",
+    "confidence": "medium",
+    "matchAmbiguity": {
+      "conflictGroup": 7,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 124,
+        "powerHp": 15,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilSpecJASO",
+          "severity": "major",
+          "values": [
+            "MA2",
+            "MB"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "KAWASAKI Z125 (BK250): 10W-40 JASO MA2",
+        "PIAGGIO Medley 125 (MED125): 10W-40 JASO MB"
+      ]
+    }
+  },
+  {
+    "make": "KAWASAKI",
+    "model": "Z125",
+    "generation": "BK250",
+    "yearFrom": 2019,
+    "yearTo": 9999,
+    "engineCode": "BK250A",
+    "displacementCc": 124,
+    "fuelType": "essence",
+    "engineType": "4T",
+    "powerKw": 11.0,
+    "powerHp": 15,
+    "clutchType": "embrayage humide",
+    "oilViscosity": "10W-40",
+    "oilSpecAPI": "SM",
+    "oilSpecACEA": null,
+    "oilSpecOEM": null,
+    "oilSpecJASO": "MA2",
+    "oilCapacityLiters": 1.5,
+    "gearboxOilSeparate": false,
+    "oilChangeIntervalKm": 12000,
+    "source": "Kawasaki Z125 owner's manual; AMSOIL; Motul",
+    "confidence": "medium",
+    "matchAmbiguity": {
+      "conflictGroup": 7,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 124,
+        "powerHp": 15,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilSpecJASO",
+          "severity": "major",
+          "values": [
+            "MA2",
+            "MB"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "KAWASAKI Ninja 125 (BK250): 10W-40 JASO MA2",
+        "PIAGGIO Medley 125 (MED125): 10W-40 JASO MB"
+      ]
+    }
+  },
+  {
+    "make": "KAWASAKI",
+    "model": "Ninja 400",
+    "generation": "EX400",
+    "yearFrom": 2018,
+    "yearTo": 9999,
+    "engineCode": "EX400A",
+    "displacementCc": 399,
+    "fuelType": "essence",
+    "engineType": "4T",
+    "powerKw": 33.4,
+    "powerHp": 45,
+    "clutchType": "embrayage humide",
+    "oilViscosity": "10W-40",
+    "oilSpecAPI": "SM",
+    "oilSpecACEA": null,
+    "oilSpecOEM": null,
+    "oilSpecJASO": "MA2",
+    "oilCapacityLiters": 2.1,
+    "gearboxOilSeparate": false,
+    "oilChangeIntervalKm": 12000,
+    "source": "Kawasaki Ninja 400 owner's manual; AMSOIL; Motul",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "KAWASAKI",
+    "model": "Z400",
+    "generation": "EX400",
+    "yearFrom": 2019,
+    "yearTo": 9999,
+    "engineCode": "EX400A",
+    "displacementCc": 399,
+    "fuelType": "essence",
+    "engineType": "4T",
+    "powerKw": 33.4,
+    "powerHp": 45,
+    "clutchType": "embrayage humide",
+    "oilViscosity": "10W-40",
+    "oilSpecAPI": "SM",
+    "oilSpecACEA": null,
+    "oilSpecOEM": null,
+    "oilSpecJASO": "MA2",
+    "oilCapacityLiters": 2.1,
+    "gearboxOilSeparate": false,
+    "oilChangeIntervalKm": 12000,
+    "source": "Kawasaki Z400 owner's manual; AMSOIL; Motul",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "KAWASAKI",
+    "model": "Z650",
+    "generation": "ER650",
+    "yearFrom": 2017,
+    "yearTo": 9999,
+    "engineCode": "ER650F",
+    "displacementCc": 649,
+    "fuelType": "essence",
+    "engineType": "4T",
+    "powerKw": 50.0,
+    "powerHp": 68,
+    "clutchType": "embrayage humide",
+    "oilViscosity": "10W-40",
+    "oilSpecAPI": "SM",
+    "oilSpecACEA": null,
+    "oilSpecOEM": null,
+    "oilSpecJASO": "MA2",
+    "oilCapacityLiters": 2.8,
+    "gearboxOilSeparate": false,
+    "oilChangeIntervalKm": 12000,
+    "source": "Kawasaki Z650 owner's manual; AMSOIL; Motul",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "KAWASAKI",
+    "model": "Versys 650",
+    "generation": "ER650",
+    "yearFrom": 2017,
+    "yearTo": 9999,
+    "engineCode": "ER650F",
+    "displacementCc": 649,
+    "fuelType": "essence",
+    "engineType": "4T",
+    "powerKw": 50.0,
+    "powerHp": 68,
+    "clutchType": "embrayage humide",
+    "oilViscosity": "10W-40",
+    "oilSpecAPI": "SM",
+    "oilSpecACEA": null,
+    "oilSpecOEM": null,
+    "oilSpecJASO": "MA2",
+    "oilCapacityLiters": 2.8,
+    "gearboxOilSeparate": false,
+    "oilChangeIntervalKm": 12000,
+    "source": "Kawasaki Versys 650 owner's manual; AMSOIL; Motul",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "KAWASAKI",
+    "model": "Z900",
+    "generation": "ZRT00",
+    "yearFrom": 2017,
+    "yearTo": 9999,
+    "engineCode": "ZRT00A",
+    "displacementCc": 948,
+    "fuelType": "essence",
+    "engineType": "4T",
+    "powerKw": 92.0,
+    "powerHp": 125,
+    "clutchType": "embrayage humide",
+    "oilViscosity": "10W-40",
+    "oilSpecAPI": "SM",
+    "oilSpecACEA": null,
+    "oilSpecOEM": null,
+    "oilSpecJASO": "MA2",
+    "oilCapacityLiters": 3.7,
+    "gearboxOilSeparate": false,
+    "oilChangeIntervalKm": 12000,
+    "source": "Kawasaki Z900 owner's manual; AMSOIL; Motul",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "KAWASAKI",
+    "model": "KLX250",
+    "generation": "KL250",
+    "yearFrom": 2020,
+    "yearTo": 9999,
+    "engineCode": "KL250D",
+    "displacementCc": 249,
+    "fuelType": "essence",
+    "engineType": "4T",
+    "powerKw": 18.0,
+    "powerHp": 24,
+    "clutchType": "embrayage humide",
+    "oilViscosity": "10W-40",
+    "oilSpecAPI": "SM",
+    "oilSpecACEA": null,
+    "oilSpecOEM": null,
+    "oilSpecJASO": "MA2",
+    "oilCapacityLiters": 2.1,
+    "gearboxOilSeparate": false,
+    "oilChangeIntervalKm": 6000,
+    "source": "Kawasaki KLX250 owner's manual; AMSOIL; Motul",
+    "confidence": "medium",
+    "matchAmbiguity": {
+      "conflictGroup": 24,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 249,
+        "powerHp": 24,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "10W-30",
+            "10W-40"
+          ]
+        },
+        {
+          "field": "oilSpecJASO",
+          "severity": "major",
+          "values": [
+            "MA",
+            "MA2"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "HONDA CRF250L (MD38): 10W-30 JASO MA"
+      ]
+    }
+  }
+]

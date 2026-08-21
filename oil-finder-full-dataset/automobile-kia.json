@@ -1,0 +1,639 @@
+[
+  {
+    "make": "KIA",
+    "model": "Picanto",
+    "generation": "JA",
+    "yearFrom": 2017,
+    "yearTo": 2026,
+    "engineCode": "G3LA",
+    "displacementCc": 998,
+    "fuelType": "essence",
+    "powerKw": 49,
+    "powerHp": 67,
+    "oilViscosity": "0W-20",
+    "oilSpecAPI": "SP",
+    "oilSpecACEA": null,
+    "oilSpecOEM": "ILSAC GF-6A",
+    "oilCapacityLiters": 3.3,
+    "oilChangeIntervalKm": 15000,
+    "source": "KIA owner’s manual chapter9_8.htm; KIA media specifications (kiamedia.com); AMSOIL product lookup; Costaoils.com",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "KIA",
+    "model": "Picanto",
+    "generation": "JA",
+    "yearFrom": 2017,
+    "yearTo": 2026,
+    "engineCode": "G4LA",
+    "displacementCc": 1248,
+    "fuelType": "essence",
+    "powerKw": 62,
+    "powerHp": 84,
+    "oilViscosity": "0W-20",
+    "oilSpecAPI": "SP",
+    "oilSpecACEA": null,
+    "oilSpecOEM": "ILSAC GF-6A",
+    "oilCapacityLiters": 3.5,
+    "oilChangeIntervalKm": 15000,
+    "source": "KIA owner’s manual chapter9_8.htm; KIA media specifications (kiamedia.com); AMSOIL product lookup; Costaoils.com",
+    "confidence": "high",
+    "matchAmbiguity": {
+      "conflictGroup": 10,
+      "severity": "minor",
+      "lookupKey": {
+        "displacementCc": 1248,
+        "powerHp": 84,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "SN PLUS",
+            "SP"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "ILSAC GF-6A",
+            "None"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "Hyundai i20 (G4LA): 0W-20",
+        "Hyundai Bayon (G4LA): 0W-20",
+        "KIA Stonic (G4LA): 0W-20"
+      ]
+    }
+  },
+  {
+    "make": "KIA",
+    "model": "Rio",
+    "generation": "QB",
+    "yearFrom": 2017,
+    "yearTo": 2023,
+    "engineCode": "G4FC",
+    "displacementCc": 1396,
+    "fuelType": "essence",
+    "powerKw": 74,
+    "powerHp": 100,
+    "oilViscosity": "0W-20",
+    "oilSpecAPI": "SP",
+    "oilSpecACEA": null,
+    "oilSpecOEM": "ILSAC GF-6A",
+    "oilCapacityLiters": 3.3,
+    "oilChangeIntervalKm": 15000,
+    "source": "KIA owner’s manual chapter9_8.htm; KIA media specifications (kiamedia.com); AMSOIL product lookup; KIA forums (kiaownersclub.co.uk)",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "KIA",
+    "model": "Rio",
+    "generation": "QB",
+    "yearFrom": 2017,
+    "yearTo": 2023,
+    "engineCode": "G4FG",
+    "displacementCc": 1591,
+    "fuelType": "essence",
+    "powerKw": 94,
+    "powerHp": 128,
+    "oilViscosity": "0W-20",
+    "oilSpecAPI": "SP",
+    "oilSpecACEA": null,
+    "oilSpecOEM": "ILSAC GF-6A",
+    "oilCapacityLiters": 3.8,
+    "oilChangeIntervalKm": 15000,
+    "source": "KIA owner’s manual chapter9_8.htm; KIA media specifications (kiamedia.com); AMSOIL product lookup; KIA forums (kiaownersclub.co.uk) [capacity corrected from 3.3→3.8L per AMSOIL lookup for 1.6L]",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "KIA",
+    "model": "Stonic",
+    "generation": "YB",
+    "yearFrom": 2017,
+    "yearTo": 2026,
+    "engineCode": "G3LC",
+    "displacementCc": 998,
+    "fuelType": "essence",
+    "powerKw": 88,
+    "powerHp": 120,
+    "oilViscosity": "0W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": null,
+    "oilCapacityLiters": 3.6,
+    "oilChangeIntervalKm": 15000,
+    "source": "KIA owner’s manual chapter9_8.htm (1.0 T-GDi specific: SAE 0W-30, ACEA C2, 3.6L); KIA media specifications (kiamedia.com); Costaoils.com",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "KIA",
+    "model": "Stonic",
+    "generation": "YB",
+    "yearFrom": 2017,
+    "yearTo": 2026,
+    "engineCode": "G4LA",
+    "displacementCc": 1248,
+    "fuelType": "essence",
+    "powerKw": 62,
+    "powerHp": 84,
+    "oilViscosity": "0W-20",
+    "oilSpecAPI": "SP",
+    "oilSpecACEA": null,
+    "oilSpecOEM": "ILSAC GF-6A",
+    "oilCapacityLiters": 3.3,
+    "oilChangeIntervalKm": 15000,
+    "source": "KIA owner’s manual chapter9_8.htm; KIA media specifications (kiamedia.com); AMSOIL product lookup; Costaoils.com",
+    "confidence": "high",
+    "matchAmbiguity": {
+      "conflictGroup": 10,
+      "severity": "minor",
+      "lookupKey": {
+        "displacementCc": 1248,
+        "powerHp": 84,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "SN PLUS",
+            "SP"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "ILSAC GF-6A",
+            "None"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "Hyundai i20 (G4LA): 0W-20",
+        "Hyundai Bayon (G4LA): 0W-20",
+        "KIA Picanto (G4LA): 0W-20"
+      ]
+    }
+  },
+  {
+    "make": "KIA",
+    "model": "Stonic",
+    "generation": "YB",
+    "yearFrom": 2017,
+    "yearTo": 2026,
+    "engineCode": "D4FA",
+    "displacementCc": 1493,
+    "fuelType": "diesel",
+    "powerKw": 100,
+    "powerHp": 136,
+    "oilViscosity": "0W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": null,
+    "oilCapacityLiters": 5.3,
+    "oilChangeIntervalKm": 15000,
+    "source": "KIA owner’s manual chapter9_8.htm (CRDi: SAE 0W-30, ACEA C2/C3); KIA media specifications (kiamedia.com); AMSOIL product lookup",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "KIA",
+    "model": "Ceed",
+    "generation": "CD",
+    "yearFrom": 2018,
+    "yearTo": 2026,
+    "engineCode": "G3LC",
+    "displacementCc": 998,
+    "fuelType": "essence",
+    "powerKw": 88,
+    "powerHp": 120,
+    "oilViscosity": "0W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": null,
+    "oilCapacityLiters": 3.6,
+    "oilChangeIntervalKm": 15000,
+    "source": "KIA owner’s manual chapter9_8.htm (1.0 T-GDi specific: SAE 0W-30, ACEA C2, 3.6L); KIA media specifications (kiamedia.com); Costaoils.com",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "KIA",
+    "model": "Ceed",
+    "generation": "CD",
+    "yearFrom": 2018,
+    "yearTo": 2026,
+    "engineCode": "G4LD",
+    "displacementCc": 1353,
+    "fuelType": "essence",
+    "powerKw": 103,
+    "powerHp": 140,
+    "oilViscosity": "0W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": null,
+    "oilCapacityLiters": 4.0,
+    "oilChangeIntervalKm": 15000,
+    "source": "KIA owner’s manual chapter9_8.htm (T-GDi general rule: SAE 0W-30, ACEA C2/C3); KIA media specifications (kiamedia.com); AMSOIL product lookup",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "KIA",
+    "model": "Ceed",
+    "generation": "CD",
+    "yearFrom": 2018,
+    "yearTo": 2026,
+    "engineCode": "D4FA",
+    "displacementCc": 1493,
+    "fuelType": "diesel",
+    "powerKw": 100,
+    "powerHp": 136,
+    "oilViscosity": "0W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": null,
+    "oilCapacityLiters": 5.3,
+    "oilChangeIntervalKm": 15000,
+    "source": "KIA owner’s manual chapter9_8.htm (CRDi: SAE 0W-30, ACEA C2/C3); KIA media specifications (kiamedia.com); AMSOIL product lookup",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "KIA",
+    "model": "Ceed",
+    "generation": "CD",
+    "yearFrom": 2018,
+    "yearTo": 2026,
+    "engineCode": "D4FE",
+    "displacementCc": 1582,
+    "fuelType": "diesel",
+    "powerKw": 100,
+    "powerHp": 136,
+    "oilViscosity": "0W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": null,
+    "oilCapacityLiters": 5.3,
+    "oilChangeIntervalKm": 15000,
+    "source": "KIA owner’s manual chapter9_8.htm (CRDi: SAE 0W-30, ACEA C2/C3); KIA media specifications (kiamedia.com); AMSOIL product lookup",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "KIA",
+    "model": "Sportage",
+    "generation": "NQ5",
+    "yearFrom": 2021,
+    "yearTo": 2026,
+    "engineCode": "G4FJ",
+    "displacementCc": 1591,
+    "fuelType": "essence",
+    "powerKw": 132,
+    "powerHp": 180,
+    "oilViscosity": "0W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": null,
+    "oilCapacityLiters": 5.1,
+    "oilChangeIntervalKm": 15000,
+    "source": "KIA owner’s manual chapter9_8.htm (T-GDi general rule: SAE 0W-30, ACEA C2/C3); KIA media specifications (kiamedia.com); AMSOIL product lookup; KIA forums (kia-forums.com)",
+    "confidence": "medium",
+    "matchAmbiguity": {
+      "conflictGroup": 25,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 1591,
+        "powerHp": 180,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "0W-20",
+            "0W-30"
+          ]
+        },
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "None",
+            "SP"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "C2",
+            "None"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "ILSAC GF-6A",
+            "None"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "Hyundai Tucson (G4FJ): 0W-20",
+        "KIA Seltos (G4FJ): 0W-30"
+      ]
+    }
+  },
+  {
+    "make": "KIA",
+    "model": "Sportage",
+    "generation": "NQ5",
+    "yearFrom": 2021,
+    "yearTo": 2026,
+    "engineCode": "G4NA",
+    "displacementCc": 1999,
+    "fuelType": "essence",
+    "powerKw": 115,
+    "powerHp": 156,
+    "oilViscosity": "0W-20",
+    "oilSpecAPI": "SP",
+    "oilSpecACEA": null,
+    "oilSpecOEM": "ILSAC GF-6A",
+    "oilCapacityLiters": 5.1,
+    "oilChangeIntervalKm": 15000,
+    "source": "KIA owner’s manual chapter9_8.htm (MPI: SAE 0W-20, API SP, ILSAC GF-6A); KIA media specifications (kiamedia.com); AMSOIL product lookup [capacity corrected from 4.5→5.1L per AMSOIL]",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "KIA",
+    "model": "Sportage",
+    "generation": "NQ5",
+    "yearFrom": 2021,
+    "yearTo": 2026,
+    "engineCode": "D4FE",
+    "displacementCc": 1582,
+    "fuelType": "diesel",
+    "powerKw": 100,
+    "powerHp": 136,
+    "oilViscosity": "0W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": null,
+    "oilCapacityLiters": 5.1,
+    "oilChangeIntervalKm": 15000,
+    "source": "KIA owner’s manual chapter9_8.htm (CRDi: SAE 0W-30, ACEA C2/C3); KIA media specifications (kiamedia.com); AMSOIL product lookup",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "KIA",
+    "model": "Sportage",
+    "generation": "NQ5",
+    "yearFrom": 2021,
+    "yearTo": 2026,
+    "engineCode": "D4HA",
+    "displacementCc": 1995,
+    "fuelType": "diesel",
+    "powerKw": 137,
+    "powerHp": 186,
+    "oilViscosity": "0W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": null,
+    "oilCapacityLiters": 5.3,
+    "oilChangeIntervalKm": 15000,
+    "source": "KIA owner’s manual chapter9_8.htm (CRDi: SAE 0W-30, ACEA C2/C3); KIA media specifications (kiamedia.com); AMSOIL product lookup",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "KIA",
+    "model": "Seltos",
+    "generation": "SP2",
+    "yearFrom": 2020,
+    "yearTo": 2026,
+    "engineCode": "G4NA",
+    "displacementCc": 1999,
+    "fuelType": "essence",
+    "powerKw": 115,
+    "powerHp": 156,
+    "oilViscosity": "0W-20",
+    "oilSpecAPI": "SP",
+    "oilSpecACEA": null,
+    "oilSpecOEM": "ILSAC GF-6A",
+    "oilCapacityLiters": 4.0,
+    "oilChangeIntervalKm": 15000,
+    "source": "KIA owner’s manual chapter9_8.htm (MPI: SAE 0W-20, API SP, ILSAC GF-6A); KIA media specifications (kiamedia.com); AMSOIL product lookup",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "KIA",
+    "model": "Seltos",
+    "generation": "SP2",
+    "yearFrom": 2020,
+    "yearTo": 2026,
+    "engineCode": "G4FJ",
+    "displacementCc": 1591,
+    "fuelType": "essence",
+    "powerKw": 132,
+    "powerHp": 180,
+    "oilViscosity": "0W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": null,
+    "oilCapacityLiters": 5.1,
+    "oilChangeIntervalKm": 15000,
+    "source": "KIA owner’s manual chapter9_8.htm (T-GDi general rule: SAE 0W-30, ACEA C2/C3); KIA media specifications (kiamedia.com); AMSOIL product lookup; KIA forums (kia-forums.com)",
+    "confidence": "medium",
+    "matchAmbiguity": {
+      "conflictGroup": 25,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 1591,
+        "powerHp": 180,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "0W-20",
+            "0W-30"
+          ]
+        },
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "None",
+            "SP"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "C2",
+            "None"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "ILSAC GF-6A",
+            "None"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "Hyundai Tucson (G4FJ): 0W-20",
+        "KIA Sportage (G4FJ): 0W-30"
+      ]
+    }
+  },
+  {
+    "make": "KIA",
+    "model": "Seltos",
+    "generation": "SP2",
+    "yearFrom": 2020,
+    "yearTo": 2026,
+    "engineCode": "D4FA",
+    "displacementCc": 1493,
+    "fuelType": "diesel",
+    "powerKw": 85,
+    "powerHp": 116,
+    "oilViscosity": "0W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": null,
+    "oilCapacityLiters": 4.2,
+    "oilChangeIntervalKm": 15000,
+    "source": "KIA owner’s manual chapter9_8.htm (CRDi: SAE 0W-30, ACEA C2/C3); KIA media specifications (kiamedia.com); AMSOIL product lookup",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "KIA",
+    "model": "Sorento",
+    "generation": "MQ4",
+    "yearFrom": 2020,
+    "yearTo": 2026,
+    "engineCode": "G4KN",
+    "displacementCc": 2497,
+    "fuelType": "essence",
+    "powerKw": 143,
+    "powerHp": 194,
+    "oilViscosity": "0W-20",
+    "oilSpecAPI": "SP",
+    "oilSpecACEA": null,
+    "oilSpecOEM": "ILSAC GF-6A",
+    "oilCapacityLiters": 5.8,
+    "oilChangeIntervalKm": 15000,
+    "source": "KIA owner’s manual chapter9_8.htm (MPI/GDI: SAE 0W-20, API SP, ILSAC GF-6A); KIA media specifications (kiamedia.com); AMSOIL product lookup",
+    "confidence": "high",
+    "matchAmbiguity": {
+      "conflictGroup": 30,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 2497,
+        "powerHp": 194,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "0W-20",
+            "0W-30"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "Hyundai Santa Fe (G4KN): 0W-30"
+      ]
+    }
+  },
+  {
+    "make": "KIA",
+    "model": "Sorento",
+    "generation": "MQ4",
+    "yearFrom": 2020,
+    "yearTo": 2026,
+    "engineCode": "G4KL",
+    "displacementCc": 2497,
+    "fuelType": "essence",
+    "powerKw": 209,
+    "powerHp": 284,
+    "oilViscosity": "0W-30",
+    "oilSpecAPI": "SP",
+    "oilSpecACEA": null,
+    "oilSpecOEM": "ILSAC GF-6A",
+    "oilCapacityLiters": 5.8,
+    "oilChangeIntervalKm": 15000,
+    "source": "KIA owner’s manual chapter9_8.htm (2.5 T-GDi specific: oil cap says 0W-30, API SP, ILSAC GF-6A, 5.8L); KIA media specifications (kiamedia.com)",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "KIA",
+    "model": "Sorento",
+    "generation": "MQ4",
+    "yearFrom": 2020,
+    "yearTo": 2026,
+    "engineCode": "D4HE",
+    "displacementCc": 2199,
+    "fuelType": "diesel",
+    "powerKw": 149,
+    "powerHp": 202,
+    "oilViscosity": "0W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": null,
+    "oilCapacityLiters": 6.0,
+    "oilChangeIntervalKm": 15000,
+    "source": "KIA owner’s manual chapter9_8.htm (CRDi: SAE 0W-30, ACEA C2/C3); KIA media specifications (kiamedia.com); AMSOIL product lookup [capacity corrected from 6.7→6.0L per KIA Sorento MQ4 manual]",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "KIA",
+    "model": "Carnival",
+    "generation": "KA4",
+    "yearFrom": 2021,
+    "yearTo": 2026,
+    "engineCode": "G6DC",
+    "displacementCc": 3470,
+    "fuelType": "essence",
+    "powerKw": 216,
+    "powerHp": 294,
+    "oilViscosity": "0W-20",
+    "oilSpecAPI": "SP",
+    "oilSpecACEA": null,
+    "oilSpecOEM": "ILSAC GF-6A",
+    "oilCapacityLiters": 5.8,
+    "oilChangeIntervalKm": 15000,
+    "source": "KIA owner’s manual chapter9_8.htm (GDI V6 3.5L: SAE 0W-20, API SP, ILSAC GF-6A, 5.8L); KIA media specifications (kiamedia.com); AMSOIL product lookup",
+    "confidence": "high",
+    "matchAmbiguity": null
+  }
+]

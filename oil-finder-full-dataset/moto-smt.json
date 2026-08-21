@@ -1,0 +1,52 @@
+[
+  {
+    "make": "SMT",
+    "model": "SMT 125",
+    "generation": "SMT125",
+    "yearFrom": 2018,
+    "yearTo": 9999,
+    "engineCode": "SMT125",
+    "displacementCc": 125,
+    "fuelType": "essence",
+    "engineType": "4T",
+    "powerKw": 7.4,
+    "powerHp": 10,
+    "clutchType": "embrayage humide",
+    "oilViscosity": "10W-30",
+    "oilSpecAPI": "SM",
+    "oilSpecACEA": null,
+    "oilSpecOEM": null,
+    "oilSpecJASO": "MA2",
+    "oilCapacityLiters": 1.0,
+    "gearboxOilSeparate": false,
+    "oilChangeIntervalKm": 5000,
+    "source": "SMT 125 specs; generic Chinese 125cc specs; AMSOIL",
+    "confidence": "low",
+    "matchAmbiguity": {
+      "conflictGroup": 10,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 125,
+        "powerHp": 10,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilSpecJASO",
+          "severity": "major",
+          "values": [
+            "MA2",
+            "MB"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "KYMCO Agility 125 (AGL125): 10W-30 JASO MB",
+        "SENKE SK 125 (SK125): 10W-30 JASO MA2",
+        "SLC SLC 125 (SLC125): 10W-30 JASO MA2",
+        "SYM Symphony 125 (SYM125): 10W-30 JASO MB",
+        "ZIMOTA ZM 125 (ZM125): 10W-30 JASO MA2"
+      ]
+    }
+  }
+]

@@ -17,9 +17,12 @@ const LOCAL_CATEGORY_IMAGES: Record<string, string> = {
   'lubrifiants':    '/img/categories/lubrifiant.png',
   'frein':          '/img/categories/frein.png',
   'hydraulique':    '/img/categories/hydraulique.png',
-  'pieces-auto':    'https://images.unsplash.com/photo-1530046339160-ce3e530c7d2f?q=80&w=600',
-  'moto-karting':   'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?q=80&w=600',
-  'marine':         'https://images.unsplash.com/photo-1569263979104-865ab7cd8d13?q=80&w=600',
+  'karting':              '/img/categories/karting.jpg',
+  'moto':                 '/img/categories/moto.jpg',
+  'moto-karting':         '/img/categories/moto.jpg',
+  'pieces-auto':          'https://images.unsplash.com/photo-1530046339160-ce3e530c7d2f?q=80&w=600',
+  'auto-pieces-rechange': 'https://images.unsplash.com/photo-1530046339160-ce3e530c7d2f?q=80&w=600',
+  'marine':               'https://images.unsplash.com/photo-1569263979104-865ab7cd8d13?q=80&w=600',
 }
 
 const CATEGORY_META: Record<string, { icon: React.ElementType; color: string; bg: string; desc?: string; descKey?: string }> = {
@@ -30,10 +33,13 @@ const CATEGORY_META: Record<string, { icon: React.ElementType; color: string; bg
   'graisses':             { icon: Disc3,        color: 'text-yellow-600',  bg: 'bg-yellow-50',  desc: 'Protection maximale' },
   'refroidissement':      { icon: Thermometer,  color: 'text-teal-600',    bg: 'bg-teal-50',    desc: 'Liquides de refroidissement' },
   'frein':                { icon: CircleDot,    color: 'text-red-600',     bg: 'bg-red-50',     descKey: 'catBrakeDesc' },
+  'karting':              { icon: Bike,         color: 'text-orange-600',  bg: 'bg-orange-50',  desc: '2 roues, scooters & karting' },
   'moto-karting':         { icon: Bike,         color: 'text-orange-600',  bg: 'bg-orange-50',  desc: '2 roues & scooters' },
   'poids-lourd-agricole': { icon: Tractor,      color: 'text-green-600',   bg: 'bg-green-50',   desc: 'Camions & engins agricoles' },
   'filtres':              { icon: Filter,       color: 'text-purple-600',  bg: 'bg-purple-50',  descKey: 'catFiltersDesc' },
   'additifs':             { icon: FlaskConical, color: 'text-pink-600',    bg: 'bg-pink-50',    desc: 'Traitements & entretien moteur' },
+  'pieces-auto':          { icon: Package,      color: 'text-gray-600',    bg: 'bg-gray-50',    desc: "Pièces d'origine" },
+  'auto-pieces-rechange': { icon: Package,      color: 'text-gray-600',    bg: 'bg-gray-50',    desc: "Pièces d'origine" },
 }
 
 function CategoryCardImage({ cat }: { cat: { image?: string | null; name: string; slug: string } }) {
@@ -45,8 +51,8 @@ function CategoryCardImage({ cat }: { cat: { image?: string | null; name: string
   let imageUrl = localImg || cat.image;
   if (!imageUrl && !imgError) {
     // Search by name if slug doesn't match exactly
-    const entry = Object.entries(LOCAL_CATEGORY_IMAGES).find(([, _]) =>
-      cat.name.toLowerCase().includes(_)
+    const entry = Object.entries(LOCAL_CATEGORY_IMAGES).find(([key, _]) =>
+      cat.name.toLowerCase().includes(key)
     )
     if (entry) imageUrl = entry[1]
   }
@@ -78,16 +84,25 @@ export function CategoryGrid() {
   })
   const t = useTranslations('Home')
 
-  // Show up to 6 root categories
-  const roots = categories?.filter((c) => !c.parentId)?.slice(0, 6) ?? []
+  // Show specific root categories in a specific order
+  const displaySlugs = ['karting', 'automobile', 'moto-karting', 'marine']
+  const dbRoots = categories
+    ?.filter((c) => displaySlugs.includes(c.slug))
+    .sort((a, b) => displaySlugs.indexOf(a.slug) - displaySlugs.indexOf(b.slug)) ?? []
+
+  // Add the "Pièce de rechange" static category
+  const roots = [
+    ...dbRoots,
+    { id: 'static-pieces-auto', name: 'Pièce de rechange', slug: 'pieces-auto' }
+  ]
 
   if (isLoading) {
     return (
       <section className="bg-gray-50 py-16 md:py-20">
         <div className="section-padding">
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
-            {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div key={i} className="aspect-square animate-pulse rounded-2xl bg-gray-200" />
+          <div className="flex flex-wrap justify-center gap-4 lg:gap-6">
+            {[1, 2, 3, 4, 5].map((i) => (
+              <div key={i} className="aspect-square w-[calc(50%-0.5rem)] sm:w-[calc(33.333%-0.67rem)] lg:w-56 animate-pulse rounded-2xl bg-gray-200" />
             ))}
           </div>
         </div>
@@ -111,19 +126,19 @@ export function CategoryGrid() {
           </p>
         </div>
 
-        {/* 6-column grid */}
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
+        {/* Categories Flex Grid */}
+        <div className="flex flex-wrap justify-center gap-4 lg:gap-6">
           {roots.map((cat) => {
             const meta = CATEGORY_META[cat.slug]
             return (
               <Link
                 key={cat.id}
                 href={`/categorie/${cat.slug}`}
-                className="group flex flex-col overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-brand-accent/30 hover:shadow-lg"
+                className="group flex flex-col w-[calc(50%-0.5rem)] sm:w-[calc(33.333%-0.67rem)] lg:w-56 overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-brand-accent/30 hover:shadow-lg"
               >
                 {/* Image / Icon area */}
                 <div className="relative aspect-square overflow-hidden">
-                  <CategoryCardImage cat={cat} />
+                  <CategoryCardImage cat={cat as any} />
                   {/* Overlay on hover */}
                   <div className="absolute inset-0 bg-brand-primary/0 transition-colors duration-200 group-hover:bg-brand-primary/10" />
                 </div>

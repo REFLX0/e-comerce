@@ -1,0 +1,972 @@
+[
+  {
+    "make": "OPEL",
+    "model": "Corsa",
+    "generation": "F",
+    "yearFrom": 2019,
+    "yearTo": 9999,
+    "engineCode": "F12XHL",
+    "displacementCc": 1199,
+    "fuelType": "essence",
+    "powerKw": 74,
+    "powerHp": 100,
+    "oilViscosity": "0W-20",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": "GM Dexos1 Gen3",
+    "oilCapacityLiters": 3.5,
+    "oilChangeIntervalKm": 15000,
+    "source": "auto-data.net, autodoc.co.uk, buycarparts.co.uk",
+    "confidence": "high",
+    "matchAmbiguity": {
+      "conflictGroup": 6,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 1199,
+        "powerHp": 100,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "0W-20",
+            "0W-30",
+            "5W-30"
+          ]
+        },
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "None",
+            "SP"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "C2",
+            "C3",
+            "C5"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "GM Dexos1 Gen3",
+            "PSA B71 2010",
+            "PSA B71 2290",
+            "PSA B71 2312"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "CITROEN C3 (HNF): 5W-30",
+        "OPEL Mokka (F12XHL): 0W-30",
+        "Peugeot 208 (EB2ADTD): 0W-20"
+      ]
+    }
+  },
+  {
+    "make": "OPEL",
+    "model": "Corsa",
+    "generation": "F",
+    "yearFrom": 2019,
+    "yearTo": 9999,
+    "engineCode": "F12XHL",
+    "displacementCc": 1199,
+    "fuelType": "essence",
+    "powerKw": 96,
+    "powerHp": 130,
+    "oilViscosity": "0W-20",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": "GM Dexos1 Gen3",
+    "oilCapacityLiters": 3.7,
+    "oilChangeIntervalKm": 15000,
+    "source": "auto-data.net, autodoc.co.uk, oilguide.bizol.com",
+    "confidence": "high",
+    "matchAmbiguity": {
+      "conflictGroup": 8,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 1199,
+        "powerHp": 130,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "0W-20",
+            "0W-30"
+          ]
+        },
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "None",
+            "SP"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "C2",
+            "C5"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "GM Dexos1 Gen3",
+            "PSA B71 2010",
+            "PSA B71 2312"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "OPEL Mokka (F12XHL): 0W-30",
+        "OPEL Grandland X (F12XHL): 0W-30",
+        "Peugeot 208 (EB2ADTS): 0W-20",
+        "Peugeot 2008 (EB2ADTS): 0W-30",
+        "Peugeot 308 (EB2ADTS): 0W-20"
+      ]
+    }
+  },
+  {
+    "make": "OPEL",
+    "model": "Corsa",
+    "generation": "E",
+    "yearFrom": 2015,
+    "yearTo": 2019,
+    "engineCode": "F10XHL",
+    "displacementCc": 999,
+    "fuelType": "essence",
+    "powerKw": 85,
+    "powerHp": 115,
+    "oilViscosity": "0W-20",
+    "oilSpecAPI": "SN",
+    "oilSpecACEA": null,
+    "oilSpecOEM": "GM Dexos1 Gen2",
+    "oilCapacityLiters": 4.0,
+    "oilChangeIntervalKm": 15000,
+    "source": "reddit.com/r/opel, ato24.de, buycarparts.co.uk",
+    "confidence": "high",
+    "matchAmbiguity": {
+      "conflictGroup": 5,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 999,
+        "powerHp": 115,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "SN",
+            "SP"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "C5",
+            "None"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "GM Dexos1 Gen2",
+            "VW 508.00"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "CHEVROLET Tracker (LI6): 0W-20",
+        "SEAT Ibiza (DLAA): 0W-20",
+        "SEAT Arona (DLAA): 0W-20",
+        "SKODA Kamiq (DLAA): 0W-20",
+        "SKODA Kushaq (DLAA): 0W-20"
+      ]
+    }
+  },
+  {
+    "make": "OPEL",
+    "model": "Corsa",
+    "generation": "E",
+    "yearFrom": 2015,
+    "yearTo": 2019,
+    "engineCode": "B14XFL",
+    "displacementCc": 1364,
+    "fuelType": "essence",
+    "powerKw": 74,
+    "powerHp": 100,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": "SN",
+    "oilSpecACEA": null,
+    "oilSpecOEM": "GM Dexos1 Gen2",
+    "oilCapacityLiters": 4.0,
+    "oilChangeIntervalKm": 15000,
+    "source": "auto-data.net, autodoc.co.uk, automoli.com",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "OPEL",
+    "model": "Astra",
+    "generation": "K",
+    "yearFrom": 2015,
+    "yearTo": 2022,
+    "engineCode": "B14XFL",
+    "displacementCc": 1364,
+    "fuelType": "essence",
+    "powerKw": 110,
+    "powerHp": 150,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": "SN",
+    "oilSpecACEA": null,
+    "oilSpecOEM": "GM Dexos1 Gen2",
+    "oilCapacityLiters": 4.5,
+    "oilChangeIntervalKm": 15000,
+    "source": "autodoc.co.uk, kroon-oil.com, astrakforums.co.uk",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "OPEL",
+    "model": "Astra",
+    "generation": "K",
+    "yearFrom": 2015,
+    "yearTo": 2022,
+    "engineCode": "A16DTH",
+    "displacementCc": 1560,
+    "fuelType": "diesel",
+    "powerKw": 100,
+    "powerHp": 136,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": "GM Dexos2",
+    "oilCapacityLiters": 5.0,
+    "oilChangeIntervalKm": 15000,
+    "source": "astrakforums.co.uk, autodoc.co.uk, buycarparts.co.uk",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "OPEL",
+    "model": "Astra",
+    "generation": "J",
+    "yearFrom": 2012,
+    "yearTo": 2015,
+    "engineCode": "A14NET",
+    "displacementCc": 1364,
+    "fuelType": "essence",
+    "powerKw": 103,
+    "powerHp": 140,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": "SN",
+    "oilSpecACEA": null,
+    "oilSpecOEM": "GM Dexos1 Gen2",
+    "oilCapacityLiters": 4.5,
+    "oilChangeIntervalKm": 15000,
+    "source": "buycarparts.co.uk, reddit.com/r/opel, astrakforums.co.uk",
+    "confidence": "high",
+    "matchAmbiguity": {
+      "conflictGroup": 14,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 1364,
+        "powerHp": 140,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "A3/B4",
+            "None"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "GM Dexos1",
+            "GM Dexos1 Gen2"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "CHEVROLET Trax (LDE): 5W-30",
+        "CHEVROLET Orlando (LDE): 5W-30"
+      ]
+    }
+  },
+  {
+    "make": "OPEL",
+    "model": "Astra",
+    "generation": "J",
+    "yearFrom": 2012,
+    "yearTo": 2015,
+    "engineCode": "A16XHT",
+    "displacementCc": 1598,
+    "fuelType": "essence",
+    "powerKw": 125,
+    "powerHp": 170,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": "SN",
+    "oilSpecACEA": null,
+    "oilSpecOEM": "GM Dexos1 Gen2",
+    "oilCapacityLiters": 4.5,
+    "oilChangeIntervalKm": 15000,
+    "source": "masuma.parts, auto-data.net, astrakforums.co.uk",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "OPEL",
+    "model": "Mokka",
+    "generation": "F",
+    "yearFrom": 2020,
+    "yearTo": 9999,
+    "engineCode": "F12XHL",
+    "displacementCc": 1199,
+    "fuelType": "essence",
+    "powerKw": 74,
+    "powerHp": 100,
+    "oilViscosity": "0W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": "PSA B71 2312",
+    "oilCapacityLiters": 3.5,
+    "oilChangeIntervalKm": 15000,
+    "source": "autodoc.co.uk, auto-doc.ie, automoli.com, buycarparts.co.uk",
+    "confidence": "high",
+    "matchAmbiguity": {
+      "conflictGroup": 6,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 1199,
+        "powerHp": 100,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "0W-20",
+            "0W-30",
+            "5W-30"
+          ]
+        },
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "None",
+            "SP"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "C2",
+            "C3",
+            "C5"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "GM Dexos1 Gen3",
+            "PSA B71 2010",
+            "PSA B71 2290",
+            "PSA B71 2312"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "CITROEN C3 (HNF): 5W-30",
+        "OPEL Corsa (F12XHL): 0W-20",
+        "Peugeot 208 (EB2ADTD): 0W-20"
+      ]
+    }
+  },
+  {
+    "make": "OPEL",
+    "model": "Mokka",
+    "generation": "F",
+    "yearFrom": 2020,
+    "yearTo": 9999,
+    "engineCode": "F12XHL",
+    "displacementCc": 1199,
+    "fuelType": "essence",
+    "powerKw": 96,
+    "powerHp": 130,
+    "oilViscosity": "0W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": "PSA B71 2312",
+    "oilCapacityLiters": 3.7,
+    "oilChangeIntervalKm": 15000,
+    "source": "autodoc.parts, automoli.com, oilguide.bizol.com",
+    "confidence": "medium",
+    "matchAmbiguity": {
+      "conflictGroup": 8,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 1199,
+        "powerHp": 130,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "0W-20",
+            "0W-30"
+          ]
+        },
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "None",
+            "SP"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "C2",
+            "C5"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "GM Dexos1 Gen3",
+            "PSA B71 2010",
+            "PSA B71 2312"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "OPEL Corsa (F12XHL): 0W-20",
+        "OPEL Grandland X (F12XHL): 0W-30",
+        "Peugeot 208 (EB2ADTS): 0W-20",
+        "Peugeot 2008 (EB2ADTS): 0W-30",
+        "Peugeot 308 (EB2ADTS): 0W-20"
+      ]
+    }
+  },
+  {
+    "make": "OPEL",
+    "model": "Mokka",
+    "generation": "F",
+    "yearFrom": 2020,
+    "yearTo": 9999,
+    "engineCode": "F15DTH",
+    "displacementCc": 1499,
+    "fuelType": "diesel",
+    "powerKw": 81,
+    "powerHp": 110,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C3",
+    "oilSpecOEM": "GM Dexos2",
+    "oilCapacityLiters": 5.0,
+    "oilChangeIntervalKm": 15000,
+    "source": "autodoc.parts, auto-data.net, buycarparts.co.uk",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "OPEL",
+    "model": "Crossland X",
+    "generation": "P17",
+    "yearFrom": 2017,
+    "yearTo": 9999,
+    "engineCode": "F12XHL",
+    "displacementCc": 1199,
+    "fuelType": "essence",
+    "powerKw": 81,
+    "powerHp": 110,
+    "oilViscosity": "0W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": "PSA B71 2312",
+    "oilCapacityLiters": 3.75,
+    "oilChangeIntervalKm": 15000,
+    "source": "autodoc.parts, buycarparts.co.uk, auto-data.net",
+    "confidence": "high",
+    "matchAmbiguity": {
+      "conflictGroup": 7,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 1199,
+        "powerHp": 110,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "0W-30",
+            "5W-30"
+          ]
+        },
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "None",
+            "SN"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "PSA B71 2290",
+            "PSA B71 2312"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "CITROEN C3 (EB2DTM): 5W-30",
+        "CITROEN C-Elysee (EB2ADTD): 5W-30",
+        "CITROEN C4 (EB2DTM): 5W-30",
+        "CITROEN C4 Cactus (EB2DTM): 5W-30",
+        "CITROEN C3 Aircross (EB2DTM): 5W-30"
+      ]
+    }
+  },
+  {
+    "make": "OPEL",
+    "model": "Crossland X",
+    "generation": "P17",
+    "yearFrom": 2017,
+    "yearTo": 9999,
+    "engineCode": "A15DTH",
+    "displacementCc": 1499,
+    "fuelType": "diesel",
+    "powerKw": 75,
+    "powerHp": 102,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": "GM Dexos2",
+    "oilCapacityLiters": 4.0,
+    "oilChangeIntervalKm": 15000,
+    "source": "auto-data.net, auto-abc.eu, autodoc.co.uk",
+    "confidence": "high",
+    "matchAmbiguity": {
+      "conflictGroup": 20,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 1499,
+        "powerHp": 102,
+        "fuelType": "diesel"
+      },
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "0W-20",
+            "5W-30"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "C2",
+            "C5"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "GM Dexos2",
+            "PSA B71 2010"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "FIAT Doblo (DV5RC): 0W-20",
+        "Peugeot 2008 (DV5RD): 0W-20",
+        "Peugeot Rifter (DV5RD): 0W-20"
+      ]
+    }
+  },
+  {
+    "make": "OPEL",
+    "model": "Grandland X",
+    "generation": "A18",
+    "yearFrom": 2017,
+    "yearTo": 2021,
+    "engineCode": "F12XHL",
+    "displacementCc": 1199,
+    "fuelType": "essence",
+    "powerKw": 96,
+    "powerHp": 130,
+    "oilViscosity": "0W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": "PSA B71 2312",
+    "oilCapacityLiters": 3.5,
+    "oilChangeIntervalKm": 15000,
+    "source": "auto-data.net, autodoc.co.uk, auto-abc.eu",
+    "confidence": "high",
+    "matchAmbiguity": {
+      "conflictGroup": 8,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 1199,
+        "powerHp": 130,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "0W-20",
+            "0W-30"
+          ]
+        },
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "None",
+            "SP"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "C2",
+            "C5"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "GM Dexos1 Gen3",
+            "PSA B71 2010",
+            "PSA B71 2312"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "OPEL Corsa (F12XHL): 0W-20",
+        "OPEL Mokka (F12XHL): 0W-30",
+        "Peugeot 208 (EB2ADTS): 0W-20",
+        "Peugeot 2008 (EB2ADTS): 0W-30",
+        "Peugeot 308 (EB2ADTS): 0W-20"
+      ]
+    }
+  },
+  {
+    "make": "OPEL",
+    "model": "Grandland X",
+    "generation": "A18",
+    "yearFrom": 2018,
+    "yearTo": 2021,
+    "engineCode": "A15DTH",
+    "displacementCc": 1499,
+    "fuelType": "diesel",
+    "powerKw": 96,
+    "powerHp": 130,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": "GM Dexos2",
+    "oilCapacityLiters": 4.0,
+    "oilChangeIntervalKm": 15000,
+    "source": "auto-data.net, auto-abc.eu, autodoc.co.uk",
+    "confidence": "high",
+    "matchAmbiguity": {
+      "conflictGroup": 22,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 1499,
+        "powerHp": 130,
+        "fuelType": "diesel"
+      },
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "0W-20",
+            "5W-30"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "C2",
+            "C5"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "GM Dexos2",
+            "PSA B71 2010"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "Peugeot 3008 (DV5RC): 0W-20",
+        "Peugeot 5008 (DV5RC): 0W-20"
+      ]
+    }
+  },
+  {
+    "make": "OPEL",
+    "model": "Grandland X",
+    "generation": "A18",
+    "yearFrom": 2018,
+    "yearTo": 2021,
+    "engineCode": "A20DTH",
+    "displacementCc": 1997,
+    "fuelType": "diesel",
+    "powerKw": 130,
+    "powerHp": 177,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": "GM Dexos2",
+    "oilCapacityLiters": 5.2,
+    "oilChangeIntervalKm": 15000,
+    "source": "buycarparts.co.uk, autodoc.co.uk, auto-data.net",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "OPEL",
+    "model": "Combo",
+    "generation": "K0",
+    "yearFrom": 2018,
+    "yearTo": 9999,
+    "engineCode": "D15DTH",
+    "displacementCc": 1499,
+    "fuelType": "diesel",
+    "powerKw": 96,
+    "powerHp": 131,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C3",
+    "oilSpecOEM": "PSA B71 2290",
+    "oilCapacityLiters": 4.0,
+    "oilChangeIntervalKm": 15000,
+    "source": "autodoc.co.uk, auto-abc.eu, auto-data.net",
+    "confidence": "medium",
+    "matchAmbiguity": {
+      "conflictGroup": 23,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 1499,
+        "powerHp": 131,
+        "fuelType": "diesel"
+      },
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "0W-20",
+            "0W-30",
+            "5W-30"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "C2",
+            "C3"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "PSA B71 2010",
+            "PSA B71 2290",
+            "PSA B71 2312"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "CITROEN C5 Aircross (DV5RC): 0W-30",
+        "DS AUTOMOBILES DS 3 Crossback (DV5RC): 0W-30",
+        "DS AUTOMOBILES DS 3 (DV5RC): 0W-30",
+        "DS AUTOMOBILES DS 4 (DV5RC): 0W-30",
+        "DS AUTOMOBILES DS 7 Crossback (DV5RC): 0W-30",
+        "FIAT Doblo (DV5RC): 0W-20",
+        "JEEP Renegade (DV5RC): 0W-30",
+        "JEEP Compass (DV5RC): 0W-30",
+        "MITSUBISHI ASX (DV5RC): 0W-30"
+      ]
+    }
+  },
+  {
+    "make": "OPEL",
+    "model": "Vivaro",
+    "generation": "K0",
+    "yearFrom": 2019,
+    "yearTo": 9999,
+    "engineCode": "D15DTH",
+    "displacementCc": 1499,
+    "fuelType": "diesel",
+    "powerKw": 88,
+    "powerHp": 120,
+    "oilViscosity": "0W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": "PSA B71 2312",
+    "oilCapacityLiters": 4.0,
+    "oilChangeIntervalKm": 15000,
+    "source": "autodoc.co.uk, autodoc.parts, automoli.com",
+    "confidence": "high",
+    "matchAmbiguity": {
+      "conflictGroup": 21,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 1499,
+        "powerHp": 120,
+        "fuelType": "diesel"
+      },
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "0W-30",
+            "5W-30"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "PSA B71 2010",
+            "PSA B71 2312",
+            "WSS-M2C950-A"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "FORD Focus (XWDB): 5W-30",
+        "OPEL Zafira Life (D15DTH): 0W-30"
+      ]
+    }
+  },
+  {
+    "make": "OPEL",
+    "model": "Zafira Life",
+    "generation": "K0",
+    "yearFrom": 2019,
+    "yearTo": 9999,
+    "engineCode": "D15DTH",
+    "displacementCc": 1499,
+    "fuelType": "diesel",
+    "powerKw": 88,
+    "powerHp": 120,
+    "oilViscosity": "0W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": "PSA B71 2010",
+    "oilCapacityLiters": 5.75,
+    "oilChangeIntervalKm": 15000,
+    "source": "auto-data.net, autodoc.co.uk, buycarparts.co.uk",
+    "confidence": "high",
+    "matchAmbiguity": {
+      "conflictGroup": 21,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 1499,
+        "powerHp": 120,
+        "fuelType": "diesel"
+      },
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "0W-30",
+            "5W-30"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "PSA B71 2010",
+            "PSA B71 2312",
+            "WSS-M2C950-A"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "FORD Focus (XWDB): 5W-30",
+        "OPEL Vivaro (D15DTH): 0W-30"
+      ]
+    }
+  },
+  {
+    "make": "OPEL",
+    "model": "Movano",
+    "generation": "B",
+    "yearFrom": 2010,
+    "yearTo": 9999,
+    "engineCode": "M9T",
+    "displacementCc": 2299,
+    "fuelType": "diesel",
+    "powerKw": 92,
+    "powerHp": 125,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C3",
+    "oilSpecOEM": null,
+    "oilCapacityLiters": 8.0,
+    "oilChangeIntervalKm": 15000,
+    "source": "auto-data.net, kroon-oil.com, buycarparts.co.uk, autodoc.co.uk",
+    "confidence": "high",
+    "matchAmbiguity": null
+  }
+]

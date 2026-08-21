@@ -139,7 +139,7 @@ export const NAVIGATION_TAXONOMY: NavigationTaxonomyItem[] = [
     label: 'Moto & Karting',
     labelKey: 'motoKarting',
     children: [
-      { slug: 'moto-huile-moteur', label: 'Huile moteur', labelKey: 'huilesMoteur' },
+      { slug: 'moto-huiles', label: 'Huiles spécifiques', labelKey: 'huilesMoteur' },
       { slug: 'moto-huile-boite', label: 'Huile de boîte', labelKey: 'huileBoite' },
       { slug: 'moto-huile-fourche', label: 'Huile de fourche', labelKey: 'motoHuileFourche' },
       { slug: 'moto-lubrifiants-chaine', label: 'Lubrifiants de chaîne et additifs', labelKey: 'lubrifiantsChaine' },

@@ -1,0 +1,418 @@
+[
+  {
+    "make": "CHEVROLET",
+    "model": "Spark",
+    "generation": "II (1.0 66)",
+    "yearFrom": 2009,
+    "yearTo": 2015,
+    "engineCode": "B10D",
+    "displacementCc": 995,
+    "fuelType": "essence",
+    "powerKw": 49,
+    "powerHp": 66,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": "SN",
+    "oilSpecACEA": "A3/B4",
+    "oilSpecOEM": "GM Dexos1",
+    "oilCapacityLiters": 3.2,
+    "oilChangeIntervalKm": 15000,
+    "source": "Chevrolet owner's manual, AMSOIL, buycarparts.co.uk",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "CHEVROLET",
+    "model": "Spark",
+    "generation": "II (1.0 75)",
+    "yearFrom": 2016,
+    "yearTo": 2022,
+    "engineCode": "B10D",
+    "displacementCc": 995,
+    "fuelType": "essence",
+    "powerKw": 55,
+    "powerHp": 75,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": "SN",
+    "oilSpecACEA": "A3/B4",
+    "oilSpecOEM": "GM Dexos1",
+    "oilCapacityLiters": 3.2,
+    "oilChangeIntervalKm": 15000,
+    "source": "Chevrolet owner's manual, AMSOIL, buycarparts.co.uk",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "CHEVROLET",
+    "model": "Spark",
+    "generation": "II (1.2 82)",
+    "yearFrom": 2016,
+    "yearTo": 2022,
+    "engineCode": "B12D",
+    "displacementCc": 1229,
+    "fuelType": "essence",
+    "powerKw": 60,
+    "powerHp": 82,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": "SN",
+    "oilSpecACEA": "A3/B4",
+    "oilSpecOEM": "GM Dexos1",
+    "oilCapacityLiters": 3.2,
+    "oilChangeIntervalKm": 15000,
+    "source": "Chevrolet owner's manual, AMSOIL",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "CHEVROLET",
+    "model": "Aveo",
+    "generation": "V (1.2 86)",
+    "yearFrom": 2012,
+    "yearTo": 2018,
+    "engineCode": "B12D",
+    "displacementCc": 1229,
+    "fuelType": "essence",
+    "powerKw": 63,
+    "powerHp": 86,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": "SN",
+    "oilSpecACEA": "A3/B4",
+    "oilSpecOEM": "GM Dexos1",
+    "oilCapacityLiters": 3.5,
+    "oilChangeIntervalKm": 15000,
+    "source": "Chevrolet Aveo owner's manual, AMSOIL, buycarparts.co.uk",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "CHEVROLET",
+    "model": "Aveo",
+    "generation": "V (1.6 115)",
+    "yearFrom": 2012,
+    "yearTo": 2018,
+    "engineCode": "F16D3",
+    "displacementCc": 1598,
+    "fuelType": "essence",
+    "powerKw": 85,
+    "powerHp": 115,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": "SN",
+    "oilSpecACEA": "A3/B4",
+    "oilSpecOEM": "GM Dexos1",
+    "oilCapacityLiters": 4.5,
+    "oilChangeIntervalKm": 15000,
+    "source": "Chevrolet Aveo owner's manual, AMSOIL, buycarparts.co.uk",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "CHEVROLET",
+    "model": "Tracker",
+    "generation": "I (1.0 Turbo 115)",
+    "yearFrom": 2020,
+    "yearTo": 9999,
+    "engineCode": "LI6",
+    "displacementCc": 999,
+    "fuelType": "essence",
+    "powerKw": 85,
+    "powerHp": 115,
+    "oilViscosity": "0W-20",
+    "oilSpecAPI": "SP",
+    "oilSpecACEA": null,
+    "oilSpecOEM": "GM Dexos1 Gen2",
+    "oilCapacityLiters": 4.5,
+    "oilChangeIntervalKm": 15000,
+    "source": "Chevrolet Tracker owner's manual, AMSOIL, GM Middle East specs",
+    "confidence": "medium",
+    "matchAmbiguity": {
+      "conflictGroup": 5,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 999,
+        "powerHp": 115,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "SN",
+            "SP"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "C5",
+            "None"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "GM Dexos1 Gen2",
+            "VW 508.00"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "OPEL Corsa (F10XHL): 0W-20",
+        "SEAT Ibiza (DLAA): 0W-20",
+        "SEAT Arona (DLAA): 0W-20",
+        "SKODA Kamiq (DLAA): 0W-20",
+        "SKODA Kushaq (DLAA): 0W-20"
+      ]
+    }
+  },
+  {
+    "make": "CHEVROLET",
+    "model": "Tracker",
+    "generation": "I (1.2 Turbo 140)",
+    "yearFrom": 2020,
+    "yearTo": 9999,
+    "engineCode": "LI5",
+    "displacementCc": 1199,
+    "fuelType": "essence",
+    "powerKw": 103,
+    "powerHp": 140,
+    "oilViscosity": "0W-20",
+    "oilSpecAPI": "SP",
+    "oilSpecACEA": null,
+    "oilSpecOEM": "GM Dexos1 Gen2",
+    "oilCapacityLiters": 4.5,
+    "oilChangeIntervalKm": 15000,
+    "source": "Chevrolet Tracker owner's manual, AMSOIL, GM specs",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "CHEVROLET",
+    "model": "Equinox",
+    "generation": "III (1.5 Turbo 180)",
+    "yearFrom": 2018,
+    "yearTo": 9999,
+    "engineCode": "LSY",
+    "displacementCc": 1490,
+    "fuelType": "essence",
+    "powerKw": 132,
+    "powerHp": 180,
+    "oilViscosity": "0W-20",
+    "oilSpecAPI": "SN",
+    "oilSpecACEA": null,
+    "oilSpecOEM": "GM Dexos1 Gen2",
+    "oilCapacityLiters": 5.5,
+    "oilChangeIntervalKm": 15000,
+    "source": "Chevrolet Equinox owner's manual, AMSOIL, GM specs",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "CHEVROLET",
+    "model": "Trax",
+    "generation": "I (1.4 Turbo 140)",
+    "yearFrom": 2013,
+    "yearTo": 2018,
+    "engineCode": "LDE",
+    "displacementCc": 1364,
+    "fuelType": "essence",
+    "powerKw": 103,
+    "powerHp": 140,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": "SN",
+    "oilSpecACEA": "A3/B4",
+    "oilSpecOEM": "GM Dexos1",
+    "oilCapacityLiters": 4.8,
+    "oilChangeIntervalKm": 15000,
+    "source": "Chevrolet Trax owner's manual, AMSOIL, buycarparts.co.uk",
+    "confidence": "medium",
+    "matchAmbiguity": {
+      "conflictGroup": 14,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 1364,
+        "powerHp": 140,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "A3/B4",
+            "None"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "GM Dexos1",
+            "GM Dexos1 Gen2"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "CHEVROLET Orlando (LDE): 5W-30",
+        "OPEL Astra (A14NET): 5W-30"
+      ]
+    }
+  },
+  {
+    "make": "CHEVROLET",
+    "model": "Captiva",
+    "generation": "II (2.4 DOHC 167)",
+    "yearFrom": 2011,
+    "yearTo": 2018,
+    "engineCode": "LUW",
+    "displacementCc": 2384,
+    "fuelType": "essence",
+    "powerKw": 123,
+    "powerHp": 167,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": "SN",
+    "oilSpecACEA": "A3/B4",
+    "oilSpecOEM": "GM Dexos2",
+    "oilCapacityLiters": 5.7,
+    "oilChangeIntervalKm": 15000,
+    "source": "Chevrolet Captiva owner's manual, AMSOIL, buycarparts.co.uk",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "CHEVROLET",
+    "model": "Captiva",
+    "generation": "II (2.0 TD 163)",
+    "yearFrom": 2011,
+    "yearTo": 2018,
+    "engineCode": "A20DTH",
+    "displacementCc": 1956,
+    "fuelType": "diesel",
+    "powerKw": 120,
+    "powerHp": 163,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C3",
+    "oilSpecOEM": "GM Dexos2",
+    "oilCapacityLiters": 5.7,
+    "oilChangeIntervalKm": 15000,
+    "source": "Chevrolet Captiva owner's manual, AMSOIL, buycarparts.co.uk",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "CHEVROLET",
+    "model": "Orlando",
+    "generation": "I (1.8 141)",
+    "yearFrom": 2011,
+    "yearTo": 2018,
+    "engineCode": "F18DE",
+    "displacementCc": 1796,
+    "fuelType": "essence",
+    "powerKw": 104,
+    "powerHp": 141,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": "SN",
+    "oilSpecACEA": "A3/B4",
+    "oilSpecOEM": "GM Dexos2",
+    "oilCapacityLiters": 4.5,
+    "oilChangeIntervalKm": 15000,
+    "source": "Chevrolet Orlando owner's manual, AMSOIL, buycarparts.co.uk",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "CHEVROLET",
+    "model": "Orlando",
+    "generation": "I (1.4 Turbo 140)",
+    "yearFrom": 2012,
+    "yearTo": 2018,
+    "engineCode": "LDE",
+    "displacementCc": 1364,
+    "fuelType": "essence",
+    "powerKw": 103,
+    "powerHp": 140,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": "SN",
+    "oilSpecACEA": "A3/B4",
+    "oilSpecOEM": "GM Dexos1",
+    "oilCapacityLiters": 4.5,
+    "oilChangeIntervalKm": 15000,
+    "source": "Chevrolet Orlando owner's manual, AMSOIL, buycarparts.co.uk",
+    "confidence": "medium",
+    "matchAmbiguity": {
+      "conflictGroup": 14,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 1364,
+        "powerHp": 140,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "A3/B4",
+            "None"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "GM Dexos1",
+            "GM Dexos1 Gen2"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "CHEVROLET Trax (LDE): 5W-30",
+        "OPEL Astra (A14NET): 5W-30"
+      ]
+    }
+  },
+  {
+    "make": "CHEVROLET",
+    "model": "Malibu",
+    "generation": "IX (1.5 Turbo 160)",
+    "yearFrom": 2016,
+    "yearTo": 2024,
+    "engineCode": "LYX",
+    "displacementCc": 1490,
+    "fuelType": "essence",
+    "powerKw": 118,
+    "powerHp": 160,
+    "oilViscosity": "0W-20",
+    "oilSpecAPI": "SN",
+    "oilSpecACEA": null,
+    "oilSpecOEM": "GM Dexos1 Gen2",
+    "oilCapacityLiters": 4.3,
+    "oilChangeIntervalKm": 15000,
+    "source": "Chevrolet Malibu owner's manual, AMSOIL, GM specs",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "CHEVROLET",
+    "model": "Malibu",
+    "generation": "IX (2.0 Turbo 250)",
+    "yearFrom": 2016,
+    "yearTo": 2024,
+    "engineCode": "LTG",
+    "displacementCc": 1998,
+    "fuelType": "essence",
+    "powerKw": 184,
+    "powerHp": 250,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": "SN",
+    "oilSpecACEA": "A3/B4",
+    "oilSpecOEM": "GM Dexos1",
+    "oilCapacityLiters": 5.7,
+    "oilChangeIntervalKm": 15000,
+    "source": "Chevrolet Malibu owner's manual, AMSOIL, GM specs",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  }
+]

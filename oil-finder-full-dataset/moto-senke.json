@@ -1,0 +1,77 @@
+[
+  {
+    "make": "SENKE",
+    "model": "SK 125",
+    "generation": "SK125",
+    "yearFrom": 2018,
+    "yearTo": 9999,
+    "engineCode": "SK125",
+    "displacementCc": 125,
+    "fuelType": "essence",
+    "engineType": "4T",
+    "powerKw": 7.4,
+    "powerHp": 10,
+    "clutchType": "embrayage humide",
+    "oilViscosity": "10W-30",
+    "oilSpecAPI": "SM",
+    "oilSpecACEA": null,
+    "oilSpecOEM": null,
+    "oilSpecJASO": "MA2",
+    "oilCapacityLiters": 1.0,
+    "gearboxOilSeparate": false,
+    "oilChangeIntervalKm": 5000,
+    "source": "Senke SK 125 specs; AMSOIL; generic Chinese 125cc manual specs",
+    "confidence": "low",
+    "matchAmbiguity": {
+      "conflictGroup": 10,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 125,
+        "powerHp": 10,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilSpecJASO",
+          "severity": "major",
+          "values": [
+            "MA2",
+            "MB"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "KYMCO Agility 125 (AGL125): 10W-30 JASO MB",
+        "SLC SLC 125 (SLC125): 10W-30 JASO MA2",
+        "SMT SMT 125 (SMT125): 10W-30 JASO MA2",
+        "SYM Symphony 125 (SYM125): 10W-30 JASO MB",
+        "ZIMOTA ZM 125 (ZM125): 10W-30 JASO MA2"
+      ]
+    }
+  },
+  {
+    "make": "SENKE",
+    "model": "SK 200",
+    "generation": "SK200",
+    "yearFrom": 2019,
+    "yearTo": 9999,
+    "engineCode": "SK200",
+    "displacementCc": 200,
+    "fuelType": "essence",
+    "engineType": "4T",
+    "powerKw": 13.2,
+    "powerHp": 18,
+    "clutchType": "embrayage humide",
+    "oilViscosity": "10W-40",
+    "oilSpecAPI": "SM",
+    "oilSpecACEA": null,
+    "oilSpecOEM": null,
+    "oilSpecJASO": "MA2",
+    "oilCapacityLiters": 1.3,
+    "gearboxOilSeparate": false,
+    "oilChangeIntervalKm": 5000,
+    "source": "Senke SK 200 specs; AMSOIL; generic Chinese 200cc manual specs",
+    "confidence": "low",
+    "matchAmbiguity": null
+  }
+]

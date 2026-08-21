@@ -1,0 +1,927 @@
+[
+  {
+    "make": "CITROEN",
+    "model": "C3",
+    "generation": "IV (Smart Car)",
+    "yearFrom": 2024,
+    "yearTo": 9999,
+    "engineCode": "HNF",
+    "displacementCc": 1199,
+    "fuelType": "essence",
+    "powerKw": 74,
+    "powerHp": 100,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": "SP",
+    "oilSpecACEA": "C3",
+    "oilSpecOEM": "PSA B71 2290",
+    "oilCapacityLiters": 3.7,
+    "oilChangeIntervalKm": 15000,
+    "source": "Citroen Tunisia (citroen.tn), Stellantis Media press release Apr 2024, autoricambitritella.it",
+    "confidence": "medium",
+    "matchAmbiguity": {
+      "conflictGroup": 6,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 1199,
+        "powerHp": 100,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "0W-20",
+            "0W-30",
+            "5W-30"
+          ]
+        },
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "None",
+            "SP"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "C2",
+            "C3",
+            "C5"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "GM Dexos1 Gen3",
+            "PSA B71 2010",
+            "PSA B71 2290",
+            "PSA B71 2312"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "OPEL Corsa (F12XHL): 0W-20",
+        "OPEL Mokka (F12XHL): 0W-30",
+        "Peugeot 208 (EB2ADTD): 0W-20"
+      ]
+    }
+  },
+  {
+    "make": "CITROEN",
+    "model": "C3",
+    "generation": "III",
+    "yearFrom": 2016,
+    "yearTo": 2024,
+    "engineCode": "EB2F",
+    "displacementCc": 1199,
+    "fuelType": "essence",
+    "powerKw": 53,
+    "powerHp": 72,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": "SN",
+    "oilSpecACEA": "C3",
+    "oilSpecOEM": "PSA B71 2290",
+    "oilCapacityLiters": 4.2,
+    "oilChangeIntervalKm": 15000,
+    "source": "tunisieauto.tn, auto-data.net, autodoc24.fr",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "CITROEN",
+    "model": "C3",
+    "generation": "III",
+    "yearFrom": 2018,
+    "yearTo": 2024,
+    "engineCode": "EB2F",
+    "displacementCc": 1199,
+    "fuelType": "essence",
+    "powerKw": 61,
+    "powerHp": 83,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": "SP",
+    "oilSpecACEA": "C3",
+    "oilSpecOEM": "PSA B71 2290",
+    "oilCapacityLiters": 4.2,
+    "oilChangeIntervalKm": 15000,
+    "source": "tunisieauto.tn, autodoc24.fr, autodoc.co.uk",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "CITROEN",
+    "model": "C3",
+    "generation": "III",
+    "yearFrom": 2018,
+    "yearTo": 2024,
+    "engineCode": "EB2DTM",
+    "displacementCc": 1199,
+    "fuelType": "essence",
+    "powerKw": 81,
+    "powerHp": 110,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": "SN",
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": "PSA B71 2290",
+    "oilCapacityLiters": 3.5,
+    "oilChangeIntervalKm": 15000,
+    "source": "tunisieauto.tn, autodoc.co.uk, cactusforums.co.uk",
+    "confidence": "medium",
+    "matchAmbiguity": {
+      "conflictGroup": 7,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 1199,
+        "powerHp": 110,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "0W-30",
+            "5W-30"
+          ]
+        },
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "None",
+            "SN"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "PSA B71 2290",
+            "PSA B71 2312"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "CITROEN C-Elysee (EB2ADTD): 5W-30",
+        "CITROEN C4 (EB2DTM): 5W-30",
+        "CITROEN C4 Cactus (EB2DTM): 5W-30",
+        "CITROEN C3 Aircross (EB2DTM): 5W-30",
+        "OPEL Crossland X (F12XHL): 0W-30"
+      ]
+    }
+  },
+  {
+    "make": "CITROEN",
+    "model": "C-Elysee",
+    "generation": "II Phase I",
+    "yearFrom": 2012,
+    "yearTo": 2018,
+    "engineCode": "EB2F",
+    "displacementCc": 1199,
+    "fuelType": "essence",
+    "powerKw": 53,
+    "powerHp": 72,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": "SN",
+    "oilSpecACEA": "C3",
+    "oilSpecOEM": "PSA B71 2290",
+    "oilCapacityLiters": 3.8,
+    "oilChangeIntervalKm": 15000,
+    "source": "auto-data.net, autodoc.parts, tunisieauto.tn",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "CITROEN",
+    "model": "C-Elysee",
+    "generation": "II Phase I",
+    "yearFrom": 2012,
+    "yearTo": 2018,
+    "engineCode": "EC5",
+    "displacementCc": 1587,
+    "fuelType": "essence",
+    "powerKw": 85,
+    "powerHp": 115,
+    "oilViscosity": "5W-40",
+    "oilSpecAPI": "SN",
+    "oilSpecACEA": "A3/B4",
+    "oilSpecOEM": "PSA B71 2290",
+    "oilCapacityLiters": 4.5,
+    "oilChangeIntervalKm": 15000,
+    "source": "autodoc.parts, auto-data.net, Wikipedia",
+    "confidence": "medium",
+    "matchAmbiguity": {
+      "conflictGroup": 24,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 1587,
+        "powerHp": 115,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "5W-30",
+            "5W-40"
+          ]
+        },
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "None",
+            "SN"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "A3/B4",
+            "C2"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "Peugeot 301 (EC5): 5W-30"
+      ]
+    }
+  },
+  {
+    "make": "CITROEN",
+    "model": "C-Elysee",
+    "generation": "II Phase II",
+    "yearFrom": 2018,
+    "yearTo": 2023,
+    "engineCode": "EB2ADTD",
+    "displacementCc": 1199,
+    "fuelType": "essence",
+    "powerKw": 81,
+    "powerHp": 110,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": "SN",
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": "PSA B71 2290",
+    "oilCapacityLiters": 4.0,
+    "oilChangeIntervalKm": 15000,
+    "source": "tunisieauto.tn, Wikipedia, autodoc.co.uk",
+    "confidence": "medium",
+    "matchAmbiguity": {
+      "conflictGroup": 7,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 1199,
+        "powerHp": 110,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "0W-30",
+            "5W-30"
+          ]
+        },
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "None",
+            "SN"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "PSA B71 2290",
+            "PSA B71 2312"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "CITROEN C3 (EB2DTM): 5W-30",
+        "CITROEN C4 (EB2DTM): 5W-30",
+        "CITROEN C4 Cactus (EB2DTM): 5W-30",
+        "CITROEN C3 Aircross (EB2DTM): 5W-30",
+        "OPEL Crossland X (F12XHL): 0W-30"
+      ]
+    }
+  },
+  {
+    "make": "CITROEN",
+    "model": "C4",
+    "generation": "I (C4 Cactus successor)",
+    "yearFrom": 2018,
+    "yearTo": 2022,
+    "engineCode": "EB2DTM",
+    "displacementCc": 1199,
+    "fuelType": "essence",
+    "powerKw": 81,
+    "powerHp": 110,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": "SN",
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": "PSA B71 2290",
+    "oilCapacityLiters": 3.5,
+    "oilChangeIntervalKm": 15000,
+    "source": "tunisieauto.tn, autodoc.co.uk, cactusforums.co.uk",
+    "confidence": "medium",
+    "matchAmbiguity": {
+      "conflictGroup": 7,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 1199,
+        "powerHp": 110,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "0W-30",
+            "5W-30"
+          ]
+        },
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "None",
+            "SN"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "PSA B71 2290",
+            "PSA B71 2312"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "CITROEN C3 (EB2DTM): 5W-30",
+        "CITROEN C-Elysee (EB2ADTD): 5W-30",
+        "CITROEN C4 Cactus (EB2DTM): 5W-30",
+        "CITROEN C3 Aircross (EB2DTM): 5W-30",
+        "OPEL Crossland X (F12XHL): 0W-30"
+      ]
+    }
+  },
+  {
+    "make": "CITROEN",
+    "model": "C4 Cactus",
+    "generation": "I",
+    "yearFrom": 2014,
+    "yearTo": 2018,
+    "engineCode": "EB2DTM",
+    "displacementCc": 1199,
+    "fuelType": "essence",
+    "powerKw": 81,
+    "powerHp": 110,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": "SN",
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": "PSA B71 2290",
+    "oilCapacityLiters": 3.5,
+    "oilChangeIntervalKm": 15000,
+    "source": "autodoc.co.uk, tunisieauto.tn, cactusforums.co.uk",
+    "confidence": "medium",
+    "matchAmbiguity": {
+      "conflictGroup": 7,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 1199,
+        "powerHp": 110,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "0W-30",
+            "5W-30"
+          ]
+        },
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "None",
+            "SN"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "PSA B71 2290",
+            "PSA B71 2312"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "CITROEN C3 (EB2DTM): 5W-30",
+        "CITROEN C-Elysee (EB2ADTD): 5W-30",
+        "CITROEN C4 (EB2DTM): 5W-30",
+        "CITROEN C3 Aircross (EB2DTM): 5W-30",
+        "OPEL Crossland X (F12XHL): 0W-30"
+      ]
+    }
+  },
+  {
+    "make": "CITROEN",
+    "model": "C4 Cactus",
+    "generation": "I facelift",
+    "yearFrom": 2018,
+    "yearTo": 2021,
+    "engineCode": "EB2ADTS",
+    "displacementCc": 1199,
+    "fuelType": "essence",
+    "powerKw": 96,
+    "powerHp": 131,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": "SN",
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": "PSA B71 2290",
+    "oilCapacityLiters": 4.0,
+    "oilChangeIntervalKm": 15000,
+    "source": "buycarparts.co.uk, tunisieauto.tn, autodoc.parts",
+    "confidence": "medium",
+    "matchAmbiguity": {
+      "conflictGroup": 9,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 1199,
+        "powerHp": 131,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "0W-20",
+            "0W-30",
+            "5W-30"
+          ]
+        },
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "None",
+            "SN",
+            "SP"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "C2",
+            "C5"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "PSA B71 2010",
+            "PSA B71 2290"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "CITROEN C4 X (EB2ADTS): 5W-30",
+        "CITROEN C5 Aircross (EB2ADTS): 5W-30",
+        "DS AUTOMOBILES DS 3 Crossback (EB2ADTS): 0W-30",
+        "DS AUTOMOBILES DS 3 (EB2ADTS): 0W-30",
+        "DS AUTOMOBILES DS 4 (EB2ADTS): 0W-30",
+        "Peugeot Rifter (EB2DTS): 0W-20"
+      ]
+    }
+  },
+  {
+    "make": "CITROEN",
+    "model": "C3 Aircross",
+    "generation": "I",
+    "yearFrom": 2018,
+    "yearTo": 2024,
+    "engineCode": "EB2DTM",
+    "displacementCc": 1199,
+    "fuelType": "essence",
+    "powerKw": 81,
+    "powerHp": 110,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": "SN",
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": "PSA B71 2290",
+    "oilCapacityLiters": 3.5,
+    "oilChangeIntervalKm": 15000,
+    "source": "tunisieauto.tn, autodoc.parts, frenchcarforum.co.uk",
+    "confidence": "medium",
+    "matchAmbiguity": {
+      "conflictGroup": 7,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 1199,
+        "powerHp": 110,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "0W-30",
+            "5W-30"
+          ]
+        },
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "None",
+            "SN"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "PSA B71 2290",
+            "PSA B71 2312"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "CITROEN C3 (EB2DTM): 5W-30",
+        "CITROEN C-Elysee (EB2ADTD): 5W-30",
+        "CITROEN C4 (EB2DTM): 5W-30",
+        "CITROEN C4 Cactus (EB2DTM): 5W-30",
+        "OPEL Crossland X (F12XHL): 0W-30"
+      ]
+    }
+  },
+  {
+    "make": "CITROEN",
+    "model": "C4 X",
+    "generation": "I",
+    "yearFrom": 2022,
+    "yearTo": 9999,
+    "engineCode": "EB2ADTS",
+    "displacementCc": 1199,
+    "fuelType": "essence",
+    "powerKw": 96,
+    "powerHp": 131,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": "SN",
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": "PSA B71 2290",
+    "oilCapacityLiters": 4.0,
+    "oilChangeIntervalKm": 15000,
+    "source": "citroen.tn, automobile.tn, autodoc.co.uk",
+    "confidence": "medium",
+    "matchAmbiguity": {
+      "conflictGroup": 9,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 1199,
+        "powerHp": 131,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "0W-20",
+            "0W-30",
+            "5W-30"
+          ]
+        },
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "None",
+            "SN",
+            "SP"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "C2",
+            "C5"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "PSA B71 2010",
+            "PSA B71 2290"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "CITROEN C4 Cactus (EB2ADTS): 5W-30",
+        "CITROEN C5 Aircross (EB2ADTS): 5W-30",
+        "DS AUTOMOBILES DS 3 Crossback (EB2ADTS): 0W-30",
+        "DS AUTOMOBILES DS 3 (EB2ADTS): 0W-30",
+        "DS AUTOMOBILES DS 4 (EB2ADTS): 0W-30",
+        "Peugeot Rifter (EB2DTS): 0W-20"
+      ]
+    }
+  },
+  {
+    "make": "CITROEN",
+    "model": "C5 Aircross",
+    "generation": "I",
+    "yearFrom": 2018,
+    "yearTo": 9999,
+    "engineCode": "EB2ADTS",
+    "displacementCc": 1199,
+    "fuelType": "essence",
+    "powerKw": 96,
+    "powerHp": 131,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": "SN",
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": "PSA B71 2290",
+    "oilCapacityLiters": 4.0,
+    "oilChangeIntervalKm": 15000,
+    "source": "citroen.tn, frenchcarforum.co.uk, autodoc.parts",
+    "confidence": "medium",
+    "matchAmbiguity": {
+      "conflictGroup": 9,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 1199,
+        "powerHp": 131,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "0W-20",
+            "0W-30",
+            "5W-30"
+          ]
+        },
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "None",
+            "SN",
+            "SP"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "C2",
+            "C5"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "PSA B71 2010",
+            "PSA B71 2290"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "CITROEN C4 Cactus (EB2ADTS): 5W-30",
+        "CITROEN C4 X (EB2ADTS): 5W-30",
+        "DS AUTOMOBILES DS 3 Crossback (EB2ADTS): 0W-30",
+        "DS AUTOMOBILES DS 3 (EB2ADTS): 0W-30",
+        "DS AUTOMOBILES DS 4 (EB2ADTS): 0W-30",
+        "Peugeot Rifter (EB2DTS): 0W-20"
+      ]
+    }
+  },
+  {
+    "make": "CITROEN",
+    "model": "C5 Aircross",
+    "generation": "I",
+    "yearFrom": 2018,
+    "yearTo": 9999,
+    "engineCode": "DV5RC",
+    "displacementCc": 1499,
+    "fuelType": "diesel",
+    "powerKw": 96,
+    "powerHp": 131,
+    "oilViscosity": "0W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": "PSA B71 2312",
+    "oilCapacityLiters": 4.0,
+    "oilChangeIntervalKm": 15000,
+    "source": "citroen.tn, autodoc.co.uk, whatoil.co.uk, TotalEnergies catalog",
+    "confidence": "high",
+    "matchAmbiguity": {
+      "conflictGroup": 23,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 1499,
+        "powerHp": 131,
+        "fuelType": "diesel"
+      },
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "0W-20",
+            "0W-30",
+            "5W-30"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "C2",
+            "C3"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "PSA B71 2010",
+            "PSA B71 2290",
+            "PSA B71 2312"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "DS AUTOMOBILES DS 3 Crossback (DV5RC): 0W-30",
+        "DS AUTOMOBILES DS 3 (DV5RC): 0W-30",
+        "DS AUTOMOBILES DS 4 (DV5RC): 0W-30",
+        "DS AUTOMOBILES DS 7 Crossback (DV5RC): 0W-30",
+        "FIAT Doblo (DV5RC): 0W-20",
+        "JEEP Renegade (DV5RC): 0W-30",
+        "JEEP Compass (DV5RC): 0W-30",
+        "MITSUBISHI ASX (DV5RC): 0W-30",
+        "OPEL Combo (D15DTH): 5W-30"
+      ]
+    }
+  },
+  {
+    "make": "CITROEN",
+    "model": "C5 Aircross",
+    "generation": "I",
+    "yearFrom": 2018,
+    "yearTo": 2022,
+    "engineCode": "EP6FDT",
+    "displacementCc": 1598,
+    "fuelType": "essence",
+    "powerKw": 121,
+    "powerHp": 165,
+    "oilViscosity": "0W-30",
+    "oilSpecAPI": "SN",
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": "PSA B71 2290",
+    "oilCapacityLiters": 5.0,
+    "oilChangeIntervalKm": 15000,
+    "source": "tunisieauto.tn, autodoc.co.uk, autodoc.parts",
+    "confidence": "medium",
+    "matchAmbiguity": {
+      "conflictGroup": 28,
+      "severity": "minor",
+      "lookupKey": {
+        "displacementCc": 1598,
+        "powerHp": 165,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "None",
+            "SN"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "PSA B71 2290",
+            "PSA B71 2312"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "Peugeot 3008 (EP6FDT): 0W-30",
+        "Peugeot 5008 (EP6FDT): 0W-30"
+      ]
+    }
+  },
+  {
+    "make": "CITROEN",
+    "model": "Berlingo",
+    "generation": "II (B9)",
+    "yearFrom": 2012,
+    "yearTo": 2018,
+    "engineCode": "DV6DTED",
+    "displacementCc": 1560,
+    "fuelType": "diesel",
+    "powerKw": 66,
+    "powerHp": 90,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": "PSA B71 2290",
+    "oilCapacityLiters": 4.0,
+    "oilChangeIntervalKm": 15000,
+    "source": "tunisieauto.tn, autodoc.co.uk, berlingoforum.com",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "CITROEN",
+    "model": "Berlingo",
+    "generation": "III (K9)",
+    "yearFrom": 2018,
+    "yearTo": 9999,
+    "engineCode": "DV6DTED",
+    "displacementCc": 1560,
+    "fuelType": "diesel",
+    "powerKw": 68,
+    "powerHp": 92,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": "PSA B71 2290",
+    "oilCapacityLiters": 4.0,
+    "oilChangeIntervalKm": 15000,
+    "source": "citroen.tn, automobile.tn, autodoc.co.uk",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "CITROEN",
+    "model": "Jumpy",
+    "generation": "III",
+    "yearFrom": 2016,
+    "yearTo": 9999,
+    "engineCode": "DV6DTED",
+    "displacementCc": 1560,
+    "fuelType": "diesel",
+    "powerKw": 68,
+    "powerHp": 92,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": "PSA B71 2290",
+    "oilCapacityLiters": 4.5,
+    "oilChangeIntervalKm": 15000,
+    "source": "citroen.tn, automobile.tn, tunisieauto.tn",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "CITROEN",
+    "model": "Jumper",
+    "generation": "III",
+    "yearFrom": 2016,
+    "yearTo": 9999,
+    "engineCode": "P22DTE",
+    "displacementCc": 2199,
+    "fuelType": "diesel",
+    "powerKw": 96,
+    "powerHp": 130,
+    "oilViscosity": "0W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": "PSA B71 2312",
+    "oilCapacityLiters": 5.5,
+    "oilChangeIntervalKm": 15000,
+    "source": "tunisieauto.tn, autodoc.co.uk, buycarparts.co.uk",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  }
+]

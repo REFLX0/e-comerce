@@ -11,14 +11,17 @@ import {
   Loader2,
   Plus,
   Save,
+  Search,
   Trash2,
   Wrench,
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { useTranslations } from 'next-intl'
+import { useRouter, usePathname } from 'next/navigation'
 import { productsApi } from '@/lib/api/products'
 import { carsApi, type CarPayload } from '@/lib/api/cars'
 import type { UserCar } from '@/lib/types'
+import { useVehicleStore } from '@/lib/store/vehicle.store'
 
 type CarForm = {
   name: string
@@ -195,6 +198,30 @@ function ServiceCheckbox({
 function CarCard({ car }: { car: UserCar }) {
   const t = useTranslations('Vehicle')
   const queryClient = useQueryClient()
+  const router = useRouter()
+  const pathname = usePathname()
+  const locale = pathname?.split('/')[1] === 'en' ? 'en' : 'fr'
+  const setVehicle = useVehicleStore((state) => state.setVehicle)
+
+  const canFindOils = Boolean(car.makeSlug && car.modelSlug)
+
+  const handleFindOils = () => {
+    setVehicle({
+      type: 'automobile',
+      makeId: car.makeSlug ?? '',
+      makeName: car.make ?? '',
+      makeSlug: car.makeSlug ?? '',
+      modelId: car.modelSlug ?? '',
+      modelName: car.model ?? '',
+      modelSlug: car.modelSlug ?? '',
+      engineCode: car.engine ?? '',
+    })
+    const params = new URLSearchParams()
+    if (car.makeSlug) params.set('make', car.makeSlug)
+    if (car.modelSlug) params.set('model', car.modelSlug)
+    if (car.engine) params.set('engine', car.engine)
+    router.push(`/${locale}/catalogue?${params.toString()}`)
+  }
   const reminder = getReminder(car, t)
   const ReminderIcon = reminder.icon
   const progress = Math.min(
@@ -376,15 +403,28 @@ function CarCard({ car }: { car: UserCar }) {
           </div>
         </fieldset>
 
-        <button
-          type="button"
-          onClick={saveMaintenance}
-          disabled={updateMutation.isPending}
-          className="inline-flex items-center gap-2 rounded-xl bg-brand-primary px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-primary-light disabled:opacity-60"
-        >
-          <Save size={16} />
-          {updateMutation.isPending ? t('saving') : t('saveMaintenance')}
-        </button>
+        <div className="flex flex-wrap items-center gap-3">
+          <button
+            type="button"
+            onClick={saveMaintenance}
+            disabled={updateMutation.isPending}
+            className="inline-flex items-center gap-2 rounded-xl bg-brand-primary px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-primary-light disabled:opacity-60"
+          >
+            <Save size={16} />
+            {updateMutation.isPending ? t('saving') : t('saveMaintenance')}
+          </button>
+
+          {canFindOils && (
+            <button
+              type="button"
+              onClick={handleFindOils}
+              className="inline-flex items-center gap-2 rounded-xl border border-brand-primary/25 bg-brand-primary/5 px-4 py-2.5 text-sm font-semibold text-brand-primary transition-colors hover:bg-brand-primary hover:text-white"
+            >
+              <Search size={16} />
+              Trouver les huiles compatibles
+            </button>
+          )}
+        </div>
       </div>
     </div>
   )

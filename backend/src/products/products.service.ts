@@ -27,6 +27,7 @@ export interface ProductFilters {
   api?: string;
   acea?: string;
   volume?: string;
+  oem?: string;
 }
 
 @Injectable()
@@ -101,6 +102,7 @@ export class ProductsService {
       api: filters.api,
       acea: filters.acea,
       volume: filters.volume,
+      oem: filters.oem,
     };
     return `products:list:${JSON.stringify(relevant)}`;
   }
@@ -193,6 +195,12 @@ export class ProductsService {
         mode: 'insensitive',
       };
     }
+    if (filters.oem) {
+      specsInput.OEMApprovals = {
+        contains: filters.oem,
+        mode: 'insensitive',
+      };
+    }
     if (Object.keys(variantSome).length > 0)
       where.variants = { some: variantSome };
     if (Object.keys(specsInput).length > 0) {
@@ -236,7 +244,6 @@ export class ProductsService {
       const skip = (Math.max(filters.page ?? 1, 1) - 1) * limit;
       data = all.slice(skip, skip + limit);
     } else {
-      const page = Math.max(filters.page ?? 1, 1);
       const skip = (page - 1) * limit;
       const orderBy = this.buildOrderBy(filters.sortBy);
       [data, total] = await Promise.all([
@@ -245,11 +252,11 @@ export class ProductsService {
       ]);
     }
 
-    const page = filters.cursor ? 1 : Math.max(filters.page ?? 1, 1);
+    const resultPage = filters.cursor ? 1 : Math.max(filters.page ?? 1, 1);
     const result: any = {
       data: data.map(this.serialize),
       total,
-      page,
+      page: resultPage,
       limit,
       totalPages: total > 0 ? Math.ceil(total / limit) : null,
       // Cursor for next page — null means no more pages

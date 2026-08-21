@@ -1,0 +1,754 @@
+{
+  "_meta": {
+    "description": "Cross-brand characteristics lookup conflicts for poids-lourd (full-field comparison with per-field severity, all brands)",
+    "lookupKeyDefinition": "(displacementCc, powerHp, fuelType) — matches backend/Prisma schema. Additional data fields (gearboxOilSeparate, emissionStandard, oilCapacityLiters, oilChangeIntervalKm) are not part of the lookup key.",
+    "poidsLourdSpecificFields": [
+      "gearboxOilSeparate",
+      "gearboxOilSpec",
+      "emissionStandard",
+      "oilCapacityLiters",
+      "oilChangeIntervalKm"
+    ],
+    "specFieldsCompared": [
+      "oilViscosity",
+      "oilSpecAPI",
+      "oilSpecACEA",
+      "oilSpecOEM"
+    ],
+    "totalEntries": 133,
+    "totalUniqueKeys": 122,
+    "totalConflictGroups": 11,
+    "totalAmbiguousEntries": 22,
+    "brandsIncluded": [
+      "astra",
+      "changan",
+      "daf",
+      "dongfeng",
+      "faw",
+      "ford-trucks",
+      "hyundai-truck",
+      "isuzu",
+      "iveco",
+      "jac",
+      "king-long",
+      "man",
+      "mercedes-benz",
+      "otokar",
+      "renault-trucks",
+      "scania",
+      "shacman",
+      "sinotruk",
+      "tata",
+      "volvo-trucks"
+    ],
+    "generatedFrom": [
+      "poids-lourd-astra.json",
+      "poids-lourd-changan.json",
+      "poids-lourd-daf.json",
+      "poids-lourd-dongfeng.json",
+      "poids-lourd-faw.json",
+      "poids-lourd-ford-trucks.json",
+      "poids-lourd-hyundai-truck.json",
+      "poids-lourd-isuzu.json",
+      "poids-lourd-iveco.json",
+      "poids-lourd-jac.json",
+      "poids-lourd-king-long.json",
+      "poids-lourd-man.json",
+      "poids-lourd-mercedes-benz.json",
+      "poids-lourd-otokar.json",
+      "poids-lourd-renault-trucks.json",
+      "poids-lourd-scania.json",
+      "poids-lourd-shacman.json",
+      "poids-lourd-sinotruk.json",
+      "poids-lourd-tata.json",
+      "poids-lourd-volvo-trucks.json"
+    ]
+  },
+  "dataCorrections": [
+    {
+      "batch": "phase1-initial",
+      "description": "Ford Trucks F-MAX/Cargo: oilViscosity/API/ACEA/OEM/interval were null (no direct owner manual access). Filled with inferred values from Euro V/VI class standards. Confidence remains 'low'."
+    }
+  ],
+  "conflicts": [
+    {
+      "conflictGroup": 17,
+      "lookupKey": {
+        "displacementCc": 6700,
+        "powerHp": 210,
+        "fuelType": "diesel"
+      },
+      "severity": "minor",
+      "differingFields": [
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "DAF Standard Drain",
+            "IVECO 18-1804 T2"
+          ]
+        }
+      ],
+      "entries": [
+        {
+          "make": "DAF",
+          "model": "LF 210",
+          "generation": "Euro VI",
+          "engineCode": "PACCAR PX-7 210",
+          "emissionStandard": "Euro VI",
+          "oilViscosity": "10W-40",
+          "oilSpecAPI": "CJ-4",
+          "oilSpecACEA": "E7",
+          "oilSpecOEM": "DAF Standard Drain",
+          "source": "DAF LF with PACCAR PX-7 (Cummins ISB 6.7 derived); distribution truck; 6.7L inline-6; 15.5L oil capacity; ACEA E7/API CJ-4; relevant for Tunisia LF 45/55 used market"
+        },
+        {
+          "make": "IVECO",
+          "model": "Eurocargo 210",
+          "generation": "Euro VI",
+          "engineCode": "N67TE2*",
+          "emissionStandard": "Euro VI",
+          "oilViscosity": "10W-40",
+          "oilSpecAPI": "CJ-4",
+          "oilSpecACEA": "E7",
+          "oilSpecOEM": "IVECO 18-1804 T2",
+          "source": "NEF Tector 7 entry power rating for lighter Eurocargo duty. Same 6.7L block and 10.8L oil capacity as 250hp variant. N67TE2 engine code family per Scribd NEF documentation."
+        }
+      ],
+      "note": "Key: 6700cc/210hp/diesel. Entries: 2. . Differences: oilSpecOEM: DAF Standard Drain vs IVECO 18-1804 T2 [minor]"
+    },
+    {
+      "conflictGroup": 22,
+      "lookupKey": {
+        "displacementCc": 6871,
+        "powerHp": 250,
+        "fuelType": "diesel"
+      },
+      "severity": "major",
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "10W-40",
+            "5W-30"
+          ]
+        },
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "CI-4",
+            "CJ-4"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "E6",
+            "E7"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "MAN M 3275-1",
+            "MAN M 3477"
+          ]
+        }
+      ],
+      "entries": [
+        {
+          "make": "MAN",
+          "model": "TGM 18.250",
+          "generation": "Euro VI",
+          "engineCode": "D0836LFL66",
+          "emissionStandard": "Euro VI",
+          "oilViscosity": "5W-30",
+          "oilSpecAPI": "CJ-4",
+          "oilSpecACEA": "E6",
+          "oilSpecOEM": "MAN M 3477",
+          "source": "kroon-oil.com TGM 18.250 D0836 LFL66/Euro 6 capacity 21.5L filter 1.5L; truckstar.com.ua D0836 LFL66/75 max 20L min 16L M 3377/M 3677 for Euro 6 SCR+CRT; kroon-oil oil change 60000 km/12 months"
+        },
+        {
+          "make": "MAN",
+          "model": "TGM 18.250",
+          "generation": "Euro V",
+          "engineCode": "D0836LFL50",
+          "emissionStandard": "Euro V",
+          "oilViscosity": "10W-40",
+          "oilSpecAPI": "CI-4",
+          "oilSpecACEA": "E7",
+          "oilSpecOEM": "MAN M 3275-1",
+          "source": "kroon-oil.com TGM 18.240 D0836 LFL50/Euro 4 capacity 21.5L; truckstar.com.ua D0836 LFL50/53 max 20L min 16L M 3277/M 3377 for Euro 4 PM-Kat; ravenol.com TGM Euro 5 ACEA E6/E7/E8/E9 5W-30"
+        }
+      ],
+      "note": "Key: 6871cc/250hp/diesel. Entries: 2. . Differences: oilViscosity: 10W-40 vs 5W-30 [major]; oilSpecAPI: CI-4 vs CJ-4 [minor]; oilSpecACEA: E6 vs E7 [major]; oilSpecOEM: MAN M 3275-1 vs MAN M 3477 [minor]"
+    },
+    {
+      "conflictGroup": 29,
+      "lookupKey": {
+        "displacementCc": 7700,
+        "powerHp": 250,
+        "fuelType": "diesel"
+      },
+      "severity": "major",
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "10W-30",
+            "10W-40"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "E8",
+            "E9"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "Renault RLD-4",
+            "Volvo VDS-4.5"
+          ]
+        }
+      ],
+      "entries": [
+        {
+          "make": "RENAULT TRUCKS",
+          "model": "D 250",
+          "generation": "Euro VI",
+          "engineCode": "DTI 8",
+          "emissionStandard": "Euro VI",
+          "oilViscosity": "10W-30",
+          "oilSpecAPI": "CK-4",
+          "oilSpecACEA": "E8",
+          "oilSpecOEM": "Renault RLD-4",
+          "source": "Renault Trucks D range (renault-trucks.com), Kroon-Oil D 320 DTI 8 capacity 18.5-24L, mwtruckparts.co.uk engine guide"
+        },
+        {
+          "make": "VOLVO TRUCKS",
+          "model": "FE 250",
+          "generation": "Euro VI",
+          "engineCode": "D8K250",
+          "emissionStandard": "Euro VI",
+          "oilViscosity": "10W-40",
+          "oilSpecAPI": "CK-4",
+          "oilSpecACEA": "E9",
+          "oilSpecOEM": "Volvo VDS-4.5",
+          "source": "kroon-oil.com FE 250 D8K (24L service fill); Volvo Trucks Australia FE specs (D8K 250 hp, 7700cc); LinkedIn Volvo capacities (D8: 24L); Volvo FL Product Guide (D8K 200-280 hp)"
+        }
+      ],
+      "note": "Key: 7700cc/250hp/diesel. Entries: 2. . Differences: oilViscosity: 10W-30 vs 10W-40 [major]; oilSpecACEA: E8 vs E9 [major]; oilSpecOEM: Renault RLD-4 vs Volvo VDS-4.5 [minor]"
+    },
+    {
+      "conflictGroup": 33,
+      "lookupKey": {
+        "displacementCc": 7700,
+        "powerHp": 320,
+        "fuelType": "diesel"
+      },
+      "severity": "major",
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "10W-40",
+            "15W-40"
+          ]
+        },
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "CH-4",
+            "CK-4"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "E5",
+            "E9"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "Volvo VDS-4.5"
+          ]
+        }
+      ],
+      "entries": [
+        {
+          "make": "FAW",
+          "model": "Jiefang J5 320",
+          "generation": "Euro III",
+          "engineCode": "CA6DL1-32",
+          "emissionStandard": "Euro III",
+          "oilViscosity": "15W-40",
+          "oilSpecAPI": "CH-4",
+          "oilSpecACEA": "E5",
+          "oilSpecOEM": null,
+          "source": "CA6DL1 workshop manual (Scribd): oil sump ~23L; Ravenol/choise.ravenol.com: FAW J5 CA6DL1-32 liquid volume 30L; chinafawtruk.com: CA6DL1 7.7L 260-320PS; Ravenol recommends 10W-40 but 15W-40 is standard for export climates"
+        },
+        {
+          "make": "VOLVO TRUCKS",
+          "model": "FE 320",
+          "generation": "Euro VI",
+          "engineCode": "D8K320",
+          "emissionStandard": "Euro VI",
+          "oilViscosity": "10W-40",
+          "oilSpecAPI": "CK-4",
+          "oilSpecACEA": "E9",
+          "oilSpecOEM": "Volvo VDS-4.5",
+          "source": "oto.com Volvo FE D8K 320 HP (7700cc, 320hp, 1200Nm); Volvo Trucks Australia FE specs (D8K up to 320 hp); kroon-oil.com (D8K 24L service fill); Volvo FL Spec Scribd (D8K 200-280 hp range)"
+        }
+      ],
+      "note": "Key: 7700cc/320hp/diesel. Entries: 2. . Differences: oilViscosity: 10W-40 vs 15W-40 [major]; oilSpecAPI: CH-4 vs CK-4 [minor]; oilSpecACEA: E5 vs E9 [major]; oilSpecOEM: Volvo VDS-4.5 [minor]"
+    },
+    {
+      "conflictGroup": 40,
+      "lookupKey": {
+        "displacementCc": 8700,
+        "powerHp": 360,
+        "fuelType": "diesel"
+      },
+      "severity": "minor",
+      "differingFields": [
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "CI-4",
+            "CK-4"
+          ]
+        }
+      ],
+      "entries": [
+        {
+          "make": "ASTRA",
+          "model": "HD8 360",
+          "generation": "Euro V",
+          "engineCode": "Cursor 9",
+          "emissionStandard": "Euro V",
+          "oilViscosity": "10W-40",
+          "oilSpecAPI": "CI-4",
+          "oilSpecACEA": "E7",
+          "oilSpecOEM": "IVECO 18-1804 T2",
+          "source": "Top power rating for Astra HD8 with Cursor 9 at 360hp (265kW). Same 8.7L block and 21L oil system as HD8 330. FPT Industrial Cursor 9 range covers 300-360hp. Identical lubrication spec to all Cursor 9 truck applications."
+        },
+        {
+          "make": "IVECO",
+          "model": "Eurocargo 360",
+          "generation": "Euro VI",
+          "engineCode": "F3CEF609D*",
+          "emissionStandard": "Euro VI",
+          "oilViscosity": "10W-40",
+          "oilSpecAPI": "CK-4",
+          "oilSpecACEA": "E7",
+          "oilSpecOEM": "IVECO 18-1804 T2",
+          "source": "Cursor 9 top diesel rating for Eurocargo. FPT Industrial Cursor 9 range 300-400hp. Same oil system as 300hp variant. Kroon-Oil confirms 21L capacity for Cursor 9 in truck applications."
+        }
+      ],
+      "note": "Key: 8700cc/360hp/diesel. Entries: 2. . Differences: oilSpecAPI: CI-4 vs CK-4 [minor]"
+    },
+    {
+      "conflictGroup": 50,
+      "lookupKey": {
+        "displacementCc": 9726,
+        "powerHp": 336,
+        "fuelType": "diesel"
+      },
+      "severity": "minor",
+      "differingFields": [
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "CH-4",
+            "CI-4"
+          ]
+        }
+      ],
+      "entries": [
+        {
+          "make": "SINOTRUK",
+          "model": "Howo 7 336",
+          "generation": "Euro III",
+          "engineCode": "WD615.47",
+          "emissionStandard": "Euro III",
+          "oilViscosity": "15W-40",
+          "oilSpecAPI": "CH-4",
+          "oilSpecACEA": null,
+          "oilSpecOEM": null,
+          "source": "SINOTRUK WD615 Workshop Manual (scribd, 20L oil sump); sinotruks.biz maintenance instructions (CH-4 Grade)"
+        },
+        {
+          "make": "SINOTRUK",
+          "model": "Howo A7 336",
+          "generation": "Euro IV",
+          "engineCode": "WD615.338",
+          "emissionStandard": "Euro IV",
+          "oilViscosity": "15W-40",
+          "oilSpecAPI": "CI-4",
+          "oilSpecACEA": null,
+          "oilSpecOEM": null,
+          "source": "SINOTRUK WD615.338 Howo A7 early variant; WD615 Workshop Manual (scribd) 20L oil sump; heavytruk.com WD615 engine specs"
+        }
+      ],
+      "note": "Key: 9726cc/336hp/diesel. Entries: 2. . Differences: oilSpecAPI: CH-4 vs CI-4 [minor]"
+    },
+    {
+      "conflictGroup": 52,
+      "lookupKey": {
+        "displacementCc": 9726,
+        "powerHp": 380,
+        "fuelType": "diesel"
+      },
+      "severity": "major",
+      "differingFields": [
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "CH-4",
+            "CI-4"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "E5",
+            "E7"
+          ]
+        }
+      ],
+      "entries": [
+        {
+          "make": "SHACMAN",
+          "model": "F3000 380",
+          "generation": "Euro III",
+          "engineCode": "WD615.47",
+          "emissionStandard": "Euro III",
+          "oilViscosity": "15W-40",
+          "oilSpecAPI": "CH-4",
+          "oilSpecACEA": "E5",
+          "oilSpecOEM": null,
+          "source": "SHACMAN F3000 spec sheet (timintl.com): WD615.47, 9.7L, 280kW/380hp; WP10 service manual: oil system capacity 20L incl filters, CH-4 recommended"
+        },
+        {
+          "make": "SINOTRUK",
+          "model": "Howo 380",
+          "generation": "Euro IV",
+          "engineCode": "WD615.56",
+          "emissionStandard": "Euro IV",
+          "oilViscosity": "15W-40",
+          "oilSpecAPI": "CI-4",
+          "oilSpecACEA": "E7",
+          "oilSpecOEM": null,
+          "source": "SINOTRUK WD615 EGR variant specs; typical WD615.56 380hp export configuration; oil capacity estimated from WD615 base 20L plus cooler circuit"
+        }
+      ],
+      "note": "Key: 9726cc/380hp/diesel. Entries: 2. . Differences: oilSpecAPI: CH-4 vs CI-4 [minor]; oilSpecACEA: E5 vs E7 [major]"
+    },
+    {
+      "conflictGroup": 62,
+      "lookupKey": {
+        "displacementCc": 10800,
+        "powerHp": 380,
+        "fuelType": "diesel"
+      },
+      "severity": "major",
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "10W-30",
+            "15W-40"
+          ]
+        },
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "CJ-4",
+            "CK-4"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "E8",
+            "E9"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "Renault RLD-3",
+            "Renault RLD-4"
+          ]
+        }
+      ],
+      "entries": [
+        {
+          "make": "RENAULT TRUCKS",
+          "model": "T 380 / C 380",
+          "generation": "Euro VI",
+          "engineCode": "DTI 11",
+          "emissionStandard": "Euro VI",
+          "oilViscosity": "10W-30",
+          "oilSpecAPI": "CK-4",
+          "oilSpecACEA": "E8",
+          "oilSpecOEM": "Renault RLD-4",
+          "source": "Renault Trucks UK range page, Renault Trucks Qatar K Range brochure, Q8Oils RLD specifications PDF"
+        },
+        {
+          "make": "RENAULT TRUCKS",
+          "model": "Kerax 380 / K 380",
+          "generation": "Euro V",
+          "engineCode": "DXi 11",
+          "emissionStandard": "Euro V",
+          "oilViscosity": "15W-40",
+          "oilSpecAPI": "CJ-4",
+          "oilSpecACEA": "E9",
+          "oilSpecOEM": "Renault RLD-3",
+          "source": "Renault Trucks Qatar K Range brochure (DXi 11 380hp), Q8Oils RLD-3 spec sheet, Renault Trucks Oils Maxima Euro V page"
+        }
+      ],
+      "note": "Key: 10800cc/380hp/diesel. Entries: 2. . Differences: oilViscosity: 10W-30 vs 15W-40 [major]; oilSpecAPI: CJ-4 vs CK-4 [minor]; oilSpecACEA: E8 vs E9 [major]; oilSpecOEM: Renault RLD-3 vs Renault RLD-4 [minor]"
+    },
+    {
+      "conflictGroup": 65,
+      "lookupKey": {
+        "displacementCc": 10800,
+        "powerHp": 430,
+        "fuelType": "diesel"
+      },
+      "severity": "major",
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "10W-30",
+            "15W-40"
+          ]
+        },
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "CJ-4",
+            "CK-4"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "E8",
+            "E9"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "Renault RLD-3",
+            "Renault RLD-4"
+          ]
+        }
+      ],
+      "entries": [
+        {
+          "make": "RENAULT TRUCKS",
+          "model": "T 430 / C 430",
+          "generation": "Euro VI",
+          "engineCode": "DTI 11",
+          "emissionStandard": "Euro VI",
+          "oilViscosity": "10W-30",
+          "oilSpecAPI": "CK-4",
+          "oilSpecACEA": "E8",
+          "oilSpecOEM": "Renault RLD-4",
+          "source": "Renault Trucks UK range page, Kroon-Oil T 460 engine data, Renault Trucks Oils Maxeon product page"
+        },
+        {
+          "make": "RENAULT TRUCKS",
+          "model": "Kerax 430 / K 430",
+          "generation": "Euro V",
+          "engineCode": "DXi 11",
+          "emissionStandard": "Euro V",
+          "oilViscosity": "15W-40",
+          "oilSpecAPI": "CJ-4",
+          "oilSpecACEA": "E9",
+          "oilSpecOEM": "Renault RLD-3",
+          "source": "Renault DXi 11 Workshop Manual, Q8Oils RLD-3=ACEA E9-08+VDS-4, Renault Trucks Oils Maxima Euro V product page, Kroon-Oil capacity data"
+        }
+      ],
+      "note": "Key: 10800cc/430hp/diesel. Entries: 2. . Differences: oilViscosity: 10W-30 vs 15W-40 [major]; oilSpecAPI: CJ-4 vs CK-4 [minor]; oilSpecACEA: E8 vs E9 [major]; oilSpecOEM: Renault RLD-3 vs Renault RLD-4 [minor]"
+    },
+    {
+      "conflictGroup": 68,
+      "lookupKey": {
+        "displacementCc": 10800,
+        "powerHp": 460,
+        "fuelType": "diesel"
+      },
+      "severity": "major",
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "10W-30",
+            "15W-40"
+          ]
+        },
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "CJ-4",
+            "CK-4"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "E8",
+            "E9"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "Renault RLD-3",
+            "Renault RLD-4"
+          ]
+        }
+      ],
+      "entries": [
+        {
+          "make": "RENAULT TRUCKS",
+          "model": "T 460 / C 460",
+          "generation": "Euro VI",
+          "engineCode": "DTI 11",
+          "emissionStandard": "Euro VI",
+          "oilViscosity": "10W-30",
+          "oilSpecAPI": "CK-4",
+          "oilSpecACEA": "E8",
+          "oilSpecOEM": "Renault RLD-4",
+          "source": "Renault Trucks UK (renaulttruckcommercials.co.uk), Kroon-Oil T 460 capacity 36L, Q8Oils RLD-4=ACEA E8/E11 spec sheet"
+        },
+        {
+          "make": "RENAULT TRUCKS",
+          "model": "Kerax 460 / K 460",
+          "generation": "Euro V",
+          "engineCode": "DXi 11",
+          "emissionStandard": "Euro V",
+          "oilViscosity": "15W-40",
+          "oilSpecAPI": "CJ-4",
+          "oilSpecACEA": "E9",
+          "oilSpecOEM": "Renault RLD-3",
+          "source": "Renault DXi 11 Workshop Manual (scribd.com), Q8Oils RLD-3=ACEA E9-08+VDS-4 spec, Kroon-Oil Premium 430 DXi capacity 36.5L, MAG1 lube advisor"
+        }
+      ],
+      "note": "Key: 10800cc/460hp/diesel. Entries: 2. . Differences: oilViscosity: 10W-30 vs 15W-40 [major]; oilSpecAPI: CJ-4 vs CK-4 [minor]; oilSpecACEA: E8 vs E9 [major]; oilSpecOEM: Renault RLD-3 vs Renault RLD-4 [minor]"
+    },
+    {
+      "conflictGroup": 88,
+      "lookupKey": {
+        "displacementCc": 12742,
+        "powerHp": 410,
+        "fuelType": "diesel"
+      },
+      "severity": "major",
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "10W-40",
+            "15W-40"
+          ]
+        },
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "CJ-4",
+            "CK-4"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "E7",
+            "E9"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "Scania LDF-4"
+          ]
+        }
+      ],
+      "entries": [
+        {
+          "make": "HYUNDAI",
+          "model": "Xcient 410",
+          "generation": "Euro V",
+          "engineCode": "D6CB",
+          "emissionStandard": "Euro V",
+          "oilViscosity": "15W-40",
+          "oilSpecAPI": "CJ-4",
+          "oilSpecACEA": "E7",
+          "oilSpecOEM": null,
+          "source": "Hyundai CE lubricants page (hyundai-ce.eu), Kroon-oil Xcient D6HA 38L service fill, AMSOIL lookup 42.27qt dry fill, KoreaSpare D6CB 410hp, chinatrucks.org D6CF 12.742L"
+        },
+        {
+          "make": "SCANIA",
+          "model": "G410",
+          "generation": "Euro VI",
+          "engineCode": "DC13 073",
+          "emissionStandard": "Euro VI",
+          "oilViscosity": "10W-40",
+          "oilSpecAPI": "CK-4",
+          "oilSpecACEA": "E9",
+          "oilSpecOEM": "Scania LDF-4",
+          "source": "Scania G410 Euro 6 (DC13 073, 302 kW/410 hp, 12.7L); Scania G-series regional haul specs; LDF-4 for 100000 km drain interval"
+        }
+      ],
+      "note": "Key: 12742cc/410hp/diesel. Entries: 2. . Differences: oilViscosity: 10W-40 vs 15W-40 [major]; oilSpecAPI: CJ-4 vs CK-4 [minor]; oilSpecACEA: E7 vs E9 [major]; oilSpecOEM: Scania LDF-4 [minor]"
+    }
+  ],
+  "summary": {
+    "safeEntries": 111,
+    "ambiguousEntries": 22,
+    "majorConflicts": 8,
+    "minorConflicts": 3,
+    "recommendation": "Entries with matchAmbiguity=null can safely use 'Par caracteristiques' lookup. Ambiguous entries should be resolved via 'Par vehicule' path. Major conflicts (viscosity or ACEA differs) carry real risk of recommending wrong oil. Minor conflicts (API or OEM spec differs) may indicate incomplete sourcing or regional differences. Note: ACEA E4/E6/E7/E8/E9 are distinct sequences — E8 (low-SAPS) vs E9 (high-SAPS) is a meaningful difference for engines with DPF/SCR."
+  }
+}

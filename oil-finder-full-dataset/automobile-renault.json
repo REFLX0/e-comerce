@@ -1,0 +1,663 @@
+[
+  {
+    "make": "Renault",
+    "model": "Clio",
+    "generation": "V",
+    "yearFrom": 2019,
+    "yearTo": 2025,
+    "engineCode": "H4D",
+    "displacementCc": 999,
+    "fuelType": "essence",
+    "powerKw": 67,
+    "powerHp": 91,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C3",
+    "oilSpecOEM": "RN17",
+    "oilCapacityLiters": 3.7,
+    "oilChangeIntervalKm": 15000,
+    "source": "auto-data.net (Renault Clio V 1.0 TCe 91hp); autodoc.co.uk engine oil lookup; Renault EU owner's manual (1.0 TCe: 5W-30, ACEA C3, RN17, 3.7L)",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "Renault",
+    "model": "Clio",
+    "generation": "V",
+    "yearFrom": 2019,
+    "yearTo": 2025,
+    "engineCode": "H4D",
+    "displacementCc": 999,
+    "fuelType": "essence",
+    "powerKw": 74,
+    "powerHp": 101,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C3",
+    "oilSpecOEM": "RN17",
+    "oilCapacityLiters": 3.7,
+    "oilChangeIntervalKm": 15000,
+    "source": "auto-data.net (Renault Clio V 1.0 TCe 101hp); autodoc.co.uk engine oil lookup; Renault EU owner's manual (1.0 TCe: 5W-30, ACEA C3, RN17, 3.7L)",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "Renault",
+    "model": "Clio",
+    "generation": "V",
+    "yearFrom": 2019,
+    "yearTo": 2020,
+    "engineCode": "K9K",
+    "displacementCc": 1461,
+    "fuelType": "diesel",
+    "powerKw": 63,
+    "powerHp": 85,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C3",
+    "oilSpecOEM": "RN17",
+    "oilCapacityLiters": 5.4,
+    "oilChangeIntervalKm": 15000,
+    "source": "auto-data.net (Renault Clio V 1.5 Blue dCi 85hp); automoli.com; Renault EU owner's manual (1.5 dCi: 5W-30, ACEA C3, RN17, 5.4L)",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "Renault",
+    "model": "Clio",
+    "generation": "V",
+    "yearFrom": 2019,
+    "yearTo": 2020,
+    "engineCode": "K9K",
+    "displacementCc": 1461,
+    "fuelType": "diesel",
+    "powerKw": 85,
+    "powerHp": 116,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C3",
+    "oilSpecOEM": "RN17",
+    "oilCapacityLiters": 5.4,
+    "oilChangeIntervalKm": 15000,
+    "source": "auto-data.net (Renault Clio V 1.5 Blue dCi 115hp); autodoc.co.uk engine oil lookup; Renault EU owner's manual (1.5 dCi: 5W-30, ACEA C3, RN17, 5.4L)",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "Renault",
+    "model": "Captur",
+    "generation": "II",
+    "yearFrom": 2019,
+    "yearTo": 2025,
+    "engineCode": "H5Ht",
+    "displacementCc": 1332,
+    "fuelType": "essence",
+    "powerKw": 96,
+    "powerHp": 131,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C3",
+    "oilSpecOEM": "RN17",
+    "oilCapacityLiters": 5.4,
+    "oilChangeIntervalKm": 15000,
+    "source": "auto-data.net (Renault Captur II 1.3 TCe 131hp); autodoc.co.uk engine oil lookup; Renault EU owner's manual (1.3 TCe: 5W-30, ACEA C3, RN17, 5.4L)",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "Renault",
+    "model": "Captur",
+    "generation": "II",
+    "yearFrom": 2019,
+    "yearTo": 2025,
+    "engineCode": "H5Ht",
+    "displacementCc": 1332,
+    "fuelType": "essence",
+    "powerKw": 103,
+    "powerHp": 140,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C3",
+    "oilSpecOEM": "RN17",
+    "oilCapacityLiters": 5.4,
+    "oilChangeIntervalKm": 15000,
+    "source": "auto-data.net (Renault Captur II 1.3 TCe 140hp); autodoc.co.uk engine oil lookup; buycarparts.co.uk; Renault EU owner's manual (1.3 TCe: 5W-30, ACEA C3, RN17, 5.4L)",
+    "confidence": "medium",
+    "matchAmbiguity": {
+      "conflictGroup": 13,
+      "severity": "minor",
+      "lookupKey": {
+        "displacementCc": 1332,
+        "powerHp": 140,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "None",
+            "SN"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "None",
+            "RN17"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "MITSUBISHI ASX (H5Ht): 5W-30",
+        "NISSAN Qashqai (HR13DDT): 5W-30",
+        "Renault Kadjar (H5Ht): 5W-30",
+        "Renault Megane (H5Ht): 5W-30"
+      ]
+    }
+  },
+  {
+    "make": "Renault",
+    "model": "Captur",
+    "generation": "I",
+    "yearFrom": 2013,
+    "yearTo": 2019,
+    "engineCode": "H5Ft",
+    "displacementCc": 1197,
+    "fuelType": "essence",
+    "powerKw": 88,
+    "powerHp": 120,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": null,
+    "oilSpecOEM": "RN0710",
+    "oilCapacityLiters": 4.6,
+    "oilChangeIntervalKm": 15000,
+    "source": "autodoc.parts (Renault Captur I 1.2 TCe 120hp); kroon-oil.com product recommendation; Renault EU owner's manual (1.2 TCe: 5W-30, RN0710, 4.6L)",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "Renault",
+    "model": "Duster",
+    "generation": "II",
+    "yearFrom": 2018,
+    "yearTo": 2024,
+    "engineCode": "K9K",
+    "displacementCc": 1461,
+    "fuelType": "diesel",
+    "powerKw": 80,
+    "powerHp": 109,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C3",
+    "oilSpecOEM": "RN17",
+    "oilCapacityLiters": 4.5,
+    "oilChangeIntervalKm": 15000,
+    "source": "autodoc.parts (Renault Duster II 1.5 dCi 110hp); buycarparts.co.uk; Renault EU owner's manual (1.5 dCi: 5W-30, ACEA C3, RN17, 4.5L)",
+    "confidence": "medium",
+    "matchAmbiguity": {
+      "conflictGroup": 17,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 1461,
+        "powerHp": 109,
+        "fuelType": "diesel"
+      },
+      "differingFields": [
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "C3",
+            "C4"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "RN0710",
+            "RN0720",
+            "RN17"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "DACIA Duster (K9K 898): 5W-30",
+        "DACIA Lodgy (K9K 846): 5W-30"
+      ]
+    }
+  },
+  {
+    "make": "Renault",
+    "model": "Duster",
+    "generation": "II",
+    "yearFrom": 2018,
+    "yearTo": 2024,
+    "engineCode": "H5Ft",
+    "displacementCc": 1198,
+    "fuelType": "essence",
+    "powerKw": 92,
+    "powerHp": 125,
+    "oilViscosity": "5W-40",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "A3/B4",
+    "oilSpecOEM": "RN0710",
+    "oilCapacityLiters": 4.6,
+    "oilChangeIntervalKm": 15000,
+    "source": "autodoc.co.uk (Renault Duster II 1.2 TCe 125hp); autodoc.parts; Renault EU owner's manual (1.2 TCe: 5W-40, ACEA A3/B4, RN0710, 4.6L)",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "Renault",
+    "model": "Duster",
+    "generation": "II",
+    "yearFrom": 2021,
+    "yearTo": 2024,
+    "engineCode": "H4D",
+    "displacementCc": 999,
+    "fuelType": "essence",
+    "powerKw": 67,
+    "powerHp": 91,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C3",
+    "oilSpecOEM": "RN17",
+    "oilCapacityLiters": 4.1,
+    "oilChangeIntervalKm": 15000,
+    "source": "autodoc.co.uk (Renault/Dacia Duster II 1.0 TCe 91hp); auto-data.net (Sandero III 1.0 TCe); Renault EU owner's manual (1.0 TCe: 5W-30, ACEA C3, RN17, 4.1L)",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "Renault",
+    "model": "Duster",
+    "generation": "III",
+    "yearFrom": 2024,
+    "yearTo": 2026,
+    "engineCode": "H5Ft",
+    "displacementCc": 1198,
+    "fuelType": "essence",
+    "powerKw": 96,
+    "powerHp": 130,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C3",
+    "oilSpecOEM": "RN17",
+    "oilCapacityLiters": 4.25,
+    "oilChangeIntervalKm": 15000,
+    "source": "auto-data.net (Renault Duster III 1.2 TCe 130hp MHEV); autodoc.co.uk; Renault EU owner's manual (1.2 TCe MHEV: 5W-30, ACEA C3, RN17, 4.25L)",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "Renault",
+    "model": "Symbol",
+    "generation": "III",
+    "yearFrom": 2017,
+    "yearTo": 2025,
+    "engineCode": "B4D",
+    "displacementCc": 999,
+    "fuelType": "essence",
+    "powerKw": 54,
+    "powerHp": 73,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C3",
+    "oilSpecOEM": "RN17",
+    "oilCapacityLiters": 3.2,
+    "oilChangeIntervalKm": 15000,
+    "source": "autodoc.parts (Renault Symbol III 1.0 SCe 75hp); automoli.com; Renault EU owner's manual (1.0 SCe: 5W-30, ACEA C3, RN17, 3.2L)",
+    "confidence": "medium",
+    "matchAmbiguity": {
+      "conflictGroup": 1,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 999,
+        "powerHp": 73,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "5W-30",
+            "5W-40"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "A3/B4",
+            "C3"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "RN0710",
+            "RN17"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "Renault Logan (B4D): 5W-40",
+        "Renault Logan (B4D): 5W-40"
+      ]
+    }
+  },
+  {
+    "make": "Renault",
+    "model": "Kadjar",
+    "generation": "I",
+    "yearFrom": 2018,
+    "yearTo": 2025,
+    "engineCode": "H5Ht",
+    "displacementCc": 1332,
+    "fuelType": "essence",
+    "powerKw": 103,
+    "powerHp": 140,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C3",
+    "oilSpecOEM": "RN17",
+    "oilCapacityLiters": 5.5,
+    "oilChangeIntervalKm": 15000,
+    "source": "auto-data.net (Renault Kadjar 1.3 TCe 140hp); autodoc.co.uk; buycarparts.co.uk; Renault EU owner's manual (1.3 TCe: 5W-30, ACEA C3, RN17, 5.5L)",
+    "confidence": "medium",
+    "matchAmbiguity": {
+      "conflictGroup": 13,
+      "severity": "minor",
+      "lookupKey": {
+        "displacementCc": 1332,
+        "powerHp": 140,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "None",
+            "SN"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "None",
+            "RN17"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "MITSUBISHI ASX (H5Ht): 5W-30",
+        "NISSAN Qashqai (HR13DDT): 5W-30",
+        "Renault Captur (H5Ht): 5W-30",
+        "Renault Megane (H5Ht): 5W-30"
+      ]
+    }
+  },
+  {
+    "make": "Renault",
+    "model": "Kadjar",
+    "generation": "I",
+    "yearFrom": 2018,
+    "yearTo": 2025,
+    "engineCode": "K9K",
+    "displacementCc": 1461,
+    "fuelType": "diesel",
+    "powerKw": 85,
+    "powerHp": 116,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C3",
+    "oilSpecOEM": "RN17",
+    "oilCapacityLiters": 4.8,
+    "oilChangeIntervalKm": 15000,
+    "source": "autodoc.parts (Renault Kadjar 1.5 Blue dCi 115hp); auto-data.net; Renault EU owner's manual (1.5 dCi: 5W-30, ACEA C3, RN17, 4.8L)",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "Renault",
+    "model": "Megane",
+    "generation": "IV",
+    "yearFrom": 2018,
+    "yearTo": 2025,
+    "engineCode": "H5Ht",
+    "displacementCc": 1332,
+    "fuelType": "essence",
+    "powerKw": 103,
+    "powerHp": 140,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C3",
+    "oilSpecOEM": "RN17",
+    "oilCapacityLiters": 5.5,
+    "oilChangeIntervalKm": 15000,
+    "source": "auto-data.net (Renault Megane IV 1.3 TCe 140hp); autodoc.co.uk; Renault EU owner's manual (1.3 TCe: 5W-30, ACEA C3, RN17, 5.5L)",
+    "confidence": "medium",
+    "matchAmbiguity": {
+      "conflictGroup": 13,
+      "severity": "minor",
+      "lookupKey": {
+        "displacementCc": 1332,
+        "powerHp": 140,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "None",
+            "SN"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "None",
+            "RN17"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "MITSUBISHI ASX (H5Ht): 5W-30",
+        "NISSAN Qashqai (HR13DDT): 5W-30",
+        "Renault Captur (H5Ht): 5W-30",
+        "Renault Kadjar (H5Ht): 5W-30"
+      ]
+    }
+  },
+  {
+    "make": "Renault",
+    "model": "Kangoo",
+    "generation": "III",
+    "yearFrom": 2021,
+    "yearTo": 2025,
+    "engineCode": "K9K",
+    "displacementCc": 1461,
+    "fuelType": "diesel",
+    "powerKw": 85,
+    "powerHp": 116,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C3",
+    "oilSpecOEM": "RN17",
+    "oilCapacityLiters": 5.7,
+    "oilChangeIntervalKm": 15000,
+    "source": "auto-data.net (Renault Kangoo III 1.5 Blue dCi 115hp); autodoc.co.uk; Renault EU owner's manual (1.5 dCi: 5W-30, ACEA C3, RN17, 5.7L)",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "Renault",
+    "model": "Logan",
+    "generation": "II",
+    "yearFrom": 2017,
+    "yearTo": 2021,
+    "engineCode": "B4D",
+    "displacementCc": 999,
+    "fuelType": "essence",
+    "powerKw": 54,
+    "powerHp": 73,
+    "oilViscosity": "5W-40",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "A3/B4",
+    "oilSpecOEM": "RN0710",
+    "oilCapacityLiters": 3.2,
+    "oilChangeIntervalKm": 15000,
+    "source": "autodoc.co.uk (Renault Logan II 1.0 SCe 75hp); buycarparts.co.uk; Renault EU owner's manual (1.0 SCe: 5W-40, ACEA A3/B4, RN0710, 3.2L)",
+    "confidence": "medium",
+    "matchAmbiguity": {
+      "conflictGroup": 1,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 999,
+        "powerHp": 73,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "5W-30",
+            "5W-40"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "A3/B4",
+            "C3"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "RN0710",
+            "RN17"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "Renault Symbol (B4D): 5W-30",
+        "Renault Logan (B4D): 5W-40"
+      ]
+    }
+  },
+  {
+    "make": "Renault",
+    "model": "Logan",
+    "generation": "MCV",
+    "yearFrom": 2017,
+    "yearTo": 2021,
+    "engineCode": "B4D",
+    "displacementCc": 999,
+    "fuelType": "essence",
+    "powerKw": 54,
+    "powerHp": 73,
+    "oilViscosity": "5W-40",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "A3/B4",
+    "oilSpecOEM": "RN0710",
+    "oilCapacityLiters": 3.2,
+    "oilChangeIntervalKm": 15000,
+    "source": "autodoc.co.uk (Renault Logan MCV II 1.0 SCe 75hp); buycarparts.co.uk; Renault EU owner's manual (1.0 SCe: 5W-40, ACEA A3/B4, RN0710, 3.2L)",
+    "confidence": "medium",
+    "matchAmbiguity": {
+      "conflictGroup": 1,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 999,
+        "powerHp": 73,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "5W-30",
+            "5W-40"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "A3/B4",
+            "C3"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "RN0710",
+            "RN17"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "Renault Symbol (B4D): 5W-30",
+        "Renault Logan (B4D): 5W-40"
+      ]
+    }
+  },
+  {
+    "make": "Renault",
+    "model": "Sandero",
+    "generation": "Stepway III",
+    "yearFrom": 2020,
+    "yearTo": 2025,
+    "engineCode": "H4D",
+    "displacementCc": 999,
+    "fuelType": "essence",
+    "powerKw": 67,
+    "powerHp": 91,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C3",
+    "oilSpecOEM": "RN17",
+    "oilCapacityLiters": 4.1,
+    "oilChangeIntervalKm": 15000,
+    "source": "auto-data.net (Dacia Sandero III Stepway 1.0 TCe 91hp); automoli.com; Renault/Dacia EU owner's manual (1.0 TCe: 5W-30, ACEA C3, RN17, 4.1L)",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "Renault",
+    "model": "Taliant",
+    "generation": "I",
+    "yearFrom": 2021,
+    "yearTo": 2025,
+    "engineCode": "B4D",
+    "displacementCc": 999,
+    "fuelType": "essence",
+    "powerKw": 48,
+    "powerHp": 65,
+    "oilViscosity": "5W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": null,
+    "oilSpecOEM": "RN17",
+    "oilCapacityLiters": 3.2,
+    "oilChangeIntervalKm": 15000,
+    "source": "auto-data.net (Renault Taliant 1.0 SCe 65hp); autodoc.co.uk; Renault EU owner's manual (1.0 SCe: 5W-30, RN17, 3.2L)",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  }
+]

@@ -1,0 +1,332 @@
+[
+  {
+    "make": "HONDA",
+    "model": "City",
+    "generation": "VII (1.5 i-VTEC 121)",
+    "yearFrom": 2020,
+    "yearTo": 9999,
+    "engineCode": "L15BU",
+    "displacementCc": 1498,
+    "fuelType": "essence",
+    "powerKw": 89,
+    "powerHp": 121,
+    "oilViscosity": "0W-20",
+    "oilSpecAPI": "SP",
+    "oilSpecACEA": null,
+    "oilSpecOEM": "Honda HTO-06",
+    "oilCapacityLiters": 3.5,
+    "oilChangeIntervalKm": 10000,
+    "source": "Honda owner's manual, AMSOIL, Castrol, Motul",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "HONDA",
+    "model": "Amaze",
+    "generation": "II (1.2 i-VTEC 90)",
+    "yearFrom": 2018,
+    "yearTo": 9999,
+    "engineCode": "L12B",
+    "displacementCc": 1199,
+    "fuelType": "essence",
+    "powerKw": 66,
+    "powerHp": 90,
+    "oilViscosity": "0W-20",
+    "oilSpecAPI": "SN",
+    "oilSpecACEA": null,
+    "oilSpecOEM": "Honda HTO-06",
+    "oilCapacityLiters": 3.2,
+    "oilChangeIntervalKm": 10000,
+    "source": "Honda owner's manual, AMSOIL, buycarparts.co.uk",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "HONDA",
+    "model": "BR-V",
+    "generation": "II (1.5 i-VTEC 121)",
+    "yearFrom": 2021,
+    "yearTo": 9999,
+    "engineCode": "L15BU",
+    "displacementCc": 1498,
+    "fuelType": "essence",
+    "powerKw": 89,
+    "powerHp": 121,
+    "oilViscosity": "0W-20",
+    "oilSpecAPI": "SP",
+    "oilSpecACEA": null,
+    "oilSpecOEM": "Honda HTO-06",
+    "oilCapacityLiters": 3.5,
+    "oilChangeIntervalKm": 10000,
+    "source": "Honda owner's manual, AMSOIL, Castrol",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "HONDA",
+    "model": "Jazz",
+    "generation": "VI (1.5 e:HEV 122)",
+    "yearFrom": 2020,
+    "yearTo": 9999,
+    "engineCode": "L15BE",
+    "displacementCc": 1498,
+    "fuelType": "essence",
+    "powerKw": 90,
+    "powerHp": 122,
+    "oilViscosity": "0W-20",
+    "oilSpecAPI": "SP",
+    "oilSpecACEA": null,
+    "oilSpecOEM": "Honda HTO-06",
+    "oilCapacityLiters": 3.4,
+    "oilChangeIntervalKm": 10000,
+    "source": "Honda Jazz e:HEV owner's manual, AMSOIL",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "HONDA",
+    "model": "HR-V",
+    "generation": "II (1.5 VTEC Turbo 131)",
+    "yearFrom": 2022,
+    "yearTo": 9999,
+    "engineCode": "L15BG",
+    "displacementCc": 1498,
+    "fuelType": "essence",
+    "powerKw": 96,
+    "powerHp": 131,
+    "oilViscosity": "0W-20",
+    "oilSpecAPI": "SP",
+    "oilSpecACEA": null,
+    "oilSpecOEM": "Honda HTO-06",
+    "oilCapacityLiters": 4.4,
+    "oilChangeIntervalKm": 10000,
+    "source": "Honda HR-V owner's manual, AMSOIL, Castrol",
+    "confidence": "medium",
+    "matchAmbiguity": {
+      "conflictGroup": 18,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 1498,
+        "powerHp": 131,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "None",
+            "SP"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "C5",
+            "None"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "Honda HTO-06",
+            "VW 508.00"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "HONDA HR-V (L15BE): 0W-20",
+        "VOLKSWAGEN Golf (DKTA): 0W-20",
+        "VOLKSWAGEN Golf Variant (DPBA): 0W-20"
+      ]
+    }
+  },
+  {
+    "make": "HONDA",
+    "model": "HR-V",
+    "generation": "II (1.5 e:HEV 131)",
+    "yearFrom": 2023,
+    "yearTo": 9999,
+    "engineCode": "L15BE",
+    "displacementCc": 1498,
+    "fuelType": "essence",
+    "powerKw": 96,
+    "powerHp": 131,
+    "oilViscosity": "0W-20",
+    "oilSpecAPI": "SP",
+    "oilSpecACEA": null,
+    "oilSpecOEM": "Honda HTO-06",
+    "oilCapacityLiters": 4.4,
+    "oilChangeIntervalKm": 10000,
+    "source": "Honda HR-V e:HEV owner's manual, AMSOIL",
+    "confidence": "medium",
+    "matchAmbiguity": {
+      "conflictGroup": 18,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 1498,
+        "powerHp": 131,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "None",
+            "SP"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "C5",
+            "None"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "Honda HTO-06",
+            "VW 508.00"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "HONDA HR-V (L15BG): 0W-20",
+        "VOLKSWAGEN Golf (DKTA): 0W-20",
+        "VOLKSWAGEN Golf Variant (DPBA): 0W-20"
+      ]
+    }
+  },
+  {
+    "make": "HONDA",
+    "model": "Civic",
+    "generation": "X (1.0 VTEC Turbo 125)",
+    "yearFrom": 2017,
+    "yearTo": 2021,
+    "engineCode": "P10A",
+    "displacementCc": 998,
+    "fuelType": "essence",
+    "powerKw": 92,
+    "powerHp": 125,
+    "oilViscosity": "0W-20",
+    "oilSpecAPI": "SN",
+    "oilSpecACEA": null,
+    "oilSpecOEM": "Honda HTO-06",
+    "oilCapacityLiters": 5.7,
+    "oilChangeIntervalKm": 10000,
+    "source": "Honda Civic X owner's manual, AMSOIL, Castrol",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "HONDA",
+    "model": "Civic",
+    "generation": "X (1.5 VTEC Turbo 182)",
+    "yearFrom": 2017,
+    "yearTo": 2021,
+    "engineCode": "L15BG",
+    "displacementCc": 1498,
+    "fuelType": "essence",
+    "powerKw": 134,
+    "powerHp": 182,
+    "oilViscosity": "0W-20",
+    "oilSpecAPI": "SP",
+    "oilSpecACEA": null,
+    "oilSpecOEM": "Honda HTO-06",
+    "oilCapacityLiters": 5.7,
+    "oilChangeIntervalKm": 10000,
+    "source": "Honda Civic X owner's manual, AMSOIL, Castrol",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "HONDA",
+    "model": "Civic",
+    "generation": "XI (2.0 e:HEV 184)",
+    "yearFrom": 2022,
+    "yearTo": 9999,
+    "engineCode": "LFA2",
+    "displacementCc": 1996,
+    "fuelType": "essence",
+    "powerKw": 135,
+    "powerHp": 184,
+    "oilViscosity": "0W-20",
+    "oilSpecAPI": "SP",
+    "oilSpecACEA": null,
+    "oilSpecOEM": "Honda HTO-06",
+    "oilCapacityLiters": 5.7,
+    "oilChangeIntervalKm": 10000,
+    "source": "Honda Civic XI e:HEV owner's manual, AMSOIL",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "HONDA",
+    "model": "CR-V",
+    "generation": "V (1.5 VTEC Turbo 193)",
+    "yearFrom": 2019,
+    "yearTo": 2022,
+    "engineCode": "L15BG",
+    "displacementCc": 1498,
+    "fuelType": "essence",
+    "powerKw": 142,
+    "powerHp": 193,
+    "oilViscosity": "0W-20",
+    "oilSpecAPI": "SP",
+    "oilSpecACEA": null,
+    "oilSpecOEM": "Honda HTO-06",
+    "oilCapacityLiters": 5.1,
+    "oilChangeIntervalKm": 10000,
+    "source": "Honda CR-V V owner's manual, AMSOIL, Castrol",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "HONDA",
+    "model": "CR-V",
+    "generation": "VI (2.0 e:HEV 204)",
+    "yearFrom": 2023,
+    "yearTo": 9999,
+    "engineCode": "LFA2",
+    "displacementCc": 1996,
+    "fuelType": "essence",
+    "powerKw": 150,
+    "powerHp": 204,
+    "oilViscosity": "0W-20",
+    "oilSpecAPI": "SP",
+    "oilSpecACEA": null,
+    "oilSpecOEM": "Honda HTO-06",
+    "oilCapacityLiters": 5.1,
+    "oilChangeIntervalKm": 10000,
+    "source": "Honda CR-V VI e:HEV owner's manual, AMSOIL",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "HONDA",
+    "model": "CR-V",
+    "generation": "VI (1.5 VTEC Turbo 194)",
+    "yearFrom": 2023,
+    "yearTo": 9999,
+    "engineCode": "L15BG",
+    "displacementCc": 1498,
+    "fuelType": "essence",
+    "powerKw": 143,
+    "powerHp": 194,
+    "oilViscosity": "0W-20",
+    "oilSpecAPI": "SP",
+    "oilSpecACEA": null,
+    "oilSpecOEM": "Honda HTO-06",
+    "oilCapacityLiters": 5.1,
+    "oilChangeIntervalKm": 10000,
+    "source": "Honda CR-V VI owner's manual, AMSOIL",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  }
+]

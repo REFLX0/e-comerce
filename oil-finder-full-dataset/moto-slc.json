@@ -1,0 +1,77 @@
+[
+  {
+    "make": "SLC",
+    "model": "SLC 125",
+    "generation": "SLC125",
+    "yearFrom": 2018,
+    "yearTo": 9999,
+    "engineCode": "SLC125",
+    "displacementCc": 125,
+    "fuelType": "essence",
+    "engineType": "4T",
+    "powerKw": 7.4,
+    "powerHp": 10,
+    "clutchType": "embrayage humide",
+    "oilViscosity": "10W-30",
+    "oilSpecAPI": "SM",
+    "oilSpecACEA": null,
+    "oilSpecOEM": null,
+    "oilSpecJASO": "MA2",
+    "oilCapacityLiters": 1.0,
+    "gearboxOilSeparate": false,
+    "oilChangeIntervalKm": 5000,
+    "source": "SLC 125 specs; generic Chinese 125cc specs; AMSOIL",
+    "confidence": "low",
+    "matchAmbiguity": {
+      "conflictGroup": 10,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 125,
+        "powerHp": 10,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilSpecJASO",
+          "severity": "major",
+          "values": [
+            "MA2",
+            "MB"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "KYMCO Agility 125 (AGL125): 10W-30 JASO MB",
+        "SENKE SK 125 (SK125): 10W-30 JASO MA2",
+        "SMT SMT 125 (SMT125): 10W-30 JASO MA2",
+        "SYM Symphony 125 (SYM125): 10W-30 JASO MB",
+        "ZIMOTA ZM 125 (ZM125): 10W-30 JASO MA2"
+      ]
+    }
+  },
+  {
+    "make": "SLC",
+    "model": "SLC 150",
+    "generation": "SLC150",
+    "yearFrom": 2019,
+    "yearTo": 9999,
+    "engineCode": "SLC150",
+    "displacementCc": 150,
+    "fuelType": "essence",
+    "engineType": "4T",
+    "powerKw": 8.8,
+    "powerHp": 12,
+    "clutchType": "embrayage humide",
+    "oilViscosity": "10W-30",
+    "oilSpecAPI": "SM",
+    "oilSpecACEA": null,
+    "oilSpecOEM": null,
+    "oilSpecJASO": "MA2",
+    "oilCapacityLiters": 1.1,
+    "gearboxOilSeparate": false,
+    "oilChangeIntervalKm": 5000,
+    "source": "SLC 150 specs; generic Chinese 150cc specs; AMSOIL",
+    "confidence": "low",
+    "matchAmbiguity": null
+  }
+]

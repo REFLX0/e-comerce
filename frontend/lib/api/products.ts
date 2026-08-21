@@ -65,8 +65,15 @@ export const productsApi = {
       params as Record<string, string | number | boolean | undefined>
     ),
 
-  getOilRecommendations: (params: { vehicleType: string; cylinders: number; power: number; fuelType: FuelType; make?: string }) =>
-    apiGet<{ data: Product[]; total: number }>('/products/oil-recommendations', params),
+  getOilByVehicle: (params: { make: string; model: string; engineCode?: string }) =>
+    apiGet<{ data: Product[]; total: number; oilFinderStatus?: string; oilSpec?: any }>('/oil-finder/vehicle', params),
+
+  getOilRecommendations: (params: { vehicleType: string; displacementCc: number; power: number; fuelType: FuelType; make?: string }) =>
+    apiGet<{ data: Product[]; total: number; oilFinderStatus?: string; oilSpec?: any }>('/oil-finder/specs', {
+      displacementCc: params.displacementCc,
+      powerHp: params.power,
+      fuelType: params.fuelType,
+    }),
 
   getMakes: (vehicleType?: string) => apiGet<VehicleMake[]>('/vehicles/makes', vehicleType ? { vehicleType } : undefined),
 

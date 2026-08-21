@@ -1,0 +1,557 @@
+{
+  "_meta": {
+    "description": "Cross-brand characteristics lookup conflicts for moto (full-field comparison with per-field severity, all brands)",
+    "lookupKeyDefinition": "(displacementCc, powerHp, fuelType) — matches backend/Prisma schema. engineType (2T/4T) and clutchType remain as display/filter fields only.",
+    "motoSpecificFields": [
+      "engineType",
+      "clutchType",
+      "oilSpecJASO",
+      "gearboxOilSeparate"
+    ],
+    "specFieldsCompared": [
+      "oilViscosity",
+      "oilSpecAPI",
+      "oilSpecACEA",
+      "oilSpecOEM",
+      "oilSpecJASO"
+    ],
+    "totalEntries": 92,
+    "totalUniqueKeys": 62,
+    "totalConflictGroups": 6,
+    "totalAmbiguousEntries": 21,
+    "brandsIncluded": [
+      "aprilia",
+      "bmw",
+      "cfmoto",
+      "honda",
+      "kawasaki",
+      "ktm",
+      "kymco",
+      "motoguzzi",
+      "piaggio",
+      "senke",
+      "slc",
+      "smt",
+      "suzuki",
+      "sym",
+      "vespa",
+      "yamaha",
+      "zimota",
+      "zontes"
+    ],
+    "generatedFrom": [
+      "moto-aprilia.json",
+      "moto-bmw.json",
+      "moto-cfmoto.json",
+      "moto-honda.json",
+      "moto-kawasaki.json",
+      "moto-ktm.json",
+      "moto-kymco.json",
+      "moto-motoguzzi.json",
+      "moto-piaggio.json",
+      "moto-senke.json",
+      "moto-slc.json",
+      "moto-smt.json",
+      "moto-suzuki.json",
+      "moto-sym.json",
+      "moto-vespa.json",
+      "moto-yamaha.json",
+      "moto-zimota.json",
+      "moto-zontes.json"
+    ]
+  },
+  "engineCodeFixes": [],
+  "dataCorrections": [
+    {
+      "batch": "sample-fix",
+      "description": "clutchType: normalized 'dry' → 'sans embrayage / scooter automatique', 'wet' → 'embrayage humide' per French 3-value enum"
+    },
+    {
+      "batch": "sample-fix",
+      "description": "Removed 2T entry: YAMAHA YZ250 (2-stroke) — excluded pending 2T schema definition"
+    }
+  ],
+  "conflicts": [
+    {
+      "conflictGroup": 4,
+      "lookupKey": {
+        "displacementCc": 124,
+        "powerHp": 11,
+        "fuelType": "essence"
+      },
+      "severity": "major",
+      "differingFields": [
+        {
+          "field": "oilSpecJASO",
+          "severity": "major",
+          "values": [
+            "MA",
+            "MB"
+          ]
+        },
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "10W-30",
+            "10W-40"
+          ]
+        },
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "SG",
+            "SM"
+          ]
+        }
+      ],
+      "entries": [
+        {
+          "make": "HONDA",
+          "model": "SH125i",
+          "generation": "NF13",
+          "engineCode": "NF13",
+          "engineType": "4T",
+          "clutchType": "sans embrayage / scooter automatique",
+          "oilViscosity": "10W-30",
+          "oilSpecAPI": "SG",
+          "oilSpecACEA": null,
+          "oilSpecOEM": null,
+          "oilSpecJASO": "MB",
+          "source": "Honda SH125i manual, AMSOIL, Castrol"
+        },
+        {
+          "make": "HONDA",
+          "model": "CB125F",
+          "generation": "NXB125",
+          "engineCode": "NXB125",
+          "engineType": "4T",
+          "clutchType": "embrayage humide",
+          "oilViscosity": "10W-30",
+          "oilSpecAPI": "SG",
+          "oilSpecACEA": null,
+          "oilSpecOEM": null,
+          "oilSpecJASO": "MA",
+          "source": "Honda CB125F manual, AMSOIL, buycarparts.co.uk"
+        },
+        {
+          "make": "PIAGGIO",
+          "model": "Liberty 125",
+          "generation": "LIB125",
+          "engineCode": "LIB125",
+          "engineType": "4T",
+          "clutchType": "sans embrayage / scooter automatique",
+          "oilViscosity": "10W-40",
+          "oilSpecAPI": "SM",
+          "oilSpecACEA": null,
+          "oilSpecOEM": null,
+          "oilSpecJASO": "MB",
+          "source": "Piaggio Liberty 125 owner's manual; AMSOIL; Motul"
+        },
+        {
+          "make": "SYM",
+          "model": "Jet 14 125",
+          "generation": "JET14",
+          "engineCode": "JET14",
+          "engineType": "4T",
+          "clutchType": "sans embrayage / scooter automatique",
+          "oilViscosity": "10W-30",
+          "oilSpecAPI": "SM",
+          "oilSpecACEA": null,
+          "oilSpecOEM": null,
+          "oilSpecJASO": "MB",
+          "source": "SYM Jet 14 manual; AMSOIL; Motul"
+        },
+        {
+          "make": "VESPA",
+          "model": "Primavera 125",
+          "generation": "PRM125",
+          "engineCode": "PRM125",
+          "engineType": "4T",
+          "clutchType": "sans embrayage / scooter automatique",
+          "oilViscosity": "10W-40",
+          "oilSpecAPI": "SM",
+          "oilSpecACEA": null,
+          "oilSpecOEM": null,
+          "oilSpecJASO": "MB",
+          "source": "Vespa Primavera 125 owner's manual; AMSOIL; Motul"
+        },
+        {
+          "make": "VESPA",
+          "model": "Sprint 125",
+          "generation": "SPR125",
+          "engineCode": "SPR125",
+          "engineType": "4T",
+          "clutchType": "sans embrayage / scooter automatique",
+          "oilViscosity": "10W-40",
+          "oilSpecAPI": "SM",
+          "oilSpecACEA": null,
+          "oilSpecOEM": null,
+          "oilSpecJASO": "MB",
+          "source": "Vespa Sprint 125 owner's manual; AMSOIL; Motul"
+        }
+      ],
+      "note": "Key: 124cc/11hp/essence. Entries: 6. . Differences: oilSpecJASO: MA vs MB [major]; oilViscosity: 10W-30 vs 10W-40 [major]; oilSpecAPI: SG vs SM [minor]"
+    },
+    {
+      "conflictGroup": 7,
+      "lookupKey": {
+        "displacementCc": 124,
+        "powerHp": 15,
+        "fuelType": "essence"
+      },
+      "severity": "major",
+      "differingFields": [
+        {
+          "field": "oilSpecJASO",
+          "severity": "major",
+          "values": [
+            "MA2",
+            "MB"
+          ]
+        }
+      ],
+      "entries": [
+        {
+          "make": "KAWASAKI",
+          "model": "Ninja 125",
+          "generation": "BK250",
+          "engineCode": "BK250A",
+          "engineType": "4T",
+          "clutchType": "embrayage humide",
+          "oilViscosity": "10W-40",
+          "oilSpecAPI": "SM",
+          "oilSpecACEA": null,
+          "oilSpecOEM": null,
+          "oilSpecJASO": "MA2",
+          "source": "Kawasaki Ninja 125 owner's manual; AMSOIL; Motul"
+        },
+        {
+          "make": "KAWASAKI",
+          "model": "Z125",
+          "generation": "BK250",
+          "engineCode": "BK250A",
+          "engineType": "4T",
+          "clutchType": "embrayage humide",
+          "oilViscosity": "10W-40",
+          "oilSpecAPI": "SM",
+          "oilSpecACEA": null,
+          "oilSpecOEM": null,
+          "oilSpecJASO": "MA2",
+          "source": "Kawasaki Z125 owner's manual; AMSOIL; Motul"
+        },
+        {
+          "make": "PIAGGIO",
+          "model": "Medley 125",
+          "generation": "MED125",
+          "engineCode": "MED125",
+          "engineType": "4T",
+          "clutchType": "sans embrayage / scooter automatique",
+          "oilViscosity": "10W-40",
+          "oilSpecAPI": "SM",
+          "oilSpecACEA": null,
+          "oilSpecOEM": null,
+          "oilSpecJASO": "MB",
+          "source": "Piaggio Medley 125 owner's manual; AMSOIL; Motul"
+        }
+      ],
+      "note": "Key: 124cc/15hp/essence. Entries: 3. . Differences: oilSpecJASO: MA2 vs MB [major]"
+    },
+    {
+      "conflictGroup": 10,
+      "lookupKey": {
+        "displacementCc": 125,
+        "powerHp": 10,
+        "fuelType": "essence"
+      },
+      "severity": "major",
+      "differingFields": [
+        {
+          "field": "oilSpecJASO",
+          "severity": "major",
+          "values": [
+            "MA2",
+            "MB"
+          ]
+        }
+      ],
+      "entries": [
+        {
+          "make": "KYMCO",
+          "model": "Agility 125",
+          "generation": "AGL125",
+          "engineCode": "AGL125",
+          "engineType": "4T",
+          "clutchType": "sans embrayage / scooter automatique",
+          "oilViscosity": "10W-30",
+          "oilSpecAPI": "SM",
+          "oilSpecACEA": null,
+          "oilSpecOEM": null,
+          "oilSpecJASO": "MB",
+          "source": "KYMCO Agility 125 manual; AMSOIL; Motul"
+        },
+        {
+          "make": "SENKE",
+          "model": "SK 125",
+          "generation": "SK125",
+          "engineCode": "SK125",
+          "engineType": "4T",
+          "clutchType": "embrayage humide",
+          "oilViscosity": "10W-30",
+          "oilSpecAPI": "SM",
+          "oilSpecACEA": null,
+          "oilSpecOEM": null,
+          "oilSpecJASO": "MA2",
+          "source": "Senke SK 125 specs; AMSOIL; generic Chinese 125cc manual specs"
+        },
+        {
+          "make": "SLC",
+          "model": "SLC 125",
+          "generation": "SLC125",
+          "engineCode": "SLC125",
+          "engineType": "4T",
+          "clutchType": "embrayage humide",
+          "oilViscosity": "10W-30",
+          "oilSpecAPI": "SM",
+          "oilSpecACEA": null,
+          "oilSpecOEM": null,
+          "oilSpecJASO": "MA2",
+          "source": "SLC 125 specs; generic Chinese 125cc specs; AMSOIL"
+        },
+        {
+          "make": "SMT",
+          "model": "SMT 125",
+          "generation": "SMT125",
+          "engineCode": "SMT125",
+          "engineType": "4T",
+          "clutchType": "embrayage humide",
+          "oilViscosity": "10W-30",
+          "oilSpecAPI": "SM",
+          "oilSpecACEA": null,
+          "oilSpecOEM": null,
+          "oilSpecJASO": "MA2",
+          "source": "SMT 125 specs; generic Chinese 125cc specs; AMSOIL"
+        },
+        {
+          "make": "SYM",
+          "model": "Symphony 125",
+          "generation": "SYM125",
+          "engineCode": "SYM125",
+          "engineType": "4T",
+          "clutchType": "sans embrayage / scooter automatique",
+          "oilViscosity": "10W-30",
+          "oilSpecAPI": "SM",
+          "oilSpecACEA": null,
+          "oilSpecOEM": null,
+          "oilSpecJASO": "MB",
+          "source": "SYM Symphony 125 manual; AMSOIL; Motul"
+        },
+        {
+          "make": "ZIMOTA",
+          "model": "ZM 125",
+          "generation": "ZM125",
+          "engineCode": "ZM125",
+          "engineType": "4T",
+          "clutchType": "embrayage humide",
+          "oilViscosity": "10W-30",
+          "oilSpecAPI": "SM",
+          "oilSpecACEA": null,
+          "oilSpecOEM": null,
+          "oilSpecJASO": "MA2",
+          "source": "Zimota ZM 125 specs; generic Chinese 125cc specs; AMSOIL"
+        }
+      ],
+      "note": "Key: 125cc/10hp/essence. Entries: 6. . Differences: oilSpecJASO: MA2 vs MB [major]"
+    },
+    {
+      "conflictGroup": 12,
+      "lookupKey": {
+        "displacementCc": 125,
+        "powerHp": 14,
+        "fuelType": "essence"
+      },
+      "severity": "major",
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "10W-30",
+            "10W-40"
+          ]
+        },
+        {
+          "field": "oilSpecJASO",
+          "severity": "major",
+          "values": [
+            "MA2",
+            "MB"
+          ]
+        }
+      ],
+      "entries": [
+        {
+          "make": "KYMCO",
+          "model": "DT X 125",
+          "generation": "DTX125",
+          "engineCode": "DTX125",
+          "engineType": "4T",
+          "clutchType": "sans embrayage / scooter automatique",
+          "oilViscosity": "10W-30",
+          "oilSpecAPI": "SM",
+          "oilSpecACEA": null,
+          "oilSpecOEM": null,
+          "oilSpecJASO": "MB",
+          "source": "KYMCO DT X 125 manual; AMSOIL; Motul"
+        },
+        {
+          "make": "ZONTES",
+          "model": "G125",
+          "generation": "G125",
+          "engineCode": "G125",
+          "engineType": "4T",
+          "clutchType": "embrayage humide",
+          "oilViscosity": "10W-40",
+          "oilSpecAPI": "SM",
+          "oilSpecACEA": null,
+          "oilSpecOEM": null,
+          "oilSpecJASO": "MA2",
+          "source": "Zontes G125 specs; AMSOIL; Zontes official"
+        }
+      ],
+      "note": "Key: 125cc/14hp/essence. Entries: 2. . Differences: oilViscosity: 10W-30 vs 10W-40 [major]; oilSpecJASO: MA2 vs MB [major]"
+    },
+    {
+      "conflictGroup": 13,
+      "lookupKey": {
+        "displacementCc": 125,
+        "powerHp": 15,
+        "fuelType": "essence"
+      },
+      "severity": "major",
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "10W-30",
+            "10W-40"
+          ]
+        },
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "SJ",
+            "SM"
+          ]
+        },
+        {
+          "field": "oilSpecJASO",
+          "severity": "major",
+          "values": [
+            "MA2",
+            "MB"
+          ]
+        }
+      ],
+      "entries": [
+        {
+          "make": "HONDA",
+          "model": "Forza 125",
+          "generation": "K50",
+          "engineCode": "K50",
+          "engineType": "4T",
+          "clutchType": "sans embrayage / scooter automatique",
+          "oilViscosity": "10W-30",
+          "oilSpecAPI": "SJ",
+          "oilSpecACEA": null,
+          "oilSpecOEM": null,
+          "oilSpecJASO": "MB",
+          "source": "Honda Forza 125 manual, AMSOIL, Motul"
+        },
+        {
+          "make": "KTM",
+          "model": "Duke 125",
+          "generation": "BD125",
+          "engineCode": "BD125",
+          "engineType": "4T",
+          "clutchType": "embrayage humide",
+          "oilViscosity": "10W-40",
+          "oilSpecAPI": "SM",
+          "oilSpecACEA": null,
+          "oilSpecOEM": null,
+          "oilSpecJASO": "MA2",
+          "source": "KTM Duke 125 owner's manual; AMSOIL; Motul"
+        }
+      ],
+      "note": "Key: 125cc/15hp/essence. Entries: 2. . Differences: oilViscosity: 10W-30 vs 10W-40 [major]; oilSpecAPI: SJ vs SM [minor]; oilSpecJASO: MA2 vs MB [major]"
+    },
+    {
+      "conflictGroup": 24,
+      "lookupKey": {
+        "displacementCc": 249,
+        "powerHp": 24,
+        "fuelType": "essence"
+      },
+      "severity": "major",
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "10W-30",
+            "10W-40"
+          ]
+        },
+        {
+          "field": "oilSpecJASO",
+          "severity": "major",
+          "values": [
+            "MA",
+            "MA2"
+          ]
+        }
+      ],
+      "entries": [
+        {
+          "make": "HONDA",
+          "model": "CRF250L",
+          "generation": "MD38",
+          "engineCode": "MD38E",
+          "engineType": "4T",
+          "clutchType": "embrayage humide",
+          "oilViscosity": "10W-30",
+          "oilSpecAPI": "SM",
+          "oilSpecACEA": null,
+          "oilSpecOEM": null,
+          "oilSpecJASO": "MA",
+          "source": "Honda CRF250L manual, AMSOIL, Castrol"
+        },
+        {
+          "make": "KAWASAKI",
+          "model": "KLX250",
+          "generation": "KL250",
+          "engineCode": "KL250D",
+          "engineType": "4T",
+          "clutchType": "embrayage humide",
+          "oilViscosity": "10W-40",
+          "oilSpecAPI": "SM",
+          "oilSpecACEA": null,
+          "oilSpecOEM": null,
+          "oilSpecJASO": "MA2",
+          "source": "Kawasaki KLX250 owner's manual; AMSOIL; Motul"
+        }
+      ],
+      "note": "Key: 249cc/24hp/essence. Entries: 2. . Differences: oilViscosity: 10W-30 vs 10W-40 [major]; oilSpecJASO: MA vs MA2 [major]"
+    }
+  ],
+  "summary": {
+    "safeEntries": 71,
+    "ambiguousEntries": 21,
+    "majorConflicts": 6,
+    "minorConflicts": 0,
+    "recommendation": "Entries with matchAmbiguity=null can safely use 'Par caractéristiques' lookup. Ambiguous entries should ideally be resolved via 'Par véhicule' path. Major conflicts (viscosity, ACEA, or JASO differs) carry a real risk of recommending the wrong oil. Minor conflicts (API or OEM spec differs) may indicate incomplete sourcing or regional differences. JASO MA/MA2 vs MB is a MAJOR conflict — using MB oil in a wet-clutch bike causes clutch slip."
+  }
+}

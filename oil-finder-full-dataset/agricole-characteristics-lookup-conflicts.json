@@ -1,0 +1,67 @@
+{
+  "_meta": {
+    "description": "Cross-brand characteristics lookup conflicts for agricole (corrected schema v3). Engine oil spec fields renamed with 'engine' prefix. Hydraulic/transmission fields added (hydraulicTransmissionOilType, hydraulicOilSpecOEM, hydraulicOilCapacityLiters).",
+    "lookupKeyDefinition": "(displacementCc, powerHp, fuelType) — matches backend/Prisma schema. Tractors use hour-based oil change intervals (oilChangeIntervalHours field).",
+    "agricoleSpecificFields": [
+      "hydraulicTransmissionOilType",
+      "hydraulicOilSpecOEM",
+      "hydraulicOilCapacityLiters",
+      "engineOilChangeIntervalHours",
+      "emissionStandard"
+    ],
+    "specFieldsCompared": [
+      "engineOilViscosity",
+      "engineOilSpecACEA",
+      "engineOilSpecAPI",
+      "oilSpecOEM"
+    ],
+    "totalEntries": 35,
+    "totalUniqueKeys": 34,
+    "totalConflictGroups": 0,
+    "totalAmbiguousEntries": 0,
+    "brandsIncluded": [
+      "john-deere",
+      "massey-ferguson",
+      "new-holland",
+      "landini",
+      "same",
+      "lamborghini",
+      "kubota",
+      "solis",
+      "mahindra",
+      "agrimont"
+    ],
+    "generatedFrom": [
+      "agricole-john-deere.json",
+      "agricole-massey-ferguson.json",
+      "agricole-new-holland.json",
+      "agricole-landini.json",
+      "agricole-same.json",
+      "agricole-lamborghini.json",
+      "agricole-kubota.json",
+      "agricole-solis.json",
+      "agricole-mahindra.json",
+      "agricole-agrimont.json"
+    ]
+  },
+  "dataCorrections": [
+    {
+      "type": "schema_correction",
+      "description": "v1→v2→v3: engine oil fields prefixed with 'engine' (engineOilViscosity, engineOilSpecAPI, engineOilSpecACEA). oilCapacityLiters→engineOilCapacityLiters, oilChangeIntervalHours→engineOilChangeIntervalHours. Removed gearboxOilSeparate. Added hydraulicTransmissionOilType (UTTO|STOU|separate fluids), hydraulicOilSpecOEM, hydraulicOilCapacityLiters. oilSpecOEM unchanged.",
+      "entriesAffected": 35,
+      "hydraulicTypeBreakdown": {
+        "UTTO": 28,
+        "separate fluids": 7,
+        "null": 0
+      }
+    }
+  ],
+  "conflicts": [],
+  "summary": {
+    "safeEntries": 35,
+    "ambiguousEntries": 0,
+    "majorConflicts": 0,
+    "minorConflicts": 0,
+    "recommendation": "Entries with matchAmbiguity=null can safely use 'Par caractéristiques' lookup. Major conflicts (engineOilViscosity or engineOilSpecACEA differs) carry real risk. Minor conflicts (engineOilSpecAPI or oilSpecOEM differs) may indicate incomplete sourcing. Note: SAME and Lamborghini share SDF Group engines and lubricant specs — cross-brand matches with identical specs are NOT conflicts. hydraulicTransmissionOilType is a display/recommendation field and is NOT compared for conflicts."
+  }
+}

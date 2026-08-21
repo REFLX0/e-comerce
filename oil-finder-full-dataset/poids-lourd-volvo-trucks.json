@@ -1,0 +1,347 @@
+[
+  {
+    "make": "VOLVO TRUCKS",
+    "model": "FH 460",
+    "generation": "Euro VI",
+    "yearFrom": 2013,
+    "yearTo": 9999,
+    "engineCode": "D13K460",
+    "displacementCc": 12800,
+    "fuelType": "diesel",
+    "powerKw": 338,
+    "powerHp": 460,
+    "oilViscosity": "10W-40",
+    "oilSpecAPI": "CK-4",
+    "oilSpecACEA": "E9",
+    "oilSpecOEM": "Volvo VDS-4.5",
+    "oilCapacityLiters": 36.0,
+    "gearboxOilSeparate": true,
+    "gearboxOilSpec": "SAE 75W-90 Volvo STD 1273.04",
+    "oilChangeIntervalKm": 100000,
+    "emissionStandard": "Euro VI",
+    "source": "Volvo Trucks D13K Euro 6 Fact Sheet (stpi.it.volvo.com); semitruckoil.com; Lubrizol VDS-4.5 spec sheet (ACEA E9, API CK-4); Volvo Trucks Australia specs page (100000 km interval with VDS-4)",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "VOLVO TRUCKS",
+    "model": "FH 500",
+    "generation": "Euro VI",
+    "yearFrom": 2013,
+    "yearTo": 9999,
+    "engineCode": "D13K500",
+    "displacementCc": 12800,
+    "fuelType": "diesel",
+    "powerKw": 368,
+    "powerHp": 500,
+    "oilViscosity": "10W-40",
+    "oilSpecAPI": "CK-4",
+    "oilSpecACEA": "E9",
+    "oilSpecOEM": "Volvo VDS-4.5",
+    "oilCapacityLiters": 36.0,
+    "gearboxOilSeparate": true,
+    "gearboxOilSpec": "SAE 75W-90 Volvo STD 1273.04",
+    "oilChangeIntervalKm": 100000,
+    "emissionStandard": "Euro VI",
+    "source": "Volvo Trucks D13K Euro 6 Fact Sheet; Volvo Trucks Australia specs (D13K 500 hp listed); semitruckoil.com D13 page; Wikipedia Volvo D13 (36L oil capacity)",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "VOLVO TRUCKS",
+    "model": "FMX 540",
+    "generation": "Euro VI",
+    "yearFrom": 2013,
+    "yearTo": 9999,
+    "engineCode": "D13K540",
+    "displacementCc": 12800,
+    "fuelType": "diesel",
+    "powerKw": 397,
+    "powerHp": 540,
+    "oilViscosity": "10W-40",
+    "oilSpecAPI": "CK-4",
+    "oilSpecACEA": "E9",
+    "oilSpecOEM": "Volvo VDS-4.5",
+    "oilCapacityLiters": 36.0,
+    "gearboxOilSeparate": true,
+    "gearboxOilSpec": "SAE 75W-90 Volvo STD 1273.04",
+    "oilChangeIntervalKm": 100000,
+    "emissionStandard": "Euro VI",
+    "source": "Volvo D13K540 EU6SCR Fact Sheet (stpi.it.volvo.com, 12.8L 540hp); Volvo Trucks Australia FH specs (D13 540 hp listed); kroon-oil.com FMX 540 D13K",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "VOLVO TRUCKS",
+    "model": "FH 420",
+    "generation": "Euro VI",
+    "yearFrom": 2013,
+    "yearTo": 9999,
+    "engineCode": "D13K420",
+    "displacementCc": 12800,
+    "fuelType": "diesel",
+    "powerKw": 309,
+    "powerHp": 420,
+    "oilViscosity": "10W-40",
+    "oilSpecAPI": "CK-4",
+    "oilSpecACEA": "E9",
+    "oilSpecOEM": "Volvo VDS-4.5",
+    "oilCapacityLiters": 36.0,
+    "gearboxOilSeparate": true,
+    "gearboxOilSpec": "SAE 75W-90 Volvo STD 1273.04",
+    "oilChangeIntervalKm": 100000,
+    "emissionStandard": "Euro VI",
+    "source": "Volvo Trucks D13K Euro 6 Fact Sheet (Scribd, 380/420/460/500 hp); semitruckoil.com; Wikipedia Volvo D13",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "VOLVO TRUCKS",
+    "model": "FM 330",
+    "generation": "Euro VI",
+    "yearFrom": 2013,
+    "yearTo": 9999,
+    "engineCode": "D11K330",
+    "displacementCc": 10800,
+    "fuelType": "diesel",
+    "powerKw": 243,
+    "powerHp": 330,
+    "oilViscosity": "10W-40",
+    "oilSpecAPI": "CK-4",
+    "oilSpecACEA": "E9",
+    "oilSpecOEM": "Volvo VDS-4.5",
+    "oilCapacityLiters": 38.0,
+    "gearboxOilSeparate": true,
+    "gearboxOilSpec": "SAE 75W-90 Volvo STD 1273.04",
+    "oilChangeIntervalKm": 100000,
+    "emissionStandard": "Euro VI",
+    "source": "Commercial Motor UK (D11K 330/370/410/450 hp Euro 6); LinkedIn Volvo engine oil capacities (D11: 37-38L); RILCO Inc (VDS-4.5 for D11/D13/D16); semitruckoil.com Volvo page",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "VOLVO TRUCKS",
+    "model": "FM 450",
+    "generation": "Euro VI",
+    "yearFrom": 2013,
+    "yearTo": 9999,
+    "engineCode": "D11K450",
+    "displacementCc": 10800,
+    "fuelType": "diesel",
+    "powerKw": 331,
+    "powerHp": 450,
+    "oilViscosity": "10W-40",
+    "oilSpecAPI": "CK-4",
+    "oilSpecACEA": "E9",
+    "oilSpecOEM": "Volvo VDS-4.5",
+    "oilCapacityLiters": 38.0,
+    "gearboxOilSeparate": true,
+    "gearboxOilSpec": "SAE 75W-90 Volvo STD 1273.04",
+    "oilChangeIntervalKm": 100000,
+    "emissionStandard": "Euro VI",
+    "source": "Commercial Motor UK (D11K 450 hp Euro 6); LinkedIn Volvo engine capacities (D11: 37-38L); RILCO Inc (VDS-4.5 for D11); Volvo Trucks Canada (D11 42L/44qt oil pan maintenance)",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "VOLVO TRUCKS",
+    "model": "FE 250",
+    "generation": "Euro VI",
+    "yearFrom": 2014,
+    "yearTo": 9999,
+    "engineCode": "D8K250",
+    "displacementCc": 7700,
+    "fuelType": "diesel",
+    "powerKw": 184,
+    "powerHp": 250,
+    "oilViscosity": "10W-40",
+    "oilSpecAPI": "CK-4",
+    "oilSpecACEA": "E9",
+    "oilSpecOEM": "Volvo VDS-4.5",
+    "oilCapacityLiters": 24.0,
+    "gearboxOilSeparate": true,
+    "gearboxOilSpec": "SAE 75W-90 Volvo STD 1273.04",
+    "oilChangeIntervalKm": 80000,
+    "emissionStandard": "Euro VI",
+    "source": "kroon-oil.com FE 250 D8K (24L service fill); Volvo Trucks Australia FE specs (D8K 250 hp, 7700cc); LinkedIn Volvo capacities (D8: 24L); Volvo FL Product Guide (D8K 200-280 hp)",
+    "confidence": "high",
+    "matchAmbiguity": {
+      "conflictGroup": 29,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 7700,
+        "powerHp": 250,
+        "fuelType": "diesel"
+      },
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "10W-30",
+            "10W-40"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "E8",
+            "E9"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "Renault RLD-4",
+            "Volvo VDS-4.5"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "RENAULT TRUCKS D 250 (Euro VI): 10W-30 ACEA E8"
+      ]
+    }
+  },
+  {
+    "make": "VOLVO TRUCKS",
+    "model": "FE 320",
+    "generation": "Euro VI",
+    "yearFrom": 2014,
+    "yearTo": 9999,
+    "engineCode": "D8K320",
+    "displacementCc": 7700,
+    "fuelType": "diesel",
+    "powerKw": 235,
+    "powerHp": 320,
+    "oilViscosity": "10W-40",
+    "oilSpecAPI": "CK-4",
+    "oilSpecACEA": "E9",
+    "oilSpecOEM": "Volvo VDS-4.5",
+    "oilCapacityLiters": 24.0,
+    "gearboxOilSeparate": true,
+    "gearboxOilSpec": "SAE 75W-90 Volvo STD 1273.04",
+    "oilChangeIntervalKm": 80000,
+    "emissionStandard": "Euro VI",
+    "source": "oto.com Volvo FE D8K 320 HP (7700cc, 320hp, 1200Nm); Volvo Trucks Australia FE specs (D8K up to 320 hp); kroon-oil.com (D8K 24L service fill); Volvo FL Spec Scribd (D8K 200-280 hp range)",
+    "confidence": "high",
+    "matchAmbiguity": {
+      "conflictGroup": 33,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 7700,
+        "powerHp": 320,
+        "fuelType": "diesel"
+      },
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "10W-40",
+            "15W-40"
+          ]
+        },
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "CH-4",
+            "CK-4"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "E5",
+            "E9"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "Volvo VDS-4.5"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "FAW Jiefang J5 320 (Euro III): 15W-40 ACEA E5"
+      ]
+    }
+  },
+  {
+    "make": "VOLVO TRUCKS",
+    "model": "FH16 550",
+    "generation": "Euro VI",
+    "yearFrom": 2013,
+    "yearTo": 2022,
+    "engineCode": "D16K550",
+    "displacementCc": 16100,
+    "fuelType": "diesel",
+    "powerKw": 405,
+    "powerHp": 550,
+    "oilViscosity": "10W-40",
+    "oilSpecAPI": "CK-4",
+    "oilSpecACEA": "E9",
+    "oilSpecOEM": "Volvo VDS-4.5",
+    "oilCapacityLiters": 42.0,
+    "gearboxOilSeparate": true,
+    "gearboxOilSpec": "SAE 75W-90 Volvo STD 1273.04",
+    "oilChangeIntervalKm": 100000,
+    "emissionStandard": "Euro VI",
+    "source": "Volvo FH16 Facebook page (550/650/750 hp); Scribd FH16 specs (42L oil change volume); semitruckoil.com D16 (16.1L, 550-750hp, ~52qt); LinkedIn (D16: 52L); RILCO Inc (VDS-4.5 for D16); Nordic Machinery Tunisia (FH16 listed)",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "VOLVO TRUCKS",
+    "model": "FH16 650",
+    "generation": "Euro VI",
+    "yearFrom": 2013,
+    "yearTo": 2022,
+    "engineCode": "D16K650",
+    "displacementCc": 16100,
+    "fuelType": "diesel",
+    "powerKw": 478,
+    "powerHp": 650,
+    "oilViscosity": "10W-40",
+    "oilSpecAPI": "CK-4",
+    "oilSpecACEA": "E9",
+    "oilSpecOEM": "Volvo VDS-4.5",
+    "oilCapacityLiters": 42.0,
+    "gearboxOilSeparate": true,
+    "gearboxOilSpec": "SAE 75W-90 Volvo STD 1273.04",
+    "oilChangeIntervalKm": 100000,
+    "emissionStandard": "Euro VI",
+    "source": "Volvo FH16 Facebook page (550/650/750 hp); Scribd FH16 powertrain specs (42L oil change incl. filter); semitruckoil.com D16 (16.1L); RILCO Inc (VDS-4.5 for D16); Nordic Machinery Tunisia (FH16 in range)",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "VOLVO TRUCKS",
+    "model": "FL 280",
+    "generation": "Euro V",
+    "yearFrom": 2009,
+    "yearTo": 2014,
+    "engineCode": "D7E280",
+    "displacementCc": 7140,
+    "fuelType": "diesel",
+    "powerKw": 206,
+    "powerHp": 280,
+    "oilViscosity": "15W-40",
+    "oilSpecAPI": "CJ-4",
+    "oilSpecACEA": "E7",
+    "oilSpecOEM": "Volvo VDS-3",
+    "oilCapacityLiters": 23.0,
+    "gearboxOilSeparate": true,
+    "gearboxOilSpec": "SAE 75W-90 Volvo STD 1273.04",
+    "oilChangeIntervalKm": 40000,
+    "emissionStandard": "Euro V",
+    "source": "kroon-oil.com FL 280 Euro 4 D7E (21-25L capacity); LinkedIn Volvo capacities (D7: 20-23L); Scribd D7E specs (240-280 hp, 7.1L); Volvo Trucks Australia FL (D8K replaced D7E from 2014)",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  }
+]

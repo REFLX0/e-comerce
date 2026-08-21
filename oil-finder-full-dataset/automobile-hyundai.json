@@ -1,0 +1,530 @@
+[
+  {
+    "make": "Hyundai",
+    "model": "i10",
+    "generation": "BA",
+    "yearFrom": 2014,
+    "yearTo": 2023,
+    "engineCode": "G3LA",
+    "displacementCc": 998,
+    "fuelType": "essence",
+    "powerKw": 49,
+    "powerHp": 66,
+    "oilViscosity": "0W-20",
+    "oilSpecAPI": "SN PLUS",
+    "oilSpecACEA": null,
+    "oilSpecOEM": null,
+    "oilCapacityLiters": 3.3,
+    "oilChangeIntervalKm": 15000,
+    "source": "Hyundai India oils-consumables page; AMSOIL product lookup; Checkered Flag Hyundai service page",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "Hyundai",
+    "model": "i10",
+    "generation": "BA",
+    "yearFrom": 2014,
+    "yearTo": 2023,
+    "engineCode": "G4LA",
+    "displacementCc": 1248,
+    "fuelType": "essence",
+    "powerKw": 61,
+    "powerHp": 83,
+    "oilViscosity": "0W-20",
+    "oilSpecAPI": "SN PLUS",
+    "oilSpecACEA": null,
+    "oilSpecOEM": null,
+    "oilCapacityLiters": 3.3,
+    "oilChangeIntervalKm": 15000,
+    "source": "Hyundai India oils-consumables page; AMSOIL product lookup; Checkered Flag Hyundai service page",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "Hyundai",
+    "model": "i20",
+    "generation": "BP",
+    "yearFrom": 2020,
+    "yearTo": 2026,
+    "engineCode": "G3LC",
+    "displacementCc": 998,
+    "fuelType": "essence",
+    "powerKw": 74,
+    "powerHp": 100,
+    "oilViscosity": "0W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": null,
+    "oilCapacityLiters": 3.6,
+    "oilChangeIntervalKm": 15000,
+    "source": "Shared engine G3LC T-GDi with KIA Stonic/Ceed (KIA manual: SAE 0W-30, ACEA C2, 3.6L); AMSOIL product lookup",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "Hyundai",
+    "model": "i20",
+    "generation": "BP",
+    "yearFrom": 2020,
+    "yearTo": 2026,
+    "engineCode": "G4LA",
+    "displacementCc": 1248,
+    "fuelType": "essence",
+    "powerKw": 62,
+    "powerHp": 84,
+    "oilViscosity": "0W-20",
+    "oilSpecAPI": "SN PLUS",
+    "oilSpecACEA": null,
+    "oilSpecOEM": null,
+    "oilCapacityLiters": 3.3,
+    "oilChangeIntervalKm": 15000,
+    "source": "Hyundai India oils-consumables page (1.0L/1.2L MPI: SAE 0W-20, API SN Plus); AMSOIL product lookup",
+    "confidence": "high",
+    "matchAmbiguity": {
+      "conflictGroup": 10,
+      "severity": "minor",
+      "lookupKey": {
+        "displacementCc": 1248,
+        "powerHp": 84,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "SN PLUS",
+            "SP"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "ILSAC GF-6A",
+            "None"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "Hyundai Bayon (G4LA): 0W-20",
+        "KIA Picanto (G4LA): 0W-20",
+        "KIA Stonic (G4LA): 0W-20"
+      ]
+    }
+  },
+  {
+    "make": "Hyundai",
+    "model": "Bayon",
+    "generation": "BC",
+    "yearFrom": 2022,
+    "yearTo": 2026,
+    "engineCode": "G3LC",
+    "displacementCc": 998,
+    "fuelType": "essence",
+    "powerKw": 74,
+    "powerHp": 100,
+    "oilViscosity": "0W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": null,
+    "oilCapacityLiters": 3.6,
+    "oilChangeIntervalKm": 15000,
+    "source": "Shared engine G3LC T-GDi with KIA Stonic/Ceed and Hyundai i20 (KIA manual: SAE 0W-30, ACEA C2, 3.6L); AMSOIL product lookup",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "Hyundai",
+    "model": "Bayon",
+    "generation": "BC",
+    "yearFrom": 2022,
+    "yearTo": 2026,
+    "engineCode": "G4LA",
+    "displacementCc": 1248,
+    "fuelType": "essence",
+    "powerKw": 62,
+    "powerHp": 84,
+    "oilViscosity": "0W-20",
+    "oilSpecAPI": "SN PLUS",
+    "oilSpecACEA": null,
+    "oilSpecOEM": null,
+    "oilCapacityLiters": 3.3,
+    "oilChangeIntervalKm": 15000,
+    "source": "Hyundai India oils-consumables page (1.0L/1.2L MPI: SAE 0W-20, API SN Plus); AMSOIL product lookup",
+    "confidence": "high",
+    "matchAmbiguity": {
+      "conflictGroup": 10,
+      "severity": "minor",
+      "lookupKey": {
+        "displacementCc": 1248,
+        "powerHp": 84,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "SN PLUS",
+            "SP"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "ILSAC GF-6A",
+            "None"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "Hyundai i20 (G4LA): 0W-20",
+        "KIA Picanto (G4LA): 0W-20",
+        "KIA Stonic (G4LA): 0W-20"
+      ]
+    }
+  },
+  {
+    "make": "Hyundai",
+    "model": "Creta",
+    "generation": "SU2",
+    "yearFrom": 2020,
+    "yearTo": 2026,
+    "engineCode": "G4NL",
+    "displacementCc": 1497,
+    "fuelType": "essence",
+    "powerKw": 85,
+    "powerHp": 115,
+    "oilViscosity": "0W-20",
+    "oilSpecAPI": "SN PLUS",
+    "oilSpecACEA": null,
+    "oilSpecOEM": null,
+    "oilCapacityLiters": 3.8,
+    "oilChangeIntervalKm": 15000,
+    "source": "Hyundai India oils-consumables page (1.5L MPI: SAE 0W-20, API SN Plus, 3.8L); AMSOIL product lookup",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "Hyundai",
+    "model": "Creta",
+    "generation": "SU2",
+    "yearFrom": 2020,
+    "yearTo": 2026,
+    "engineCode": "G4LH",
+    "displacementCc": 1497,
+    "fuelType": "essence",
+    "powerKw": 118,
+    "powerHp": 160,
+    "oilViscosity": "0W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": null,
+    "oilCapacityLiters": 4.2,
+    "oilChangeIntervalKm": 15000,
+    "source": "Hyundai India oils-consumables page (1.5L T-GDi: SAE 0W-30, ACEA C2, 4.2L); AMSOIL product lookup",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "Hyundai",
+    "model": "Creta",
+    "generation": "SU2",
+    "yearFrom": 2020,
+    "yearTo": 2026,
+    "engineCode": "D4FC",
+    "displacementCc": 1493,
+    "fuelType": "diesel",
+    "powerKw": 85,
+    "powerHp": 116,
+    "oilViscosity": "0W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": null,
+    "oilCapacityLiters": 4.2,
+    "oilChangeIntervalKm": 15000,
+    "source": "AMSOIL product lookup; Hyundai diesel general recommendation (SAE 0W-30, ACEA C2/C3 for CRDi); Costaoils.com",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "Hyundai",
+    "model": "Kona",
+    "generation": "OS",
+    "yearFrom": 2020,
+    "yearTo": 2026,
+    "engineCode": "G4FJ",
+    "displacementCc": 1591,
+    "fuelType": "essence",
+    "powerKw": 146,
+    "powerHp": 198,
+    "oilViscosity": "0W-20",
+    "oilSpecAPI": "SP",
+    "oilSpecACEA": null,
+    "oilSpecOEM": null,
+    "oilCapacityLiters": 5.1,
+    "oilChangeIntervalKm": 15000,
+    "source": "Checkered Flag Hyundai; James Hodge Hyundai service page (1.6L T-GDi: SAE 0W-20 full synthetic required, 4.8-5.1L); AMSOIL product lookup",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "Hyundai",
+    "model": "Kona",
+    "generation": "OS",
+    "yearFrom": 2020,
+    "yearTo": 2026,
+    "engineCode": "G4NA",
+    "displacementCc": 1999,
+    "fuelType": "essence",
+    "powerKw": 115,
+    "powerHp": 156,
+    "oilViscosity": "0W-20",
+    "oilSpecAPI": "SP",
+    "oilSpecACEA": null,
+    "oilSpecOEM": "ILSAC GF-6A",
+    "oilCapacityLiters": 4.2,
+    "oilChangeIntervalKm": 15000,
+    "source": "Checkered Flag Hyundai; James Hodge Hyundai service page (2.0L MPI: SAE 0W-20, 4.2-4.5L); AMSOIL product lookup; Checkered Flag Hyundai (Kona 2.0L: API SP / ILSAC GF-6A)",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "Hyundai",
+    "model": "Tucson",
+    "generation": "NX4",
+    "yearFrom": 2021,
+    "yearTo": 2026,
+    "engineCode": "G4FJ",
+    "displacementCc": 1591,
+    "fuelType": "essence",
+    "powerKw": 132,
+    "powerHp": 180,
+    "oilViscosity": "0W-20",
+    "oilSpecAPI": "SP",
+    "oilSpecACEA": null,
+    "oilSpecOEM": "ILSAC GF-6A",
+    "oilCapacityLiters": 5.1,
+    "oilChangeIntervalKm": 15000,
+    "source": "Official Hyundai Tucson NX4 2025 owner's manual (ownersmanual.hyundai.com): Smartstream G1.6 T-GDi — SAE 0W-20, API SN PLUS/SP or ILSAC GF-6; Checkered Flag Hyundai; James Hodge Hyundai service page (1.6L T-GDi: SAE 0W-20 full synthetic required, 4.8-5.1L); AMSOIL product lookup",
+    "confidence": "high",
+    "matchAmbiguity": {
+      "conflictGroup": 25,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 1591,
+        "powerHp": 180,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "0W-20",
+            "0W-30"
+          ]
+        },
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "None",
+            "SP"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "C2",
+            "None"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "ILSAC GF-6A",
+            "None"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "KIA Sportage (G4FJ): 0W-30",
+        "KIA Seltos (G4FJ): 0W-30"
+      ]
+    }
+  },
+  {
+    "make": "Hyundai",
+    "model": "Tucson",
+    "generation": "NX4",
+    "yearFrom": 2021,
+    "yearTo": 2026,
+    "engineCode": "G4NA",
+    "displacementCc": 1999,
+    "fuelType": "essence",
+    "powerKw": 115,
+    "powerHp": 156,
+    "oilViscosity": "0W-20",
+    "oilSpecAPI": "SP",
+    "oilSpecACEA": null,
+    "oilSpecOEM": "ILSAC GF-6A",
+    "oilCapacityLiters": 4.5,
+    "oilChangeIntervalKm": 15000,
+    "source": "Official Hyundai Tucson NX4 2025 owner's manual (ownersmanual.hyundai.com): Smartstream G2.0 — SAE 0W-20, API SN PLUS/SP or ILSAC GF-6; Checkered Flag Hyundai; James Hodge Hyundai service page (2.0L MPI: SAE 0W-20, 4.2-4.5L); AMSOIL product lookup",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "Hyundai",
+    "model": "Tucson",
+    "generation": "NX4",
+    "yearFrom": 2021,
+    "yearTo": 2026,
+    "engineCode": "D4HA",
+    "displacementCc": 1995,
+    "fuelType": "diesel",
+    "powerKw": 137,
+    "powerHp": 186,
+    "oilViscosity": "0W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": null,
+    "oilCapacityLiters": 5.1,
+    "oilChangeIntervalKm": 15000,
+    "source": "AMSOIL product lookup; Hyundai diesel general recommendation (2.0L CRDi: SAE 0W-30, ACEA C2/C3, 5.1L); Costaoils.com",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "Hyundai",
+    "model": "Santa Fe",
+    "generation": "NC",
+    "yearFrom": 2024,
+    "yearTo": 2026,
+    "engineCode": "G4KN",
+    "displacementCc": 2497,
+    "fuelType": "essence",
+    "powerKw": 143,
+    "powerHp": 194,
+    "oilViscosity": "0W-30",
+    "oilSpecAPI": "SP",
+    "oilSpecACEA": null,
+    "oilSpecOEM": "ILSAC GF-6A",
+    "oilCapacityLiters": 5.8,
+    "oilChangeIntervalKm": 15000,
+    "source": "AMSOIL product lookup; James Hodge Hyundai service page (2.5L GDI: SAE 0W-30, API SP, ILSAC GF-6A, 5.8L)",
+    "confidence": "high",
+    "matchAmbiguity": {
+      "conflictGroup": 30,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 2497,
+        "powerHp": 194,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "0W-20",
+            "0W-30"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "KIA Sorento (G4KN): 0W-20"
+      ]
+    }
+  },
+  {
+    "make": "Hyundai",
+    "model": "Santa Fe",
+    "generation": "NC",
+    "yearFrom": 2024,
+    "yearTo": 2026,
+    "engineCode": "G4KL",
+    "displacementCc": 2497,
+    "fuelType": "essence",
+    "powerKw": 209,
+    "powerHp": 284,
+    "oilViscosity": "0W-30",
+    "oilSpecAPI": "SP",
+    "oilSpecACEA": null,
+    "oilSpecOEM": "ILSAC GF-6A",
+    "oilCapacityLiters": 5.8,
+    "oilChangeIntervalKm": 15000,
+    "source": "AMSOIL product lookup; James Hodge Hyundai service page (2.5L T-GDi: SAE 0W-30, API SP, ILSAC GF-6A, 5.8L/6.1 qt)",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "Hyundai",
+    "model": "Grand i10 Nios",
+    "generation": "AI",
+    "yearFrom": 2020,
+    "yearTo": 2025,
+    "engineCode": "G4LA",
+    "displacementCc": 1248,
+    "fuelType": "essence",
+    "powerKw": 61,
+    "powerHp": 83,
+    "oilViscosity": "0W-20",
+    "oilSpecAPI": "SN PLUS",
+    "oilSpecACEA": null,
+    "oilSpecOEM": null,
+    "oilCapacityLiters": 3.3,
+    "oilChangeIntervalKm": 15000,
+    "source": "Hyundai India oils-consumables page (1.2L MPI: SAE 0W-20, API SN Plus); AMSOIL product lookup",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "Hyundai",
+    "model": "i30",
+    "generation": "PDE/CN7",
+    "yearFrom": 2017,
+    "yearTo": 2026,
+    "engineCode": "G4LH",
+    "displacementCc": 1497,
+    "fuelType": "essence",
+    "powerKw": 118,
+    "powerHp": 160,
+    "oilViscosity": "0W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": null,
+    "oilCapacityLiters": 4.2,
+    "oilChangeIntervalKm": 15000,
+    "source": "Shared engine G4LH T-GDi with Hyundai Creta N Line (SAE 0W-30, ACEA C2, 4.2L); AMSOIL product lookup",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "Hyundai",
+    "model": "i30",
+    "generation": "PDE/CN7",
+    "yearFrom": 2017,
+    "yearTo": 2026,
+    "engineCode": "D4FE",
+    "displacementCc": 1582,
+    "fuelType": "diesel",
+    "powerKw": 100,
+    "powerHp": 136,
+    "oilViscosity": "0W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": null,
+    "oilCapacityLiters": 5.3,
+    "oilChangeIntervalKm": 15000,
+    "source": "Shared engine D4FE CRDi with KIA Ceed/Sportage (SAE 0W-30, ACEA C2/C3); AMSOIL product lookup; Costaoils.com",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  }
+]

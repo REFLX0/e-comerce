@@ -1,0 +1,621 @@
+[
+  {
+    "make": "RENAULT TRUCKS",
+    "model": "T High 440",
+    "generation": "Euro VI",
+    "yearFrom": 2013,
+    "yearTo": 9999,
+    "engineCode": "DTI 13",
+    "displacementCc": 12800,
+    "fuelType": "diesel",
+    "powerKw": 324,
+    "powerHp": 440,
+    "oilViscosity": "10W-30",
+    "oilSpecAPI": "CK-4",
+    "oilSpecACEA": "E8",
+    "oilSpecOEM": "Renault RLD-4",
+    "oilCapacityLiters": 36.0,
+    "gearboxOilSeparate": true,
+    "gearboxOilSpec": "75W-90 Renault 97307/97315",
+    "oilChangeIntervalKm": 150000,
+    "emissionStandard": "Euro VI",
+    "source": "Renault Trucks corporate site (renault-trucks.com), TotalEnergies Rubia Optima RLD-5/RLD-4 data, Kroon-Oil T 480 capacity data, Volvo D13K shared platform",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "RENAULT TRUCKS",
+    "model": "T High 480",
+    "generation": "Euro VI",
+    "yearFrom": 2013,
+    "yearTo": 9999,
+    "engineCode": "DTI 13",
+    "displacementCc": 12800,
+    "fuelType": "diesel",
+    "powerKw": 353,
+    "powerHp": 480,
+    "oilViscosity": "10W-30",
+    "oilSpecAPI": "CK-4",
+    "oilSpecACEA": "E8",
+    "oilSpecOEM": "Renault RLD-4",
+    "oilCapacityLiters": 36.0,
+    "gearboxOilSeparate": true,
+    "gearboxOilSpec": "75W-90 Renault 97307/97315",
+    "oilChangeIntervalKm": 150000,
+    "emissionStandard": "Euro VI",
+    "source": "Renault Trucks corporate site (renault-trucks.com), TotalEnergies Rubia Optima RLD-5/RLD-4 data, Kroon-Oil T 480 capacity data, Volvo D13K shared platform",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "RENAULT TRUCKS",
+    "model": "T High 520",
+    "generation": "Euro VI",
+    "yearFrom": 2013,
+    "yearTo": 9999,
+    "engineCode": "DTI 13",
+    "displacementCc": 12800,
+    "fuelType": "diesel",
+    "powerKw": 382,
+    "powerHp": 520,
+    "oilViscosity": "10W-30",
+    "oilSpecAPI": "CK-4",
+    "oilSpecACEA": "E8",
+    "oilSpecOEM": "Renault RLD-4",
+    "oilCapacityLiters": 36.0,
+    "gearboxOilSeparate": true,
+    "gearboxOilSpec": "75W-90 Renault 97307/97315",
+    "oilChangeIntervalKm": 150000,
+    "emissionStandard": "Euro VI",
+    "source": "Renault Trucks corporate site (renault-trucks.com), Renault Trucks Qatar K Range brochure, TotalEnergies Rubia Optima data",
+    "confidence": "high",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "RENAULT TRUCKS",
+    "model": "T 460 / C 460",
+    "generation": "Euro VI",
+    "yearFrom": 2013,
+    "yearTo": 9999,
+    "engineCode": "DTI 11",
+    "displacementCc": 10800,
+    "fuelType": "diesel",
+    "powerKw": 340,
+    "powerHp": 460,
+    "oilViscosity": "10W-30",
+    "oilSpecAPI": "CK-4",
+    "oilSpecACEA": "E8",
+    "oilSpecOEM": "Renault RLD-4",
+    "oilCapacityLiters": 36.0,
+    "gearboxOilSeparate": true,
+    "gearboxOilSpec": "75W-90 Renault 97307/97315",
+    "oilChangeIntervalKm": 150000,
+    "emissionStandard": "Euro VI",
+    "source": "Renault Trucks UK (renaulttruckcommercials.co.uk), Kroon-Oil T 460 capacity 36L, Q8Oils RLD-4=ACEA E8/E11 spec sheet",
+    "confidence": "high",
+    "matchAmbiguity": {
+      "conflictGroup": 68,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 10800,
+        "powerHp": 460,
+        "fuelType": "diesel"
+      },
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "10W-30",
+            "15W-40"
+          ]
+        },
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "CJ-4",
+            "CK-4"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "E8",
+            "E9"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "Renault RLD-3",
+            "Renault RLD-4"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "RENAULT TRUCKS Kerax 460 / K 460 (Euro V): 15W-40 ACEA E9"
+      ]
+    }
+  },
+  {
+    "make": "RENAULT TRUCKS",
+    "model": "T 430 / C 430",
+    "generation": "Euro VI",
+    "yearFrom": 2013,
+    "yearTo": 9999,
+    "engineCode": "DTI 11",
+    "displacementCc": 10800,
+    "fuelType": "diesel",
+    "powerKw": 316,
+    "powerHp": 430,
+    "oilViscosity": "10W-30",
+    "oilSpecAPI": "CK-4",
+    "oilSpecACEA": "E8",
+    "oilSpecOEM": "Renault RLD-4",
+    "oilCapacityLiters": 36.0,
+    "gearboxOilSeparate": true,
+    "gearboxOilSpec": "75W-90 Renault 97307/97315",
+    "oilChangeIntervalKm": 150000,
+    "emissionStandard": "Euro VI",
+    "source": "Renault Trucks UK range page, Kroon-Oil T 460 engine data, Renault Trucks Oils Maxeon product page",
+    "confidence": "high",
+    "matchAmbiguity": {
+      "conflictGroup": 65,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 10800,
+        "powerHp": 430,
+        "fuelType": "diesel"
+      },
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "10W-30",
+            "15W-40"
+          ]
+        },
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "CJ-4",
+            "CK-4"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "E8",
+            "E9"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "Renault RLD-3",
+            "Renault RLD-4"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "RENAULT TRUCKS Kerax 430 / K 430 (Euro V): 15W-40 ACEA E9"
+      ]
+    }
+  },
+  {
+    "make": "RENAULT TRUCKS",
+    "model": "T 380 / C 380",
+    "generation": "Euro VI",
+    "yearFrom": 2013,
+    "yearTo": 9999,
+    "engineCode": "DTI 11",
+    "displacementCc": 10800,
+    "fuelType": "diesel",
+    "powerKw": 280,
+    "powerHp": 380,
+    "oilViscosity": "10W-30",
+    "oilSpecAPI": "CK-4",
+    "oilSpecACEA": "E8",
+    "oilSpecOEM": "Renault RLD-4",
+    "oilCapacityLiters": 36.0,
+    "gearboxOilSeparate": true,
+    "gearboxOilSpec": "75W-90 Renault 97307/97315",
+    "oilChangeIntervalKm": 150000,
+    "emissionStandard": "Euro VI",
+    "source": "Renault Trucks UK range page, Renault Trucks Qatar K Range brochure, Q8Oils RLD specifications PDF",
+    "confidence": "high",
+    "matchAmbiguity": {
+      "conflictGroup": 62,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 10800,
+        "powerHp": 380,
+        "fuelType": "diesel"
+      },
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "10W-30",
+            "15W-40"
+          ]
+        },
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "CJ-4",
+            "CK-4"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "E8",
+            "E9"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "Renault RLD-3",
+            "Renault RLD-4"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "RENAULT TRUCKS Kerax 380 / K 380 (Euro V): 15W-40 ACEA E9"
+      ]
+    }
+  },
+  {
+    "make": "RENAULT TRUCKS",
+    "model": "Kerax 460 / K 460",
+    "generation": "Euro V",
+    "yearFrom": 2009,
+    "yearTo": 2016,
+    "engineCode": "DXi 11",
+    "displacementCc": 10800,
+    "fuelType": "diesel",
+    "powerKw": 340,
+    "powerHp": 460,
+    "oilViscosity": "15W-40",
+    "oilSpecAPI": "CJ-4",
+    "oilSpecACEA": "E9",
+    "oilSpecOEM": "Renault RLD-3",
+    "oilCapacityLiters": 36.5,
+    "gearboxOilSeparate": true,
+    "gearboxOilSpec": "75W-90 Renault 97307",
+    "oilChangeIntervalKm": 100000,
+    "emissionStandard": "Euro V",
+    "source": "Renault DXi 11 Workshop Manual (scribd.com), Q8Oils RLD-3=ACEA E9-08+VDS-4 spec, Kroon-Oil Premium 430 DXi capacity 36.5L, MAG1 lube advisor",
+    "confidence": "high",
+    "matchAmbiguity": {
+      "conflictGroup": 68,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 10800,
+        "powerHp": 460,
+        "fuelType": "diesel"
+      },
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "10W-30",
+            "15W-40"
+          ]
+        },
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "CJ-4",
+            "CK-4"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "E8",
+            "E9"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "Renault RLD-3",
+            "Renault RLD-4"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "RENAULT TRUCKS T 460 / C 460 (Euro VI): 10W-30 ACEA E8"
+      ]
+    }
+  },
+  {
+    "make": "RENAULT TRUCKS",
+    "model": "Kerax 430 / K 430",
+    "generation": "Euro V",
+    "yearFrom": 2009,
+    "yearTo": 2016,
+    "engineCode": "DXi 11",
+    "displacementCc": 10800,
+    "fuelType": "diesel",
+    "powerKw": 316,
+    "powerHp": 430,
+    "oilViscosity": "15W-40",
+    "oilSpecAPI": "CJ-4",
+    "oilSpecACEA": "E9",
+    "oilSpecOEM": "Renault RLD-3",
+    "oilCapacityLiters": 36.5,
+    "gearboxOilSeparate": true,
+    "gearboxOilSpec": "75W-90 Renault 97307",
+    "oilChangeIntervalKm": 100000,
+    "emissionStandard": "Euro V",
+    "source": "Renault DXi 11 Workshop Manual, Q8Oils RLD-3=ACEA E9-08+VDS-4, Renault Trucks Oils Maxima Euro V product page, Kroon-Oil capacity data",
+    "confidence": "high",
+    "matchAmbiguity": {
+      "conflictGroup": 65,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 10800,
+        "powerHp": 430,
+        "fuelType": "diesel"
+      },
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "10W-30",
+            "15W-40"
+          ]
+        },
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "CJ-4",
+            "CK-4"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "E8",
+            "E9"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "Renault RLD-3",
+            "Renault RLD-4"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "RENAULT TRUCKS T 430 / C 430 (Euro VI): 10W-30 ACEA E8"
+      ]
+    }
+  },
+  {
+    "make": "RENAULT TRUCKS",
+    "model": "Kerax 380 / K 380",
+    "generation": "Euro V",
+    "yearFrom": 2009,
+    "yearTo": 2016,
+    "engineCode": "DXi 11",
+    "displacementCc": 10800,
+    "fuelType": "diesel",
+    "powerKw": 280,
+    "powerHp": 380,
+    "oilViscosity": "15W-40",
+    "oilSpecAPI": "CJ-4",
+    "oilSpecACEA": "E9",
+    "oilSpecOEM": "Renault RLD-3",
+    "oilCapacityLiters": 36.5,
+    "gearboxOilSeparate": true,
+    "gearboxOilSpec": "75W-90 Renault 97307",
+    "oilChangeIntervalKm": 100000,
+    "emissionStandard": "Euro V",
+    "source": "Renault Trucks Qatar K Range brochure (DXi 11 380hp), Q8Oils RLD-3 spec sheet, Renault Trucks Oils Maxima Euro V page",
+    "confidence": "high",
+    "matchAmbiguity": {
+      "conflictGroup": 62,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 10800,
+        "powerHp": 380,
+        "fuelType": "diesel"
+      },
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "10W-30",
+            "15W-40"
+          ]
+        },
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "CJ-4",
+            "CK-4"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "E8",
+            "E9"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "Renault RLD-3",
+            "Renault RLD-4"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "RENAULT TRUCKS T 380 / C 380 (Euro VI): 10W-30 ACEA E8"
+      ]
+    }
+  },
+  {
+    "make": "RENAULT TRUCKS",
+    "model": "D 280",
+    "generation": "Euro VI",
+    "yearFrom": 2013,
+    "yearTo": 9999,
+    "engineCode": "DTI 8",
+    "displacementCc": 7700,
+    "fuelType": "diesel",
+    "powerKw": 206,
+    "powerHp": 280,
+    "oilViscosity": "10W-30",
+    "oilSpecAPI": "CK-4",
+    "oilSpecACEA": "E8",
+    "oilSpecOEM": "Renault RLD-4",
+    "oilCapacityLiters": 21.0,
+    "gearboxOilSeparate": true,
+    "gearboxOilSpec": "75W-90 Renault 97307",
+    "oilChangeIntervalKm": 100000,
+    "emissionStandard": "Euro VI",
+    "source": "Renault Trucks D range (renault-trucks.com), Kroon-Oil D 320 DTI 8 capacity 18.5-24L, Renault Trucks Oils Genuine Expert page (10k km oil analysis for 8L engines)",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "RENAULT TRUCKS",
+    "model": "D 250",
+    "generation": "Euro VI",
+    "yearFrom": 2013,
+    "yearTo": 9999,
+    "engineCode": "DTI 8",
+    "displacementCc": 7700,
+    "fuelType": "diesel",
+    "powerKw": 184,
+    "powerHp": 250,
+    "oilViscosity": "10W-30",
+    "oilSpecAPI": "CK-4",
+    "oilSpecACEA": "E8",
+    "oilSpecOEM": "Renault RLD-4",
+    "oilCapacityLiters": 21.0,
+    "gearboxOilSeparate": true,
+    "gearboxOilSpec": "75W-90 Renault 97307",
+    "oilChangeIntervalKm": 100000,
+    "emissionStandard": "Euro VI",
+    "source": "Renault Trucks D range (renault-trucks.com), Kroon-Oil D 320 DTI 8 capacity 18.5-24L, mwtruckparts.co.uk engine guide",
+    "confidence": "medium",
+    "matchAmbiguity": {
+      "conflictGroup": 29,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 7700,
+        "powerHp": 250,
+        "fuelType": "diesel"
+      },
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "10W-30",
+            "10W-40"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "E8",
+            "E9"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "Renault RLD-4",
+            "Volvo VDS-4.5"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "VOLVO TRUCKS FE 250 (Euro VI): 10W-40 ACEA E9"
+      ]
+    }
+  },
+  {
+    "make": "RENAULT TRUCKS",
+    "model": "Midlum 280 / Premium 280",
+    "generation": "Euro V",
+    "yearFrom": 2006,
+    "yearTo": 2013,
+    "engineCode": "DXi 7",
+    "displacementCc": 7100,
+    "fuelType": "diesel",
+    "powerKw": 206,
+    "powerHp": 280,
+    "oilViscosity": "15W-40",
+    "oilSpecAPI": "CI-4",
+    "oilSpecACEA": "E7",
+    "oilSpecOEM": "Renault RLD-2",
+    "oilCapacityLiters": 25.3,
+    "gearboxOilSeparate": true,
+    "gearboxOilSpec": "75W-90 GL5",
+    "oilChangeIntervalKm": 80000,
+    "emissionStandard": "Euro V",
+    "source": "Ravenol oil guide Midlum 270 DXi capacity 25.3L, Q8Oils RLD-2=ACEA E7-04+VDS-3 spec, Renault Trucks Oils Maxima Euro V RLD-2 page, pdfcoffee.com Renault lubrication technical note",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "RENAULT TRUCKS",
+    "model": "Midlum 240 / Premium 240",
+    "generation": "Euro V",
+    "yearFrom": 2006,
+    "yearTo": 2013,
+    "engineCode": "DXi 7",
+    "displacementCc": 7100,
+    "fuelType": "diesel",
+    "powerKw": 177,
+    "powerHp": 240,
+    "oilViscosity": "15W-40",
+    "oilSpecAPI": "CI-4",
+    "oilSpecACEA": "E7",
+    "oilSpecOEM": "Renault RLD-2",
+    "oilCapacityLiters": 25.3,
+    "gearboxOilSeparate": true,
+    "gearboxOilSpec": "75W-90 GL5",
+    "oilChangeIntervalKm": 80000,
+    "emissionStandard": "Euro V",
+    "source": "Ravenol oil guide Midlum 270 DXi capacity 25.3L, Q8Oils RLD-2=ACEA E7-04+VDS-3 spec, Renault Trucks Oils Maxima Euro V RLD-2 page, truck1.eu DXi 7 240hp listing",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  }
+]

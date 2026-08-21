@@ -1,0 +1,103 @@
+[
+  {
+    "make": "SHACMAN",
+    "model": "X3000 375",
+    "generation": "Euro V",
+    "yearFrom": 2016,
+    "yearTo": 9999,
+    "engineCode": "WP12.375N50",
+    "displacementCc": 11596,
+    "fuelType": "diesel",
+    "powerKw": 276,
+    "powerHp": 375,
+    "oilViscosity": "15W-40",
+    "oilSpecAPI": "CI-4",
+    "oilSpecACEA": "E7",
+    "oilSpecOEM": null,
+    "oilCapacityLiters": 28.0,
+    "gearboxOilSeparate": true,
+    "gearboxOilSpec": null,
+    "oilChangeIntervalKm": 40000,
+    "emissionStandard": "Euro V",
+    "source": "Weichai WP12 maintenance manual (Scribd): oil capacity 28L truck engine, CI-4 grade recommended; WP12 displacement 11.596L from Weichai official specs",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "SHACMAN",
+    "model": "X3000 480",
+    "generation": "Euro V",
+    "yearFrom": 2018,
+    "yearTo": 9999,
+    "engineCode": "WP13.480E501",
+    "displacementCc": 12540,
+    "fuelType": "diesel",
+    "powerKw": 353,
+    "powerHp": 480,
+    "oilViscosity": "15W-40",
+    "oilSpecAPI": "CI-4",
+    "oilSpecACEA": "E7",
+    "oilSpecOEM": null,
+    "oilCapacityLiters": 29.0,
+    "gearboxOilSeparate": true,
+    "gearboxOilSpec": null,
+    "oilChangeIntervalKm": 40000,
+    "emissionStandard": "Euro V",
+    "source": "Weichai India WP13 spec: oil sump capacity 29L; Weichai Power official: WP13 displacement 12.54L, 353kW/480hp",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "SHACMAN",
+    "model": "F3000 380",
+    "generation": "Euro III",
+    "yearFrom": 2010,
+    "yearTo": 9999,
+    "engineCode": "WD615.47",
+    "displacementCc": 9726,
+    "fuelType": "diesel",
+    "powerKw": 280,
+    "powerHp": 380,
+    "oilViscosity": "15W-40",
+    "oilSpecAPI": "CH-4",
+    "oilSpecACEA": "E5",
+    "oilSpecOEM": null,
+    "oilCapacityLiters": 20.0,
+    "gearboxOilSeparate": true,
+    "gearboxOilSpec": null,
+    "oilChangeIntervalKm": 30000,
+    "emissionStandard": "Euro III",
+    "source": "SHACMAN F3000 spec sheet (timintl.com): WD615.47, 9.7L, 280kW/380hp; WP10 service manual: oil system capacity 20L incl filters, CH-4 recommended",
+    "confidence": "medium",
+    "matchAmbiguity": {
+      "conflictGroup": 52,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 9726,
+        "powerHp": 380,
+        "fuelType": "diesel"
+      },
+      "differingFields": [
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "CH-4",
+            "CI-4"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "E5",
+            "E7"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "SINOTRUK Howo 380 (Euro IV): 15W-40 ACEA E7"
+      ]
+    }
+  }
+]

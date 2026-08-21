@@ -1,0 +1,682 @@
+[
+  {
+    "make": "DS AUTOMOBILES",
+    "model": "DS 3 Crossback",
+    "generation": "I (1.2 PureTech 131)",
+    "yearFrom": 2019,
+    "yearTo": 2022,
+    "engineCode": "EB2ADTS",
+    "displacementCc": 1199,
+    "fuelType": "essence",
+    "powerKw": 96,
+    "powerHp": 131,
+    "oilViscosity": "0W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": "PSA B71 2290",
+    "oilCapacityLiters": 4.2,
+    "oilChangeIntervalKm": 15000,
+    "source": "Stellantis PSA specs, Citroen C3 Aircross EB2ADTS cross-ref, TotalEnergies",
+    "confidence": "medium",
+    "matchAmbiguity": {
+      "conflictGroup": 9,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 1199,
+        "powerHp": 131,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "0W-20",
+            "0W-30",
+            "5W-30"
+          ]
+        },
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "None",
+            "SN",
+            "SP"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "C2",
+            "C5"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "PSA B71 2010",
+            "PSA B71 2290"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "CITROEN C4 Cactus (EB2ADTS): 5W-30",
+        "CITROEN C4 X (EB2ADTS): 5W-30",
+        "CITROEN C5 Aircross (EB2ADTS): 5W-30",
+        "DS AUTOMOBILES DS 3 (EB2ADTS): 0W-30",
+        "DS AUTOMOBILES DS 4 (EB2ADTS): 0W-30",
+        "Peugeot Rifter (EB2DTS): 0W-20"
+      ]
+    }
+  },
+  {
+    "make": "DS AUTOMOBILES",
+    "model": "DS 3 Crossback",
+    "generation": "I (1.5 BlueHDi 131)",
+    "yearFrom": 2019,
+    "yearTo": 9999,
+    "engineCode": "DV5RC",
+    "displacementCc": 1499,
+    "fuelType": "diesel",
+    "powerKw": 96,
+    "powerHp": 131,
+    "oilViscosity": "0W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": "PSA B71 2312",
+    "oilCapacityLiters": 3.8,
+    "oilChangeIntervalKm": 15000,
+    "source": "PSA DV5RC specs cross-ref, Stellantis, TotalEnergies",
+    "confidence": "medium",
+    "matchAmbiguity": {
+      "conflictGroup": 23,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 1499,
+        "powerHp": 131,
+        "fuelType": "diesel"
+      },
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "0W-20",
+            "0W-30",
+            "5W-30"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "C2",
+            "C3"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "PSA B71 2010",
+            "PSA B71 2290",
+            "PSA B71 2312"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "CITROEN C5 Aircross (DV5RC): 0W-30",
+        "DS AUTOMOBILES DS 3 (DV5RC): 0W-30",
+        "DS AUTOMOBILES DS 4 (DV5RC): 0W-30",
+        "DS AUTOMOBILES DS 7 Crossback (DV5RC): 0W-30",
+        "FIAT Doblo (DV5RC): 0W-20",
+        "JEEP Renegade (DV5RC): 0W-30",
+        "JEEP Compass (DV5RC): 0W-30",
+        "MITSUBISHI ASX (DV5RC): 0W-30",
+        "OPEL Combo (D15DTH): 5W-30"
+      ]
+    }
+  },
+  {
+    "make": "DS AUTOMOBILES",
+    "model": "DS 3",
+    "generation": "II (1.2 PureTech 131)",
+    "yearFrom": 2022,
+    "yearTo": 9999,
+    "engineCode": "EB2ADTS",
+    "displacementCc": 1199,
+    "fuelType": "essence",
+    "powerKw": 96,
+    "powerHp": 131,
+    "oilViscosity": "0W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": "PSA B71 2290",
+    "oilCapacityLiters": 4.2,
+    "oilChangeIntervalKm": 15000,
+    "source": "Stellantis PSA specs, DS Automobiles cross-ref with Citroen",
+    "confidence": "medium",
+    "matchAmbiguity": {
+      "conflictGroup": 9,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 1199,
+        "powerHp": 131,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "0W-20",
+            "0W-30",
+            "5W-30"
+          ]
+        },
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "None",
+            "SN",
+            "SP"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "C2",
+            "C5"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "PSA B71 2010",
+            "PSA B71 2290"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "CITROEN C4 Cactus (EB2ADTS): 5W-30",
+        "CITROEN C4 X (EB2ADTS): 5W-30",
+        "CITROEN C5 Aircross (EB2ADTS): 5W-30",
+        "DS AUTOMOBILES DS 3 Crossback (EB2ADTS): 0W-30",
+        "DS AUTOMOBILES DS 4 (EB2ADTS): 0W-30",
+        "Peugeot Rifter (EB2DTS): 0W-20"
+      ]
+    }
+  },
+  {
+    "make": "DS AUTOMOBILES",
+    "model": "DS 3",
+    "generation": "II (1.5 BlueHDi 131)",
+    "yearFrom": 2022,
+    "yearTo": 9999,
+    "engineCode": "DV5RC",
+    "displacementCc": 1499,
+    "fuelType": "diesel",
+    "powerKw": 96,
+    "powerHp": 131,
+    "oilViscosity": "0W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": "PSA B71 2312",
+    "oilCapacityLiters": 3.8,
+    "oilChangeIntervalKm": 15000,
+    "source": "PSA DV5RC specs, Stellantis",
+    "confidence": "medium",
+    "matchAmbiguity": {
+      "conflictGroup": 23,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 1499,
+        "powerHp": 131,
+        "fuelType": "diesel"
+      },
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "0W-20",
+            "0W-30",
+            "5W-30"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "C2",
+            "C3"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "PSA B71 2010",
+            "PSA B71 2290",
+            "PSA B71 2312"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "CITROEN C5 Aircross (DV5RC): 0W-30",
+        "DS AUTOMOBILES DS 3 Crossback (DV5RC): 0W-30",
+        "DS AUTOMOBILES DS 4 (DV5RC): 0W-30",
+        "DS AUTOMOBILES DS 7 Crossback (DV5RC): 0W-30",
+        "FIAT Doblo (DV5RC): 0W-20",
+        "JEEP Renegade (DV5RC): 0W-30",
+        "JEEP Compass (DV5RC): 0W-30",
+        "MITSUBISHI ASX (DV5RC): 0W-30",
+        "OPEL Combo (D15DTH): 5W-30"
+      ]
+    }
+  },
+  {
+    "make": "DS AUTOMOBILES",
+    "model": "DS 4",
+    "generation": "I (1.2 PureTech 131)",
+    "yearFrom": 2021,
+    "yearTo": 9999,
+    "engineCode": "EB2ADTS",
+    "displacementCc": 1199,
+    "fuelType": "essence",
+    "powerKw": 96,
+    "powerHp": 131,
+    "oilViscosity": "0W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": "PSA B71 2290",
+    "oilCapacityLiters": 4.2,
+    "oilChangeIntervalKm": 15000,
+    "source": "Stellantis PSA specs, Citroen C4 Cactus EB2ADTS cross-ref",
+    "confidence": "medium",
+    "matchAmbiguity": {
+      "conflictGroup": 9,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 1199,
+        "powerHp": 131,
+        "fuelType": "essence"
+      },
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "0W-20",
+            "0W-30",
+            "5W-30"
+          ]
+        },
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "None",
+            "SN",
+            "SP"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "C2",
+            "C5"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "PSA B71 2010",
+            "PSA B71 2290"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "CITROEN C4 Cactus (EB2ADTS): 5W-30",
+        "CITROEN C4 X (EB2ADTS): 5W-30",
+        "CITROEN C5 Aircross (EB2ADTS): 5W-30",
+        "DS AUTOMOBILES DS 3 Crossback (EB2ADTS): 0W-30",
+        "DS AUTOMOBILES DS 3 (EB2ADTS): 0W-30",
+        "Peugeot Rifter (EB2DTS): 0W-20"
+      ]
+    }
+  },
+  {
+    "make": "DS AUTOMOBILES",
+    "model": "DS 4",
+    "generation": "I (1.5 BlueHDi 131)",
+    "yearFrom": 2021,
+    "yearTo": 9999,
+    "engineCode": "DV5RC",
+    "displacementCc": 1499,
+    "fuelType": "diesel",
+    "powerKw": 96,
+    "powerHp": 131,
+    "oilViscosity": "0W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": "PSA B71 2312",
+    "oilCapacityLiters": 3.8,
+    "oilChangeIntervalKm": 15000,
+    "source": "PSA DV5RC specs cross-ref, Stellantis",
+    "confidence": "medium",
+    "matchAmbiguity": {
+      "conflictGroup": 23,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 1499,
+        "powerHp": 131,
+        "fuelType": "diesel"
+      },
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "0W-20",
+            "0W-30",
+            "5W-30"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "C2",
+            "C3"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "PSA B71 2010",
+            "PSA B71 2290",
+            "PSA B71 2312"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "CITROEN C5 Aircross (DV5RC): 0W-30",
+        "DS AUTOMOBILES DS 3 Crossback (DV5RC): 0W-30",
+        "DS AUTOMOBILES DS 3 (DV5RC): 0W-30",
+        "DS AUTOMOBILES DS 7 Crossback (DV5RC): 0W-30",
+        "FIAT Doblo (DV5RC): 0W-20",
+        "JEEP Renegade (DV5RC): 0W-30",
+        "JEEP Compass (DV5RC): 0W-30",
+        "MITSUBISHI ASX (DV5RC): 0W-30",
+        "OPEL Combo (D15DTH): 5W-30"
+      ]
+    }
+  },
+  {
+    "make": "DS AUTOMOBILES",
+    "model": "DS 4",
+    "generation": "I (1.6 THP 225)",
+    "yearFrom": 2021,
+    "yearTo": 9999,
+    "engineCode": "EP6FDT",
+    "displacementCc": 1598,
+    "fuelType": "essence",
+    "powerKw": 165,
+    "powerHp": 225,
+    "oilViscosity": "0W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C3",
+    "oilSpecOEM": "PSA B71 2312",
+    "oilCapacityLiters": 5.5,
+    "oilChangeIntervalKm": 15000,
+    "source": "PSA EP6FDT specs, Peugeot 3008/5008 cross-ref, Stellantis",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "DS AUTOMOBILES",
+    "model": "DS 4",
+    "generation": "I (1.6 THP 180 Plug-in Hybrid)",
+    "yearFrom": 2022,
+    "yearTo": 9999,
+    "engineCode": "EP6FDT",
+    "displacementCc": 1598,
+    "fuelType": "essence",
+    "powerKw": 132,
+    "powerHp": 180,
+    "oilViscosity": "0W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C3",
+    "oilSpecOEM": "PSA B71 2312",
+    "oilCapacityLiters": 5.5,
+    "oilChangeIntervalKm": 15000,
+    "source": "Stellantis PHEV specs, PSA EP6FDT hybrid cross-ref",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "DS AUTOMOBILES",
+    "model": "DS 7 Crossback",
+    "generation": "I (1.6 THP 225)",
+    "yearFrom": 2018,
+    "yearTo": 9999,
+    "engineCode": "EP6FDT",
+    "displacementCc": 1598,
+    "fuelType": "essence",
+    "powerKw": 165,
+    "powerHp": 225,
+    "oilViscosity": "0W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C3",
+    "oilSpecOEM": "PSA B71 2312",
+    "oilCapacityLiters": 5.5,
+    "oilChangeIntervalKm": 15000,
+    "source": "PSA EP6FDT specs, Peugeot 3008/5008/Citroen C5 Aircross cross-ref",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "DS AUTOMOBILES",
+    "model": "DS 7 Crossback",
+    "generation": "I (1.6 THP 180 PHEV)",
+    "yearFrom": 2020,
+    "yearTo": 9999,
+    "engineCode": "EP6FDT",
+    "displacementCc": 1598,
+    "fuelType": "essence",
+    "powerKw": 132,
+    "powerHp": 180,
+    "oilViscosity": "0W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C3",
+    "oilSpecOEM": "PSA B71 2312",
+    "oilCapacityLiters": 5.5,
+    "oilChangeIntervalKm": 15000,
+    "source": "Stellantis PHEV specs, PSA EP6FDT hybrid cross-ref",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "DS AUTOMOBILES",
+    "model": "DS 7 Crossback",
+    "generation": "I (1.5 BlueHDi 131)",
+    "yearFrom": 2018,
+    "yearTo": 9999,
+    "engineCode": "DV5RC",
+    "displacementCc": 1499,
+    "fuelType": "diesel",
+    "powerKw": 96,
+    "powerHp": 131,
+    "oilViscosity": "0W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": "PSA B71 2312",
+    "oilCapacityLiters": 4.0,
+    "oilChangeIntervalKm": 15000,
+    "source": "PSA DV5RC specs cross-ref, Stellantis",
+    "confidence": "medium",
+    "matchAmbiguity": {
+      "conflictGroup": 23,
+      "severity": "major",
+      "lookupKey": {
+        "displacementCc": 1499,
+        "powerHp": 131,
+        "fuelType": "diesel"
+      },
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "0W-20",
+            "0W-30",
+            "5W-30"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "C2",
+            "C3"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "PSA B71 2010",
+            "PSA B71 2290",
+            "PSA B71 2312"
+          ]
+        }
+      ],
+      "otherVehicles": [
+        "CITROEN C5 Aircross (DV5RC): 0W-30",
+        "DS AUTOMOBILES DS 3 Crossback (DV5RC): 0W-30",
+        "DS AUTOMOBILES DS 3 (DV5RC): 0W-30",
+        "DS AUTOMOBILES DS 4 (DV5RC): 0W-30",
+        "FIAT Doblo (DV5RC): 0W-20",
+        "JEEP Renegade (DV5RC): 0W-30",
+        "JEEP Compass (DV5RC): 0W-30",
+        "MITSUBISHI ASX (DV5RC): 0W-30",
+        "OPEL Combo (D15DTH): 5W-30"
+      ]
+    }
+  },
+  {
+    "make": "DS AUTOMOBILES",
+    "model": "DS 7 Crossback",
+    "generation": "I (2.0 BlueHDi 181)",
+    "yearFrom": 2018,
+    "yearTo": 9999,
+    "engineCode": "DW10CTED4",
+    "displacementCc": 1997,
+    "fuelType": "diesel",
+    "powerKw": 133,
+    "powerHp": 181,
+    "oilViscosity": "0W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": "PSA B71 2312",
+    "oilCapacityLiters": 4.5,
+    "oilChangeIntervalKm": 15000,
+    "source": "PSA DW10 specs, Peugeot 3008/5008 2.0 BlueHDi cross-ref",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "DS AUTOMOBILES",
+    "model": "DS 9",
+    "generation": "I (1.6 THP 225)",
+    "yearFrom": 2021,
+    "yearTo": 9999,
+    "engineCode": "EP6FDT",
+    "displacementCc": 1598,
+    "fuelType": "essence",
+    "powerKw": 165,
+    "powerHp": 225,
+    "oilViscosity": "0W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C3",
+    "oilSpecOEM": "PSA B71 2312",
+    "oilCapacityLiters": 5.5,
+    "oilChangeIntervalKm": 15000,
+    "source": "PSA EP6FDT specs, DS Automobiles, Stellantis",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "DS AUTOMOBILES",
+    "model": "DS 9",
+    "generation": "I (1.6 THP 250)",
+    "yearFrom": 2022,
+    "yearTo": 9999,
+    "engineCode": "EP6FDT",
+    "displacementCc": 1598,
+    "fuelType": "essence",
+    "powerKw": 184,
+    "powerHp": 250,
+    "oilViscosity": "0W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C3",
+    "oilSpecOEM": "PSA B71 2312",
+    "oilCapacityLiters": 5.5,
+    "oilChangeIntervalKm": 15000,
+    "source": "PSA EP6FDT high-output specs, DS Automobiles, Stellantis",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "DS AUTOMOBILES",
+    "model": "DS 9",
+    "generation": "I (1.6 THP 225 PHEV)",
+    "yearFrom": 2021,
+    "yearTo": 9999,
+    "engineCode": "EP6FDT",
+    "displacementCc": 1598,
+    "fuelType": "essence",
+    "powerKw": 165,
+    "powerHp": 225,
+    "oilViscosity": "0W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C3",
+    "oilSpecOEM": "PSA B71 2312",
+    "oilCapacityLiters": 5.5,
+    "oilChangeIntervalKm": 15000,
+    "source": "Stellantis PHEV specs, PSA EP6FDT hybrid cross-ref",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  },
+  {
+    "make": "DS AUTOMOBILES",
+    "model": "DS 9",
+    "generation": "I (2.0 BlueHDi 181)",
+    "yearFrom": 2021,
+    "yearTo": 9999,
+    "engineCode": "DW10CTED4",
+    "displacementCc": 1997,
+    "fuelType": "diesel",
+    "powerKw": 133,
+    "powerHp": 181,
+    "oilViscosity": "0W-30",
+    "oilSpecAPI": null,
+    "oilSpecACEA": "C2",
+    "oilSpecOEM": "PSA B71 2312",
+    "oilCapacityLiters": 4.5,
+    "oilChangeIntervalKm": 15000,
+    "source": "PSA DW10 specs, Peugeot cross-ref, Stellantis",
+    "confidence": "medium",
+    "matchAmbiguity": null
+  }
+]

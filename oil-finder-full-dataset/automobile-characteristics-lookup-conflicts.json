@@ -1,0 +1,2532 @@
+{
+  "_meta": {
+    "description": "Cross-brand characteristics lookup conflicts for automobile sample batch (V4 — full-field comparison with per-field severity, all brands)",
+    "lookupKeyDefinition": "(displacementCc, powerHp, fuelType)",
+    "specFieldsCompared": [
+      "oilViscosity",
+      "oilSpecAPI",
+      "oilSpecACEA",
+      "oilSpecOEM"
+    ],
+    "totalEntries": 393,
+    "totalUniqueKeys": 208,
+    "totalConflictGroups": 30,
+    "totalAmbiguousEntries": 122,
+    "brandsIncluded": [
+      "chevrolet",
+      "citroen",
+      "cupra",
+      "dacia",
+      "ds",
+      "fiat",
+      "ford",
+      "honda",
+      "hyundai",
+      "jeep",
+      "kia",
+      "mitsubishi",
+      "nissan",
+      "opel",
+      "peugeot",
+      "renault",
+      "seat",
+      "skoda",
+      "suzuki",
+      "toyota",
+      "volkswagen"
+    ],
+    "generatedFrom": [
+      "automobile-chevrolet.json",
+      "automobile-citroen.json",
+      "automobile-cupra.json",
+      "automobile-dacia.json",
+      "automobile-ds.json",
+      "automobile-fiat.json",
+      "automobile-ford.json",
+      "automobile-honda.json",
+      "automobile-hyundai.json",
+      "automobile-jeep.json",
+      "automobile-kia.json",
+      "automobile-mitsubishi.json",
+      "automobile-nissan.json",
+      "automobile-opel.json",
+      "automobile-peugeot.json",
+      "automobile-renault.json",
+      "automobile-seat.json",
+      "automobile-skoda.json",
+      "automobile-suzuki.json",
+      "automobile-toyota.json",
+      "automobile-volkswagen.json"
+    ]
+  },
+  "engineCodeFixes": [
+    {
+      "make": "KIA",
+      "model": "Picanto",
+      "generation": "JA",
+      "engineCode_old": "G3LC",
+      "engineCode_new": "G3LA",
+      "displacementCc": 998,
+      "powerHp": 67,
+      "fuelType": "essence",
+      "reason": "G3LC is the 1.0 T-GDI code; Picanto 1.0 MPI (67hp NA) uses G3LA per motorinsel.eu, autoparts-24.com, Wikipedia Hyundai Kappa engine article"
+    },
+    {
+      "make": "Hyundai",
+      "model": "i10",
+      "generation": "BA",
+      "engineCode_old": "G3LC",
+      "engineCode_new": "G3LA",
+      "displacementCc": 998,
+      "powerHp": 66,
+      "fuelType": "essence",
+      "reason": "G3LC is the 1.0 T-GDI code; i10 1.0 MPI (66hp NA) uses G3LA per autoparts-24.com, Ravenol (G3LA/G3LD for i10 1.0 MPi), Wikipedia"
+    },
+    {
+      "make": "Hyundai",
+      "model": "Grand i10 Nios",
+      "generation": "AI",
+      "engineCode_old": "G3LA",
+      "engineCode_new": "G4LA",
+      "displacementCc": 1248,
+      "powerHp": 83,
+      "fuelType": "essence",
+      "reason": "G3LA is the 998cc 1.0L MPI code; Grand i10 Nios 1.2L (1248cc) uses G4LA per Kia/Hyundai engine code conventions (G4xx = 1.2L+ Kappa/Gamma)"
+    }
+  ],
+  "dataCorrections": [
+    {
+      "make": "Hyundai",
+      "model": "Kona",
+      "generation": "OS",
+      "engineCode": "G4NA",
+      "field": "oilSpecOEM",
+      "oldValue": null,
+      "newValue": "ILSAC GF-6A",
+      "reason": "Checkered Flag Hyundai explicitly states API SP / ILSAC GF-6A for Kona 2.0L MPI; matches Smartstream engine family spec"
+    },
+    {
+      "make": "Hyundai",
+      "model": "Tucson",
+      "generation": "NX4",
+      "engineCode": "G4FJ",
+      "field": "oilSpecOEM",
+      "oldValue": null,
+      "newValue": "ILSAC GF-6A",
+      "reason": "Official Hyundai Tucson NX4 owner's manual: 'Smartstream G1.6 T-GDi | SAE 0W-20, API SN PLUS/SP or ILSAC GF-6'"
+    },
+    {
+      "make": "Hyundai",
+      "model": "Tucson",
+      "generation": "NX4",
+      "engineCode": "G4NA",
+      "field": "oilSpecOEM",
+      "oldValue": null,
+      "newValue": "ILSAC GF-6A",
+      "reason": "Official Hyundai Tucson NX4 owner's manual: 'Smartstream G2.0 | SAE 0W-20, API SN PLUS/SP or ILSAC GF-6'"
+    },
+    {
+      "brand": "Mitsubishi",
+      "field": "oilSpecOEM",
+      "description": "Normalized OEM string from Renault RN17 to RN17 (2 entries: ASX II 1.3 TCe 140/160) to match Renault file format",
+      "entries_affected": [
+        "Mitsubishi ASX II (1.3 TCe 140)",
+        "Mitsubishi ASX II (1.3 TCe 160)"
+      ]
+    },
+    {
+      "brand": "Chevrolet",
+      "field": "oilSpecOEM",
+      "description": "Normalized OEM string from GM Dexos1 Gen 2 to GM Dexos1 Gen2 (4 entries: Tracker 1.0T/1.2T, Equinox 1.5T, Malibu 1.5T) to match Opel file format",
+      "entries_affected": [
+        "Chevrolet Tracker 1.0T 115",
+        "Chevrolet Tracker 1.2T 140",
+        "Chevrolet Equinox 1.5T 180",
+        "Chevrolet Malibu 1.5T 160"
+      ]
+    }
+  ],
+  "conflicts": [
+    {
+      "conflictGroup": 1,
+      "lookupKey": {
+        "displacementCc": 999,
+        "powerHp": 73,
+        "fuelType": "essence"
+      },
+      "severity": "major",
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "5W-30",
+            "5W-40"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "A3/B4",
+            "C3"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "RN0710",
+            "RN17"
+          ]
+        }
+      ],
+      "entries": [
+        {
+          "make": "Renault",
+          "model": "Symbol",
+          "generation": "III",
+          "engineCode": "B4D",
+          "oilViscosity": "5W-30",
+          "oilSpecAPI": null,
+          "oilSpecACEA": "C3",
+          "oilSpecOEM": "RN17",
+          "source": "autodoc.parts (Renault Symbol III 1.0 SCe 75hp); automoli.com; Renault EU owner's manual (1.0 SCe: 5W-30, ACEA C3, RN17, 3.2L)"
+        },
+        {
+          "make": "Renault",
+          "model": "Logan",
+          "generation": "II",
+          "engineCode": "B4D",
+          "oilViscosity": "5W-40",
+          "oilSpecAPI": null,
+          "oilSpecACEA": "A3/B4",
+          "oilSpecOEM": "RN0710",
+          "source": "autodoc.co.uk (Renault Logan II 1.0 SCe 75hp); buycarparts.co.uk; Renault EU owner's manual (1.0 SCe: 5W-40, ACEA A3/B4, RN0710, 3.2L)"
+        },
+        {
+          "make": "Renault",
+          "model": "Logan",
+          "generation": "MCV",
+          "engineCode": "B4D",
+          "oilViscosity": "5W-40",
+          "oilSpecAPI": null,
+          "oilSpecACEA": "A3/B4",
+          "oilSpecOEM": "RN0710",
+          "source": "autodoc.co.uk (Renault Logan MCV II 1.0 SCe 75hp); buycarparts.co.uk; Renault EU owner's manual (1.0 SCe: 5W-40, ACEA A3/B4, RN0710, 3.2L)"
+        }
+      ],
+      "note": "Engine(s) B4D at 999cc/73hp. Brands: Renault. Differences: oilViscosity: 5W-30 vs 5W-40 [major]; oilSpecACEA: A3/B4 vs C3 [major]; oilSpecOEM: RN0710 vs RN17 [minor]. Review for Tunisia market."
+    },
+    {
+      "conflictGroup": 2,
+      "lookupKey": {
+        "displacementCc": 999,
+        "powerHp": 75,
+        "fuelType": "essence"
+      },
+      "severity": "major",
+      "differingFields": [
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "None",
+            "SN"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "A5/B5",
+            "C3"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "RN0710",
+            "VW 502.00"
+          ]
+        }
+      ],
+      "entries": [
+        {
+          "make": "DACIA",
+          "model": "Logan",
+          "generation": "II",
+          "engineCode": "B4D",
+          "oilViscosity": "5W-30",
+          "oilSpecAPI": null,
+          "oilSpecACEA": "C3",
+          "oilSpecOEM": "RN0710",
+          "source": "autodoc.co.uk, auto-doc.ie, buycarparts.co.uk"
+        },
+        {
+          "make": "SEAT",
+          "model": "Ibiza",
+          "generation": "MK5",
+          "engineCode": "CHYB",
+          "oilViscosity": "5W-30",
+          "oilSpecAPI": "SN",
+          "oilSpecACEA": "A5/B5",
+          "oilSpecOEM": "VW 502.00",
+          "source": "buycarparts.co.uk, SEAT Ibiza specs"
+        },
+        {
+          "make": "SKODA",
+          "model": "Fabia",
+          "generation": "MK4",
+          "engineCode": "CHYB",
+          "oilViscosity": "5W-30",
+          "oilSpecAPI": "SN",
+          "oilSpecACEA": "A5/B5",
+          "oilSpecOEM": "VW 502.00",
+          "source": "automobile.tn, buycarparts.co.uk, VW EA211 MPI specs"
+        }
+      ],
+      "note": "Engine(s) B4D, CHYB at 999cc/75hp. Brands: DACIA, SEAT, SKODA. Differences: oilSpecAPI: None vs SN [minor]; oilSpecACEA: A5/B5 vs C3 [major]; oilSpecOEM: RN0710 vs VW 502.00 [minor]. Review for Tunisia market."
+    },
+    {
+      "conflictGroup": 3,
+      "lookupKey": {
+        "displacementCc": 999,
+        "powerHp": 95,
+        "fuelType": "essence"
+      },
+      "severity": "minor",
+      "differingFields": [
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "None",
+            "SN",
+            "SP"
+          ]
+        }
+      ],
+      "entries": [
+        {
+          "make": "SEAT",
+          "model": "Ibiza",
+          "generation": "MK5",
+          "engineCode": "CHZB",
+          "oilViscosity": "0W-20",
+          "oilSpecAPI": "SN",
+          "oilSpecACEA": "C5",
+          "oilSpecOEM": "VW 508.00",
+          "source": "automobile.tn, buycarparts.co.uk, VW EA211 TSI specs"
+        },
+        {
+          "make": "SEAT",
+          "model": "Arona",
+          "generation": "MK1",
+          "engineCode": "CHZB",
+          "oilViscosity": "0W-20",
+          "oilSpecAPI": "SN",
+          "oilSpecACEA": "C5",
+          "oilSpecOEM": "VW 508.00",
+          "source": "automobile.tn, buycarparts.co.uk"
+        },
+        {
+          "make": "SKODA",
+          "model": "Fabia",
+          "generation": "MK4",
+          "engineCode": "CHZB",
+          "oilViscosity": "0W-20",
+          "oilSpecAPI": "SP",
+          "oilSpecACEA": "C5",
+          "oilSpecOEM": "VW 508.00",
+          "source": "SEATCUPRA.NET, buycarparts.co.uk, VW EA211 TSI specs"
+        },
+        {
+          "make": "SKODA",
+          "model": "Kamiq",
+          "generation": "NW4",
+          "engineCode": "CHZB",
+          "oilViscosity": "0W-20",
+          "oilSpecAPI": "SN",
+          "oilSpecACEA": "C5",
+          "oilSpecOEM": "VW 508.00",
+          "source": "buycarparts.co.uk, oilspec.eu"
+        },
+        {
+          "make": "VOLKSWAGEN",
+          "model": "T-Cross",
+          "generation": "A11",
+          "engineCode": "CHZB",
+          "oilViscosity": "0W-20",
+          "oilSpecAPI": null,
+          "oilSpecACEA": "C5",
+          "oilSpecOEM": "VW 508.00",
+          "source": "buycarparts.eu oil lookup, VW T-Cross owner manual, volkswagen.tn model listing"
+        },
+        {
+          "make": "VOLKSWAGEN",
+          "model": "Polo",
+          "generation": "AW1",
+          "engineCode": "CHYB",
+          "oilViscosity": "0W-20",
+          "oilSpecAPI": null,
+          "oilSpecACEA": "C5",
+          "oilSpecOEM": "VW 508.00",
+          "source": "ATO24 oil finder, VW Polo owner manual, volkswagen.tn new polo listing"
+        }
+      ],
+      "note": "Engine(s) CHYB, CHZB at 999cc/95hp. Brands: SEAT, SKODA, VOLKSWAGEN. Differences: oilSpecAPI: None vs SN vs SP [minor]. Review for Tunisia market."
+    },
+    {
+      "conflictGroup": 4,
+      "lookupKey": {
+        "displacementCc": 999,
+        "powerHp": 110,
+        "fuelType": "essence"
+      },
+      "severity": "major",
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "0W-20",
+            "5W-30"
+          ]
+        },
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "None",
+            "SP"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "C3",
+            "C5"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "RN17",
+            "VW 508.00"
+          ]
+        }
+      ],
+      "entries": [
+        {
+          "make": "DACIA",
+          "model": "Jogger",
+          "generation": "I",
+          "engineCode": "H5D 490",
+          "oilViscosity": "5W-30",
+          "oilSpecAPI": null,
+          "oilSpecACEA": "C3",
+          "oilSpecOEM": "RN17",
+          "source": "auto-data.net, automoli.com, autodoc.co.uk"
+        },
+        {
+          "make": "SKODA",
+          "model": "Scala",
+          "generation": "NW",
+          "engineCode": "DLAA",
+          "oilViscosity": "0W-20",
+          "oilSpecAPI": "SP",
+          "oilSpecACEA": "C5",
+          "oilSpecOEM": "VW 508.00",
+          "source": "automobile.tn, buycarparts.co.uk, oilspec.eu"
+        }
+      ],
+      "note": "Engine(s) DLAA, H5D 490 at 999cc/110hp. Brands: DACIA, SKODA. Differences: oilViscosity: 0W-20 vs 5W-30 [major]; oilSpecAPI: None vs SP [minor]; oilSpecACEA: C3 vs C5 [major]; oilSpecOEM: RN17 vs VW 508.00 [minor]. Review for Tunisia market."
+    },
+    {
+      "conflictGroup": 5,
+      "lookupKey": {
+        "displacementCc": 999,
+        "powerHp": 115,
+        "fuelType": "essence"
+      },
+      "severity": "major",
+      "differingFields": [
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "SN",
+            "SP"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "C5",
+            "None"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "GM Dexos1 Gen2",
+            "VW 508.00"
+          ]
+        }
+      ],
+      "entries": [
+        {
+          "make": "CHEVROLET",
+          "model": "Tracker",
+          "generation": "I (1.0 Turbo 115)",
+          "engineCode": "LI6",
+          "oilViscosity": "0W-20",
+          "oilSpecAPI": "SP",
+          "oilSpecACEA": null,
+          "oilSpecOEM": "GM Dexos1 Gen2",
+          "source": "Chevrolet Tracker owner's manual, AMSOIL, GM Middle East specs"
+        },
+        {
+          "make": "OPEL",
+          "model": "Corsa",
+          "generation": "E",
+          "engineCode": "F10XHL",
+          "oilViscosity": "0W-20",
+          "oilSpecAPI": "SN",
+          "oilSpecACEA": null,
+          "oilSpecOEM": "GM Dexos1 Gen2",
+          "source": "reddit.com/r/opel, ato24.de, buycarparts.co.uk"
+        },
+        {
+          "make": "SEAT",
+          "model": "Ibiza",
+          "generation": "MK5",
+          "engineCode": "DLAA",
+          "oilViscosity": "0W-20",
+          "oilSpecAPI": "SP",
+          "oilSpecACEA": "C5",
+          "oilSpecOEM": "VW 508.00",
+          "source": "automobile.tn, buycarparts.co.uk"
+        },
+        {
+          "make": "SEAT",
+          "model": "Arona",
+          "generation": "MK1",
+          "engineCode": "DLAA",
+          "oilViscosity": "0W-20",
+          "oilSpecAPI": "SP",
+          "oilSpecACEA": "C5",
+          "oilSpecOEM": "VW 508.00",
+          "source": "automobile.tn, buycarparts.co.uk"
+        },
+        {
+          "make": "SKODA",
+          "model": "Kamiq",
+          "generation": "NW4",
+          "engineCode": "DLAA",
+          "oilViscosity": "0W-20",
+          "oilSpecAPI": "SP",
+          "oilSpecACEA": "C5",
+          "oilSpecOEM": "VW 508.00",
+          "source": "buycarparts.co.uk, oilspec.eu"
+        },
+        {
+          "make": "SKODA",
+          "model": "Kushaq",
+          "generation": "MK1",
+          "engineCode": "DLAA",
+          "oilViscosity": "0W-20",
+          "oilSpecAPI": "SP",
+          "oilSpecACEA": "C5",
+          "oilSpecOEM": "VW 508.00",
+          "source": "automobile.tn, SEATCUPRA.NET, oilspec.eu"
+        }
+      ],
+      "note": "Engine(s) DLAA, F10XHL, LI6 at 999cc/115hp. Brands: CHEVROLET, OPEL, SEAT, SKODA. Differences: oilSpecAPI: SN vs SP [minor]; oilSpecACEA: C5 vs None [major]; oilSpecOEM: GM Dexos1 Gen2 vs VW 508.00 [minor]. Review for Tunisia market."
+    },
+    {
+      "conflictGroup": 6,
+      "lookupKey": {
+        "displacementCc": 1199,
+        "powerHp": 100,
+        "fuelType": "essence"
+      },
+      "severity": "major",
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "0W-20",
+            "0W-30",
+            "5W-30"
+          ]
+        },
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "None",
+            "SP"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "C2",
+            "C3",
+            "C5"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "GM Dexos1 Gen3",
+            "PSA B71 2010",
+            "PSA B71 2290",
+            "PSA B71 2312"
+          ]
+        }
+      ],
+      "entries": [
+        {
+          "make": "CITROEN",
+          "model": "C3",
+          "generation": "IV (Smart Car)",
+          "engineCode": "HNF",
+          "oilViscosity": "5W-30",
+          "oilSpecAPI": "SP",
+          "oilSpecACEA": "C3",
+          "oilSpecOEM": "PSA B71 2290",
+          "source": "Citroen Tunisia (citroen.tn), Stellantis Media press release Apr 2024, autoricambitritella.it"
+        },
+        {
+          "make": "OPEL",
+          "model": "Corsa",
+          "generation": "F",
+          "engineCode": "F12XHL",
+          "oilViscosity": "0W-20",
+          "oilSpecAPI": null,
+          "oilSpecACEA": "C2",
+          "oilSpecOEM": "GM Dexos1 Gen3",
+          "source": "auto-data.net, autodoc.co.uk, buycarparts.co.uk"
+        },
+        {
+          "make": "OPEL",
+          "model": "Mokka",
+          "generation": "F",
+          "engineCode": "F12XHL",
+          "oilViscosity": "0W-30",
+          "oilSpecAPI": null,
+          "oilSpecACEA": "C2",
+          "oilSpecOEM": "PSA B71 2312",
+          "source": "autodoc.co.uk, auto-doc.ie, automoli.com, buycarparts.co.uk"
+        },
+        {
+          "make": "Peugeot",
+          "model": "208",
+          "generation": "II",
+          "engineCode": "EB2ADTD",
+          "oilViscosity": "0W-20",
+          "oilSpecAPI": "SP",
+          "oilSpecACEA": "C5",
+          "oilSpecOEM": "PSA B71 2010",
+          "source": "auto-data.net (Peugeot 208 II 1.2 PureTech 100hp EB2ADTD, 0W-20, ACEA C5, PSA B71 2010, 3.5L)"
+        }
+      ],
+      "note": "Engine(s) EB2ADTD, F12XHL, HNF at 1199cc/100hp. Brands: CITROEN, OPEL, Peugeot. Differences: oilViscosity: 0W-20 vs 0W-30 vs 5W-30 [major]; oilSpecAPI: None vs SP [minor]; oilSpecACEA: C2 vs C3 vs C5 [major]; oilSpecOEM: GM Dexos1 Gen3 vs PSA B71 2010 vs PSA B71 2290 vs PSA B71 2312 [minor]. Review for Tunisia market."
+    },
+    {
+      "conflictGroup": 7,
+      "lookupKey": {
+        "displacementCc": 1199,
+        "powerHp": 110,
+        "fuelType": "essence"
+      },
+      "severity": "major",
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "0W-30",
+            "5W-30"
+          ]
+        },
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "None",
+            "SN"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "PSA B71 2290",
+            "PSA B71 2312"
+          ]
+        }
+      ],
+      "entries": [
+        {
+          "make": "CITROEN",
+          "model": "C3",
+          "generation": "III",
+          "engineCode": "EB2DTM",
+          "oilViscosity": "5W-30",
+          "oilSpecAPI": "SN",
+          "oilSpecACEA": "C2",
+          "oilSpecOEM": "PSA B71 2290",
+          "source": "tunisieauto.tn, autodoc.co.uk, cactusforums.co.uk"
+        },
+        {
+          "make": "CITROEN",
+          "model": "C-Elysee",
+          "generation": "II Phase II",
+          "engineCode": "EB2ADTD",
+          "oilViscosity": "5W-30",
+          "oilSpecAPI": "SN",
+          "oilSpecACEA": "C2",
+          "oilSpecOEM": "PSA B71 2290",
+          "source": "tunisieauto.tn, Wikipedia, autodoc.co.uk"
+        },
+        {
+          "make": "CITROEN",
+          "model": "C4",
+          "generation": "I (C4 Cactus successor)",
+          "engineCode": "EB2DTM",
+          "oilViscosity": "5W-30",
+          "oilSpecAPI": "SN",
+          "oilSpecACEA": "C2",
+          "oilSpecOEM": "PSA B71 2290",
+          "source": "tunisieauto.tn, autodoc.co.uk, cactusforums.co.uk"
+        },
+        {
+          "make": "CITROEN",
+          "model": "C4 Cactus",
+          "generation": "I",
+          "engineCode": "EB2DTM",
+          "oilViscosity": "5W-30",
+          "oilSpecAPI": "SN",
+          "oilSpecACEA": "C2",
+          "oilSpecOEM": "PSA B71 2290",
+          "source": "autodoc.co.uk, tunisieauto.tn, cactusforums.co.uk"
+        },
+        {
+          "make": "CITROEN",
+          "model": "C3 Aircross",
+          "generation": "I",
+          "engineCode": "EB2DTM",
+          "oilViscosity": "5W-30",
+          "oilSpecAPI": "SN",
+          "oilSpecACEA": "C2",
+          "oilSpecOEM": "PSA B71 2290",
+          "source": "tunisieauto.tn, autodoc.parts, frenchcarforum.co.uk"
+        },
+        {
+          "make": "OPEL",
+          "model": "Crossland X",
+          "generation": "P17",
+          "engineCode": "F12XHL",
+          "oilViscosity": "0W-30",
+          "oilSpecAPI": null,
+          "oilSpecACEA": "C2",
+          "oilSpecOEM": "PSA B71 2312",
+          "source": "autodoc.parts, buycarparts.co.uk, auto-data.net"
+        }
+      ],
+      "note": "Engine(s) EB2ADTD, EB2DTM, F12XHL at 1199cc/110hp. Brands: CITROEN, OPEL. Differences: oilViscosity: 0W-30 vs 5W-30 [major]; oilSpecAPI: None vs SN [minor]; oilSpecOEM: PSA B71 2290 vs PSA B71 2312 [minor]. Review for Tunisia market."
+    },
+    {
+      "conflictGroup": 8,
+      "lookupKey": {
+        "displacementCc": 1199,
+        "powerHp": 130,
+        "fuelType": "essence"
+      },
+      "severity": "major",
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "0W-20",
+            "0W-30"
+          ]
+        },
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "None",
+            "SP"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "C2",
+            "C5"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "GM Dexos1 Gen3",
+            "PSA B71 2010",
+            "PSA B71 2312"
+          ]
+        }
+      ],
+      "entries": [
+        {
+          "make": "OPEL",
+          "model": "Corsa",
+          "generation": "F",
+          "engineCode": "F12XHL",
+          "oilViscosity": "0W-20",
+          "oilSpecAPI": null,
+          "oilSpecACEA": "C2",
+          "oilSpecOEM": "GM Dexos1 Gen3",
+          "source": "auto-data.net, autodoc.co.uk, oilguide.bizol.com"
+        },
+        {
+          "make": "OPEL",
+          "model": "Mokka",
+          "generation": "F",
+          "engineCode": "F12XHL",
+          "oilViscosity": "0W-30",
+          "oilSpecAPI": null,
+          "oilSpecACEA": "C2",
+          "oilSpecOEM": "PSA B71 2312",
+          "source": "autodoc.parts, automoli.com, oilguide.bizol.com"
+        },
+        {
+          "make": "OPEL",
+          "model": "Grandland X",
+          "generation": "A18",
+          "engineCode": "F12XHL",
+          "oilViscosity": "0W-30",
+          "oilSpecAPI": null,
+          "oilSpecACEA": "C2",
+          "oilSpecOEM": "PSA B71 2312",
+          "source": "auto-data.net, autodoc.co.uk, auto-abc.eu"
+        },
+        {
+          "make": "Peugeot",
+          "model": "208",
+          "generation": "II",
+          "engineCode": "EB2ADTS",
+          "oilViscosity": "0W-20",
+          "oilSpecAPI": "SP",
+          "oilSpecACEA": "C5",
+          "oilSpecOEM": "PSA B71 2010",
+          "source": "auto-data.net (Peugeot 208 II 1.2 PureTech 130hp EB2ADTS, 0W-20, ACEA C5, PSA B71 2010, 3.5L)"
+        },
+        {
+          "make": "Peugeot",
+          "model": "2008",
+          "generation": "II",
+          "engineCode": "EB2ADTS",
+          "oilViscosity": "0W-30",
+          "oilSpecAPI": null,
+          "oilSpecACEA": "C2",
+          "oilSpecOEM": "PSA B71 2312",
+          "source": "autodoc.parts (Peugeot 2008 II 1.2 PureTech 130 EB2ADTS, 0W-30, ACEA C2, PSA B71 2312, 4.0L); same EB2ADTS as 208 II but 2008 SUV uses 0W-30/C2/B71 2312 per PSA vehicle-specific recommendation"
+        },
+        {
+          "make": "Peugeot",
+          "model": "308",
+          "generation": "II",
+          "engineCode": "EB2ADTS",
+          "oilViscosity": "0W-20",
+          "oilSpecAPI": null,
+          "oilSpecACEA": "C5",
+          "oilSpecOEM": "PSA B71 2010",
+          "source": "auto-data.net (Peugeot 308 II 1.2 PureTech 130hp EB2ADTS, 0W-20, ACEA C5, PSA B71 2010, 3.5L)"
+        }
+      ],
+      "note": "Engine(s) EB2ADTS, F12XHL at 1199cc/130hp. Brands: OPEL, Peugeot. Differences: oilViscosity: 0W-20 vs 0W-30 [major]; oilSpecAPI: None vs SP [minor]; oilSpecACEA: C2 vs C5 [major]; oilSpecOEM: GM Dexos1 Gen3 vs PSA B71 2010 vs PSA B71 2312 [minor]. Review for Tunisia market."
+    },
+    {
+      "conflictGroup": 9,
+      "lookupKey": {
+        "displacementCc": 1199,
+        "powerHp": 131,
+        "fuelType": "essence"
+      },
+      "severity": "major",
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "0W-20",
+            "0W-30",
+            "5W-30"
+          ]
+        },
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "None",
+            "SN",
+            "SP"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "C2",
+            "C5"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "PSA B71 2010",
+            "PSA B71 2290"
+          ]
+        }
+      ],
+      "entries": [
+        {
+          "make": "CITROEN",
+          "model": "C4 Cactus",
+          "generation": "I facelift",
+          "engineCode": "EB2ADTS",
+          "oilViscosity": "5W-30",
+          "oilSpecAPI": "SN",
+          "oilSpecACEA": "C2",
+          "oilSpecOEM": "PSA B71 2290",
+          "source": "buycarparts.co.uk, tunisieauto.tn, autodoc.parts"
+        },
+        {
+          "make": "CITROEN",
+          "model": "C4 X",
+          "generation": "I",
+          "engineCode": "EB2ADTS",
+          "oilViscosity": "5W-30",
+          "oilSpecAPI": "SN",
+          "oilSpecACEA": "C2",
+          "oilSpecOEM": "PSA B71 2290",
+          "source": "citroen.tn, automobile.tn, autodoc.co.uk"
+        },
+        {
+          "make": "CITROEN",
+          "model": "C5 Aircross",
+          "generation": "I",
+          "engineCode": "EB2ADTS",
+          "oilViscosity": "5W-30",
+          "oilSpecAPI": "SN",
+          "oilSpecACEA": "C2",
+          "oilSpecOEM": "PSA B71 2290",
+          "source": "citroen.tn, frenchcarforum.co.uk, autodoc.parts"
+        },
+        {
+          "make": "DS AUTOMOBILES",
+          "model": "DS 3 Crossback",
+          "generation": "I (1.2 PureTech 131)",
+          "engineCode": "EB2ADTS",
+          "oilViscosity": "0W-30",
+          "oilSpecAPI": null,
+          "oilSpecACEA": "C2",
+          "oilSpecOEM": "PSA B71 2290",
+          "source": "Stellantis PSA specs, Citroen C3 Aircross EB2ADTS cross-ref, TotalEnergies"
+        },
+        {
+          "make": "DS AUTOMOBILES",
+          "model": "DS 3",
+          "generation": "II (1.2 PureTech 131)",
+          "engineCode": "EB2ADTS",
+          "oilViscosity": "0W-30",
+          "oilSpecAPI": null,
+          "oilSpecACEA": "C2",
+          "oilSpecOEM": "PSA B71 2290",
+          "source": "Stellantis PSA specs, DS Automobiles cross-ref with Citroen"
+        },
+        {
+          "make": "DS AUTOMOBILES",
+          "model": "DS 4",
+          "generation": "I (1.2 PureTech 131)",
+          "engineCode": "EB2ADTS",
+          "oilViscosity": "0W-30",
+          "oilSpecAPI": null,
+          "oilSpecACEA": "C2",
+          "oilSpecOEM": "PSA B71 2290",
+          "source": "Stellantis PSA specs, Citroen C4 Cactus EB2ADTS cross-ref"
+        },
+        {
+          "make": "Peugeot",
+          "model": "Rifter",
+          "generation": "I",
+          "engineCode": "EB2DTS",
+          "oilViscosity": "0W-20",
+          "oilSpecAPI": "SP",
+          "oilSpecACEA": "C5",
+          "oilSpecOEM": "PSA B71 2010",
+          "source": "zeusauto.lt + auto-data.net (Peugeot Rifter 1.2 PureTech 131 EB2DTS, 0W-20, ACEA C5, PSA B71 2010, 4.0L)"
+        }
+      ],
+      "note": "Engine(s) EB2ADTS, EB2DTS at 1199cc/131hp. Brands: CITROEN, DS AUTOMOBILES, Peugeot. Differences: oilViscosity: 0W-20 vs 0W-30 vs 5W-30 [major]; oilSpecAPI: None vs SN vs SP [minor]; oilSpecACEA: C2 vs C5 [major]; oilSpecOEM: PSA B71 2010 vs PSA B71 2290 [minor]. Review for Tunisia market."
+    },
+    {
+      "conflictGroup": 10,
+      "lookupKey": {
+        "displacementCc": 1248,
+        "powerHp": 84,
+        "fuelType": "essence"
+      },
+      "severity": "minor",
+      "differingFields": [
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "SN PLUS",
+            "SP"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "ILSAC GF-6A",
+            "None"
+          ]
+        }
+      ],
+      "entries": [
+        {
+          "make": "Hyundai",
+          "model": "i20",
+          "generation": "BP",
+          "engineCode": "G4LA",
+          "oilViscosity": "0W-20",
+          "oilSpecAPI": "SN PLUS",
+          "oilSpecACEA": null,
+          "oilSpecOEM": null,
+          "source": "Hyundai India oils-consumables page (1.0L/1.2L MPI: SAE 0W-20, API SN Plus); AMSOIL product lookup"
+        },
+        {
+          "make": "Hyundai",
+          "model": "Bayon",
+          "generation": "BC",
+          "engineCode": "G4LA",
+          "oilViscosity": "0W-20",
+          "oilSpecAPI": "SN PLUS",
+          "oilSpecACEA": null,
+          "oilSpecOEM": null,
+          "source": "Hyundai India oils-consumables page (1.0L/1.2L MPI: SAE 0W-20, API SN Plus); AMSOIL product lookup"
+        },
+        {
+          "make": "KIA",
+          "model": "Picanto",
+          "generation": "JA",
+          "engineCode": "G4LA",
+          "oilViscosity": "0W-20",
+          "oilSpecAPI": "SP",
+          "oilSpecACEA": null,
+          "oilSpecOEM": "ILSAC GF-6A",
+          "source": "KIA owner’s manual chapter9_8.htm; KIA media specifications (kiamedia.com); AMSOIL product lookup; Costaoils.com"
+        },
+        {
+          "make": "KIA",
+          "model": "Stonic",
+          "generation": "YB",
+          "engineCode": "G4LA",
+          "oilViscosity": "0W-20",
+          "oilSpecAPI": "SP",
+          "oilSpecACEA": null,
+          "oilSpecOEM": "ILSAC GF-6A",
+          "source": "KIA owner’s manual chapter9_8.htm; KIA media specifications (kiamedia.com); AMSOIL product lookup; Costaoils.com"
+        }
+      ],
+      "note": "Engine(s) G4LA at 1248cc/84hp. Brands: Hyundai, KIA. Differences: oilSpecAPI: SN PLUS vs SP [minor]; oilSpecOEM: ILSAC GF-6A vs None [minor]. Review for Tunisia market."
+    },
+    {
+      "conflictGroup": 11,
+      "lookupKey": {
+        "displacementCc": 1248,
+        "powerHp": 90,
+        "fuelType": "diesel"
+      },
+      "severity": "major",
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "0W-30",
+            "5W-30"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "C2",
+            "C3"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "Fiat 9.55535-S1",
+            "Suzuki RO-2"
+          ]
+        }
+      ],
+      "entries": [
+        {
+          "make": "FIAT",
+          "model": "Doblo",
+          "generation": "263 (1.3 MultiJet)",
+          "engineCode": "199A2.000",
+          "oilViscosity": "0W-30",
+          "oilSpecAPI": null,
+          "oilSpecACEA": "C2",
+          "oilSpecOEM": "Fiat 9.55535-S1",
+          "source": "kroon-oil.com, buycarparts.co.uk, fiatforum.com, ato24.de"
+        },
+        {
+          "make": "SUZUKI",
+          "model": "Vitara",
+          "generation": "I",
+          "engineCode": "D13AA",
+          "oilViscosity": "5W-30",
+          "oilSpecAPI": null,
+          "oilSpecACEA": "C3",
+          "oilSpecOEM": "Suzuki RO-2",
+          "source": "Suzuki global owner's manual, Fiat 1.3 MultiJet II specifications"
+        },
+        {
+          "make": "SUZUKI",
+          "model": "S-Cross",
+          "generation": "I",
+          "engineCode": "D13AA",
+          "oilViscosity": "5W-30",
+          "oilSpecAPI": null,
+          "oilSpecACEA": "C3",
+          "oilSpecOEM": "Suzuki RO-2",
+          "source": "Suzuki global owner's manual, Fiat 1.3 MultiJet II specifications"
+        }
+      ],
+      "note": "Engine(s) 199A2.000, D13AA at 1248cc/90hp. Brands: FIAT, SUZUKI. Differences: oilViscosity: 0W-30 vs 5W-30 [major]; oilSpecACEA: C2 vs C3 [major]; oilSpecOEM: Fiat 9.55535-S1 vs Suzuki RO-2 [minor]. Review for Tunisia market."
+    },
+    {
+      "conflictGroup": 12,
+      "lookupKey": {
+        "displacementCc": 1248,
+        "powerHp": 95,
+        "fuelType": "diesel"
+      },
+      "severity": "major",
+      "differingFields": [
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "C2",
+            "C3"
+          ]
+        }
+      ],
+      "entries": [
+        {
+          "make": "FIAT",
+          "model": "Tipo",
+          "generation": "356 (1.3 MultiJet)",
+          "engineCode": "199B1.000",
+          "oilViscosity": "0W-30",
+          "oilSpecAPI": null,
+          "oilSpecACEA": "C2",
+          "oilSpecOEM": "Fiat 9.55535-S1",
+          "source": "kroon-oil.com, autodoc.parts, buycarparts.co.uk, choise.ravenol.com"
+        },
+        {
+          "make": "FIAT",
+          "model": "500L",
+          "generation": "352 (1.3 MultiJet)",
+          "engineCode": "330A1.000",
+          "oilViscosity": "0W-30",
+          "oilSpecAPI": null,
+          "oilSpecACEA": "C3",
+          "oilSpecOEM": "Fiat 9.55535-S1",
+          "source": "auto-data.net, autodoc.co.uk, costaoils.com, wikipedia.org"
+        }
+      ],
+      "note": "Engine(s) 199B1.000, 330A1.000 at 1248cc/95hp. Brands: FIAT. Differences: oilSpecACEA: C2 vs C3 [major]. Review for Tunisia market."
+    },
+    {
+      "conflictGroup": 13,
+      "lookupKey": {
+        "displacementCc": 1332,
+        "powerHp": 140,
+        "fuelType": "essence"
+      },
+      "severity": "minor",
+      "differingFields": [
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "None",
+            "SN"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "None",
+            "RN17"
+          ]
+        }
+      ],
+      "entries": [
+        {
+          "make": "MITSUBISHI",
+          "model": "ASX",
+          "generation": "II (1.3 TCe 140)",
+          "engineCode": "H5Ht",
+          "oilViscosity": "5W-30",
+          "oilSpecAPI": null,
+          "oilSpecACEA": "C3",
+          "oilSpecOEM": "RN17",
+          "source": "Renault Captur II H5Ht cross-ref, Stellantis/Nissan Alliance, motorinsel.eu"
+        },
+        {
+          "make": "NISSAN",
+          "model": "Qashqai",
+          "generation": "J12",
+          "engineCode": "HR13DDT",
+          "oilViscosity": "5W-30",
+          "oilSpecAPI": "SN",
+          "oilSpecACEA": "C3",
+          "oilSpecOEM": null,
+          "source": "nissan.lu, autodoc24.ch, piecesauto24.com, autodoc.co.uk"
+        },
+        {
+          "make": "Renault",
+          "model": "Captur",
+          "generation": "II",
+          "engineCode": "H5Ht",
+          "oilViscosity": "5W-30",
+          "oilSpecAPI": null,
+          "oilSpecACEA": "C3",
+          "oilSpecOEM": "RN17",
+          "source": "auto-data.net (Renault Captur II 1.3 TCe 140hp); autodoc.co.uk engine oil lookup; buycarparts.co.uk; Renault EU owner's manual (1.3 TCe: 5W-30, ACEA C3, RN17, 5.4L)"
+        },
+        {
+          "make": "Renault",
+          "model": "Kadjar",
+          "generation": "I",
+          "engineCode": "H5Ht",
+          "oilViscosity": "5W-30",
+          "oilSpecAPI": null,
+          "oilSpecACEA": "C3",
+          "oilSpecOEM": "RN17",
+          "source": "auto-data.net (Renault Kadjar 1.3 TCe 140hp); autodoc.co.uk; buycarparts.co.uk; Renault EU owner's manual (1.3 TCe: 5W-30, ACEA C3, RN17, 5.5L)"
+        },
+        {
+          "make": "Renault",
+          "model": "Megane",
+          "generation": "IV",
+          "engineCode": "H5Ht",
+          "oilViscosity": "5W-30",
+          "oilSpecAPI": null,
+          "oilSpecACEA": "C3",
+          "oilSpecOEM": "RN17",
+          "source": "auto-data.net (Renault Megane IV 1.3 TCe 140hp); autodoc.co.uk; Renault EU owner's manual (1.3 TCe: 5W-30, ACEA C3, RN17, 5.5L)"
+        }
+      ],
+      "note": "Engine(s) H5Ht, HR13DDT at 1332cc/140hp. Brands: MITSUBISHI, NISSAN, Renault. Differences: oilSpecAPI: None vs SN [minor]; oilSpecOEM: None vs RN17 [minor]. Review for Tunisia market."
+    },
+    {
+      "conflictGroup": 14,
+      "lookupKey": {
+        "displacementCc": 1364,
+        "powerHp": 140,
+        "fuelType": "essence"
+      },
+      "severity": "major",
+      "differingFields": [
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "A3/B4",
+            "None"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "GM Dexos1",
+            "GM Dexos1 Gen2"
+          ]
+        }
+      ],
+      "entries": [
+        {
+          "make": "CHEVROLET",
+          "model": "Trax",
+          "generation": "I (1.4 Turbo 140)",
+          "engineCode": "LDE",
+          "oilViscosity": "5W-30",
+          "oilSpecAPI": "SN",
+          "oilSpecACEA": "A3/B4",
+          "oilSpecOEM": "GM Dexos1",
+          "source": "Chevrolet Trax owner's manual, AMSOIL, buycarparts.co.uk"
+        },
+        {
+          "make": "CHEVROLET",
+          "model": "Orlando",
+          "generation": "I (1.4 Turbo 140)",
+          "engineCode": "LDE",
+          "oilViscosity": "5W-30",
+          "oilSpecAPI": "SN",
+          "oilSpecACEA": "A3/B4",
+          "oilSpecOEM": "GM Dexos1",
+          "source": "Chevrolet Orlando owner's manual, AMSOIL, buycarparts.co.uk"
+        },
+        {
+          "make": "OPEL",
+          "model": "Astra",
+          "generation": "J",
+          "engineCode": "A14NET",
+          "oilViscosity": "5W-30",
+          "oilSpecAPI": "SN",
+          "oilSpecACEA": null,
+          "oilSpecOEM": "GM Dexos1 Gen2",
+          "source": "buycarparts.co.uk, reddit.com/r/opel, astrakforums.co.uk"
+        }
+      ],
+      "note": "Engine(s) A14NET, LDE at 1364cc/140hp. Brands: CHEVROLET, OPEL. Differences: oilSpecACEA: A3/B4 vs None [major]; oilSpecOEM: GM Dexos1 vs GM Dexos1 Gen2 [minor]. Review for Tunisia market."
+    },
+    {
+      "conflictGroup": 15,
+      "lookupKey": {
+        "displacementCc": 1395,
+        "powerHp": 125,
+        "fuelType": "essence"
+      },
+      "severity": "major",
+      "differingFields": [
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "A3/B4",
+            "C3"
+          ]
+        }
+      ],
+      "entries": [
+        {
+          "make": "SEAT",
+          "model": "Leon",
+          "generation": "MK3",
+          "engineCode": "CZCA",
+          "oilViscosity": "5W-30",
+          "oilSpecAPI": "SN",
+          "oilSpecACEA": "C3",
+          "oilSpecOEM": "VW 502.00",
+          "source": "buycarparts.co.uk, SEATCUPRA.NET oil forum"
+        },
+        {
+          "make": "SKODA",
+          "model": "Octavia",
+          "generation": "MK3",
+          "engineCode": "CZCA",
+          "oilViscosity": "5W-30",
+          "oilSpecAPI": "SN",
+          "oilSpecACEA": "C3",
+          "oilSpecOEM": "VW 502.00",
+          "source": "buycarparts.co.uk, oilspec.eu"
+        },
+        {
+          "make": "VOLKSWAGEN",
+          "model": "Golf",
+          "generation": "MK7.5",
+          "engineCode": "CZCA",
+          "oilViscosity": "5W-30",
+          "oilSpecAPI": "SN",
+          "oilSpecACEA": "A3/B4",
+          "oilSpecOEM": "VW 502.00",
+          "source": "AUTODOC UK CZCA oil spec, GOLFMK7 forum, VW Golf MK7 owner manual"
+        },
+        {
+          "make": "VOLKSWAGEN",
+          "model": "Golf Variant",
+          "generation": "MK7",
+          "engineCode": "CZCA",
+          "oilViscosity": "5W-30",
+          "oilSpecAPI": "SN",
+          "oilSpecACEA": "A3/B4",
+          "oilSpecOEM": "VW 502.00",
+          "source": "GOLFMK7 forum 1.4 TSI 140HP oil liters, AUTODOC UK CZCA oil spec"
+        }
+      ],
+      "note": "Engine(s) CZCA at 1395cc/125hp. Brands: SEAT, SKODA, VOLKSWAGEN. Differences: oilSpecACEA: A3/B4 vs C3 [major]. Review for Tunisia market."
+    },
+    {
+      "conflictGroup": 16,
+      "lookupKey": {
+        "displacementCc": 1461,
+        "powerHp": 90,
+        "fuelType": "diesel"
+      },
+      "severity": "major",
+      "differingFields": [
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "C3",
+            "C4"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "RN0720",
+            "RN17"
+          ]
+        }
+      ],
+      "entries": [
+        {
+          "make": "DACIA",
+          "model": "Duster",
+          "generation": "II",
+          "engineCode": "K9K 656",
+          "oilViscosity": "5W-30",
+          "oilSpecAPI": null,
+          "oilSpecACEA": "C3",
+          "oilSpecOEM": "RN17",
+          "source": "autodoc.co.uk, daciaforum.co.uk, auto-doc.ie"
+        },
+        {
+          "make": "DACIA",
+          "model": "Sandero",
+          "generation": "II",
+          "engineCode": "K9K 626",
+          "oilViscosity": "5W-30",
+          "oilSpecAPI": null,
+          "oilSpecACEA": "C4",
+          "oilSpecOEM": "RN0720",
+          "source": "auto-data.net, auto-doc.ie, daciaforum.co.uk"
+        },
+        {
+          "make": "DACIA",
+          "model": "Dokker",
+          "generation": "I",
+          "engineCode": "K9K 626",
+          "oilViscosity": "5W-30",
+          "oilSpecAPI": null,
+          "oilSpecACEA": "C4",
+          "oilSpecOEM": "RN0720",
+          "source": "autodoc.parts, auto-doc.ie, daciaforum.co.uk, reddit.com"
+        },
+        {
+          "make": "NISSAN",
+          "model": "Micra",
+          "generation": "K14",
+          "engineCode": "K9K",
+          "oilViscosity": "5W-30",
+          "oilSpecAPI": null,
+          "oilSpecACEA": "C4",
+          "oilSpecOEM": "RN0720",
+          "source": "autodoc.co.uk, pieces24.be, autopart.tn"
+        }
+      ],
+      "note": "Engine(s) K9K, K9K 626, K9K 656 at 1461cc/90hp. Brands: DACIA, NISSAN. Differences: oilSpecACEA: C3 vs C4 [major]; oilSpecOEM: RN0720 vs RN17 [minor]. Review for Tunisia market."
+    },
+    {
+      "conflictGroup": 17,
+      "lookupKey": {
+        "displacementCc": 1461,
+        "powerHp": 109,
+        "fuelType": "diesel"
+      },
+      "severity": "major",
+      "differingFields": [
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "C3",
+            "C4"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "RN0710",
+            "RN0720",
+            "RN17"
+          ]
+        }
+      ],
+      "entries": [
+        {
+          "make": "DACIA",
+          "model": "Duster",
+          "generation": "I",
+          "engineCode": "K9K 898",
+          "oilViscosity": "5W-30",
+          "oilSpecAPI": null,
+          "oilSpecACEA": "C4",
+          "oilSpecOEM": "RN0720",
+          "source": "auto-data.net, daciaforum.co.uk, auto-doc.ie, 4x4community.co.za"
+        },
+        {
+          "make": "DACIA",
+          "model": "Lodgy",
+          "generation": "I",
+          "engineCode": "K9K 846",
+          "oilViscosity": "5W-30",
+          "oilSpecAPI": null,
+          "oilSpecACEA": "C3",
+          "oilSpecOEM": "RN0710",
+          "source": "autodoc.parts, auto-doc.ie, buycarparts.co.uk"
+        },
+        {
+          "make": "Renault",
+          "model": "Duster",
+          "generation": "II",
+          "engineCode": "K9K",
+          "oilViscosity": "5W-30",
+          "oilSpecAPI": null,
+          "oilSpecACEA": "C3",
+          "oilSpecOEM": "RN17",
+          "source": "autodoc.parts (Renault Duster II 1.5 dCi 110hp); buycarparts.co.uk; Renault EU owner's manual (1.5 dCi: 5W-30, ACEA C3, RN17, 4.5L)"
+        }
+      ],
+      "note": "Engine(s) K9K, K9K 846, K9K 898 at 1461cc/109hp. Brands: DACIA, Renault. Differences: oilSpecACEA: C3 vs C4 [major]; oilSpecOEM: RN0710 vs RN0720 vs RN17 [minor]. Review for Tunisia market."
+    },
+    {
+      "conflictGroup": 18,
+      "lookupKey": {
+        "displacementCc": 1498,
+        "powerHp": 131,
+        "fuelType": "essence"
+      },
+      "severity": "major",
+      "differingFields": [
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "None",
+            "SP"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "C5",
+            "None"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "Honda HTO-06",
+            "VW 508.00"
+          ]
+        }
+      ],
+      "entries": [
+        {
+          "make": "HONDA",
+          "model": "HR-V",
+          "generation": "II (1.5 VTEC Turbo 131)",
+          "engineCode": "L15BG",
+          "oilViscosity": "0W-20",
+          "oilSpecAPI": "SP",
+          "oilSpecACEA": null,
+          "oilSpecOEM": "Honda HTO-06",
+          "source": "Honda HR-V owner's manual, AMSOIL, Castrol"
+        },
+        {
+          "make": "HONDA",
+          "model": "HR-V",
+          "generation": "II (1.5 e:HEV 131)",
+          "engineCode": "L15BE",
+          "oilViscosity": "0W-20",
+          "oilSpecAPI": "SP",
+          "oilSpecACEA": null,
+          "oilSpecOEM": "Honda HTO-06",
+          "source": "Honda HR-V e:HEV owner's manual, AMSOIL"
+        },
+        {
+          "make": "VOLKSWAGEN",
+          "model": "Golf",
+          "generation": "MK8",
+          "engineCode": "DKTA",
+          "oilViscosity": "0W-20",
+          "oilSpecAPI": null,
+          "oilSpecACEA": "C5",
+          "oilSpecOEM": "VW 508.00",
+          "source": "OilChooser.com 1.5 TSI guide, VW Golf 8 owner manual, volkswagen.tn golf listing"
+        },
+        {
+          "make": "VOLKSWAGEN",
+          "model": "Golf Variant",
+          "generation": "MK8",
+          "engineCode": "DPBA",
+          "oilViscosity": "0W-20",
+          "oilSpecAPI": null,
+          "oilSpecACEA": "C5",
+          "oilSpecOEM": "VW 508.00",
+          "source": "buycarparts.eu DPBA oil lookup, VW Golf VIII Variant owner manual"
+        }
+      ],
+      "note": "Engine(s) DKTA, DPBA, L15BE, L15BG at 1498cc/131hp. Brands: HONDA, VOLKSWAGEN. Differences: oilSpecAPI: None vs SP [minor]; oilSpecACEA: C5 vs None [major]; oilSpecOEM: Honda HTO-06 vs VW 508.00 [minor]. Review for Tunisia market."
+    },
+    {
+      "conflictGroup": 19,
+      "lookupKey": {
+        "displacementCc": 1498,
+        "powerHp": 150,
+        "fuelType": "essence"
+      },
+      "severity": "minor",
+      "differingFields": [
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "None",
+            "SP"
+          ]
+        }
+      ],
+      "entries": [
+        {
+          "make": "CUPRA",
+          "model": "Formentor",
+          "generation": "MK1",
+          "engineCode": "DKTA",
+          "oilViscosity": "0W-20",
+          "oilSpecAPI": "SP",
+          "oilSpecACEA": "C5",
+          "oilSpecOEM": "VW 508.00",
+          "source": "automobile.tn, buycarparts.co.uk, SEATCUPRA.NET"
+        },
+        {
+          "make": "CUPRA",
+          "model": "Leon Sportstourer",
+          "generation": "MK4",
+          "engineCode": "DKTA",
+          "oilViscosity": "0W-20",
+          "oilSpecAPI": "SP",
+          "oilSpecACEA": "C5",
+          "oilSpecOEM": "VW 508.00",
+          "source": "VW EA211 evo specs, buycarparts.co.uk"
+        },
+        {
+          "make": "SEAT",
+          "model": "Leon",
+          "generation": "MK4",
+          "engineCode": "DKTA",
+          "oilViscosity": "0W-20",
+          "oilSpecAPI": "SP",
+          "oilSpecACEA": "C5",
+          "oilSpecOEM": "VW 508.00",
+          "source": "VW EA211 evo specs, SEATCUPRA.NET"
+        },
+        {
+          "make": "SKODA",
+          "model": "Octavia",
+          "generation": "MK4",
+          "engineCode": "DKTA",
+          "oilViscosity": "0W-20",
+          "oilSpecAPI": "SP",
+          "oilSpecACEA": "C5",
+          "oilSpecOEM": "VW 508.00",
+          "source": "buycarparts.co.uk, oilspec.eu"
+        },
+        {
+          "make": "SKODA",
+          "model": "Karoq",
+          "generation": "MK1",
+          "engineCode": "DKTA",
+          "oilViscosity": "0W-20",
+          "oilSpecAPI": "SP",
+          "oilSpecACEA": "C5",
+          "oilSpecOEM": "VW 508.00",
+          "source": "automobile.tn, buycarparts.co.uk"
+        },
+        {
+          "make": "VOLKSWAGEN",
+          "model": "T-Roc",
+          "generation": "A11",
+          "engineCode": "DADA",
+          "oilViscosity": "0W-20",
+          "oilSpecAPI": null,
+          "oilSpecACEA": "C5",
+          "oilSpecOEM": "VW 508.00",
+          "source": "buycarparts.eu DADA oil lookup, motorz.tn T-Roc listing, Tunisian classified ads"
+        },
+        {
+          "make": "VOLKSWAGEN",
+          "model": "Tiguan",
+          "generation": "Typ AD1",
+          "engineCode": "DKTA",
+          "oilViscosity": "0W-20",
+          "oilSpecAPI": null,
+          "oilSpecACEA": "C5",
+          "oilSpecOEM": "VW 508.00",
+          "source": "buycarparts.eu oil lookup, VW Tiguan 2021 service manual, volkswagen.tn tiguan listing"
+        }
+      ],
+      "note": "Engine(s) DADA, DKTA at 1498cc/150hp. Brands: CUPRA, SEAT, SKODA, VOLKSWAGEN. Differences: oilSpecAPI: None vs SP [minor]. Review for Tunisia market."
+    },
+    {
+      "conflictGroup": 20,
+      "lookupKey": {
+        "displacementCc": 1499,
+        "powerHp": 102,
+        "fuelType": "diesel"
+      },
+      "severity": "major",
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "0W-20",
+            "5W-30"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "C2",
+            "C5"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "GM Dexos2",
+            "PSA B71 2010"
+          ]
+        }
+      ],
+      "entries": [
+        {
+          "make": "FIAT",
+          "model": "Doblo",
+          "generation": "K9 (III 1.5 BlueHDi 100)",
+          "engineCode": "DV5RC",
+          "oilViscosity": "0W-20",
+          "oilSpecAPI": null,
+          "oilSpecACEA": "C2",
+          "oilSpecOEM": "PSA B71 2010",
+          "source": "autodoc.co.uk, whatoil.co.uk, frenchcarforum.co.uk, motors.tn, zmorda.tn"
+        },
+        {
+          "make": "OPEL",
+          "model": "Crossland X",
+          "generation": "P17",
+          "engineCode": "A15DTH",
+          "oilViscosity": "5W-30",
+          "oilSpecAPI": null,
+          "oilSpecACEA": "C2",
+          "oilSpecOEM": "GM Dexos2",
+          "source": "auto-data.net, auto-abc.eu, autodoc.co.uk"
+        },
+        {
+          "make": "Peugeot",
+          "model": "2008",
+          "generation": "II",
+          "engineCode": "DV5RD",
+          "oilViscosity": "0W-20",
+          "oilSpecAPI": null,
+          "oilSpecACEA": "C5",
+          "oilSpecOEM": "PSA B71 2010",
+          "source": "autodoc.co.uk (Peugeot 2008 II 1.5 BlueHDi 102 DV5RD, 0W-20, ACEA C5, PSA B71 2010, 4.0L)"
+        },
+        {
+          "make": "Peugeot",
+          "model": "Rifter",
+          "generation": "I",
+          "engineCode": "DV5RD",
+          "oilViscosity": "0W-20",
+          "oilSpecAPI": null,
+          "oilSpecACEA": "C5",
+          "oilSpecOEM": "PSA B71 2010",
+          "source": "auto-data.net + frenchcarforum.co.uk (Peugeot Rifter 1.5 BlueHDi 102 DV5RD, 0W-20, ACEA C5, PSA B71 2010, 4.0L)"
+        }
+      ],
+      "note": "Engine(s) A15DTH, DV5RC, DV5RD at 1499cc/102hp. Brands: FIAT, OPEL, Peugeot. Differences: oilViscosity: 0W-20 vs 5W-30 [major]; oilSpecACEA: C2 vs C5 [major]; oilSpecOEM: GM Dexos2 vs PSA B71 2010 [minor]. Review for Tunisia market."
+    },
+    {
+      "conflictGroup": 21,
+      "lookupKey": {
+        "displacementCc": 1499,
+        "powerHp": 120,
+        "fuelType": "diesel"
+      },
+      "severity": "major",
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "0W-30",
+            "5W-30"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "PSA B71 2010",
+            "PSA B71 2312",
+            "WSS-M2C950-A"
+          ]
+        }
+      ],
+      "entries": [
+        {
+          "make": "FORD",
+          "model": "Focus",
+          "generation": "MK3.5",
+          "engineCode": "XWDB",
+          "oilViscosity": "5W-30",
+          "oilSpecAPI": null,
+          "oilSpecACEA": "C2",
+          "oilSpecOEM": "WSS-M2C950-A",
+          "source": "Ford Owner's Manual, Shell Helix Ultra Professional AF-L 5W-30"
+        },
+        {
+          "make": "OPEL",
+          "model": "Vivaro",
+          "generation": "K0",
+          "engineCode": "D15DTH",
+          "oilViscosity": "0W-30",
+          "oilSpecAPI": null,
+          "oilSpecACEA": "C2",
+          "oilSpecOEM": "PSA B71 2312",
+          "source": "autodoc.co.uk, autodoc.parts, automoli.com"
+        },
+        {
+          "make": "OPEL",
+          "model": "Zafira Life",
+          "generation": "K0",
+          "engineCode": "D15DTH",
+          "oilViscosity": "0W-30",
+          "oilSpecAPI": null,
+          "oilSpecACEA": "C2",
+          "oilSpecOEM": "PSA B71 2010",
+          "source": "auto-data.net, autodoc.co.uk, buycarparts.co.uk"
+        }
+      ],
+      "note": "Engine(s) D15DTH, XWDB at 1499cc/120hp. Brands: FORD, OPEL. Differences: oilViscosity: 0W-30 vs 5W-30 [major]; oilSpecOEM: PSA B71 2010 vs PSA B71 2312 vs WSS-M2C950-A [minor]. Review for Tunisia market."
+    },
+    {
+      "conflictGroup": 22,
+      "lookupKey": {
+        "displacementCc": 1499,
+        "powerHp": 130,
+        "fuelType": "diesel"
+      },
+      "severity": "major",
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "0W-20",
+            "5W-30"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "C2",
+            "C5"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "GM Dexos2",
+            "PSA B71 2010"
+          ]
+        }
+      ],
+      "entries": [
+        {
+          "make": "OPEL",
+          "model": "Grandland X",
+          "generation": "A18",
+          "engineCode": "A15DTH",
+          "oilViscosity": "5W-30",
+          "oilSpecAPI": null,
+          "oilSpecACEA": "C2",
+          "oilSpecOEM": "GM Dexos2",
+          "source": "auto-data.net, auto-abc.eu, autodoc.co.uk"
+        },
+        {
+          "make": "Peugeot",
+          "model": "3008",
+          "generation": "II",
+          "engineCode": "DV5RC",
+          "oilViscosity": "0W-20",
+          "oilSpecAPI": null,
+          "oilSpecACEA": "C5",
+          "oilSpecOEM": "PSA B71 2010",
+          "source": "auto-data.net (Peugeot 3008 II 1.5 BlueHDi 130 DV5RC, 0W-20, ACEA C5, PSA B71 2010, 4.0L)"
+        },
+        {
+          "make": "Peugeot",
+          "model": "5008",
+          "generation": "II",
+          "engineCode": "DV5RC",
+          "oilViscosity": "0W-20",
+          "oilSpecAPI": null,
+          "oilSpecACEA": "C5",
+          "oilSpecOEM": "PSA B71 2010",
+          "source": "auto-data.net (Peugeot 5008 II 1.5 BlueHDi 130 DV5RC, 0W-20, ACEA C5, PSA B71 2010, 4.0L)"
+        }
+      ],
+      "note": "Engine(s) A15DTH, DV5RC at 1499cc/130hp. Brands: OPEL, Peugeot. Differences: oilViscosity: 0W-20 vs 5W-30 [major]; oilSpecACEA: C2 vs C5 [major]; oilSpecOEM: GM Dexos2 vs PSA B71 2010 [minor]. Review for Tunisia market."
+    },
+    {
+      "conflictGroup": 23,
+      "lookupKey": {
+        "displacementCc": 1499,
+        "powerHp": 131,
+        "fuelType": "diesel"
+      },
+      "severity": "major",
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "0W-20",
+            "0W-30",
+            "5W-30"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "C2",
+            "C3"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "PSA B71 2010",
+            "PSA B71 2290",
+            "PSA B71 2312"
+          ]
+        }
+      ],
+      "entries": [
+        {
+          "make": "CITROEN",
+          "model": "C5 Aircross",
+          "generation": "I",
+          "engineCode": "DV5RC",
+          "oilViscosity": "0W-30",
+          "oilSpecAPI": null,
+          "oilSpecACEA": "C2",
+          "oilSpecOEM": "PSA B71 2312",
+          "source": "citroen.tn, autodoc.co.uk, whatoil.co.uk, TotalEnergies catalog"
+        },
+        {
+          "make": "DS AUTOMOBILES",
+          "model": "DS 3 Crossback",
+          "generation": "I (1.5 BlueHDi 131)",
+          "engineCode": "DV5RC",
+          "oilViscosity": "0W-30",
+          "oilSpecAPI": null,
+          "oilSpecACEA": "C2",
+          "oilSpecOEM": "PSA B71 2312",
+          "source": "PSA DV5RC specs cross-ref, Stellantis, TotalEnergies"
+        },
+        {
+          "make": "DS AUTOMOBILES",
+          "model": "DS 3",
+          "generation": "II (1.5 BlueHDi 131)",
+          "engineCode": "DV5RC",
+          "oilViscosity": "0W-30",
+          "oilSpecAPI": null,
+          "oilSpecACEA": "C2",
+          "oilSpecOEM": "PSA B71 2312",
+          "source": "PSA DV5RC specs, Stellantis"
+        },
+        {
+          "make": "DS AUTOMOBILES",
+          "model": "DS 4",
+          "generation": "I (1.5 BlueHDi 131)",
+          "engineCode": "DV5RC",
+          "oilViscosity": "0W-30",
+          "oilSpecAPI": null,
+          "oilSpecACEA": "C2",
+          "oilSpecOEM": "PSA B71 2312",
+          "source": "PSA DV5RC specs cross-ref, Stellantis"
+        },
+        {
+          "make": "DS AUTOMOBILES",
+          "model": "DS 7 Crossback",
+          "generation": "I (1.5 BlueHDi 131)",
+          "engineCode": "DV5RC",
+          "oilViscosity": "0W-30",
+          "oilSpecAPI": null,
+          "oilSpecACEA": "C2",
+          "oilSpecOEM": "PSA B71 2312",
+          "source": "PSA DV5RC specs cross-ref, Stellantis"
+        },
+        {
+          "make": "FIAT",
+          "model": "Doblo",
+          "generation": "K9 (III 1.5 BlueHDi 130)",
+          "engineCode": "DV5RC",
+          "oilViscosity": "0W-20",
+          "oilSpecAPI": null,
+          "oilSpecACEA": "C2",
+          "oilSpecOEM": "PSA B71 2010",
+          "source": "autodoc.co.uk, zmorda.tn, greenncap.com, motors.tn"
+        },
+        {
+          "make": "JEEP",
+          "model": "Renegade",
+          "generation": "BU (1.5 BlueHDi 130)",
+          "engineCode": "DV5RC",
+          "oilViscosity": "0W-30",
+          "oilSpecAPI": null,
+          "oilSpecACEA": "C2",
+          "oilSpecOEM": "PSA B71 2312",
+          "source": "PSA DV5RC specs cross-ref (Peugeot/Citroen), motorinsel.eu, Stellantis"
+        },
+        {
+          "make": "JEEP",
+          "model": "Compass",
+          "generation": "MP (1.5 BlueHDi 130)",
+          "engineCode": "DV5RC",
+          "oilViscosity": "0W-30",
+          "oilSpecAPI": null,
+          "oilSpecACEA": "C2",
+          "oilSpecOEM": "PSA B71 2312",
+          "source": "PSA DV5RC specs cross-ref, motorinsel.eu, Stellantis"
+        },
+        {
+          "make": "MITSUBISHI",
+          "model": "ASX",
+          "generation": "II (1.5 BlueHDi 131)",
+          "engineCode": "DV5RC",
+          "oilViscosity": "0W-30",
+          "oilSpecAPI": null,
+          "oilSpecACEA": "C2",
+          "oilSpecOEM": "PSA B71 2312",
+          "source": "PSA DV5RC cross-ref, Stellantis shared platform, motorinsel.eu"
+        },
+        {
+          "make": "OPEL",
+          "model": "Combo",
+          "generation": "K0",
+          "engineCode": "D15DTH",
+          "oilViscosity": "5W-30",
+          "oilSpecAPI": null,
+          "oilSpecACEA": "C3",
+          "oilSpecOEM": "PSA B71 2290",
+          "source": "autodoc.co.uk, auto-abc.eu, auto-data.net"
+        }
+      ],
+      "note": "Engine(s) D15DTH, DV5RC at 1499cc/131hp. Brands: CITROEN, DS AUTOMOBILES, FIAT, JEEP, MITSUBISHI, OPEL. Differences: oilViscosity: 0W-20 vs 0W-30 vs 5W-30 [major]; oilSpecACEA: C2 vs C3 [major]; oilSpecOEM: PSA B71 2010 vs PSA B71 2290 vs PSA B71 2312 [minor]. Review for Tunisia market."
+    },
+    {
+      "conflictGroup": 24,
+      "lookupKey": {
+        "displacementCc": 1587,
+        "powerHp": 115,
+        "fuelType": "essence"
+      },
+      "severity": "major",
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "5W-30",
+            "5W-40"
+          ]
+        },
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "None",
+            "SN"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "A3/B4",
+            "C2"
+          ]
+        }
+      ],
+      "entries": [
+        {
+          "make": "CITROEN",
+          "model": "C-Elysee",
+          "generation": "II Phase I",
+          "engineCode": "EC5",
+          "oilViscosity": "5W-40",
+          "oilSpecAPI": "SN",
+          "oilSpecACEA": "A3/B4",
+          "oilSpecOEM": "PSA B71 2290",
+          "source": "autodoc.parts, auto-data.net, Wikipedia"
+        },
+        {
+          "make": "Peugeot",
+          "model": "301",
+          "generation": "I",
+          "engineCode": "EC5",
+          "oilViscosity": "5W-30",
+          "oilSpecAPI": null,
+          "oilSpecACEA": "C2",
+          "oilSpecOEM": "PSA B71 2290",
+          "source": "auto-data.net + autodoc.parts (Peugeot 301 1.6 VTi 115 EC5, 5W-30, ACEA C2, PSA B71 2290, 3.25L)"
+        }
+      ],
+      "note": "Engine(s) EC5 at 1587cc/115hp. Brands: CITROEN, Peugeot. Differences: oilViscosity: 5W-30 vs 5W-40 [major]; oilSpecAPI: None vs SN [minor]; oilSpecACEA: A3/B4 vs C2 [major]. Review for Tunisia market."
+    },
+    {
+      "conflictGroup": 25,
+      "lookupKey": {
+        "displacementCc": 1591,
+        "powerHp": 180,
+        "fuelType": "essence"
+      },
+      "severity": "major",
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "0W-20",
+            "0W-30"
+          ]
+        },
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "None",
+            "SP"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "C2",
+            "None"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "ILSAC GF-6A",
+            "None"
+          ]
+        }
+      ],
+      "entries": [
+        {
+          "make": "Hyundai",
+          "model": "Tucson",
+          "generation": "NX4",
+          "engineCode": "G4FJ",
+          "oilViscosity": "0W-20",
+          "oilSpecAPI": "SP",
+          "oilSpecACEA": null,
+          "oilSpecOEM": "ILSAC GF-6A",
+          "source": "Official Hyundai Tucson NX4 2025 owner's manual (ownersmanual.hyundai.com): Smartstream G1.6 T-GDi — SAE 0W-20, API SN PLUS/SP or ILSAC GF-6; Checkered Flag Hyundai; James Hodge Hyundai service page (1.6L T-GDi: SAE 0W-20 full synthetic required, 4.8-5.1L); AMSOIL product lookup"
+        },
+        {
+          "make": "KIA",
+          "model": "Sportage",
+          "generation": "NQ5",
+          "engineCode": "G4FJ",
+          "oilViscosity": "0W-30",
+          "oilSpecAPI": null,
+          "oilSpecACEA": "C2",
+          "oilSpecOEM": null,
+          "source": "KIA owner’s manual chapter9_8.htm (T-GDi general rule: SAE 0W-30, ACEA C2/C3); KIA media specifications (kiamedia.com); AMSOIL product lookup; KIA forums (kia-forums.com)"
+        },
+        {
+          "make": "KIA",
+          "model": "Seltos",
+          "generation": "SP2",
+          "engineCode": "G4FJ",
+          "oilViscosity": "0W-30",
+          "oilSpecAPI": null,
+          "oilSpecACEA": "C2",
+          "oilSpecOEM": null,
+          "source": "KIA owner’s manual chapter9_8.htm (T-GDi general rule: SAE 0W-30, ACEA C2/C3); KIA media specifications (kiamedia.com); AMSOIL product lookup; KIA forums (kia-forums.com)"
+        }
+      ],
+      "note": "Engine(s) G4FJ at 1591cc/180hp. Brands: Hyundai, KIA. Differences: oilViscosity: 0W-20 vs 0W-30 [major]; oilSpecAPI: None vs SP [minor]; oilSpecACEA: C2 vs None [major]; oilSpecOEM: ILSAC GF-6A vs None [minor]. Review for Tunisia market."
+    },
+    {
+      "conflictGroup": 26,
+      "lookupKey": {
+        "displacementCc": 1598,
+        "powerHp": 110,
+        "fuelType": "essence"
+      },
+      "severity": "major",
+      "differingFields": [
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "A3/B4",
+            "A5/B5"
+          ]
+        }
+      ],
+      "entries": [
+        {
+          "make": "SEAT",
+          "model": "Arona",
+          "generation": "MK1",
+          "engineCode": "CWVB",
+          "oilViscosity": "5W-30",
+          "oilSpecAPI": "SN",
+          "oilSpecACEA": "A5/B5",
+          "oilSpecOEM": "VW 502.00",
+          "source": "buycarparts.co.uk, VW EA211 MPI specs"
+        },
+        {
+          "make": "SKODA",
+          "model": "Scala",
+          "generation": "NW",
+          "engineCode": "CWVB",
+          "oilViscosity": "5W-30",
+          "oilSpecAPI": "SN",
+          "oilSpecACEA": "A5/B5",
+          "oilSpecOEM": "VW 502.00",
+          "source": "automobile.tn, VW EA211 MPI specs"
+        },
+        {
+          "make": "VOLKSWAGEN",
+          "model": "Polo",
+          "generation": "AW",
+          "engineCode": "CFNA",
+          "oilViscosity": "5W-30",
+          "oilSpecAPI": "SN",
+          "oilSpecACEA": "A3/B4",
+          "oilSpecOEM": "VW 502.00",
+          "source": "buycarparts.eu CFNA oil lookup, VW Polo 6R owner manual, automax.tn VW Polo listings"
+        }
+      ],
+      "note": "Engine(s) CFNA, CWVB at 1598cc/110hp. Brands: SEAT, SKODA, VOLKSWAGEN. Differences: oilSpecACEA: A3/B4 vs A5/B5 [major]. Review for Tunisia market."
+    },
+    {
+      "conflictGroup": 27,
+      "lookupKey": {
+        "displacementCc": 1598,
+        "powerHp": 130,
+        "fuelType": "diesel"
+      },
+      "severity": "major",
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "0W-20",
+            "0W-30"
+          ]
+        },
+        {
+          "field": "oilSpecACEA",
+          "severity": "major",
+          "values": [
+            "C2",
+            "C5"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "Fiat 9.55535-DSX",
+            "Fiat 9.55535-S1"
+          ]
+        }
+      ],
+      "entries": [
+        {
+          "make": "FIAT",
+          "model": "Tipo",
+          "generation": "357 (1.6 MultiJet 130 AdBlue)",
+          "engineCode": "937AM5000",
+          "oilViscosity": "0W-20",
+          "oilSpecAPI": null,
+          "oilSpecACEA": "C5",
+          "oilSpecOEM": "Fiat 9.55535-DSX",
+          "source": "mycarusermanual.com, autodoc.parts, auto-doc.ie, kroon-oil.com"
+        },
+        {
+          "make": "JEEP",
+          "model": "Renegade",
+          "generation": "BU (1.6 MultiJet 130)",
+          "engineCode": "937AM5000",
+          "oilViscosity": "0W-30",
+          "oilSpecAPI": null,
+          "oilSpecACEA": "C2",
+          "oilSpecOEM": "Fiat 9.55535-S1",
+          "source": "Fiat 500X 1.6 MultiJet cross-ref, motorinsel.eu, buycarparts.co.uk"
+        },
+        {
+          "make": "JEEP",
+          "model": "Compass",
+          "generation": "MP (1.6 MultiJet 130)",
+          "engineCode": "937AM5000",
+          "oilViscosity": "0W-30",
+          "oilSpecAPI": null,
+          "oilSpecACEA": "C2",
+          "oilSpecOEM": "Fiat 9.55535-S1",
+          "source": "Fiat 500X/500L 1.6 MultiJet cross-ref, motorinsel.eu"
+        }
+      ],
+      "note": "Engine(s) 937AM5000 at 1598cc/130hp. Brands: FIAT, JEEP. Differences: oilViscosity: 0W-20 vs 0W-30 [major]; oilSpecACEA: C2 vs C5 [major]; oilSpecOEM: Fiat 9.55535-DSX vs Fiat 9.55535-S1 [minor]. Review for Tunisia market."
+    },
+    {
+      "conflictGroup": 28,
+      "lookupKey": {
+        "displacementCc": 1598,
+        "powerHp": 165,
+        "fuelType": "essence"
+      },
+      "severity": "minor",
+      "differingFields": [
+        {
+          "field": "oilSpecAPI",
+          "severity": "minor",
+          "values": [
+            "None",
+            "SN"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "PSA B71 2290",
+            "PSA B71 2312"
+          ]
+        }
+      ],
+      "entries": [
+        {
+          "make": "CITROEN",
+          "model": "C5 Aircross",
+          "generation": "I",
+          "engineCode": "EP6FDT",
+          "oilViscosity": "0W-30",
+          "oilSpecAPI": "SN",
+          "oilSpecACEA": "C2",
+          "oilSpecOEM": "PSA B71 2290",
+          "source": "tunisieauto.tn, autodoc.co.uk, autodoc.parts"
+        },
+        {
+          "make": "Peugeot",
+          "model": "3008",
+          "generation": "II",
+          "engineCode": "EP6FDT",
+          "oilViscosity": "0W-30",
+          "oilSpecAPI": null,
+          "oilSpecACEA": "C2",
+          "oilSpecOEM": "PSA B71 2312",
+          "source": "buycarparts.co.uk + auto-data.net (Peugeot 3008 II 1.6 THP 165 EP6FDT, 0W-30, ACEA C2, PSA B71 2312, 4.25L)"
+        },
+        {
+          "make": "Peugeot",
+          "model": "5008",
+          "generation": "II",
+          "engineCode": "EP6FDT",
+          "oilViscosity": "0W-30",
+          "oilSpecAPI": null,
+          "oilSpecACEA": "C2",
+          "oilSpecOEM": "PSA B71 2312",
+          "source": "buycarparts.co.uk (Peugeot 5008 II 1.6 THP 165 EP6FDT, 0W-30, ACEA C2, PSA B71 2312, 4.25L)"
+        }
+      ],
+      "note": "Engine(s) EP6FDT at 1598cc/165hp. Brands: CITROEN, Peugeot. Differences: oilSpecAPI: None vs SN [minor]; oilSpecOEM: PSA B71 2290 vs PSA B71 2312 [minor]. Review for Tunisia market."
+    },
+    {
+      "conflictGroup": 29,
+      "lookupKey": {
+        "displacementCc": 1997,
+        "powerHp": 150,
+        "fuelType": "diesel"
+      },
+      "severity": "major",
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "0W-30",
+            "5W-30"
+          ]
+        },
+        {
+          "field": "oilSpecOEM",
+          "severity": "minor",
+          "values": [
+            "PSA B71 2312",
+            "WSS-M2C950-A"
+          ]
+        }
+      ],
+      "entries": [
+        {
+          "make": "FORD",
+          "model": "Focus",
+          "generation": "MK4",
+          "engineCode": "XWFA",
+          "oilViscosity": "5W-30",
+          "oilSpecAPI": null,
+          "oilSpecACEA": "C2",
+          "oilSpecOEM": "WSS-M2C950-A",
+          "source": "Ford Owner's Manual, Motul Specific 948D 5W-30"
+        },
+        {
+          "make": "FORD",
+          "model": "Kuga",
+          "generation": "MK2",
+          "engineCode": "XWKA",
+          "oilViscosity": "5W-30",
+          "oilSpecAPI": null,
+          "oilSpecACEA": "C2",
+          "oilSpecOEM": "WSS-M2C950-A",
+          "source": "Ford Owner's Manual, Shell Helix Ultra Professional AF-L 5W-30"
+        },
+        {
+          "make": "FORD",
+          "model": "Kuga",
+          "generation": "MK3",
+          "engineCode": "XWFA",
+          "oilViscosity": "5W-30",
+          "oilSpecAPI": null,
+          "oilSpecACEA": "C2",
+          "oilSpecOEM": "WSS-M2C950-A",
+          "source": "Ford Owner's Manual, Motul Specific 948D 5W-30"
+        },
+        {
+          "make": "Peugeot",
+          "model": "5008",
+          "generation": "II",
+          "engineCode": "DW10FC",
+          "oilViscosity": "0W-30",
+          "oilSpecAPI": null,
+          "oilSpecACEA": "C2",
+          "oilSpecOEM": "PSA B71 2312",
+          "source": "auto-data.net (Peugeot 5008 II 2.0 BlueHDi 150 DW10FC, 0W-30, ACEA C2, PSA B71 2312, 5.0L)"
+        }
+      ],
+      "note": "Engine(s) DW10FC, XWFA, XWKA at 1997cc/150hp. Brands: FORD, Peugeot. Differences: oilViscosity: 0W-30 vs 5W-30 [major]; oilSpecOEM: PSA B71 2312 vs WSS-M2C950-A [minor]. Review for Tunisia market."
+    },
+    {
+      "conflictGroup": 30,
+      "lookupKey": {
+        "displacementCc": 2497,
+        "powerHp": 194,
+        "fuelType": "essence"
+      },
+      "severity": "major",
+      "differingFields": [
+        {
+          "field": "oilViscosity",
+          "severity": "major",
+          "values": [
+            "0W-20",
+            "0W-30"
+          ]
+        }
+      ],
+      "entries": [
+        {
+          "make": "Hyundai",
+          "model": "Santa Fe",
+          "generation": "NC",
+          "engineCode": "G4KN",
+          "oilViscosity": "0W-30",
+          "oilSpecAPI": "SP",
+          "oilSpecACEA": null,
+          "oilSpecOEM": "ILSAC GF-6A",
+          "source": "AMSOIL product lookup; James Hodge Hyundai service page (2.5L GDI: SAE 0W-30, API SP, ILSAC GF-6A, 5.8L)"
+        },
+        {
+          "make": "KIA",
+          "model": "Sorento",
+          "generation": "MQ4",
+          "engineCode": "G4KN",
+          "oilViscosity": "0W-20",
+          "oilSpecAPI": "SP",
+          "oilSpecACEA": null,
+          "oilSpecOEM": "ILSAC GF-6A",
+          "source": "KIA owner’s manual chapter9_8.htm (MPI/GDI: SAE 0W-20, API SP, ILSAC GF-6A); KIA media specifications (kiamedia.com); AMSOIL product lookup"
+        }
+      ],
+      "note": "Engine(s) G4KN at 2497cc/194hp. Brands: Hyundai, KIA. Differences: oilViscosity: 0W-20 vs 0W-30 [major]. Review for Tunisia market."
+    }
+  ],
+  "summary": {
+    "safeEntries": 271,
+    "ambiguousEntries": 122,
+    "majorConflicts": 25,
+    "minorConflicts": 5,
+    "recommendation": "Entries with matchAmbiguity=null can safely use 'Par caractéristiques' lookup. Ambiguous entries should ideally be resolved via 'Par véhicule' path, or the UI should prompt the user to confirm make/model when a conflict is detected. Major conflicts (viscosity or ACEA differs) carry a real risk of recommending the wrong oil. Minor conflicts (API or OEM spec differs) may indicate incomplete sourcing or regional differences."
+  }
+}

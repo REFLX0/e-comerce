@@ -6,14 +6,15 @@ import { EngineSpecFinder } from './EngineSpecFinder'
 import { VehicleFinder } from './VehicleFinder'
 import { motion, AnimatePresence } from 'framer-motion'
 
-type VehicleType = 'automobile' | 'moto' | 'poids_lourd' | 'agricole'
+type VehicleType = 'automobile' | 'moto' | 'poids_lourd' | 'agricole' | 'marine'
 type SearchMode = 'vehicle' | 'specs'
 
 const VEHICLE_TYPES = [
-  { id: 'automobile' as const, icon: Car, label: 'Automobile', sub: 'Voiture de tourisme' },
-  { id: 'moto' as const, icon: Bike, label: 'Moto', sub: '2 roues & scooters' },
-  { id: 'poids_lourd' as const, icon: Truck, label: 'Poids Lourd', sub: 'Camions & utilitaires' },
-  { id: 'agricole' as const, icon: Tractor, label: 'Agricole', sub: 'Tracteurs & engins' },
+  { id: 'automobile' as const, image: 'https://images.unsplash.com/photo-1616788494707-ec28f08d05a1?q=80&w=600', fallbackIcon: Car, label: 'Automobile', sub: 'Voitures de tourisme & SUV' },
+  { id: 'moto' as const, image: 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?q=80&w=600', fallbackIcon: Bike, label: 'Moto', sub: '2 roues & scooters' },
+  { id: 'marine' as const, image: 'https://images.unsplash.com/photo-1569263979104-865ab7cd8d13?q=80&w=600', fallbackIcon: Sparkles, label: 'Marine', sub: 'Bateaux nautiques' },
+  { id: 'poids_lourd' as const, image: 'https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?q=80&w=600', fallbackIcon: Truck, label: 'Poids Lourd', sub: 'Camions & utilitaires' },
+  { id: 'agricole' as const, image: 'https://images.unsplash.com/photo-1500937386664-56d1dfef3854?q=80&w=600', fallbackIcon: Tractor, label: 'Agricole', sub: 'Tracteurs & engins' },
 ]
 
 export function OilFinderTabs() {
@@ -107,28 +108,40 @@ export function OilFinderTabs() {
               <p className="mt-2 max-w-xl text-sm leading-6 text-gray-500">
                 Sélectionnez la catégorie de votre véhicule pour commencer
               </p>
-              <div className="mt-7 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
+              <div className="mt-7 grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-5">
                 {VEHICLE_TYPES.map((type) => {
-                  const Icon = type.icon
+                  const FallbackIcon = type.fallbackIcon
                   return (
                     <button
                       key={type.id}
                       onClick={() => handleSelectType(type.id)}
-                      className="group relative flex min-h-44 flex-col items-start justify-between overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 text-left transition-all duration-200 hover:-translate-y-1 hover:border-brand-primary/35 hover:shadow-[0_16px_30px_rgba(22,37,76,0.12)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+                      className="group relative flex min-h-48 flex-col items-center justify-end overflow-hidden rounded-2xl border border-slate-200 bg-white text-center transition-all duration-300 hover:-translate-y-1 hover:border-brand-primary hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
                     >
-                      <div className="absolute right-0 top-0 h-20 w-20 rounded-bl-[3rem] bg-brand-primary/[0.035] transition-colors group-hover:bg-brand-accent/15" />
-                      <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-primary text-white shadow-lg shadow-brand-primary/15 transition-transform group-hover:scale-105">
-                        <Icon size={23} />
+                      {/* Image Background */}
+                      <div className="absolute inset-0 z-0 bg-gray-100">
+                        {/* We use an img tag instead of next/image here just in case the file doesn't exist yet, so we can use a fallback easily */}
+                        <img 
+                          src={type.image} 
+                          alt={type.label}
+                          className="h-full w-full object-cover opacity-90 transition-transform duration-500 group-hover:scale-105 group-hover:opacity-100"
+                          onError={(e) => {
+                            e.currentTarget.style.display = 'none';
+                            e.currentTarget.nextElementSibling?.classList.remove('hidden');
+                          }}
+                        />
+                        {/* Fallback Icon if image fails to load */}
+                        <div className="hidden flex h-full w-full items-center justify-center bg-gray-50 text-gray-400">
+                          <FallbackIcon size={40} />
+                        </div>
                       </div>
-                      <div className="w-full">
-                        <span className="block text-base font-bold text-brand-primary">
+
+                      {/* Content Overlay */}
+                      <div className="relative w-full z-10 bg-white pt-3 pb-3 px-2 border-t border-gray-100/50">
+                        <span className="block text-sm font-bold text-[#16254c]">
                           {type.label}
                         </span>
-                        <span className="mt-1 block text-sm text-gray-500">
+                        <span className="mt-0.5 block text-[11px] text-gray-500">
                           {type.sub}
-                        </span>
-                        <span className="mt-4 inline-flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-brand-primary/70 transition-colors group-hover:text-brand-primary">
-                          Sélectionner <ChevronRight size={14} />
                         </span>
                       </div>
                     </button>
@@ -231,7 +244,7 @@ export function OilFinderTabs() {
                   Retour
                 </button>
               </div>
-              <EngineSpecFinder onClose={() => {}} initialVehicleType={vehicleType} />
+              <EngineSpecFinder onClose={() => {}} initialVehicleType={vehicleType !== 'marine' ? vehicleType : null} />
             </motion.div>
           )}
         </AnimatePresence>

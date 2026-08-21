@@ -144,8 +144,10 @@ model Address {
   user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   fullName  String
   phone     String
+  address   String?
   city      String
   wilaya    String
+  postalCode String?
   isDefault Boolean @default(false)
 }
 
@@ -367,19 +369,25 @@ model OilFinderVehicle {
   id              String             @id @default(cuid())
   make            String
   model           String
+  category        String             @default("automobile")
   generation      String             @default("") // "" = not specified (keeps the natural key non-null → idempotent import)
   yearFrom        Int?
   yearTo          Int?
   engineCode      String             @default("") // "" = not specified
   displacementCc  Int?
-  powerKw         Int?
-  powerHp         Int?
+  powerKw         Float?
+  powerHp         Float?
   fuelType        String // String, not the ESSENCE/DIESEL enum — staging may hold hybride/gpl
   oilSpecId       String
   oilSpec         OilFinderOilSpec   @relation(fields: [oilSpecId], references: [id], onDelete: Restrict)
   source          String // provenance, preserved for support/audit
   confidence      String // "high" | "medium" | "low" — preserved, queryable
   matchAmbiguity  Json? // null | { field: "major"|"minor" } — verbatim from input
+
+  // Hydraulic fluid fields (specifically for agricole category)
+  hydraulicTransmissionOilType  String?
+  hydraulicOilSpecOEM           String?
+  hydraulicOilCapacityLiters    Float?
 
   @@unique([make, model, generation, engineCode, source]) // same vehicle from N sources = N rows
   @@index([make, model, engineCode])
@@ -389,7 +397,7 @@ model OilFinderVehicle {
 model OilFinderLookupConflict {
   id              String @id @default(cuid())
   displacementCc  Int
-  powerHp         Int
+  powerHp         Float
   fuelType        String
   highestSeverity String // "MAJOR" | "MINOR" (derived: any major field → MAJOR)
   fieldSeverities Json // { oilViscosity: "major", ... } — verbatim from report

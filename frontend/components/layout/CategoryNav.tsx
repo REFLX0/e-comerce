@@ -116,7 +116,7 @@ export function CategoryNav() {
                   </button>
                 ) : (
                   <Link
-                    href={`/catalogue?categorySlug=${item.slug}`}
+                    href={`/categorie/${item.slug}`}
                     className="group relative flex h-full items-center gap-2 px-5 text-sm font-semibold transition-all duration-200"
                     style={{ color: '#16254c', borderBottom: '2px solid transparent' }}
                   >
@@ -223,7 +223,7 @@ function FlyoutPanel({
             {rootLabel}
           </span>
           <Link
-            href={`/catalogue?categorySlug=${item.slug}`}
+            href={`/categorie/${item.slug}`}
             onClick={onClose}
             className="flex items-center gap-1 text-xs font-medium transition-opacity hover:opacity-70"
             style={{ color: 'rgba(255,255,255,0.7)' }}
@@ -274,7 +274,7 @@ function FlyoutPanel({
                 ) : (
                   // Leaf item: direct link
                   <Link
-                    href={`/catalogue?categorySlug=${child.slug}`}
+                    href={`/categorie/${child.slug}`}
                     role="menuitem"
                     onClick={onClose}
                     onMouseEnter={() => setActiveChild(null)}
@@ -304,7 +304,7 @@ function FlyoutPanel({
         {/* Footer hint */}
         <div className="border-t px-5 py-2.5" style={{ borderColor: 'rgba(22,37,76,0.07)' }}>
           <Link
-            href={`/catalogue?categorySlug=${item.slug}`}
+            href={`/categorie/${item.slug}`}
             onClick={onClose}
             className="flex items-center gap-1.5 text-xs font-semibold transition-opacity hover:opacity-70"
             style={{ color: '#D4A76A' }}
@@ -382,7 +382,7 @@ function SubPanel({
           return (
             <li key={subChild.slug} role="none">
               <Link
-                href={`/catalogue?categorySlug=${subChild.slug}`}
+                href={`/categorie/${subChild.slug}`}
                 role="menuitem"
                 onClick={onClose}
                 className="sub-item group flex items-center gap-3 px-5 py-[10px] text-sm font-medium transition-all duration-150"
@@ -412,7 +412,7 @@ function SubPanel({
       {/* Link to parent category */}
       <div className="mt-auto border-t px-5 py-2.5" style={{ borderColor: 'rgba(22,37,76,0.07)' }}>
         <Link
-          href={`/catalogue?categorySlug=${node.slug}`}
+          href={`/categorie/${node.slug}`}
           onClick={onClose}
           className="flex items-center gap-1.5 text-xs font-semibold transition-opacity hover:opacity-70"
           style={{ color: 'rgba(22,37,76,0.5)' }}

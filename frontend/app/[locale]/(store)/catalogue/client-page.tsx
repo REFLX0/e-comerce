@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useSearchParams } from 'next/navigation'
 import { useLocale, useTranslations } from 'next-intl'
-import { Car, Search, Sparkles, X } from 'lucide-react'
+import { Car, Search, Sparkles, X, LayoutGrid, List } from 'lucide-react'
 import Link from 'next/link'
 import { productsApi } from '@/lib/api/products'
 import { useRouter } from '@/i18n/routing'
@@ -30,6 +30,19 @@ export default function CataloguePage() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [searchValue, setSearchValue] = useState(searchParams.get('search') || '')
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
+
+  useEffect(() => {
+    const savedMode = localStorage.getItem('catalogueViewMode') as 'grid' | 'list'
+    if (savedMode === 'grid' || savedMode === 'list') {
+      setViewMode(savedMode)
+    }
+  }, [])
+
+  const handleViewModeChange = (mode: 'grid' | 'list') => {
+    setViewMode(mode)
+    localStorage.setItem('catalogueViewMode', mode)
+  }
 
   const storedVehicle = useVehicleStore((state) => state.vehicle)
 
@@ -38,13 +51,14 @@ export default function CataloguePage() {
   const vehicleMake = searchParams.get('make')
   const vehicleModel = searchParams.get('model')
   const vehicleEngine = searchParams.get('engine')
+  const isOilFinder = searchParams.get('isOilFinder') === 'true'
   const isVehicleSearch = Boolean(vehicleMake && vehicleModel)
 
   const specType = searchParams.get('vehicleType')
-  const specCylinders = searchParams.get('cylinders')
+  const specDisplacement = searchParams.get('displacementCc')
   const specPower = searchParams.get('power')
   const specFuelType = searchParams.get('fuelType')
-  const isSpecSearch = Boolean(specType && specCylinders && specPower && specFuelType)
+  const isSpecSearch = Boolean(specType && specDisplacement && specPower && specFuelType)
   const isSearchMode = isVehicleSearch || isSpecSearch
 
   useEffect(() => {
@@ -54,7 +68,7 @@ export default function CataloguePage() {
   const filters = useMemo(() => {
     const nextFilters: Record<string, string | number | boolean | undefined> = {}
     searchParams.forEach((value, key) => {
-      if (VEHICLE_QUERY_KEYS.includes(key)) return
+      if (VEHICLE_QUERY_KEYS.includes(key) || key === 'displacementCc' || key === 'isOilFinder') return
       if (value === 'true') nextFilters[key] = true
       else if (value === 'false') nextFilters[key] = false
       else if (!Number.isNaN(Number(value)) && key.includes('price')) nextFilters[key] = Number(value)
@@ -78,12 +92,19 @@ export default function CataloguePage() {
 
   const { data, isLoading, isError, refetch } = useQuery<any>({
     queryKey: isVehicleSearch
-      ? ['compatible-products', vehicleMake, vehicleModel, vehicleEngine, filters]
+      ? ['compatible-products', vehicleMake, vehicleModel, vehicleEngine, filters, isOilFinder]
       : isSpecSearch
-        ? ['oil-recommendations', specType, specCylinders, specPower, specFuelType, searchParams.get('make') || undefined]
+        ? ['oil-recommendations', specType, specDisplacement, specPower, specFuelType, searchParams.get('make') || undefined]
         : ['products', filters],
     queryFn: () => {
       if (isVehicleSearch) {
+        if (isOilFinder || filters.categorySlug === 'huiles-moteur') {
+          return productsApi.getOilByVehicle({
+            make: vehicleMake!,
+            model: vehicleModel!,
+            engineCode: vehicleEngine || undefined,
+          })
+        }
         return productsApi.getCompatible({
           make: vehicleMake!,
           model: vehicleModel!,
@@ -108,7 +129,7 @@ export default function CataloguePage() {
       if (isSpecSearch) {
         return productsApi.getOilRecommendations({
           vehicleType: specType!,
-          cylinders: Number(specCylinders),
+          displacementCc: Number(specDisplacement),
           power: Number(specPower),
           fuelType: specFuelType as 'diesel' | 'essence',
           make: searchParams.get('make') || undefined,
@@ -145,7 +166,7 @@ export default function CataloguePage() {
     : isSpecSearch
       ? t('specOilsTitle', {
           fuel: t(specFuelType === 'diesel' ? 'diesel' : 'petrol'),
-          cylinders: specCylinders ?? '',
+          cylinders: specDisplacement ?? '',
           power: specPower ?? '',
         })
       : t('catalogTitle')
@@ -279,7 +300,29 @@ export default function CataloguePage() {
               </p>
             )}
           </div>
-          <div className="flex w-full items-center gap-2 sm:w-auto">
+          <div className="flex w-full items-center justify-end gap-3 sm:w-auto">
+            <div className="flex h-10 items-center rounded border border-black/10 bg-white p-1">
+              <button
+                type="button"
+                onClick={() => handleViewModeChange('grid')}
+                className={`flex h-full w-9 items-center justify-center rounded transition-colors ${
+                  viewMode === 'grid' ? 'bg-[#16254c] text-white shadow-sm' : 'text-neutral-400 hover:text-[#111]'
+                }`}
+                aria-label={t('gridView', { fallback: 'Grid view' })}
+              >
+                <LayoutGrid size={16} strokeWidth={2.5} />
+              </button>
+              <button
+                type="button"
+                onClick={() => handleViewModeChange('list')}
+                className={`flex h-full w-9 items-center justify-center rounded transition-colors ${
+                  viewMode === 'list' ? 'bg-[#16254c] text-white shadow-sm' : 'text-neutral-400 hover:text-[#111]'
+                }`}
+                aria-label={t('listView', { fallback: 'List view' })}
+              >
+                <List size={18} strokeWidth={2.5} />
+              </button>
+            </div>
             {!isSpecSearch && <MobileFiltersSheet />}
             <SortDropdown />
           </div>
@@ -304,7 +347,7 @@ export default function CataloguePage() {
               if (products.length > 0) {
                 return (
                   <>
-                    <ProductGrid products={products} />
+                    <ProductGrid products={products} viewMode={viewMode} />
                     <Pagination currentPage={data?.page ?? 1} totalPages={data?.totalPages ?? 1} />
                   </>
                 )
