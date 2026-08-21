@@ -159,7 +159,7 @@ async function loadVehicles(skipped: string[]) {
         continue
       }
       const categoryMatch = file.match(/^(.*?)-/);
-      const category = categoryMatch ? categoryMatch[1].toLowerCase() : 'automobile';
+      const category = categoryMatch?.[1]?.toLowerCase() || 'automobile';
       vehicles.push({
         category,
         make: String(e.make).trim(),
