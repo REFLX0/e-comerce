@@ -10,26 +10,24 @@ const VEHICLE_PARAM_KEYS = ['make', 'model', 'engine']
 
 /**
  * Shows the currently selected vehicle and lets the user clear it.
- * The vehicle comes from the URL (oil-finder push) or the persisted store.
+ * Only renders when make+model are present in the URL — does NOT render
+ * purely from the persisted Zustand store, to avoid bleeding into
+ * unrelated catalogue/search pages after an oil-finder session.
  */
 export function VehicleContextBar() {
   const t = useTranslations('Catalogue')
   const router = useRouter()
   const searchParams = useSearchParams()
-  const vehicle = useVehicleStore((state) => state.vehicle)
   const clearVehicle = useVehicleStore((state) => state.clearVehicle)
 
   const urlMake = searchParams.get('make')
   const urlModel = searchParams.get('model')
-  const hasUrlVehicle = Boolean(urlMake && urlModel)
+  const urlEngine = searchParams.get('engine')
 
-  if (!vehicle && !hasUrlVehicle) return null
+  // Only render when make+model are in the URL
+  if (!urlMake || !urlModel) return null
 
-  const label = vehicle
-    ? [vehicle.makeName, vehicle.modelName, vehicle.engineCode]
-        .filter(Boolean)
-        .join(' · ')
-    : [urlMake, urlModel].filter(Boolean).join(' · ')
+  const label = [urlMake, urlModel, urlEngine].filter(Boolean).join(' · ')
 
   const handleEdit = () => {
     clearVehicle()

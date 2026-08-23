@@ -75,9 +75,12 @@ export const productsApi = {
       fuelType: params.fuelType,
     }),
 
-  getMakes: (vehicleType?: string) => apiGet<VehicleMake[]>('/vehicles/makes', vehicleType ? { vehicleType } : undefined),
+  getMakes: (vehicleType?: string) => apiGet<VehicleMake[]>('/oil-finder/makes', vehicleType ? { category: vehicleType } : undefined),
 
-  getModels: (makeSlug: string) => apiGet<VehicleModel[]>(`/vehicles/makes/${makeSlug}/models`),
+  getModels: (makeName: string) => apiGet<VehicleModel[]>(`/oil-finder/makes/${encodeURIComponent(makeName)}/models`),
 
-  getEngines: (modelSlug: string) => apiGet<VehicleEngine[]>(`/vehicles/models/${modelSlug}/engines`),
+  getEngines: (makeName: string, modelName: string) => apiGet<VehicleEngine[]>(`/oil-finder/models/${encodeURIComponent(makeName)}/${encodeURIComponent(modelName)}/engines`),
+
+  getAIRecommendation: (params: { make: string; model: string; engineCode?: string }) =>
+    apiGet<{ recommendation: string }>('/oil-finder/ai-recommendation', params),
 }

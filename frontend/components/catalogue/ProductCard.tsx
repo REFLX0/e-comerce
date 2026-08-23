@@ -173,6 +173,25 @@ export function ProductCard({ product, viewMode = 'grid' }: Props) {
 
           <CompatibilityStatus />
 
+          {/* OEM Approvals */}
+          {product.specs?.oemApprovals && product.specs.oemApprovals.length > 0 && (
+            <div className="mt-2 flex flex-wrap gap-1">
+              {product.specs.oemApprovals.slice(0, 3).map((approval) => (
+                <span
+                  key={approval}
+                  className="rounded border border-blue-200 bg-blue-50 px-1.5 py-0.5 text-[10px] font-semibold text-blue-700"
+                >
+                  {approval}
+                </span>
+              ))}
+              {product.specs.oemApprovals.length > 3 && (
+                <span className="rounded border border-gray-200 bg-gray-50 px-1.5 py-0.5 text-[10px] font-semibold text-gray-500">
+                  +{product.specs.oemApprovals.length - 3}
+                </span>
+              )}
+            </div>
+          )}
+
           {/* Quick Specs */}
           <div className="mt-3 flex flex-wrap items-center gap-2">
             {defaultVariant?.volume && (
@@ -320,6 +339,25 @@ export function ProductCard({ product, viewMode = 'grid' }: Props) {
         <div className="mt-1 flex-1">
           <CompatibilityStatus compact />
         </div>
+
+        {/* OEM Approvals */}
+        {product.specs?.oemApprovals && product.specs.oemApprovals.length > 0 && (
+          <div className="mt-1.5 flex flex-wrap gap-1">
+            {product.specs.oemApprovals.slice(0, 2).map((approval) => (
+              <span
+                key={approval}
+                className="rounded border border-blue-200 bg-blue-50 px-1.5 py-0.5 text-[9px] font-semibold text-blue-700 leading-tight"
+              >
+                {approval}
+              </span>
+            ))}
+            {product.specs.oemApprovals.length > 2 && (
+              <span className="rounded border border-gray-200 bg-gray-50 px-1.5 py-0.5 text-[9px] font-semibold text-gray-500 leading-tight">
+                +{product.specs.oemApprovals.length - 2}
+              </span>
+            )}
+          </div>
+        )}
 
         <div className="mt-3 flex items-end justify-between border-t border-gray-100 pt-3">
           {/* Price */}

@@ -25,7 +25,10 @@ export function useVehicleUrlSync(enabled = true) {
     if (!enabled || !vehicle) return
     const hasMake = searchParams.get('make')
     const hasModel = searchParams.get('model')
+    const isSpecSearch = searchParams.has('vehicleType') && searchParams.has('power')
+    
     if (hasMake && hasModel) return
+    if (isSpecSearch) return
 
     const params = new URLSearchParams(searchParams.toString())
     if (!hasMake) params.set('make', vehicle.makeSlug)

@@ -59,6 +59,15 @@ export type OilFinderResult =
 
 const normFuel = (fuelType: string): string => fuelType.trim().toLowerCase()
 
+function slugify(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/[^\w\s-]/g, '')
+    .replace(/[\s_-]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+
 @Injectable()
 export class OilFinderService {
   constructor(private readonly prisma: PrismaService) {}
@@ -175,6 +184,41 @@ export class OilFinderService {
       message: 'ambiguous — needs make/model (major conflict: viscosity or ACEA differs across candidates)',
       candidates: toCandidates(rows),
     }
+  }
+
+  async getMakes(category?: string) {
+    const where = category && category !== 'undefined' ? { category: category.toLowerCase() } : {}
+    const rows = await this.prisma.oilFinderVehicle.findMany({
+      where,
+      select: { make: true },
+      distinct: ['make'],
+      orderBy: { make: 'asc' },
+    })
+    return rows.map((r) => ({ slug: slugify(r.make), name: r.make }))
+  }
+
+  async getModels(makeName: string) {
+    const rows = await this.prisma.oilFinderVehicle.findMany({
+      where: { make: { equals: makeName.trim(), mode: 'insensitive' as const } },
+      select: { model: true },
+      distinct: ['model'],
+      orderBy: { model: 'asc' },
+    })
+    return rows.map((r) => ({ slug: slugify(r.model), name: r.model }))
+  }
+
+  async getEngines(makeName: string, modelName: string) {
+    const rows = await this.prisma.oilFinderVehicle.findMany({
+      where: {
+        make: { equals: makeName.trim(), mode: 'insensitive' as const },
+        model: { equals: modelName.trim(), mode: 'insensitive' as const },
+        engineCode: { not: '' },
+      },
+      select: { engineCode: true, yearFrom: true, yearTo: true },
+      distinct: ['engineCode'],
+      orderBy: { engineCode: 'asc' },
+    })
+    return rows
   }
 }
 

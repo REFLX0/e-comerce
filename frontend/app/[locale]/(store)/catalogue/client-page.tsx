@@ -21,6 +21,7 @@ import { Breadcrumb } from '@/components/common/Breadcrumb'
 import { ProductGridSkeleton } from '@/components/common/Skeleton'
 import { ErrorState } from '@/components/common/ErrorState'
 import { EmptyState } from '@/components/common/EmptyState'
+import { AIOilRecommendation } from '@/components/catalogue/AIOilRecommendation'
 
 const VEHICLE_QUERY_KEYS = ['make', 'model', 'engine', 'vehicleType', 'cylinders', 'power', 'fuelType']
 
@@ -355,7 +356,52 @@ export default function CataloguePage() {
 
               return (
                 <div className="border border-black/10 bg-neutral-50 px-5 py-3 sm:px-8">
+                  {isVehicleSearch && data?.oilSpec && (
+                    <div className="mb-8 mt-4 rounded-xl border border-blue-100 bg-blue-50 p-6 text-center shadow-sm">
+                      <h3 className="mb-2 text-lg font-bold text-blue-900">Recommandation constructeur</h3>
+                      <p className="mb-4 text-sm text-blue-700">
+                        Nous n'avons pas de produit correspondant en stock, mais voici les spécifications recommandées pour votre véhicule :
+                      </p>
+                      <div className="flex flex-wrap justify-center gap-2">
+                        {data.oilSpec.viscosity && (
+                          <span className="rounded-md bg-white px-3 py-1.5 text-sm font-black text-blue-900 shadow-sm ring-1 ring-blue-200">
+                            {data.oilSpec.viscosity}
+                          </span>
+                        )}
+                        {data.oilSpec.apiStandard && (
+                          <span className="rounded-md bg-white px-3 py-1.5 text-sm font-semibold text-blue-800 shadow-sm ring-1 ring-blue-200">
+                            API {data.oilSpec.apiStandard}
+                          </span>
+                        )}
+                        {data.oilSpec.aceaStandard && (
+                          <span className="rounded-md bg-white px-3 py-1.5 text-sm font-semibold text-blue-800 shadow-sm ring-1 ring-blue-200">
+                            ACEA {data.oilSpec.aceaStandard}
+                          </span>
+                        )}
+                        {data.oilSpec.oemApproval && (
+                          <span className="rounded-md bg-white px-3 py-1.5 text-sm font-semibold text-blue-800 shadow-sm ring-1 ring-blue-200">
+                            {data.oilSpec.oemApproval}
+                          </span>
+                        )}
+                      </div>
+                      {data.oilSpec.capacityLiters && (
+                        <p className="mt-4 text-xs font-medium text-blue-600/80">
+                          Capacité carter : {data.oilSpec.capacityLiters} L
+                        </p>
+                      )}
+                    </div>
+                  )}
+
+                  {isVehicleSearch && activeVehicle && (
+                    <AIOilRecommendation 
+                      make={activeVehicle.makeName} 
+                      model={activeVehicle.modelName} 
+                      engineCode={activeVehicle.engineCode} 
+                    />
+                  )}
+                  
                   <EmptyState title={emptyTitle} message={emptyMessage} action={emptyAction} />
+                  
                   {isVehicleSearch && (
                     <div className="mb-8 border-t border-black/10 pt-6 text-center">
                       <p className="mb-3 text-sm text-neutral-500">{t('vehicleNotFoundHint')}</p>

@@ -169,17 +169,18 @@ export function VehicleFinder({ onClose, initialVehicleType }: VehicleFinderProp
     setLoading(true)
     setError('')
     setModels([])
-    productsApi.getModels(make.slug)
+    productsApi.getModels(make.name)
       .then(setModels)
       .catch(() => setError('Impossible de charger les modèles'))
       .finally(() => setLoading(false))
   }
 
   const loadEngines = (model: VehicleModel) => {
+    if (!selectedMake) return
     setLoading(true)
     setError('')
     setEngines([])
-    productsApi.getEngines(model.slug)
+    productsApi.getEngines(selectedMake.name, model.name)
       .then(setEngines)
       .catch(() => setError('Impossible de charger les motorisations'))
       .finally(() => setLoading(false))

@@ -53,28 +53,11 @@ export const WILAYAS_TN = [
 export type Wilaya = (typeof WILAYAS_TN)[number]
 
 /**
- * Extracts a cleaner reference number from a raw database SKU.
- * e.g., 'AUTO-MANNOLLIQUIDEDEREFROIDISSEMENTMOTOP-3089-1L' -> '3089'
- * e.g., 'Neolux-N380-V1' -> 'N380'
+ * Returns the raw SKU as-is. SKUs are stored in a clean format
+ * (e.g. 'MOT-300V-10W40', 'TOTALENERGIES-QUARTZ-INEO-FIRST-0W-20-5L')
+ * and should be displayed without heuristic extraction.
  */
 export function formatSKU(sku?: string): string {
   if (!sku) return 'N/A'
-  
-  // Clean up auto-generated prefixes
-  if (sku.startsWith('AUTO-') || sku.startsWith('MOTO-') || sku.startsWith('MARINE-')) {
-    const parts = sku.split('-')
-    if (parts.length >= 3) {
-      // The reference is usually the second-to-last segment (e.g. [..., name, ref, volume])
-      return parts[parts.length - 2] || ''
-    }
-  }
-
-  // General fallback for normal SKUs (e.g. Neolux-N380-V1 -> N380)
-  // If there are exactly 3 parts, the middle one is usually the reference
-  const parts = sku.split('-')
-  if (parts.length === 3) {
-    return parts[1] || sku
-  }
-
   return sku
 }
