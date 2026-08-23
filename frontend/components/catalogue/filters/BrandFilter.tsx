@@ -54,7 +54,7 @@ export function BrandFilter({ brands, selected, onChange }: BrandFilterProps) {
         <Search
           aria-hidden="true"
           size={14}
-          className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-neutral-400"
+          className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-white/40"
         />
         <label htmlFor="brand-filter-search" className="sr-only">
           {t('searchBrands')}
@@ -65,16 +65,16 @@ export function BrandFilter({ brands, selected, onChange }: BrandFilterProps) {
           value={query}
           onChange={(event) => setQuery(event.target.value)}
           placeholder={t('searchBrands')}
-          className="h-9 w-full border border-black/15 bg-white pl-8 pr-3 text-xs font-semibold text-[#111] outline-none transition-colors placeholder:text-neutral-400 focus:border-[#E10600]"
+          className="h-9 w-full rounded-lg border border-white/10 bg-white/5 pl-8 pr-3 text-xs font-semibold text-white outline-none transition-colors placeholder:text-white/30 focus:border-[#D4A76A]"
         />
       </div>
 
-      <ul className="max-h-56 space-y-0.5 overflow-y-auto pr-1">
+      <ul className="max-h-56 space-y-1 overflow-y-auto pr-1">
         {filtered.slice(0, visibleCount).map((brand) => {
           const isSelected = selected.includes(brand.slug)
           return (
             <li key={brand.id}>
-              <label className="group flex min-h-9 cursor-pointer items-center gap-2.5 rounded-sm px-1.5 transition-colors hover:bg-neutral-50">
+              <label className="group flex min-h-9 cursor-pointer items-center gap-3 rounded-xl px-2 py-1 transition-all hover:bg-white/5">
                 <input
                   type="checkbox"
                   className="sr-only"
@@ -84,32 +84,32 @@ export function BrandFilter({ brands, selected, onChange }: BrandFilterProps) {
                 <span
                   aria-hidden="true"
                   className={cn(
-                    'flex h-4 w-4 shrink-0 items-center justify-center border transition-colors',
+                    'flex h-5 w-5 shrink-0 items-center justify-center rounded-md border transition-all duration-200',
                     isSelected
-                      ? 'border-[#E10600] bg-[#E10600] text-white'
-                      : 'border-black/20 bg-white group-hover:border-[#E10600]/60'
+                      ? 'border-[#D4A76A] bg-[#D4A76A] text-[#16254c] shadow-[0_0_10px_rgba(212,167,106,0.3)]'
+                      : 'border-white/20 bg-white/5 text-transparent group-hover:border-white/40 group-hover:bg-white/10'
                   )}
                 >
                   <Check
-                    size={11}
+                    size={13}
                     strokeWidth={3.5}
                     className={cn(
-                      'transition-transform duration-150',
+                      'transition-transform duration-200',
                       isSelected ? 'scale-100 opacity-100' : 'scale-50 opacity-0'
                     )}
                   />
                 </span>
                 <span
                   className={cn(
-                    'min-w-0 flex-1 truncate text-[13px]',
+                    'min-w-0 flex-1 truncate text-[13px] transition-colors',
                     isSelected
-                      ? 'font-bold text-[#111]'
-                      : 'text-neutral-600 group-hover:text-[#111]'
+                      ? 'font-bold text-white'
+                      : 'text-white/70 group-hover:text-white'
                   )}
                 >
                   {brand.name}
                 </span>
-                <span className="text-[11px] font-semibold text-neutral-400">
+                <span className={cn('text-[11px] font-semibold transition-colors', isSelected ? 'text-[#D4A76A]/70' : 'text-white/40')}>
                   {brand.count}
                 </span>
               </label>
@@ -117,7 +117,7 @@ export function BrandFilter({ brands, selected, onChange }: BrandFilterProps) {
           )
         })}
         {filtered.length === 0 && (
-          <li className="px-2 py-3 text-xs text-neutral-400">{t('noResults')}</li>
+          <li className="px-2 py-3 text-xs text-white/50">{t('noResults')}</li>
         )}
       </ul>
 
@@ -125,7 +125,7 @@ export function BrandFilter({ brands, selected, onChange }: BrandFilterProps) {
         <button
           type="button"
           onClick={() => setExpanded((prev) => !prev)}
-          className="mt-2 text-[11px] font-black uppercase tracking-wide text-[#E10600] outline-none transition-colors hover:text-[#bd0500] focus-visible:ring-2 focus-visible:ring-[#E10600]/30"
+          className="mt-3 text-[11px] font-black uppercase tracking-wide text-[#D4A76A] outline-none transition-colors hover:text-[#e8b975] focus-visible:ring-2 focus-visible:ring-[#D4A76A]/30"
         >
           {expanded ? t('showLess') : t('showMore')}
         </button>

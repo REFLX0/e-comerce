@@ -61,8 +61,8 @@ export function ActiveFilters() {
   const removeFilter = (key: string) => patchFilters({ [key]: null })
 
   return (
-    <div className="mb-6 flex flex-wrap items-center gap-2 border-y border-black/10 py-4">
-      <span className="mr-1 text-[11px] font-black uppercase tracking-[0.15em] text-neutral-500">
+    <div className="mb-6 flex flex-wrap items-center gap-2.5 border-y border-black/5 py-4">
+      <span className="mr-1 text-[11px] font-black uppercase tracking-[0.15em] text-neutral-400">
         {t('activeFilters')}
       </span>
       {activeChips.map((chip) => (
@@ -70,17 +70,17 @@ export function ActiveFilters() {
           key={`${chip.key}-${chip.label}`}
           type="button"
           onClick={() => removeFilter(chip.key)}
-          className="inline-flex items-center gap-1.5 border border-[#E10600]/20 bg-[#E10600]/[0.06] px-2.5 py-1.5 text-xs font-bold text-[#111] transition-colors hover:border-[#E10600] hover:bg-[#E10600] hover:text-white"
+          className="inline-flex items-center gap-2 rounded-lg border border-black/10 bg-[#0a1128] px-3 py-1.5 text-xs font-bold text-white shadow-sm transition-all hover:border-[#D4A76A]/50 hover:bg-[#16254c] hover:text-[#D4A76A]"
         >
           {chip.label}
-          <X size={13} aria-hidden="true" />
+          <X size={13} aria-hidden="true" className="text-white/50" />
           <span className="sr-only">{t('removeFilter')}</span>
         </button>
       ))}
       <button
         type="button"
         onClick={clearAll}
-        className="ml-1 text-xs font-bold text-[#E10600] hover:underline"
+        className="ml-2 text-xs font-black text-[#0a1128] underline underline-offset-4 hover:text-black transition-colors"
       >
         {t('clearAllFilters')}
       </button>

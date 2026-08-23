@@ -94,11 +94,11 @@ export function PriceFilter({ bounds, value, onChange }: PriceFilterProps) {
   const sliderTooWide = sliderBounds.max - sliderBounds.min < 1
 
   return (
-    <div>
-      <div className="mb-3 flex items-center justify-between gap-2">
-        <span className="text-xs font-bold text-[#111]">{formatPrice(slider[0])}</span>
-        <span aria-hidden="true" className="h-px flex-1 bg-black/10" />
-        <span className="text-xs font-bold text-[#111]">{formatPrice(slider[1])}</span>
+    <div className="px-1">
+      <div className="mb-4 flex items-center justify-between gap-3">
+        <span className="text-[13px] font-black text-[#D4A76A]">{formatPrice(slider[0])}</span>
+        <span aria-hidden="true" className="h-px flex-1 bg-white/10" />
+        <span className="text-[13px] font-black text-[#D4A76A]">{formatPrice(slider[1])}</span>
       </div>
 
       {!sliderTooWide ? (
@@ -110,14 +110,15 @@ export function PriceFilter({ bounds, value, onChange }: PriceFilterProps) {
           onValueChange={(values) => setSlider([values[0], values[1]])}
           onValueCommitted={(values) => commitSlider(values as number[])}
           aria-label={t('price')}
+          className="my-5"
         />
       ) : (
-        <p className="py-2 text-[11px] text-neutral-400">
+        <p className="py-2 text-[11px] text-white/40">
           {formatPrice(sliderBounds.min)} — {formatPrice(sliderBounds.max)}
         </p>
       )}
 
-      <div className="mt-4 grid grid-cols-2 gap-2">
+      <div className="mt-5 grid grid-cols-2 gap-3">
         <label className="relative block">
           <span className="sr-only">{t('priceMin')}</span>
           <input
@@ -127,11 +128,11 @@ export function PriceFilter({ bounds, value, onChange }: PriceFilterProps) {
             onChange={(event) => setMinStr(event.target.value)}
             placeholder={t('priceMin')}
             aria-label={t('priceMin')}
-            className="h-10 w-full border border-black/15 bg-white px-2.5 pe-9 text-xs font-semibold text-[#111] outline-none transition-colors placeholder:text-neutral-400 focus:border-[#E10600]"
+            className="h-10 w-full rounded-lg border border-white/10 bg-white/5 px-3 pe-9 text-xs font-semibold text-white outline-none transition-colors placeholder:text-white/30 focus:border-[#D4A76A]"
           />
           <span
             aria-hidden="true"
-            className="pointer-events-none absolute end-2.5 top-1/2 -translate-y-1/2 text-[10px] font-bold text-neutral-400"
+            className="pointer-events-none absolute end-3 top-1/2 -translate-y-1/2 text-[10px] font-bold text-white/40"
           >
             DT
           </span>
@@ -145,11 +146,11 @@ export function PriceFilter({ bounds, value, onChange }: PriceFilterProps) {
             onChange={(event) => setMaxStr(event.target.value)}
             placeholder={t('priceMax')}
             aria-label={t('priceMax')}
-            className="h-10 w-full border border-black/15 bg-white px-2.5 pe-9 text-xs font-semibold text-[#111] outline-none transition-colors placeholder:text-neutral-400 focus:border-[#E10600]"
+            className="h-10 w-full rounded-lg border border-white/10 bg-white/5 px-3 pe-9 text-xs font-semibold text-white outline-none transition-colors placeholder:text-white/30 focus:border-[#D4A76A]"
           />
           <span
             aria-hidden="true"
-            className="pointer-events-none absolute end-2.5 top-1/2 -translate-y-1/2 text-[10px] font-bold text-neutral-400"
+            className="pointer-events-none absolute end-3 top-1/2 -translate-y-1/2 text-[10px] font-bold text-white/40"
           >
             DT
           </span>

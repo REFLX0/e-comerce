@@ -150,19 +150,19 @@ export function FilterSidebar({
     patch({ [key]: read(key) === value ? null : value })
 
   return (
-    <div className="overflow-hidden border border-black/10 bg-white shadow-[0_18px_45px_rgba(11,11,12,0.07)]">
+    <div className="overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-[#16254c] to-[#0a1128] shadow-2xl backdrop-blur-xl">
       {/* ── Header ─────────────────────────────────────────────────────── */}
-      <div className="flex items-center justify-between border-b border-black/10 px-5 py-4">
-        <div className="flex items-center gap-2.5">
-          <div className="flex h-8 w-8 items-center justify-center bg-[#0B0B0C] text-white">
-            <SlidersHorizontal size={15} aria-hidden="true" />
+      <div className="flex items-center justify-between border-b border-white/10 px-5 py-4">
+        <div className="flex items-center gap-3">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/5 bg-white/10 text-white shadow-inner">
+            <SlidersHorizontal size={16} aria-hidden="true" />
           </div>
           <div>
-            <h2 className="text-sm font-black uppercase tracking-[0.16em] text-[#111]">
+            <h2 className="text-sm font-black uppercase tracking-[0.16em] text-[#D4A76A]">
               {t('filters')}
             </h2>
             {activeCount > 0 && (
-              <p className="mt-0.5 text-[11px] font-medium text-neutral-500">
+              <p className="mt-0.5 text-[11px] font-medium text-white/60">
                 {t('filtersActive', { count: activeCount })}
               </p>
             )}
@@ -172,7 +172,7 @@ export function FilterSidebar({
           <button
             type="button"
             onClick={clearAll}
-            className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wide text-[#E10600] outline-none transition-colors hover:text-[#ab0500] focus-visible:ring-2 focus-visible:ring-[#E10600]/30"
+            className="inline-flex items-center gap-1.5 rounded-lg bg-white/5 px-2.5 py-1.5 text-[10px] font-bold uppercase tracking-widest text-[#D4A76A] outline-none transition-all hover:bg-white/10 hover:text-white focus-visible:ring-2 focus-visible:ring-[#D4A76A]/30"
           >
             <RotateCcw size={13} aria-hidden="true" />
             {t('clearAllFilters')}
@@ -184,10 +184,10 @@ export function FilterSidebar({
         {/* ── Categories ───────────────────────────────────────────────── */}
         {!hideCategories && (
           <section aria-label={t('categories')}>
-            <h3 className="mb-3 text-[11px] font-black uppercase tracking-[0.16em] text-neutral-500">
+            <h3 className="mb-4 pl-1 text-[11px] font-black uppercase tracking-[0.16em] text-[#D4A76A]/80">
               {t('categories')}
             </h3>
-            <div className="space-y-1">
+            <div className="space-y-1.5">
               <CategoryChoice
                 label={t('allCategories')}
                 active={!read('categorySlug')}
@@ -228,7 +228,7 @@ export function FilterSidebar({
         <AccordionPrimitive.Root
           defaultValue={DEFAULT_OPEN_SECTIONS}
           multiple
-          className="flex w-full flex-col"
+          className="flex w-full flex-col gap-1"
         >
           {/* Brands */}
           {!hideBrands && (
@@ -289,7 +289,7 @@ export function FilterSidebar({
               activeCount={read('volume') ? 1 : 0}
               onClear={() => patch({ volume: null })}
             >
-              <div className="flex flex-wrap gap-1.5">
+              <div className="flex flex-wrap gap-2">
                 {facets!.volumes
                   .filter((volume) => isPackagingVolume(volume.volume))
                   .sort(
@@ -307,16 +307,16 @@ export function FilterSidebar({
                         aria-pressed={isActive}
                         onClick={() => toggleSingle('volume', volume.volume)}
                         className={cn(
-                          'inline-flex min-h-8 items-center gap-1 border px-2.5 text-[10px] font-black tracking-wide transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E10600]/30',
+                          'inline-flex min-h-8 items-center gap-1.5 rounded-lg border px-3 text-[11px] font-bold tracking-wide transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4A76A]/30',
                           isActive
-                            ? 'border-[#E10600] bg-[#E10600] text-white'
-                            : 'border-black/10 bg-white text-[#111] hover:border-black/35'
+                            ? 'border-[#D4A76A] bg-[#D4A76A]/10 text-[#D4A76A]'
+                            : 'border-white/10 bg-white/5 text-white/80 hover:border-white/20 hover:bg-white/10 hover:text-white'
                         )}
                       >
                         {volume.volume}
                         <span
                           className={cn(
-                            isActive ? 'text-white/70' : 'text-neutral-400'
+                            isActive ? 'text-[#D4A76A]/70' : 'text-white/40'
                           )}
                         >
                           {volume.count}
@@ -335,7 +335,7 @@ export function FilterSidebar({
             activeCount={read('type') ? 1 : 0}
             onClear={() => patch({ type: null })}
           >
-            <div className="space-y-2.5">
+            <div className="space-y-1.5">
               {OIL_TYPES.map((type) => (
                 <ToggleRow
                   key={type}
@@ -355,7 +355,7 @@ export function FilterSidebar({
             activeCount={read('api') ? 1 : 0}
             onClear={() => patch({ api: null })}
           >
-            <div className="space-y-2.5">
+            <div className="space-y-1.5">
               {API_STANDARDS.map((standard) => (
                 <ToggleRow
                   key={standard}
@@ -375,7 +375,7 @@ export function FilterSidebar({
             activeCount={read('acea') ? 1 : 0}
             onClear={() => patch({ acea: null })}
           >
-            <div className="space-y-2.5">
+            <div className="space-y-1.5">
               {ACEA_STANDARDS.map((standard) => (
                 <ToggleRow
                   key={standard}
@@ -398,7 +398,7 @@ export function FilterSidebar({
               patch({ inStockOnly: null, isNew: null, isFeatured: null })
             }
           >
-            <div className="space-y-2.5">
+            <div className="space-y-1.5">
               <ToggleRow
                 label={t('inStockOnly')}
                 checked={read('inStockOnly') === 'true'}
@@ -448,17 +448,19 @@ function CategoryChoice({
       type="button"
       onClick={onClick}
       aria-pressed={active}
-      className={`flex min-h-9 w-full items-center justify-between gap-3 border-s-2 px-3 text-start text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E10600]/30 ${
-        nested ? 'ps-7 text-[13px]' : ''
+      className={`flex min-h-10 w-full items-center justify-between gap-3 rounded-xl px-4 text-start text-[13px] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4A76A]/30 ${
+        nested ? 'ps-8 text-[12px]' : ''
       } ${
         active
-          ? 'border-[#E10600] bg-[#E10600]/[0.06] font-bold text-[#111]'
-          : 'border-transparent text-neutral-600 hover:border-black/25 hover:bg-neutral-50 hover:text-[#111]'
+          ? 'border border-white/10 bg-white/10 font-bold text-white shadow-inner'
+          : 'border border-transparent text-white/70 hover:bg-white/5 hover:text-white'
       }`}
     >
       <span className="truncate">{label}</span>
       {typeof count === 'number' && (
-        <span className="text-[11px] text-neutral-400">{count}</span>
+        <span className={cn('text-[11px]', active ? 'text-[#D4A76A]' : 'text-white/40')}>
+          {count}
+        </span>
       )}
     </button>
   )
@@ -474,7 +476,7 @@ function ToggleRow({
   onChange: (checked: boolean) => void
 }) {
   return (
-    <label className="group flex min-h-8 cursor-pointer items-center gap-2.5 py-0.5">
+    <label className="group flex min-h-9 cursor-pointer items-center gap-3 rounded-xl px-2 py-1 transition-all hover:bg-white/5">
       <input
         type="checkbox"
         className="sr-only"
@@ -484,27 +486,27 @@ function ToggleRow({
       <span
         aria-hidden="true"
         className={cn(
-          'flex h-4 w-4 shrink-0 items-center justify-center border transition-colors',
+          'flex h-5 w-5 shrink-0 items-center justify-center rounded-md border transition-all duration-200',
           checked
-            ? 'border-[#E10600] bg-[#E10600] text-white'
-            : 'border-black/20 bg-white group-hover:border-[#E10600]/60'
+            ? 'border-[#D4A76A] bg-[#D4A76A] text-[#16254c] shadow-[0_0_10px_rgba(212,167,106,0.3)]'
+            : 'border-white/20 bg-white/5 text-transparent group-hover:border-white/40 group-hover:bg-white/10'
         )}
       >
         <Check
-          size={11}
+          size={13}
           strokeWidth={3.5}
           className={cn(
-            'transition-transform duration-150',
-            checked ? 'scale-100 opacity-100' : 'scale-50 opacity-0'
+            'transition-transform duration-200',
+            checked ? 'scale-100' : 'scale-50 opacity-0'
           )}
         />
       </span>
       <span
         className={cn(
-          'text-[13px]',
+          'text-[13px] transition-colors',
           checked
-            ? 'font-bold text-[#111]'
-            : 'text-neutral-600 group-hover:text-[#111]'
+            ? 'font-bold text-white'
+            : 'text-white/70 group-hover:text-white'
         )}
       >
         {label}

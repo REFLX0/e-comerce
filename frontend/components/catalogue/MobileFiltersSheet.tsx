@@ -92,7 +92,7 @@ export function MobileFiltersSheet({
             type="button"
             aria-label={`${triggerLabel ?? t('filters')}${activeCount ? ` (${activeCount})` : ''}`}
             className={cn(
-              'flex min-h-11 flex-1 items-center justify-center gap-2 border border-black/15 bg-white px-4 text-xs font-black uppercase tracking-[0.12em] text-[#111] transition-colors hover:border-[#E10600] hover:text-[#E10600] sm:flex-none lg:hidden',
+              'flex min-h-12 flex-1 items-center justify-center gap-2.5 rounded-xl border border-white/10 bg-[#0a1128] px-4 text-[13px] font-black uppercase tracking-[0.12em] text-[#D4A76A] shadow-[0_8px_30px_rgba(10,17,40,0.15)] transition-all hover:bg-[#16254c] hover:shadow-[0_8px_30px_rgba(10,17,40,0.25)] sm:flex-none lg:hidden',
               triggerClassName
             )}
           />
@@ -103,7 +103,7 @@ export function MobileFiltersSheet({
         {activeCount > 0 && (
           <span
             aria-hidden="true"
-            className="flex h-5 min-w-5 items-center justify-center bg-[#E10600] px-1 text-[10px] font-black text-white"
+            className="flex h-5 min-w-5 items-center justify-center rounded-full bg-[#D4A76A] px-1 text-[11px] font-black text-[#16254c] shadow-[0_0_10px_rgba(212,167,106,0.3)]"
           >
             {activeCount}
           </span>
@@ -113,13 +113,13 @@ export function MobileFiltersSheet({
       <SheetContent
         side="bottom"
         showCloseButton
-        className="gap-0 bg-white p-0"
+        className="gap-0 border-t-white/10 bg-[#0a1128] p-0 text-white"
       >
-        <SheetHeader className="border-b border-black/10 px-5 py-4">
-          <SheetTitle className="flex items-center gap-2 text-[13px] font-black uppercase tracking-[0.16em] text-[#111]">
+        <SheetHeader className="border-b border-white/10 px-5 py-4">
+          <SheetTitle className="flex items-center gap-3 text-[13px] font-black uppercase tracking-[0.16em] text-[#D4A76A]">
             {t('filters')}
             {draftCount > 0 && (
-              <span className="text-[11px] font-bold normal-case tracking-normal text-neutral-500">
+              <span className="text-[11px] font-bold normal-case tracking-normal text-white/60">
                 {t('filtersActive', { count: draftCount })}
               </span>
             )}
@@ -127,34 +127,38 @@ export function MobileFiltersSheet({
         </SheetHeader>
 
         <div className="h-[62dvh] max-h-[640px] min-h-[320px] overflow-y-auto">
-          <FilterSidebar
-            mode="draft"
-            draft={draft}
-            onDraftChange={handleDraftChange}
-            hideCategories={hideCategories}
-            hideBrands={hideBrands}
-          />
+          {/* We pass a prop or just let FilterSidebar render its gradient inside the sheet.
+              Since FilterSidebar has rounded-2xl, it'll look like a floating card inside the sheet. */}
+          <div className="p-3">
+            <FilterSidebar
+              mode="draft"
+              draft={draft}
+              onDraftChange={handleDraftChange}
+              hideCategories={hideCategories}
+              hideBrands={hideBrands}
+            />
+          </div>
         </div>
 
-        <div className="sticky bottom-0 flex gap-2 border-t border-black/10 bg-white p-3">
+        <div className="sticky bottom-0 flex gap-3 border-t border-white/10 bg-[#0a1128]/95 p-4 backdrop-blur-md">
           <button
             type="button"
             onClick={clearDraft}
             disabled={draftCount === 0}
-            className="min-h-12 flex-1 border border-black/15 px-3 text-xs font-black uppercase tracking-[0.12em] text-[#111] outline-none transition-colors hover:border-[#E10600] hover:text-[#E10600] focus-visible:ring-2 focus-visible:ring-[#E10600]/30 disabled:cursor-not-allowed disabled:opacity-40"
+            className="min-h-12 flex-1 rounded-xl border border-white/10 bg-white/5 px-3 text-xs font-black uppercase tracking-[0.12em] text-white/70 outline-none transition-all hover:bg-white/10 hover:text-white focus-visible:ring-2 focus-visible:ring-[#D4A76A]/30 disabled:cursor-not-allowed disabled:opacity-40"
           >
             {t('clear')}
           </button>
           <button
             type="button"
             onClick={apply}
-            className="flex min-h-12 flex-[1.6] items-center justify-center gap-2 bg-[#E10600] px-3 text-xs font-black uppercase tracking-[0.12em] text-white outline-none transition-colors hover:bg-[#bd0500] focus-visible:ring-2 focus-visible:ring-[#E10600]/40"
+            className="flex min-h-12 flex-[1.6] items-center justify-center gap-2 rounded-xl bg-[#D4A76A] px-3 text-xs font-black uppercase tracking-[0.12em] text-[#16254c] shadow-[0_0_15px_rgba(212,167,106,0.3)] outline-none transition-all hover:bg-[#e8b975] focus-visible:ring-2 focus-visible:ring-[#D4A76A]/40"
           >
             {t('applyFilters')}
             {draftCount > 0 && (
               <span
                 aria-hidden="true"
-                className="flex h-5 min-w-5 items-center justify-center bg-white/25 px-1 text-[10px] font-black"
+                className="flex h-5 min-w-5 items-center justify-center rounded-full bg-[#16254c]/20 px-1 text-[11px] font-black"
               >
                 {draftCount}
               </span>

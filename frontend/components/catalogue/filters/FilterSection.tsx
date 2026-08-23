@@ -32,30 +32,30 @@ export function FilterSection({
   const isActive = activeCount > 0
 
   return (
-    <AccordionPrimitive.Item value={value} className="not-last:border-b border-black/10">
-      <AccordionPrimitive.Header className="flex items-center gap-1">
+    <AccordionPrimitive.Item value={value} className="not-last:border-b border-white/10 px-4">
+      <AccordionPrimitive.Header className="flex items-center gap-2">
         <AccordionPrimitive.Trigger
           data-slot="filter-section-trigger"
-          className="group/filter-trigger flex min-h-11 flex-1 items-center justify-between gap-2 py-3 pe-1 text-start text-[11px] font-black uppercase tracking-[0.16em] text-[#111] outline-none transition-colors hover:text-[#E10600] focus-visible:ring-2 focus-visible:ring-[#E10600]/30"
+          className="group/filter-trigger flex min-h-12 flex-1 items-center justify-between gap-2 py-3 text-start text-[11px] font-black uppercase tracking-[0.16em] text-white outline-none transition-colors hover:text-[#D4A76A] focus-visible:ring-2 focus-visible:ring-[#D4A76A]/30 rounded-lg px-1"
         >
-          <span className="flex items-center gap-2">
+          <span className="flex items-center gap-2.5">
             {title}
             {isActive && (
-              <span className="flex h-4.5 min-w-4.5 items-center justify-center bg-[#E10600] px-1 text-[9px] font-black text-white">
+              <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-[#D4A76A] px-1 text-[10px] font-black text-[#16254c] shadow-[0_0_10px_rgba(212,167,106,0.3)]">
                 {activeCount}
               </span>
             )}
           </span>
           <ChevronDown
             aria-hidden="true"
-            className="size-3.5 shrink-0 text-neutral-400 transition-transform duration-200 group-aria-expanded/filter-trigger:rotate-180"
+            className="size-4 shrink-0 text-white/40 transition-transform duration-200 group-aria-expanded/filter-trigger:rotate-180"
           />
         </AccordionPrimitive.Trigger>
         {isActive && onClear && (
           <button
             type="button"
             onClick={onClear}
-            className="shrink-0 text-[10px] font-bold uppercase tracking-wide text-neutral-400 transition-colors hover:text-[#E10600] focus-visible:ring-2 focus-visible:ring-[#E10600]/30 outline-none"
+            className="shrink-0 rounded-lg px-2 py-1 text-[10px] font-bold uppercase tracking-wide text-white/50 transition-colors hover:bg-white/10 hover:text-white focus-visible:ring-2 focus-visible:ring-[#D4A76A]/30 outline-none"
             aria-label={`${t('clear')} ${title}`}
           >
             {t('clear')}
@@ -64,7 +64,7 @@ export function FilterSection({
       </AccordionPrimitive.Header>
       <AccordionPrimitive.Panel
         data-slot="filter-section-content"
-        className="data-open:animate-accordion-down data-closed:animate-accordion-up overflow-hidden"
+        className="data-open:animate-accordion-down data-closed:animate-accordion-up overflow-hidden px-1"
       >
         <div className={cn('pb-4')}>{children}</div>
       </AccordionPrimitive.Panel>

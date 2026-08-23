@@ -35,10 +35,10 @@ export function ViscosityFilter({ viscosities, selected, onChange }: ViscosityFi
     if (items.length === 0) return null
     return (
       <div className="mb-3 last:mb-0">
-        <p className="mb-2 text-[10px] font-black uppercase tracking-[0.14em] text-neutral-400">
+        <p className="mb-2 text-[10px] font-black uppercase tracking-[0.14em] text-white/50 pl-1">
           {title}
         </p>
-        <div className="flex flex-wrap gap-1.5">
+        <div className="flex flex-wrap gap-2">
           {items.map((item) => {
             const isActive = selected === item.value
             return (
@@ -48,14 +48,14 @@ export function ViscosityFilter({ viscosities, selected, onChange }: ViscosityFi
                 aria-pressed={isActive}
                 onClick={() => onChange(isActive ? null : item.value)}
                 className={cn(
-                  'min-h-8 border px-2.5 text-[11px] font-black tracking-wide transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E10600]/30',
+                  'min-h-8 inline-flex items-center gap-1.5 rounded-lg border px-3 text-[11px] font-bold tracking-wide transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4A76A]/30',
                   isActive
-                    ? 'border-[#E10600] bg-[#E10600] text-white'
-                    : 'border-black/10 bg-neutral-50 text-[#111] hover:border-black/35 hover:bg-white'
+                    ? 'border-[#D4A76A] bg-[#D4A76A]/10 text-[#D4A76A]'
+                    : 'border-white/10 bg-white/5 text-white/80 hover:border-white/20 hover:bg-white/10 hover:text-white'
                 )}
               >
                 {item.value}
-                <span className={cn('ml-1 text-[10px] font-bold', isActive ? 'text-white/70' : 'text-neutral-400')}>
+                <span className={cn('text-[10px]', isActive ? 'text-[#D4A76A]/70' : 'text-white/40')}>
                   {item.count}
                 </span>
               </button>
