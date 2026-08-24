@@ -14,11 +14,11 @@
 │                                                     │
 │  ┌─────────────┐   ┌──────────────────────────┐    │
 │  │   NGINX     │   │  Docker Compose Stack    │    │
-│  │  :8080      │──▶│                          │    │
+│  │  :8082      │──▶│                          │    │
 │  │  Rate Limit │   │  frontend  :3000 (Next)  │    │
 │  │  Caching    │   │  backend   :4000 (Nest)  │    │
-│  │  Proxy      │   │  postgres  :5433         │    │
-│  └─────────────┘   │  redis     :6380         │    │
+│  │  Proxy      │   │  postgres  :5432         │    │
+│  └─────────────┘   │  redis     :6379         │    │
 │                    └──────────────────────────┘    │
 └─────────────────────────────────────────────────────┘
 ```
@@ -55,7 +55,24 @@ cp .env.production.example .env
 docker-compose up -d --build
 ```
 
-The app will be available at **http://localhost:8080**
+The app will be available at **http://localhost:8082**
+
+### 2.1 Port forwarding (Docker host ↔ containers)
+
+You can reach key services directly on the host using these forwarded ports:
+
+| Service | Host endpoint | Notes |
+|---|---|---|
+| NGINX | `http://localhost:8082` | Main entrypoint |
+| Frontend | `http://localhost:3000` | Direct Next.js access |
+| Backend | `http://localhost:4000/api/health` | Direct NestJS access |
+| PostgreSQL | `localhost:5432` | Bound to `127.0.0.1` |
+| Redis | `localhost:6379` | Bound to `127.0.0.1` |
+| MinIO API | `http://localhost:9000` | S3-compatible API |
+| MinIO Console | `http://localhost:9001` | Bound to `127.0.0.1` |
+| Kafka UI | `http://localhost:8080` | Web UI |
+
+All host ports are configurable through `.env` variables (see `.env.production.example`).
 
 ### 3. Seed the database (first time, optional)
 Migrations run automatically on startup via the `migrate` service.
