@@ -213,11 +213,11 @@ export function ProductCard({ product, viewMode = 'grid' }: Props) {
             {/* Stock indicator */}
             <div className="mb-3">
               {!isOutOfStock ? (
-                <span className="flex items-center gap-1.5 text-xs font-bold text-green-600">
+                <span className="flex items-center gap-1.5 text-xs font-bold text-emerald-600">
                   <Check size={14} strokeWidth={3} /> {t('inStock')}
                 </span>
               ) : (
-                <span className="flex items-center gap-1.5 text-xs font-bold text-[#E10600]">
+                <span className="flex items-center gap-1.5 text-xs font-bold text-rose-500">
                   <X size={14} strokeWidth={3} /> {t('outOfStock')}
                 </span>
               )}
@@ -250,7 +250,7 @@ export function ProductCard({ product, viewMode = 'grid' }: Props) {
               whileTap={{ scale: 0.97 }}
               onClick={handleAddToCart}
               disabled={isOutOfStock}
-              className="flex min-h-[40px] flex-1 items-center justify-center gap-2 bg-[#E10600] text-xs font-black uppercase tracking-wider text-white transition-colors hover:bg-[#bd0500] disabled:cursor-not-allowed disabled:bg-gray-300"
+              className="flex min-h-[40px] flex-1 items-center justify-center gap-2 bg-[#16254c] text-xs font-black uppercase tracking-wider text-white shadow-sm transition-colors hover:bg-[#1f356b] hover:text-[#D4A76A] disabled:cursor-not-allowed disabled:bg-gray-300"
               aria-label={t('addToCart')}
             >
               <ShoppingCart size={15} />
@@ -259,7 +259,7 @@ export function ProductCard({ product, viewMode = 'grid' }: Props) {
             <motion.button
               whileTap={{ scale: 0.9 }}
               onClick={handleAddToWishlist}
-              className="hidden h-10 w-10 shrink-0 items-center justify-center border border-gray-200 bg-white text-gray-400 transition-colors hover:border-[#E10600] hover:text-[#E10600] sm:flex"
+              className="hidden h-10 w-10 shrink-0 items-center justify-center border border-gray-200 bg-white text-gray-400 transition-colors hover:border-[#D4A76A] hover:text-[#D4A76A] sm:flex"
               aria-label={t('addToWishlist')}
             >
               <Heart size={16} />
@@ -285,7 +285,7 @@ export function ProductCard({ product, viewMode = 'grid' }: Props) {
             </span>
           )}
           {product.isPromo && (
-            <span className="bg-[#E10600] px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-white">
+            <span className="bg-[#D4A76A] px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-[#16254c]">
               {t('promo')}{product.promoPercent ? ` -${product.promoPercent}%` : ''}
             </span>
           )}
@@ -294,7 +294,7 @@ export function ProductCard({ product, viewMode = 'grid' }: Props) {
         {/* Top-right: Wishlist */}
         <motion.button
           whileTap={{ scale: 0.88 }}
-          className="absolute top-2 right-2 z-10 flex h-7 w-7 items-center justify-center rounded-full bg-white/90 text-gray-400 shadow-sm border border-gray-100 backdrop-blur transition-colors hover:text-[#E10600]"
+          className="absolute top-2 right-2 z-10 flex h-7 w-7 items-center justify-center rounded-full bg-white/90 text-gray-400 shadow-sm border border-gray-100 backdrop-blur transition-colors hover:text-[#D4A76A]"
           onClick={handleAddToWishlist}
           aria-label={t('addToWishlist')}
         >
@@ -364,9 +364,9 @@ export function ProductCard({ product, viewMode = 'grid' }: Props) {
           <div className="flex flex-col">
             <span className="mb-0.5 flex items-center gap-1 text-[10px] font-bold">
               {!isOutOfStock ? (
-                <span className="text-green-600">{t('inStock')}</span>
+                <span className="text-emerald-600">{t('inStock')}</span>
               ) : (
-                <span className="text-[#E10600]">{t('outOfStock')}</span>
+                <span className="text-rose-500">{t('outOfStock')}</span>
               )}
             </span>
             
@@ -389,7 +389,7 @@ export function ProductCard({ product, viewMode = 'grid' }: Props) {
             whileTap={{ scale: 0.9 }}
             onClick={handleAddToCart}
             disabled={isOutOfStock}
-            className="flex h-9 w-9 shrink-0 items-center justify-center bg-[#E10600] text-white transition-colors hover:bg-[#bd0500] disabled:cursor-not-allowed disabled:bg-gray-300 sm:h-10 sm:w-10"
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#16254c] text-white shadow-sm transition-colors hover:bg-[#1f356b] hover:text-[#D4A76A] disabled:cursor-not-allowed disabled:bg-gray-300 sm:h-10 sm:w-10"
             aria-label={t('addToCart')}
           >
             <ShoppingCart size={16} />

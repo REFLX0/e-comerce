@@ -68,7 +68,7 @@ export class AdminService {
     const skip = (safePage - 1) * safeLimit;
     const where: Prisma.ProductWhereInput = {};
 
-    if (search?.trim()) {
+    if (search?.trim() && search.trim() !== 'undefined') {
       const query = search.trim();
       where.OR = [
         { nameFr: { contains: query, mode: 'insensitive' } },

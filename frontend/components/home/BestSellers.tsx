@@ -45,7 +45,7 @@ export function BestSellers() {
 
   const { data: products, isLoading } = useQuery({
     queryKey: ['best-sellers'],
-    queryFn: () => productsApi.getBestSellers(6),
+    queryFn: () => productsApi.getBestSellers(8),
   })
 
   if (isLoading) {
@@ -70,16 +70,16 @@ export function BestSellers() {
         {/* Header */}
         <div className="mb-10 flex items-end justify-between gap-4">
           <div>
-            <p className="mb-1 text-xs font-bold uppercase tracking-[0.25em] text-brand-accent">
+            <p className="mb-1 text-xs font-bold uppercase tracking-[0.25em] text-[#D4A76A]">
               {t('bestSellers')}
             </p>
-            <h2 className="text-3xl font-black uppercase tracking-tight text-brand-primary md:text-4xl">
-              Top Produits
+            <h2 className="text-3xl font-black uppercase tracking-tight text-[#16254c] md:text-4xl">
+              {t('topProducts')}
             </h2>
           </div>
           <Link
             href="/catalogue?sort=popular"
-            className="hidden items-center gap-1 text-sm font-bold text-brand-primary/60 transition-colors hover:text-brand-primary sm:inline-flex"
+            className="hidden items-center gap-1 text-sm font-bold text-[#16254c]/70 transition-colors hover:text-[#D4A76A] sm:inline-flex"
           >
             {t('viewAll')} <ArrowRight size={14} />
           </Link>

@@ -76,7 +76,7 @@ export function BrandsBar() {
         {/* Scrollable brand logos */}
         <div
           ref={scrollRef}
-          className="hide-scrollbar flex gap-4 overflow-x-auto pb-2"
+          className="hide-scrollbar flex gap-4 overflow-x-auto pb-3 pt-1"
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
           onFocus={() => setIsPaused(true)}
@@ -87,14 +87,16 @@ export function BrandsBar() {
               key={brand.slug}
               href={`/marque/${brand.slug}`}
               title={brand.name}
-              className="relative flex h-16 w-28 shrink-0 items-center justify-center rounded-xl border border-gray-100 bg-gray-50 opacity-60 transition-all duration-200 hover:border-gray-200 hover:bg-white hover:opacity-100 hover:shadow-md md:h-20 md:w-36"
+              className="group relative flex h-20 w-36 shrink-0 items-center justify-center rounded-2xl border border-slate-200/80 bg-white p-3 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#D4A76A]/40 hover:shadow-[0_8px_20px_rgba(22,37,76,0.08)] md:h-24 md:w-44"
             >
-              <Image
-                src={brand.logo}
-                alt={brand.name}
-                fill
-                className="object-contain p-3 grayscale transition-all duration-200 hover:grayscale-0"
-              />
+              <div className="relative h-full w-full">
+                <Image
+                  src={brand.logo}
+                  alt={brand.name}
+                  fill
+                  className="object-contain transition-transform duration-300 group-hover:scale-110"
+                />
+              </div>
             </Link>
           ))}
         </div>

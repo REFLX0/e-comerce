@@ -187,7 +187,23 @@ export class OilFinderService {
   }
 
   async getMakes(category?: string) {
-    const where = category && category !== 'undefined' ? { category: category.toLowerCase() } : {}
+    let where: any = {}
+    if (category && category !== 'undefined') {
+      const cat = category.toLowerCase().trim()
+      if (cat === 'poids' || cat === 'poids_lourd' || cat === 'poids-lourd' || cat === 'truck' || cat === 'camion') {
+        where = { category: { in: ['poids', 'poids_lourd', 'poids-lourd'] } }
+      } else if (cat === 'auto' || cat === 'automobile' || cat === 'car' || cat === 'voiture') {
+        where = { category: { in: ['auto', 'automobile'] } }
+      } else if (cat === 'moto' || cat === 'motorcycle' || cat === 'scooter') {
+        where = { category: { in: ['moto', 'motorcycle'] } }
+      } else if (cat === 'marine' || cat === 'boat' || cat === 'bateau') {
+        where = { category: { in: ['marine'] } }
+      } else if (cat === 'agricole' || cat === 'tractor' || cat === 'tracteur') {
+        where = { category: { in: ['agricole'] } }
+      } else {
+        where = { category: cat }
+      }
+    }
     const rows = await this.prisma.oilFinderVehicle.findMany({
       where,
       select: { make: true },

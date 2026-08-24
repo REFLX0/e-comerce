@@ -247,11 +247,11 @@ export function VehicleFinder({ onClose, initialVehicleType }: VehicleFinderProp
       onClick={handleSearch}
       disabled={disabled}
       className={`
-        flex items-center gap-2.5 rounded-xl px-6 py-3 text-sm font-semibold transition-all duration-200
-        ${!disabled ? 'bg-[#E10600] text-gray-900 hover:bg-[#c80500]' : 'bg-gray-100 text-gray-500 cursor-not-allowed'}
+        flex items-center gap-2.5 rounded-xl px-7 py-3.5 text-sm font-bold transition-all duration-200
+        ${!disabled ? 'bg-[#16254c] text-white hover:bg-[#1f356b] shadow-md shadow-[#16254c]/15' : 'bg-slate-200 text-slate-400 cursor-not-allowed'}
       `}
     >
-      <Search size={16} />
+      <Search size={16} className={!disabled ? 'text-[#D4A76A]' : 'text-slate-400'} />
       <span>Voir les huiles compatibles</span>
     </button>
   )

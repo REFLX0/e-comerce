@@ -52,12 +52,12 @@ export function Pagination({ currentPage = 1, totalPages, nextCursor, isLoading,
     }
 
     return (
-      <div className="mt-12 flex justify-center border-t border-black/10 pt-7">
+      <div className="mt-12 flex justify-center border-t border-slate-100 pt-7">
         <button
           type="button"
           onClick={handleLoadMore}
           disabled={busy}
-          className="flex items-center gap-2 border border-black/15 px-8 py-3 text-sm font-bold text-[#111] transition-all hover:border-[#E10600] hover:bg-[#E10600] hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
+          className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-8 py-3 text-sm font-bold text-[#16254c] shadow-sm transition-all hover:border-[#D4A76A] hover:bg-[#16254c] hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
           aria-label="Voir plus de produits"
         >
           {busy ? (
@@ -93,14 +93,14 @@ export function Pagination({ currentPage = 1, totalPages, nextCursor, isLoading,
 
   return (
     <nav
-      className="mt-12 flex items-center justify-center gap-1.5 border-t border-black/10 pt-7"
+      className="mt-12 flex items-center justify-center gap-2 border-t border-slate-100 pt-7"
       aria-label="Pagination"
     >
       <button
         type="button"
         onClick={() => handlePageChange(currentPage - 1)}
         disabled={currentPage === 1 || busy}
-        className="flex h-10 w-10 items-center justify-center border border-black/15 text-[#111] transition-colors hover:border-[#E10600] hover:bg-[#E10600] hover:text-white disabled:cursor-not-allowed disabled:opacity-35"
+        className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-[#16254c] transition-all hover:border-[#D4A76A] hover:bg-[#16254c] hover:text-white disabled:cursor-not-allowed disabled:opacity-35"
         aria-label="Page précédente"
       >
         <ChevronLeft size={18} />
@@ -115,10 +115,10 @@ export function Pagination({ currentPage = 1, totalPages, nextCursor, isLoading,
             type="button"
             onClick={() => handlePageChange(page as number)}
             aria-current={currentPage === page ? 'page' : undefined}
-            className={`flex h-10 min-w-10 items-center justify-center border px-2 text-sm font-black transition-colors ${
+            className={`flex h-10 min-w-10 items-center justify-center rounded-xl border px-3 text-sm font-bold transition-all ${
               currentPage === page
-                ? 'border-[#E10600] bg-[#E10600] text-white'
-                : 'border-black/15 text-[#111] hover:border-[#E10600] hover:text-[#E10600]'
+                ? 'border-[#16254c] bg-[#16254c] text-white shadow-sm'
+                : 'border-slate-200 bg-white text-[#16254c] hover:border-[#D4A76A] hover:text-[#D4A76A]'
             }`}
           >
             {page}
@@ -130,7 +130,7 @@ export function Pagination({ currentPage = 1, totalPages, nextCursor, isLoading,
         type="button"
         onClick={() => handlePageChange(currentPage + 1)}
         disabled={currentPage === totalPages || busy}
-        className="flex h-10 w-10 items-center justify-center border border-black/15 text-[#111] transition-colors hover:border-[#E10600] hover:bg-[#E10600] hover:text-white disabled:cursor-not-allowed disabled:opacity-35"
+        className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-[#16254c] transition-all hover:border-[#D4A76A] hover:bg-[#16254c] hover:text-white disabled:cursor-not-allowed disabled:opacity-35"
         aria-label="Page suivante"
       >
         <ChevronRight size={18} />

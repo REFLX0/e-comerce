@@ -35,7 +35,7 @@ export function SortDropdown() {
       <ArrowDownUp size={15} className="hidden text-neutral-500 sm:block" />
       <span className="hidden text-[11px] font-black uppercase tracking-[0.14em] text-neutral-500 md:block">{t('sortBy')}</span>
       <Select value={currentSort} onValueChange={handleSortChange}>
-        <SelectTrigger className="h-11 min-w-[172px] rounded-none border-black/15 bg-white font-semibold text-[#111] focus-visible:border-[#E10600] focus-visible:ring-[#E10600]/20">
+        <SelectTrigger className="h-11 min-w-[172px] rounded-lg border-slate-200 bg-white font-semibold text-[#16254c] focus-visible:border-[#D4A76A] focus-visible:ring-[#D4A76A]/20">
           <SelectValue placeholder={t('sortBy')} />
         </SelectTrigger>
         <SelectContent align="end" className="rounded-none border-black/15">

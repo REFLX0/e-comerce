@@ -186,7 +186,11 @@ export function createApiClient(opts: ApiClientOptions) {
     const { params, headers: extra, ...rest } = init
     const url = buildApiUrl(baseUrl, path)
     if (params) {
-      for (const [k, v] of Object.entries(params)) url.searchParams.set(k, String(v))
+      for (const [k, v] of Object.entries(params)) {
+        if (v !== undefined && v !== null && v !== '' && v !== 'undefined') {
+          url.searchParams.set(k, String(v))
+        }
+      }
     }
 
     const isFormData = rest.body instanceof FormData
