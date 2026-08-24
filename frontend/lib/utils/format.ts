@@ -53,11 +53,55 @@ export const WILAYAS_TN = [
 export type Wilaya = (typeof WILAYAS_TN)[number]
 
 /**
- * Returns the raw SKU as-is. SKUs are stored in a clean format
- * (e.g. 'MOT-300V-10W40', 'TOTALENERGIES-QUARTZ-INEO-FIRST-0W-20-5L')
- * and should be displayed without heuristic extraction.
+ * Returns a clean, concise product SKU reference.
+ * Strips auto-prefixes and unit noise so references look professional (e.g. 'MN-3089-1L', 'LM-2424', '106001').
  */
 export function formatSKU(sku?: string): string {
   if (!sku) return 'N/A'
-  return sku
+  let clean = sku.replace(/-UNITÉ$/i, '').replace(/-UNITE$/i, '').trim()
+  if (clean.startsWith('AUTO-')) {
+    const trailingMatch = clean.match(/-(\d+)(?:-([A-Z0-9]+))?$/i)
+    if (trailingMatch) {
+      const num = trailingMatch[1]
+      const suffix = trailingMatch[2] ? `-${trailingMatch[2]}` : ''
+      return `REF-${num}${suffix}`
+    }
+    return clean.replace(/^AUTO-/i, '').slice(0, 16)
+  }
+  return clean
 }
+
+/**
+ * Ensures product names are properly formatted and capitalized even if stored in slug format.
+ */
+export function formatProductName(name?: string, brandName?: string): string {
+  if (!name) return ''
+  if (!name.includes('-') && !name.includes('_')) return name
+
+  let clean = name.replace(/^auto-/i, '')
+  let words = clean.split(/[-_]+/).filter(Boolean)
+
+  const capitalized = words.map((w, idx) => {
+    const lower = w.toLowerCase()
+    if (/^\d+w\d*$/i.test(lower)) return lower.toUpperCase()
+    if (/^\d+(\.\d+)?(l|ml)$/i.test(lower)) return lower.toUpperCase()
+    if (/^(4t|2t|atf|dsg|cvt|mtf|dot3|dot4|h1|h4|h7|h11|w5w|led|api|acea|mos2|oem)$/i.test(lower)) {
+      return lower.toUpperCase()
+    }
+    if (/^(\d+)w$/i.test(lower) || /^(\d+)v$/i.test(lower)) return lower.toUpperCase()
+    if (idx > 0 && ['de', 'du', 'des', 'le', 'la', 'les', 'et', 'pour', 'en', 'sur', 'a', 'à', 'au', 'aux'].includes(lower)) {
+      return lower
+    }
+    return lower.charAt(0).toUpperCase() + lower.slice(1)
+  })
+
+  let title = capitalized.join(' ')
+  if (brandName) {
+    const brandLower = brandName.toLowerCase()
+    if (title.toLowerCase().startsWith(brandLower + ' ')) {
+      title = brandName + title.slice(brandName.length)
+    }
+  }
+  return title
+}
+

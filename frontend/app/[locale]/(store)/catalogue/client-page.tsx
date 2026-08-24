@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useSearchParams } from 'next/navigation'
 import { useLocale, useTranslations } from 'next-intl'
-import { Car, Search, Sparkles, X, LayoutGrid, List } from 'lucide-react'
+import { Search, Sparkles, X, LayoutGrid, List } from 'lucide-react'
 import Link from 'next/link'
 import { productsApi } from '@/lib/api/products'
 import { useRouter } from '@/i18n/routing'
@@ -222,8 +222,8 @@ export default function CataloguePage() {
         <div className="section-padding relative py-12 md:py-16">
           <div className="grid max-w-5xl gap-9 lg:grid-cols-[minmax(0,1fr)_260px] lg:items-end">
             <div>
-              <p className="mb-4 flex items-center gap-2 text-[11px] font-black uppercase tracking-[0.24em] text-[#ff504a]">
-                <span className="h-px w-8 bg-[#E10600]" />
+              <p className="mb-4 flex items-center gap-2 text-[11px] font-black uppercase tracking-[0.24em] text-[#D4A76A]">
+                <span className="h-px w-8 bg-[#D4A76A]" />
                 {isSearchMode ? t('precisionSearch') : t('catalogEyebrow')}
               </p>
               <h1 className="max-w-3xl text-4xl font-black uppercase leading-[0.92] tracking-[-0.055em] text-white sm:text-5xl md:text-6xl">
@@ -233,31 +233,104 @@ export default function CataloguePage() {
                 {isSearchMode ? t('searchModeIntro') : t('catalogIntro')}
               </p>
             </div>
+            {/* ── Premium Guided Search Card ── */}
             <Link
               href={`/${locale}/#oil-finder`}
-              className="group flex items-center gap-3 border border-white/20 bg-white/[0.06] p-4 transition-colors hover:border-[#E10600] hover:bg-[#E10600]"
+              className="group relative flex items-center gap-5 overflow-hidden rounded-2xl p-5 transition-all duration-300 hover:shadow-[0_12px_40px_rgba(212,167,106,0.18)]"
+              style={{
+                background: 'linear-gradient(135deg, rgba(22,37,76,0.7) 0%, rgba(10,17,40,0.85) 100%)',
+                border: '1px solid rgba(212,167,106,0.2)',
+                backdropFilter: 'blur(16px)',
+                boxShadow: '0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.05)',
+              }}
             >
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center bg-[#E10600] text-white transition-colors group-hover:bg-white group-hover:text-[#E10600]">
-                <Car size={19} />
+              {/* Animated golden shimmer on hover */}
+              <span
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+                style={{
+                  background: 'radial-gradient(ellipse at 20% 50%, rgba(212,167,106,0.12) 0%, transparent 70%)',
+                }}
+              />
+
+              {/* Custom premium oil-drop illustration */}
+              <span
+                className="relative flex h-[60px] w-[60px] shrink-0 items-center justify-center rounded-xl transition-all duration-300 group-hover:scale-105"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(212,167,106,0.15) 0%, rgba(212,167,106,0.05) 100%)',
+                  border: '1px solid rgba(212,167,106,0.25)',
+                }}
+              >
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    d="M16 4C16 4 8 13.5 8 19.5C8 23.6 11.6 27 16 27C20.4 27 24 23.6 24 19.5C24 13.5 16 4 16 4Z"
+                    fill="url(#oilGrad)"
+                    opacity="0.9"
+                  />
+                  <path
+                    d="M12.5 14C12.5 14 11 17 11 19.5C11 20.8 11.5 22 12.5 22.8"
+                    stroke="white"
+                    strokeWidth="1.2"
+                    strokeLinecap="round"
+                    opacity="0.35"
+                  />
+                  <circle cx="22" cy="7" r="1.5" fill="#D4A76A" opacity="0.7"/>
+                  <circle cx="25" cy="11" r="1" fill="#D4A76A" opacity="0.4"/>
+                  <defs>
+                    <linearGradient id="oilGrad" x1="16" y1="4" x2="16" y2="27" gradientUnits="userSpaceOnUse">
+                      <stop offset="0%" stopColor="#f0c87a"/>
+                      <stop offset="100%" stopColor="#a87830"/>
+                    </linearGradient>
+                  </defs>
+                </svg>
               </span>
-              <span>
-                <span className="block text-[10px] font-black uppercase tracking-[0.15em] text-white/55 group-hover:text-white/70">{t('vehicleFinderLabel')}</span>
-                <span className="mt-1 block text-sm font-bold">{t('findMyOil')}</span>
+
+              {/* Text content */}
+              <span className="min-w-0 flex-1">
+                <span
+                  className="block text-[9px] font-black uppercase tracking-[0.22em]"
+                  style={{ color: 'rgba(212,167,106,0.6)' }}
+                >
+                  {t('vehicleFinderLabel')}
+                </span>
+                <span
+                  className="mt-1.5 block text-[15px] font-bold leading-snug transition-colors duration-300 group-hover:text-white"
+                  style={{ color: 'rgba(255,255,255,0.85)' }}
+                >
+                  {t('findMyOil')}
+                </span>
               </span>
+
+              {/* Arrow */}
+              <span
+                className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg transition-all duration-300 group-hover:translate-x-0.5"
+                style={{ color: 'rgba(212,167,106,0.5)' }}
+              >
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                  <path d="M2 7H12M8 3L12 7L8 11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </span>
+
+              {/* Bottom gold accent line */}
+              <span
+                aria-hidden="true"
+                className="absolute bottom-0 left-5 right-5 h-px opacity-40 transition-all duration-500 group-hover:left-0 group-hover:right-0 group-hover:opacity-70"
+                style={{ background: 'linear-gradient(90deg, transparent, #D4A76A, transparent)' }}
+              />
             </Link>
           </div>
 
           {!isSpecSearch && (
             <div className="mt-9 max-w-4xl">
-              <form onSubmit={handleSearchSubmit} className="flex border border-white/25 bg-white p-1.5 shadow-[0_18px_44px_rgba(0,0,0,0.28)]">
-                <Search className="ml-3 shrink-0 self-center text-[#0B0B0C]" size={19} />
+              <form onSubmit={handleSearchSubmit} className="flex rounded-xl border border-white/10 bg-[#0a1128]/40 p-1.5 shadow-[0_8px_30px_rgba(0,0,0,0.28)] backdrop-blur-md">
+                <Search className="ml-3 shrink-0 self-center text-white/50" size={19} />
                 <label className="sr-only" htmlFor="catalogue-search">{t('searchProducts')}</label>
                 <input
                   id="catalogue-search"
                   value={searchValue}
                   onChange={(event) => setSearchValue(event.target.value)}
                   placeholder={t('searchProducts')}
-                  className="min-w-0 flex-1 bg-transparent px-3 py-3 text-sm font-semibold text-[#111] outline-none placeholder:text-neutral-500"
+                  className="min-w-0 flex-1 bg-transparent px-3 py-3 text-sm font-semibold text-white outline-none placeholder:text-white/40"
                 />
                 {searchValue && (
                   <button
@@ -266,13 +339,13 @@ export default function CataloguePage() {
                       setSearchValue('')
                       updateFilter('search', null)
                     }}
-                    className="mr-1 flex h-10 w-10 items-center justify-center text-neutral-500 transition-colors hover:text-[#111]"
+                    className="mr-1 flex h-10 w-10 items-center justify-center text-white/40 transition-colors hover:text-white"
                     aria-label={t('clearSearch')}
                   >
                     <X size={17} />
                   </button>
                 )}
-                <button type="submit" className="flex min-h-11 items-center gap-2 bg-[#E10600] px-4 text-xs font-black uppercase tracking-[0.13em] text-white transition-colors hover:bg-[#bd0500] sm:px-5">
+                <button type="submit" className="flex min-h-11 items-center gap-2 rounded-lg bg-[#D4A76A] px-4 text-xs font-black uppercase tracking-[0.13em] text-[#16254c] shadow-[0_0_15px_rgba(212,167,106,0.2)] transition-all hover:bg-[#e8b975] hover:shadow-[0_0_20px_rgba(212,167,106,0.4)] sm:px-5">
                   <Search size={15} />
                   <span className="hidden sm:inline">{t('searchAction')}</span>
                 </button>
@@ -405,8 +478,8 @@ export default function CataloguePage() {
                   {isVehicleSearch && (
                     <div className="mb-8 border-t border-black/10 pt-6 text-center">
                       <p className="mb-3 text-sm text-neutral-500">{t('vehicleNotFoundHint')}</p>
-                      <Link href={`/${locale}/#oil-finder`} className="inline-flex min-h-11 items-center gap-2 bg-[#E10600] px-5 text-xs font-black uppercase tracking-[0.12em] text-white transition-colors hover:bg-[#bd0500]">
-                        <Car size={16} />
+                      <Link href={`/${locale}/#oil-finder`} className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-[#D4A76A] px-5 text-xs font-black uppercase tracking-[0.12em] text-[#16254c] shadow-[0_0_15px_rgba(212,167,106,0.3)] transition-all hover:bg-[#e8b975] hover:shadow-[0_0_20px_rgba(212,167,106,0.5)]">
+                        <svg width="15" height="15" viewBox="0 0 32 32" fill="none"><path d="M16 4C16 4 8 13.5 8 19.5C8 23.6 11.6 27 16 27C20.4 27 24 23.6 24 19.5C24 13.5 16 4 16 4Z" fill="currentColor" opacity="0.9"/></svg>
                         {t('searchBySpecs')}
                       </Link>
                     </div>
@@ -426,8 +499,8 @@ function QuickFilter({ label, active, onClick }: { label: string; active: boolea
     <button
       type="button"
       onClick={onClick}
-      className={`min-h-8 border px-2.5 text-[10px] font-black uppercase tracking-[0.12em] transition-colors ${
-        active ? 'border-[#E10600] bg-[#E10600] text-white' : 'border-white/20 bg-white/[0.05] text-white hover:border-white hover:bg-white hover:text-[#111]'
+      className={`min-h-8 rounded-lg border px-3 text-[10px] font-black uppercase tracking-[0.12em] transition-all ${
+        active ? 'border-[#D4A76A]/50 bg-[#16254c] text-[#D4A76A] shadow-[0_0_10px_rgba(212,167,106,0.2)]' : 'border-white/10 bg-[#0a1128]/40 text-white/60 hover:border-[#D4A76A]/30 hover:bg-[#16254c]/60 hover:text-white'
       }`}
     >
       <Sparkles size={11} className="mr-1.5 inline-block" />

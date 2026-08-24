@@ -10,7 +10,7 @@ import type { Product } from '@/lib/types'
 import { useCartStore } from '@/lib/store/cart.store'
 import { wishlistApi } from '@/lib/api/wishlist'
 import { toast } from 'sonner'
-import { formatPrice, formatSKU } from '@/lib/utils/format'
+import { formatPrice, formatSKU, formatProductName } from '@/lib/utils/format'
 import { useProductCompatibility } from '@/lib/hooks/useProductCompatibility'
 
 /* ── Lazy image with skeleton + error fallback ───────────────────────── */
@@ -166,8 +166,8 @@ export function ProductCard({ product, viewMode = 'grid' }: Props) {
           </div>
 
           <Link href={`/produit/${product.slug}`} className="mt-1 focus:outline-none">
-            <h3 className="text-sm font-bold text-gray-900 group-hover:text-[#E10600] transition-colors sm:text-base">
-              {product.name}
+            <h3 className="text-sm font-bold text-gray-900 group-hover:text-[#16254c] transition-colors sm:text-base">
+              {formatProductName(product.name, product.brand?.name)}
             </h3>
           </Link>
 
@@ -330,8 +330,8 @@ export function ProductCard({ product, viewMode = 'grid' }: Props) {
 
         {/* Product name */}
         <Link href={`/produit/${product.slug}`} className="mt-1 focus:outline-none">
-          <h3 className="line-clamp-2 min-h-[2.5rem] text-xs font-bold leading-relaxed text-gray-900 transition-colors group-hover:text-[#E10600] sm:text-[13px]">
-            {product.name}
+          <h3 className="line-clamp-2 min-h-[2.5rem] text-xs font-bold leading-relaxed text-gray-900 transition-colors group-hover:text-[#16254c] sm:text-[13px]">
+            {formatProductName(product.name, product.brand?.name)}
           </h3>
         </Link>
 

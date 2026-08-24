@@ -1,6 +1,7 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useMemo, useRef, useState, useCallback, useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { useQuery } from '@tanstack/react-query'
 import { categoriesApi } from '@/lib/api/categories'
 import { productsApi } from '@/lib/api/products'
@@ -11,15 +12,33 @@ import { FilterSection } from './filters/FilterSection'
 import { BrandFilter } from './filters/BrandFilter'
 import { PriceFilter, type PriceRangeValue } from './filters/PriceFilter'
 import { ViscosityFilter } from './filters/ViscosityFilter'
-import { Check, RotateCcw, SlidersHorizontal } from 'lucide-react'
+import {
+  Bike,
+  Car,
+  Check,
+  ChevronRight,
+  Package,
+  RotateCcw,
+  ShipWheel,
+  SlidersHorizontal,
+  Wrench,
+} from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import {
   useFilterParams,
   countActiveFilters,
   type FilterValue,
 } from '@/lib/hooks/useFilterParams'
-import type { FacetBrand } from '@/lib/types'
+import { NAVIGATION_TAXONOMY } from '@/lib/navigation/taxonomy'
+import type { Category, FacetBrand } from '@/lib/types'
 import { cn } from '@/lib/utils'
+
+const NAVIGATION_ICONS: Record<string, React.ElementType> = {
+  automobile: Car,
+  'auto-pieces-rechange': Wrench,
+  'moto-karting': Bike,
+  marine: ShipWheel,
+}
 
 const OIL_TYPES = ['100% Synthèse', 'Semi-Synthèse', 'Minérale']
 const API_STANDARDS = ['API SL', 'API SM', 'API SN', 'API SP', 'API CF', 'API CI-4', 'API CJ-4', 'API CK-4']
@@ -28,18 +47,28 @@ const ACEA_STANDARDS = ['ACEA A3/B4', 'ACEA C2', 'ACEA C3', 'ACEA C4', 'ACEA C5'
 /** Every accordion section — all open by default; state persists while mounted. */
 const DEFAULT_OPEN_SECTIONS = ['brands', 'budget', 'viscosity', 'packaging', 'oil-type', 'api', 'acea', 'availability']
 
-function uniqueCategories<T extends { name: string }>(categories: T[]) {
-  const names = new Set<string>()
-  return categories.filter((category) => {
-    const name = category.name.trim().toLocaleLowerCase()
-    if (names.has(name)) return false
-    names.add(name)
-    return true
-  })
-}
-
 function isPackagingVolume(value: string) {
   return /^\d+(?:[.,]\d+)?\s*(?:l|ml)$/i.test(value.trim())
+}
+
+function findNode(categories: Category[] | undefined, slug: string): Category | undefined {
+  if (!categories) return undefined
+  for (const cat of categories) {
+    if (cat.slug === slug) return cat
+    if (cat.children?.length) {
+      const found = findNode(cat.children, slug)
+      if (found) return found
+    }
+  }
+  return undefined
+}
+
+export interface SubcategoryOption {
+  id?: string | number
+  name: string
+  slug: string
+  productCount?: number
+  children?: SubcategoryOption[]
 }
 
 interface FilterSidebarProps {
@@ -61,6 +90,7 @@ export function FilterSidebar({
   hideBrands = false,
 }: FilterSidebarProps) {
   const t = useTranslations('Catalogue')
+  const tTax = useTranslations('Taxonomy')
   const searchParams = useSearchParams()
   const filterParams = useFilterParams()
 
@@ -111,9 +141,9 @@ export function FilterSidebar({
     }
   }, [searchParams])
 
-  const { data: categories, isLoading: catLoading } = useQuery({
-    queryKey: ['categories'],
-    queryFn: categoriesApi.getAll,
+  const { data: categoriesTree, isLoading: catLoading } = useQuery({
+    queryKey: ['categories-tree'],
+    queryFn: categoriesApi.getTree,
   })
 
   const { data: facets, isLoading: facetsLoading } = useQuery({
@@ -129,6 +159,48 @@ export function FilterSidebar({
     if (inDraft) onDraftChange?.(Object.keys(draft ?? {}).reduce((acc, key) => ({ ...acc, [key]: null }), {}))
     else filterParams.clearAll()
   }
+
+  // Build the list of categories with resolved taxonomy subcategories
+  const resolvedCategories = useMemo(() => {
+    return NAVIGATION_TAXONOMY.map((item) => {
+      const dbNode = findNode(categoriesTree, item.slug)
+      const label = item.labelKey ? tTax(item.labelKey) : (dbNode?.name ?? item.label ?? item.slug)
+      const Icon = NAVIGATION_ICONS[item.slug] ?? Package
+
+      const subcategories: SubcategoryOption[] = (item.children ?? []).map((child) => {
+        const childDbNode = findNode(categoriesTree, child.slug)
+        const childLabel = child.labelKey ? tTax(child.labelKey) : (childDbNode?.name ?? child.label ?? child.slug)
+
+        const subSubcategories: SubcategoryOption[] = (child.children ?? []).map((subChild) => {
+          const subChildDbNode = findNode(categoriesTree, subChild.slug)
+          const subChildLabel = subChild.labelKey ? tTax(subChild.labelKey) : (subChildDbNode?.name ?? subChild.label ?? subChild.slug)
+          return {
+            id: subChildDbNode?.id ?? subChild.slug,
+            name: subChildLabel,
+            slug: subChild.slug,
+            productCount: subChildDbNode?.productCount,
+          }
+        })
+
+        return {
+          id: childDbNode?.id ?? child.slug,
+          name: childLabel,
+          slug: child.slug,
+          productCount: childDbNode?.productCount,
+          children: subSubcategories.length ? subSubcategories : undefined,
+        }
+      })
+
+      return {
+        id: dbNode?.id ?? item.slug,
+        slug: item.slug,
+        label,
+        Icon,
+        count: dbNode?.productCount,
+        subcategories,
+      }
+    })
+  }, [categoriesTree, tTax])
 
   if (catLoading || facetsLoading) return <FilterSidebarSkeleton />
 
@@ -149,8 +221,10 @@ export function FilterSidebar({
   const toggleSingle = (key: string, value: string) =>
     patch({ [key]: read(key) === value ? null : value })
 
+  const currentCategorySlug = read('categorySlug')
+
   return (
-    <div className="overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-[#16254c] to-[#0a1128] shadow-2xl backdrop-blur-xl">
+    <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-[#16254c] to-[#0a1128] shadow-2xl backdrop-blur-xl">
       {/* ── Header ─────────────────────────────────────────────────────── */}
       <div className="flex items-center justify-between border-b border-white/10 px-5 py-4">
         <div className="flex items-center gap-3">
@@ -188,38 +262,35 @@ export function FilterSidebar({
               {t('categories')}
             </h3>
             <div className="space-y-1.5">
-              <CategoryChoice
-                label={t('allCategories')}
-                active={!read('categorySlug')}
+              {/* All categories button */}
+              <button
+                type="button"
                 onClick={() => patch({ categorySlug: null })}
-              />
-              {uniqueCategories(
-                (categories ?? []).filter((category) => category.productCount > 0)
-              )
-                .slice(0, 10)
-                .flatMap((category) => [
-                  <CategoryChoice
-                    key={category.id}
-                    label={category.name}
-                    count={category.productCount}
-                    active={read('categorySlug') === category.slug}
-                    onClick={() => patch({ categorySlug: category.slug })}
-                  />,
-                  ...(read('categorySlug') === category.slug
-                    ? uniqueCategories(category.children ?? [])
-                        .filter((child) => child.productCount > 0)
-                        .map((child) => (
-                          <CategoryChoice
-                            key={child.id}
-                            label={child.name}
-                            count={child.productCount}
-                            active={read('categorySlug') === child.slug}
-                            onClick={() => patch({ categorySlug: child.slug })}
-                            nested
-                          />
-                        ))
-                    : []),
-                ])}
+                aria-pressed={!currentCategorySlug}
+                className={`flex min-h-10 w-full items-center justify-between gap-3 rounded-xl px-4 text-start text-[13px] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4A76A]/30 ${
+                  !currentCategorySlug
+                    ? 'border border-white/10 bg-white/10 font-bold text-white shadow-inner'
+                    : 'border border-transparent text-white/70 hover:bg-white/5 hover:text-white'
+                }`}
+              >
+                <span>{t('allCategories')}</span>
+              </button>
+
+              {/* Taxonomy categories with hover flyout */}
+              {resolvedCategories.map((cat) => (
+                <CategoryWithFlyout
+                  key={cat.slug}
+                  slug={cat.slug}
+                  label={cat.label}
+                  Icon={cat.Icon}
+                  count={cat.count}
+                  active={currentCategorySlug === cat.slug}
+                  onClick={() => patch({ categorySlug: cat.slug })}
+                  subcategories={cat.subcategories}
+                  activeChildSlug={currentCategorySlug}
+                  onChildClick={(slug) => patch({ categorySlug: slug })}
+                />
+              ))}
             </div>
           </section>
         )}
@@ -299,27 +370,28 @@ export function FilterSidebar({
                   )
                   .slice(0, 16)
                   .map((volume) => {
-                    const isActive = read('volume') === volume.volume
+                    const active = read('volume') === volume.volume
                     return (
                       <button
                         key={volume.volume}
                         type="button"
-                        aria-pressed={isActive}
                         onClick={() => toggleSingle('volume', volume.volume)}
+                        aria-pressed={active}
                         className={cn(
-                          'inline-flex min-h-8 items-center gap-1.5 rounded-lg border px-3 text-[11px] font-bold tracking-wide transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4A76A]/30',
-                          isActive
-                            ? 'border-[#D4A76A] bg-[#D4A76A]/10 text-[#D4A76A]'
+                          'rounded-xl border px-3 py-1.5 text-xs font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4A76A]/40',
+                          active
+                            ? 'border-[#D4A76A] bg-[#D4A76A] font-bold text-[#16254c] shadow-[0_0_15px_rgba(212,167,106,0.3)]'
                             : 'border-white/10 bg-white/5 text-white/80 hover:border-white/20 hover:bg-white/10 hover:text-white'
                         )}
                       >
                         {volume.volume}
                         <span
                           className={cn(
-                            isActive ? 'text-[#D4A76A]/70' : 'text-white/40'
+                            'ml-1.5 text-[10px]',
+                            active ? 'text-[#16254c]/70' : 'text-white/40'
                           )}
                         >
-                          {volume.count}
+                          ({volume.count})
                         </span>
                       </button>
                     )
@@ -328,64 +400,82 @@ export function FilterSidebar({
             </FilterSection>
           )}
 
-          {/* Oil type / API / ACEA */}
+          {/* Oil Type */}
           <FilterSection
             value="oil-type"
             title={t('oilType')}
             activeCount={read('type') ? 1 : 0}
             onClear={() => patch({ type: null })}
           >
-            <div className="space-y-1.5">
+            <div className="space-y-1">
               {OIL_TYPES.map((type) => (
                 <ToggleRow
                   key={type}
                   label={type}
                   checked={read('type') === type}
-                  onChange={(checked) =>
-                    patch({ type: checked ? type : null })
-                  }
+                  onChange={(checked) => patch({ type: checked ? type : null })}
                 />
               ))}
             </div>
           </FilterSection>
 
+          {/* API Standards */}
           <FilterSection
             value="api"
-            title={t('apiStandards')}
+            title={t('standardsApi')}
             activeCount={read('api') ? 1 : 0}
             onClear={() => patch({ api: null })}
           >
-            <div className="space-y-1.5">
-              {API_STANDARDS.map((standard) => (
-                <ToggleRow
-                  key={standard}
-                  label={standard}
-                  checked={read('api') === standard}
-                  onChange={(checked) =>
-                    patch({ api: checked ? standard : null })
-                  }
-                />
-              ))}
+            <div className="flex flex-wrap gap-2">
+              {API_STANDARDS.map((api) => {
+                const active = read('api') === api
+                return (
+                  <button
+                    key={api}
+                    type="button"
+                    onClick={() => toggleSingle('api', api)}
+                    aria-pressed={active}
+                    className={cn(
+                      'rounded-xl border px-3 py-1.5 text-xs font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4A76A]/40',
+                      active
+                        ? 'border-[#D4A76A] bg-[#D4A76A] font-bold text-[#16254c] shadow-[0_0_15px_rgba(212,167,106,0.3)]'
+                        : 'border-white/10 bg-white/5 text-white/80 hover:border-white/20 hover:bg-white/10 hover:text-white'
+                    )}
+                  >
+                    {api}
+                  </button>
+                )
+              })}
             </div>
           </FilterSection>
 
+          {/* ACEA Standards */}
           <FilterSection
             value="acea"
-            title={t('aceaStandards')}
+            title={t('standardsAcea')}
             activeCount={read('acea') ? 1 : 0}
             onClear={() => patch({ acea: null })}
           >
-            <div className="space-y-1.5">
-              {ACEA_STANDARDS.map((standard) => (
-                <ToggleRow
-                  key={standard}
-                  label={standard}
-                  checked={read('acea') === standard}
-                  onChange={(checked) =>
-                    patch({ acea: checked ? standard : null })
-                  }
-                />
-              ))}
+            <div className="flex flex-wrap gap-2">
+              {ACEA_STANDARDS.map((acea) => {
+                const active = read('acea') === acea
+                return (
+                  <button
+                    key={acea}
+                    type="button"
+                    onClick={() => toggleSingle('acea', acea)}
+                    aria-pressed={active}
+                    className={cn(
+                      'rounded-xl border px-3 py-1.5 text-xs font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4A76A]/40',
+                      active
+                        ? 'border-[#D4A76A] bg-[#D4A76A] font-bold text-[#16254c] shadow-[0_0_15px_rgba(212,167,106,0.3)]'
+                        : 'border-white/10 bg-white/5 text-white/80 hover:border-white/20 hover:bg-white/10 hover:text-white'
+                    )}
+                  >
+                    {acea}
+                  </button>
+                )
+              })}
             </div>
           </FilterSection>
 
@@ -398,7 +488,7 @@ export function FilterSidebar({
               patch({ inStockOnly: null, isNew: null, isFeatured: null })
             }
           >
-            <div className="space-y-1.5">
+            <div className="space-y-1">
               <ToggleRow
                 label={t('inStockOnly')}
                 checked={read('inStockOnly') === 'true'}
@@ -409,9 +499,7 @@ export function FilterSidebar({
               <ToggleRow
                 label={t('newArrivals')}
                 checked={read('isNew') === 'true'}
-                onChange={(checked) =>
-                  patch({ isNew: checked ? 'true' : null })
-                }
+                onChange={(checked) => patch({ isNew: checked ? 'true' : null })}
               />
               <ToggleRow
                 label={t('featuredProducts')}
@@ -430,39 +518,260 @@ export function FilterSidebar({
 
 /* ── Small building blocks ───────────────────────────────────────────────── */
 
-function CategoryChoice({
+/**
+ * A category row with hover flyout subcategory panel
+ */
+function CategoryWithFlyout({
+  slug,
   label,
+  Icon,
   count,
   active,
   onClick,
-  nested = false,
+  subcategories,
+  activeChildSlug,
+  onChildClick,
 }: {
+  slug: string
   label: string
+  Icon: React.ElementType
   count?: number
   active: boolean
   onClick: () => void
-  nested?: boolean
+  subcategories: SubcategoryOption[]
+  activeChildSlug: string | null
+  onChildClick: (slug: string) => void
 }) {
+  const [isOpen, setIsOpen] = useState(false)
+  const [mounted, setMounted] = useState(false)
+  const [flyoutPos, setFlyoutPos] = useState<{ top: number; left: number } | null>(null)
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const rowRef = useRef<HTMLDivElement>(null)
+  const hasSubs = subcategories.length > 0
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  // Check if any subcategory or nested subcategory is currently selected
+  const hasActiveSub = useMemo(() => {
+    if (!activeChildSlug) return false
+    return subcategories.some((sub) => {
+      if (sub.slug === activeChildSlug) return true
+      return sub.children?.some((child) => child.slug === activeChildSlug)
+    })
+  }, [subcategories, activeChildSlug])
+
+  const isHighlighted = active || hasActiveSub
+
+  const openFlyout = useCallback(() => {
+    if (!hasSubs) return
+    if (closeTimer.current) clearTimeout(closeTimer.current)
+    if (rowRef.current) {
+      const rect = rowRef.current.getBoundingClientRect()
+      setFlyoutPos({ top: Math.max(12, rect.top), left: rect.right + 6 })
+    }
+    setIsOpen(true)
+  }, [hasSubs])
+
+  const scheduleClose = useCallback(() => {
+    if (closeTimer.current) clearTimeout(closeTimer.current)
+    closeTimer.current = setTimeout(() => setIsOpen(false), 220)
+  }, [])
+
+  const cancelClose = useCallback(() => {
+    if (closeTimer.current) clearTimeout(closeTimer.current)
+  }, [])
+
+  // Close when window scrolls to keep clean UI
+  useEffect(() => {
+    if (!isOpen) return
+    const onScroll = () => setIsOpen(false)
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [isOpen])
+
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      aria-pressed={active}
-      className={`flex min-h-10 w-full items-center justify-between gap-3 rounded-xl px-4 text-start text-[13px] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4A76A]/30 ${
-        nested ? 'ps-8 text-[12px]' : ''
-      } ${
-        active
-          ? 'border border-white/10 bg-white/10 font-bold text-white shadow-inner'
-          : 'border border-transparent text-white/70 hover:bg-white/5 hover:text-white'
-      }`}
+    <div
+      ref={rowRef}
+      className="relative"
+      onMouseEnter={openFlyout}
+      onMouseLeave={scheduleClose}
     >
-      <span className="truncate">{label}</span>
-      {typeof count === 'number' && (
-        <span className={cn('text-[11px]', active ? 'text-[#D4A76A]' : 'text-white/40')}>
-          {count}
+      {/* The main category row button */}
+      <button
+        type="button"
+        onClick={onClick}
+        aria-pressed={isHighlighted}
+        aria-haspopup={hasSubs ? 'menu' : undefined}
+        aria-expanded={hasSubs ? isOpen : undefined}
+        className={`flex min-h-10 w-full items-center justify-between gap-2.5 rounded-xl px-3.5 text-start text-[13px] transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4A76A]/40 ${
+          isHighlighted
+            ? 'border border-[#D4A76A]/40 bg-white/10 font-bold text-white shadow-inner'
+            : 'border border-transparent text-white/75 hover:border-white/10 hover:bg-white/5 hover:text-white'
+        }`}
+      >
+        <span className="flex min-w-0 items-center gap-2.5">
+          <Icon
+            size={15}
+            className={cn(
+              'shrink-0 transition-colors',
+              isHighlighted ? 'text-[#D4A76A]' : 'text-white/40'
+            )}
+          />
+          <span className="truncate">{label}</span>
         </span>
+
+        <span className="flex shrink-0 items-center gap-1.5">
+          {typeof count === 'number' && (
+            <span className={cn('text-[11px] font-semibold', isHighlighted ? 'text-[#D4A76A]' : 'text-white/35')}>
+              {count}
+            </span>
+          )}
+          {hasSubs && (
+            <ChevronRight
+              size={13}
+              className={cn(
+                'transition-all duration-200',
+                isOpen ? 'translate-x-0.5 text-[#D4A76A]' : 'text-white/30'
+              )}
+            />
+          )}
+        </span>
+      </button>
+
+      {/* Flyout Subcategories Panel rendered via React Portal directly into body */}
+      {mounted && isOpen && hasSubs && flyoutPos && typeof document !== 'undefined' && createPortal(
+        <div
+          role="menu"
+          onMouseEnter={cancelClose}
+          onMouseLeave={scheduleClose}
+          className="fixed z-[99999] overflow-hidden rounded-2xl border border-[#D4A76A]/35 shadow-2xl backdrop-blur-2xl"
+          style={{
+            top: flyoutPos.top,
+            left: flyoutPos.left,
+            minWidth: 250,
+            maxWidth: 320,
+            background: 'linear-gradient(145deg, #16254c 0%, #0a1128 100%)',
+            boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 30px rgba(212,167,106,0.12)',
+            animation: 'flyoutIn 0.16s cubic-bezier(0.16,1,0.3,1) both',
+          }}
+        >
+          {/* Invisible hit-bridge on the left so moving cursor across gap never drops hover */}
+          <div
+            className="pointer-events-auto absolute -left-3 bottom-0 top-0 w-3 bg-transparent"
+            aria-hidden="true"
+          />
+
+          {/* Header */}
+          <div
+            className="flex items-center justify-between border-b border-white/10 px-4 py-3"
+            style={{ background: 'rgba(212,167,106,0.08)' }}
+          >
+            <div className="flex items-center gap-2">
+              <Icon size={14} className="text-[#D4A76A]" />
+              <span className="text-[11px] font-black uppercase tracking-[0.16em] text-[#D4A76A]">
+                {label}
+              </span>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                onClick()
+                setIsOpen(false)
+              }}
+              className="text-[10px] font-bold uppercase tracking-wider text-white/50 transition-colors hover:text-[#D4A76A]"
+            >
+              Tous
+            </button>
+          </div>
+
+          {/* List */}
+          <ul className="max-h-[380px] overflow-y-auto py-1.5">
+            {subcategories.map((sub) => {
+              const isSubActive = activeChildSlug === sub.slug
+              const hasSubChildren = (sub.children?.length ?? 0) > 0
+
+              return (
+                <li key={sub.slug} role="none" className="px-1.5 py-0.5">
+                  <button
+                    type="button"
+                    role="menuitem"
+                    onClick={() => {
+                      onChildClick(sub.slug)
+                      setIsOpen(false)
+                    }}
+                    className={cn(
+                      'group flex w-full items-center justify-between gap-2.5 rounded-xl px-3 py-2 text-start text-[13px] transition-all duration-150',
+                      isSubActive
+                        ? 'bg-[#D4A76A]/15 font-bold text-[#D4A76A] shadow-inner'
+                        : 'text-white/80 hover:bg-white/10 hover:text-white'
+                    )}
+                  >
+                    <span className="flex min-w-0 items-center gap-2">
+                      <span
+                        className={cn(
+                          'h-1.5 w-1.5 shrink-0 rounded-full transition-colors',
+                          isSubActive
+                            ? 'bg-[#D4A76A] shadow-[0_0_8px_#D4A76A]'
+                            : 'bg-white/30 group-hover:bg-[#D4A76A]'
+                        )}
+                      />
+                      <span className="truncate">{sub.name}</span>
+                    </span>
+
+                    {typeof sub.productCount === 'number' && (
+                      <span
+                        className={cn(
+                          'text-[10px] font-semibold',
+                          isSubActive ? 'text-[#D4A76A]' : 'text-white/35 group-hover:text-white/60'
+                        )}
+                      >
+                        {sub.productCount}
+                      </span>
+                    )}
+                  </button>
+
+                  {/* Sub-children (e.g. Additifs -> Additif Essence, Additif Diesel, Additif Huile) */}
+                  {hasSubChildren && (
+                    <ul className="ml-4 mt-1 space-y-0.5 border-l border-white/10 pl-2">
+                      {sub.children!.map((subChild) => {
+                        const isSubChildActive = activeChildSlug === subChild.slug
+                        return (
+                          <li key={subChild.slug}>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                onChildClick(subChild.slug)
+                                setIsOpen(false)
+                              }}
+                              className={cn(
+                                'flex w-full items-center justify-between gap-2 rounded-lg px-2.5 py-1.5 text-[12px] transition-colors',
+                                isSubChildActive
+                                  ? 'bg-[#D4A76A]/20 font-bold text-[#D4A76A]'
+                                  : 'text-white/65 hover:bg-white/5 hover:text-white'
+                              )}
+                            >
+                              <span className="truncate">{subChild.name}</span>
+                              {typeof subChild.productCount === 'number' && (
+                                <span className="text-[10px] text-white/30">
+                                  {subChild.productCount}
+                                </span>
+                              )}
+                            </button>
+                          </li>
+                        )
+                      })}
+                    </ul>
+                  )}
+                </li>
+              )
+            })}
+          </ul>
+        </div>,
+        document.body
       )}
-    </button>
+    </div>
   )
 }
 

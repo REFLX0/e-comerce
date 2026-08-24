@@ -10,11 +10,11 @@ type VehicleType = 'automobile' | 'moto' | 'poids_lourd' | 'agricole' | 'marine'
 type SearchMode = 'vehicle' | 'specs'
 
 const VEHICLE_TYPES = [
-  { id: 'automobile' as const, image: 'https://images.unsplash.com/photo-1616788494707-ec28f08d05a1?q=80&w=600', fallbackIcon: Car, label: 'Automobile', sub: 'Voitures de tourisme & SUV' },
-  { id: 'moto' as const, image: 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?q=80&w=600', fallbackIcon: Bike, label: 'Moto', sub: '2 roues & scooters' },
-  { id: 'marine' as const, image: 'https://images.unsplash.com/photo-1569263979104-865ab7cd8d13?q=80&w=600', fallbackIcon: Sparkles, label: 'Marine', sub: 'Bateaux nautiques' },
-  { id: 'poids_lourd' as const, image: 'https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?q=80&w=600', fallbackIcon: Truck, label: 'Poids Lourd', sub: 'Camions & utilitaires' },
-  { id: 'agricole' as const, image: 'https://images.unsplash.com/photo-1500937386664-56d1dfef3854?q=80&w=600', fallbackIcon: Tractor, label: 'Agricole', sub: 'Tracteurs & engins' },
+  { id: 'automobile' as const, image: '/img/categories/automobile.jpg', fallbackIcon: Car, label: 'Automobile', sub: 'Voitures de tourisme & SUV' },
+  { id: 'moto' as const, image: '/img/categories/moto.jpg', fallbackIcon: Bike, label: 'Moto', sub: '2 roues & scooters' },
+  { id: 'marine' as const, image: '/img/categories/marine.jpg', fallbackIcon: Sparkles, label: 'Marine', sub: 'Bateaux nautiques' },
+  { id: 'poids_lourd' as const, image: '/img/categories/poids_lourd.jpg', fallbackIcon: Truck, label: 'Poids Lourd', sub: 'Camions & utilitaires' },
+  { id: 'agricole' as const, image: '/img/categories/agricole.jpg', fallbackIcon: Tractor, label: 'Agricole', sub: 'Tracteurs & engins' },
 ]
 
 export function OilFinderTabs() {
@@ -108,39 +108,40 @@ export function OilFinderTabs() {
               <p className="mt-2 max-w-xl text-sm leading-6 text-gray-500">
                 Sélectionnez la catégorie de votre véhicule pour commencer
               </p>
-              <div className="mt-7 grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-5">
+              <div className="mt-7 grid grid-cols-2 gap-3.5 sm:grid-cols-3 xl:grid-cols-5">
                 {VEHICLE_TYPES.map((type) => {
                   const FallbackIcon = type.fallbackIcon
                   return (
                     <button
                       key={type.id}
                       onClick={() => handleSelectType(type.id)}
-                      className="group relative flex min-h-48 flex-col items-center justify-end overflow-hidden rounded-2xl border border-slate-200 bg-white text-center transition-all duration-300 hover:-translate-y-1 hover:border-brand-primary hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+                      className="group relative flex min-h-[220px] flex-col items-center justify-end overflow-hidden rounded-2xl border border-slate-200/80 bg-white text-center shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-[#D4A76A] hover:shadow-[0_12px_30px_rgba(212,167,106,0.2)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4A76A]"
                     >
-                      {/* Image Background */}
-                      <div className="absolute inset-0 z-0 bg-gray-100">
-                        {/* We use an img tag instead of next/image here just in case the file doesn't exist yet, so we can use a fallback easily */}
+                      {/* Image Background with gradient overlay */}
+                      <div className="absolute inset-0 z-0 bg-slate-900 overflow-hidden">
                         <img 
                           src={type.image} 
                           alt={type.label}
-                          className="h-full w-full object-cover opacity-90 transition-transform duration-500 group-hover:scale-105 group-hover:opacity-100"
+                          className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
                           onError={(e) => {
                             e.currentTarget.style.display = 'none';
                             e.currentTarget.nextElementSibling?.classList.remove('hidden');
                           }}
                         />
-                        {/* Fallback Icon if image fails to load */}
-                        <div className="hidden flex h-full w-full items-center justify-center bg-gray-50 text-gray-400">
+                        {/* Fallback Icon */}
+                        <div className="hidden flex h-full w-full items-center justify-center bg-gray-900 text-gray-400">
                           <FallbackIcon size={40} />
                         </div>
+                        {/* Top subtle vignette */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
                       </div>
 
                       {/* Content Overlay */}
-                      <div className="relative w-full z-10 bg-white pt-3 pb-3 px-2 border-t border-gray-100/50">
-                        <span className="block text-sm font-bold text-[#16254c]">
+                      <div className="relative w-full z-10 p-3.5 text-center backdrop-blur-md bg-white/95 border-t border-white/40 transition-colors group-hover:bg-white">
+                        <span className="block text-sm font-black uppercase tracking-wider text-[#16254c] group-hover:text-[#D4A76A] transition-colors">
                           {type.label}
                         </span>
-                        <span className="mt-0.5 block text-[11px] text-gray-500">
+                        <span className="mt-0.5 block text-[11px] font-medium text-gray-500">
                           {type.sub}
                         </span>
                       </div>
