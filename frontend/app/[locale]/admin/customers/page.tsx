@@ -2,10 +2,10 @@
 
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { adminApi } from '@/lib/api/admin'
+import { adminApi, type TopBuyer } from '@/lib/api/admin'
 import Link from 'next/link'
 import { useLocale, useTranslations } from 'next-intl'
-import { Search, Mail, Phone, ShoppingBag, UserCheck, ChevronLeft, ChevronRight, Ban, ShieldOff } from 'lucide-react'
+import { Search, Mail, Phone, ShoppingBag, UserCheck, ChevronLeft, ChevronRight, Ban, ShieldOff, Crown, TrendingUp, Repeat2 } from 'lucide-react'
 import { toast } from 'sonner'
 
 export default function AdminCustomersPage() {
@@ -19,6 +19,12 @@ export default function AdminCustomersPage() {
   const { data, isLoading, isError } = useQuery<any>({
     queryKey: ['admin-users', page],
     queryFn: () => adminApi.getUsers({ page }),
+  })
+
+  const { data: topBuyers } = useQuery<TopBuyer[]>({
+    queryKey: ['admin-top-buyers'],
+    queryFn: () => adminApi.getTopBuyers(10),
+    staleTime: 1000 * 60 * 5,
   })
 
   const raw = (data as any)?.data ?? data ?? {}
@@ -58,6 +64,86 @@ export default function AdminCustomersPage() {
           <p className="text-sm text-gray-500">{t('registeredCustomers', { count: total })}</p>
         </div>
       </div>
+
+      {/* ── Top Buyers Leaderboard ─────────────────────────────────────────── */}
+      {topBuyers && topBuyers.length > 0 && (
+        <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
+          <div className="mb-4 flex items-center gap-3">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-50 text-amber-600">
+              <Crown size={18} />
+            </div>
+            <div>
+              <h2 className="font-bold text-brand-primary">Top 10 Meilleurs Clients</h2>
+              <p className="text-xs text-gray-400">Classés par valeur cumulée (LTV + fréquence)</p>
+            </div>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-gray-100 text-left">
+                  <th className="pb-2 pl-2 text-xs font-semibold text-gray-400">#</th>
+                  <th className="pb-2 px-3 text-xs font-semibold text-gray-400">Client</th>
+                  <th className="pb-2 px-3 text-xs font-semibold text-gray-400 text-right">LTV</th>
+                  <th className="pb-2 px-3 text-xs font-semibold text-gray-400 text-right hidden sm:table-cell">Commandes</th>
+                  <th className="pb-2 px-3 text-xs font-semibold text-gray-400 text-right hidden md:table-cell">Panier moyen</th>
+                  <th className="pb-2 pr-2 text-xs font-semibold text-gray-400"></th>
+                </tr>
+              </thead>
+              <tbody>
+                {topBuyers.map((buyer, idx) => (
+                  <tr key={buyer.id} className="border-t border-gray-50 hover:bg-gray-50/50 transition-colors">
+                    <td className="py-2.5 pl-2">
+                      <span className={`inline-flex h-6 w-6 items-center justify-center rounded-full text-xs font-black ${
+                        idx === 0 ? 'bg-amber-400 text-white' :
+                        idx === 1 ? 'bg-gray-300 text-white' :
+                        idx === 2 ? 'bg-orange-300 text-white' :
+                        'bg-gray-100 text-gray-500'
+                      }`}>{idx + 1}</span>
+                    </td>
+                    <td className="py-2.5 px-3">
+                      <Link href={localizedHref(`/admin/customers/${buyer.id}`)} className="group flex items-center gap-2">
+                        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand-primary text-xs font-bold text-white">
+                          {buyer.name && buyer.name.length > 0 ? buyer.name.charAt(0).toUpperCase() : 'U'}
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium text-brand-primary group-hover:underline">{buyer.name ?? '—'}</p>
+                          <p className="text-xs text-gray-400">{buyer.email}</p>
+                        </div>
+                      </Link>
+                    </td>
+                    <td className="py-2.5 px-3 text-right">
+                      <span className="text-sm font-bold text-brand-primary whitespace-nowrap">
+                        {buyer.totalSpent.toLocaleString(locale, { minimumFractionDigits: 2 })} TND
+                      </span>
+                    </td>
+                    <td className="py-2.5 px-3 text-right hidden sm:table-cell">
+                      <span className="inline-flex items-center gap-1 text-sm font-semibold text-gray-600">
+                        <ShoppingBag size={12} className="text-brand-accent" />
+                        {buyer.orderCount}
+                        {buyer.repeatBuyer && <span title="Client récurrent"><Repeat2 size={12} className="text-green-500" /></span>}
+                      </span>
+                    </td>
+                    <td className="py-2.5 px-3 text-right hidden md:table-cell">
+                      <span className="text-sm text-gray-500">
+                        {buyer.avgOrderValue.toLocaleString(locale, { minimumFractionDigits: 2 })} TND
+                      </span>
+                    </td>
+                    <td className="py-2.5 pr-2">
+                      <div className="flex items-center justify-end gap-1">
+                        <span className="flex items-center gap-0.5 rounded-full bg-green-50 px-2 py-0.5 text-xs font-bold text-green-700">
+                          <TrendingUp size={10} />
+                          {buyer.score.toFixed(0)}
+                        </span>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
 
       <div className="relative max-w-md">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />

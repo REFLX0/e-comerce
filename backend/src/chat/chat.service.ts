@@ -1,6 +1,7 @@
 import { Injectable, Logger, HttpException, HttpStatus } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../prisma/prisma.service';
+import { SearchService } from '../search/search.service';
 
 export interface ChatMessage {
   role: 'user' | 'assistant' | 'system' | 'tool';
@@ -17,9 +18,10 @@ export class ChatService {
   constructor(
     private readonly config: ConfigService,
     private readonly prisma: PrismaService,
+    private readonly searchService: SearchService,
   ) {}
 
-  async chat(messages: ChatMessage[], userEmail?: string): Promise<{ reply: string }> {
+  async chat(messages: ChatMessage[], userEmail?: string): Promise<{ reply: string, clientActions?: any[] }> {
     const apiKey = this.config.get<string>('OPENROUTER_API_KEY');
     if (!apiKey) {
       throw new HttpException('Chat is not configured', HttpStatus.SERVICE_UNAVAILABLE);
@@ -74,7 +76,6 @@ ${user.orders.map(o => `- Commande #${o.id.slice(-8).toUpperCase()} du ${o.creat
       }
     }
 
-    const tools = [
       {
         type: 'function',
         function: {
@@ -89,6 +90,36 @@ ${user.orders.map(o => `- Commande #${o.id.slice(-8).toUpperCase()} du ${o.creat
               }
             },
             required: ['query']
+          }
+        }
+      },
+      {
+        type: 'function',
+        function: {
+          name: 'find_vehicle_parts',
+          description: 'Rechercher une pièce spécifique pour un véhicule (marque, modèle, année)',
+          parameters: {
+            type: 'object',
+            properties: {
+              make: { type: 'string', description: "Marque (ex: 'Renault')" },
+              model: { type: 'string', description: "Modèle (ex: 'Clio 4')" },
+              part: { type: 'string', description: "La pièce recherchée (ex: 'plaquettes de frein')" }
+            },
+            required: ['make', 'model', 'part']
+          }
+        }
+      },
+      {
+        type: 'function',
+        function: {
+          name: 'add_to_cart',
+          description: 'Ajouter un produit au panier du client en utilisant son identifiant (slug)',
+          parameters: {
+            type: 'object',
+            properties: {
+              slug: { type: 'string', description: "Le slug du produit (ex: 'motul-8100-x-cess-5w40-5l')" }
+            },
+            required: ['slug']
           }
         }
       }
@@ -121,32 +152,26 @@ ${user.orders.map(o => `- Commande #${o.id.slice(-8).toUpperCase()} du ${o.creat
 
       if (!replyMessage) throw new HttpException('Réponse vide', HttpStatus.BAD_GATEWAY);
 
+      const clientActions: any[] = [];
+
       // Handle Tool Calling
       if (replyMessage.tool_calls && replyMessage.tool_calls.length > 0) {
         payload.messages.push(replyMessage);
 
         for (const toolCall of replyMessage.tool_calls) {
+          let args: any = {};
+          try { args = JSON.parse(toolCall.function.arguments); } catch (e) {}
+
           if (toolCall.function.name === 'search_products') {
-            let args = { query: '' };
-            try { args = JSON.parse(toolCall.function.arguments); } catch (e) {}
-            
-            const keywords = args.query.split(' ').filter(k => k.length > 2);
+            const q = args.query?.trim();
             let productsText = "Aucun produit trouvé.";
             
-            if (keywords.length > 0) {
-              const whereClause = {
-                AND: keywords.map(kw => ({ nameFr: { contains: kw, mode: 'insensitive' as any } }))
-              };
-              
-              const products = await this.prisma.product.findMany({
-                where: whereClause,
-                take: 5,
-                include: { variants: { take: 1 } }
-              });
+            if (q && q.length > 2) {
+              const products = await this.searchService.searchProducts(q, 5);
 
-              if (products.length > 0) {
+              if (products && products.length > 0) {
                 productsText = products.map(p => 
-                  `- [${p.nameFr}](/produit/${p.slug}) (Prix: ${p.variants[0]?.price || 'N/A'} TND)`
+                  `- [${p.nameFr || (p as any).name}](/produit/${p.slug}) (Prix: ${(p as any).price || p.variants?.[0]?.price || 'N/A'} TND, Slug: ${p.slug})`
                 ).join('\n');
               }
             }
@@ -156,6 +181,58 @@ ${user.orders.map(o => `- Commande #${o.id.slice(-8).toUpperCase()} du ${o.creat
               tool_call_id: toolCall.id,
               name: toolCall.function.name,
               content: productsText
+            });
+          }
+          
+          else if (toolCall.function.name === 'find_vehicle_parts') {
+            const q = `${args.part} ${args.make} ${args.model}`.trim();
+            let productsText = "Aucune pièce compatible trouvée.";
+            
+            if (q.length > 2) {
+              const products = await this.searchService.searchProducts(q, 5);
+
+              if (products && products.length > 0) {
+                productsText = products.map(p => 
+                  `- [${p.nameFr || (p as any).name}](/produit/${p.slug}) (Prix: ${(p as any).price || p.variants?.[0]?.price || 'N/A'} TND, Slug: ${p.slug})`
+                ).join('\n');
+              }
+            }
+
+            payload.messages.push({
+              role: 'tool',
+              tool_call_id: toolCall.id,
+              name: toolCall.function.name,
+              content: productsText
+            });
+          }
+
+          else if (toolCall.function.name === 'add_to_cart') {
+            const slug = args.slug;
+            let resultText = "Produit introuvable.";
+
+            if (slug) {
+              const product = await this.prisma.product.findUnique({
+                where: { slug },
+                include: { variants: true, brand: true, category: true, images: true }
+              });
+
+              if (product && product.variants.length > 0) {
+                clientActions.push({
+                  type: 'ADD_TO_CART',
+                  payload: {
+                    product: product,
+                    variant: product.variants[0]
+                  }
+                });
+                resultText = `Le produit a été ajouté au panier du client avec succès.`;
+              }
+            }
+
+            payload.messages.push({
+              role: 'tool',
+              tool_call_id: toolCall.id,
+              name: toolCall.function.name,
+              content: resultText
             });
           }
         }
@@ -172,10 +249,10 @@ ${user.orders.map(o => `- Commande #${o.id.slice(-8).toUpperCase()} du ${o.creat
 
         const secondData = await secondResponse.json();
         const finalReply = secondData?.choices?.[0]?.message?.content;
-        return { reply: finalReply?.trim() || "Je n'ai pas pu récupérer les informations." };
+        return { reply: finalReply?.trim() || "Je n'ai pas pu récupérer les informations.", clientActions: clientActions.length > 0 ? clientActions : undefined };
       }
 
-      return { reply: replyMessage.content?.trim() || '' };
+      return { reply: replyMessage.content?.trim() || '', clientActions: clientActions.length > 0 ? clientActions : undefined };
 
     } catch (err) {
       this.logger.error(`Chat failed: ${(err as Error).message}`);

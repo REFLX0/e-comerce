@@ -1,0 +1,84 @@
+{
+  "totalBackendEndpoints": 116,
+  "totalFrontendApiCalls": 112,
+  "backendEndpointsSample": [
+    {
+      "method": "GET",
+      "route": "/admin/dashboard",
+      "file": "admin\\admin.controller.ts"
+    },
+    {
+      "method": "GET",
+      "route": "/admin/products",
+      "file": "admin\\admin.controller.ts"
+    },
+    {
+      "method": "GET",
+      "route": "/admin/catalog/brands",
+      "file": "admin\\admin.controller.ts"
+    },
+    {
+      "method": "GET",
+      "route": "/admin/catalog/categories",
+      "file": "admin\\admin.controller.ts"
+    },
+    {
+      "method": "GET",
+      "route": "/admin/products/export",
+      "file": "admin\\admin.controller.ts"
+    },
+    {
+      "method": "POST",
+      "route": "/admin/products/import",
+      "file": "admin\\admin.controller.ts"
+    },
+    {
+      "method": "GET",
+      "route": "/admin/products/:id",
+      "file": "admin\\admin.controller.ts"
+    },
+    {
+      "method": "POST",
+      "route": "/admin/products",
+      "file": "admin\\admin.controller.ts"
+    },
+    {
+      "method": "PATCH",
+      "route": "/admin/products/:id",
+      "file": "admin\\admin.controller.ts"
+    },
+    {
+      "method": "DELETE",
+      "route": "/admin/products/:id",
+      "file": "admin\\admin.controller.ts"
+    },
+    {
+      "method": "POST",
+      "route": "/admin/products/bulk",
+      "file": "admin\\admin.controller.ts"
+    },
+    {
+      "method": "POST",
+      "route": "/admin/products/:id/duplicate",
+      "file": "admin\\admin.controller.ts"
+    },
+    {
+      "method": "PATCH",
+      "route": "/admin/products/:id/publish",
+      "file": "admin\\admin.controller.ts"
+    },
+    {
+      "method": "GET",
+      "route": "/admin/orders",
+      "file": "admin\\admin.controller.ts"
+    },
+    {
+      "method": "GET",
+      "route": "/admin/orders/export",
+      "file": "admin\\admin.controller.ts"
+    }
+  ],
+  "unmatchedApiCalls": [],
+  "deadLinks": [],
+  "emptyHandlers": []
+}

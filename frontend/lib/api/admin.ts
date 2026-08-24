@@ -15,6 +15,19 @@ export interface CatalogCategory {
   _count?: { products: number }
 }
 
+export interface TopBuyer {
+  id: string
+  name: string | null
+  email: string
+  phone: string | null
+  totalSpent: number
+  orderCount: number
+  avgOrderValue: number
+  lastOrderAt: string
+  repeatBuyer: boolean
+  score: number
+}
+
 export async function downloadOrderPdf(orderId: string) {
   const baseUrl = process.env.NEXT_PUBLIC_API_URL || '/api'
   try {
@@ -76,6 +89,9 @@ export const adminApi = {
 
   getUsers: (params?: { page?: number }) =>
     api.get('/admin/users', { params }),
+
+  getTopBuyers: (limit = 10) =>
+    api.get<TopBuyer[]>('/admin/buyers/top', { params: { limit } }),
 
   getUser: (id: string) =>
     api.get(`/admin/users/${id}`),

@@ -1,3 +1,5 @@
+import { backendClient as api } from './client'
+
 export interface Notification {
   id: string
   type: string
@@ -8,26 +10,21 @@ export interface Notification {
   createdAt: string
 }
 
-const BASE = '/api/admin/notifications'
+export interface NotificationsResponse {
+  data: Notification[]
+  total: number
+}
 
 export const notificationsApi = {
-  async findAll(page = 1, limit = 20): Promise<{ data: Notification[]; total: number }> {
-    const res = await fetch(`${BASE}?page=${page}&limit=${limit}`, { credentials: 'include' })
-    if (!res.ok) throw new Error('Failed to fetch notifications')
-    return res.json()
-  },
+  findAll: (page = 1, limit = 20) =>
+    api.get<NotificationsResponse>('/admin/notifications', { params: { page, limit } }),
 
-  async unreadCount(): Promise<number> {
-    const res = await fetch(`${BASE}/unread-count`, { credentials: 'include' })
-    if (!res.ok) throw new Error('Failed to fetch unread count')
-    return res.json()
-  },
+  unreadCount: () =>
+    api.get<number>('/admin/notifications/unread-count'),
 
-  async markRead(id: string): Promise<void> {
-    await fetch(`${BASE}/${id}/read`, { method: 'PATCH', credentials: 'include' })
-  },
+  markRead: (id: string) =>
+    api.patch<void>(`/admin/notifications/${id}/read`, {}),
 
-  async markAllRead(): Promise<void> {
-    await fetch(`${BASE}/mark-all-read`, { method: 'PATCH', credentials: 'include' })
-  },
+  markAllRead: () =>
+    api.patch<void>('/admin/notifications/mark-all-read', {}),
 }

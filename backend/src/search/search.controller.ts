@@ -27,6 +27,6 @@ export class SearchController {
 
   @Get('suggestions')
   suggestions(@Query('q') q: string) {
-    return this.searchService.getSuggestions(q);
+    return this.searchService.getSuggestionsWithFallback(q);
   }
 }

@@ -1,9 +1,10 @@
 "use client";
 
 import { useState, useEffect, useRef } from 'react'
-import { Search, Loader2, X, Sparkles } from 'lucide-react'
+import { Search, Loader2, X, Sparkles, Tag, Layers } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useQuery } from '@tanstack/react-query'
+import { searchApi, type SuggestionProduct, type SuggestionCategory, type SuggestionBrand } from '@/lib/api/search'
 import { productsApi } from '@/lib/api/products'
 import { Link } from '@/i18n/routing'
 import Image from 'next/image'
@@ -23,9 +24,10 @@ export function GlobalSearch({ className }: GlobalSearchProps) {
   
   const debouncedQuery = useDebounce(query, 300)
 
-  const { data: results, isFetching } = useQuery({
-    queryKey: ['search', debouncedQuery],
-    queryFn: () => productsApi.search(debouncedQuery, 5),
+  // Use the richer /search/suggestions endpoint (products + categories + brands)
+  const { data: suggestions, isFetching } = useQuery({
+    queryKey: ['search-suggestions', debouncedQuery],
+    queryFn: () => searchApi.suggestions(debouncedQuery),
     enabled: debouncedQuery.length > 2,
     staleTime: 1000 * 60 * 5,
   })
@@ -59,6 +61,11 @@ export function GlobalSearch({ className }: GlobalSearchProps) {
     setQuery('')
     setIsOpen(false)
   }
+
+  const hasResults =
+    (suggestions?.products?.length ?? 0) > 0 ||
+    (suggestions?.categories?.length ?? 0) > 0 ||
+    (suggestions?.brands?.length ?? 0) > 0
 
   return (
     <div ref={searchRef} className={`relative z-50 flex-1 ${className ?? ''}`}>
@@ -105,37 +112,83 @@ export function GlobalSearch({ className }: GlobalSearchProps) {
               <div className="flex items-center justify-center py-8 text-gray-400">
                 <Loader2 size={24} className="animate-spin text-brand-primary" />
               </div>
-            ) : results && results.length > 0 ? (
-              <div className="flex flex-col">
-                <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider px-3 py-2">
-                  {t('suggestedProducts')}
-                </span>
-                {results.map((product) => (
-                  <Link
-                    key={product.id}
-                    href={`/produit/${product.slug}`}
-                    onClick={() => setIsOpen(false)}
-                    className="group/item flex items-center gap-3 rounded-lg p-2 transition-colors duration-150 hover:bg-brand-surface"
-                  >
-                    <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-md bg-brand-surface">
-                      {product.images?.[0] ? (
-                        <Image src={product.images[0]} alt={product.name} fill className="object-cover" />
-                      ) : (
-                        <div className="h-full w-full bg-gray-200" />
-                      )}
-                    </div>
-                    <div className="flex flex-col min-w-0">
-                      <span className="text-sm font-semibold text-brand-primary truncate group-hover/item:text-brand-primary/70 transition-colors">
-                        {product.name}
-                      </span>
-                      {product.brand && (
-                        <span className="text-xs text-gray-500 uppercase tracking-widest font-medium">
-                          {product.brand.name}
-                        </span>
-                      )}
-                    </div>
-                  </Link>
-                ))}
+            ) : hasResults ? (
+              <div className="flex flex-col gap-1">
+
+                {/* Categories */}
+                {(suggestions?.categories?.length ?? 0) > 0 && (
+                  <div>
+                    <span className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-gray-400">
+                      <Layers size={11} /> {t('suggestedCategories') ?? 'Catégories'}
+                    </span>
+                    {suggestions!.categories.slice(0, 2).map((cat: SuggestionCategory) => (
+                      <Link
+                        key={cat.id}
+                        href={`/categorie/${cat.slug}`}
+                        onClick={() => setIsOpen(false)}
+                        className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-brand-primary transition-colors hover:bg-brand-surface"
+                      >
+                        <span className="h-2 w-2 rounded-full bg-brand-accent/60" />
+                        {cat.name}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+
+                {/* Brands */}
+                {(suggestions?.brands?.length ?? 0) > 0 && (
+                  <div>
+                    <span className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-gray-400">
+                      <Tag size={11} /> {t('suggestedBrands') ?? 'Marques'}
+                    </span>
+                    {suggestions!.brands.slice(0, 2).map((brand: SuggestionBrand) => (
+                      <Link
+                        key={brand.id}
+                        href={`/marque/${brand.slug}`}
+                        onClick={() => setIsOpen(false)}
+                        className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-brand-primary transition-colors hover:bg-brand-surface"
+                      >
+                        <span className="h-2 w-2 rounded-full bg-blue-400/70" />
+                        {brand.name}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+
+                {/* Products */}
+                {(suggestions?.products?.length ?? 0) > 0 && (
+                  <div>
+                    <span className="px-3 py-1.5 text-xs font-semibold text-gray-400 uppercase tracking-wider block">
+                      {t('suggestedProducts')}
+                    </span>
+                    {suggestions!.products.slice(0, 5).map((product: SuggestionProduct) => (
+                      <Link
+                        key={product.id}
+                        href={`/produit/${product.slug}`}
+                        onClick={() => setIsOpen(false)}
+                        className="group/item flex items-center gap-3 rounded-lg p-2 transition-colors duration-150 hover:bg-brand-surface"
+                      >
+                        <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-md bg-brand-surface">
+                          {product.image ? (
+                            <Image src={product.image} alt={product.name} fill className="object-cover" />
+                          ) : (
+                            <div className="h-full w-full bg-gray-200" />
+                          )}
+                        </div>
+                        <div className="flex flex-col min-w-0">
+                          <span className="text-sm font-semibold text-brand-primary truncate group-hover/item:text-brand-primary/70 transition-colors">
+                            {product.name}
+                          </span>
+                          {product.brandName && (
+                            <span className="text-xs text-gray-500 uppercase tracking-widest font-medium">
+                              {product.brandName}
+                            </span>
+                          )}
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                )}
                 
                 <button
                   onClick={handleSearch}

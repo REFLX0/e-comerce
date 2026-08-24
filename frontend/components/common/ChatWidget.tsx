@@ -22,6 +22,7 @@ import {
   MessageCircle,
   ChevronDown,
 } from 'lucide-react'
+import { useCartStore } from '@/lib/store/cart.store'
 
 interface ChatMessage {
   role: 'user' | 'assistant'
@@ -62,6 +63,28 @@ export function ChatWidget() {
   const scrollRef = useRef<HTMLDivElement>(null)
   const menuRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
+  const addItem = useCartStore((state) => state.addItem)
+
+  // Load from localStorage on mount
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('specpart_chat_history')
+      if (saved) {
+        const parsed = JSON.parse(saved)
+        if (parsed.messages?.length) setMessages(parsed.messages)
+        if (parsed.showActions !== undefined) setShowActions(parsed.showActions)
+      }
+    } catch (e) {
+      console.error('Failed to parse chat history', e)
+    }
+  }, [])
+
+  // Save to localStorage when messages change
+  useEffect(() => {
+    if (messages.length > 1) { // Don't save if it's just the welcome message
+      localStorage.setItem('specpart_chat_history', JSON.stringify({ messages, showActions }))
+    }
+  }, [messages, showActions])
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' })
@@ -109,6 +132,16 @@ export function ChatWidget() {
       if (!response.ok) throw new Error('Chat request failed')
 
       const data = await response.json()
+      
+      // Handle server-side UI actions (like adding to cart)
+      if (data.clientActions && data.clientActions.length > 0) {
+        data.clientActions.forEach((action: any) => {
+          if (action.type === 'ADD_TO_CART' && action.payload?.product && action.payload?.variant) {
+            addItem(action.payload.product, action.payload.variant, 1)
+          }
+        })
+      }
+
       const botMsg: ChatMessage = { role: 'assistant', content: data.reply, time: now(locale) }
       setMessages([...history, botMsg])
       if (!isOpen) setUnread((n) => n + 1)
@@ -130,6 +163,7 @@ export function ChatWidget() {
     setMessages([{ role: 'assistant', content: welcomeMessage, time: now(locale) }])
     setShowActions(true)
     setMenuOpen(false)
+    localStorage.removeItem('specpart_chat_history')
   }
 
   return (
