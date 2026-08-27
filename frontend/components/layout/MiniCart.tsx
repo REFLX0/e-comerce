@@ -13,17 +13,26 @@ import { CrossSellSuggestions } from '@/components/cart/CrossSellSuggestions'
 import { PartsWhatsAppCheckout } from '@/components/cart/PartsWhatsAppCheckout'
 
 export default function MiniCart() {
-  const { items, itemCount, totalTTC, updateQuantity, removeItem } = useCartStore()
+  const {
+    items,
+    itemCount,
+    itemsTotalTTC,
+    totalTTC,
+    freeShippingThreshold,
+    updateQuantity,
+    removeItem,
+  } = useCartStore()
   const hasMounted = useHasMounted()
   const visibleItems = hasMounted ? items : []
   const visibleItemCount = hasMounted ? itemCount : 0
+  const visibleItemsTotalTTC = hasMounted ? itemsTotalTTC : 0
   const visibleTotalTTC = hasMounted ? totalTTC : 0
   const t = useTranslations('Cart')
 
-  // Free shipping threshold
-  const FREE_SHIPPING_THRESHOLD = 500
-  const remaining = Math.max(0, FREE_SHIPPING_THRESHOLD - visibleTotalTTC)
-  const progress = Math.min(100, (visibleTotalTTC / FREE_SHIPPING_THRESHOLD) * 100)
+  // Free shipping threshold from store (dynamic settings/DB)
+  const threshold = freeShippingThreshold || 150
+  const remaining = Math.max(0, threshold - visibleItemsTotalTTC)
+  const progress = Math.min(100, (visibleItemsTotalTTC / threshold) * 100)
 
   return (
     <Sheet>

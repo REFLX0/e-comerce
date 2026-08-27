@@ -12,6 +12,11 @@ import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class VariantDto {
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  id?: string;
+
   @ApiProperty() @IsString() @MinLength(1) volume: string;
   @ApiProperty() @IsNumber() @Min(0) price: number;
   @ApiProperty() @IsNumber() @Min(0) stockQty: number;
@@ -19,6 +24,28 @@ export class VariantDto {
   @IsOptional()
   @IsString()
   imageUrl?: string;
+}
+
+export class ProductSpecsDto {
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  viscosity?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  apiStandard?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  aeceaStandard?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  OEMApprovals?: string;
 }
 
 export class CreateProductDto {
@@ -44,6 +71,10 @@ export class CreateProductDto {
   stock?: number;
   @ApiProperty({ required: false })
   @IsOptional()
+  @IsString()
+  packageUnit?: string;
+  @ApiProperty({ required: false })
+  @IsOptional()
   @IsBoolean()
   isPublished?: boolean;
   @ApiProperty({ required: false })
@@ -59,4 +90,9 @@ export class CreateProductDto {
   @ValidateNested({ each: true })
   @Type(() => VariantDto)
   variants?: VariantDto[];
+  @ApiProperty({ required: false, type: ProductSpecsDto })
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => ProductSpecsDto)
+  specs?: ProductSpecsDto;
 }

@@ -108,7 +108,13 @@ export default function AdminOrdersPage() {
           <h1 className="text-2xl font-bold text-brand-primary">{t('orders')}</h1>
           <p className="text-sm text-gray-500">{t('ordersFound', { count: orders.length })}</p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
+          <Link
+            href={`/${locale}/admin/payments`}
+            className="flex items-center gap-2 rounded-xl bg-brand-accent px-3.5 py-2.5 text-sm font-bold text-black hover:bg-brand-accent-hover transition-colors shadow-sm"
+          >
+            <Package size={16} /> ⚡ Vente Caisse Magasin
+          </Link>
           <button onClick={exportCsv} className="flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">
             <Download size={15} /> {t('exportCsv')}
           </button>

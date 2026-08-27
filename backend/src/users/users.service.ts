@@ -81,6 +81,79 @@ export class UsersService {
     });
   }
 
+  private async resolveMakeAndModel(
+    make?: string,
+    makeSlug?: string,
+    model?: string,
+    modelSlug?: string,
+  ) {
+    let resolvedMake = make?.trim();
+    let resolvedMakeSlug = makeSlug?.trim();
+    let resolvedModel = model?.trim();
+    let resolvedModelSlug = modelSlug?.trim();
+
+    if (resolvedMake || resolvedMakeSlug) {
+      const makeQuery = (resolvedMakeSlug || resolvedMake || '').toLowerCase();
+      let matchedMake = await this.prisma.vehicleMake.findFirst({
+        where: {
+          OR: [
+            { slug: makeQuery },
+            { name: { equals: makeQuery, mode: 'insensitive' as const } },
+            ...(makeQuery === 'volkswagen' || makeQuery === 'vw'
+              ? [
+                  { slug: 'vw' },
+                  { name: { contains: 'vw', mode: 'insensitive' as const } },
+                  { slug: 'volkswagen' },
+                ]
+              : []),
+          ],
+        },
+      });
+
+      if (matchedMake) {
+        resolvedMake = matchedMake.name;
+        resolvedMakeSlug = matchedMake.slug;
+
+        if (resolvedModel || resolvedModelSlug) {
+          const modelQuery = (resolvedModelSlug || resolvedModel || '').toLowerCase();
+          let matchedModel = await this.prisma.vehicleModel.findFirst({
+            where: {
+              makeId: matchedMake.id,
+              OR: [
+                { slug: modelQuery },
+                { name: { equals: modelQuery, mode: 'insensitive' as const } },
+                { slug: { contains: modelQuery, mode: 'insensitive' as const } },
+                { name: { contains: modelQuery, mode: 'insensitive' as const } },
+              ],
+            },
+            orderBy: {
+              compatibilities: { _count: 'desc' },
+            },
+          });
+
+          if (matchedModel) {
+            resolvedModel = matchedModel.name;
+            resolvedModelSlug = matchedModel.slug;
+          }
+        }
+      }
+    }
+
+    if (!resolvedMakeSlug && resolvedMake) {
+      resolvedMakeSlug = resolvedMake.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    }
+    if (!resolvedModelSlug && resolvedModel) {
+      resolvedModelSlug = resolvedModel.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    }
+
+    return {
+      make: this.optionalString(resolvedMake),
+      makeSlug: this.optionalString(resolvedMakeSlug),
+      model: this.optionalString(resolvedModel),
+      modelSlug: this.optionalString(resolvedModelSlug),
+    };
+  }
+
   async addCar(userId: string, dto: CreateUserCarDto) {
     if (dto.lastOilChangeMileage > dto.currentMileage) {
       throw new BadRequestException(
@@ -88,12 +161,21 @@ export class UsersService {
       );
     }
 
+    const { make, makeSlug, model, modelSlug } = await this.resolveMakeAndModel(
+      dto.make,
+      dto.makeSlug,
+      dto.model,
+      dto.modelSlug,
+    );
+
     return this.prisma.userCar.create({
       data: {
         userId,
         name: dto.name.trim(),
-        make: this.optionalString(dto.make),
-        model: this.optionalString(dto.model),
+        make,
+        makeSlug,
+        model,
+        modelSlug,
         year: dto.year,
         vin: this.optionalString(dto.vin),
         engine: this.optionalString(dto.engine),
@@ -120,8 +202,6 @@ export class UsersService {
     if (car.userId !== userId) throw new ForbiddenException();
 
     const currentMileage = dto.currentMileage ?? car.currentMileage;
-    // This is an action, not a persisted status: confirming it starts a new
-    // oil-change cycle at the car's current mileage.
     const oilChangeDoneNow = dto.oilChangeDone === true;
     const lastOilChangeMileage = oilChangeDoneNow
       ? currentMileage
@@ -133,14 +213,27 @@ export class UsersService {
       );
     }
 
+    const resolved =
+      dto.make !== undefined ||
+      dto.makeSlug !== undefined ||
+      dto.model !== undefined ||
+      dto.modelSlug !== undefined
+        ? await this.resolveMakeAndModel(
+            dto.make ?? car.make ?? undefined,
+            dto.makeSlug ?? car.makeSlug ?? undefined,
+            dto.model ?? car.model ?? undefined,
+            dto.modelSlug ?? car.modelSlug ?? undefined,
+          )
+        : null;
+
     return this.prisma.userCar.update({
       where: { id: carId },
       data: {
         name: dto.name?.trim(),
-        make:
-          dto.make === undefined ? undefined : this.optionalString(dto.make),
-        model:
-          dto.model === undefined ? undefined : this.optionalString(dto.model),
+        make: resolved ? resolved.make : (dto.make === undefined ? undefined : this.optionalString(dto.make)),
+        makeSlug: resolved ? resolved.makeSlug : (dto.makeSlug === undefined ? undefined : this.optionalString(dto.makeSlug)),
+        model: resolved ? resolved.model : (dto.model === undefined ? undefined : this.optionalString(dto.model)),
+        modelSlug: resolved ? resolved.modelSlug : (dto.modelSlug === undefined ? undefined : this.optionalString(dto.modelSlug)),
         year: dto.year,
         vin: dto.vin === undefined ? undefined : this.optionalString(dto.vin),
         engine:

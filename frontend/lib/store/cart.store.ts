@@ -4,7 +4,7 @@ import type { Cart, CartItem, Product, ProductVariant } from '@/lib/types'
 
 const TVA_RATE = Number(process.env.NEXT_PUBLIC_TVA_RATE || 0.19)
 const DEFAULT_FREE_SHIPPING_THRESHOLD = Number(
-  process.env.NEXT_PUBLIC_FREE_SHIPPING_THRESHOLD || 100
+  process.env.NEXT_PUBLIC_FREE_SHIPPING_THRESHOLD || 150
 )
 const DEFAULT_SHIPPING_COST = Number(process.env.NEXT_PUBLIC_SHIPPING_COST || 7)
 
@@ -29,24 +29,50 @@ function countItems(items: CartItem[]): number {
 function calculateCart(
   items: CartItem[],
   requestedDiscount: number,
+  promoType: 'PERCENT' | 'FIXED' | 'SHIPPING' | undefined,
   shippingBaseCost: number,
-  freeShippingThreshold: number
-): Omit<Cart, 'items' | 'promoCode'> {
+  freeShippingThreshold: number,
+  selectedWilaya?: string,
+  eta?: string
+): Omit<Cart, 'items' | 'promoCode' | 'promoType'> {
   const subtotalHT = round2(
     items.reduce((acc, item) => acc + item.variant.priceHT * item.quantity, 0)
   )
-  // Clamp the discount so totals can never go negative
+
+  // Real TTC value of items in cart
+  const itemsTotalTTC = round2(
+    items.reduce(
+      (acc, item) =>
+        acc +
+        (typeof item.variant.priceTTC === 'number' && item.variant.priceTTC > 0
+          ? item.variant.priceTTC
+          : item.variant.priceHT * (1 + TVA_RATE)) *
+          item.quantity,
+      0
+    )
+  )
+
+  // Clamp item discount so totals can never go negative
   const promoDiscount = round2(Math.min(Math.max(requestedDiscount, 0), subtotalHT))
-  const discounted = round2(subtotalHT - promoDiscount)
-  const tva = round2(discounted * TVA_RATE)
-  const shippingCost =
-    items.length === 0 || discounted >= freeShippingThreshold ? 0 : shippingBaseCost
+  const discountedHT = round2(Math.max(0, subtotalHT - promoDiscount))
+  const tva = round2(discountedHT * TVA_RATE)
+
+  // Free shipping check: Promo code OR items total TTC reaches threshold
+  const isFreeShipping =
+    promoType === 'SHIPPING' ||
+    (items.length > 0 && itemsTotalTTC >= freeShippingThreshold)
+
+  const shippingCost = items.length === 0 || isFreeShipping ? 0 : shippingBaseCost
+
   return {
-    subtotalHT: discounted,
+    subtotalHT: discountedHT,
+    itemsTotalTTC,
     tva,
-    totalTTC: round2(discounted + tva + shippingCost),
+    totalTTC: round2(discountedHT + tva + shippingCost),
     shippingCost,
     promoDiscount,
+    selectedWilaya,
+    eta,
   }
 }
 
@@ -57,8 +83,9 @@ interface CartStore extends Cart {
   addItem: (product: Product, variant: ProductVariant, quantity?: number) => AddItemResult
   removeItem: (variantId: string) => void
   updateQuantity: (variantId: string, quantity: number) => void
-  applyPromo: (code: string, discount: number) => void
+  applyPromo: (code: string, discount: number, type?: 'PERCENT' | 'FIXED' | 'SHIPPING') => void
   removePromo: () => void
+  setSelectedWilaya: (wilaya: string, cost?: number, eta?: string) => void
   setShippingConfig: (config: { cost?: number; freeThreshold?: number }) => void
   clearCart: () => void
 }
@@ -70,30 +97,62 @@ export const useCartStore = create<CartStore>()(
       const commit = (
         items: CartItem[],
         promoCode: string | undefined,
-        requestedDiscount: number
+        promoType: 'PERCENT' | 'FIXED' | 'SHIPPING' | undefined,
+        requestedDiscount: number,
+        customShippingCost?: number,
+        customWilaya?: string,
+        customEta?: string
       ) => {
-        const { shippingBaseCost, freeShippingThreshold } = get()
+        const state = get()
+        const shippingBaseCost =
+          typeof customShippingCost === 'number' ? customShippingCost : state.shippingBaseCost
+        const selectedWilaya = customWilaya !== undefined ? customWilaya : state.selectedWilaya
+        const eta = customEta !== undefined ? customEta : state.eta
+        const freeShippingThreshold = state.freeShippingThreshold
+
         // An empty cart never keeps a promo code
         const code = items.length === 0 ? undefined : promoCode
+        const type = items.length === 0 ? undefined : promoType
         const discount = items.length === 0 ? 0 : requestedDiscount
-        const calc = calculateCart(items, discount, shippingBaseCost, freeShippingThreshold)
-        set({ items, promoCode: code, itemCount: countItems(items), ...calc })
+
+        const calc = calculateCart(
+          items,
+          discount,
+          type,
+          shippingBaseCost,
+          freeShippingThreshold,
+          selectedWilaya,
+          eta
+        )
+
+        set({
+          items,
+          promoCode: code,
+          promoType: type,
+          itemCount: countItems(items),
+          shippingBaseCost,
+          ...calc,
+        })
       }
 
       return {
         items: [],
         promoCode: undefined,
+        promoType: undefined,
         promoDiscount: 0,
         subtotalHT: 0,
+        itemsTotalTTC: 0,
         tva: 0,
         totalTTC: 0,
         shippingCost: 0,
         itemCount: 0,
         shippingBaseCost: DEFAULT_SHIPPING_COST,
         freeShippingThreshold: DEFAULT_FREE_SHIPPING_THRESHOLD,
+        selectedWilaya: undefined,
+        eta: undefined,
 
         addItem: (product, variant, quantity = 1) => {
-          const { items, promoCode, promoDiscount } = get()
+          const { items, promoCode, promoType, promoDiscount } = get()
           const stock = getVariantStock(variant)
           if (stock <= 0) return { ok: false, reason: 'OUT_OF_STOCK' }
 
@@ -116,27 +175,28 @@ export const useCartStore = create<CartStore>()(
                 },
               ]
 
-          commit(newItems, promoCode, promoDiscount)
+          commit(newItems, promoCode, promoType, promoDiscount)
           return { ok: true, capped: next < desired }
         },
 
         removeItem: (variantId) => {
-          const { items, promoCode, promoDiscount } = get()
+          const { items, promoCode, promoType, promoDiscount } = get()
           commit(
             items.filter((i) => i.variantId !== variantId),
             promoCode,
+            promoType,
             promoDiscount
           )
         },
 
         updateQuantity: (variantId, quantity) => {
-          const { items, promoCode, promoDiscount } = get()
+          const { items, promoCode, promoType, promoDiscount } = get()
           const qty = Math.floor(quantity)
           if (qty <= 0) {
-            // Setting quantity to zero removes the line instead of being ignored
             commit(
               items.filter((i) => i.variantId !== variantId),
               promoCode,
+              promoType,
               promoDiscount
             )
             return
@@ -146,15 +206,23 @@ export const useCartStore = create<CartStore>()(
               ? { ...i, quantity: Math.min(qty, getVariantStock(i.variant)) }
               : i
           )
-          commit(newItems, promoCode, promoDiscount)
+          commit(newItems, promoCode, promoType, promoDiscount)
         },
 
-        applyPromo: (code, discount) => {
-          commit(get().items, code, discount)
+        applyPromo: (code, discount, type = 'PERCENT') => {
+          const { items } = get()
+          commit(items, code, type, discount)
         },
 
         removePromo: () => {
-          commit(get().items, undefined, 0)
+          const { items } = get()
+          commit(items, undefined, undefined, 0)
+        },
+
+        setSelectedWilaya: (wilaya, cost, eta) => {
+          const { items, promoCode, promoType, promoDiscount, shippingBaseCost } = get()
+          const finalCost = typeof cost === 'number' ? cost : shippingBaseCost
+          commit(items, promoCode, promoType, promoDiscount, finalCost, wilaya, eta)
         },
 
         setShippingConfig: ({ cost, freeThreshold }) => {
@@ -164,11 +232,11 @@ export const useCartStore = create<CartStore>()(
               ? { freeShippingThreshold: freeThreshold }
               : {}),
           })
-          const { items, promoCode, promoDiscount } = get()
-          commit(items, promoCode, promoDiscount)
+          const { items, promoCode, promoType, promoDiscount } = get()
+          commit(items, promoCode, promoType, promoDiscount)
         },
 
-        clearCart: () => commit([], undefined, 0),
+        clearCart: () => commit([], undefined, undefined, 0),
       }
     },
     { name: 'cart-storage' }

@@ -13,7 +13,7 @@ import { useTranslations } from 'next-intl'
 export function CartSummary() {
   const t = useTranslations('Checkout')
   const tCart = useTranslations('Cart')
-  const { items, totalTTC, shippingCost, updateQuantity, removeItem } = useCartStore()
+  const { items, itemsTotalTTC, totalTTC, shippingCost, updateQuantity, removeItem } = useCartStore()
 
   const subtotal = useCartStore((s) => s.subtotalHT)
 
@@ -126,19 +126,19 @@ export function CartSummary() {
 
           <div className="mb-6 space-y-4">
             <div className="flex justify-between text-sm text-gray-600">
-              <span>{tCart('totalTTC')}</span>
-              <span>{formatPrice(totalTTC)}</span>
+              <span>Sous-total articles</span>
+              <span className="font-semibold text-gray-800">{formatPrice(itemsTotalTTC)}</span>
             </div>
             <div className="flex justify-between text-sm text-gray-600">
               <span>{t('shipping')}</span>
               {shippingCost === 0 ? (
-                <span className="font-medium text-green-500">{tCart('free')}</span>
+                <span className="font-bold text-green-500">{tCart('free')}</span>
               ) : (
-                <span>{formatPrice(shippingCost)}</span>
+                <span className="font-semibold">{formatPrice(shippingCost)}</span>
               )}
             </div>
 
-            <FreeShippingProgress subtotal={totalTTC} className="py-2" />
+            <FreeShippingProgress subtotal={itemsTotalTTC} className="py-2" />
 
             <CrossSellSuggestions variant="sidebar" />
 

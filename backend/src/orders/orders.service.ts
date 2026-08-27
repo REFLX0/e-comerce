@@ -10,12 +10,15 @@ import { CreateOrderDto } from './dto/create-order.dto';
 import * as crypto from 'crypto';
 import { generateDeliveryNotePDF } from '../admin/invoice-pdf';
 
+import { ShippingService } from '../shipping/shipping.service';
+
 @Injectable()
 export class OrdersService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly kafka: KafkaService,
     private readonly couponsService: CouponsService,
+    private readonly shippingService: ShippingService,
   ) {}
 
   async create(dto: CreateOrderDto, userId?: string) {
@@ -63,17 +66,29 @@ export class OrdersService {
     }, 0);
 
     let promoDiscount = 0;
+    let isFreeShippingPromo = false;
     if (dto.promoCode) {
       const coupon = await this.couponsService.validateCode(
         dto.promoCode,
         itemsTotalHT,
       );
       promoDiscount = coupon.discount;
+      if (coupon.type === 'SHIPPING') {
+        isFreeShippingPromo = true;
+      }
     }
 
-    const discountedHT = itemsTotalHT - promoDiscount;
+    const discountedHT = Math.max(0, itemsTotalHT - promoDiscount);
     const tva = Math.round(discountedHT * TVA_RATE * 100) / 100;
-    const shipping = dto.shippingCost ?? 0;
+    const itemsTotalTTC = Math.round((discountedHT + tva) * 100) / 100;
+
+    // Securely calculate shipping rate based on Wilaya and DB zones
+    const shippingCalc = await this.shippingService.calculateRate(
+      dto.shipping.wilaya,
+      itemsTotalTTC,
+    );
+
+    const shipping = isFreeShippingPromo ? 0 : shippingCalc.price;
     const totalAmount = Math.round((discountedHT + tva + shipping) * 100) / 100;
 
     // Atomic: create order + decrement stock + create payment + increment coupon

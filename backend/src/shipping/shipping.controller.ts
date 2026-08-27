@@ -6,6 +6,7 @@ import {
   Delete,
   Param,
   Body,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
@@ -23,6 +24,15 @@ export class ShippingController {
 
   @Get('zones') findAll() {
     return this.shippingService.findAll();
+  }
+
+  @Get('rate')
+  calculateRate(
+    @Query('wilaya') wilaya?: string,
+    @Query('subtotal') subtotal?: string,
+  ) {
+    const subtotalNum = subtotal ? parseFloat(subtotal) : undefined;
+    return this.shippingService.calculateRate(wilaya, subtotalNum);
   }
 
   @ApiBearerAuth()

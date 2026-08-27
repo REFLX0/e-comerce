@@ -9,11 +9,19 @@ import { useTranslations } from 'next-intl'
 export function OrderSummary() {
   const t = useTranslations('Checkout')
   const tCart = useTranslations('Cart')
-  const { items, totalTTC, shippingCost } = useCartStore()
+  const {
+    items,
+    itemsTotalTTC,
+    promoDiscount,
+    promoCode,
+    eta,
+    totalTTC,
+    shippingCost,
+  } = useCartStore()
   const [cgvAccepted, setCgvAccepted] = useState(false)
 
   return (
-    <div className="bg-brand-primary shadow-card sticky top-24 rounded-2xl p-6 text-white md:p-8">
+    <div className="bg-brand-primary shadow-card rounded-2xl p-5 sm:p-6 text-white md:p-8 lg:sticky lg:top-24">
       <h2 className="font-display mb-6 border-b border-white/10 pb-4 text-xl font-bold">
         {t('orderSummary')}
       </h2>
@@ -53,11 +61,26 @@ export function OrderSummary() {
 
       <div className="mb-6 space-y-3 border-t border-white/10 pt-6">
         <div className="flex justify-between text-sm text-white/70">
-          <span>{t('delivery')}</span>
+          <span>Sous-total articles</span>
+          <span>{formatPrice(itemsTotalTTC)}</span>
+        </div>
+
+        {promoDiscount > 0 && (
+          <div className="flex justify-between text-sm text-green-400">
+            <span>Remise promo ({promoCode})</span>
+            <span>-{formatPrice(promoDiscount * 1.19)}</span>
+          </div>
+        )}
+
+        <div className="flex justify-between text-sm text-white/70">
+          <div>
+            <span>{t('delivery')}</span>
+            {eta && <span className="text-xs text-white/50 block">Délai estimé : {eta}</span>}
+          </div>
           {shippingCost === 0 ? (
-            <span className="font-medium text-green-400">{tCart('free')}</span>
+            <span className="font-bold text-green-400">{tCart('free')}</span>
           ) : (
-            <span>{formatPrice(shippingCost)}</span>
+            <span className="font-semibold">{formatPrice(shippingCost)}</span>
           )}
         </div>
       </div>

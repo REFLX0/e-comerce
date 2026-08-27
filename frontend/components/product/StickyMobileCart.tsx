@@ -44,7 +44,7 @@ export function StickyMobileCart({ product, variant }: Props) {
 
   return (
     <div
-      className={`fixed bottom-0 left-0 right-0 z-50 border-t border-gray-200 bg-white/95 backdrop-blur-xl shadow-overlay transition-transform duration-300 lg:hidden ${
+      className={`fixed bottom-[60px] left-0 right-0 z-40 border-t border-gray-200 bg-white/95 backdrop-blur-xl shadow-overlay transition-transform duration-300 md:bottom-0 lg:hidden ${
         isVisible ? 'translate-y-0' : 'translate-y-full'
       }`}
     >

@@ -5,24 +5,50 @@ import { useMutation, useQuery } from '@tanstack/react-query'
 import { adminApi } from '@/lib/api/admin'
 import { useRouter, useParams } from 'next/navigation'
 import { toast } from 'sonner'
-import { Save, ArrowLeft, Upload, X, Trash2, Plus, Info } from 'lucide-react'
+import {
+  Save,
+  ArrowLeft,
+  Upload,
+  X,
+  Plus,
+  Trash2,
+  Image as ImageIcon,
+  Info,
+  Star,
+  MoveLeft,
+  MoveRight,
+  Link2,
+  Wrench,
+  Droplets,
+  Package,
+  Loader2,
+  Check
+} from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useLocale, useTranslations } from 'next-intl'
 
-function categoryLabel(category: any) {
-  const name = category.nameFr ?? category.name ?? 'Category'
-  return category.parent?.nameFr ? `${category.parent.nameFr} / ${name}` : name
+interface ImageItem {
+  id: string
+  url?: string
+  file?: File
+  preview: string
+  isPrimary: boolean
 }
 
-interface VariantForm {
+interface VariantItem {
   id?: string
   volume: string
   price: string
   stockQty: string
-  imageUrl: string | null
   imageFile: File | null
   imagePreview: string | null
+  imageUrl?: string | null
+}
+
+function categoryLabel(category: any) {
+  const name = category.nameFr ?? category.name ?? 'Category'
+  return category.parent?.nameFr ? `${category.parent.nameFr} / ${name}` : name
 }
 
 export default function EditProductPage() {
@@ -33,6 +59,7 @@ export default function EditProductPage() {
   const id = params.id as string
   const localizedHref = (href: string) => `/${locale}${href}`
 
+  // Basic Information
   const [nameFr, setNameFr] = useState('')
   const [slug, setSlug] = useState('')
   const [sku, setSku] = useState('')
@@ -40,19 +67,43 @@ export default function EditProductPage() {
   const [brandId, setBrandId] = useState('')
   const [categoryId, setCategoryId] = useState('')
   const [isPublished, setIsPublished] = useState(true)
-  const [file, setFile] = useState<File | null>(null)
-  const [imagePreview, setImagePreview] = useState<string | null>(null)
-  const [existingImages, setExistingImages] = useState<string[]>([])
+  const [isFeatured, setIsFeatured] = useState(false)
+
+  // Product Nature: "piece" (Single auto part) vs "oil" (Multi-packaging lubricant)
+  const [productType, setProductType] = useState<'piece' | 'oil'>('piece')
+
+  // For Single Piece
+  const [price, setPrice] = useState('')
+  const [stock, setStock] = useState('10')
+  const [packageUnit, setPackageUnit] = useState('1 Pièce')
+
+  // For Lubricants & Oils
+  const [variants, setVariants] = useState<VariantItem[]>([])
+  const [viscosity, setViscosity] = useState('')
+  const [apiStandard, setApiStandard] = useState('')
+  const [aeceaStandard, setAeceaStandard] = useState('')
+  const [OEMApprovals, setOEMApprovals] = useState('')
+
+  // Images Management
+  const [images, setImages] = useState<ImageItem[]>([])
+  const [urlInput, setUrlInput] = useState('')
+  const [showUrlInput, setShowUrlInput] = useState(false)
   const [isUploading, setIsUploading] = useState(false)
-  const [variants, setVariants] = useState<VariantForm[]>([])
 
   const { data: product, isLoading } = useQuery<any>({
     queryKey: ['admin-product', id],
     queryFn: () => adminApi.getProduct(id),
     enabled: !!id,
   })
-  const { data: brandsData = [] } = useQuery<any[]>({ queryKey: ['admin-catalog-brands'], queryFn: adminApi.getCatalogBrands })
-  const { data: categoriesData = [] } = useQuery<any[]>({ queryKey: ['admin-catalog-categories'], queryFn: adminApi.getCatalogCategories })
+
+  const { data: brandsData = [] } = useQuery<any[]>({
+    queryKey: ['admin-catalog-brands'],
+    queryFn: adminApi.getCatalogBrands,
+  })
+  const { data: categoriesData = [] } = useQuery<any[]>({
+    queryKey: ['admin-catalog-categories'],
+    queryFn: adminApi.getCatalogCategories,
+  })
 
   useEffect(() => {
     if (product) {
@@ -63,261 +114,831 @@ export default function EditProductPage() {
       setBrandId(product.brandId ?? '')
       setCategoryId(product.categoryId ?? '')
       setIsPublished(product.isPublished ?? true)
-      setExistingImages((product.images ?? []).map((img: any) => img.url))
-      setVariants((product.variants ?? []).map((v: any) => ({
-        id: v.id,
-        volume: v.volume,
-        price: v.price?.toString() ?? '',
-        stockQty: v.stockQty?.toString() ?? '',
-        imageUrl: v.imageUrl ?? null,
-        imageFile: null,
-        imagePreview: null,
-      })))
+      setIsFeatured(product.isFeatured ?? false)
+
+      // Specs
+      if (product.specs) {
+        setViscosity(product.specs.viscosity ?? '')
+        setApiStandard(product.specs.apiStandard ?? '')
+        setAeceaStandard(product.specs.aeceaStandard ?? '')
+        setOEMApprovals(product.specs.OEMApprovals ?? '')
+      }
+
+      // Populate Images Gallery
+      if (product.images && product.images.length > 0) {
+        setImages(
+          product.images.map((img: any, idx: number) => ({
+            id: img.id || `img-${idx}`,
+            url: img.url,
+            preview: img.url,
+            isPrimary: img.isPrimary || idx === 0,
+          }))
+        )
+      } else {
+        setImages([])
+      }
+
+      // Determine product type (piece vs multi-volume oil)
+      const rawVariants = product.variants ?? []
+      if (
+        rawVariants.length === 1 &&
+        (rawVariants[0].volume === '1 Pièce' ||
+          rawVariants[0].volume === 'default' ||
+          rawVariants[0].volume === 'Unité' ||
+          !rawVariants[0].volume.toLowerCase().includes('l'))
+      ) {
+        setProductType('piece')
+        setPrice(rawVariants[0].price?.toString() ?? '')
+        setStock(rawVariants[0].stockQty?.toString() ?? '10')
+        setPackageUnit(rawVariants[0].volume === 'default' ? '1 Pièce' : rawVariants[0].volume)
+        setVariants([])
+      } else if (rawVariants.length > 0) {
+        setProductType('oil')
+        setVariants(
+          rawVariants.map((v: any) => ({
+            id: v.id,
+            volume: v.volume,
+            price: v.price?.toString() ?? '',
+            stockQty: v.stockQty?.toString() ?? '10',
+            imageUrl: v.imageUrl ?? null,
+            imageFile: null,
+            imagePreview: v.imageUrl ?? null,
+          }))
+        )
+      } else {
+        setProductType('piece')
+        setPrice('0')
+        setStock('10')
+      }
     }
   }, [product])
+
+  // Multi-File upload handler
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files || e.target.files.length === 0) return
+    const newFiles = Array.from(e.target.files)
+    const newItems: ImageItem[] = newFiles.map((file, idx) => ({
+      id: `local-${Date.now()}-${idx}-${Math.random()}`,
+      file,
+      preview: URL.createObjectURL(file),
+      isPrimary: images.length === 0 && idx === 0,
+    }))
+    setImages((prev) => [...prev, ...newItems])
+    e.target.value = ''
+  }
+
+  // Add Direct Image URL
+  const handleAddUrl = () => {
+    if (!urlInput.trim()) return
+    const item: ImageItem = {
+      id: `url-${Date.now()}`,
+      url: urlInput.trim(),
+      preview: urlInput.trim(),
+      isPrimary: images.length === 0,
+    }
+    setImages((prev) => [...prev, item])
+    setUrlInput('')
+    setShowUrlInput(false)
+  }
+
+  // Remove image
+  const removeImage = (id: string) => {
+    setImages((prev) => {
+      const filtered = prev.filter((img) => img.id !== id)
+      if (filtered.length > 0 && !filtered.some((img) => img.isPrimary) && filtered[0]) {
+        filtered[0].isPrimary = true
+      }
+      return filtered
+    })
+  }
+
+  // Set as primary image
+  const setPrimaryImage = (id: string) => {
+    setImages((prev) =>
+      prev.map((img) => ({
+        ...img,
+        isPrimary: img.id === id,
+      }))
+    )
+  }
+
+  // Move image order
+  const moveImage = (index: number, direction: 'left' | 'right') => {
+    const targetIndex = direction === 'left' ? index - 1 : index + 1
+    if (targetIndex < 0 || targetIndex >= images.length) return
+    setImages((prev) => {
+      const copy = [...prev]
+      const current = copy[index]
+      const target = copy[targetIndex]
+      if (current && target) {
+        copy[index] = target
+        copy[targetIndex] = current
+      }
+      return copy
+    })
+  }
+
+  // Variant operations
+  const addVariant = () => {
+    setVariants((prev) => [
+      ...prev,
+      { volume: '', price: '', stockQty: '10', imageFile: null, imagePreview: null },
+    ])
+  }
+
+  const removeVariant = (index: number) => {
+    setVariants((prev) => prev.filter((_, i) => i !== index))
+  }
+
+  const updateVariant = (index: number, field: keyof VariantItem, value: any) => {
+    setVariants((prev) =>
+      prev.map((v, i) => (i === index ? { ...v, [field]: value } : v))
+    )
+  }
+
+  const handleVariantImage = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setVariants((prev) =>
+      prev.map((v, i) =>
+        i === index
+          ? {
+              ...v,
+              imageFile: file,
+              imagePreview: URL.createObjectURL(file),
+            }
+          : v
+      )
+    )
+  }
+
+  const removeVariantImage = (index: number) => {
+    setVariants((prev) =>
+      prev.map((v, i) =>
+        i === index ? { ...v, imageFile: null, imagePreview: null, imageUrl: null } : v
+      )
+    )
+  }
 
   const updateMutation = useMutation({
     mutationFn: (body: any) => adminApi.updateProduct(id, body),
     onSuccess: () => {
-      toast.success(t('productUpdated'))
+      toast.success(t('productUpdated') || 'Produit modifié avec succès !')
       router.push(localizedHref('/admin/catalog/products'))
     },
     onError: (err: any) => toast.error(err?.message || t('productUpdateError')),
   })
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const selectedFile = e.target.files[0]
-      setFile(selectedFile)
-      if (imagePreview) URL.revokeObjectURL(imagePreview)
-      setImagePreview(URL.createObjectURL(selectedFile))
-    }
-  }
-
-  const removeNewImage = () => {
-    if (imagePreview) URL.revokeObjectURL(imagePreview)
-    setFile(null)
-    setImagePreview(null)
-  }
-
-  const updateVariant = (index: number, field: keyof VariantForm, value: string) => {
-    setVariants(prev => prev.map((v, i) => i === index ? { ...v, [field]: value } : v))
-  }
-
-  const handleVariantImage = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
-    const f = e.target.files?.[0]
-    if (!f) return
-    setVariants(prev => {
-      if (prev[index]?.imagePreview) URL.revokeObjectURL(prev[index].imagePreview!)
-      return prev.map((v, i) => i === index ? { ...v, imageFile: f, imagePreview: URL.createObjectURL(f) } : v)
-    })
-  }
-
-  const removeVariantImage = (index: number) => {
-    setVariants(prev => {
-      if (prev[index]?.imagePreview) URL.revokeObjectURL(prev[index].imagePreview!)
-      return prev.map((v, i) => i === index ? { ...v, imageFile: null, imagePreview: null, imageUrl: null } : v)
-    })
-  }
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!nameFr || !slug || !brandId || !categoryId) {
-      toast.error(t('requiredFields'))
+    if (!nameFr.trim() || !slug.trim() || !brandId || !categoryId) {
+      toast.error(t('requiredFields') || 'Veuillez remplir tous les champs obligatoires (*)')
+      return
+    }
+
+    if (productType === 'piece' && (!price || parseFloat(price) <= 0)) {
+      toast.error('Veuillez saisir un prix valide pour cette pièce.')
+      return
+    }
+
+    if (productType === 'oil' && variants.length === 0) {
+      toast.error('Veuillez renseigner au moins un conditionnement.')
       return
     }
 
     setIsUploading(true)
-    let imageUrl = null
 
     try {
-      if (file) {
-        const res = await adminApi.uploadImage(file)
-        imageUrl = (res as any).url || (res as any).data?.url
-      }
+      // 1. Upload any newly added local product images
+      const primaryItem = images.find((img) => img.isPrimary) || images[0]
+      const orderedImages = primaryItem
+        ? [primaryItem, ...images.filter((img) => img.id !== primaryItem.id)]
+        : images
 
-      // Upload any new variant images
-      const variantImageUrls: (string | null)[] = await Promise.all(
-        variants.map(async (v) => {
-          if (v.imageFile) {
-            const res = await adminApi.uploadImage(v.imageFile)
-            return (res as any).url || (res as any).data?.url || null
+      const uploadedImageUrls: string[] = await Promise.all(
+        orderedImages.map(async (img) => {
+          if (img.file) {
+            const res = await adminApi.uploadImage(img.file)
+            return (res as any).url || (res as any).data?.url || ''
           }
-          return v.imageUrl
+          return img.url || ''
         })
       )
+      const finalImages = uploadedImageUrls.filter(Boolean)
 
-      const payload: any = {
-        nameFr, slug, sku, description,
-        brandId, categoryId,
-        isPublished,
-        variants: variants.map((v, idx) => ({
+      // 2. Upload any new variant images
+      let finalVariants: any = undefined
+      if (productType === 'oil') {
+        const variantImageUrls: (string | null)[] = await Promise.all(
+          variants.map(async (v) => {
+            if (v.imageFile) {
+              const res = await adminApi.uploadImage(v.imageFile)
+              return (res as any).url || (res as any).data?.url || null
+            }
+            return v.imageUrl || null
+          })
+        )
+
+        finalVariants = variants.map((v, idx) => ({
           id: v.id,
-          volume: v.volume,
+          volume: v.volume.trim() || '1L',
           price: parseFloat(v.price) || 0,
           stockQty: parseInt(v.stockQty, 10) || 0,
           imageUrl: variantImageUrls[idx],
-        })),
+        }))
       }
 
-      if (imageUrl) {
-        payload.images = [imageUrl]
+      // 3. Assemble full product payload
+      const payload: any = {
+        nameFr: nameFr.trim(),
+        slug: slug.trim(),
+        sku: sku.trim(),
+        description: description.trim() || nameFr.trim(),
+        brandId,
+        categoryId,
+        isPublished,
+        isFeatured,
+        images: finalImages,
+      }
+
+      if (productType === 'piece') {
+        payload.price = parseFloat(price) || 0
+        payload.stock = parseInt(stock, 10) || 0
+        payload.packageUnit = packageUnit.trim() || '1 Pièce'
+        payload.variants = [
+          {
+            volume: packageUnit.trim() || '1 Pièce',
+            price: parseFloat(price) || 0,
+            stockQty: parseInt(stock, 10) || 0,
+          },
+        ]
+      } else {
+        payload.variants = finalVariants
+        payload.specs = {
+          viscosity: viscosity.trim() || undefined,
+          apiStandard: apiStandard.trim() || undefined,
+          aeceaStandard: aeceaStandard.trim() || undefined,
+          OEMApprovals: OEMApprovals.trim() || undefined,
+        }
       }
 
       updateMutation.mutate(payload)
     } catch {
-      toast.error(t('uploadError'))
+      toast.error(t('uploadError') || "Erreur lors de l'enregistrement.")
+    } finally {
       setIsUploading(false)
     }
   }
 
   if (isLoading) {
     return (
-      <div className="p-4 sm:p-6 space-y-5">
-        <div className="h-8 w-48 animate-pulse rounded bg-gray-100" />
-        <div className="h-96 animate-pulse rounded-2xl bg-gray-100" />
+      <div className="p-8 max-w-5xl mx-auto flex flex-col items-center justify-center min-h-96">
+        <Loader2 size={36} className="animate-spin text-[#16254c]" />
+        <p className="mt-3 text-xs font-bold text-slate-500 uppercase tracking-wider">Chargement du produit...</p>
       </div>
     )
   }
 
   if (!product) {
     return (
-      <div className="p-4 sm:p-6 text-center py-16">
-        <h2 className="text-xl font-bold text-brand-primary mb-2">{t('productNotFound')}</h2>
-        <Link href={localizedHref('/admin/catalog/products')} className="text-sm text-brand-accent hover:underline">{t('backToList')}</Link>
+      <div className="p-8 text-center py-16">
+        <h2 className="text-xl font-bold text-[#16254c] mb-2">{t('productNotFound') || 'Produit introuvable'}</h2>
+        <Link href={localizedHref('/admin/catalog/products')} className="text-xs font-bold text-[#D4A76A] hover:underline">
+          {t('backToList') || 'Retour à la liste des produits'}
+        </Link>
       </div>
     )
   }
 
   return (
-    <div className="p-4 sm:p-6 space-y-5">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+    <div className="p-4 sm:p-6 max-w-5xl mx-auto space-y-6">
+      {/* Header */}
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-b border-slate-200 pb-5">
         <div className="flex items-center gap-3">
-          <Link href={localizedHref('/admin/catalog/products')} className="rounded-lg p-2 text-gray-400 hover:bg-gray-100 hover:text-brand-primary transition-colors">
-            <ArrowLeft size={20} />
+          <Link
+            href={localizedHref('/admin/catalog/products')}
+            className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white border border-slate-200 text-slate-600 hover:bg-slate-100 transition-colors shadow-sm"
+          >
+            <ArrowLeft size={18} />
           </Link>
           <div>
-            <h1 className="text-2xl font-bold text-brand-primary">{t('editProductTitle')}</h1>
-            <p className="text-sm text-gray-500">{product.nameFr}</p>
+            <div className="flex items-center gap-2">
+              <span className="h-2 w-2 rounded-full bg-[#D4A76A]" />
+              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Édition Produit #{id.slice(-6)}</span>
+            </div>
+            <h1 className="text-2xl font-black text-[#16254c] tracking-tight">{product.nameFr}</h1>
           </div>
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="max-w-2xl space-y-6">
-        <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm space-y-5">
-          <div className="space-y-1.5">
-            <label className="text-sm font-semibold text-gray-700">{t('productNameLabel')}</label>
-            <input type="text" value={nameFr} onChange={e => setNameFr(e.target.value)} className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-brand-accent transition-all" required />
+      <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Product Type Switcher Card */}
+        <div className="rounded-3xl border border-slate-200/90 bg-white p-5 sm:p-6 shadow-sm">
+          <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Type de produit & Tarification</span>
+          <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <button
+              type="button"
+              onClick={() => setProductType('piece')}
+              className={`flex items-start gap-4 rounded-2xl border p-4 text-left transition-all ${
+                productType === 'piece'
+                  ? 'border-[#16254c] bg-[#16254c]/5 ring-2 ring-[#16254c]/10 shadow-sm'
+                  : 'border-slate-200 bg-slate-50/50 hover:bg-slate-100/50'
+              }`}
+            >
+              <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${
+                productType === 'piece' ? 'bg-[#16254c] text-white shadow-md' : 'bg-slate-200 text-slate-600'
+              }`}>
+                <Wrench size={20} />
+              </div>
+              <div>
+                <p className="text-sm font-bold text-slate-900">Pièce Détachée / Filtre / Accessoire</p>
+                <p className="text-xs text-slate-500 mt-0.5">Produit standard avec prix unique et gestion directe du stock.</p>
+              </div>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setProductType('oil')}
+              className={`flex items-start gap-4 rounded-2xl border p-4 text-left transition-all ${
+                productType === 'oil'
+                  ? 'border-[#16254c] bg-[#16254c]/5 ring-2 ring-[#16254c]/10 shadow-sm'
+                  : 'border-slate-200 bg-slate-50/50 hover:bg-slate-100/50'
+              }`}
+            >
+              <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${
+                productType === 'oil' ? 'bg-[#16254c] text-white shadow-md' : 'bg-slate-200 text-slate-600'
+              }`}>
+                <Droplets size={20} />
+              </div>
+              <div>
+                <p className="text-sm font-bold text-slate-900">Huile Moteur / Lubrifiant / Fluide</p>
+                <p className="text-xs text-slate-500 mt-0.5">Produit avec volumes multiples (1L, 4L, 5L...) et spécifications techniques.</p>
+              </div>
+            </button>
           </div>
-          <div className="space-y-1.5">
-            <label className="text-sm font-semibold text-gray-700">{t('productSlugLabel')}</label>
-            <input type="text" value={slug} onChange={e => setSlug(e.target.value)} className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-brand-accent transition-all" required />
-          </div>
-          <div className="space-y-1.5">
-            <label className="text-sm font-semibold text-gray-700">{t('productSkuLabel')}</label>
-            <input type="text" value={sku} onChange={e => setSku(e.target.value)} className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-brand-accent transition-all" />
-          </div>
-          <div className="space-y-1.5">
-            <label className="text-sm font-semibold text-gray-700">{t('productDescLabel')}</label>
-            <textarea value={description} onChange={e => setDescription(e.target.value)} rows={3} className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-brand-accent transition-all resize-none" />
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-1.5">
-              <label className="text-sm font-semibold text-gray-700">{t('brandLabel')}</label>
-              <select value={brandId} onChange={e => setBrandId(e.target.value)} className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-brand-accent transition-all" required>
-                <option value="">{t('selectBrand')}</option>
-                {brandsData.map((b: any) => (
-                  <option key={b.id} value={b.id}>{b.name || b.nameFr}</option>
-                ))}
-              </select>
-            </div>
-            <div className="space-y-1.5">
-              <label className="text-sm font-semibold text-gray-700">{t('categoryLabel')}</label>
-              <select value={categoryId} onChange={e => setCategoryId(e.target.value)} className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-brand-accent transition-all" required>
-                <option value="">{t('selectCategory')}</option>
-                {categoriesData.map((c: any) => (
-                  <option key={c.id} value={c.id}>{categoryLabel(c)}</option>
-                ))}
-              </select>
-            </div>
+        </div>
+
+        {/* General Information Card */}
+        <div className="rounded-3xl border border-slate-200/90 bg-white p-5 sm:p-7 shadow-sm space-y-5">
+          <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
+            <Package size={17} className="text-[#16254c]" />
+            <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wider">Informations Générales</h2>
           </div>
 
-          {/* Variants */}
-          <div className="space-y-3">
-            <label className="text-sm font-semibold text-gray-700">{t('packagings')}</label>
-            <div className="rounded-xl border border-gray-200 bg-gray-50 p-4 space-y-3">
-              <div className="grid grid-cols-[1fr_1fr_1fr_1fr_auto] gap-3 mb-2 px-1">
-                <span className="text-xs font-semibold text-gray-500 uppercase">{t('volumeHeader')}</span>
-                <span className="text-xs font-semibold text-gray-500 uppercase">{t('priceTndHeader')}</span>
-                <span className="text-xs font-semibold text-gray-500 uppercase">{t('stockHeader')}</span>
-                <span className="text-xs font-semibold text-gray-500 uppercase flex items-center gap-1" title={t('photoOptionalTip')}>
-                    {t('photoOptional')}
-                    <Info size={11} className="text-brand-accent" />
-                  </span>
-                <span className="w-8"></span>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="space-y-1.5 sm:col-span-2">
+              <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+                Nom du produit <span className="text-rose-500">*</span>
+              </label>
+              <input
+                type="text"
+                value={nameFr}
+                onChange={(e) => setNameFr(e.target.value)}
+                className="w-full rounded-2xl border border-slate-200 bg-slate-50/60 px-4 py-3 text-sm font-semibold text-slate-900 outline-none transition-all focus:border-[#16254c] focus:bg-white focus:ring-2 focus:ring-[#16254c]/10"
+                required
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+                Slug URL <span className="text-rose-500">*</span>
+              </label>
+              <input
+                type="text"
+                value={slug}
+                onChange={(e) => setSlug(e.target.value)}
+                className="w-full rounded-2xl border border-slate-200 bg-slate-50/60 px-4 py-3 text-sm font-mono text-slate-800 outline-none transition-all focus:border-[#16254c] focus:bg-white focus:ring-2 focus:ring-[#16254c]/10"
+                required
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+                Référence SKU / Code Article
+              </label>
+              <input
+                type="text"
+                value={sku}
+                onChange={(e) => setSku(e.target.value)}
+                className="w-full rounded-2xl border border-slate-200 bg-slate-50/60 px-4 py-3 text-sm font-mono text-slate-800 outline-none transition-all focus:border-[#16254c] focus:bg-white focus:ring-2 focus:ring-[#16254c]/10"
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+                Marque Fabricant <span className="text-rose-500">*</span>
+              </label>
+              <select
+                value={brandId}
+                onChange={(e) => setBrandId(e.target.value)}
+                className="w-full rounded-2xl border border-slate-200 bg-slate-50/60 px-4 py-3 text-sm font-semibold text-slate-800 outline-none transition-all focus:border-[#16254c] focus:bg-white focus:ring-2 focus:ring-[#16254c]/10"
+                required
+              >
+                <option value="">-- Sélectionner une marque --</option>
+                {brandsData.map((b: any) => (
+                  <option key={b.id} value={b.id}>
+                    {b.name || b.nameFr}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+                Catégorie Catalogue <span className="text-rose-500">*</span>
+              </label>
+              <select
+                value={categoryId}
+                onChange={(e) => setCategoryId(e.target.value)}
+                className="w-full rounded-2xl border border-slate-200 bg-slate-50/60 px-4 py-3 text-sm font-semibold text-slate-800 outline-none transition-all focus:border-[#16254c] focus:bg-white focus:ring-2 focus:ring-[#16254c]/10"
+                required
+              >
+                <option value="">-- Sélectionner une catégorie --</option>
+                {categoriesData.map((c: any) => (
+                  <option key={c.id} value={c.id}>
+                    {categoryLabel(c)}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="space-y-1.5 sm:col-span-2">
+              <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">Description détaillée</label>
+              <textarea
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                rows={3}
+                className="w-full rounded-2xl border border-slate-200 bg-slate-50/60 px-4 py-3 text-sm text-slate-800 outline-none transition-all focus:border-[#16254c] focus:bg-white focus:ring-2 focus:ring-[#16254c]/10 resize-none"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Pricing & Stock Card */}
+        {productType === 'piece' ? (
+          <div className="rounded-3xl border border-slate-200/90 bg-white p-5 sm:p-7 shadow-sm space-y-5">
+            <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
+              <Wrench size={17} className="text-[#16254c]" />
+              <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wider">Prix & Stock de la Pièce</h2>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+                  Prix de Vente (TND) <span className="text-rose-500">*</span>
+                </label>
+                <div className="relative">
+                  <input
+                    type="number"
+                    step="0.001"
+                    min="0"
+                    value={price}
+                    onChange={(e) => setPrice(e.target.value)}
+                    placeholder="0.000"
+                    className="w-full rounded-2xl border border-slate-200 bg-slate-50/60 px-4 py-3 text-base font-bold font-mono text-slate-900 outline-none transition-all focus:border-[#16254c] focus:bg-white focus:ring-2 focus:ring-[#16254c]/10"
+                    required
+                  />
+                  <span className="absolute right-4 top-3.5 text-xs font-bold text-slate-400">TND</span>
+                </div>
               </div>
+
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">Quantité en Stock</label>
+                <input
+                  type="number"
+                  min="0"
+                  value={stock}
+                  onChange={(e) => setStock(e.target.value)}
+                  className="w-full rounded-2xl border border-slate-200 bg-slate-50/60 px-4 py-3 text-base font-bold font-mono text-slate-900 outline-none transition-all focus:border-[#16254c] focus:bg-white focus:ring-2 focus:ring-[#16254c]/10"
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">Conditionnement / Unité</label>
+                <input
+                  type="text"
+                  value={packageUnit}
+                  onChange={(e) => setPackageUnit(e.target.value)}
+                  placeholder="ex: 1 Pièce, Jeu de 4, Kit..."
+                  className="w-full rounded-2xl border border-slate-200 bg-slate-50/60 px-4 py-3 text-sm font-semibold text-slate-800 outline-none transition-all focus:border-[#16254c] focus:bg-white focus:ring-2 focus:ring-[#16254c]/10"
+                />
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="rounded-3xl border border-slate-200/90 bg-white p-5 sm:p-7 shadow-sm space-y-5">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <div className="flex items-center gap-2">
+                <Droplets size={17} className="text-[#16254c]" />
+                <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wider">Conditionnements & Volumes d&apos;Huile</h2>
+              </div>
+              <button
+                type="button"
+                onClick={addVariant}
+                className="inline-flex items-center gap-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 px-3 py-1.5 text-xs font-bold text-slate-700 transition-colors"
+              >
+                <Plus size={14} />
+                <span>Ajouter un volume</span>
+              </button>
+            </div>
+
+            <div className="space-y-3">
               {variants.map((v, idx) => (
-                <div key={idx} className="grid grid-cols-[1fr_1fr_1fr_1fr_auto] gap-3 items-center">
-                  <input type="text" value={v.volume} onChange={e => updateVariant(idx, 'volume', e.target.value)} className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:border-brand-accent" placeholder={t('volumePlaceholder')} required />
-                  <input type="number" value={v.price} onChange={e => updateVariant(idx, 'price', e.target.value)} min={0} step={0.01} className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:border-brand-accent" placeholder="0.00" required />
-                  <input type="number" value={v.stockQty} onChange={e => updateVariant(idx, 'stockQty', e.target.value)} min={0} className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:border-brand-accent" placeholder="0" required />
-                  <div className="flex items-center gap-2">
-                    {(v.imagePreview || v.imageUrl) ? (
-                      <div className="relative h-9 w-9 shrink-0 rounded-lg overflow-hidden border border-gray-200">
-                        <Image src={v.imagePreview || v.imageUrl!} alt="" fill className="object-cover" />
-                        <button type="button" onClick={() => removeVariantImage(idx)} className="absolute top-0 right-0 rounded-full bg-black/60 p-0.5 text-white leading-none text-[10px]" style={{ width: 14, height: 14 }}>×</button>
+                <div
+                  key={idx}
+                  className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 p-3.5 rounded-2xl border border-slate-200 bg-slate-50/50"
+                >
+                  <div className="w-full sm:w-32">
+                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Volume</span>
+                    <input
+                      type="text"
+                      value={v.volume}
+                      onChange={(e) => updateVariant(idx, 'volume', e.target.value)}
+                      placeholder="ex: 1L, 5L"
+                      className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-bold text-slate-900 outline-none focus:border-[#16254c]"
+                      required
+                    />
+                  </div>
+
+                  <div className="flex-1">
+                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Prix (TND)</span>
+                    <input
+                      type="number"
+                      step="0.001"
+                      min="0"
+                      value={v.price}
+                      onChange={(e) => updateVariant(idx, 'price', e.target.value)}
+                      placeholder="0.000"
+                      className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-mono font-bold text-slate-900 outline-none focus:border-[#16254c]"
+                      required
+                    />
+                  </div>
+
+                  <div className="w-full sm:w-28">
+                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Stock</span>
+                    <input
+                      type="number"
+                      min="0"
+                      value={v.stockQty}
+                      onChange={(e) => updateVariant(idx, 'stockQty', e.target.value)}
+                      placeholder="10"
+                      className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-mono font-bold text-slate-900 outline-none focus:border-[#16254c]"
+                      required
+                    />
+                  </div>
+
+                  <div className="flex items-center gap-2 self-end sm:self-center mt-2 sm:mt-4">
+                    {v.imagePreview ? (
+                      <div className="relative h-9 w-9 shrink-0 rounded-xl overflow-hidden border border-slate-300">
+                        <Image src={v.imagePreview} alt="" fill className="object-contain p-0.5" />
+                        <button
+                          type="button"
+                          onClick={() => removeVariantImage(idx)}
+                          className="absolute -top-1 -right-1 bg-rose-600 text-white rounded-full p-0.5"
+                        >
+                          <X size={10} />
+                        </button>
                       </div>
-                    ) : null}
-                    <label className="cursor-pointer rounded-lg border border-gray-200 bg-white p-1.5 text-gray-400 hover:border-brand-accent hover:text-brand-accent transition-colors">
-                      <Upload size={14} />
-                      <input type="file" accept="image/*" onChange={e => handleVariantImage(idx, e)} className="hidden" />
-                    </label>
+                    ) : (
+                      <label className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-xl border border-dashed border-slate-300 bg-white text-slate-400 hover:text-slate-700 hover:border-slate-400 transition-colors" title="Photo spécifique du bidon (optionnel)">
+                        <Upload size={14} />
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => handleVariantImage(idx, e)}
+                          className="hidden"
+                        />
+                      </label>
+                    )}
+
+                    {variants.length > 1 && (
+                      <button
+                        type="button"
+                        onClick={() => removeVariant(idx)}
+                        className="flex h-9 w-9 items-center justify-center rounded-xl text-slate-400 hover:bg-rose-50 hover:text-rose-600 transition-colors"
+                      >
+                        <Trash2 size={15} />
+                      </button>
+                    )}
                   </div>
                 </div>
               ))}
-              <p className="mt-3 text-xs text-gray-500">
-                <span className="font-semibold text-brand-primary">{t('tipColon')}</span> {t('variantPhotoTip')}
-              </p>
+            </div>
+
+            {/* Technical Lubricant Specs */}
+            <div className="border-t border-slate-100 pt-4 space-y-4">
+              <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block">Spécifications Techniques & Homologations</span>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold text-slate-700">Viscosité SAE</label>
+                  <input
+                    type="text"
+                    value={viscosity}
+                    onChange={(e) => setViscosity(e.target.value)}
+                    placeholder="ex: 5W-30, 5W-40, 10W-40..."
+                    className="w-full rounded-2xl border border-slate-200 bg-slate-50/60 px-4 py-2.5 text-sm font-semibold outline-none focus:border-[#16254c] focus:bg-white"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold text-slate-700">Norme ACEA</label>
+                  <input
+                    type="text"
+                    value={aeceaStandard}
+                    onChange={(e) => setAeceaStandard(e.target.value)}
+                    placeholder="ex: C3, A3/B4, C2..."
+                    className="w-full rounded-2xl border border-slate-200 bg-slate-50/60 px-4 py-2.5 text-sm font-semibold outline-none focus:border-[#16254c] focus:bg-white"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold text-slate-700">Norme API</label>
+                  <input
+                    type="text"
+                    value={apiStandard}
+                    onChange={(e) => setApiStandard(e.target.value)}
+                    placeholder="ex: SN/CF, SP, SL..."
+                    className="w-full rounded-2xl border border-slate-200 bg-slate-50/60 px-4 py-2.5 text-sm font-semibold outline-none focus:border-[#16254c] focus:bg-white"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold text-slate-700">Homologations Constructeurs (OEM)</label>
+                  <input
+                    type="text"
+                    value={OEMApprovals}
+                    onChange={(e) => setOEMApprovals(e.target.value)}
+                    placeholder="ex: VW 504.00/507.00, MB 229.51, BMW LL-04..."
+                    className="w-full rounded-2xl border border-slate-200 bg-slate-50/60 px-4 py-2.5 text-sm font-semibold outline-none focus:border-[#16254c] focus:bg-white"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Multi-Images Management Card */}
+        <div className="rounded-3xl border border-slate-200/90 bg-white p-5 sm:p-7 shadow-sm space-y-5">
+          <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+            <div className="flex items-center gap-2">
+              <ImageIcon size={17} className="text-[#16254c]" />
+              <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wider">Galerie Photos du Produit</h2>
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setShowUrlInput(!showUrlInput)}
+                className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-bold text-slate-700 hover:bg-slate-100 transition-colors"
+              >
+                <Link2 size={13} />
+                <span>Coller un lien URL</span>
+              </button>
             </div>
           </div>
 
-          {/* Product images */}
-          <div className="space-y-1.5">
-            <label className="text-sm font-semibold text-gray-700">{t('productImages')}</label>
-            <div className="flex flex-wrap gap-3">
-              {existingImages.map((url, i) => (
-                <div key={i} className="relative h-20 w-20 rounded-lg overflow-hidden border border-gray-200">
-                  <Image src={url} alt="" fill className="object-cover" />
-                </div>
-              ))}
-              {imagePreview ? (
-                <div className="relative h-20 w-20 rounded-lg overflow-hidden border border-brand-accent">
-                  <Image src={imagePreview} alt="" fill className="object-cover" />
-                  <button type="button" onClick={removeNewImage} className="absolute top-0.5 right-0.5 rounded-full bg-black/60 p-0.5 text-white"><X size={12} /></button>
-                </div>
-              ) : (
-                <label className="flex h-20 w-20 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-200 bg-gray-50 hover:border-brand-accent hover:bg-brand-accent/5 transition-colors">
-                  <Upload size={16} className="text-gray-400" />
-                  <span className="mt-1 text-[10px] text-gray-400">{t('addImage')}</span>
-                  <input type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
-                </label>
-              )}
+          {showUrlInput && (
+            <div className="flex gap-2 p-3 rounded-2xl bg-slate-50 border border-slate-200">
+              <input
+                type="url"
+                value={urlInput}
+                onChange={(e) => setUrlInput(e.target.value)}
+                placeholder="https://images.unsplash.com/... ou lien photo fabricant"
+                className="flex-1 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-mono outline-none focus:border-[#16254c]"
+              />
+              <button
+                type="button"
+                onClick={handleAddUrl}
+                className="rounded-xl bg-[#16254c] px-4 py-2 text-xs font-bold text-white hover:bg-[#1f3469]"
+              >
+                Ajouter
+              </button>
             </div>
-          </div>
+          )}
 
-          <label className="flex items-center gap-3 cursor-pointer">
-            <input type="checkbox" checked={isPublished} onChange={e => setIsPublished(e.target.checked)} className="rounded border-gray-300" />
-            <span className="text-sm font-medium text-gray-700">{t('publishedTag')}</span>
-          </label>
+          {/* Image Cards Grid */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 gap-4">
+            {images.map((img, idx) => (
+              <div
+                key={img.id}
+                className={`group relative flex flex-col rounded-2xl border bg-white p-2 shadow-sm transition-all ${
+                  img.isPrimary ? 'border-[#D4A76A] ring-2 ring-[#D4A76A]/20' : 'border-slate-200'
+                }`}
+              >
+                <div className="relative aspect-square w-full rounded-xl overflow-hidden bg-slate-50">
+                  <Image src={img.preview} alt="" fill className="object-contain p-1" />
+                  {img.isPrimary && (
+                    <span className="absolute top-1.5 left-1.5 rounded-full bg-[#16254c] px-2 py-0.5 text-[9px] font-black text-[#D4A76A] shadow-md flex items-center gap-1">
+                      <Star size={9} fill="#D4A76A" /> Principale
+                    </span>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => removeImage(img.id)}
+                    className="absolute top-1.5 right-1.5 flex h-6 w-6 items-center justify-center rounded-full bg-slate-900/70 text-white hover:bg-rose-600 transition-colors shadow-sm"
+                  >
+                    <X size={12} />
+                  </button>
+                </div>
+
+                <div className="mt-2 flex items-center justify-between gap-1 pt-1 border-t border-slate-100">
+                  <div className="flex items-center gap-0.5">
+                    {idx > 0 && (
+                      <button
+                        type="button"
+                        onClick={() => moveImage(idx, 'left')}
+                        className="p-1 text-slate-400 hover:text-slate-700"
+                        title="Déplacer vers la gauche"
+                      >
+                        <MoveLeft size={13} />
+                      </button>
+                    )}
+                    {idx < images.length - 1 && (
+                      <button
+                        type="button"
+                        onClick={() => moveImage(idx, 'right')}
+                        className="p-1 text-slate-400 hover:text-slate-700"
+                        title="Déplacer vers la droite"
+                      >
+                        <MoveRight size={13} />
+                      </button>
+                    )}
+                  </div>
+                  {!img.isPrimary && (
+                    <button
+                      type="button"
+                      onClick={() => setPrimaryImage(img.id)}
+                      className="text-[10px] font-bold text-slate-500 hover:text-[#16254c] hover:underline"
+                    >
+                      Définir principale
+                    </button>
+                  )}
+                </div>
+              </div>
+            ))}
+
+            {/* Upload Zone */}
+            <label className="flex aspect-square cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-slate-300 bg-slate-50/50 hover:bg-slate-100/50 hover:border-slate-400 transition-all text-center p-3">
+              <Upload size={22} className="text-slate-400 group-hover:text-slate-600" />
+              <span className="mt-2 text-xs font-bold text-slate-700">Ajouter photos</span>
+              <span className="text-[10px] text-slate-400 mt-0.5">Sélection multiple</span>
+              <input
+                type="file"
+                multiple
+                accept="image/*"
+                onChange={handleFileChange}
+                className="hidden"
+              />
+            </label>
+          </div>
         </div>
 
-        <div className="flex justify-end gap-3">
-          <Link href={localizedHref('/admin/catalog/products')} className="rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">
-            {t('cancel')}
-          </Link>
-          <button type="submit" disabled={updateMutation.isPending || isUploading} className="flex items-center gap-2 rounded-xl bg-brand-accent px-4 py-2.5 text-sm font-semibold text-black hover:bg-brand-accent-hover transition-colors disabled:opacity-50">
-            <Save size={16} /> {isUploading ? t('uploading') : updateMutation.isPending ? t('savingChanges') : t('saveChanges')}
-          </button>
+        {/* Publication & Visibility */}
+        <div className="rounded-3xl border border-slate-200/90 bg-white p-5 sm:p-7 shadow-sm flex flex-col sm:flex-row gap-6 sm:items-center sm:justify-between">
+          <div className="space-y-2">
+            <label className="flex items-center gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={isPublished}
+                onChange={(e) => setIsPublished(e.target.checked)}
+                className="h-4 w-4 rounded border-slate-300 text-[#16254c] focus:ring-[#16254c]"
+              />
+              <div>
+                <p className="text-sm font-bold text-slate-900">Publié dans le catalogue</p>
+                <p className="text-xs text-slate-500">Le produit est visible et commandable en ligne par les clients.</p>
+              </div>
+            </label>
+
+            <label className="flex items-center gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={isFeatured}
+                onChange={(e) => setIsFeatured(e.target.checked)}
+                className="h-4 w-4 rounded border-slate-300 text-[#16254c] focus:ring-[#16254c]"
+              />
+              <div>
+                <p className="text-sm font-bold text-slate-900">Mettre en avant sur la page d&apos;accueil</p>
+                <p className="text-xs text-slate-500">Ajoute un badge VIP et affiche le produit dans les sélections vedettes.</p>
+              </div>
+            </label>
+          </div>
+
+          <div className="flex items-center gap-3 self-end sm:self-auto">
+            <Link
+              href={localizedHref('/admin/catalog/products')}
+              className="rounded-2xl border border-slate-200 bg-white px-5 py-3 text-xs font-bold text-slate-600 hover:bg-slate-50 transition-colors"
+            >
+              Annuler
+            </Link>
+            <button
+              type="submit"
+              disabled={updateMutation.isPending || isUploading}
+              className="inline-flex items-center gap-2 rounded-2xl bg-[#16254c] px-6 py-3.5 text-xs font-bold text-white shadow-lg shadow-[#16254c]/15 transition-all hover:bg-[#1f3469] hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50"
+            >
+              {isUploading || updateMutation.isPending ? (
+                <Loader2 size={16} className="animate-spin text-[#D4A76A]" />
+              ) : (
+                <Save size={16} className="text-[#D4A76A]" />
+              )}
+              <span>{isUploading ? 'Téléversement photos...' : updateMutation.isPending ? 'Enregistrement...' : 'Enregistrer les modifications'}</span>
+            </button>
+          </div>
         </div>
       </form>
     </div>

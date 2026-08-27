@@ -150,12 +150,28 @@ export const adminApi = {
   deleteShippingZone: (id: string) =>
     api.delete(`/shipping/zones/${id}`),
 
-  // Payments
-  getPayments: (params?: { page?: number; limit?: number }) =>
-    api.get('/admin/payments', { params }),
+  // Payments & POS
+  getPayments: (params?: { page?: number; limit?: number; search?: string }) =>
+    api.get('/admin/payments', { params: params as any }),
 
   updatePaymentStatus: (id: string, status: string) =>
     api.patch(`/admin/payments/${id}/status`, { status }),
+
+  searchPosProducts: (search?: string) =>
+    api.get<any[]>('/admin/pos/products', search ? { params: { search } } : undefined),
+
+  createDirectSale: (data: {
+    customerName?: string;
+    customerPhone?: string;
+    paymentMethod: string;
+    notes?: string;
+    items: Array<{
+      productId: string;
+      variantId: string;
+      quantity: number;
+      unitPrice?: number;
+    }>;
+  }) => api.post('/admin/pos/sale', data),
 
   // Contact messages
   getContactMessages: (params?: { page?: number; limit?: number; sort?: string; filter?: string }) =>

@@ -149,11 +149,15 @@ export interface CartItem {
 export interface Cart {
   items: CartItem[]
   promoCode?: string
+  promoType?: 'PERCENT' | 'FIXED' | 'SHIPPING'
   promoDiscount: number
   subtotalHT: number
+  itemsTotalTTC: number
   tva: number
   totalTTC: number
   shippingCost: number
+  selectedWilaya?: string
+  eta?: string
 }
 
 // ─── User & Auth ──────────────────────────────────────────────────────────

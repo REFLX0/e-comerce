@@ -8,21 +8,22 @@ import Image from 'next/image'
 import {
   Package, Heart, MapPin, Star, ArrowRight, ShoppingBag, Clock,
   CheckCircle2, Truck, XCircle, Car, ArrowUpRight, CalendarDays,
+  Sparkles, ShieldCheck
 } from 'lucide-react'
 import { useLocale, useTranslations } from 'next-intl'
 
 const STATUS_CONFIG = {
-  PENDING: { labelKey: 'pending', icon: Clock, cls: 'bg-amber-50 text-amber-700' },
-  CONFIRMED: { labelKey: 'confirmed', icon: CheckCircle2, cls: 'bg-blue-50 text-blue-700' },
-  SHIPPED: { labelKey: 'shipped', icon: Truck, cls: 'bg-violet-50 text-violet-700' },
-  DELIVERED: { labelKey: 'delivered', icon: CheckCircle2, cls: 'bg-emerald-50 text-emerald-700' },
-  CANCELLED: { labelKey: 'cancelled', icon: XCircle, cls: 'bg-rose-50 text-rose-700' },
+  PENDING: { labelKey: 'pending', icon: Clock, cls: 'bg-amber-50 text-amber-700 border-amber-200' },
+  CONFIRMED: { labelKey: 'confirmed', icon: CheckCircle2, cls: 'bg-blue-50 text-blue-700 border-blue-200' },
+  SHIPPED: { labelKey: 'shipped', icon: Truck, cls: 'bg-violet-50 text-violet-700 border-violet-200' },
+  DELIVERED: { labelKey: 'delivered', icon: CheckCircle2, cls: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
+  CANCELLED: { labelKey: 'cancelled', icon: XCircle, cls: 'bg-rose-50 text-rose-700 border-rose-200' },
 }
 
 const QUICK_LINKS = [
   { href: '/compte/commandes', icon: Package, labelKey: 'myOrders', descKey: 'myOrdersDesc' },
-  { href: '/compte/wishlist', icon: Heart, labelKey: 'myWishlist', descKey: 'myWishlistDesc' },
   { href: '/compte/voitures', icon: Car, labelKey: 'myCars', descKey: 'myCarsDesc' },
+  { href: '/compte/wishlist', icon: Heart, labelKey: 'myWishlist', descKey: 'myWishlistDesc' },
   { href: '/compte/adresses', icon: MapPin, labelKey: 'myAddresses', descKey: 'myAddressesDesc' },
   { href: '/compte/profil', icon: Star, labelKey: 'myProfile', descKey: 'myProfileDesc' },
 ]
@@ -40,89 +41,152 @@ export default function CompteDashboardPage() {
 
   return (
     <div className="space-y-8">
-      <section className="relative overflow-hidden rounded-3xl bg-[linear-gradient(115deg,#16254c_0%,#1f356b_72%,#2d477f_100%)] px-6 py-7 text-white shadow-[0_18px_45px_rgba(22,37,76,0.2)] sm:px-8">
-        <div className="absolute -right-10 -top-16 h-52 w-52 rounded-full border-[28px] border-brand-accent/20" />
-        <div className="absolute bottom-0 right-20 h-20 w-20 translate-y-10 rounded-full bg-brand-accent/15" />
+      {/* Welcome Hero Banner */}
+      <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#16254c] via-[#1f356b] to-[#16254c] px-6 py-8 text-white shadow-xl shadow-slate-900/5 sm:px-8 border border-white/10">
+        <div className="absolute -right-8 -top-12 h-44 w-44 rounded-full border-[20px] border-[#D4A76A]/15 pointer-events-none" />
+        <div className="absolute bottom-0 right-16 h-24 w-24 rounded-full bg-[#D4A76A]/10 blur-xl pointer-events-none" />
+        
         <div className="relative flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-brand-accent-light">{t('mySpace')}</p>
-            <h1 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
+            <div className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-[#D4A76A] backdrop-blur-md">
+              <Sparkles size={12} />
+              <span>{t('mySpace') || 'Espace Client Privilège'}</span>
+            </div>
+            <h1 className="mt-3 text-2xl sm:text-3xl font-black tracking-tight text-white">
               {t('hello', { name: user?.firstName ?? t('dearCustomer') })}
             </h1>
-            <p className="mt-2 max-w-xl text-sm leading-6 text-white/75">{t('welcome')}</p>
+            <p className="mt-1.5 max-w-xl text-xs sm:text-sm text-white/75 leading-relaxed">
+              {t('welcome') || 'Bienvenue dans votre tableau de bord. Suivez vos commandes, vos véhicules et vos préférences en temps réel.'}
+            </p>
           </div>
-          <Link href="/compte/profil" className="inline-flex items-center justify-center gap-2 self-start rounded-xl bg-white px-4 py-2.5 text-sm font-bold text-brand-primary transition-transform hover:-translate-y-0.5 hover:shadow-lg sm:self-auto">
-            {t('myProfile')} <ArrowUpRight size={16} />
+          <Link
+            href="/compte/profil"
+            className="inline-flex items-center justify-center gap-2 self-start rounded-2xl bg-white px-5 py-3 text-xs font-bold text-[#16254c] shadow-lg shadow-black/10 transition-all hover:scale-[1.02] hover:bg-slate-50 active:scale-[0.98] sm:self-auto"
+          >
+            <span>{t('myProfile')}</span>
+            <ArrowUpRight size={14} className="text-[#D4A76A]" />
           </Link>
         </div>
       </section>
 
+      {/* Quick Shortcuts */}
       <section>
-        <p className="text-xs font-bold uppercase tracking-[0.18em] text-brand-accent">{t('shortcuts')}</p>
-        <h2 className="mt-1 text-xl font-bold text-brand-primary">{t('manageAccount')}</h2>
-        <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-5">
+        <div className="flex items-center gap-2">
+          <span className="h-1.5 w-1.5 rounded-full bg-[#D4A76A]" />
+          <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400">{t('shortcuts')}</p>
+        </div>
+        <h2 className="mt-0.5 text-lg sm:text-xl font-black text-[#16254c] tracking-tight">{t('manageAccount')}</h2>
+        
+        <div className="mt-4 grid grid-cols-1 gap-3.5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
           {QUICK_LINKS.map((link) => (
-            <Link key={link.href} href={link.href} className="group relative min-h-40 overflow-hidden rounded-2xl border border-slate-200 bg-white p-4 transition-all hover:-translate-y-1 hover:border-brand-primary/30 hover:shadow-[0_14px_26px_rgba(22,37,76,0.1)]">
-              <div className="absolute -right-4 -top-4 h-20 w-20 rounded-full bg-brand-primary/[0.035] transition-colors group-hover:bg-brand-accent/20" />
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-primary/5 text-brand-primary transition-all group-hover:bg-brand-primary group-hover:text-white">
-                <link.icon size={18} />
+            <Link
+              key={link.href}
+              href={link.href}
+              className="group relative flex flex-col justify-between overflow-hidden rounded-3xl border border-slate-200/90 bg-white p-5 transition-all duration-300 hover:-translate-y-1 hover:border-slate-300 hover:shadow-[0_15px_30px_-10px_rgba(22,37,76,0.08)]"
+            >
+              <div className="absolute -right-4 -top-4 h-20 w-20 rounded-full bg-[#16254c]/[0.02] transition-colors group-hover:bg-[#D4A76A]/10 pointer-events-none" />
+              <div>
+                <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-slate-100 text-[#16254c] transition-all group-hover:bg-[#16254c] group-hover:text-white group-hover:shadow-md group-hover:shadow-[#16254c]/20">
+                  <link.icon size={19} strokeWidth={2} />
+                </div>
+                <p className="mt-4 text-sm font-black text-[#16254c] tracking-tight">{t(link.labelKey)}</p>
+                <p className="mt-1 text-xs text-slate-500 leading-relaxed">{t(link.descKey)}</p>
               </div>
-              <p className="mt-5 text-sm font-bold text-brand-primary">{t(link.labelKey)}</p>
-              <p className="mt-1 text-xs leading-5 text-gray-500">{t(link.descKey)}</p>
-              <ArrowRight size={15} className="absolute bottom-4 right-4 text-brand-primary/40 transition-all group-hover:translate-x-1 group-hover:text-brand-primary" />
+              <div className="mt-4 flex items-center justify-end">
+                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-slate-50 text-slate-400 group-hover:bg-[#16254c]/10 group-hover:text-[#16254c] transition-colors">
+                  <ArrowRight size={13} className="transition-transform group-hover:translate-x-0.5" />
+                </div>
+              </div>
             </Link>
           ))}
         </div>
       </section>
 
-      <section className="overflow-hidden rounded-3xl border border-slate-200 bg-white">
-        <div className="flex flex-col gap-3 border-b border-slate-100 px-5 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+      {/* Recent Orders Section */}
+      <section className="overflow-hidden rounded-3xl border border-slate-200/90 bg-white shadow-sm">
+        <div className="flex flex-col gap-3 border-b border-slate-100 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6 bg-slate-50/40">
           <div>
-            <p className="text-xs font-bold uppercase tracking-[0.18em] text-brand-accent">{t('tracking')}</p>
-            <h2 className="mt-1 text-xl font-bold text-brand-primary">{t('recentOrders')}</h2>
+            <div className="flex items-center gap-2">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#D4A76A]" />
+              <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400">{t('tracking')}</p>
+            </div>
+            <h2 className="mt-0.5 text-lg sm:text-xl font-black text-[#16254c] tracking-tight">{t('recentOrders')}</h2>
           </div>
-          <Link href="/compte/commandes" className="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-primary/70 transition-colors hover:text-brand-primary">
-            {t('viewAll')} <ArrowRight size={14} />
+          <Link
+            href="/compte/commandes"
+            className="inline-flex items-center gap-1.5 text-xs font-bold text-[#16254c] hover:text-[#1f3469] transition-colors"
+          >
+            <span>{t('viewAll')}</span>
+            <ArrowRight size={13} className="text-[#D4A76A]" />
           </Link>
         </div>
 
         {isLoading ? (
           <div className="space-y-3 p-5 sm:p-6">
-            {[1, 2, 3].map((index) => <div key={index} className="h-20 animate-pulse rounded-2xl bg-slate-100" />)}
+            {[1, 2, 3].map((index) => (
+              <div key={index} className="h-20 animate-pulse rounded-2xl bg-slate-100" />
+            ))}
           </div>
         ) : orders.length === 0 ? (
-          <div className="m-5 rounded-2xl border border-dashed border-slate-300 bg-slate-50/70 px-5 py-12 text-center sm:m-6">
-            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-primary/5 text-brand-primary"><ShoppingBag size={22} /></div>
-            <p className="mt-4 text-sm font-bold text-brand-primary">{t('noOrders')}</p>
-            <Link href="/catalogue" className="mt-4 inline-flex items-center gap-1.5 rounded-xl bg-brand-primary px-4 py-2.5 text-sm font-bold text-white transition-colors hover:bg-brand-primary-light">
-              {t('discoverCatalog')}
+          <div className="m-5 rounded-3xl border-2 border-dashed border-slate-200 bg-slate-50/50 p-8 sm:p-12 text-center sm:m-6">
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-3xl bg-slate-100 text-slate-400 shadow-inner">
+              <ShoppingBag size={24} />
+            </div>
+            <p className="mt-4 text-sm font-black text-[#16254c]">{t('noOrders') || 'Aucune commande récente'}</p>
+            <p className="mt-1 text-xs text-slate-500 max-w-sm mx-auto">Découvrez notre vaste catalogue de plus de 46 000 pièces certifiées.</p>
+            <Link
+              href="/catalogue"
+              className="mt-5 inline-flex items-center gap-2 rounded-2xl bg-[#16254c] px-5 py-3 text-xs font-bold text-white shadow-md shadow-[#16254c]/10 hover:bg-[#1f3469] transition-all"
+            >
+              <span>{t('discoverCatalog') || 'Explorer le catalogue'}</span>
+              <ArrowRight size={14} />
             </Link>
           </div>
         ) : (
           <div className="divide-y divide-slate-100">
-            {orders.map((order: { id: string; createdAt: string; status: string; totalAmount: number; items: { product?: { images?: { url: string }[] } }[] }) => {
+            {orders.map((order: any) => {
               const status = STATUS_CONFIG[order.status as keyof typeof STATUS_CONFIG] ?? STATUS_CONFIG.PENDING
               const orderDate = new Date(order.createdAt)
               const imageUrl = order.items?.[0]?.product?.images?.[0]?.url
               return (
-                <div key={order.id} className="flex flex-col gap-4 px-5 py-5 transition-colors hover:bg-slate-50/70 sm:flex-row sm:items-center sm:px-6">
+                <div
+                  key={order.id}
+                  className="flex flex-col gap-4 p-5 sm:p-6 transition-colors hover:bg-slate-50/60 sm:flex-row sm:items-center"
+                >
                   {imageUrl ? (
-                    <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-2xl border border-slate-100 bg-white">
-                      <Image src={imageUrl} alt="" fill sizes="56px" className="object-contain p-1" />
+                    <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-1 shadow-sm">
+                      <Image src={imageUrl} alt="" fill sizes="56px" className="object-contain" />
                     </div>
                   ) : (
-                    <div className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl ${status.cls}`}><status.icon size={18} /></div>
+                    <div className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border ${status.cls}`}>
+                      <status.icon size={20} />
+                    </div>
                   )}
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-                      <p className="font-mono text-xs font-semibold tracking-wide text-brand-primary/60">#{order.id.slice(-8).toUpperCase()}</p>
-                      {!Number.isNaN(orderDate.getTime()) && <span className="inline-flex items-center gap-1 text-xs text-gray-400"><CalendarDays size={12} />{orderDate.toLocaleDateString(locale === 'fr' ? 'fr-TN' : 'en-US', { day: 'numeric', month: 'short', year: 'numeric' })}</span>}
+                      <p className="font-mono text-xs font-bold tracking-wide text-[#16254c]">
+                        #{order.id.slice(-8).toUpperCase()}
+                      </p>
+                      {!Number.isNaN(orderDate.getTime()) && (
+                        <span className="inline-flex items-center gap-1 text-xs text-slate-400">
+                          <CalendarDays size={12} />
+                          {orderDate.toLocaleDateString(locale === 'fr' ? 'fr-TN' : 'en-US', { day: 'numeric', month: 'short', year: 'numeric' })}
+                        </span>
+                      )}
                     </div>
-                    <p className="mt-1 text-sm font-bold text-brand-primary">{order.items?.length ?? 0} {t('items')} · {(order.totalAmount ?? 0).toLocaleString(locale === 'fr' ? 'fr-TN' : 'en-US', { minimumFractionDigits: 2 })} TND</p>
+                    <p className="mt-1 text-sm font-black text-slate-900">
+                      {order.items?.length ?? 0} {t('items')} · {(order.totalAmount ?? 0).toLocaleString(locale === 'fr' ? 'fr-TN' : 'en-US', { minimumFractionDigits: 2 })} TND
+                    </p>
                   </div>
-                  <span className={`self-start rounded-full px-3 py-1.5 text-xs font-bold sm:self-auto ${status.cls}`}>{t(status.labelKey)}</span>
-                  <Link href={`/compte/commandes/${order.id}`} className="inline-flex items-center gap-1 text-sm font-semibold text-gray-400 transition-colors hover:text-brand-primary sm:ml-1">
-                    {t('details')} <ArrowRight size={12} />
+                  <span className={`self-start rounded-full border px-3 py-1 text-xs font-bold sm:self-auto ${status.cls}`}>
+                    {t(status.labelKey)}
+                  </span>
+                  <Link
+                    href={`/compte/commandes/${order.id}`}
+                    className="inline-flex items-center gap-1 text-xs font-bold text-slate-500 hover:text-[#16254c] transition-colors sm:ml-1"
+                  >
+                    <span>{t('details')}</span>
+                    <ArrowRight size={12} />
                   </Link>
                 </div>
               )

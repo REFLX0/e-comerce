@@ -26,6 +26,16 @@ export function useProductCompatibility(product: Product) {
     retry: false,
   })
 
+  // 1. If backend explicitly verified this product for a vehicle search query:
+  const isConfirmedByBackend = (product as any)?.compatLevel === 'confirmed'
+
+  // The active target vehicle is the one in the vehicle store, or the primary saved car
+  const activeVehicle = useMemo(() => {
+    if (selectedVehicle) return selectedVehicle
+    if (savedCars.length > 0) return savedCars[0]
+    return null
+  }, [selectedVehicle, savedCars])
+
   const checkedVehicles = useMemo(() => {
     return mounted ? [selectedVehicle, ...savedCars].filter(Boolean) : []
   }, [mounted, selectedVehicle, savedCars])
@@ -35,17 +45,20 @@ export function useProductCompatibility(product: Product) {
     [product, checkedVehicles]
   )
 
-  const firstCheckedVehicleLabel = useMemo(() => {
-    if (checkedVehicles.length === 0) return null
-    const first = checkedVehicles[0]
-    return first ? getVehicleCompatibilityLabel(first) : null
-  }, [checkedVehicles])
+  const activeVehicleLabel = useMemo(() => {
+    if (!activeVehicle) return null
+    return getVehicleCompatibilityLabel(activeVehicle)
+  }, [activeVehicle])
+
+  const isCompatible = isConfirmedByBackend || Boolean(match)
+  const resolvedVehicleLabel = match?.label ?? activeVehicleLabel
 
   return {
-    isCompatible: Boolean(match),
-    vehicleLabel: match?.label ?? null,
-    matchedVehicle: match?.vehicle ?? null,
-    hasCheckedVehicles: checkedVehicles.length > 0,
-    firstCheckedVehicleLabel,
+    isCompatible,
+    vehicleLabel: resolvedVehicleLabel,
+    matchedVehicle: match?.vehicle ?? activeVehicle,
+    hasCheckedVehicles: Boolean(selectedVehicle) || (mounted && isConfirmedByBackend),
+    hasAnySavedVehicle: savedCars.length > 0,
+    firstCheckedVehicleLabel: activeVehicleLabel,
   }
 }

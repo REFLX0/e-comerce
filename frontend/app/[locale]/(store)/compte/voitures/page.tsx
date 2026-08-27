@@ -14,10 +14,21 @@ import {
   Search,
   Trash2,
   Wrench,
+  Sparkles,
+  ShieldCheck,
+  Fuel,
+  Zap,
+  ChevronRight,
+  SlidersHorizontal,
+  Info,
+  Check,
+  X,
+  ExternalLink
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { useTranslations } from 'next-intl'
 import { useRouter, usePathname } from 'next/navigation'
+import { Link } from '@/i18n/routing'
 import { productsApi } from '@/lib/api/products'
 import { carsApi, type CarPayload } from '@/lib/api/cars'
 import type { UserCar } from '@/lib/types'
@@ -25,13 +36,10 @@ import { useVehicleStore } from '@/lib/store/vehicle.store'
 
 type CarForm = {
   name: string
-  // slug from DB (used for catalogue URL filter)
   make: string        // makeSlug
   model: string       // modelSlug
-  // display names from DB (used for compatibility matching)
   makeName: string
   modelName: string
-  // custom free-text fallback
   customMake?: string
   customModel?: string
   year: string
@@ -99,53 +107,58 @@ function getReminder(car: UserCar, t: (k: string, values?: Record<string, string
 
   if (remainingKm <= 0) {
     return {
-      tone: 'danger',
+      status: 'urgent',
+      title: t('oilChangeOverdueTitle') || 'Vidange dépassée !',
+      text: t('oilChangeOverdueDesc', { km: formatKm(Math.abs(remainingKm)) }) || `Échéance dépassée de ${formatKm(Math.abs(remainingKm))} km`,
+      remainingKm,
+      progressColor: 'from-rose-500 to-red-600',
+      badgeBg: 'bg-rose-50 border-rose-200 text-rose-800',
       icon: AlertTriangle,
-      title: t('reminderDueNow'),
-      text: t('reminderOverdueKm', { km: formatKm(Math.abs(remainingKm)) }),
-      barClass: 'bg-red-500',
-      badgeClass: 'bg-red-50 text-red-700',
+      iconColor: 'text-rose-600',
     }
   }
 
-  if (remainingKm <= 1000) {
+  if (remainingKm <= 1500) {
     return {
-      tone: 'warning',
+      status: 'warning',
+      title: t('oilChangeSoonTitle') || 'Vidange à prévoir bientôt',
+      text: t('oilChangeSoonDesc', { km: formatKm(remainingKm) }) || `Prévoyez l'entretien dans ${formatKm(remainingKm)} km`,
+      remainingKm,
+      progressColor: 'from-amber-400 to-orange-500',
+      badgeBg: 'bg-amber-50 border-amber-200 text-amber-900',
       icon: AlertTriangle,
-      title: t('reminderInKm', { km: formatKm(remainingKm) }),
-      text: t('reminderNextAt', { km: formatKm(nextMileage) }),
-      barClass: 'bg-amber-500',
-      badgeClass: 'bg-amber-50 text-amber-700',
+      iconColor: 'text-amber-600',
     }
   }
 
   return {
-    tone: 'ok',
-    icon: CheckCircle2,
-    title: t('reminderInKm', { km: formatKm(remainingKm) }),
-    text: t('reminderNextAt', { km: formatKm(nextMileage) }),
-    barClass: 'bg-green-500',
-    badgeClass: 'bg-green-50 text-green-700',
+    status: 'ok',
+    title: t('oilChangeOkTitle') || `Prochaine vidange dans ${formatKm(remainingKm)} km`,
+    text: t('oilChangeOkDesc', { nextMileage: formatKm(nextMileage) }) || `Prochain intervalle à ${formatKm(nextMileage)} km`,
+    remainingKm,
+    progressColor: 'from-emerald-400 to-teal-500',
+    badgeBg: 'bg-emerald-50 border-emerald-200 text-emerald-900',
+    icon: ShieldCheck,
+    iconColor: 'text-emerald-600',
   }
 }
 
 function buildPayload(form: CarForm): CarPayload {
-  // If custom make/model entered, use that as both name and slug (no DB slug available)
-  const isMakeCustom = form.make === 'Autre'
-  const isModelCustom = form.model === 'Autre'
+  const isCustomMake = form.make === 'Autre'
+  const isCustomModel = form.model === 'Autre'
 
-  const finalMakeName = isMakeCustom ? form.customMake?.trim() : form.makeName || undefined
-  const finalMakeSlug = isMakeCustom ? undefined : (form.make?.trim() || undefined)
-  const finalModelName = isModelCustom ? form.customModel?.trim() : form.modelName || undefined
-  const finalModelSlug = isModelCustom ? undefined : (form.model?.trim() || undefined)
+  const finalMake = isCustomMake ? form.customMake?.trim() : form.makeName || form.make
+  const finalMakeSlug = isCustomMake ? undefined : form.make || undefined
+  const finalModel = isCustomModel ? form.customModel?.trim() : form.modelName || form.model
+  const finalModelSlug = isCustomModel ? undefined : form.model || undefined
 
   return {
     name: form.name.trim(),
-    make: finalMakeName,
+    make: finalMake || undefined,
     makeSlug: finalMakeSlug,
-    model: finalModelName,
+    model: finalModel || undefined,
     modelSlug: finalModelSlug,
-    year: form.year ? toNumber(form.year) : undefined,
+    year: toOptionalNumber(form.year),
     vin: form.vin.trim().toUpperCase() || undefined,
     engine: form.engine.trim() || undefined,
     displacement: toOptionalNumber(form.displacement),
@@ -164,33 +177,51 @@ function buildPayload(form: CarForm): CarPayload {
   }
 }
 
-function ServiceCheckbox({
+function ServiceToggle({
   id,
   checked,
   label,
+  sublabel,
   onChange,
   disabled,
 }: {
   id: string
   checked: boolean
   label: string
+  sublabel?: string
   onChange: (checked: boolean) => void
   disabled?: boolean
 }) {
   return (
     <label
       htmlFor={id}
-      className="flex min-h-11 items-center gap-3 rounded-xl border border-gray-100 bg-gray-50 px-3 py-2 text-sm font-medium text-gray-700"
+      className={`group relative flex cursor-pointer items-center justify-between rounded-2xl border p-3.5 transition-all select-none ${
+        checked
+          ? 'border-emerald-500/40 bg-emerald-50/50 shadow-sm shadow-emerald-500/5'
+          : 'border-slate-200/80 bg-slate-50/70 hover:bg-slate-100/70 hover:border-slate-300'
+      } ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
     >
+      <div className="flex items-center gap-3 pr-3">
+        <div className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border transition-colors ${
+          checked 
+            ? 'border-emerald-500 bg-emerald-500 text-white' 
+            : 'border-slate-300 bg-white text-transparent group-hover:border-slate-400'
+        }`}>
+          <Check size={14} strokeWidth={3} />
+        </div>
+        <div>
+          <p className="text-xs font-bold text-slate-800 tracking-tight">{label}</p>
+          {sublabel && <p className="text-[11px] text-slate-500 mt-0.5">{sublabel}</p>}
+        </div>
+      </div>
       <input
         id={id}
         type="checkbox"
         checked={checked}
         disabled={disabled}
         onChange={(e) => onChange(e.target.checked)}
-        className="h-4 w-4 rounded border-gray-300 text-brand-primary focus:ring-brand-primary/30"
+        className="sr-only"
       />
-      {label}
     </label>
   )
 }
@@ -202,10 +233,19 @@ function CarCard({ car }: { car: UserCar }) {
   const pathname = usePathname()
   const locale = pathname?.split('/')[1] === 'en' ? 'en' : 'fr'
   const setVehicle = useVehicleStore((state) => state.setVehicle)
+  const activeVehicle = useVehicleStore((state) => state.vehicle)
 
-  const canFindOils = Boolean(car.makeSlug && car.modelSlug)
+  const isSelectedForCatalogue = Boolean(
+    activeVehicle?.makeSlug &&
+    car.makeSlug &&
+    activeVehicle.makeSlug.toLowerCase() === car.makeSlug.toLowerCase() &&
+    activeVehicle?.modelSlug &&
+    car.modelSlug &&
+    activeVehicle.modelSlug.toLowerCase() === car.modelSlug.toLowerCase() &&
+    (!car.engine || !activeVehicle.engineCode || activeVehicle.engineCode.toLowerCase() === car.engine.toLowerCase())
+  )
 
-  const handleFindOils = () => {
+  const handleActivateAndBrowse = () => {
     setVehicle({
       type: 'automobile',
       makeId: car.makeSlug ?? '',
@@ -222,6 +262,21 @@ function CarCard({ car }: { car: UserCar }) {
     if (car.engine) params.set('engine', car.engine)
     router.push(`/${locale}/catalogue?${params.toString()}`)
   }
+
+  const handleSetOnlyActive = () => {
+    setVehicle({
+      type: 'automobile',
+      makeId: car.makeSlug ?? '',
+      makeName: car.make ?? '',
+      makeSlug: car.makeSlug ?? '',
+      modelId: car.modelSlug ?? '',
+      modelName: car.model ?? '',
+      modelSlug: car.modelSlug ?? '',
+      engineCode: car.engine ?? '',
+    })
+    toast.success(`Filtre activé pour ${car.name} ! Le catalogue affiche uniquement les pièces compatibles.`)
+  }
+
   const reminder = getReminder(car, t)
   const ReminderIcon = reminder.icon
   const progress = Math.min(
@@ -231,6 +286,7 @@ function CarCard({ car }: { car: UserCar }) {
       ((car.currentMileage - car.lastOilChangeMileage) / car.oilChangeIntervalKm) * 100
     )
   )
+
   const [currentMileage, setCurrentMileage] = useState(String(car.currentMileage))
   const [lastOilChangeMileage, setLastOilChangeMileage] = useState(
     String(car.lastOilChangeMileage)
@@ -254,7 +310,7 @@ function CarCard({ car }: { car: UserCar }) {
       setOilFilterChanged(updated.oilFilterChanged)
       setAirFilterChanged(updated.airFilterChanged)
       setCabinFilterChanged(updated.cabinFilterChanged)
-      toast.success(t('carUpdated'))
+      toast.success(t('carUpdated') || 'Carnet d\'entretien mis à jour !')
     },
     onError: () => toast.error(t('carUpdateError')),
   })
@@ -283,147 +339,206 @@ function CarCard({ car }: { car: UserCar }) {
   }
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm">
-      <div className="flex flex-col gap-3 border-b border-gray-50 bg-gray-50 p-4 sm:flex-row sm:items-start">
-        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white text-brand-primary shadow-sm">
-          <Car size={20} />
-        </div>
-        <div className="min-w-0 flex-1">
-          <div className="flex flex-wrap items-center gap-2">
-            <h2 className="text-base font-bold text-brand-primary">{car.name}</h2>
-            {car.trim && (
-              <span className="rounded-lg bg-white px-2 py-1 text-[11px] font-semibold text-gray-500">
-                {car.trim}
-              </span>
-            )}
-          </div>
-          <p className="mt-0.5 text-sm text-gray-500">
-            {[car.make, car.model, car.year, car.engine, car.fuel, car.power ? `${car.power} ch` : null, car.transmission].filter(Boolean).join(' · ') || t('customerCar')}
-          </p>
-        </div>
-        <button
-          type="button"
-          onClick={() => deleteMutation.mutate()}
-          disabled={deleteMutation.isPending}
-          className="self-start rounded-xl p-2 text-gray-400 transition-colors hover:bg-red-50 hover:text-red-500 disabled:opacity-50"
-          aria-label={t('deleteCarAria')}
-        >
-          <Trash2 size={16} />
-        </button>
-      </div>
-
-      <div className="space-y-5 p-4">
-        <div className={`rounded-2xl px-4 py-3 ${reminder.badgeClass}`}>
-          <div className="flex items-center gap-3">
-            <ReminderIcon size={20} />
+    <div className="group overflow-hidden rounded-3xl border border-slate-200/90 bg-white shadow-[0_10px_35px_-10px_rgba(22,37,76,0.06)] transition-all duration-300 hover:shadow-[0_20px_45px_-15px_rgba(22,37,76,0.1)] hover:border-slate-300">
+      {/* Top Header Card Bar */}
+      <div className="relative overflow-hidden border-b border-slate-100 bg-gradient-to-r from-slate-900 via-[#16254c] to-slate-900 p-5 text-white sm:p-6">
+        <div className="absolute -right-6 -top-6 h-28 w-28 rounded-full border-[12px] border-white/5 pointer-events-none" />
+        
+        <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-4">
+            <div className="flex h-13 w-13 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-tr from-[#D4A76A] to-[#F3D7A4] text-slate-950 shadow-md shadow-black/20 ring-2 ring-white/15">
+              <Car size={24} strokeWidth={2} />
+            </div>
             <div>
-              <p className="text-sm font-bold">{reminder.title}</p>
-              <p className="text-xs opacity-80">{reminder.text}</p>
+              <div className="flex flex-wrap items-center gap-2.5">
+                <h2 className="text-lg font-black tracking-tight text-white capitalize">{car.name}</h2>
+                {car.trim && (
+                  <span className="rounded-full bg-white/15 px-2.5 py-0.5 text-[11px] font-semibold text-white/90 backdrop-blur-md">
+                    {car.trim}
+                  </span>
+                )}
+                {isSelectedForCatalogue ? (
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/20 border border-emerald-400/40 px-2.5 py-0.5 text-[11px] font-bold text-emerald-300 backdrop-blur-md shadow-sm">
+                    <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+                    Véhicule Actif (Filtre catalogue)
+                  </span>
+                ) : (
+                  <button
+                    onClick={handleSetOnlyActive}
+                    className="inline-flex items-center gap-1 rounded-full bg-white/10 hover:bg-white/20 border border-white/10 px-2.5 py-0.5 text-[11px] font-semibold text-white/90 transition-all"
+                  >
+                    <Zap size={11} className="text-[#D4A76A]" />
+                    Activer
+                  </button>
+                )}
+              </div>
+              <p className="mt-1 text-xs text-white/70 font-medium">
+                {[car.make, car.model, car.year, car.engine, car.fuel, car.power ? `${car.power} ch` : null, car.transmission].filter(Boolean).join(' · ') || t('customerCar')}
+              </p>
             </div>
           </div>
-          <div className="mt-3 h-2 overflow-hidden rounded-full bg-white/80">
-            <div className={`h-full rounded-full ${reminder.barClass}`} style={{ width: `${progress}%` }} />
+
+          <div className="flex items-center gap-2 self-end sm:self-auto">
+            <button
+              type="button"
+              onClick={handleActivateAndBrowse}
+              className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#D4A76A] to-[#C29557] px-4 py-2.5 text-xs font-bold text-slate-950 shadow-md shadow-[#D4A76A]/20 transition-all hover:scale-[1.02] hover:brightness-110 active:scale-[0.98]"
+            >
+              <Search size={14} strokeWidth={2.5} />
+              <span>Voir les pièces compatibles</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => deleteMutation.mutate()}
+              disabled={deleteMutation.isPending}
+              className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/10 text-white/70 hover:bg-rose-500/20 hover:text-rose-300 hover:border-rose-500/30 border border-transparent transition-colors"
+              title="Supprimer ce véhicule"
+            >
+              <Trash2 size={16} />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Body: Maintenance & Oil Tracker */}
+      <div className="p-5 sm:p-7 space-y-6">
+        {/* Gauge Status Box */}
+        <div className={`rounded-2xl border p-4.5 transition-all ${reminder.badgeBg}`}>
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3.5">
+              <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white shadow-sm ${reminder.iconColor}`}>
+                <ReminderIcon size={20} strokeWidth={2.2} />
+              </div>
+              <div>
+                <p className="text-sm font-bold tracking-tight">{reminder.title}</p>
+                <p className="text-xs opacity-85 mt-0.5">{reminder.text}</p>
+              </div>
+            </div>
+            <div className="text-right">
+              <span className="text-xs font-black uppercase tracking-wider opacity-60">Cycle usure</span>
+              <p className="text-sm font-black tracking-tight">{Math.round(progress)}%</p>
+            </div>
+          </div>
+          <div className="mt-3.5 h-2.5 w-full overflow-hidden rounded-full bg-white/80 p-0.5 ring-1 ring-black/5">
+            <div
+              className={`h-full rounded-full bg-gradient-to-r ${reminder.progressColor} transition-all duration-500`}
+              style={{ width: `${progress}%` }}
+            />
           </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-          <label className="block">
-            <span className="mb-1.5 flex items-center gap-1.5 text-xs font-semibold text-gray-600">
-              <Gauge size={14} /> {t('currentKm')}
+        {/* 3 Metric Inputs */}
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+          <div className="relative rounded-2xl border border-slate-200/90 bg-slate-50/60 p-3.5 focus-within:border-[#16254c] focus-within:bg-white focus-within:ring-2 focus-within:ring-[#16254c]/10 transition-all">
+            <span className="flex items-center gap-1.5 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+              <Gauge size={13} className="text-[#16254c]" /> Kilométrage Actuel
             </span>
-            <input
-              type="number"
-              min="0"
-              value={currentMileage}
-              onChange={(e) => setCurrentMileage(e.target.value)}
-              className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm outline-none transition-colors focus:border-brand-primary focus:bg-white"
-            />
-          </label>
-          <label className="block">
-            <span className="mb-1.5 flex items-center gap-1.5 text-xs font-semibold text-gray-600">
-              <Wrench size={14} /> {t('lastOilChange')}
+            <div className="relative mt-2 flex items-center">
+              <input
+                type="number"
+                min="0"
+                value={currentMileage}
+                onChange={(e) => setCurrentMileage(e.target.value)}
+                className="w-full bg-transparent font-mono text-base font-bold text-slate-900 outline-none"
+              />
+              <span className="text-xs font-extrabold text-slate-400">KM</span>
+            </div>
+          </div>
+
+          <div className="relative rounded-2xl border border-slate-200/90 bg-slate-50/60 p-3.5 focus-within:border-[#16254c] focus-within:bg-white focus-within:ring-2 focus-within:ring-[#16254c]/10 transition-all">
+            <span className="flex items-center gap-1.5 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+              <Wrench size={13} className="text-[#16254c]" /> Dernière Vidange
             </span>
-            <input
-              type="number"
-              min="0"
-              value={lastOilChangeMileage}
-              onChange={(e) => setLastOilChangeMileage(e.target.value)}
-              className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm outline-none transition-colors focus:border-brand-primary focus:bg-white"
-            />
-          </label>
-          <label className="block">
-            <span className="mb-1.5 flex items-center gap-1.5 text-xs font-semibold text-gray-600">
-              <Calendar size={14} /> {t('interval')}
+            <div className="relative mt-2 flex items-center">
+              <input
+                type="number"
+                min="0"
+                value={lastOilChangeMileage}
+                onChange={(e) => setLastOilChangeMileage(e.target.value)}
+                className="w-full bg-transparent font-mono text-base font-bold text-slate-900 outline-none"
+              />
+              <span className="text-xs font-extrabold text-slate-400">KM</span>
+            </div>
+          </div>
+
+          <div className="relative rounded-2xl border border-slate-200/90 bg-slate-50/60 p-3.5 focus-within:border-[#16254c] focus-within:bg-white focus-within:ring-2 focus-within:ring-[#16254c]/10 transition-all">
+            <span className="flex items-center gap-1.5 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+              <Calendar size={13} className="text-[#16254c]" /> Intervalle Entretien
             </span>
-            <input
-              type="number"
-              min="1000"
-              step="500"
-              value={intervalKm}
-              onChange={(e) => setIntervalKm(e.target.value)}
-              className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm outline-none transition-colors focus:border-brand-primary focus:bg-white"
-            />
-          </label>
+            <div className="relative mt-2 flex items-center">
+              <input
+                type="number"
+                min="1000"
+                step="500"
+                value={intervalKm}
+                onChange={(e) => setIntervalKm(e.target.value)}
+                className="w-full bg-transparent font-mono text-base font-bold text-slate-900 outline-none"
+              />
+              <span className="text-xs font-extrabold text-slate-400">KM</span>
+            </div>
+          </div>
         </div>
 
-        <fieldset className="space-y-3">
-          <legend className="text-sm font-semibold text-gray-700">{t('maintenanceDoneNow')}</legend>
-          <p className="text-xs text-gray-500">
-            {t('maintenanceDoneNowHint')}
-          </p>
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-          <ServiceCheckbox
-            id={`oil-change-${car.id}`}
-            checked={oilChangeDoneNow}
-            disabled={updateMutation.isPending}
-            label={t('oilChangeDone')}
-            onChange={setOilChangeDoneNow}
-          />
-          <ServiceCheckbox
-            id={`oil-filter-${car.id}`}
-            checked={oilFilterChanged}
-            disabled={updateMutation.isPending}
-            label={t('oilFilterChanged')}
-            onChange={setOilFilterChanged}
-          />
-          <ServiceCheckbox
-            id={`air-filter-${car.id}`}
-            checked={airFilterChanged}
-            disabled={updateMutation.isPending}
-            label={t('airFilterChanged')}
-            onChange={setAirFilterChanged}
-          />
-          <ServiceCheckbox
-            id={`cabin-filter-${car.id}`}
-            checked={cabinFilterChanged}
-            disabled={updateMutation.isPending}
-            label={t('cabinFilterChanged')}
-            onChange={setCabinFilterChanged}
-          />
+        {/* Maintenance Checklist */}
+        <div className="space-y-3 pt-1">
+          <div className="flex items-center justify-between">
+            <p className="text-xs font-bold text-slate-900 uppercase tracking-wider">
+              Entretien & Remplacement de filtres
+            </p>
+            <span className="text-[11px] text-slate-500">Cochez les interventions effectuées</span>
           </div>
-        </fieldset>
 
-        <div className="flex flex-wrap items-center gap-3">
+          <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+            <ServiceToggle
+              id={`oil-change-${car.id}`}
+              checked={oilChangeDoneNow}
+              disabled={updateMutation.isPending}
+              label="Vidange moteur effectuée aujourd'hui"
+              sublabel="Réinitialise le compteur à votre kilométrage actuel"
+              onChange={setOilChangeDoneNow}
+            />
+            <ServiceToggle
+              id={`oil-filter-${car.id}`}
+              checked={oilFilterChanged}
+              disabled={updateMutation.isPending}
+              label="Filtre à huile remplacé"
+              sublabel="Protection optimale du circuit lubrifiant"
+              onChange={setOilFilterChanged}
+            />
+            <ServiceToggle
+              id={`air-filter-${car.id}`}
+              checked={airFilterChanged}
+              disabled={updateMutation.isPending}
+              label="Filtre à air moteur remplacé"
+              sublabel="Flux d'admission et combustion propre"
+              onChange={setAirFilterChanged}
+            />
+            <ServiceToggle
+              id={`cabin-filter-${car.id}`}
+              checked={cabinFilterChanged}
+              disabled={updateMutation.isPending}
+              label="Filtre d'habitacle (Pollen/Charbon)"
+              sublabel="Qualité de l'air intérieur du véhicule"
+              onChange={setCabinFilterChanged}
+            />
+          </div>
+        </div>
+
+        {/* Save Bar */}
+        <div className="flex items-center justify-end pt-2 border-t border-slate-100">
           <button
             type="button"
             onClick={saveMaintenance}
             disabled={updateMutation.isPending}
-            className="inline-flex items-center gap-2 rounded-xl bg-brand-primary px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-primary-light disabled:opacity-60"
+            className="inline-flex items-center gap-2 rounded-2xl bg-[#16254c] px-5 py-3 text-xs font-bold text-white shadow-md shadow-[#16254c]/15 transition-all hover:bg-[#1f3469] hover:scale-[1.01] active:scale-[0.98] disabled:opacity-50"
           >
-            <Save size={16} />
-            {updateMutation.isPending ? t('saving') : t('saveMaintenance')}
+            {updateMutation.isPending ? (
+              <Loader2 size={15} className="animate-spin text-[#D4A76A]" />
+            ) : (
+              <Save size={15} className="text-[#D4A76A]" />
+            )}
+            <span>Enregistrer le carnet d&apos;entretien</span>
           </button>
-
-          {canFindOils && (
-            <button
-              type="button"
-              onClick={handleFindOils}
-              className="inline-flex items-center gap-2 rounded-xl border border-brand-primary/25 bg-brand-primary/5 px-4 py-2.5 text-sm font-semibold text-brand-primary transition-colors hover:bg-brand-primary hover:text-white"
-            >
-              <Search size={16} />
-              Trouver les huiles compatibles
-            </button>
-          )}
         </div>
       </div>
     </div>
@@ -453,44 +568,47 @@ export default function MesVoituresPage() {
     enabled: !!form.make && form.make !== 'Autre',
   })
 
+  const setVehicle = useVehicleStore((state) => state.setVehicle)
+  const activeVehicle = useVehicleStore((state) => state.vehicle)
+
   const cars = useMemo(() => data ?? [], [data])
 
   const createMutation = useMutation({
     mutationFn: (payload: CarPayload) => carsApi.create(payload),
-    onSuccess: () => {
+    onSuccess: (newCar: any) => {
       queryClient.invalidateQueries({ queryKey: ['my-cars'] })
+      if (newCar?.makeSlug && newCar?.modelSlug) {
+        setVehicle({
+          type: 'automobile',
+          makeId: newCar.makeSlug,
+          makeName: newCar.make ?? newCar.makeSlug,
+          makeSlug: newCar.makeSlug,
+          modelId: newCar.modelSlug,
+          modelName: newCar.model ?? newCar.modelSlug,
+          modelSlug: newCar.modelSlug,
+          engineCode: newCar.engine ?? '',
+        })
+      }
       setForm(EMPTY_FORM)
       setErrors({})
       setShowForm(false)
-      toast.success(t('carAdded'))
+      toast.success("Véhicule ajouté et activé ! Le catalogue n'affiche désormais que les pièces compatibles.")
     },
-    onError: () => toast.error(t('carAddError')),
+    onError: () => toast.error(t('carAddError') || 'Erreur lors de l\'ajout du véhicule.'),
   })
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {}
-    if (!form.name.trim()) newErrors.name = t('nameRequired')
+    if (!form.name.trim()) newErrors.name = t('nameRequired') || 'Veuillez saisir un nom pour votre véhicule'
     
     const vinClean = form.vin.trim().toUpperCase()
     if (vinClean && !/^[A-HJ-NPR-Z0-9]{17}$/.test(vinClean)) {
-      newErrors.vin = t('vinLength')
+      newErrors.vin = t('vinLength') || 'Le numéro VIN doit contenir exactement 17 caractères'
     }
 
     const yearNum = toNumber(form.year)
     if (form.year && (yearNum < 1980 || yearNum > new Date().getFullYear())) {
-      newErrors.year = t('yearRange', { year: new Date().getFullYear() })
-    }
-
-    if (form.displacement && (toNumber(form.displacement) < 0.5 || toNumber(form.displacement) > 10)) {
-      newErrors.displacement = t('displacementRange')
-    }
-
-    if (form.cylinders && (toNumber(form.cylinders) < 2 || toNumber(form.cylinders) > 16)) {
-      newErrors.cylinders = t('cylindersRange')
-    }
-
-    if (form.power && (toNumber(form.power) < 20 || toNumber(form.power) > 2000)) {
-      newErrors.power = t('powerRange')
+      newErrors.year = t('yearRange', { year: new Date().getFullYear() }) || 'Année invalide'
     }
 
     const currentKm = toNumber(form.currentMileage)
@@ -502,7 +620,7 @@ export default function MesVoituresPage() {
     if (form.oilChangeIntervalKm && intervalKm <= 0) newErrors.oilChangeIntervalKm = t('mustBeGreaterThanZero')
 
     if (form.currentMileage && form.lastOilChangeMileage && currentKm < lastKm) {
-      newErrors.currentMileage = t('currentGteLast')
+      newErrors.currentMileage = t('currentGteLast') || 'Le kilométrage actuel doit être supérieur à celui de la dernière vidange'
     }
 
     setErrors(newErrors)
@@ -512,7 +630,7 @@ export default function MesVoituresPage() {
   const handleCreate = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     if (!validateForm()) {
-      toast.error(t('fixFormErrors'))
+      toast.error(t('fixFormErrors') || 'Veuillez corriger les erreurs dans le formulaire.')
       return
     }
 
@@ -521,54 +639,118 @@ export default function MesVoituresPage() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+    <div className="space-y-7">
+      {/* Hero Header */}
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-slate-100 pb-6">
         <div>
-          <h1 className="text-2xl font-bold text-brand-primary">{t('myCars')}</h1>
-          <p className="text-sm text-gray-500">
-            {t('myCarsSubtitle')}
+          <div className="flex items-center gap-2">
+            <span className="h-2 w-2 rounded-full bg-[#D4A76A]" />
+            <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Espace Garage Privé</span>
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-black text-[#16254c] tracking-tight mt-1">
+            {t('myCars') || 'Mes Véhicules & Entretien'}
+          </h1>
+          <p className="text-xs sm:text-sm text-slate-500 mt-1 max-w-xl">
+            {t('myCarsSubtitle') || 'Suivez les échéances de vidange, les remplacements de filtres et profitez du filtrage exclusif de compatibilité sur tout le catalogue.'}
           </p>
         </div>
+
         {!showForm && (
           <button
             type="button"
             onClick={() => setShowForm(true)}
-            className="inline-flex items-center gap-2 rounded-xl bg-brand-primary px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-primary-light"
+            className="inline-flex items-center gap-2.5 rounded-2xl bg-[#16254c] px-5 py-3.5 text-xs sm:text-sm font-bold text-white shadow-lg shadow-[#16254c]/15 transition-all hover:bg-[#1f3469] hover:scale-[1.02] active:scale-[0.98]"
           >
-            <Plus size={16} />
-            {t('addCar')}
+            <div className="flex h-5 w-5 items-center justify-center rounded-lg bg-white/20 text-[#D4A76A]">
+              <Plus size={14} strokeWidth={3} />
+            </div>
+            <span>{t('addCar') || 'Ajouter un véhicule'}</span>
           </button>
         )}
       </div>
 
-      {showForm && (
-        <form onSubmit={handleCreate} className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
-          <div className="mb-4 flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-primary/10 text-brand-primary">
-              <Car size={18} />
+      {/* Auto-compatibility Explanation Banner */}
+      <div className="relative overflow-hidden rounded-3xl border border-emerald-500/30 bg-gradient-to-r from-[#111f40] via-[#16254c] to-[#111f40] p-5 sm:p-6 text-white shadow-xl shadow-slate-900/5">
+        <div className="absolute -right-8 -bottom-8 h-32 w-32 rounded-full bg-emerald-500/10 blur-2xl pointer-events-none" />
+        <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-4">
+            <div className="relative flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-emerald-400/30 bg-emerald-500/15 text-emerald-400 shadow-inner">
+              <Car size={24} strokeWidth={2} />
+              <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-emerald-500 ring-2 ring-[#16254c]">
+                <span className="h-1.5 w-1.5 rounded-full bg-white animate-ping" />
+              </span>
             </div>
             <div>
-              <h2 className="text-lg font-bold text-brand-primary">{t('newCar')}</h2>
-              <p className="text-xs text-gray-500">{t('newCarHint')}</p>
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] font-black uppercase tracking-wider text-emerald-400">
+                  Compatibilité Automatisée
+                </span>
+                <span className="rounded-full bg-emerald-500/20 px-2 py-0.5 text-[9px] font-bold text-emerald-300">
+                  100% Vérifié
+                </span>
+              </div>
+              <p className="text-sm font-bold text-white mt-0.5">
+                Filtrage intelligent de 46 000+ pièces
+              </p>
+              <p className="text-xs text-white/70 mt-0.5 max-w-2xl">
+                Lorsque vous sélectionnez un véhicule actif, l&apos;ensemble du catalogue n&apos;affiche que les pièces, filtres et huiles exactement conformes à votre motorisation.
+              </p>
             </div>
+          </div>
+          
+          <Link
+            href="/catalogue"
+            className="inline-flex items-center gap-2 self-start sm:self-center rounded-xl bg-white/10 hover:bg-white/20 border border-white/15 px-4 py-2.5 text-xs font-bold text-white transition-all backdrop-blur-md"
+          >
+            <span>Explorer le catalogue</span>
+            <ExternalLink size={13} className="text-[#D4A76A]" />
+          </Link>
+        </div>
+      </div>
+
+      {/* Add Car Form */}
+      {showForm && (
+        <form onSubmit={handleCreate} className="rounded-3xl border border-slate-200/90 bg-white p-6 sm:p-8 shadow-lg shadow-slate-900/5 space-y-6">
+          <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+            <div className="flex items-center gap-3">
+              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#16254c]/10 text-[#16254c]">
+                <Car size={20} />
+              </div>
+              <div>
+                <h2 className="text-lg font-black text-[#16254c]">{t('newCar') || 'Nouveau Véhicule'}</h2>
+                <p className="text-xs text-slate-500">{t('newCarHint') || 'Renseignez les détails pour le suivi et le catalogue.'}</p>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => setShowForm(false)}
+              className="flex h-8 w-8 items-center justify-center rounded-xl bg-slate-100 text-slate-500 hover:bg-slate-200 transition-colors"
+            >
+              <X size={16} />
+            </button>
           </div>
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <label className="block">
-              <span className="mb-1.5 block text-sm font-medium text-gray-700">{t('carName')} <span className="text-red-500">*</span></span>
+              <span className="mb-1.5 block text-xs font-bold text-slate-700 uppercase tracking-wider">
+                Nom / Surnom du véhicule <span className="text-rose-500">*</span>
+              </span>
               <input
                 value={form.name}
                 onChange={(e) => {
                   setForm((prev) => ({ ...prev, name: e.target.value }))
                   if (errors.name) setErrors(prev => ({ ...prev, name: '' }))
                 }}
-                placeholder={t('carNamePlaceholder')}
-                className={`w-full rounded-xl border bg-gray-50 px-3 py-2.5 text-sm outline-none transition-colors focus:bg-white ${errors.name ? 'border-red-300 focus:border-red-500' : 'border-gray-200 focus:border-brand-primary'}`}
+                placeholder="ex: Golfia, Ma Clio, Mon Astra..."
+                className={`w-full rounded-2xl border bg-slate-50/60 px-4 py-3 text-sm font-semibold outline-none transition-all focus:bg-white focus:ring-2 ${errors.name ? 'border-rose-300 focus:border-rose-500 focus:ring-rose-500/10' : 'border-slate-200 focus:border-[#16254c] focus:ring-[#16254c]/10'}`}
               />
-              {errors.name && <p className="mt-1 text-xs text-red-500">{errors.name}</p>}
+              {errors.name && <p className="mt-1.5 text-xs text-rose-500 font-medium">{errors.name}</p>}
             </label>
+
             <label className="block">
-              <span className="mb-1.5 block text-sm font-medium text-gray-700">{t('vinLabel')}</span>
+              <span className="mb-1.5 block text-xs font-bold text-slate-700 uppercase tracking-wider">
+                Numéro de châssis (VIN - 17 caractères)
+              </span>
               <input
                 value={form.vin}
                 maxLength={17}
@@ -576,342 +758,166 @@ export default function MesVoituresPage() {
                   setForm((prev) => ({ ...prev, vin: e.target.value.toUpperCase() }))
                   if (errors.vin) setErrors(prev => ({ ...prev, vin: '' }))
                 }}
-                placeholder={t('vinPlaceholder')}
-                className={`w-full rounded-xl border bg-gray-50 px-3 py-2.5 text-sm font-mono uppercase outline-none transition-colors focus:bg-white ${errors.vin ? 'border-red-300 focus:border-red-500' : 'border-gray-200 focus:border-brand-primary'}`}
+                placeholder="ex: VF1... / WVWZZZ..."
+                className={`w-full rounded-2xl border bg-slate-50/60 px-4 py-3 text-sm font-mono uppercase outline-none transition-all focus:bg-white focus:ring-2 ${errors.vin ? 'border-rose-300 focus:border-rose-500 focus:ring-rose-500/10' : 'border-slate-200 focus:border-[#16254c] focus:ring-[#16254c]/10'}`}
               />
-              {errors.vin && <p className="mt-1 text-xs text-red-500">{errors.vin}</p>}
+              {errors.vin && <p className="mt-1.5 text-xs text-rose-500 font-medium">{errors.vin}</p>}
             </label>
+          </div>
+
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
             <label className="block">
-              <span className="mb-1.5 block text-sm font-medium text-gray-700">{t('makeLabel')}</span>
+              <span className="mb-1.5 block text-xs font-bold text-slate-700 uppercase tracking-wider">Marque Constructeur</span>
               <select
                 value={form.make}
                 onChange={(e) => {
-                  const slug = e.target.value
-                  const selectedMake = makes.find((m: any) => m.slug === slug)
-                  setForm((prev) => ({ 
-                    ...prev, 
-                    make: slug, 
-                    makeName: selectedMake?.name || '',
-                    model: '', 
+                  const makeSlug = e.target.value
+                  const selectedObj = makes.find((m: any) => m.slug === makeSlug)
+                  setForm((prev) => ({
+                    ...prev,
+                    make: makeSlug,
+                    makeName: selectedObj ? selectedObj.name : '',
+                    model: '',
                     modelName: '',
                   }))
                 }}
-                className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm outline-none transition-colors focus:border-brand-primary focus:bg-white"
+                className="w-full rounded-2xl border border-slate-200 bg-slate-50/60 px-4 py-3 text-sm font-semibold outline-none transition-all focus:border-[#16254c] focus:bg-white focus:ring-2 focus:ring-[#16254c]/10"
               >
-                <option value="">{t('selectMake')}</option>
-                {makes.map((make: any) => (
-                  <option key={make.slug} value={make.slug}>{make.name}</option>
+                <option value="">-- Choisir une marque --</option>
+                {makes.map((m: any) => (
+                  <option key={m.id || m.slug} value={m.slug}>
+                    {m.name}
+                  </option>
                 ))}
-                <option value="Autre">{t('other')}</option>
+                <option value="Autre">Autre marque</option>
               </select>
-              {form.make === 'Autre' && (
-                <input
-                  value={form.customMake || ''}
-                  onChange={(e) => setForm((prev) => ({ ...prev, customMake: e.target.value }))}
-                  placeholder={t('enterMake')}
-                  className="mt-2 w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm outline-none transition-colors focus:border-brand-primary focus:bg-white"
-                />
-              )}
             </label>
+
             <label className="block">
-              <span className="mb-1.5 block text-sm font-medium text-gray-700">{t('modelLabel')}</span>
-              {form.make === 'Autre' ? (
-                <input
-                  value={form.customModel || ''}
-                  onChange={(e) => setForm((prev) => ({ ...prev, customModel: e.target.value }))}
-                  placeholder={t('enterModel')}
-                  className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm outline-none transition-colors focus:border-brand-primary focus:bg-white"
-                />
-              ) : (
-                <select
-                  value={form.model}
-                  onChange={(e) => {
-                    const slug = e.target.value
-                    const selectedModel = models.find((m: any) => m.slug === slug)
-                    setForm((prev) => ({ 
-                      ...prev, 
-                      model: slug, 
-                      modelName: selectedModel?.name || '',
-                    }))
-                  }}
-                  disabled={!form.make}
-                  className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm outline-none transition-colors focus:border-brand-primary focus:bg-white disabled:opacity-50"
-                >
-                  <option value="">{t('selectModel')}</option>
-                  {models.map((model: any) => (
-                    <option key={model.slug} value={model.slug}>{model.name}</option>
-                  ))}
-                  <option value="Autre">{t('other')}</option>
-                </select>
-              )}
-              {form.model === 'Autre' && form.make !== 'Autre' && (
-                <input
-                  value={form.customModel || ''}
-                  onChange={(e) => setForm((prev) => ({ ...prev, customModel: e.target.value }))}
-                  placeholder={t('enterModel')}
-                  className="mt-2 w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm outline-none transition-colors focus:border-brand-primary focus:bg-white"
-                />
-              )}
-            </label>
-            <label className="block">
-              <span className="mb-1.5 block text-sm font-medium text-gray-700">{t('yearLabel')}</span>
-              <input
-                type="number"
-                min="1980"
-                max={new Date().getFullYear()}
-                value={form.year}
+              <span className="mb-1.5 block text-xs font-bold text-slate-700 uppercase tracking-wider">Modèle</span>
+              <select
+                value={form.model}
+                disabled={!form.make || form.make === 'Autre'}
                 onChange={(e) => {
-                  setForm((prev) => ({ ...prev, year: e.target.value }))
-                  if (errors.year) setErrors(prev => ({ ...prev, year: '' }))
+                  const modelSlug = e.target.value
+                  const selectedObj = models.find((m: any) => m.slug === modelSlug)
+                  setForm((prev) => ({
+                    ...prev,
+                    model: modelSlug,
+                    modelName: selectedObj ? selectedObj.name : '',
+                  }))
                 }}
-                placeholder={String(new Date().getFullYear())}
-                className={`w-full rounded-xl border bg-gray-50 px-3 py-2.5 text-sm outline-none transition-colors focus:bg-white ${errors.year ? 'border-red-300 focus:border-red-500' : 'border-gray-200 focus:border-brand-primary'}`}
-              />
-              {errors.year && <p className="mt-1 text-xs text-red-500">{errors.year}</p>}
+                className="w-full rounded-2xl border border-slate-200 bg-slate-50/60 px-4 py-3 text-sm font-semibold outline-none transition-all focus:border-[#16254c] focus:bg-white focus:ring-2 focus:ring-[#16254c]/10 disabled:opacity-50"
+              >
+                <option value="">-- Choisir un modèle --</option>
+                {models.map((m: any) => (
+                  <option key={m.id || m.slug} value={m.slug}>
+                    {m.name}
+                  </option>
+                ))}
+                <option value="Autre">Autre modèle</option>
+              </select>
             </label>
+
             <label className="block">
-              <span className="mb-1.5 block text-sm font-medium text-gray-700">{t('engineLabel')}</span>
+              <span className="mb-1.5 block text-xs font-bold text-slate-700 uppercase tracking-wider">Motorisation</span>
               <input
                 value={form.engine}
-                onChange={(e) => {
-                  setForm((prev) => ({ ...prev, engine: e.target.value }))
-                }}
-                placeholder={t('enginePlaceholder')}
-                className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm outline-none transition-colors focus:border-brand-primary focus:bg-white"
+                onChange={(e) => setForm((prev) => ({ ...prev, engine: e.target.value }))}
+                placeholder="ex: 1.5 dCi 90, 1.6 TDI 115..."
+                className="w-full rounded-2xl border border-slate-200 bg-slate-50/60 px-4 py-3 text-sm font-semibold outline-none transition-all focus:border-[#16254c] focus:bg-white focus:ring-2 focus:ring-[#16254c]/10"
               />
             </label>
+          </div>
+
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
             <label className="block">
-              <span className="mb-1.5 block text-sm font-medium text-gray-700">{t('displacementLabel')}</span>
-              <input
-                type="number"
-                min="0.5"
-                max="10"
-                step="0.1"
-                value={form.displacement}
-                onChange={(e) => {
-                  setForm((prev) => ({ ...prev, displacement: e.target.value }))
-                  if (errors.displacement) setErrors(prev => ({ ...prev, displacement: '' }))
-                }}
-                placeholder="1.6"
-                className={`w-full rounded-xl border bg-gray-50 px-3 py-2.5 text-sm outline-none transition-colors focus:bg-white ${errors.displacement ? 'border-red-300 focus:border-red-500' : 'border-gray-200 focus:border-brand-primary'}`}
-              />
-              {errors.displacement && <p className="mt-1 text-xs text-red-500">{errors.displacement}</p>}
-            </label>
-            <label className="block">
-              <span className="mb-1.5 block text-sm font-medium text-gray-700">{t('cylindersLabel')}</span>
-              <select
-                value={form.cylinders}
-                onChange={(e) => {
-                  setForm((prev) => ({ ...prev, cylinders: e.target.value }))
-                  if (errors.cylinders) setErrors(prev => ({ ...prev, cylinders: '' }))
-                }}
-                className={`w-full rounded-xl border bg-gray-50 px-3 py-2.5 text-sm outline-none transition-colors focus:bg-white ${errors.cylinders ? 'border-red-300 focus:border-red-500' : 'border-gray-200 focus:border-brand-primary'}`}
-              >
-                <option value="">{t('select')}</option>
-                <option value="3">{t('cylindersN', { n: 3 })}</option>
-                <option value="4">{t('cylindersN', { n: 4 })}</option>
-                <option value="5">{t('cylindersN', { n: 5 })}</option>
-                <option value="6">{t('cylindersN', { n: 6 })}</option>
-                <option value="8">{t('cylindersN', { n: 8 })}</option>
-                <option value="12">{t('cylindersN', { n: 12 })}</option>
-              </select>
-              {errors.cylinders && <p className="mt-1 text-xs text-red-500">{errors.cylinders}</p>}
-            </label>
-            <label className="block">
-              <span className="mb-1.5 block text-sm font-medium text-gray-700">{t('fuelLabel')}</span>
-              <select
-                value={form.fuel}
-                onChange={(e) => setForm((prev) => ({ ...prev, fuel: e.target.value }))}
-                className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm outline-none transition-colors focus:border-brand-primary focus:bg-white"
-              >
-                <option value="">{t('select')}</option>
-                <option value="essence">{t('fuelEssence')}</option>
-                <option value="diesel">{t('fuelDiesel')}</option>
-                <option value="hybride">{t('fuelHybrid')}</option>
-                <option value="electrique">{t('fuelElectric')}</option>
-                <option value="gpl">{t('fuelGpl')}</option>
-              </select>
-            </label>
-            <label className="block">
-              <span className="mb-1.5 block text-sm font-medium text-gray-700">{t('powerLabel')}</span>
-              <input
-                type="number"
-                min="20"
-                max="2000"
-                value={form.power}
-                onChange={(e) => {
-                  setForm((prev) => ({ ...prev, power: e.target.value }))
-                  if (errors.power) setErrors(prev => ({ ...prev, power: '' }))
-                }}
-                placeholder="90"
-                className={`w-full rounded-xl border bg-gray-50 px-3 py-2.5 text-sm outline-none transition-colors focus:bg-white ${errors.power ? 'border-red-300 focus:border-red-500' : 'border-gray-200 focus:border-brand-primary'}`}
-              />
-              {errors.power && <p className="mt-1 text-xs text-red-500">{errors.power}</p>}
-            </label>
-            <label className="block">
-              <span className="mb-1.5 block text-sm font-medium text-gray-700">{t('transmissionLabel')}</span>
-              <select
-                value={form.transmission}
-                onChange={(e) => setForm((prev) => ({ ...prev, transmission: e.target.value }))}
-                className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm outline-none transition-colors focus:border-brand-primary focus:bg-white"
-              >
-                <option value="">{t('select')}</option>
-                <option value="manuelle">{t('transManual')}</option>
-                <option value="automatique">{t('transAuto')}</option>
-              </select>
-            </label>
-            <label className="block">
-              <span className="mb-1.5 block text-sm font-medium text-gray-700">{t('trimLabel')}</span>
-              <input
-                value={form.trim}
-                onChange={(e) => setForm((prev) => ({ ...prev, trim: e.target.value }))}
-                placeholder={t('trimPlaceholder')}
-                className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm outline-none transition-colors focus:border-brand-primary focus:bg-white"
-              />
-            </label>
-            <label className="block">
-              <span className="mb-1.5 block text-sm font-medium text-gray-700">{t('productionDateLabel')}</span>
-              <input
-                type="month"
-                value={form.productionDate}
-                onChange={(e) => setForm((prev) => ({ ...prev, productionDate: e.target.value }))}
-                className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm outline-none transition-colors focus:border-brand-primary focus:bg-white"
-              />
-            </label>
-            <label className="block">
-              <span className="mb-1.5 block text-sm font-medium text-gray-700">{t('currentKm')}</span>
+              <span className="mb-1.5 block text-xs font-bold text-slate-700 uppercase tracking-wider">Kilométrage Actuel</span>
               <input
                 type="number"
                 min="0"
                 value={form.currentMileage}
-                onChange={(e) => {
-                  setForm((prev) => ({ ...prev, currentMileage: e.target.value }))
-                  if (errors.currentMileage) setErrors(prev => ({ ...prev, currentMileage: '' }))
-                }}
-                placeholder="85000"
-                className={`w-full rounded-xl border bg-gray-50 px-3 py-2.5 text-sm outline-none transition-colors focus:bg-white ${errors.currentMileage ? 'border-red-300 focus:border-red-500' : 'border-gray-200 focus:border-brand-primary'}`}
+                onChange={(e) => setForm((prev) => ({ ...prev, currentMileage: e.target.value }))}
+                placeholder="ex: 125000"
+                className="w-full rounded-2xl border border-slate-200 bg-slate-50/60 px-4 py-3 text-sm font-mono font-semibold outline-none transition-all focus:border-[#16254c] focus:bg-white focus:ring-2 focus:ring-[#16254c]/10"
               />
-              {errors.currentMileage && <p className="mt-1 text-xs text-red-500">{errors.currentMileage}</p>}
             </label>
             <label className="block">
-              <span className="mb-1.5 block text-sm font-medium text-gray-700">{t('lastOilChange')}</span>
+              <span className="mb-1.5 block text-xs font-bold text-slate-700 uppercase tracking-wider">Kilométrage Dernière Vidange</span>
               <input
                 type="number"
                 min="0"
                 value={form.lastOilChangeMileage}
-                onChange={(e) => {
-                  setForm((prev) => ({ ...prev, lastOilChangeMileage: e.target.value }))
-                  if (errors.lastOilChangeMileage) setErrors(prev => ({ ...prev, lastOilChangeMileage: '' }))
-                }}
-                placeholder="76000"
-                className={`w-full rounded-xl border bg-gray-50 px-3 py-2.5 text-sm outline-none transition-colors focus:bg-white ${errors.lastOilChangeMileage ? 'border-red-300 focus:border-red-500' : 'border-gray-200 focus:border-brand-primary'}`}
+                onChange={(e) => setForm((prev) => ({ ...prev, lastOilChangeMileage: e.target.value }))}
+                placeholder="ex: 120000"
+                className="w-full rounded-2xl border border-slate-200 bg-slate-50/60 px-4 py-3 text-sm font-mono font-semibold outline-none transition-all focus:border-[#16254c] focus:bg-white focus:ring-2 focus:ring-[#16254c]/10"
               />
-              {errors.lastOilChangeMileage && <p className="mt-1 text-xs text-red-500">{errors.lastOilChangeMileage}</p>}
             </label>
             <label className="block">
-              <span className="mb-1.5 block text-sm font-medium text-gray-700">{t('oilChangeEveryKm')}</span>
+              <span className="mb-1.5 block text-xs font-bold text-slate-700 uppercase tracking-wider">Intervalle Vidange</span>
               <input
                 type="number"
                 min="1000"
                 step="500"
                 value={form.oilChangeIntervalKm}
-                onChange={(e) => {
-                  setForm((prev) => ({ ...prev, oilChangeIntervalKm: e.target.value }))
-                  if (errors.oilChangeIntervalKm) setErrors(prev => ({ ...prev, oilChangeIntervalKm: '' }))
-                }}
-                className={`w-full rounded-xl border bg-gray-50 px-3 py-2.5 text-sm outline-none transition-colors focus:bg-white ${errors.oilChangeIntervalKm ? 'border-red-300 focus:border-red-500' : 'border-gray-200 focus:border-brand-primary'}`}
+                onChange={(e) => setForm((prev) => ({ ...prev, oilChangeIntervalKm: e.target.value }))}
+                placeholder="10000"
+                className="w-full rounded-2xl border border-slate-200 bg-slate-50/60 px-4 py-3 text-sm font-mono font-semibold outline-none transition-all focus:border-[#16254c] focus:bg-white focus:ring-2 focus:ring-[#16254c]/10"
               />
-              {errors.oilChangeIntervalKm && <p className="mt-1 text-xs text-red-500">{errors.oilChangeIntervalKm}</p>}
             </label>
           </div>
 
-          {form.lastOilChangeMileage && form.oilChangeIntervalKm && (
-            <div className="mt-4 rounded-xl border border-blue-100 bg-blue-50 p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-semibold text-blue-900">{t('nextOilChange')}</p>
-                  <p className="text-2xl font-black text-brand-primary">
-                    {formatKm(toNumber(form.lastOilChangeMileage) + toNumber(form.oilChangeIntervalKm))} km
-                  </p>
-                </div>
-                {toNumber(form.currentMileage) >= (toNumber(form.lastOilChangeMileage) + toNumber(form.oilChangeIntervalKm)) && (
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-red-100 px-3 py-1 text-xs font-bold text-red-700">
-                    🔴 {t('oilChangeLate')}
-                  </span>
-                )}
-              </div>
-            </div>
-          )}
-
-          <fieldset className="mt-6">
-            <legend className="mb-3 text-sm font-semibold text-gray-700">{t('partsChangedLastOil')}</legend>
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-              <ServiceCheckbox
-                id="new-oil-filter"
-                checked={form.oilFilterChanged}
-                label={t('oilFilter')}
-                onChange={(checked) => setForm((prev) => ({ ...prev, oilFilterChanged: checked }))}
-              />
-              <ServiceCheckbox
-                id="new-air-filter"
-                checked={form.airFilterChanged}
-                label={t('airFilter')}
-                onChange={(checked) => setForm((prev) => ({ ...prev, airFilterChanged: checked }))}
-              />
-              <ServiceCheckbox
-                id="new-cabin-filter"
-                checked={form.cabinFilterChanged}
-                label={t('cabinFilter')}
-                onChange={(checked) => setForm((prev) => ({ ...prev, cabinFilterChanged: checked }))}
-              />
-            </div>
-          </fieldset>
-
-          <div className="mt-8 flex justify-end gap-3">
+          <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
             <button
               type="button"
-              onClick={() => {
-                setShowForm(false)
-                setForm(EMPTY_FORM)
-                setErrors({})
-              }}
-              className="rounded-xl px-4 py-2 text-sm font-semibold text-gray-500 transition-colors hover:bg-gray-50"
+              onClick={() => setShowForm(false)}
+              className="rounded-2xl border border-slate-200 px-5 py-3 text-xs font-bold text-slate-600 hover:bg-slate-50 transition-colors"
             >
-              {t('cancel')}
+              Annuler
             </button>
             <button
               type="submit"
               disabled={createMutation.isPending}
-              className="inline-flex items-center gap-2 rounded-xl bg-brand-primary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-primary-light disabled:opacity-50"
+              className="inline-flex items-center gap-2 rounded-2xl bg-[#16254c] px-6 py-3 text-xs font-bold text-white shadow-lg shadow-[#16254c]/15 transition-all hover:bg-[#1f3469] disabled:opacity-50"
             >
-              {createMutation.isPending ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
-              {createMutation.isPending ? t('saving') : t('save')}
+              {createMutation.isPending && <Loader2 size={15} className="animate-spin text-[#D4A76A]" />}
+              <span>Enregistrer le véhicule</span>
             </button>
           </div>
         </form>
       )}
 
-      {isLoading ? (
-        <div className="space-y-4">
-          {[1, 2].map((item) => (
-            <div key={item} className="h-64 animate-pulse rounded-2xl bg-gray-100" />
-          ))}
-        </div>
-      ) : cars.length === 0 ? (
-        <div className="rounded-2xl border-2 border-dashed border-gray-200 py-14 text-center">
-          <Car size={44} className="mx-auto mb-3 text-gray-200" />
-          <h3 className="font-semibold text-gray-400">{t('noCars')}</h3>
-          <p className="mt-1 text-sm text-gray-300">
-            {t('noCarsHint')}
-          </p>
-        </div>
-      ) : (
-        <div className="space-y-4">
-          {cars.map((car) => (
-            <CarCard key={car.id} car={car} />
-          ))}
-        </div>
-      )}
+      {/* Car List */}
+      <div className="space-y-6">
+        {isLoading ? (
+          <div className="flex min-h-64 items-center justify-center rounded-3xl border border-slate-100 bg-slate-50/50">
+            <div className="flex flex-col items-center gap-3">
+              <Loader2 size={32} className="animate-spin text-[#16254c]" />
+              <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Chargement de votre garage...</p>
+            </div>
+          </div>
+        ) : cars.length === 0 ? (
+          <div className="flex min-h-72 flex-col items-center justify-center rounded-3xl border-2 border-dashed border-slate-200 bg-slate-50/50 p-8 text-center">
+            <div className="flex h-16 w-16 items-center justify-center rounded-3xl bg-slate-100 text-slate-400 shadow-inner">
+              <Car size={32} />
+            </div>
+            <h3 className="mt-4 text-base font-bold text-slate-900">{t('noCars') || 'Aucun véhicule enregistré'}</h3>
+            <p className="mt-1 max-w-sm text-xs text-slate-500">
+              {t('noCarsDesc') || 'Ajoutez votre première voiture pour activer le suivi d\'entretien et le filtrage exclusif des pièces compatibles.'}
+            </p>
+            <button
+              type="button"
+              onClick={() => setShowForm(true)}
+              className="mt-5 inline-flex items-center gap-2 rounded-2xl bg-[#16254c] px-5 py-3 text-xs font-bold text-white shadow-md shadow-[#16254c]/10 hover:bg-[#1f3469] transition-all"
+            >
+              <Plus size={15} />
+              <span>{t('addFirstCar') || 'Ajouter une voiture'}</span>
+            </button>
+          </div>
+        ) : (
+          cars.map((car) => <CarCard key={car.id} car={car} />)
+        )}
+      </div>
     </div>
   )
 }

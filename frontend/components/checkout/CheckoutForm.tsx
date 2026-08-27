@@ -3,14 +3,14 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useCartStore } from '@/lib/store/cart.store'
-
 import { ordersApi } from '@/lib/api/orders'
 import { couponsApi } from '@/lib/api/coupons'
+import { shippingApi } from '@/lib/api/shipping'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
-import { Check, Tag, X } from 'lucide-react'
+import { Check, Tag, X, Truck } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { WILAYAS_TN } from '@/lib/utils/format'
 import { FormInput, FormSelect, FormTextarea } from '@/components/common/FormInput'
@@ -22,7 +22,19 @@ export function CheckoutForm() {
   const [promoInput, setPromoInput] = useState('')
   const [promoLoading, setPromoLoading] = useState(false)
   const [promoError, setPromoError] = useState('')
-  const { items, shippingCost, promoCode, promoDiscount, clearCart, applyPromo, removePromo } = useCartStore()
+  const {
+    items,
+    shippingCost,
+    promoCode,
+    promoDiscount,
+    promoType,
+    itemsTotalTTC,
+    eta,
+    clearCart,
+    applyPromo,
+    removePromo,
+    setSelectedWilaya,
+  } = useCartStore()
 
   const checkoutSchema = z.object({
     firstName: z.string().min(2, t('firstNameTooShort')),
@@ -33,10 +45,14 @@ export function CheckoutForm() {
     city: z.string().min(2, t('cityRequired')),
     wilaya: z.string().min(1, t('wilayaRequired')),
     postalCode: z.string().min(4, t('postalCodeRequired')),
-    vehicleVin: z.string().trim().refine(
-      (value) => value === '' || /^[A-HJ-NPR-Z0-9]{17}$/i.test(value),
-      t('invalidVin')
-    ).optional(),
+    vehicleVin: z
+      .string()
+      .trim()
+      .refine(
+        (value) => value === '' || /^[A-HJ-NPR-Z0-9]{17}$/i.test(value),
+        t('invalidVin')
+      )
+      .optional(),
     notes: z.string().optional(),
   })
 
@@ -45,10 +61,32 @@ export function CheckoutForm() {
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm<CheckoutFormData>({
     resolver: zodResolver(checkoutSchema),
   })
+
+  const watchedWilaya = watch('wilaya')
+
+  // Dynamically update shipping tariff and ETA when destination wilaya changes
+  useEffect(() => {
+    if (!watchedWilaya) return
+    let isMounted = true
+    shippingApi
+      .calculateRate(watchedWilaya, itemsTotalTTC)
+      .then((res) => {
+        if (isMounted && res) {
+          setSelectedWilaya(watchedWilaya, res.basePrice, res.eta)
+        }
+      })
+      .catch((e) => {
+        console.warn('Failed to calculate rate for wilaya', e)
+      })
+    return () => {
+      isMounted = false
+    }
+  }, [watchedWilaya, itemsTotalTTC, setSelectedWilaya])
 
   const rawSubtotal = items.reduce((acc, item) => acc + item.variant.priceHT * item.quantity, 0)
 
@@ -60,9 +98,9 @@ export function CheckoutForm() {
     try {
       const res = await couponsApi.validate(code, rawSubtotal)
       if (res.type === 'SHIPPING') {
-        applyPromo(code, 0)
+        applyPromo(code, 0, 'SHIPPING')
       } else {
-        applyPromo(code, res.discount)
+        applyPromo(code, res.discount, res.type)
       }
       setPromoInput('')
       toast.success(t('promoApplied'))
@@ -176,15 +214,32 @@ export function CheckoutForm() {
             />
           </div>
 
-          <FormSelect
-            id="wilaya"
-            label={t('wilayaLabel')}
-            required
-            placeholder={t('selectPlaceholder')}
-            options={WILAYAS_TN.map((w) => ({ value: w, label: w }))}
-            error={errors.wilaya?.message}
-            {...register('wilaya')}
-          />
+          <div>
+            <FormSelect
+              id="wilaya"
+              label={t('wilayaLabel')}
+              required
+              placeholder={t('selectPlaceholder')}
+              options={WILAYAS_TN.map((w) => ({ value: w, label: w }))}
+              error={errors.wilaya?.message}
+              {...register('wilaya')}
+            />
+            {watchedWilaya && (
+              <p className="mt-1.5 flex items-center gap-1.5 text-xs text-green-700 font-medium">
+                <Truck size={13} />
+                <span>
+                  Livraison estimée : <strong className="font-bold">{eta || '24-48h'}</strong>
+                  {shippingCost === 0 ? (
+                    <span className="ml-1 rounded bg-green-100 px-1.5 py-0.5 text-[10px] font-bold text-green-800">
+                      Offerte
+                    </span>
+                  ) : (
+                    <span className="ml-1 text-gray-600">({shippingCost.toFixed(3)} DT)</span>
+                  )}
+                </span>
+              </p>
+            )}
+          </div>
 
           <FormInput
             id="city"

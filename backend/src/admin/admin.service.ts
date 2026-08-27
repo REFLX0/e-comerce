@@ -56,8 +56,9 @@ export class AdminService {
       include: {
         brand: true,
         category: true,
-        variants: true,
+        variants: { orderBy: { price: 'asc' } },
         images: { orderBy: { sortOrder: 'asc' } },
+        specs: true,
       },
     });
   }
@@ -124,7 +125,7 @@ export class AdminService {
   }
 
   async createProduct(dto: CreateProductDto) {
-    const { price, brandId, categoryId, stock, images, variants, ...rest } =
+    const { price, brandId, categoryId, stock, images, variants, specs, packageUnit, ...rest } =
       dto;
     const sku = dto.sku || `SKU-${dto.slug || dto.nameFr}-${Date.now()}`;
     const data: Prisma.ProductCreateInput = {
@@ -149,33 +150,44 @@ export class AdminService {
     if (variants && variants.length > 0) {
       data.variants = {
         create: variants.map((v, idx) => ({
-          volume: v.volume,
-          price: v.price,
-          stockQty: v.stockQty,
+          volume: String(v.volume || '1 Pièce').trim(),
+          price: Number(v.price) || 0,
+          stockQty: Number(v.stockQty) || 0,
           imageUrl: v.imageUrl ?? null,
-          skuVariant: `${sku}-${v.volume.replace(/\s+/g, '').toUpperCase()}`,
+          skuVariant: `${sku}-${String(v.volume || '1P').replace(/[^a-zA-Z0-9]/g, '').toUpperCase()}-${idx}`,
         })),
       };
     } else if (price !== undefined) {
-      // Create a default variant when price is provided but no explicit variants array
+      const unit = packageUnit || '1 Pièce';
       data.variants = {
         create: {
-          volume: 'default',
-          price,
-          stockQty: stock ?? 0,
-          skuVariant: `${sku}-default`,
+          volume: unit,
+          price: Number(price) || 0,
+          stockQty: Number(stock) || 0,
+          skuVariant: `${sku}-1P`,
+        },
+      };
+    }
+
+    if (specs && (specs.viscosity || specs.apiStandard || specs.aeceaStandard || specs.OEMApprovals)) {
+      data.specs = {
+        create: {
+          viscosity: specs.viscosity || null,
+          apiStandard: specs.apiStandard || null,
+          aeceaStandard: specs.aeceaStandard || null,
+          OEMApprovals: specs.OEMApprovals || null,
         },
       };
     }
 
     return this.prisma.product.create({
       data,
-      include: { brand: true, category: true, variants: true },
+      include: { brand: true, category: true, variants: true, images: true, specs: true },
     });
   }
 
   async updateProduct(id: string, data: any) {
-    const { price, stock, variants, images, ...productData } = data;
+    const { price, stock, variants, images, specs, packageUnit, ...productData } = data;
     const updateData: Prisma.ProductUncheckedUpdateInput = {};
 
     for (const key of [
@@ -214,8 +226,8 @@ export class AdminService {
       }
     }
 
-    // If a full variants array is provided, update all variants
-    if (variants && variants.length > 0) {
+    // If a variants array is provided, synchronize variants
+    if (Array.isArray(variants)) {
       const existing = await this.prisma.product.findUnique({
         where: { id },
         select: {
@@ -224,82 +236,106 @@ export class AdminService {
         },
       });
 
-      const updates = variants
-        .map((v: any) => {
-          const match = v.id
-            ? existing?.variants.find((ev: any) => ev.id === v.id)
-            : existing?.variants.find(
-                (ev: any) => ev.volume === v.volume && ev.id,
-              );
-          if (match) {
-            const variantData: Prisma.ProductVariantUpdateInput = {};
-            if (v.volume !== undefined) variantData.volume = v.volume;
-            if (v.price !== undefined) variantData.price = v.price;
-            if (v.stockQty !== undefined) variantData.stockQty = v.stockQty;
-            if (v.imageUrl !== undefined) variantData.imageUrl = v.imageUrl;
+      const currentVariantIds = existing?.variants.map((v) => v.id) || [];
+      const incomingVariantIds = variants
+        .map((v: any) => v.id)
+        .filter(Boolean) as string[];
 
-            return this.prisma.productVariant.update({
-              where: { id: match.id },
-              data: variantData,
-            });
-          }
+      // Delete variants removed in form
+      const toDelete = currentVariantIds.filter(
+        (vid) => !incomingVariantIds.includes(vid),
+      );
+      if (toDelete.length > 0) {
+        await this.prisma.productVariant.deleteMany({
+          where: { id: { in: toDelete } },
+        });
+      }
 
-          if (!v.volume || v.price === undefined) return Promise.resolve(null);
+      for (let idx = 0; idx < variants.length; idx++) {
+        const v = variants[idx];
+        if (!v.volume || v.price === undefined) continue;
+        const vol = String(v.volume || '1 Pièce').trim();
+        const priceVal = Number(v.price) || 0;
+        const stockVal = Number(v.stockQty ?? stock ?? 0);
+        const imgVal = v.imageUrl || null;
 
-          const skuBase = existing?.sku ?? productData.sku ?? id;
-          return this.prisma.productVariant.create({
+        if (v.id && currentVariantIds.includes(v.id)) {
+          await this.prisma.productVariant.update({
+            where: { id: v.id },
             data: {
-              productId: id,
-              volume: v.volume,
-              price: v.price,
-              stockQty: v.stockQty ?? 0,
-              imageUrl: v.imageUrl ?? null,
-              skuVariant: `${skuBase}-${v.volume.replace(/\s+/g, '').toUpperCase()}-${Date.now()}`,
+              volume: vol,
+              price: priceVal,
+              stockQty: stockVal,
+              imageUrl: imgVal,
             },
           });
-        })
-        .filter(Boolean);
-
-      if (updates.length > 0) {
-        await this.prisma.$transaction(updates);
-      }
-    } else {
-      // Fallback: update first variant price/stock
-      const variantUpdate: any = {};
-      if (price !== undefined) variantUpdate.price = price;
-      if (stock !== undefined) variantUpdate.stockQty = stock;
-
-      if (Object.keys(variantUpdate).length > 0) {
-        const existing = await this.prisma.product.findUnique({
-          where: { id },
-          select: { variants: { take: 1, select: { id: true } } },
-        });
-        if (existing?.variants.length) {
-          await this.prisma.productVariant.update({
-            where: { id: existing.variants[0].id },
-            data: variantUpdate,
-          });
-        } else if (price !== undefined) {
-          const product = await this.prisma.product.findUnique({
-            where: { id },
-            select: { sku: true },
-          });
+        } else {
+          const skuBase = existing?.sku ?? productData.sku ?? id;
+          const skuVariant = `${skuBase}-${vol.replace(/[^a-zA-Z0-9]/g, '').toUpperCase() || 'VAR'}-${Date.now()}-${idx}`;
           await this.prisma.productVariant.create({
             data: {
               productId: id,
-              volume: 'default',
-              price,
-              stockQty: stock ?? 0,
-              skuVariant: `${product?.sku ?? id}-default-${Date.now()}`,
+              volume: vol,
+              price: priceVal,
+              stockQty: stockVal,
+              imageUrl: imgVal,
+              skuVariant,
             },
           });
         }
       }
+    } else if (price !== undefined || stock !== undefined) {
+      const existing = await this.prisma.product.findUnique({
+        where: { id },
+        select: { variants: { take: 1, select: { id: true } } },
+      });
+      if (existing?.variants.length) {
+        await this.prisma.productVariant.update({
+          where: { id: existing.variants[0].id },
+          data: {
+            ...(price !== undefined ? { price: Number(price) } : {}),
+            ...(stock !== undefined ? { stockQty: Number(stock) } : {}),
+          },
+        });
+      } else if (price !== undefined) {
+        const product = await this.prisma.product.findUnique({
+          where: { id },
+          select: { sku: true },
+        });
+        await this.prisma.productVariant.create({
+          data: {
+            productId: id,
+            volume: packageUnit || '1 Pièce',
+            price: Number(price || 0),
+            stockQty: Number(stock || 0),
+            skuVariant: `${product?.sku || id}-1P-${Date.now()}`,
+          },
+        });
+      }
+    }
+
+    if (specs) {
+      await this.prisma.productSpecs.upsert({
+        where: { productId: id },
+        create: {
+          productId: id,
+          viscosity: specs.viscosity || null,
+          apiStandard: specs.apiStandard || null,
+          aeceaStandard: specs.aeceaStandard || null,
+          OEMApprovals: specs.OEMApprovals || null,
+        },
+        update: {
+          viscosity: specs.viscosity || null,
+          apiStandard: specs.apiStandard || null,
+          aeceaStandard: specs.aeceaStandard || null,
+          OEMApprovals: specs.OEMApprovals || null,
+        },
+      });
     }
 
     const updatedProduct = await this.prisma.product.findUnique({
       where: { id },
-      include: { brand: true, category: true, variants: true, images: true },
+      include: { brand: true, category: true, variants: true, images: true, specs: true },
     });
 
     if (updatedProduct) {
@@ -555,13 +591,34 @@ export class AdminService {
   }
 
   async updateOrderStatus(id: string, status: string) {
-    const valid = ['PENDING', 'CONFIRMED', 'SHIPPED', 'DELIVERED', 'CANCELLED'];
+    const valid = ['PENDING', 'CONFIRMED', 'SHIPPED', 'DELIVERED', 'CANCELLED', 'RETURNED'];
     if (!valid.includes(status))
       throw new BadRequestException(`Invalid order status: ${status}`);
-    return this.prisma.order.update({
+
+    const updated = await this.prisma.order.update({
       where: { id },
       data: { status: status as any },
     });
+
+    // Auto-sync payment status when order status changes
+    if (status === 'DELIVERED') {
+      await this.prisma.payment.updateMany({
+        where: { orderId: id, status: 'PENDING' },
+        data: { status: 'COMPLETED' },
+      });
+    } else if (status === 'CANCELLED') {
+      await this.prisma.payment.updateMany({
+        where: { orderId: id, status: 'PENDING' },
+        data: { status: 'FAILED' },
+      });
+    } else if (status === 'RETURNED') {
+      await this.prisma.payment.updateMany({
+        where: { orderId: id },
+        data: { status: 'REFUNDED' },
+      });
+    }
+
+    return updated;
   }
 
   // ─── Users ────────────────────────────────────────────────────────────────
@@ -703,11 +760,25 @@ export class AdminService {
     return this.prisma.review.delete({ where: { id } });
   }
 
-  // ─── Payments ─────────────────────────────────────────────────────────────
-  async getPayments(page = 1, limit = 20) {
+  // ─── Payments & Point of Sale (POS) ───────────────────────────────────────
+  async getPayments(page = 1, limit = 20, search?: string) {
     const skip = (page - 1) * limit;
-    const [data, total] = await Promise.all([
+    const where: Prisma.PaymentWhereInput = {};
+
+    if (search?.trim()) {
+      const q = search.trim();
+      where.OR = [
+        { id: { contains: q, mode: 'insensitive' } },
+        { orderId: { contains: q, mode: 'insensitive' } },
+        { order: { shipFullName: { contains: q, mode: 'insensitive' } } },
+        { order: { user: { name: { contains: q, mode: 'insensitive' } } } },
+        { order: { user: { email: { contains: q, mode: 'insensitive' } } } },
+      ];
+    }
+
+    const [data, total, pendingAgg, completedAgg, totalAgg] = await Promise.all([
       this.prisma.payment.findMany({
+        where,
         include: {
           order: {
             include: {
@@ -723,9 +794,31 @@ export class AdminService {
         skip,
         take: limit,
       }),
-      this.prisma.payment.count(),
+      this.prisma.payment.count({ where }),
+      this.prisma.payment.aggregate({
+        where: { status: 'PENDING' },
+        _sum: { amount: true },
+      }),
+      this.prisma.payment.aggregate({
+        where: { status: 'COMPLETED' },
+        _sum: { amount: true },
+      }),
+      this.prisma.payment.aggregate({
+        _sum: { amount: true },
+      }),
     ]);
-    return { data, total, page, totalPages: Math.ceil(total / limit) };
+
+    return {
+      data,
+      total,
+      page,
+      totalPages: Math.ceil(total / limit),
+      stats: {
+        totalPending: pendingAgg._sum.amount ?? 0,
+        totalCompleted: completedAgg._sum.amount ?? 0,
+        totalVolume: totalAgg._sum.amount ?? 0,
+      },
+    };
   }
 
   async updatePaymentStatus(id: string, status: string) {
@@ -735,6 +828,159 @@ export class AdminService {
     return this.prisma.payment.update({
       where: { id },
       data: { status: status as any },
+    });
+  }
+
+  async searchProductsForPos(query?: string) {
+    const where: Prisma.ProductWhereInput = { isPublished: true };
+    if (query?.trim()) {
+      const q = query.trim();
+      where.OR = [
+        { nameFr: { contains: q, mode: 'insensitive' } },
+        { sku: { contains: q, mode: 'insensitive' } },
+        { slug: { contains: q, mode: 'insensitive' } },
+        { variants: { some: { skuVariant: { contains: q, mode: 'insensitive' } } } },
+      ];
+    }
+
+    return this.prisma.product.findMany({
+      where,
+      select: {
+        id: true,
+        nameFr: true,
+        sku: true,
+        images: { select: { url: true }, take: 1, orderBy: { sortOrder: 'asc' } },
+        brand: { select: { name: true } },
+        category: { select: { nameFr: true } },
+        variants: {
+          select: {
+            id: true,
+            volume: true,
+            price: true,
+            stockQty: true,
+            skuVariant: true,
+          },
+        },
+      },
+      take: 25,
+      orderBy: { nameFr: 'asc' },
+    });
+  }
+
+  async createDirectSale(dto: {
+    customerName?: string;
+    customerPhone?: string;
+    paymentMethod: string;
+    notes?: string;
+    items: Array<{
+      productId: string;
+      variantId: string;
+      quantity: number;
+      unitPrice?: number;
+    }>;
+  }) {
+    if (!dto.items || dto.items.length === 0) {
+      throw new BadRequestException('Au moins un produit est requis pour enregistrer une vente.');
+    }
+
+    const variantIds = dto.items.map((i) => i.variantId);
+    const variants = await this.prisma.productVariant.findMany({
+      where: { id: { in: variantIds } },
+      include: { product: true },
+    });
+
+    if (variants.length !== variantIds.length) {
+      throw new BadRequestException('Un ou plusieurs produits sélectionnés sont introuvables.');
+    }
+
+    // Check stock
+    for (const item of dto.items) {
+      const variant = variants.find((v) => v.id === item.variantId);
+      if (!variant) continue;
+      if (variant.stockQty < item.quantity) {
+        throw new BadRequestException(
+          `Stock insuffisant pour ${variant.product.nameFr} (${variant.volume}). Disponible: ${variant.stockQty}, Demandé: ${item.quantity}`,
+        );
+      }
+    }
+
+    // Calculate total
+    let totalAmount = 0;
+    const orderItemsData = dto.items.map((item) => {
+      const variant = variants.find((v) => v.id === item.variantId)!;
+      const unitPrice =
+        typeof item.unitPrice === 'number' && item.unitPrice >= 0
+          ? item.unitPrice
+          : variant.price;
+      totalAmount += unitPrice * item.quantity;
+      return {
+        productId: variant.productId,
+        variantId: item.variantId,
+        quantity: item.quantity,
+        unitPrice,
+      };
+    });
+
+    totalAmount = Math.round(totalAmount * 100) / 100;
+    const validMethod = ['CASH', 'CARD', 'CHECK', 'COD'].includes(
+      dto.paymentMethod?.toUpperCase(),
+    )
+      ? dto.paymentMethod.toUpperCase()
+      : 'CASH';
+
+    return this.prisma.$transaction(async (tx) => {
+      // 1. Create Order as STORE_PICKUP & DELIVERED
+      const order = await tx.order.create({
+        data: {
+          orderType: 'STORE_PICKUP',
+          status: 'DELIVERED',
+          totalAmount,
+          shippingCost: 0,
+          shipFullName: dto.customerName?.trim() || 'Client Comptoir (Magasin)',
+          shipPhone: dto.customerPhone?.trim() || '',
+          shipWilaya: 'Tunis',
+          shipCity: 'Magasin / Boutique',
+          notes: dto.notes
+            ? `[Vente Comptoir] ${dto.notes}`
+            : '[Vente Comptoir Magasin]',
+          items: {
+            create: orderItemsData,
+          },
+        },
+        include: {
+          items: {
+            include: {
+              product: { select: { nameFr: true } },
+              variant: { select: { volume: true } },
+            },
+          },
+        },
+      });
+
+      // 2. Decrement stock
+      for (const item of dto.items) {
+        await tx.productVariant.update({
+          where: { id: item.variantId },
+          data: { stockQty: { decrement: item.quantity } },
+        });
+      }
+
+      // 3. Create Payment as COMPLETED
+      const payment = await tx.payment.create({
+        data: {
+          orderId: order.id,
+          method: validMethod,
+          amount: totalAmount,
+          status: 'COMPLETED',
+          notes: `Encaissement immédiat caisse (${validMethod})`,
+        },
+      });
+
+      return {
+        order,
+        payment,
+        success: true,
+      };
     });
   }
 

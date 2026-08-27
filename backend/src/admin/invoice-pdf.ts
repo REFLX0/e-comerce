@@ -110,7 +110,11 @@ export function generateDeliveryNotePDF(order: InvoiceOrder) {
           ? 'Expédiée'
           : order.status === 'CONFIRMED'
             ? 'Confirmée'
-            : 'En attente',
+            : order.status === 'CANCELLED'
+              ? 'Annulée'
+              : order.status === 'RETURNED'
+                ? 'Retournée'
+                : 'En attente',
       leftMargin + 90,
       orderY + 36,
     );
@@ -192,22 +196,30 @@ export function generateDeliveryNotePDF(order: InvoiceOrder) {
     .stroke();
   currentY += 12;
 
+  const itemsSubtotal = order.items.reduce(
+    (sum: number, item: any) => sum + item.unitPrice * item.quantity,
+    0,
+  );
+
+  doc.font('Helvetica').fontSize(9).fillColor(grayColor);
+  doc.text('Sous-total articles:', leftMargin + 280, currentY);
+  doc.text(`${itemsSubtotal.toFixed(2)} TND`, leftMargin + 410, currentY);
+
+  currentY += 16;
+  doc.font('Helvetica').fontSize(9).fillColor(grayColor);
+  doc.text('Frais de livraison:', leftMargin + 280, currentY);
+  if (order.shippingCost > 0) {
+    doc.text(`${order.shippingCost.toFixed(2)} TND`, leftMargin + 410, currentY);
+  } else {
+    doc.fillColor('#16a34a').font('Helvetica-Bold').text('Gratuit (0.00 TND)', leftMargin + 410, currentY);
+  }
+
+  currentY += 18;
   doc.font('Helvetica-Bold').fontSize(11).fillColor(primaryColor);
-  doc.text('Total TTC:', leftMargin + 300, currentY);
+  doc.text('Total TTC:', leftMargin + 280, currentY);
   doc
     .fillColor(accentColor)
     .text(`${order.totalAmount.toFixed(2)} TND`, leftMargin + 410, currentY);
-
-  if (order.shippingCost > 0) {
-    currentY += 18;
-    doc.font('Helvetica').fontSize(9).fillColor(grayColor);
-    doc.text('Frais de livraison:', leftMargin + 300, currentY);
-    doc.text(
-      `${order.shippingCost.toFixed(2)} TND`,
-      leftMargin + 410,
-      currentY,
-    );
-  }
 
   if (order.notes) {
     currentY += 30;
@@ -218,6 +230,8 @@ export function generateDeliveryNotePDF(order: InvoiceOrder) {
   }
 
   addHeaderFooter();
-  doc.end();
+  // NOTE: Do NOT call doc.end() here — the caller (controller) is responsible for
+  // piping the stream and ending it. Calling end() here AND in the controller
+  // causes a double-end which corrupts the PDF output.
   return doc;
 }

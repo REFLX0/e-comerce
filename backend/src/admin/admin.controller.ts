@@ -138,6 +138,7 @@ export class AdminController {
       `attachment; filename="livraison-${id.slice(-8).toUpperCase()}.pdf"`,
     );
     doc.pipe(res);
+    doc.end();
   }
 
   @Get('buyers/top') getTopBuyers(@Query('limit') l?: string) {
@@ -205,13 +206,22 @@ export class AdminController {
   @Get('payments') getPayments(
     @Query('page') p?: string,
     @Query('limit') l?: string,
+    @Query('search') search?: string,
   ) {
-    return this.adminService.getPayments(p ? +p : 1, l ? +l : 20);
+    return this.adminService.getPayments(p ? +p : 1, l ? +l : 20, search);
   }
   @Patch('payments/:id/status') updatePaymentStatus(
     @Param('id') id: string,
     @Body('status') status: string,
   ) {
     return this.adminService.updatePaymentStatus(id, status);
+  }
+
+  @Get('pos/products') searchPosProducts(@Query('search') search?: string) {
+    return this.adminService.searchProductsForPos(search);
+  }
+
+  @Post('pos/sale') createDirectSale(@Body() body: any) {
+    return this.adminService.createDirectSale(body);
   }
 }
