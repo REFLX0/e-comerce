@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo } from 'react'
+import { useMemo, forwardRef } from 'react'
 import { useTranslations } from 'next-intl'
 import { Check } from 'lucide-react'
 import type { Product } from '@/lib/types'
@@ -157,13 +157,18 @@ export function ProductTabs({ product }: Props) {
   )
 }
 
-function ProductTab({ value, children }: { value: string; children: React.ReactNode }) {
-  return (
-    <TabsTrigger
-      value={value}
-      className="data-[state=active]:border-brand-primary data-[state=active]:text-brand-primary font-display shrink-0 rounded-none border-b-2 border-transparent px-6 pb-4 text-base font-medium text-gray-500 data-[state=active]:bg-transparent md:text-lg"
-    >
-      {children}
-    </TabsTrigger>
-  )
-}
+const ProductTab = forwardRef<HTMLButtonElement, { value: string; children: React.ReactNode }>(
+  ({ value, children, ...props }, ref) => {
+    return (
+      <TabsTrigger
+        ref={ref}
+        value={value}
+        className="data-[state=active]:border-brand-primary data-[state=active]:text-brand-primary font-display shrink-0 rounded-none border-b-2 border-transparent px-6 pb-4 text-base font-medium text-gray-500 data-[state=active]:bg-transparent md:text-lg"
+        {...props}
+      >
+        {children}
+      </TabsTrigger>
+    )
+  }
+)
+ProductTab.displayName = 'ProductTab'

@@ -146,14 +146,39 @@ export default function AdminProductsPage() {
     setSelected((prev) => prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id])
 
   const exportCsv = async () => {
+    const toastId = toast.loading('Export en cours...')
     try {
-      const res = await adminApi.exportProducts(); const csv = (res as any).csv
-      const blob = new Blob([csv as any], { type: 'text/csv;charset=utf-8;' })
-      const url = URL.createObjectURL(blob)
-      const a = document.createElement('a'); a.href = url; a.download = `produits-${new Date().toISOString().split('T')[0]}.csv`
+      const response = await fetch('/api/admin/products/export')
+      if (!response.ok) throw new Error('Export failed')
+      const data = await response.json()
+      
+      const JSZip = (await import('jszip')).default
+      const zip = new JSZip()
+      
+      const d = new Date();
+      const day = String(d.getDate()).padStart(2, '0');
+      const month = new Intl.DateTimeFormat('fr-FR', { month: 'long' }).format(d);
+      const year = d.getFullYear();
+      const hours = String(d.getHours()).padStart(2, '0');
+      const minutes = String(d.getMinutes()).padStart(2, '0');
+
+      data.files.forEach((file: { category: string, csv: string }) => {
+        const safeCat = file.category.replace(/[^a-zA-Z0-9_\-]/g, '_')
+        const blob = new Blob(['\ufeff', file.csv], { type: 'application/vnd.ms-excel;charset=utf-8;' })
+        zip.folder(safeCat)?.file(`Products_${day}${month}${year}_${hours}${minutes}.xls`, blob)
+      })
+
+      const zipBlob = await zip.generateAsync({ type: 'blob' })
+      const url = URL.createObjectURL(zipBlob)
+      const a = document.createElement('a'); a.href = url;
+      a.download = `Products_${day}${month}${year}_${hours}${minutes}.zip`;
       a.click(); URL.revokeObjectURL(url)
-      toast.success(t('csvDownloaded'))
-    } catch { toast.error(t('exportError')) }
+      
+      toast.success(t('csvDownloaded'), { id: toastId })
+    } catch (err) {
+      console.error(err)
+      toast.error(t('exportError'), { id: toastId })
+    }
   }
 
   const importCsv = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -178,18 +203,6 @@ export default function AdminProductsPage() {
     }
   }
 
-  const downloadTemplate = () => {
-    const header = t('csvHeader') + '\n';
-    const sample = t('csvSample') + '\n';
-    const blob = new Blob([header + sample], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `modele-import-produits.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
-  }
-
   return (
     <div className="p-4 sm:p-6 space-y-5">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -198,11 +211,7 @@ export default function AdminProductsPage() {
           <p className="text-sm text-gray-500">{t('productsInCatalog', { count: total })}</p>
         </div>
         <div className="flex flex-wrap gap-2">
-          <input ref={fileInputRef} type="file" accept=".csv" onChange={importCsv} className="hidden" disabled={isImporting} />
-          
-          <button onClick={downloadTemplate} className="flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">
-            {t('csvTemplate')}
-          </button>
+          <input ref={fileInputRef} type="file" accept=".csv,.xls,.xlsx" onChange={importCsv} className="hidden" disabled={isImporting} />
           
           <button onClick={() => fileInputRef.current?.click()} disabled={isImporting} className="flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors disabled:opacity-50">
             {isImporting ? <div className="h-4 w-4 animate-spin rounded-full border-2 border-gray-600 border-t-transparent" /> : <Upload size={15} />}
@@ -212,6 +221,7 @@ export default function AdminProductsPage() {
           <button onClick={exportCsv} className="flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">
             <Download size={15} /> {t('exportLabel')}
           </button>
+
           <Link href={localizedHref('/admin/catalog/products/new')}
             className="flex items-center gap-2 rounded-xl bg-brand-accent px-4 py-2.5 text-sm font-semibold text-black hover:bg-brand-accent-hover transition-colors">
             <Plus size={16} /> {t('newProduct')}

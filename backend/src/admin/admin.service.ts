@@ -465,26 +465,41 @@ export class AdminService {
       orderBy: { createdAt: 'desc' },
     });
     const header =
-      'SKU,Nom,Slug,Description,Marque,Catégorie,Prix TND,Stock Total,Publié,Image\n';
-    const rows = products
-      .map((p) => {
-        const firstVariant = p.variants[0];
-        const totalStock = p.variants.reduce((sum, v) => sum + v.stockQty, 0);
-        return [
-          p.sku,
-          `"${p.nameFr}"`,
-          p.slug,
-          `"${(p.description || '').replace(/"/g, '""')}"`,
-          p.brand?.name || '',
-          p.category?.nameFr || '',
-          firstVariant?.price ? firstVariant.price.toFixed(2) : '0.00',
-          totalStock,
-          p.isPublished ? 'Oui' : 'Non',
-          p.images[0]?.url || '',
-        ].join(',');
-      })
-      .join('\n');
-    return { csv: header + rows };
+      'Nom du produit *,Unité de mesure,description,Code produit,Taux de vente,Taux d\'achat,Stock d\'ouverture,Taux d\'ouverture,Niveau d\'alerte minimum,Nom de la catégorie,Unité de catégorie,Est-ce un service (Oui / Non),Code à barres\n';
+
+    const grouped = new Map<string, any[]>();
+    for (const p of products) {
+      const cat = p.category?.nameFr || 'Sans Categorie';
+      if (!grouped.has(cat)) grouped.set(cat, []);
+      grouped.get(cat)!.push(p);
+    }
+
+    const files = Array.from(grouped.entries()).map(([category, prods]) => {
+      const rows = prods
+        .map((p) => {
+          const firstVariant = p.variants[0];
+          const totalStock = p.variants.reduce((sum: number, v: any) => sum + v.stockQty, 0);
+          return [
+            `"${p.nameFr}"`, // Nom du produit *
+            `"${firstVariant?.volume || ''}"`, // Unité de mesure
+            `"${(p.description || '').replace(/"/g, '""')}"`, // description
+            `"${p.sku}"`, // Code produit
+            firstVariant?.price ? firstVariant.price.toFixed(2) : '0.00', // Taux de vente
+            '', // Taux d'achat
+            totalStock, // Stock d'ouverture
+            '', // Taux d'ouverture
+            '', // Niveau d'alerte minimum
+            `"${p.category?.nameFr || ''}"`, // Nom de la catégorie
+            '', // Unité de catégorie
+            '"Non"', // Est-ce un service
+            '', // Code à barres
+          ].join(',');
+        })
+        .join('\n');
+      return { category, csv: header + rows };
+    });
+
+    return { files };
   }
 
   // ─── Orders ───────────────────────────────────────────────────────────────

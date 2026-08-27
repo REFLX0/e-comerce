@@ -11,7 +11,7 @@ export class KafkaService implements OnModuleInit, OnModuleDestroy {
   private consumers: Consumer[] = [];
 
   constructor(private readonly config: ConfigService) {
-    const brokers = this.config.get<string>('KAFKA_BROKERS') || 'kafka:9092';
+    const brokers = this.config?.get?.('KAFKA_BROKERS') || process.env.KAFKA_BROKERS || 'kafka:9092';
     this.kafka = new Kafka({
       clientId: 'specpart-backend',
       brokers: brokers.split(','),

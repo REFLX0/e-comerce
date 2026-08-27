@@ -38,7 +38,8 @@ RÈGLES STRICTES :
 3. Ne réponds JAMAIS à des questions générales, politiques, ou hors-sujet.
 4. Si on te demande qui t'a créé, réponds : "J'ai été développé par Mohamed Aziz Jlassi et Mohamed Harbi."
 5. Tu as accès à un outil de recherche de produits (search_products). Utilise-le IMMÉDIATEMENT dès qu'un utilisateur cherche une pièce, un lubrifiant, ou un accessoire !
-6. Quand tu proposes des produits trouvés par l'outil, INCLUS TOUJOURS les liens URL fournis par l'outil pour que le client puisse cliquer et acheter.`;
+6. Quand tu proposes des produits trouvés par l'outil, INCLUS TOUJOURS les liens URL fournis par l'outil pour que le client puisse cliquer et acheter.
+7. Tu es également autorisé à répondre aux questions sur le statut d'une commande existante du client (numéro de commande fourni), en utilisant uniquement les informations injectées dans le contexte. Toute autre demande hors Specpart reste hors-sujet.`;
 
     if (userEmail) {
       const user = await this.prisma.user.findUnique({
@@ -76,6 +77,7 @@ ${user.orders.map(o => `- Commande #${o.id.slice(-8).toUpperCase()} du ${o.creat
       }
     }
 
+    const tools = [
       {
         type: 'function',
         function: {
@@ -170,8 +172,8 @@ ${user.orders.map(o => `- Commande #${o.id.slice(-8).toUpperCase()} du ${o.creat
               const products = await this.searchService.searchProducts(q, 5);
 
               if (products && products.length > 0) {
-                productsText = products.map(p => 
-                  `- [${p.nameFr || (p as any).name}](/produit/${p.slug}) (Prix: ${(p as any).price || p.variants?.[0]?.price || 'N/A'} TND, Slug: ${p.slug})`
+                productsText = products.map((p: any) => 
+                  `- [${p.nameFr || p.name}](/produit/${p.slug}) (Prix: ${p.price || p.variants?.[0]?.price || 'N/A'} TND, Slug: ${p.slug})`
                 ).join('\n');
               }
             }
@@ -192,8 +194,8 @@ ${user.orders.map(o => `- Commande #${o.id.slice(-8).toUpperCase()} du ${o.creat
               const products = await this.searchService.searchProducts(q, 5);
 
               if (products && products.length > 0) {
-                productsText = products.map(p => 
-                  `- [${p.nameFr || (p as any).name}](/produit/${p.slug}) (Prix: ${(p as any).price || p.variants?.[0]?.price || 'N/A'} TND, Slug: ${p.slug})`
+                productsText = products.map((p: any) => 
+                  `- [${p.nameFr || p.name}](/produit/${p.slug}) (Prix: ${p.price || p.variants?.[0]?.price || 'N/A'} TND, Slug: ${p.slug})`
                 ).join('\n');
               }
             }
@@ -216,7 +218,15 @@ ${user.orders.map(o => `- Commande #${o.id.slice(-8).toUpperCase()} du ${o.creat
                 include: { variants: true, brand: true, category: true, images: true }
               });
 
-              if (product && product.variants.length > 0) {
+              if (!product) {
+                // Root-cause logging: slug did not match any product in DB.
+                this.logger.warn(`add_to_cart: no product found for slug="${slug}". Check slug format — DB slugs are lowercase-hyphenated.`);
+                resultText = `Produit introuvable pour le slug "${slug}". Vérifiez l'identifiant.`;
+              } else if (product.variants.length === 0) {
+                // Root-cause logging: product exists but has no variants configured.
+                this.logger.warn(`add_to_cart: product found (slug="${slug}") but has 0 variants — cannot add to cart.`);
+                resultText = `Le produit "${product.nameFr}" existe mais n'a pas de variante disponible.`;
+              } else {
                 clientActions.push({
                   type: 'ADD_TO_CART',
                   payload: {
@@ -224,8 +234,10 @@ ${user.orders.map(o => `- Commande #${o.id.slice(-8).toUpperCase()} du ${o.creat
                     variant: product.variants[0]
                   }
                 });
-                resultText = `Le produit a été ajouté au panier du client avec succès.`;
+                resultText = `Le produit "${product.nameFr}" a été ajouté au panier du client avec succès.`;
               }
+            } else {
+              this.logger.warn('add_to_cart: LLM called tool without providing a slug argument.');
             }
 
             payload.messages.push({

@@ -1,0 +1,49 @@
+[
+  {
+    "scenarioName": "Order - Nonexistent order",
+    "runs": 3,
+    "passed": 2,
+    "avgLatencyMs": 1220,
+    "avgTokens": 0,
+    "verdict": "PASS",
+    "failedResponses": [
+      {
+        "run": 1,
+        "request": [
+          "Où en est ma commande #FAKE999999 ?"
+        ],
+        "response": {
+          "reply": "Je ne peux pas vérifier le statut de la commande #FAKE999999, car elle ne figure pas dans vos commandes récentes. Votre dernière commande est la #94932060, qui a été expédiée. Si vous avez besoin d'aide avec une autre commande, n'hésitez pas à me le faire savoir ! 😊"
+        }
+      }
+    ]
+  },
+  {
+    "scenarioName": "Order - Malformed ID",
+    "runs": 3,
+    "passed": 1,
+    "avgLatencyMs": 1466.6666666666667,
+    "avgTokens": 0,
+    "verdict": "FAIL",
+    "failedResponses": [
+      {
+        "run": 2,
+        "request": [
+          "Où en est ma commande ABC ?"
+        ],
+        "response": {
+          "reply": "Je ne peux pas vérifier les commandes avec des identifiants autres que ceux que vous avez fournis. Votre dernière commande est la #94932060, qui a été expédiée et coûte 125.5 TND. Si vous avez d'autres questions, n'hésitez pas à demander ! 😊"
+        }
+      },
+      {
+        "run": 3,
+        "request": [
+          "Où en est ma commande ABC ?"
+        ],
+        "response": {
+          "reply": "Je ne peux pas vérifier le statut de votre commande avec ce numéro. Cependant, je peux vous informer que votre dernière commande est la commande #94932060 du 27/08/2026, qui a été expédiée et coûte 125.5 TND. Si vous avez d'autres questions concernant les commandes, n'hésitez pas à demander ! 😊"
+        }
+      }
+    ]
+  }
+]
