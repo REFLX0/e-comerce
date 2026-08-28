@@ -159,6 +159,13 @@ export default function AdminAnalyticsPage() {
             <h2 className="font-bold text-brand-primary">{t('revenueLast7Days')}</h2>
           </div>
 
+          {recentOrders.length === 0 ? (
+            <div className="flex h-72 flex-col items-center justify-center text-center text-gray-400">
+              <BarChart3 size={40} className="mb-3 text-gray-200" />
+              <p className="text-sm font-semibold">{t('noSalesYet')}</p>
+              <p className="mt-1 text-xs">{t('noSalesYetDesc')}</p>
+            </div>
+          ) : (
           <div className="flex h-72 items-end gap-3">
             {dailyRevenue.map((day) => (
               <div key={day.key} className="flex min-w-0 flex-1 flex-col items-center gap-2">
@@ -173,6 +180,7 @@ export default function AdminAnalyticsPage() {
               </div>
             ))}
           </div>
+          )}
         </div>
 
         <div className="space-y-4">

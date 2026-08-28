@@ -34,16 +34,27 @@ export async function downloadOrderPdf(orderId: string) {
     const res = await fetch(`${baseUrl}/admin/orders/${orderId}/pdf`, { credentials: 'include' })
     if (!res.ok) throw new Error('PDF download failed')
     const blob = await res.blob()
-    const url = URL.createObjectURL(blob)
+    const pdfBlob = new Blob([blob], { type: 'application/pdf' })
+    const url = URL.createObjectURL(pdfBlob)
+    const fileName = `facture-${orderId.slice(-8).toUpperCase()}.pdf`
+
     const a = document.createElement('a')
+    a.style.display = 'none'
     a.href = url
-    a.download = `livraison-${orderId.slice(-8).toUpperCase()}.pdf`
+    a.setAttribute('download', fileName)
+    a.download = fileName
     document.body.appendChild(a)
     a.click()
-    document.body.removeChild(a)
-    URL.revokeObjectURL(url)
+
+    setTimeout(() => {
+      if (document.body.contains(a)) {
+        document.body.removeChild(a)
+      }
+      URL.revokeObjectURL(url)
+    }, 60000)
   } catch (e) {
     console.error('PDF download error:', e)
+    throw e
   }
 }
 

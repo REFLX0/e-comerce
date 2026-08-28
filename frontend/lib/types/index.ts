@@ -118,6 +118,7 @@ export interface Product {
   isBestSeller: boolean
   isNew: boolean
   isPromo: boolean
+  isFeatured: boolean
   promoPercent?: number
   rating: number
   reviewCount: number

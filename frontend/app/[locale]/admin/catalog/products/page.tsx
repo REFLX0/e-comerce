@@ -9,7 +9,7 @@ import { useLocale, useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 import {
   Search, Plus, Edit2, Trash2, Copy, Eye,
-  Upload, Download, Package
+  Upload, Download, Package, Star
 } from 'lucide-react'
 
 function PriceBadge({ price }: { price: number }) {
@@ -30,7 +30,7 @@ interface Product {
   price?: number; stock?: number; stockQty?: number
   variants?: Array<{ price?: number; stockQty?: number; skuVariant?: string }>
   images?: Array<string | { url?: string; altFr?: string }>
-  isPublished?: boolean
+  isPublished?: boolean; isFeatured?: boolean
 }
 function productName(p: Product, t: any) { return p.nameFr ?? p.name ?? t('productNoName') }
 function brandName(p: Product) { return typeof p.brand === 'string' ? p.brand : p.brand?.name }
@@ -94,7 +94,7 @@ export default function AdminProductsPage() {
   const [page, setPage] = useState(1)
   const [selected, setSelected] = useState<string[]>([])
   const [showPublished, setShowPublished] = useState<'all' | 'published' | 'unpublished'>('all')
-  const [confirmDelete, setConfirmDelete] = useState<string | null>(null)
+  const [confirmDelete, setConfirmDelete] = useState<{ id: string; name: string } | null>(null)
   const [isImporting, setIsImporting] = useState(false)
   const limit = 50
 
@@ -282,6 +282,7 @@ export default function AdminProductsPage() {
                 <th className="px-2 py-3 text-xs font-semibold text-gray-500">{t('priceHeader')}</th>
                 <th className="px-2 py-3 text-xs font-semibold text-gray-500">{t('stockHeader')}</th>
                 <th className="px-2 py-3 text-xs font-semibold text-gray-500">{t('statusHeader')}</th>
+                <th className="px-2 py-3 text-xs font-semibold text-gray-500 text-center">⭐</th>
                 <th className="py-3 pl-2 pr-4 text-xs font-semibold text-gray-500">{t('actionsHeader')}</th>
               </tr>
             </thead>
@@ -320,12 +321,17 @@ export default function AdminProductsPage() {
                       ? <span className="rounded-full bg-green-100 px-2.5 py-1 text-xs font-semibold text-green-700">{t('publishedTag')}</span>
                       : <span className="rounded-full bg-gray-100 px-2.5 py-1 text-xs font-semibold text-gray-500">{t('draftTag')}</span>}
                   </td>
+                  <td className="px-2 py-3 text-center">
+                    {product.isFeatured && (
+                      <Star size={14} className="mx-auto text-amber-400" fill="currentColor" />
+                    )}
+                  </td>
                   <td className="py-3 pl-2 pr-4">
                     <div className="flex gap-1">
                       <Link href={localizedHref(`/produit/${product.slug}`)} target="_blank" className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-brand-primary transition-colors" title={t('viewOnSite')}><Eye size={15} /></Link>
                       <Link href={localizedHref(`/admin/catalog/products/${product.id}/edit`)} className="rounded-lg p-1.5 text-gray-400 hover:bg-blue-50 hover:text-blue-600 transition-colors" title={t('editAction')}><Edit2 size={15} /></Link>
                       <button onClick={() => duplicateMutation.mutate(product.id)} className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-700 transition-colors" title={t('duplicateAction')}><Copy size={15} /></button>
-                      <button onClick={() => setConfirmDelete(product.id)} className="rounded-lg p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-500 transition-colors" title={t('deleteAction')}><Trash2 size={15} /></button>
+                      <button onClick={() => setConfirmDelete({ id: product.id, name: productName(product, t) })} className="rounded-lg p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-500 transition-colors" title={t('deleteAction')}><Trash2 size={15} /></button>
                     </div>
                   </td>
                 </tr>
@@ -365,10 +371,11 @@ export default function AdminProductsPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
           <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-xl max-w-sm w-full mx-4">
             <h3 className="text-lg font-bold text-brand-primary mb-2">{t('confirmDeleteTitle')}</h3>
+            <p className="text-sm text-gray-700 mb-1 font-medium truncate">« {confirmDelete.name} »</p>
             <p className="text-sm text-gray-500 mb-6">{t('confirmDeleteDesc')}</p>
             <div className="flex justify-end gap-3">
               <button onClick={() => setConfirmDelete(null)} className="rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">{t('cancel')}</button>
-              <button onClick={() => deleteMutation.mutate(confirmDelete)} disabled={deleteMutation.isPending} className="rounded-xl bg-red-500 px-4 py-2 text-sm font-semibold text-white hover:bg-red-600 transition-colors disabled:opacity-50">
+              <button onClick={() => deleteMutation.mutate(confirmDelete.id)} disabled={deleteMutation.isPending} className="rounded-xl bg-red-500 px-4 py-2 text-sm font-semibold text-white hover:bg-red-600 transition-colors disabled:opacity-50">
                 {deleteMutation.isPending ? t('deleting') : t('deleteAction')}
               </button>
             </div>
@@ -396,7 +403,7 @@ export default function AdminProductsPage() {
             </div>
             <div className="flex flex-col gap-1">
               <Link href={localizedHref(`/admin/catalog/products/${product.id}/edit`)} className="rounded-lg p-2 text-gray-400 hover:bg-blue-50 hover:text-blue-600 transition-colors"><Edit2 size={16} /></Link>
-              <button onClick={() => setConfirmDelete(product.id)} className="rounded-lg p-2 text-gray-400 hover:bg-red-50 hover:text-red-500 transition-colors" title={t('deleteAction')}><Trash2 size={16} /></button>
+              <button onClick={() => setConfirmDelete({ id: product.id, name: productName(product, t) })} className="rounded-lg p-2 text-gray-400 hover:bg-red-50 hover:text-red-500 transition-colors" title={t('deleteAction')}><Trash2 size={16} /></button>
             </div>
           </div>
         ))}

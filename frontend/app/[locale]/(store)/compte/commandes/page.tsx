@@ -113,14 +113,22 @@ function OrderCard({ order }: { order: OrderShape }) {
     setDownloading(true)
     try {
       const blob = await ordersApi.getInvoicePdf(order.id)
-      const url = URL.createObjectURL(blob)
+      const pdfBlob = new Blob([blob], { type: 'application/pdf' })
+      const url = URL.createObjectURL(pdfBlob)
+      const fileName = `facture-${order.id.slice(-8).toUpperCase()}.pdf`
       const a = document.createElement('a')
+      a.style.display = 'none'
       a.href = url
-      a.download = `facture-${order.id.slice(-8).toUpperCase()}.pdf`
+      a.setAttribute('download', fileName)
+      a.download = fileName
       document.body.appendChild(a)
       a.click()
-      document.body.removeChild(a)
-      URL.revokeObjectURL(url)
+      setTimeout(() => {
+        if (document.body.contains(a)) {
+          document.body.removeChild(a)
+        }
+        URL.revokeObjectURL(url)
+      }, 60000)
     } catch {
       toast.error(t('invoiceDownloadError'))
     } finally {

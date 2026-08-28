@@ -37,6 +37,7 @@ export const ordersApi = {
   async getInvoicePdf(id: string): Promise<Blob> {
     const res = await fetch(`${API_BASE}/orders/${id}/pdf`, { credentials: 'include' })
     if (!res.ok) throw new Error('PDF download failed')
-    return res.blob()
+    const buffer = await res.arrayBuffer()
+    return new Blob([buffer], { type: 'application/pdf' })
   },
 }

@@ -5,7 +5,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { adminApi, type TopBuyer } from '@/lib/api/admin'
 import Link from 'next/link'
 import { useLocale, useTranslations } from 'next-intl'
-import { Search, Mail, Phone, ShoppingBag, UserCheck, ChevronLeft, ChevronRight, Ban, ShieldOff, Crown, TrendingUp, Repeat2 } from 'lucide-react'
+import { Search, Mail, Phone, ShoppingBag, UserCheck, ChevronLeft, ChevronRight, Ban, ShieldOff, Crown, TrendingUp, Repeat2, ShoppingCart } from 'lucide-react'
 import { toast } from 'sonner'
 
 export default function AdminCustomersPage() {
@@ -210,6 +210,7 @@ export default function AdminCustomersPage() {
                     <td className="px-2 py-3 text-xs text-gray-500">{c.createdAt ? new Date(c.createdAt).toLocaleDateString(locale) : '—'}</td>
                     <td className="py-3 pl-2 pr-4">
                       <div className="flex gap-1">
+                        <Link href={localizedHref(`/admin/orders?customer=${c.id}`)} className="rounded-lg p-1.5 text-gray-400 hover:bg-brand-primary/10 hover:text-brand-primary transition-colors" title={`${t('ordersCountLabel', { count: c.ordersCount ?? 0 })}`}><ShoppingCart size={15} /></Link>
                         <a href={`mailto:${c.email}`} className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-brand-primary transition-colors" title={t('sendEmail')}><Mail size={15} /></a>
                         {c.phone && <a href={`tel:${c.phone}`} className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-brand-primary transition-colors" title={t('call')}><Phone size={15} /></a>}
                         {c.role !== 'ADMIN' && (

@@ -135,7 +135,7 @@ export class AdminController {
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader(
       'Content-Disposition',
-      `attachment; filename="livraison-${id.slice(-8).toUpperCase()}.pdf"`,
+      `attachment; filename="facture-${id.slice(-8).toUpperCase()}.pdf"`,
     );
     doc.pipe(res);
     doc.end();

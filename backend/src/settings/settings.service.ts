@@ -20,6 +20,16 @@ const DEFAULT_SETTINGS: Record<string, string> = {
   CGV_REQUIRE_CHECKOUT: 'true',
   SECURITY_SESSION_DAYS: '30',
   SECURITY_2FA_ENABLED: 'false',
+  FACTURE_LOGO: '"/logo.jpg"',
+  FACTURE_TABA3: '""',
+  FACTURE_CODE_IMG: '""',
+  FACTURE_MATRICULE_FISCALE: '"1823940/A/P/000"',
+  FACTURE_REGISTRE_COMMERCE: '"B0123452026"',
+  FACTURE_ADDRESS: '"Jardins De Carthage 1090, Tunis"',
+  FACTURE_PHONE: '"29294195"',
+  FACTURE_EMAIL: '"specpart@hotmail.com"',
+  FACTURE_TVA_RATE: '"19"',
+  FACTURE_TIMBRE_FISCAL: '"1.000"',
 };
 
 @Injectable()

@@ -8,10 +8,11 @@ import { settingsApi } from '@/lib/api/admin'
 import Link from 'next/link'
 import Image from 'next/image'
 import { adminApi } from '@/lib/api/admin'
-import { BarChart2, CreditCard, Mail, Package, Scale, Settings2, Shield, Truck, ChevronRight, Loader2, Upload } from 'lucide-react'
+import { BarChart2, CreditCard, Mail, Package, Scale, Settings2, Shield, Truck, ChevronRight, Loader2, Upload, FileText, Stamp, QrCode } from 'lucide-react'
 
 const SECTION_PANELS: Record<string, { titleKey: string; descKey: string }> = {
   'Informations generales': { titleKey: 'infoGeneral', descKey: 'infoGeneralDesc' },
+  'Facturation & Facture': { titleKey: 'invoicingTitle', descKey: 'invoicingDesc' },
   'SEO': { titleKey: 'seoTitle', descKey: 'seoDesc' },
   'Email transactionnel': { titleKey: 'emailTransactional', descKey: 'emailTransactionalDesc' },
   'Paiements': { titleKey: 'payments', descKey: 'paymentsDesc' },
@@ -56,6 +57,7 @@ export default function AdminSettingsPage() {
 
   const sections = [
     { label: 'Informations generales', labelKey: 'infoGeneral', descKey: 'sectDescGeneral', icon: Settings2, href: null },
+    { label: 'Facturation & Facture', labelKey: 'invoicingTitle', descKey: 'sectDescInvoicing', icon: FileText, href: null },
     { label: 'SEO', labelKey: 'seoTitle', descKey: 'sectDescSeo', icon: BarChart2, href: null },
     { label: 'Email transactionnel', labelKey: 'emailTransactional', descKey: 'sectDescEmail', icon: Mail, href: null },
     { label: 'Paiements', labelKey: 'payments', descKey: 'sectDescPayments', icon: CreditCard, href: null },
@@ -161,6 +163,140 @@ export default function AdminSettingsPage() {
                           }
                         }} />
                       </label>
+                    </div>
+                  </div>
+                </>
+              )}
+
+              {activeSection === 'Facturation & Facture' && (
+                <>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {/* Logo Facture */}
+                    <div className="space-y-1.5 rounded-xl border border-gray-100 bg-gray-50/50 p-4">
+                      <label className="text-sm font-semibold text-gray-700">{t('invoiceLogo')}</label>
+                      <p className="text-xs text-gray-400">Logo imprimé en haut à gauche de la facture</p>
+                      <div className="flex items-center gap-3 pt-2">
+                        {form.FACTURE_LOGO ? (
+                          <div className="relative h-16 w-32 rounded-lg overflow-hidden border border-gray-200 bg-white">
+                            <Image src={String(form.FACTURE_LOGO)} alt="Logo Facture" fill className="object-contain p-1.5" />
+                          </div>
+                        ) : (
+                          <div className="flex h-16 w-32 items-center justify-center rounded-lg border-2 border-dashed border-gray-200 bg-white text-xs text-gray-400">Logo par défaut</div>
+                        )}
+                        <label className="cursor-pointer rounded-xl border border-gray-200 bg-white px-3.5 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-colors shadow-sm">
+                          <Upload size={13} className="inline mr-1" />{t('chooseFile')}
+                          <input type="file" accept="image/*" className="hidden" onChange={async (e) => {
+                            if (e.target.files?.[0]) {
+                              try {
+                                const res = await adminApi.uploadImage(e.target.files[0]);
+                                const url = (res as any).url || (res as any).data?.url;
+                                if (url) set('FACTURE_LOGO', url);
+                                toast.success(t('logoUploaded'));
+                              } catch { toast.error(t('logoUploadError')); }
+                            }
+                          }} />
+                        </label>
+                      </div>
+                    </div>
+
+                    {/* Cachet Bleu / Taba3 */}
+                    <div className="space-y-1.5 rounded-xl border border-blue-100 bg-blue-50/30 p-4">
+                      <label className="text-sm font-semibold text-blue-950 flex items-center gap-1.5">
+                        <Stamp size={16} className="text-blue-600" />
+                        {t('invoiceTaba3')}
+                      </label>
+                      <p className="text-xs text-blue-800/70">{t('invoiceTaba3Desc')}</p>
+                      <div className="flex items-center gap-3 pt-2">
+                        {form.FACTURE_TABA3 ? (
+                          <div className="relative h-16 w-32 rounded-lg overflow-hidden border border-blue-200 bg-white">
+                            <Image src={String(form.FACTURE_TABA3)} alt="Taba3" fill className="object-contain p-1" />
+                          </div>
+                        ) : (
+                          <div className="flex h-16 w-32 items-center justify-center rounded-lg border-2 border-dashed border-blue-200 bg-white text-[11px] text-blue-400 text-center px-1">Aucun cachet</div>
+                        )}
+                        <label className="cursor-pointer rounded-xl border border-blue-200 bg-white px-3.5 py-2 text-xs font-semibold text-blue-700 hover:bg-blue-50 transition-colors shadow-sm">
+                          <Upload size={13} className="inline mr-1" />{t('chooseFile')}
+                          <input type="file" accept="image/*" className="hidden" onChange={async (e) => {
+                            if (e.target.files?.[0]) {
+                              try {
+                                const res = await adminApi.uploadImage(e.target.files[0]);
+                                const url = (res as any).url || (res as any).data?.url;
+                                if (url) set('FACTURE_TABA3', url);
+                                toast.success(t('taba3Uploaded'));
+                              } catch { toast.error(t('logoUploadError')); }
+                            }
+                          }} />
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* QR Code / Barcode / Auth Code Upload */}
+                  <div className="space-y-1.5 rounded-xl border border-gray-100 bg-gray-50/50 p-4">
+                    <label className="text-sm font-semibold text-gray-700 flex items-center gap-1.5">
+                      <QrCode size={16} className="text-brand-primary" />
+                      {t('invoiceCodeImg')}
+                    </label>
+                    <p className="text-xs text-gray-400">{t('invoiceCodeImgDesc')}</p>
+                    <div className="flex items-center gap-3 pt-2">
+                      {form.FACTURE_CODE_IMG ? (
+                        <div className="relative h-16 w-20 rounded-lg overflow-hidden border border-gray-200 bg-white">
+                          <Image src={String(form.FACTURE_CODE_IMG)} alt="Code Facture" fill className="object-contain p-1" />
+                        </div>
+                      ) : (
+                        <div className="flex h-16 w-20 items-center justify-center rounded-lg border-2 border-dashed border-gray-200 bg-white text-[11px] text-gray-400">Optionnel</div>
+                      )}
+                      <label className="cursor-pointer rounded-xl border border-gray-200 bg-white px-3.5 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-colors shadow-sm">
+                        <Upload size={13} className="inline mr-1" />{t('chooseFile')}
+                        <input type="file" accept="image/*" className="hidden" onChange={async (e) => {
+                          if (e.target.files?.[0]) {
+                            try {
+                              const res = await adminApi.uploadImage(e.target.files[0]);
+                              const url = (res as any).url || (res as any).data?.url;
+                              if (url) set('FACTURE_CODE_IMG', url);
+                              toast.success(t('codeImgUploaded'));
+                            } catch { toast.error(t('logoUploadError')); }
+                          }
+                        }} />
+                      </label>
+                    </div>
+                  </div>
+
+                  {/* Fiscal mentions and legal details */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-1.5">
+                      <label className="text-sm font-semibold text-gray-700">{t('matriculeFiscale')}</label>
+                      <input type="text" placeholder="1823940/A/P/000" value={String(form.FACTURE_MATRICULE_FISCALE ?? '1823940/A/P/000')} onChange={e => set('FACTURE_MATRICULE_FISCALE', e.target.value)} className="w-full rounded-xl border border-gray-200 px-4 py-2 text-sm outline-none focus:border-brand-accent font-mono" />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-sm font-semibold text-gray-700">{t('registreCommerce')}</label>
+                      <input type="text" placeholder="B0123452026" value={String(form.FACTURE_REGISTRE_COMMERCE ?? '')} onChange={e => set('FACTURE_REGISTRE_COMMERCE', e.target.value)} className="w-full rounded-xl border border-gray-200 px-4 py-2 text-sm outline-none focus:border-brand-accent font-mono" />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="space-y-1.5">
+                      <label className="text-sm font-semibold text-gray-700">{t('invoiceAddress')}</label>
+                      <input type="text" placeholder="Jardins De Carthage 1090, Tunis" value={String(form.FACTURE_ADDRESS ?? 'Jardins De Carthage 1090, Tunis')} onChange={e => set('FACTURE_ADDRESS', e.target.value)} className="w-full rounded-xl border border-gray-200 px-4 py-2 text-sm outline-none focus:border-brand-accent" />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-sm font-semibold text-gray-700">{t('invoicePhone')}</label>
+                      <input type="text" placeholder="29294195" value={String(form.FACTURE_PHONE ?? '29294195')} onChange={e => set('FACTURE_PHONE', e.target.value)} className="w-full rounded-xl border border-gray-200 px-4 py-2 text-sm outline-none focus:border-brand-accent" />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-sm font-semibold text-gray-700">{t('invoiceEmail')}</label>
+                      <input type="email" placeholder="specpart@hotmail.com" value={String(form.FACTURE_EMAIL ?? 'specpart@hotmail.com')} onChange={e => set('FACTURE_EMAIL', e.target.value)} className="w-full rounded-xl border border-gray-200 px-4 py-2 text-sm outline-none focus:border-brand-accent" />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-1.5">
+                      <label className="text-sm font-semibold text-gray-700">{t('invoiceTvaRate')}</label>
+                      <select value={String(form.FACTURE_TVA_RATE ?? '19')} onChange={e => set('FACTURE_TVA_RATE', e.target.value)} className="w-full rounded-xl border border-gray-200 px-4 py-2 text-sm outline-none focus:border-brand-accent">
+                        <option value="19">19% (TVA Pièces & Lubrifiants)</option>
+                        <option value="7">7% (Taux Réduit)</option>
+                        <option value="0">0% (Exonéré)</option>
+                      </select>
                     </div>
                   </div>
                 </>

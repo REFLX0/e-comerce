@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useTranslations } from 'next-intl'
 import Image from 'next/image'
 import { Link } from '@/i18n/routing'
-import { Heart, Check, X, ShoppingCart, AlertTriangle, ShieldCheck } from 'lucide-react'
+import { Heart, Check, X, ShoppingCart, AlertTriangle, ShieldCheck, Star } from 'lucide-react'
 import { motion } from 'framer-motion'
 import type { Product } from '@/lib/types'
 import { useCartStore } from '@/lib/store/cart.store'
@@ -154,6 +154,12 @@ export function ProductCard({ product, viewMode = 'grid' }: Props) {
         {/* Content */}
         <div className="flex flex-1 flex-col p-4 sm:p-5">
           <div className="flex items-center gap-2">
+            {product.isFeatured && (
+              <span className="flex items-center gap-1 rounded bg-amber-100 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-amber-700">
+                <Star size={8} fill="currentColor" />
+                VIP
+              </span>
+            )}
             {product.brand && (
               <span className="text-[11px] font-black uppercase tracking-wider text-[#16254c]/70">
                 {product.brand.name}
@@ -279,6 +285,12 @@ export function ProductCard({ product, viewMode = 'grid' }: Props) {
         
         {/* Top Badges */}
         <div className="absolute top-2 left-2 z-10 flex flex-col gap-1">
+          {product.isFeatured && (
+            <span className="flex items-center gap-1 bg-amber-400 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-amber-900 shadow-sm">
+              <Star size={8} fill="currentColor" />
+              VIP
+            </span>
+          )}
           {product.isNew && (
             <span className="bg-[#16254c] px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-white">
               {t('new')}

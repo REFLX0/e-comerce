@@ -494,70 +494,100 @@ export default function AdminPaymentsPage() {
                       <p className="text-sm">Aucun produit trouvé</p>
                     </div>
                   ) : (
-                    searchResults.map((product) => (
-                      <div
-                        key={product.id}
-                        className="rounded-2xl border border-gray-200/70 bg-white p-3.5 shadow-sm hover:shadow transition-all"
-                      >
-                        <div className="flex items-start gap-3">
-                          {product.images?.[0]?.url ? (
-                            <div className="relative h-14 w-14 shrink-0 rounded-xl overflow-hidden border border-gray-100 bg-gray-50">
-                              <Image
-                                src={product.images[0].url}
-                                alt={product.nameFr}
-                                fill
-                                className="object-contain p-1"
-                              />
-                            </div>
-                          ) : (
-                            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gray-100 text-gray-400">
-                              <Package size={20} />
-                            </div>
-                          )}
-                          <div className="min-w-0 flex-1">
-                            <div className="flex items-center gap-2">
-                              {product.brand?.name && (
-                                <span className="rounded bg-gray-100 px-1.5 py-0.5 text-[10px] font-bold text-gray-600">
-                                  {product.brand.name}
-                                </span>
-                              )}
-                              <span className="font-mono text-[10px] text-gray-400">SKU: {product.sku}</span>
-                            </div>
-                            <h4 className="mt-0.5 truncate text-sm font-bold text-brand-primary">{product.nameFr}</h4>
+                    searchResults.map((product) => {
+                      const firstAvailableVariant =
+                        (product.variants || []).find((v: any) => v.stockQty > 0) ||
+                        product.variants?.[0]
+                      const isAnyInStock = (product.variants || []).some((v: any) => v.stockQty > 0)
 
-                            {/* Variants List & Add Buttons */}
-                            <div className="mt-2.5 flex flex-wrap gap-2">
-                              {(product.variants || []).map((variant: any) => {
-                                const inStock = variant.stockQty > 0
-                                return (
-                                  <button
-                                    key={variant.id}
-                                    type="button"
-                                    onClick={() => addToCart(product, variant)}
-                                    disabled={!inStock}
-                                    className={`flex items-center gap-2 rounded-xl px-3 py-1.5 text-xs font-semibold transition-all ${
-                                      inStock
-                                        ? 'bg-brand-primary/5 hover:bg-brand-primary hover:text-white text-brand-primary active:scale-95'
-                                        : 'bg-gray-100 text-gray-400 cursor-not-allowed opacity-60'
-                                    }`}
-                                  >
-                                    <span>{variant.volume || 'Standard'}</span>
-                                    <span className="font-bold">{variant.price.toFixed(2)} TND</span>
-                                    <span
-                                      className={`rounded-full px-1.5 py-0.2 text-[9px] ${
-                                        inStock ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-600'
+                      return (
+                        <div
+                          key={product.id}
+                          onClick={() => {
+                            if (isAnyInStock && firstAvailableVariant) {
+                              addToCart(product, firstAvailableVariant)
+                            }
+                          }}
+                          className={`group relative rounded-2xl border bg-white p-3.5 shadow-sm transition-all select-none ${
+                            isAnyInStock
+                              ? 'cursor-pointer border-gray-200/80 hover:border-brand-primary hover:bg-brand-primary/[0.02] hover:shadow-md active:scale-[0.99]'
+                              : 'border-gray-200/50 opacity-60 cursor-not-allowed bg-gray-50/50'
+                          }`}
+                        >
+                          <div className="flex items-start gap-3">
+                            {product.images?.[0]?.url ? (
+                              <div className="relative h-14 w-14 shrink-0 rounded-xl overflow-hidden border border-gray-100 bg-gray-50">
+                                <Image
+                                  src={product.images[0].url}
+                                  alt={product.nameFr}
+                                  fill
+                                  className="object-contain p-1"
+                                />
+                              </div>
+                            ) : (
+                              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gray-100 text-gray-400">
+                                <Package size={20} />
+                              </div>
+                            )}
+                            <div className="min-w-0 flex-1">
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-2">
+                                  {product.brand?.name && (
+                                    <span className="rounded bg-gray-100 px-1.5 py-0.5 text-[10px] font-bold text-gray-600">
+                                      {product.brand.name}
+                                    </span>
+                                  )}
+                                  <span className="font-mono text-[10px] text-gray-400">SKU: {product.sku}</span>
+                                </div>
+                                {isAnyInStock && (
+                                  <span className="hidden sm:inline-flex items-center gap-1 text-[11px] font-bold text-brand-primary opacity-0 group-hover:opacity-100 transition-opacity">
+                                    + Ajouter
+                                  </span>
+                                )}
+                              </div>
+                              <h4 className="mt-0.5 truncate text-sm font-bold text-brand-primary group-hover:text-blue-600 transition-colors">
+                                {product.nameFr}
+                              </h4>
+
+                              {/* Variants List & Add Buttons */}
+                              <div className="mt-2.5 flex flex-wrap gap-2">
+                                {(product.variants || []).map((variant: any) => {
+                                  const inStock = variant.stockQty > 0
+                                  return (
+                                    <button
+                                      key={variant.id}
+                                      type="button"
+                                      onClick={(e) => {
+                                        e.stopPropagation()
+                                        if (inStock) {
+                                          addToCart(product, variant)
+                                        }
+                                      }}
+                                      disabled={!inStock}
+                                      className={`flex items-center gap-2 rounded-xl px-3 py-1.5 text-xs font-semibold transition-all ${
+                                        inStock
+                                          ? 'bg-brand-primary/5 hover:bg-brand-primary hover:text-white text-brand-primary active:scale-95'
+                                          : 'bg-gray-100 text-gray-400 cursor-not-allowed opacity-60'
                                       }`}
                                     >
-                                      {inStock ? `Stock: ${variant.stockQty}` : 'Épuisé'}
-                                    </span>
-                                  </button>
-                                )
-                              })}
+                                      <span>{variant.volume || 'Standard'}</span>
+                                      <span className="font-bold">{variant.price.toFixed(2)} TND</span>
+                                      <span
+                                        className={`rounded-full px-1.5 py-0.2 text-[9px] ${
+                                          inStock ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-600'
+                                        }`}
+                                      >
+                                        {inStock ? `Stock: ${variant.stockQty}` : 'Épuisé'}
+                                      </span>
+                                    </button>
+                                  )
+                                })}
+                              </div>
                             </div>
                           </div>
                         </div>
-                      </div>
-                    ))
+                      )
+                    })
                   )}
                 </div>
               </div>

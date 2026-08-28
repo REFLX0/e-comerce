@@ -463,7 +463,17 @@ export class AdminService {
       },
     });
     if (!order) throw new NotFoundException('Order not found');
-    return generateDeliveryNotePDF(order);
+    const settingsRows = await this.prisma.setting.findMany();
+    const settings = Object.fromEntries(
+      settingsRows.map((r) => {
+        try {
+          return [r.key, JSON.parse(r.value)];
+        } catch {
+          return [r.key, r.value];
+        }
+      }),
+    );
+    return generateDeliveryNotePDF(order, settings);
   }
 
   async bulkProducts(ids: string[], action: string) {

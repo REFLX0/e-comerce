@@ -88,10 +88,10 @@ function NavItem({
                   key={child.href}
                   href={withLocale(child.href, locale)}
                   onClick={onClose}
-                  className={`flex items-center gap-2 rounded-lg px-2 py-2 text-xs font-medium transition-all ${
+                  className={`flex items-center gap-2 rounded-lg px-2 py-2 text-xs transition-all ${
                     childActive
-                      ? 'text-white'
-                      : 'text-gray-500 hover:text-white'
+                      ? 'font-bold text-white bg-white/10 border-l-2 border-brand-accent -ml-[2px] pl-[6px]'
+                      : 'font-medium text-gray-500 hover:text-white'
                   }`}
                 >
                   <child.icon size={14} />
