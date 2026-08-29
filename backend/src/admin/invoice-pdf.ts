@@ -528,6 +528,25 @@ export function generateDeliveryNotePDF(
       });
   }
 
+  // Timbre Fiscal
+  const timbreFiscal = parseFloat(settings.FACTURE_TIMBRE_FISCAL || '1.000');
+  if (timbreFiscal > 0) {
+    summaryY += 16;
+    doc
+      .font('Helvetica-Bold')
+      .fillColor(primaryColor)
+      .text('Timbre Fiscal', summaryX, summaryY, { width: 90, align: 'right' });
+    doc
+      .font('Helvetica')
+      .fillColor(primaryColor)
+      .text(formatDt(timbreFiscal), summaryX + 95, summaryY, {
+        width: summaryWidth - 95,
+        align: 'right',
+      });
+  }
+
+  const finalTotalTtc = order.totalAmount + (timbreFiscal > 0 ? timbreFiscal : 0);
+
   // TOTAL TTC (Bold Shaded Box)
   summaryY += 18;
   const totalBoxHeight = 22;
@@ -548,7 +567,7 @@ export function generateDeliveryNotePDF(
     .fontSize(11)
     .font('Helvetica-Bold')
     .fillColor('#0f172a')
-    .text(formatDt(order.totalAmount), summaryX + 100, summaryY + 1, {
+    .text(formatDt(finalTotalTtc), summaryX + 100, summaryY + 1, {
       width: summaryWidth - 105,
       align: 'right',
     });
@@ -561,7 +580,7 @@ export function generateDeliveryNotePDF(
     .fillColor('#475569')
     .text('Montant en lettres', leftMargin, lettersY);
 
-  const amountInWords = amountToTunisianWords(order.totalAmount);
+  const amountInWords = amountToTunisianWords(finalTotalTtc);
   doc
     .fontSize(9.5)
     .font('Helvetica')

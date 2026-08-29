@@ -620,8 +620,8 @@ export class ProductsService {
           productId: v.productId,
           volume: v.volume,
           imageUrl: v.imageUrl ?? null,
-          priceHT: v.price,
-          priceTTC: +(v.price * 1.19).toFixed(2),
+          priceHT: +(v.price / 1.19).toFixed(3),
+          priceTTC: v.price,
           stock: v.stockQty,
           sku: v.skuVariant,
           status:

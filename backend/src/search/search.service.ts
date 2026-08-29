@@ -330,7 +330,7 @@ export class SearchService implements OnModuleInit {
       brand: product.brand ? { name: product.brand.name, slug: product.brand.slug } : null,
       category: product.category ? { name: product.category.nameFr, slug: product.category.slug } : null,
       variants: product.variants?.map((v: any) => ({
-        id: v.id, priceHT: v.price, priceTTC: +(v.price * 1.19).toFixed(2), stock: v.stockQty,
+        id: v.id, priceHT: +(v.price / 1.19).toFixed(3), priceTTC: v.price, stock: v.stockQty,
       })) ?? [],
       specs: product.specs ? { viscosity: product.specs.viscosity } : null,
       isBestSeller: product.isFeatured,

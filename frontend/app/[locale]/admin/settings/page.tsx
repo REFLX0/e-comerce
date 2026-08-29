@@ -291,12 +291,16 @@ export default function AdminSettingsPage() {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-1.5">
-                      <label className="text-sm font-semibold text-gray-700">{t('invoiceTvaRate')}</label>
+                      <label className="text-sm font-semibold text-gray-700">{t('invoiceTvaRate') || 'Taux TVA (%)'}</label>
                       <select value={String(form.FACTURE_TVA_RATE ?? '19')} onChange={e => set('FACTURE_TVA_RATE', e.target.value)} className="w-full rounded-xl border border-gray-200 px-4 py-2 text-sm outline-none focus:border-brand-accent">
                         <option value="19">19% (TVA Pièces & Lubrifiants)</option>
                         <option value="7">7% (Taux Réduit)</option>
                         <option value="0">0% (Exonéré)</option>
                       </select>
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-sm font-semibold text-gray-700">Timbre Fiscal (DT)</label>
+                      <input type="text" placeholder="1.000" value={String(form.FACTURE_TIMBRE_FISCAL ?? '1.000')} onChange={e => set('FACTURE_TIMBRE_FISCAL', e.target.value)} className="w-full rounded-xl border border-gray-200 px-4 py-2 text-sm outline-none focus:border-brand-accent" />
                     </div>
                   </div>
                 </>
