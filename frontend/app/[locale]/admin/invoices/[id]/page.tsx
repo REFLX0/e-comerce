@@ -8,6 +8,7 @@ import { useTranslations, useLocale } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { ArrowLeft, Save, Plus, Trash, Download, FileText } from 'lucide-react';
+import { format } from 'date-fns';
 import Link from 'next/link';
 
 export default function AdminInvoiceEditorPage({ params: { id, locale } }: { params: { id: string; locale: string } }) {

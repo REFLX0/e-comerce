@@ -35,22 +35,22 @@ export interface Invoice {
 export const invoicesApi = {
   // Admin endpoints
   getAllAdmin: async (): Promise<Invoice[]> => {
-    const { data } = await api.get('/admin/invoices');
+    const { data } = (await api.get('/admin/invoices')) as any;
     return data;
   },
 
   getOneAdmin: async (id: string): Promise<Invoice> => {
-    const { data } = await api.get(`/admin/invoices/${id}`);
+    const { data } = (await api.get(`/admin/invoices/${id}`)) as any;
     return data;
   },
 
   create: async (payload: Partial<Invoice>): Promise<Invoice> => {
-    const { data } = await api.post('/admin/invoices', payload);
+    const { data } = (await api.post('/admin/invoices', payload)) as any;
     return data;
   },
 
   update: async (id: string, payload: Partial<Invoice>): Promise<Invoice> => {
-    const { data } = await api.patch(`/admin/invoices/${id}`, payload);
+    const { data } = (await api.patch(`/admin/invoices/${id}`, payload)) as any;
     return data;
   },
 
@@ -59,7 +59,7 @@ export const invoicesApi = {
   },
 
   duplicate: async (id: string): Promise<Invoice> => {
-    const { data } = await api.post(`/admin/invoices/${id}/duplicate`);
+    const { data } = (await api.post(`/admin/invoices/${id}/duplicate`, {})) as any;
     return data;
   },
 
@@ -69,12 +69,12 @@ export const invoicesApi = {
 
   // Customer endpoints
   getAllUser: async (): Promise<Invoice[]> => {
-    const { data } = await api.get('/invoices');
+    const { data } = (await api.get('/invoices')) as any;
     return data;
   },
 
   getOneUser: async (id: string): Promise<Invoice> => {
-    const { data } = await api.get(`/invoices/${id}`);
+    const { data } = (await api.get(`/invoices/${id}`)) as any;
     return data;
   },
 

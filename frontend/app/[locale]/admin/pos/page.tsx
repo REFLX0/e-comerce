@@ -163,7 +163,7 @@ export default function POSInvoicePage() {
           quantity: i.quantity,
           unitPriceHT: i.unitPriceHT,
         })),
-      }, { responseType: 'blob' })
+      } as any) as any
       const blob = res.data
       const url = URL.createObjectURL(blob)
       const a = document.createElement('a')
