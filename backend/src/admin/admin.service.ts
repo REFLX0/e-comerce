@@ -1256,4 +1256,35 @@ export class AdminService {
         });
     });
   }
+
+  // ─── POS Invoice ─────────────────────────────────────────────────────────
+  async generatePOSInvoice(body: {
+    clientName: string;
+    items: Array<{
+      productId?: string;
+      name: string;
+      volume?: string;
+      quantity: number;
+      unitPriceHT: number;
+    }>;
+  }): Promise<Buffer> {
+    const { generatePOSInvoicePDF } = require('./invoice-pdf');
+
+    const invoiceNumber = `FAC-${new Date()
+      .toISOString()
+      .slice(0, 10)
+      .replace(/-/g, '')}-${Math.floor(Math.random() * 9000) + 1000}`;
+
+    return generatePOSInvoicePDF({
+      invoiceNumber,
+      date: new Date(),
+      clientName: body.clientName?.trim() || 'Client comptoir',
+      items: body.items.map((item) => ({
+        name: item.name,
+        volume: item.volume,
+        quantity: item.quantity,
+        unitPriceHT: item.unitPriceHT,
+      })),
+    });
+  }
 }

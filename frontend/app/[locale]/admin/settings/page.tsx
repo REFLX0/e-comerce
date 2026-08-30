@@ -368,6 +368,14 @@ export default function AdminSettingsPage() {
               {activeSection === 'CGV et legal' && (
                 <>
                   <div className="space-y-1.5">
+                    <label className="text-sm font-semibold text-gray-700">Matricule Fiscal (Immatriculation)</label>
+                    <input type="text" value={String(form.COMPANY_MF ?? '')} onChange={e => set('COMPANY_MF', e.target.value)} placeholder="Ex: 1234567/A/B/M/000" className="w-full rounded-xl border border-gray-200 px-4 py-2 text-sm outline-none focus:border-brand-accent" />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-sm font-semibold text-gray-700">Adresse de l'entreprise (Factures)</label>
+                    <input type="text" value={String(form.COMPANY_ADDRESS ?? '')} onChange={e => set('COMPANY_ADDRESS', e.target.value)} className="w-full rounded-xl border border-gray-200 px-4 py-2 text-sm outline-none focus:border-brand-accent" />
+                  </div>
+                  <div className="space-y-1.5">
                     <label className="text-sm font-semibold text-gray-700">{t('cgvLink')}</label>
                     <input type="text" value={String(form.CGV_LINK ?? '')} onChange={e => set('CGV_LINK', e.target.value)} className="w-full rounded-xl border border-gray-200 px-4 py-2 text-sm outline-none focus:border-brand-accent" />
                   </div>

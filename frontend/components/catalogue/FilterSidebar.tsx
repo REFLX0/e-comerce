@@ -80,6 +80,8 @@ interface FilterSidebarProps {
   hideCategories?: boolean
   /** Hide the brands section (used on brand pages which have a fixed brand context). */
   hideBrands?: boolean
+  /** Base filters to apply to the facets query (e.g. { brandSlug: slug } on brand pages) */
+  baseFilters?: Record<string, any>
 }
 
 export function FilterSidebar({
@@ -88,6 +90,7 @@ export function FilterSidebar({
   onDraftChange,
   hideCategories = false,
   hideBrands = false,
+  baseFilters = {},
 }: FilterSidebarProps) {
   const t = useTranslations('Catalogue')
   const tTax = useTranslations('Taxonomy')
@@ -138,8 +141,9 @@ export function FilterSidebar({
       search: searchParams.get('search') || undefined,
       priceMin: parsePrice('priceMin'),
       priceMax: parsePrice('priceMax'),
+      ...baseFilters,
     }
-  }, [searchParams])
+  }, [searchParams, baseFilters])
 
   const { data: categoriesTree, isLoading: catLoading } = useQuery({
     queryKey: ['categories-tree'],
@@ -174,33 +178,48 @@ export function FilterSidebar({
         const subSubcategories: SubcategoryOption[] = (child.children ?? []).map((subChild) => {
           const subChildDbNode = findNode(categoriesTree, subChild.slug)
           const subChildLabel = subChild.labelKey ? tTax(subChild.labelKey) : (subChildDbNode?.name ?? subChild.label ?? subChild.slug)
+          
+          const count = facets?.categoryCounts
+             ? facets.categoryCounts.find(c => c.id === subChildDbNode?.id)?.count ?? 0
+             : subChildDbNode?.productCount
+
           return {
             id: subChildDbNode?.id ?? subChild.slug,
             name: subChildLabel,
             slug: subChild.slug,
-            productCount: subChildDbNode?.productCount,
+            productCount: count,
           }
         })
+
+        const childCount = facets?.categoryCounts
+          ? subSubcategories.reduce((acc, sub) => acc + (sub.productCount ?? 0), 
+               facets.categoryCounts.find(c => c.id === childDbNode?.id)?.count ?? 0)
+          : childDbNode?.productCount
 
         return {
           id: childDbNode?.id ?? child.slug,
           name: childLabel,
           slug: child.slug,
-          productCount: childDbNode?.productCount,
+          productCount: childCount,
           children: subSubcategories.length ? subSubcategories : undefined,
         }
       })
+
+      const rootCount = facets?.categoryCounts
+        ? subcategories.reduce((acc, sub) => acc + (sub.productCount ?? 0), 
+             facets.categoryCounts.find(c => c.id === dbNode?.id)?.count ?? 0)
+        : dbNode?.productCount
 
       return {
         id: dbNode?.id ?? item.slug,
         slug: item.slug,
         label,
         Icon,
-        count: dbNode?.productCount,
+        count: rootCount,
         subcategories,
       }
     })
-  }, [categoriesTree, tTax])
+  }, [categoriesTree, tTax, facets?.categoryCounts])
 
   if (catLoading || facetsLoading) return <FilterSidebarSkeleton />
 

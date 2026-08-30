@@ -49,17 +49,17 @@ function formatDt(amount: number): string {
 function formatFrenchDate(date: Date): string {
   const months = [
     'janvier',
-    'février',
+    'f├®vrier',
     'mars',
     'avril',
     'mai',
     'juin',
     'juillet',
-    'août',
+    'ao├╗t',
     'septembre',
     'octobre',
     'novembre',
-    'décembre',
+    'd├®cembre',
   ];
   const d = date.getDate();
   const m = months[date.getMonth()];
@@ -218,7 +218,7 @@ export function generateDeliveryNotePDF(
     codeImgPath = resolveImagePath(settings.FACTURE_CODE_IMG);
   }
 
-  // ── HEADER: LOGO & COMPANY INFO (LEFT) ──
+  // ÔöÇÔöÇ HEADER: LOGO & COMPANY INFO (LEFT) ÔöÇÔöÇ
   let headerLeftTextX = leftMargin;
   const startY = 35;
 
@@ -251,7 +251,7 @@ export function generateDeliveryNotePDF(
       .text(`MF: ${companyMf}`, headerLeftTextX, startY + 52);
   }
 
-  // ── HEADER: FACTURE TITLE & DATES (RIGHT) ──
+  // ÔöÇÔöÇ HEADER: FACTURE TITLE & DATES (RIGHT) ÔöÇÔöÇ
   const orderNumber = (order.id || '').slice(-8).toUpperCase() || '1';
   const orderDate = order.createdAt ? new Date(order.createdAt) : new Date();
   const dateStr = formatFrenchDate(orderDate);
@@ -285,7 +285,7 @@ export function generateDeliveryNotePDF(
     .fontSize(9.5)
     .font('Helvetica-Bold')
     .fillColor(primaryColor)
-    .text(`Date d'échéance : `, leftMargin, startY + 44, {
+    .text(`Date d'├®ch├®ance : `, leftMargin, startY + 44, {
       align: 'right',
       width: contentWidth - 85,
     });
@@ -308,13 +308,13 @@ export function generateDeliveryNotePDF(
     }
   }
 
-  // ── FACTURÉ À (CLIENT INFO) ──
+  // ÔöÇÔöÇ FACTUR├ë ├Ç (CLIENT INFO) ÔöÇÔöÇ
   const clientStartY = startY + 80;
   doc
     .fontSize(10.5)
     .font('Helvetica-Bold')
     .fillColor(primaryColor)
-    .text('Facturé À:', leftMargin, clientStartY);
+    .text('Factur├® ├Ç:', leftMargin, clientStartY);
 
   const clientName =
     order.shipFullName || order.user?.name || 'Client Particulier';
@@ -340,13 +340,13 @@ export function generateDeliveryNotePDF(
       .fontSize(8.5)
       .fillColor(secondaryColor)
       .text(
-        `Tél: ${order.shipPhone}`,
+        `T├®l: ${order.shipPhone}`,
         leftMargin,
         clientStartY + (clientLocation ? 40 : 28),
       );
   }
 
-  // ── ARTICLES TABLE ──
+  // ÔöÇÔöÇ ARTICLES TABLE ÔöÇÔöÇ
   const tableY = clientStartY + 60;
   const colW = {
     num: 28,
@@ -391,7 +391,7 @@ export function generateDeliveryNotePDF(
     width: colW.name - 12,
     align: 'left',
   });
-  doc.text('Quantité', colX.qty, tableY + 6, {
+  doc.text('Quantit├®', colX.qty, tableY + 6, {
     width: colW.qty,
     align: 'center',
   });
@@ -479,7 +479,7 @@ export function generateDeliveryNotePDF(
     currentY += rowHeight;
   });
 
-  // ── TOTALS SUMMARY (RIGHT) ──
+  // ÔöÇÔöÇ TOTALS SUMMARY (RIGHT) ÔöÇÔöÇ
   const summaryWidth = 200;
   const summaryX = pageWidth - rightMargin - summaryWidth;
   let summaryY = currentY + 12;
@@ -572,7 +572,7 @@ export function generateDeliveryNotePDF(
       align: 'right',
     });
 
-  // ── MONTANT EN LETTRES (LEFT) ──
+  // ÔöÇÔöÇ MONTANT EN LETTRES (LEFT) ÔöÇÔöÇ
   const lettersY = currentY + 30;
   doc
     .fontSize(10)
@@ -590,7 +590,7 @@ export function generateDeliveryNotePDF(
       lineGap: 3,
     });
 
-  // ── THE BLUE THING (TABA3 / CACHET & SIGNATURE) ──
+  // ÔöÇÔöÇ THE BLUE THING (TABA3 / CACHET & SIGNATURE) ÔöÇÔöÇ
   const stampBoxY = Math.max(summaryY + 40, lettersY + 60);
   const stampBoxWidth = 140;
   const stampBoxHeight = 85;
@@ -633,7 +633,7 @@ export function generateDeliveryNotePDF(
       });
   }
 
-  // ── FOOTER / LEGAL MENTIONS ──
+  // ÔöÇÔöÇ FOOTER / LEGAL MENTIONS ÔöÇÔöÇ
   const footerY = doc.page.height - 35;
   doc
     .moveTo(leftMargin, footerY - 8)
@@ -646,9 +646,9 @@ export function generateDeliveryNotePDF(
     .font('Helvetica')
     .fillColor('#64748b')
     .text(
-      `${companyName} — ${companyAddress} — Tél: ${companyPhone} — Email: ${companyEmail}${
-        companyMf ? ' — MF: ' + companyMf : ''
-      }${companyRc ? ' — RC: ' + companyRc : ''}`,
+      `${companyName} ÔÇö ${companyAddress} ÔÇö T├®l: ${companyPhone} ÔÇö Email: ${companyEmail}${
+        companyMf ? ' ÔÇö MF: ' + companyMf : ''
+      }${companyRc ? ' ÔÇö RC: ' + companyRc : ''}`,
       leftMargin,
       footerY,
       { align: 'center', width: contentWidth },
@@ -656,3 +656,163 @@ export function generateDeliveryNotePDF(
 
   return doc;
 }
+
+// ─── POS Invoice ───────────────────────────────────────────────────────────
+// Used by:  admin.service.ts → generatePOSInvoice()
+//           invoices.service.ts → generatePdf()   (maps DB Invoice lines → this)
+// Accepts flat line-item data (no DB order required) — ideal for walk-in counter sales.
+
+export interface POSInvoiceItem {
+  name: string;
+  volume?: string;
+  quantity: number;
+  unitPriceHT: number;
+}
+
+export interface POSInvoiceData {
+  invoiceNumber: string;
+  date: Date;
+  clientName: string;
+  items: POSInvoiceItem[];
+  settings?: InvoiceSettings;
+}
+
+export function generatePOSInvoicePDF(data: POSInvoiceData): Buffer {
+  const chunks: Buffer[] = [];
+  const doc = new PDFDocument({ size: 'A4', margin: 40, bufferPages: true });
+  doc.on('data', (chunk) => chunks.push(chunk));
+
+  const settings = data.settings ?? {};
+  const pageWidth = 595.28;
+  const L = 40;
+  const R = 40;
+  const contentWidth = pageWidth - L - R;
+
+  // ── Company info from settings (same source as delivery note) ──
+  const companyName    = settings.SITE_NAME || 'SPECPART';
+  const companyAddress = settings.FACTURE_ADDRESS || 'Jardins De Carthage 1090, Tunis';
+  const companyPhone   = settings.FACTURE_PHONE   || settings.CONTACT_PHONE  || '29 294 195';
+  const companyEmail   = settings.FACTURE_EMAIL   || settings.CONTACT_EMAIL  || 'specpart@hotmail.com';
+  const companyMf      = settings.FACTURE_MATRICULE_FISCALE || '1823940/A/P/000';
+
+  // ── Colors (matching delivery note palette) ──
+  const PRIMARY   = '#0B1D3A';
+  const ACCENT    = '#E10600';
+  const GRAY      = '#64748b';
+  const LIGHT_BG  = '#f1f5f9';
+  const BORDER    = '#e2e8f0';
+  const WHITE     = '#ffffff';
+
+  // ── Logo ──
+  const logoPath = settings.FACTURE_LOGO ? resolveImagePath(settings.FACTURE_LOGO) : null;
+
+  // ── Totals ──
+  const TVA_RATE = parseFloat(settings.FACTURE_TVA_RATE || '19') / 100;
+  const totalHT  = data.items.reduce((s, i) => s + i.unitPriceHT * i.quantity, 0);
+  const tvaAmt   = totalHT * TVA_RATE;
+  const totalTTC = totalHT + tvaAmt;
+
+  // ── HEADER ──
+  if (logoPath) {
+    try { doc.image(logoPath, L, 35, { fit: [140, 60], align: 'left', valign: 'top' }); }
+    catch { doc.fontSize(20).fillColor(PRIMARY).font('Helvetica-Bold').text(companyName, L, 35); }
+  } else {
+    doc.fontSize(20).fillColor(PRIMARY).font('Helvetica-Bold').text(companyName, L, 35);
+  }
+
+  doc.fontSize(8).fillColor(GRAY).font('Helvetica')
+    .text(companyAddress, pageWidth / 2, 35, { align: 'right', width: pageWidth / 2 - R })
+    .text(companyPhone,   pageWidth / 2, 49, { align: 'right', width: pageWidth / 2 - R })
+    .text(companyEmail,   pageWidth / 2, 63, { align: 'right', width: pageWidth / 2 - R });
+
+  // Red accent divider
+  doc.moveTo(L, 108).lineTo(pageWidth - R, 108).lineWidth(2).strokeColor(ACCENT).stroke();
+  doc.lineWidth(1);
+
+  // ── TITLE + META BOX ──
+  doc.fontSize(22).fillColor(PRIMARY).font('Helvetica-Bold').text('FACTURE', L, 118);
+
+  const metaX = pageWidth - R - 180;
+  doc.rect(metaX, 112, 182, 70).fill(LIGHT_BG);
+  doc.fontSize(8).fillColor(GRAY).font('Helvetica')
+    .text('N° Facture', metaX + 8, 118)
+    .text('Date',       metaX + 8, 134)
+    .text('Client',     metaX + 8, 150)
+    .text('MF',         metaX + 8, 166);
+  doc.fontSize(8).fillColor(PRIMARY).font('Helvetica-Bold')
+    .text(data.invoiceNumber,                                  metaX + 65, 118, { width: 110, align: 'right' })
+    .text(data.date.toLocaleDateString('fr-TN'),               metaX + 65, 134, { width: 110, align: 'right' })
+    .text(data.clientName || 'Client comptoir',                metaX + 65, 150, { width: 110, align: 'right' })
+    .text(companyMf,                                           metaX + 65, 166, { width: 110, align: 'right' });
+
+  // ── TABLE HEADER ──
+  const tableY = 200;
+  doc.rect(L, tableY, contentWidth, 22).fill(PRIMARY);
+  doc.fillColor(WHITE).font('Helvetica-Bold').fontSize(8.5);
+  doc.text('DÉSIGNATION', L + 8,    tableY + 6, { width: 225 });
+  doc.text('VOLUME',      L + 235,  tableY + 6, { width: 65,  align: 'center' });
+  doc.text('QTÉ',         L + 300,  tableY + 6, { width: 40,  align: 'center' });
+  doc.text('PRIX HT',     L + 340,  tableY + 6, { width: 70,  align: 'right' });
+  doc.text('TOTAL HT',    L + 410,  tableY + 6, { width: 75,  align: 'right' });
+
+  // ── TABLE ROWS ──
+  let y = tableY + 22;
+  doc.font('Helvetica').fontSize(8.5);
+
+  data.items.forEach((item, idx) => {
+    if (y > doc.page.height - 160) { doc.addPage(); y = 40; }
+    const rowColor = idx % 2 === 0 ? WHITE : LIGHT_BG;
+    doc.rect(L, y, contentWidth, 20).fill(rowColor);
+    doc.fillColor(PRIMARY);
+    doc.text(item.name,                                L + 8,   y + 5, { width: 225 });
+    doc.text(item.volume || '—',                       L + 235, y + 5, { width: 65,  align: 'center' });
+    doc.text(String(item.quantity),                    L + 300, y + 5, { width: 40,  align: 'center' });
+    doc.text(`${item.unitPriceHT.toFixed(3)} DT`,     L + 340, y + 5, { width: 70,  align: 'right' });
+    doc.text(`${(item.unitPriceHT * item.quantity).toFixed(3)} DT`, L + 410, y + 5, { width: 75, align: 'right' });
+    y += 20;
+  });
+
+  doc.moveTo(L, y).lineTo(pageWidth - R, y).strokeColor(BORDER).stroke();
+
+  // ── TOTALS ──
+  const totalsX = L + contentWidth - 200;
+  y += 16;
+
+  const totLine = (label: string, value: string) => {
+    doc.font('Helvetica').fontSize(8.5).fillColor(GRAY).text(label, totalsX, y, { width: 110 });
+    doc.font('Helvetica').fontSize(8.5).fillColor(PRIMARY).text(value, totalsX + 112, y, { width: 90, align: 'right' });
+    y += 16;
+  };
+
+  totLine('Total HT', `${totalHT.toFixed(3)} DT`);
+  totLine(`TVA (${(TVA_RATE * 100).toFixed(0)}%)`, `${tvaAmt.toFixed(3)} DT`);
+
+  // ── TOTAL TTC accent block ──
+  doc.rect(totalsX - 8, y - 4, 210, 28).fill(PRIMARY);
+  doc.font('Helvetica-Bold').fontSize(11).fillColor(WHITE)
+    .text('TOTAL TTC', totalsX, y + 3, { width: 110 })
+    .text(`${totalTTC.toFixed(3)} DT`, totalsX + 112, y + 3, { width: 90, align: 'right' });
+
+  // ── Amount in words ──
+  y += 40;
+  doc.fontSize(8.5).fillColor(GRAY).font('Helvetica').text('Arrêté la présente facture à la somme de :', L, y);
+  doc.fontSize(8.5).fillColor(PRIMARY).font('Helvetica-Bold')
+    .text(amountToTunisianWords(totalTTC), L, y + 13, { width: contentWidth - 210 });
+
+  // ── FOOTER (applied to all pages via bufferedPageRange) ──
+  const range = doc.bufferedPageRange();
+  for (let i = range.start; i < range.start + range.count; i++) {
+    doc.switchToPage(i);
+    const footerY = doc.page.height - 55;
+    doc.moveTo(L, footerY).lineTo(pageWidth - R, footerY).strokeColor(BORDER).stroke();
+    doc.fontSize(7.5).fillColor(GRAY).font('Helvetica')
+      .text(`${companyName} — ${companyAddress}`, L, footerY + 8, { align: 'center', width: contentWidth })
+      .text(`Tél: ${companyPhone} | ${companyEmail}`, L, footerY + 21, { align: 'center', width: contentWidth });
+    doc.fontSize(7.5).fillColor(PRIMARY).font('Helvetica-Bold')
+      .text(`Matricule Fiscal: ${companyMf}`, L, footerY + 34, { align: 'center', width: contentWidth });
+  }
+
+  doc.end();
+  return Buffer.concat(chunks);
+}
+

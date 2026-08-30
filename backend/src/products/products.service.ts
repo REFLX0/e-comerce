@@ -436,14 +436,36 @@ export class ProductsService {
       where.variants = { some: variantSome };
     }
 
-    const variantGroups = await this.prismaRead.db.productVariant.groupBy({
-      by: ['volume'],
-      where: {
-        product: where,
-      },
-      _count: { volume: true },
-    });
-
+    const [variantGroups, viscosityGroups, brandGroups, categoryGroups, priceAgg, availableBrands] = await Promise.all([
+      this.prismaRead.db.productVariant.groupBy({
+        by: ['volume'],
+        where: { product: where },
+        _count: { volume: true },
+      }),
+      this.prismaRead.db.productSpecs.groupBy({
+        by: ['viscosity'],
+        where: { product: where },
+        _count: { viscosity: true },
+      }),
+      this.prismaRead.db.product.groupBy({
+        by: ['brandId'],
+        where,
+        _count: { brandId: true },
+      }),
+      this.prismaRead.db.product.groupBy({
+        by: ['categoryId'],
+        where,
+        _count: { categoryId: true },
+      }),
+      this.prismaRead.db.productVariant.aggregate({
+        _min: { price: true },
+        _max: { price: true },
+        where: { product: where },
+      }),
+      this.prismaRead.db.brand.findMany({
+        orderBy: { name: 'asc' },
+      })
+    ]);
     const volumes = variantGroups
       .filter((v) => v.volume)
       .map((v) => ({
@@ -455,12 +477,6 @@ export class ProductsService {
         const numB = parseFloat(b.volume) || 0;
         return numA - numB;
       });
-
-    const viscosityGroups = await this.prismaRead.db.productSpecs.groupBy({
-      by: ['viscosity'],
-      where: { product: where },
-      _count: { viscosity: true },
-    });
 
     const viscosities = viscosityGroups
       .filter((v) => v.viscosity)
@@ -474,18 +490,10 @@ export class ProductsService {
         return numA - numB || a.value.localeCompare(b.value);
       });
 
-    const brandGroups = await this.prismaRead.db.product.groupBy({
-      by: ['brandId'],
-      where,
-      _count: { brandId: true },
-    });
     const brandCounts = new Map(
       brandGroups.map((group) => [group.brandId, group._count.brandId]),
     );
 
-    const availableBrands = await this.prismaRead.db.brand.findMany({
-      orderBy: { name: 'asc' },
-    });
     const seenBrandNames = new Set<string>();
     const brands = availableBrands
       .filter((brand) => {
@@ -506,16 +514,16 @@ export class ProductsService {
         count: brandCounts.get(brand.id) ?? 0,
       }));
 
-    const priceAgg = await this.prismaRead.db.productVariant.aggregate({
-      _min: { price: true },
-      _max: { price: true },
-      where: { product: where },
-    });
+    const categoryCounts = categoryGroups.map(g => ({
+      id: g.categoryId,
+      count: g._count.categoryId,
+    }));
 
     return {
       volumes,
       brands,
       viscosities,
+      categoryCounts,
       priceRange: {
         min: Math.floor(priceAgg._min?.price ?? 0),
         max: Math.ceil(priceAgg._max?.price ?? 0),

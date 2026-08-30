@@ -98,7 +98,7 @@ export default function BrandPage({ params }: { params: Promise<{ slug: string }
         <div className="mt-6 flex flex-col gap-8 md:flex-row">
           {/* Desktop Sidebar */}
           <aside className="hidden w-64 shrink-0 lg:block">
-            <FilterSidebar hideBrands />
+            <FilterSidebar hideBrands baseFilters={{ brandSlug: slug }} />
           </aside>
 
           {/* Main Content */}
@@ -117,7 +117,7 @@ export default function BrandPage({ params }: { params: Promise<{ slug: string }
               </div>
 
               <div className="flex w-full items-center gap-3 sm:w-auto">
-                <MobileFiltersSheet hideBrands />
+                <MobileFiltersSheet hideBrands baseFilters={{ brandSlug: slug }} />
                 <SortDropdown />
               </div>
             </div>

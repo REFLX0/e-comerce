@@ -8,7 +8,7 @@ import { authApi } from '@/lib/api/auth'
 import { useTranslations, useLocale } from 'next-intl'
 import {
   LayoutDashboard, Package, Heart, MapPin, ShieldCheck, Car,
-  LifeBuoy, LogOut, User, ChevronRight, Menu, X, Sparkles, CheckCircle
+  LifeBuoy, LogOut, User, ChevronRight, Menu, X, Sparkles, CheckCircle, FileText
 } from 'lucide-react'
 
 function SidebarContent({
@@ -110,6 +110,7 @@ export default function CompteLayout({ children }: { children: React.ReactNode }
   const NAV_ITEMS = [
     { href: '/compte',           icon: LayoutDashboard, label: t('dashboard'),     exact: true },
     { href: '/compte/commandes', icon: Package,          label: t('myOrders') },
+    { href: '/compte/factures',  icon: FileText,         label: 'Mes factures' },
     { href: '/compte/wishlist',  icon: Heart,            label: t('myWishlist') },
     { href: '/compte/voitures',  icon: Car,              label: t('myCars') },
     { href: '/compte/profil',    icon: User,             label: t('myProfile') },

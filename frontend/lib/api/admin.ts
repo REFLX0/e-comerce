@@ -98,7 +98,7 @@ export const adminApi = {
   updateOrderStatus: (id: string, status: string) =>
     api.patch(`/admin/orders/${id}/status`, { status }),
 
-  getUsers: (params?: { page?: number }) =>
+  getUsers: (params?: { page?: number; limit?: number; role?: string; search?: string }) =>
     api.get('/admin/users', { params }),
 
   getTopBuyers: (limit = 10) =>

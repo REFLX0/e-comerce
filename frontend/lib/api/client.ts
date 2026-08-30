@@ -20,7 +20,7 @@ import {
 // Single source of truth for the backend base URL (see resolveBackendUrl):
 // server (inside Docker) → http://nginx:8082/api, browser → /api via nginx proxy
 const BASE_URL = resolveBackendUrl()
-const DEFAULT_TIMEOUT_MS = 8_000
+const DEFAULT_TIMEOUT_MS = 15_000
 
 // ── Error types ────────────────────────────────────────────────────────────
 

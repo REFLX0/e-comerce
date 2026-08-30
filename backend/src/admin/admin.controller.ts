@@ -141,6 +141,18 @@ export class AdminController {
     doc.end();
   }
 
+  @Post('pos/invoice')
+  async generatePOSInvoice(
+    @Body() body: { clientName: string; items: Array<{ productId?: string; name: string; volume?: string; quantity: number; unitPriceHT: number }> },
+    @Res() res: Response,
+  ) {
+    const buffer = await this.adminService.generatePOSInvoice(body);
+    const invoiceNum = `FAC-${new Date().toISOString().slice(0, 10).replace(/-/g, '')}-${Math.floor(Math.random() * 9000) + 1000}`;
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename="${invoiceNum}.pdf"`);
+    res.send(buffer);
+  }
+
   @Get('buyers/top') getTopBuyers(@Query('limit') l?: string) {
     return this.adminService.getTopBuyers(l ? +l : 20);
   }

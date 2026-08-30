@@ -1,0 +1,214 @@
+% ============================================================
+%  PRICING SHEET — AutoCommerce Platform
+%  Prepared for Flamingo Car Care Tech Ltd.
+%  Date: 04 August 2026
+%  Currency: USD (United States Dollar)
+%  Validity: 60 days (until 03 October 2026)
+%  Compile with pdflatex:  pdflatex PricingSheet.tex
+% ============================================================
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[a4paper,margin=2.5cm]{geometry}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage{pifont}
+
+\definecolor{accent}{RGB}{14,48,100}
+\definecolor{subaccent}{RGB}{42,105,191}
+
+\newcommand{\yes}{\textcolor{accent}{\ding{51}}}
+\newcommand{\no}{\textcolor{gray}{---}}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{accent}\textbf{AutoCommerce Engineering}}
+\fancyhead[R]{\small\color{accent}Pricing Sheet}
+\fancyfoot[C]{\small\thepage}
+\fancyfoot[R]{\small\color{gray}Confidential --- Flamingo Car Care Tech Ltd.}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\begin{document}
+
+% ── TITLE BLOCK ─────────────────────────────────────────────
+\begin{center}
+  {\Huge\bfseries\color{accent}Pricing Sheet}\\[0.4em]
+  {\large\bfseries AutoCommerce Platform --- White-Label E-Commerce}\\[0.2em]
+  {\normalsize\color{gray}Prepared for \textbf{Flamingo Car Care Tech
+  Ltd.} \textbar\ 04 August 2026}\\[0.2em]
+  {\normalsize\color{gray}\textbf{Validity:} 60 days ---
+  until \textbf{03 October 2026}}\\[1.2em]
+  \rule{\textwidth}{1.2pt}
+\end{center}
+
+% ── COMMERCIAL MODEL ─────────────────────────────────────────
+\section*{Commercial Model}
+
+The AutoCommerce Platform is already built and live in production.
+You are not funding development --- you are licensing a working
+product. Pricing is made up of a \textbf{one-time setup fee}
+(onboarding, configuration, and go-live) and a
+\textbf{monthly platform fee} (hosting, maintenance, security
+updates, and support). Any feature not already implemented
+can be requested as a separate quoted add-on.
+
+% ── PACKAGE COMPARISON ───────────────────────────────────────
+\section*{Package Comparison}
+
+{\small
+\renewcommand{\arraystretch}{1.35}
+\begin{tabular}{@{}p{5.1cm}p{2.9cm}p{2.9cm}p{2.9cm}@{}}
+\toprule
+ & \textbf{Starter} & \textbf{Business} & \textbf{Enterprise} \\
+\midrule
+\textbf{Setup Fee (one-time)}   & \$1,500 & \$3,500 & \$7,500 \\
+\textbf{Monthly Platform Fee}   & \$149   & \$249   & \$399   \\
+\midrule
+\multicolumn{4}{@{}l}{\textit{Storefront}} \\
+White-Label Storefront          & \yes & \yes & \yes \\
+SEO-Optimised Pages             & \yes & \yes & \yes \\
+SSL / HTTPS                     & \yes & \yes & \yes \\
+\midrule
+\multicolumn{4}{@{}l}{\textit{Vehicle Compatibility Finder}} \\
+Search by Vehicle               & \no  & \yes & \yes \\
+Search by Spec (cylinders, kW)  & \no  & \yes & \yes \\
+Vehicle Database Customisation  & \no  & \no  & \yes \\
+\midrule
+\multicolumn{4}{@{}l}{\textit{Admin Suite}} \\
+Orders \& PDF Invoice Export    & \yes & \yes & \yes \\
+Catalogue \& Inventory          & \yes & \yes & \yes \\
+Shipping Zones                  & \no  & \yes & \yes \\
+Coupons \& Promotions           & \no  & \yes & \yes \\
+Customer Management             & \no  & \yes & \yes \\
+Reviews \& Moderation           & \no  & \yes & \yes \\
+Analytics Dashboard             & \no  & \yes & \yes \\
+\midrule
+\multicolumn{4}{@{}l}{\textit{Customer Portal}} \\
+Order History \& Tracking       & \yes & \yes & \yes \\
+Addresses \& Profile            & \yes & \yes & \yes \\
+Wishlist                        & \no  & \yes & \yes \\
+After-Sales Support Tickets     & \no  & \yes & \yes \\
+\midrule
+\multicolumn{4}{@{}l}{\textit{Capacity}} \\
+Products                        & Up to 500 & Up to 5{,}000 & Unlimited \\
+Admin Accounts                  & 2         & 8             & Unlimited \\
+Languages                       & 1         & 2             & Unlimited \\
+\midrule
+\multicolumn{4}{@{}l}{\textit{Infrastructure \& Support}} \\
+Managed Hosting \& Backups      & \yes & \yes & \yes \\
+Email Support (72h SLA)         & \yes & \no  & \no  \\
+Priority Email (24h SLA)        & \no  & \yes & \no  \\
+WhatsApp + Email (4h SLA)       & \no  & \no  & \yes \\
+Monthly Check-in Call           & \no  & \no  & \yes \\
+\midrule
+\textbf{Go-Live Time}           & 2--3 weeks & 4--5 weeks & 5--6 weeks \\
+\bottomrule
+\end{tabular}
+}
+
+% ── OPTIONAL ADD-ONS ─────────────────────────────────────────
+\section*{Optional Add-Ons --- Quoted on Request}
+
+\noindent If Flamingo Car Care Tech Ltd.\ requires anything beyond
+what is already built, we will scope, quote, and deliver it
+transparently. No work begins without a written quote approved
+by the client.
+
+\medskip
+{\small
+\renewcommand{\arraystretch}{1.45}
+\begin{tabular}{@{}p{8.5cm}p{2.5cm}p{3.5cm}@{}}
+\toprule
+\textbf{Service} & \textbf{Price} & \textbf{Unit} \\
+\midrule
+Product catalogue data import     & \$300  & Per 500 products \\
+Vehicle database extension        & \$500  & Per country / region \\
+Additional language               & \$400  & Per language \\
+Payment gateway (Paystack, etc.)  & \$600  & Per gateway \\
+ERP / accounting integration      & \$1{,}000--2{,}000 & Per integration \\
+Custom UI / branding work         & \$350  & Per page / section \\
+Staff training session (2h, remote) & \$200 & Per session \\
+Dedicated support upgrade (4h, 7d) & \$200 & Per month add-on \\
+Custom feature development        & \$75   & Per hour, quoted first \\
+\bottomrule
+\end{tabular}
+}
+
+% ── NEGOTIATION ───────────────────────────────────────────────
+\section*{Open to Negotiation}
+
+We understand that launching a new digital channel is a significant
+decision, and we want to make this partnership work for both sides.
+The prices above are our standard rates based on comparable
+specialised automotive SaaS platforms and agency benchmarks ---
+substantially below the cost of a custom agency build of equivalent
+scope (typically \$30{,}000--\$80{,}000+).
+
+\medskip
+\noindent We are open to:
+\begin{itemize}[leftmargin=1.4em,itemsep=3pt]
+  \item \textbf{Phased payment structures} --- spreading the setup
+        fee over the first 2--3 months.
+  \item \textbf{Trial period} --- a reduced-rate first 3 months
+        to allow Flamingo to validate the platform before full
+        commitment.
+  \item \textbf{Annual billing discount} --- pay 12 months of
+        the monthly fee upfront and receive 2 months free
+        (approximately 17\% saving).
+  \item \textbf{Custom scoping} --- if the standard packages do
+        not exactly fit your needs, we are happy to build a
+        bespoke package around your catalogue size, feature
+        requirements, and budget.
+\end{itemize}
+
+\medskip
+\noindent\textit{To open a negotiation or request a custom quote,
+contact Mohamed Harbi at \texttt{hrbim756@gmail.com}.}
+
+% ── PAYMENT TERMS ───────────────────────────────────────────────
+\section*{Payment Terms}
+
+\begin{itemize}[leftmargin=1.4em,itemsep=4pt]
+  \item \textbf{Setup Fee:} 50\% on contract signature;
+        50\% on go-live confirmation.
+  \item \textbf{Monthly Fee:} invoiced monthly in advance from
+        the go-live date.
+  \item \textbf{Payment method:} international bank transfer
+        (SWIFT/IBAN), PayPal, or Wise.
+  \item \textbf{Currency:} United States Dollar (USD).
+  \item \textbf{Contract term:} minimum 12 months.
+  \item \textbf{Taxes:} prices are exclusive of any applicable
+        local taxes or withholding taxes.
+\end{itemize}
+
+% ── NOT INCLUDED ─────────────────────────────────────────────
+\section*{What Is Not Included}
+
+\begin{itemize}[leftmargin=1.4em,itemsep=3pt]
+  \item Third-party payment gateway transaction fees.
+  \item Domain name registration or renewal.
+  \item Physical delivery or logistics costs.
+  \item Product photography, copywriting, or translation.
+  \item Custom features not listed above (quoted separately).
+\end{itemize}
+
+% ── FOOTER ──────────────────────────────────────────────────
+\vfill
+\begin{center}
+  \small\color{gray}
+  Pricing valid until \textbf{03 October 2026}. All prices in
+  USD, exclusive of taxes.\\
+  Questions? Contact \textbf{Mohamed Harbi, Co-Founder} at
+  \texttt{hrbim756@gmail.com}.\\[0.2em]
+  \textit{AutoCommerce Engineering is a trading name pending formal
+  registration with the Tunisian RNE.}\\[0.2em]
+  \textit{This document is prepared exclusively for Flamingo
+  Car Care Tech Ltd.\ and is confidential.}
+\end{center}
+
+\end{document}

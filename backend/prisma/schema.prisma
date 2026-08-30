@@ -98,6 +98,7 @@ model User {
   reviews               Review[]
   wishlistItems         WishlistItem[]
   supportTickets        SupportTicket[]
+  invoices              Invoice[]
 }
 
 model Account {
@@ -431,6 +432,7 @@ model Order {
   items          OrderItem[]
   supportTickets SupportTicket[]
   payments       Payment[]
+  invoice        Invoice?
   createdAt      DateTime    @default(now())
   updatedAt      DateTime    @updatedAt
 
@@ -587,4 +589,63 @@ model Setting {
   key       String   @unique // e.g., "SITE_NAME", "CONTACT_EMAIL", "COD_ENABLED"
   value     String   @db.Text // Stored as JSON strings to support booleans, numbers, etc.
   updatedAt DateTime @updatedAt
+}
+
+// ─────────────────────────────────────────
+//  INVOICES / FACTURES
+// ─────────────────────────────────────────
+
+enum InvoiceStatus {
+  DRAFT
+  ISSUED
+  PAID
+  OVERDUE
+  CANCELLED
+}
+
+model Invoice {
+  id             String          @id @default(cuid())
+  sequenceNumber Int             @default(autoincrement()) @unique
+  invoiceNumber  String          @unique // e.g. "FACTURE#1"
+  issueDate      DateTime        @default(now())
+  dueDate        DateTime?
+  status         InvoiceStatus   @default(DRAFT)
+  
+  // Relations
+  customerId     String?
+  customer       User?           @relation(fields: [customerId], references: [id])
+  
+  orderId        String?         @unique
+  order          Order?          @relation(fields: [orderId], references: [id])
+  
+  // Snapshot data at time of generation/creation
+  clientName     String
+  clientAddress  String?
+  clientEmail    String?
+  clientPhone    String?
+  clientMf       String?         // Matricule Fiscal of client (B2B)
+  
+  notes          String?         @db.Text
+  subtotalHT     Float
+  totalTVA       Float
+  totalTTC       Float
+  amountInWords  String          @db.Text
+  
+  lines          InvoiceLine[]
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  @@index([status, createdAt])
+}
+
+model InvoiceLine {
+  id          String   @id @default(cuid())
+  invoiceId   String
+  invoice     Invoice  @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  description String
+  quantity    Int
+  unitPriceHT Float
+  vatRate     Float    @default(0.19)
+  vatAmount   Float
+  totalTTC    Float
 }

@@ -26,6 +26,7 @@ import { ShippingModule } from './shipping/shipping.module';
 import { ChatModule } from './chat/chat.module';
 import { OilFinderModule } from './oil-finder/oil-finder.module';
 import { MailModule } from './mail/mail.module';
+import { InvoicesModule } from './invoices/invoices.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
@@ -57,6 +58,7 @@ import { AppService } from './app.service';
     ShippingModule,
     ChatModule,
     OilFinderModule,
+    InvoicesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

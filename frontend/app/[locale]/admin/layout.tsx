@@ -14,7 +14,7 @@ import {
   LayoutDashboard, ShoppingCart, Package, Users, Tag,
   Truck, CreditCard, Star, Settings, ChevronRight,
   Menu, BarChart2, FolderTree, Layers, LogOut,
-  Search, ChevronDown, LifeBuoy, Mail
+  Search, ChevronDown, LifeBuoy, Mail, ShoppingBag, FileText
 } from 'lucide-react'
 
 type NavItemShape = {
@@ -233,6 +233,8 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   const NAV: NavItemShape[] = [
     { label: t('dashboard'), icon: LayoutDashboard, href: '/admin', exact: true },
     { label: t('orders'), icon: ShoppingCart, href: '/admin/orders', badge: t('badgeNew') },
+    { label: 'Factures', icon: FileText, href: '/admin/invoices' },
+    { label: 'Vente en boutique', icon: ShoppingBag, href: '/admin/pos' },
     {
       label: t('catalog'),
       icon: Package,
