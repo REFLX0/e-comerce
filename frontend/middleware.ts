@@ -24,7 +24,7 @@ async function getBackendAuth(req: NextRequest) {
     if (parts.length !== 3) return null
 
     // base64url → base64 → JSON
-    const padded = parts[1].replace(/-/g, '+').replace(/_/g, '/')
+    const padded = parts[1]!.replace(/-/g, '+').replace(/_/g, '/')
     const payload = JSON.parse(atob(padded))
 
     if (!payload || typeof payload.role !== 'string') return null
