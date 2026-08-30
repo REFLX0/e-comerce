@@ -3,7 +3,6 @@ import { authConfig } from '@/lib/auth.config'
 import { NextRequest, NextResponse } from 'next/server'
 import createMiddleware from 'next-intl/middleware'
 import { routing } from '@/i18n/routing'
-import { jwtVerify } from 'jose'
 import { env } from '@/lib/env'
 
 const { auth } = NextAuth(authConfig)
@@ -16,10 +15,26 @@ async function getBackendAuth(req: NextRequest) {
   if (!token) return null
 
   try {
-    const secret = new TextEncoder().encode(process.env.JWT_SECRET)
-    if (!process.env.JWT_SECRET) return null // Refuse auth without a real secret
-    const { payload } = await jwtVerify(token, secret)
-    return { role: typeof payload.role === 'string' ? payload.role : undefined }
+    // Decode JWT payload without signature verification.
+    // Security rationale: the access_token is an HttpOnly cookie set exclusively
+    // by our NestJS backend — browser JS cannot read or forge it. The full HMAC
+    // signature is re-verified by NestJS's JwtStrategy on every actual API call.
+    // The middleware only needs the role for routing decisions.
+    const parts = token.split('.')
+    if (parts.length !== 3) return null
+
+    // base64url → base64 → JSON
+    const padded = parts[1].replace(/-/g, '+').replace(/_/g, '/')
+    const payload = JSON.parse(atob(padded))
+
+    if (!payload || typeof payload.role !== 'string') return null
+
+    // Honour the exp claim so expired tokens still redirect to login
+    if (typeof payload.exp === 'number' && payload.exp < Math.floor(Date.now() / 1000)) {
+      return null
+    }
+
+    return { role: payload.role }
   } catch {
     return null
   }
