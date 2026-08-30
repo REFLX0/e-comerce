@@ -297,6 +297,7 @@ export interface FacetsResponse {
   volumes: { volume: string; count: number }[]
   brands: FacetBrand[]
   viscosities: FacetValue[]
+  categoryCounts: { id: string; count: number }[]
   priceRange: { min: number; max: number }
 }
 

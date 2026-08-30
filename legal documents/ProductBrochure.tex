@@ -1,0 +1,295 @@
+% ============================================================
+%  PRODUCT BROCHURE — AutoCommerce Platform
+%  Prepared for Flamingo Car Care Tech Ltd.
+%  Date: 04 August 2026
+%  Version: 2.0
+%  Compile with pdflatex:  pdflatex ProductBrochure.tex
+% ============================================================
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[a4paper,margin=2.5cm]{geometry}
+\usepackage{xcolor}
+\usepackage{sectsty}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage{pifont}
+
+\newcommand{\yes}{\textcolor{accent}{\ding{51}}}
+\newcommand{\no}{\textcolor{gray}{---}}
+
+\definecolor{accent}{RGB}{14,48,100}
+\definecolor{subaccent}{RGB}{42,105,191}
+\definecolor{highlight}{RGB}{230,243,255}
+
+\sectionfont{\color{accent}\Large}
+\subsectionfont{\color{subaccent}\normalsize}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{accent}\textbf{AutoCommerce Engineering}}
+\fancyhead[R]{\small\color{accent}Product Brochure}
+\fancyfoot[C]{\small\thepage}
+\fancyfoot[R]{\small\color{gray}Confidential --- Flamingo Car Care Tech Ltd.}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\begin{document}
+
+% ── TITLE BLOCK ─────────────────────────────────────────────
+\begin{center}
+  {\Huge\bfseries\color{accent}AutoCommerce Platform}\\[0.4em]
+  {\large\bfseries Product Brochure}\\[0.2em]
+  {\normalsize\color{gray}White-Label E-Commerce Platform for the
+  Automotive Industry}\\[0.3em]
+  {\normalsize Version 2.0 \textbar\ 04 August 2026}\\[1.2em]
+  \rule{\textwidth}{1.2pt}
+\end{center}
+
+% ── SECTION 1 ───────────────────────────────────────────────
+\section{Overview}
+
+AutoCommerce is an \textbf{enterprise-grade, white-label e-commerce
+platform built exclusively for the automotive industry}. It is
+designed for distributors of lubricants, motor oils, filters, and
+auto parts who want to sell online under their own brand.
+
+The platform is not a mock-up or a proof-of-concept. It is
+\textbf{live in production} today, powering the Tunisian storefront
+\texttt{kiosquetn.dev}. This means your tailored storefront can launch
+in \textbf{4--6 weeks}, not 6--12 months, at a fraction of the cost
+of a custom agency build --- with zero build risk.
+
+\medskip
+\noindent This brochure outlines every feature your team will have
+access to from day one.
+
+% ── SECTION 2 ───────────────────────────────────────────────
+\section{Key Features}
+
+\subsection{1. Vehicle-to-Parts Compatibility Finder}
+
+The core differentiator of the AutoCommerce Platform. Customers
+always buy the right oil or part for their car --- eliminating wrong
+orders, reducing returns, and building buyer confidence.
+
+\begin{itemize}[leftmargin=1.4em,itemsep=3pt]
+  \item \textbf{Four vehicle categories:} Automobile, Motorcycle,
+        Heavy Duty (trucks \& light commercial vehicles), and
+        Agricultural (tractors \& machinery).
+  \item \textbf{Search by vehicle:} brand $\rightarrow$ model
+        $\rightarrow$ engine variant, e.g.\ Toyota Land Cruiser ---
+        4.0 V6 Petrol.
+  \item \textbf{Search by technical specification:} number of
+        cylinders, power output (kW/hp), and fuel type --- for
+        customers who do not know their exact engine code.
+  \item \textbf{Guaranteed compatibility results:} only products
+        validated against the selected vehicle are displayed.
+  \item \textbf{Extendable vehicle database:} pre-loaded with
+        popular makes and models; fully configurable for any
+        market, including Nigerian vehicle types and African
+        market brands.
+\end{itemize}
+
+\subsection{2. White-Label Storefront}
+
+\begin{itemize}[leftmargin=1.4em,itemsep=3pt]
+  \item 100\% your brand: your logo, colours, domain, and identity.
+  \item Fully responsive for desktop, tablet, and mobile.
+  \item Product catalogue with search, smart filters, sorting, and
+        pagination.
+  \item Product pages with image gallery, technical spec table,
+        related products, and customer reviews.
+  \item Bilingual by default (English + any second language).
+  \item SEO-optimised product, category, and brand pages
+        (structured metadata, canonical URLs, sitemap).
+\end{itemize}
+
+\subsection{3. Admin Suite}
+
+A complete back-office for your operations team --- no technical
+knowledge required.
+
+\begin{center}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{@{}p{3.8cm}p{10.5cm}@{}}
+\toprule
+\textbf{Module} & \textbf{Capability} \\
+\midrule
+\textbf{Orders}       & Full order lifecycle (pending $\rightarrow$
+                         confirmed $\rightarrow$ shipped $\rightarrow$
+                         delivered $\rightarrow$ cancelled), with
+                         one-click PDF invoice export per order. \\
+\textbf{Catalogue}    & Add, edit, and archive products, categories,
+                         and brands. Bulk operations supported. \\
+\textbf{Inventory}    & Per-SKU real-time stock levels and automatic
+                         low-stock alerts in the dashboard. \\
+\textbf{Promotions}   & Coupon codes (percentage discount, fixed
+                         amount, free shipping) with usage limits,
+                         expiry dates, and per-customer controls. \\
+\textbf{Shipping}     & Shipping zones with configurable delivery
+                         prices and estimated delivery time (ETA). \\
+\textbf{Customers}    & Customer profiles, role management (customer,
+                         professional, admin, blocked), and full
+                         order history. \\
+\textbf{Reviews}      & Pre-publication moderation of customer
+                         product reviews. \\
+\textbf{Support}      & Customer support ticket inbox and
+                         contact-message management. \\
+\textbf{Analytics}    & Sales and order volume dashboard with
+                         key metrics and revenue trends. \\
+\textbf{Settings}     & Site-wide configuration: payment options,
+                         delivery settings, and store preferences. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{4. Inventory Management}
+
+\begin{itemize}[leftmargin=1.4em,itemsep=3pt]
+  \item Real-time stock levels tracked per product and SKU.
+  \item Low-stock threshold alerts surfaced directly in the admin
+        dashboard.
+  \item Stock quantities automatically decremented on confirmed
+        order and reconciled on cancellation.
+\end{itemize}
+
+\subsection{5. Customer Portal}
+
+\begin{itemize}[leftmargin=1.4em,itemsep=3pt]
+  \item Order history with live status tracking per order.
+  \item Wishlist of saved products.
+  \item Profile management, delivery addresses, and saved delivery
+        regions.
+  \item Security settings: password change and active-session
+        management.
+  \item After-sales support tickets linked to specific orders.
+\end{itemize}
+
+\subsection{6. Security \& Infrastructure}
+
+\begin{itemize}[leftmargin=1.4em,itemsep=3pt]
+  \item JWT authentication stored in HttpOnly cookies (XSS-proof).
+  \item bcrypt password hashing (industry standard).
+  \item Helmet.js security headers on every API response.
+  \item NGINX rate limiting on all API routes (10 req/s general,
+        5 req/min on authentication endpoints).
+  \item Prisma parameterised queries (SQL-injection proof).
+  \item Cloud VM hosting with NGINX reverse proxy.
+  \item Automated daily PostgreSQL backups with off-site storage.
+  \item Sentry error tracking and \texttt{/api/health} monitoring
+        endpoint.
+\end{itemize}
+
+\subsection{7. Payment Support}
+
+\begin{itemize}[leftmargin=1.4em,itemsep=3pt]
+  \item \textbf{Cash on delivery} as the default payment method
+        (standard for most African and Middle Eastern markets).
+  \item Payment badge display for VISA, Mastercard, and popular
+        local payment gateways.
+  \item Additional payment gateway integrations available as
+        optional add-ons (quoted separately).
+\end{itemize}
+
+% ── SECTION 3 ───────────────────────────────────────────────
+\section{How We Launch Your Storefront}
+
+\begin{enumerate}[leftmargin=1.6em,itemsep=6pt]
+  \item \textbf{Discovery \& Configuration (Week 1--2):} we
+        configure your storefront with your brand identity
+        (logo, colours, domain), your vehicle database (makes,
+        models, engine types relevant to your market), shipping
+        zones (states / regions), and payment setup.
+  \item \textbf{Catalogue Import (Week 2--3):} your product data
+        is uploaded and mapped to vehicle compatibility. We provide
+        guidance and tooling to make this fast.
+  \item \textbf{Training \& Review (Week 3--4):} your operations
+        team receives hands-on training on the admin suite. A
+        full review session is held before go-live.
+  \item \textbf{Go Live (Week 4--6):} the storefront, admin, and
+        customer portal are launched on your live domain, with
+        hosting, SSL, backups, and monitoring all active.
+  \item \textbf{Post-Launch Support:} ongoing support, security
+        updates, and feature enhancements included in the monthly
+        platform fee.
+\end{enumerate}
+
+% ── SECTION 4 ───────────────────────────────────────────────
+\section{Why AutoCommerce for Flamingo Car Care Tech Ltd.}
+
+Flamingo Car Care Tech Ltd.\ distributes over 32 automotive care and
+maintenance product lines across Africa, selling through distributors,
+auto dealers, supermarkets, and car-wash businesses. An owned
+e-commerce channel would allow Flamingo to:
+
+\begin{itemize}[leftmargin=1.4em,itemsep=3pt]
+  \item \textbf{Sell directly to end consumers} --- vehicle owners,
+        mechanics, and detailing professionals --- without relying
+        solely on third-party retailers.
+  \item \textbf{Guarantee product authenticity} --- one of the most
+        significant purchase concerns in the African automotive
+        aftermarket.
+  \item \textbf{Enable vehicle-guided purchasing} --- customers
+        select their car first, then see only compatible Flamingo
+        products (engine oils, coolants, additives, filters).
+  \item \textbf{Manage and scale inventory} across warehouse
+        locations with real-time stock visibility.
+  \item \textbf{Run promotions and loyalty campaigns} through the
+        integrated coupon and promotion engine.
+  \item \textbf{Own customer data and relationships} --- order
+        history, contact details, and re-engagement opportunities.
+\end{itemize}
+
+% ── SECTION 5 ───────────────────────────────────────────────
+\section{Pricing Overview}
+
+{\small
+\renewcommand{\arraystretch}{1.6}
+\begin{tabular}{@{}p{5.1cm}p{2.9cm}p{2.9cm}p{2.9cm}@{}}
+\toprule
+ & \textbf{Starter} & \textbf{Business} & \textbf{Enterprise} \\
+\midrule
+\textbf{Setup Fee (one-time)} & \$1,500 & \$3,500 & \$7,500 \\
+\textbf{Monthly Fee}          & \$149/mo & \$249/mo & \$399/mo \\
+\midrule
+\multicolumn{4}{@{}l}{\textit{Included features}} \\
+White-Label Storefront \& SEO & \yes & \yes & \yes \\
+Orders, Catalogue \& Inventory & \yes & \yes & \yes \\
+Customer Portal (basic)      & \yes & \yes & \yes \\
+Vehicle Compatibility Finder & \no  & \yes & \yes \\
+Shipping, Promotions, Analytics & \no & \yes & \yes \\
+Wishlist \& Support Tickets  & \no  & \yes & \yes \\
+Vehicle DB Customisation     & \no  & \no  & \yes \\
+\multicolumn{4}{@{}l}{\textit{Capacity}} \\
+Products                     & 500 & 5,000 & Unlimited \\
+Admin accounts               & 2   & 8     & Unlimited \\
+Languages                    & 1   & 2     & Unlimited \\
+Support SLA                  & 72h email & 24h email & 4h WhatsApp \\
+\midrule
+\textbf{Go-Live Time} & 2--3 weeks & 4--5 weeks & 5--6 weeks \\
+\bottomrule
+\end{tabular}
+}
+
+\noindent\textit{Full commercial terms, optional add-ons, and payment
+conditions are provided in the attached Pricing Sheet.}
+
+% ── FOOTER ──────────────────────────────────────────────────
+\vfill
+\begin{center}
+  \small\color{gray}
+  \textbf{AutoCommerce Engineering} \textbar\
+  \texttt{hrbim756@gmail.com} \textbar\
+  Mohamed Harbi, Co-Founder \textbar\
+  \texttt{hrbim756@gmail.com}\\[0.2em]
+  \textit{AutoCommerce Engineering is a trading name pending formal
+  registration with the Tunisian RNE.}\\[0.2em]
+  \textit{This document is prepared exclusively for Flamingo Car Care
+  Tech Ltd.\ and is confidential.}
+\end{center}
+
+\end{document}

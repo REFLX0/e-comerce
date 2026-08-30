@@ -11,6 +11,7 @@ import * as crypto from 'crypto';
 import { generateDeliveryNotePDF } from '../admin/invoice-pdf';
 import { ShippingService } from '../shipping/shipping.service';
 import { MailService } from '../mail/mail.service';
+import { numberToWordsDT } from '../common/utils/number-to-words';
 
 @Injectable()
 export class OrdersService {
@@ -127,7 +128,27 @@ export class OrdersService {
             }),
           },
         },
-        include: { items: true },
+      });
+
+      // Also create an Invoice automatically
+      const invoiceSubtotalHT = discountedHT;
+      const invoiceTVA = tva;
+      const invoiceTTC = totalAmount;
+      const amountInWords = numberToWordsDT(invoiceTTC);
+
+      const invoiceLines = dto.items.map((item) => {
+        const variant = variants.find((v) => v.id === item.variantId)!;
+        const lineHT = item.quantity * variant.price;
+        const vatAmount = Math.round(lineHT * TVA_RATE * 100) / 100;
+        const lineTTC = lineHT + vatAmount;
+        return {
+          description: `${variant.product.nameFr} - ${variant.volume}`,
+          quantity: item.quantity,
+          unitPriceHT: variant.price,
+          vatRate: TVA_RATE,
+          vatAmount,
+          totalTTC: lineTTC,
+        };
       });
 
       // Decrement stock
@@ -146,6 +167,31 @@ export class OrdersService {
           amount: totalAmount,
           status: 'PENDING',
         },
+      });
+
+      const invoice = await tx.invoice.create({
+        data: {
+          invoiceNumber: '', // placeholder
+          issueDate: new Date(),
+          status: 'ISSUED',
+          customerId: userId ?? null,
+          orderId: created.id,
+          clientName: dto.shipping.fullName,
+          clientAddress: `${dto.shipping.city}, ${dto.shipping.wilaya}`,
+          clientPhone: dto.shipping.phone,
+          subtotalHT: invoiceSubtotalHT,
+          totalTVA: invoiceTVA,
+          totalTTC: invoiceTTC,
+          amountInWords,
+          lines: {
+            create: invoiceLines,
+          },
+        },
+      });
+
+      await tx.invoice.update({
+        where: { id: invoice.id },
+        data: { invoiceNumber: `FACTURE#${invoice.sequenceNumber}` }
       });
 
       return created;

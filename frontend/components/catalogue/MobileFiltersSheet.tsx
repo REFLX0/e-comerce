@@ -28,6 +28,8 @@ interface MobileFiltersSheetProps {
   hideCategories?: boolean
   /** Hide the brands section inside the sheet (fixed brand context pages). */
   hideBrands?: boolean
+  /** Base filters to apply to the facets query (e.g. { brandSlug: slug } on brand pages) */
+  baseFilters?: Record<string, any>
 }
 
 /**
@@ -40,6 +42,7 @@ export function MobileFiltersSheet({
   triggerLabel,
   hideCategories,
   hideBrands,
+  baseFilters,
 }: MobileFiltersSheetProps) {
   const t = useTranslations('Catalogue')
   const searchParams = useSearchParams()
@@ -136,6 +139,7 @@ export function MobileFiltersSheet({
               onDraftChange={handleDraftChange}
               hideCategories={hideCategories}
               hideBrands={hideBrands}
+              baseFilters={baseFilters}
             />
           </div>
         </div>

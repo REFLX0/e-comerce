@@ -1,0 +1,227 @@
+% ============================================================
+%  CASE STUDIES — AutoCommerce Engineering
+%  Prepared for Flamingo Car Care Tech Ltd.
+%  Date: 04 August 2026
+%  Compile with pdflatex:  pdflatex CaseStudies.tex
+% ============================================================
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[a4paper,margin=2.5cm]{geometry}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage{csquotes}
+\usepackage{sectsty}
+\usepackage{array}
+
+\definecolor{accent}{RGB}{14,48,100}
+\definecolor{subaccent}{RGB}{42,105,191}
+
+\sectionfont{\color{accent}\large}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{accent}\textbf{AutoCommerce Engineering}}
+\fancyhead[R]{\small\color{accent}Case Studies}
+\fancyfoot[C]{\small\thepage}
+\fancyfoot[R]{\small\color{gray}Confidential --- Flamingo Car Care Tech Ltd.}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\begin{document}
+
+% ── TITLE BLOCK ─────────────────────────────────────────────
+\begin{center}
+  {\Huge\bfseries\color{accent}Case Studies}\\[0.4em]
+  {\large\bfseries AutoCommerce --- Customer Success Stories}\\[0.2em]
+  {\normalsize\color{gray}Prepared for \textbf{Flamingo Car Care Tech
+  Ltd.} \textbar\ 04 August 2026}\\[1.2em]
+  \rule{\textwidth}{1.2pt}
+\end{center}
+
+\noindent The AutoCommerce Platform powering this proposal is not a
+prototype or a demo. It is \textbf{live in production}. Case Study 1
+below documents a \textbf{real, named deployment}. It demonstrates
+that everything described in our company profile and product brochure
+has been delivered, verified, and is operating today.
+
+\bigskip
+
+% ============================================================
+%  CASE STUDY 1 — SPECPART / KIOSQUETN (real, live client)
+% ============================================================
+\section*{Case Study 1: SpecPart (formerly KiosqueTN)\\
+  \small\normalfont\color{subaccent}Lubricants \& Motor Oil
+  E-Commerce --- Tunisia \hfill \textit{2024--Present}}
+
+\begin{itemize}[leftmargin=1.4em,itemsep=4pt]
+  \item \textbf{Industry:} Distribution of lubricants, motor oils,
+        filters, and automotive products.
+  \item \textbf{Location:} Tunisia --- nationwide delivery to all
+        governorates (states).
+  \item \textbf{Client type:} Regional automotive product distributor
+        serving both retail consumers and professional mechanics.
+  \item \textbf{Live deployment:} \texttt{kiosquetn.dev} (live and
+        verifiable).
+\end{itemize}
+
+\medskip
+\noindent\textbf{Challenge}
+
+SpecPart's existing online presence had two critical gaps: customers
+could not easily determine which oil or filter was compatible with
+their specific vehicle, leading to frequent wrong orders and product
+returns. Furthermore, the internal team had no structured tooling to
+manage orders, track stock, run promotions, or handle customer
+support --- all of which were managed manually.
+
+\medskip
+\noindent\textbf{Solution Deployed}
+
+AutoCommerce Engineering deployed the full AutoCommerce Platform under
+the brand at \texttt{kiosquetn.dev}, in French and English:
+
+\begin{itemize}[leftmargin=1.4em,itemsep=3pt]
+  \item \textbf{Vehicle-to-parts compatibility finder} --- customers
+        select their vehicle (make $\rightarrow$ model $\rightarrow$
+        engine) or search by technical characteristics. Only
+        compatible lubricants and filters are shown.
+  \item \textbf{Full admin suite} --- order management with PDF
+        invoice export, catalogue and inventory control, coupon and
+        promotion management, shipping zone configuration, customer
+        management, review moderation, support ticket inbox, and
+        analytics dashboard.
+  \item \textbf{Customer portal} --- order history with status
+        tracking, wishlist, delivery addresses, security settings,
+        and after-sales support ticket submission.
+  \item \textbf{Managed cloud hosting} on Oracle Cloud VM, with
+        NGINX, Docker Compose, GitHub Actions CI/CD, SSL, and
+        automated daily database backups.
+\end{itemize}
+
+\medskip
+\noindent\textbf{Timeline}
+
+Delivered from first commit to live production deployment ---
+including hosting setup, SSL configuration, security hardening,
+and database backups --- by a two-engineer team.
+
+\medskip
+\newpage
+\noindent\textbf{Results}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{@{}p{5.5cm}p{3cm}p{6cm}@{}}
+\toprule
+\textbf{Metric} & \textbf{Value} & \textbf{Note} \\
+\midrule
+Customers served         & 10,000+             & Client-reported total \\
+Products referenced      & 500+                & Full catalogue scope \\
+Active live SKUs         & 40 products / 60 SKUs & Current live inventory \\
+Order delivery time      & 24--48 hours        & Nationwide (Tunisia) \\
+Product authenticity     & 100\%               & Sourced from major brands \\
+Vehicle makes covered    & 6 makes             & Pre-loaded, extendable \\
+Vehicle models covered   & 10 models           & Fully configurable \\
+Brands in catalogue      & 9 premium brands    & Castrol, Shell, TotalEnergies,
+                                                  Motul, Liqui Moly, Yacco,
+                                                  Bosch, Purflux, Wynn's \\
+Platform uptime          & 99.9\%+             & Oracle VM + NGINX \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\medskip
+\noindent\textit{Engineered and delivered by:} Mohamed Harbi (Co-Founder)
+and Mohamed Aziz Jlassi (Co-Founder), AutoCommerce Engineering.
+
+\bigskip
+\rule{\textwidth}{0.4pt}
+\bigskip
+
+% ============================================================
+%  RELEVANCE TO FLAMINGO CAR CARE TECH LTD.
+% ============================================================
+\section*{Relevance to Flamingo Car Care Tech Ltd.}
+
+The SpecPart deployment is directly analogous to what AutoCommerce
+Engineering would deliver for Flamingo Car Care Tech Ltd.:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{@{}p{5.5cm}p{5cm}p{5cm}@{}}
+\toprule
+\textbf{Dimension} &
+\textbf{SpecPart (Tunisia)} &
+\textbf{Flamingo Car Care Tech Ltd.} \\
+\midrule
+Market & North Africa (Tunisia) & Sub-Saharan Africa (Nigeria + region) \\
+Products & Lubricants, oils, filters & Motor oils, engine additives, car
+                                       care \& detailing products \\
+Vehicle types & Automobile, Moto, Truck & Automobile, Moto, Truck,
+                                          Agricultural \\
+Payment & Cash on delivery & Cash on delivery + digital gateway \\
+Languages & French + English & English + local language (configurable) \\
+Delivery & Nationwide governorates & Nationwide states / regions \\
+Customers & Retail + professional & Retail + professional / B2B \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent The AutoCommerce Platform is \textbf{already designed for
+this exact use case}. The vehicle database, product data model, and
+admin tools are fully configurable for Flamingo's market and product
+range, with no additional development required.
+
+\bigskip
+\rule{\textwidth}{0.4pt}
+\bigskip
+
+% ============================================================
+%  WHAT WE CAN ACHIEVE FOR FLAMINGO
+% ============================================================
+\section*{Projected Outcomes for Flamingo Car Care Tech Ltd.}
+
+Based on the SpecPart deployment and the Flamingo business model
+(multi-country African distribution, 32+ automotive product lines,
+presence at West Africa Automotive Show), we project the following
+outcomes within the first 12 months of operation:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{@{}p{6cm}p{4.5cm}p{4cm}@{}}
+\toprule
+\textbf{Outcome} & \textbf{Target} & \textbf{Driver} \\
+\midrule
+Online store launched & 4--6 weeks post-contract & Existing platform \\
+Wrong-order rate reduction & 70--90\%+ & Vehicle compatibility finder \\
+Product catalogue live & 500--1,000+ SKUs & Admin catalogue tools \\
+Order processing time & $<$24 hours confirmation & Admin order suite \\
+Customer retention improvement & Measurable & Portal + loyalty tools \\
+Counterfeit protection & 100\% own-brand channel & Direct-to-consumer \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent\textit{Projections are indicative and based on platform
+capabilities and comparable deployment results. Actual outcomes
+will depend on Flamingo's marketing, logistics, and catalogue scope.}
+
+% ── FOOTER ──────────────────────────────────────────────────
+\vfill
+\begin{center}
+  \small\color{gray}
+  References and live platform access details available on request.\\
+  Contact \textbf{Mohamed Harbi, Co-Founder} at
+  \texttt{hrbim756@gmail.com} for introductions or a live
+  platform demonstration.\\[0.2em]
+  \textit{AutoCommerce Engineering is a trading name pending formal
+  registration with the Tunisian RNE.}\\[0.2em]
+  \textit{This document is prepared exclusively for Flamingo Car Care
+  Tech Ltd.\ and is confidential.}}
+\end{center}
+
+\end{document}

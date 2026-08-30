@@ -15,7 +15,7 @@ COPY package*.json ./
 COPY prisma ./prisma/
 
 # Install all deps (including devDependencies for the build)
-RUN npm ci
+RUN npm install
 
 # Generate Prisma client against the schema
 RUN npx prisma generate

@@ -5,7 +5,7 @@ WORKDIR /app
 
 # Copy from root context (build context is the repo root)
 COPY frontend/package.json frontend/package-lock.json* ./
-RUN npm ci
+RUN npm install
 
 # ── Stage 2: Builder ──────────────────────────────────────────────────────────
 FROM node:20-alpine AS builder
