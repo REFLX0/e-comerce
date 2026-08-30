@@ -113,6 +113,7 @@ services:
     container_name: specpart-frontend
     env_file: backend/.env
     environment:
+      - PORT=3000
       - NODE_ENV=production
       # Internal API proxy: Next.js rewrites /api/* → nginx → backend
       - API_PROXY_ORIGIN=http://nginx:8082
