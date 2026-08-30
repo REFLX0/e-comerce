@@ -222,13 +222,13 @@ export function ChatWidget() {
                   <div
                     className="relative overflow-hidden rounded-full"
                     style={{
-                      width: 42, height: 42,
-                      background: '#fff',
-                      boxShadow: '0 0 0 2px rgba(212,167,106,0.5)',
+                      width: 44, height: 44,
+                      background: '#0d162d',
+                      boxShadow: '0 0 0 2px rgba(212,167,106,0.6)',
                     }}
                   >
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src="/logo.jpg" alt="Specpart" className="h-full w-full object-cover" />
+                    <img src="/chatbotlogo.png" alt="Specpart AI" className="h-full w-full object-cover" />
                     <span
                       className="absolute bottom-0.5 right-0.5 h-2.5 w-2.5 rounded-full border-2"
                       style={{ background: '#22c55e', borderColor: '#16254c' }}
@@ -349,13 +349,13 @@ export function ChatWidget() {
                   {/* Bot avatar in messages */}
                   {msg.role === 'assistant' && (
                     <div style={{
-                      width: 28, height: 28, borderRadius: '50%',
+                      width: 30, height: 30, borderRadius: '50%',
                       overflow: 'hidden', flexShrink: 0,
-                      background: '#fff',
-                      boxShadow: '0 0 0 2px rgba(212,167,106,0.4)',
+                      background: '#0d162d',
+                      boxShadow: '0 0 0 2px rgba(212,167,106,0.5)',
                     }}>
                       {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src="/logo.jpg" alt="Specpart" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      <img src="/chatbotlogo.png" alt="Specpart AI" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                     </div>
                   )}
 
@@ -378,13 +378,13 @@ export function ChatWidget() {
                         : {
                             background: '#fff',
                             color: '#1f2937',
-                            boxShadow: '0 1px 4px rgba(0,0,0,0.07)',
-                            border: '1px solid rgba(22,37,76,0.06)',
+                            boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+                            border: '1px solid rgba(22,37,76,0.07)',
                           }),
                     }}>
                       {msg.content}
                     </div>
-                    <span style={{ fontSize: 10, color: '#9ca3af', marginTop: 4, padding: '0 4px' }}>
+                    <span style={{ fontSize: 10, color: '#9ca3af', marginTop: 3, padding: '0 4px' }}>
                       {msg.time}
                     </span>
                   </div>
@@ -395,26 +395,25 @@ export function ChatWidget() {
               {isLoading && (
                 <div className="msg-bubble" style={{ display: 'flex', alignItems: 'flex-end', gap: 8 }}>
                   <div style={{
-                    width: 28, height: 28, borderRadius: '50%',
-                    overflow: 'hidden', flexShrink: 0, background: '#fff',
-                    boxShadow: '0 0 0 2px rgba(212,167,106,0.4)',
+                    width: 30, height: 30, borderRadius: '50%',
+                    overflow: 'hidden', flexShrink: 0,
+                    background: '#0d162d',
+                    boxShadow: '0 0 0 2px rgba(212,167,106,0.5)',
                   }}>
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src="/logo.jpg" alt="Specpart" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    <img src="/chatbotlogo.png" alt="Specpart AI" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                   </div>
                   <div style={{
-                    background: '#fff', borderRadius: '18px 18px 18px 4px',
-                    padding: '12px 16px', display: 'flex', alignItems: 'center', gap: 5,
-                    boxShadow: '0 1px 4px rgba(0,0,0,0.07)',
-                    border: '1px solid rgba(22,37,76,0.06)',
+                    padding: '10px 14px', borderRadius: '18px 18px 18px 4px',
+                    background: '#fff', boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+                    border: '1px solid rgba(22,37,76,0.07)',
+                    display: 'flex', alignItems: 'center', gap: 5,
                   }}>
-                    <span className="dot-1" style={{ width: 7, height: 7, borderRadius: '50%', background: '#D4A76A', display: 'block' }} />
-                    <span className="dot-2" style={{ width: 7, height: 7, borderRadius: '50%', background: '#D4A76A', display: 'block' }} />
-                    <span className="dot-3" style={{ width: 7, height: 7, borderRadius: '50%', background: '#D4A76A', display: 'block' }} />
+                    <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#D4A76A', animation: 'bounce 1s infinite' }} />
+                    <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#D4A76A', animation: 'bounce 1s infinite 0.2s' }} />
+                    <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#D4A76A', animation: 'bounce 1s infinite 0.4s' }} />
                   </div>
                 </div>
-              )}
-
               {/* Quick action chips */}
               {showActions && !isLoading && (
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 7, paddingLeft: 36, paddingTop: 4 }}>
@@ -519,25 +518,29 @@ export function ChatWidget() {
           <button
             onClick={() => setIsOpen(!isOpen)}
             style={{
-              width: 56, height: 56, borderRadius: '50%', border: 'none',
+              width: 58, height: 58, borderRadius: '50%', border: 'none',
               background: isOpen
                 ? '#374151'
-                : 'linear-gradient(135deg, #16254c 0%, #1f356b 100%)',
+                : 'linear-gradient(135deg, #0d162d 0%, #16254c 100%)',
               color: '#fff',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               cursor: 'pointer',
               boxShadow: isOpen
                 ? '0 4px 16px rgba(0,0,0,0.25)'
-                : '0 8px 24px rgba(22,37,76,0.4)',
+                : '0 8px 28px rgba(13,22,45,0.45)',
               transform: isOpen ? 'rotate(0deg) scale(0.95)' : 'rotate(0deg) scale(1)',
               transition: 'all 0.25s cubic-bezier(0.34,1.56,0.64,1)',
             }}
             aria-label={t('openChat')}
           >
-            {isOpen
-              ? <X size={22} />
-              : <MessageCircle size={24} style={{ color: '#D4A76A' }} />
-            }
+            {isOpen ? (
+              <X size={24} />
+            ) : (
+              <div className="relative flex h-12 w-12 items-center justify-center overflow-hidden rounded-full ring-2 ring-[#D4A76A]/40">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/chatbotlogo.png" alt="Chat AI" className="h-full w-full object-cover" />
+              </div>
+            )}
           </button>
 
           {/* Unread badge */}

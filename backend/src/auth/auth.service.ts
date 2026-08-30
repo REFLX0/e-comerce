@@ -83,6 +83,7 @@ export class AuthService {
     id: string;
     email: string;
     name: string | null;
+    image?: string | null;
     phone: string | null;
     role: string;
     createdAt: Date;
@@ -113,6 +114,7 @@ export class AuthService {
         firstName,
         lastName: lastNameParts.join(' '),
         phone: user.phone ?? undefined,
+        image: user.image ?? undefined,
         role: user.role,
         addresses: [],
         createdAt: user.createdAt.toISOString(),

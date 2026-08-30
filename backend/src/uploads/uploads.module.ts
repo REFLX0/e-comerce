@@ -8,5 +8,6 @@ import { UploadsController } from './uploads.controller';
   imports: [MulterModule.register({ storage: memoryStorage() })],
   controllers: [UploadsController],
   providers: [UploadsService],
+  exports: [UploadsService],
 })
 export class UploadsModule {}

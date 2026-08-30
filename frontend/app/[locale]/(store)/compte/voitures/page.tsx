@@ -670,13 +670,20 @@ export default function MesVoituresPage() {
       </div>
 
       {/* Auto-compatibility Explanation Banner */}
-      <div className="relative overflow-hidden rounded-3xl border border-emerald-500/30 bg-gradient-to-r from-[#111f40] via-[#16254c] to-[#111f40] p-5 sm:p-6 text-white shadow-xl shadow-slate-900/5">
-        <div className="absolute -right-8 -bottom-8 h-32 w-32 rounded-full bg-emerald-500/10 blur-2xl pointer-events-none" />
-        <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="relative overflow-hidden rounded-3xl border border-blue-500/30 bg-[#051129] p-5 sm:p-6 text-white shadow-xl shadow-slate-900/10">
+        {/* Background Image: bluebg */}
+        <div 
+          className="absolute inset-0 bg-cover bg-right sm:bg-center bg-no-repeat opacity-95 pointer-events-none"
+          style={{ backgroundImage: "url('/bluebg.png')" }}
+        />
+        {/* Subtle gradient vignette to ensure high text readability */}
+        <div className="absolute inset-0 bg-gradient-to-r from-[#030b1e]/90 via-[#030b1e]/60 to-transparent pointer-events-none" />
+
+        <div className="relative z-10 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-4">
-            <div className="relative flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-emerald-400/30 bg-emerald-500/15 text-emerald-400 shadow-inner">
+            <div className="relative flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-emerald-400/30 bg-emerald-500/20 text-emerald-400 shadow-inner backdrop-blur-md">
               <Car size={24} strokeWidth={2} />
-              <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-emerald-500 ring-2 ring-[#16254c]">
+              <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-emerald-500 ring-2 ring-[#051129]">
                 <span className="h-1.5 w-1.5 rounded-full bg-white animate-ping" />
               </span>
             </div>
@@ -685,14 +692,14 @@ export default function MesVoituresPage() {
                 <span className="text-[10px] font-black uppercase tracking-wider text-emerald-400">
                   Compatibilité Automatisée
                 </span>
-                <span className="rounded-full bg-emerald-500/20 px-2 py-0.5 text-[9px] font-bold text-emerald-300">
+                <span className="rounded-full bg-emerald-500/20 px-2 py-0.5 text-[9px] font-bold text-emerald-300 backdrop-blur-sm">
                   100% Vérifié
                 </span>
               </div>
               <p className="text-sm font-bold text-white mt-0.5">
                 Filtrage intelligent de 46 000+ pièces
               </p>
-              <p className="text-xs text-white/70 mt-0.5 max-w-2xl">
+              <p className="text-xs text-white/80 mt-0.5 max-w-xl">
                 Lorsque vous sélectionnez un véhicule actif, l&apos;ensemble du catalogue n&apos;affiche que les pièces, filtres et huiles exactement conformes à votre motorisation.
               </p>
             </div>
@@ -700,7 +707,7 @@ export default function MesVoituresPage() {
           
           <Link
             href="/catalogue"
-            className="inline-flex items-center gap-2 self-start sm:self-center rounded-xl bg-white/10 hover:bg-white/20 border border-white/15 px-4 py-2.5 text-xs font-bold text-white transition-all backdrop-blur-md"
+            className="inline-flex items-center gap-2 self-start sm:self-center rounded-xl bg-white/15 hover:bg-white/25 border border-white/20 px-4 py-2.5 text-xs font-bold text-white transition-all backdrop-blur-md shadow-lg shadow-black/20"
           >
             <span>Explorer le catalogue</span>
             <ExternalLink size={13} className="text-[#D4A76A]" />

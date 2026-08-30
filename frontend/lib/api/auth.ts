@@ -30,6 +30,24 @@ export const authApi = {
   updateProfile: (payload: Partial<User>, ) =>
     apiPatch<User>('/users/me', payload),
 
+  uploadAvatar: async (file: File) => {
+    const formData = new FormData()
+    formData.append('file', file)
+    const res = await fetch('/api/users/me/avatar', {
+      method: 'POST',
+      credentials: 'include',
+      body: formData,
+    })
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({ message: 'Erreur lors du téléchargement de la photo' }))
+      throw new Error(err.message || 'Erreur lors du téléchargement')
+    }
+    return res.json() as Promise<User>
+  },
+
+  deleteAvatar: () =>
+    apiDelete<User>('/users/me/avatar'),
+
   addAddress: (address: Omit<Address, 'id'>, ) =>
     apiPost<Address>('/users/me/addresses', address),
 

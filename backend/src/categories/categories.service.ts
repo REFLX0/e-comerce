@@ -3,52 +3,66 @@ import { PrismaService } from '../prisma/prisma.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 
+export type TreeNode = {
+  id: string;
+  slug: string;
+  name: string;
+  image?: string | null;
+  sortOrder: number;
+  parentId?: string | null;
+  productCount: number;
+  children: TreeNode[];
+};
+
 @Injectable()
 export class CategoriesService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findAll() {
-    const categories = await this.prisma.category.findMany({
-      where: { parentId: null },
+  async findAll(): Promise<TreeNode[]> {
+    const all = await this.prisma.category.findMany({
+      orderBy: { sortOrder: 'asc' },
       include: {
-        children: {
-          orderBy: { sortOrder: 'asc' },
-          include: { 
-            _count: { select: { products: true } },
-            children: {
-              orderBy: { sortOrder: 'asc' },
-              include: { _count: { select: { products: true } } }
-            }
-          },
-        },
         _count: { select: { products: true } },
       },
-      orderBy: { sortOrder: 'asc' },
     });
-    return categories.map((c) => ({
-      id: c.id,
-      slug: c.slug,
-      name: c.nameFr,
-      image: c.imageUrl,
-      sortOrder: c.sortOrder,
-      productCount: c._count.products + c.children.reduce((total, child) => 
-        total + child._count.products + child.children.reduce((subTotal, subChild) => subTotal + subChild._count.products, 0)
-      , 0),
-      children: c.children.map((ch) => ({
-        id: ch.id,
-        slug: ch.slug,
-        name: ch.nameFr,
-        sortOrder: ch.sortOrder,
-        productCount: ch._count.products + ch.children.reduce((subTotal, subChild) => subTotal + subChild._count.products, 0),
-        children: ch.children.map((subCh) => ({
-          id: subCh.id,
-          slug: subCh.slug,
-          name: subCh.nameFr,
-          sortOrder: subCh.sortOrder,
-          productCount: subCh._count.products,
-        }))
-      })),
-    }));
+
+    const map = new Map<string, TreeNode>();
+    for (const c of all) {
+      map.set(c.id, {
+        id: c.id,
+        slug: c.slug,
+        name: c.nameFr,
+        image: c.imageUrl,
+        sortOrder: c.sortOrder,
+        parentId: c.parentId,
+        productCount: c._count.products,
+        children: [],
+      });
+    }
+
+    const roots: TreeNode[] = [];
+    for (const item of map.values()) {
+      if (item.parentId && map.has(item.parentId)) {
+        map.get(item.parentId)!.children.push(item);
+      } else {
+        roots.push(item);
+      }
+    }
+
+    function rollupProductCount(node: TreeNode): number {
+      let sum = node.productCount;
+      for (const child of node.children) {
+        sum += rollupProductCount(child);
+      }
+      node.productCount = sum;
+      return sum;
+    }
+
+    for (const root of roots) {
+      rollupProductCount(root);
+    }
+
+    return roots;
   }
 
   async getTree() {

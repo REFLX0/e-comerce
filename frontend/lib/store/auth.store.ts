@@ -29,6 +29,7 @@ function normalizeUser(user: User | Record<string, any>): User {
     ...(user as User),
     firstName: (user as Partial<User>).firstName ?? derivedFirstName,
     lastName: (user as Partial<User>).lastName ?? derivedLastName.join(' '),
+    image: (user as Partial<User>).image ?? null,
     role: ((user as Partial<User>).role ?? 'CUSTOMER') as User['role'],
     addresses: (user as Partial<User>).addresses ?? [],
     createdAt:

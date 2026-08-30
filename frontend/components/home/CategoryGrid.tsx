@@ -84,17 +84,11 @@ export function CategoryGrid() {
   })
   const t = useTranslations('Home')
 
-  // Show specific root categories in a specific order
-  const displaySlugs = ['karting', 'automobile', 'moto-karting', 'marine']
-  const dbRoots = categories
+  // Show canonical root categories in order
+  const displaySlugs = ['automobile', 'auto-pieces-rechange', 'moto-karting', 'marine']
+  const roots = categories
     ?.filter((c) => displaySlugs.includes(c.slug))
     .sort((a, b) => displaySlugs.indexOf(a.slug) - displaySlugs.indexOf(b.slug)) ?? []
-
-  // Add the "Pièce de rechange" static category
-  const roots = [
-    ...dbRoots,
-    { id: 'static-pieces-auto', name: 'Pièce de rechange', slug: 'pieces-auto' }
-  ]
 
   if (isLoading) {
     return (

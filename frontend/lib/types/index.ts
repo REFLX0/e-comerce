@@ -208,6 +208,7 @@ export interface User {
   name?: string
   firstName: string
   lastName: string
+  image?: string | null
   phone?: string
   role: UserRole
   addresses: Address[]

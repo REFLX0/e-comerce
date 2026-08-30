@@ -28,15 +28,24 @@ export class UsersService {
   }
 
   async update(id: string, dto: UpdateProfileDto) {
+    const dataToUpdate: any = {};
+    if (dto.firstName !== undefined || dto.lastName !== undefined) {
+      const existing = await this.prisma.user.findUnique({ where: { id } });
+      const currentParts = (existing?.name || '').trim().split(/\s+/);
+      const fName = dto.firstName !== undefined ? dto.firstName : (currentParts[0] || '');
+      const lName = dto.lastName !== undefined ? dto.lastName : (currentParts.slice(1).join(' ') || '');
+      dataToUpdate.name = `${fName} ${lName}`.trim();
+    }
+    if (dto.phone !== undefined) {
+      dataToUpdate.phone = dto.phone;
+    }
+    if (dto.image !== undefined) {
+      dataToUpdate.image = dto.image;
+    }
+
     const updated = await this.prisma.user.update({
       where: { id },
-      data: {
-        name:
-          dto.firstName && dto.lastName
-            ? `${dto.firstName} ${dto.lastName}`
-            : undefined,
-        phone: dto.phone,
-      },
+      data: dataToUpdate,
     });
     return this.toSafeUser(updated);
   }

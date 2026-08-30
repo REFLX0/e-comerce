@@ -27,9 +27,18 @@ function SidebarContent({
         <div className="absolute right-4 bottom-2 h-16 w-16 rounded-full bg-white/5 blur-xl pointer-events-none" />
         
         <div className="relative flex items-center gap-3.5">
-          <div className="relative flex h-13 w-13 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-tr from-[#D4A76A] to-[#F3D7A4] font-black text-slate-950 text-base shadow-lg shadow-black/20 ring-2 ring-white/20">
-            {initials}
-            <span className="absolute -bottom-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500 ring-2 ring-[#16254c]">
+          <div className="relative flex h-13 w-13 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-tr from-[#D4A76A] to-[#F3D7A4] font-black text-slate-950 text-base shadow-lg shadow-black/20 ring-2 ring-white/20 overflow-hidden">
+            {user?.image ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={user.image}
+                alt={fullName}
+                className="h-full w-full object-cover"
+              />
+            ) : (
+              initials
+            )}
+            <span className="absolute -bottom-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500 ring-2 ring-[#16254c] z-10">
               <span className="h-1.5 w-1.5 rounded-full bg-white" />
             </span>
           </div>

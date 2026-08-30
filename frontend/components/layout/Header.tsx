@@ -50,11 +50,19 @@ export default function Header() {
 
             <Link
               href={hasMounted && isAuthenticated ? (user?.role?.toUpperCase() === 'ADMIN' ? '/admin' : '/compte') : '/auth/login'}
-              className="hidden h-10 px-4 items-center justify-center rounded-lg bg-brand-primary text-white font-medium text-sm transition-all duration-200 hover:bg-brand-primary-light sm:flex gap-2"
+              className="hidden h-10 px-3.5 items-center justify-center rounded-xl bg-brand-primary text-white font-medium text-sm transition-all duration-200 hover:bg-brand-primary-light sm:flex gap-2.5 shadow-sm"
               aria-label={t('account')}
               title={user?.role?.toUpperCase() === 'ADMIN' ? 'Admin' : t('account')}
             >
-              {hasMounted && isAuthenticated ? t('account') : t('signIn')}
+              {hasMounted && isAuthenticated && user?.image ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={user.image}
+                  alt={user.firstName || 'Compte'}
+                  className="h-6 w-6 rounded-full object-cover ring-1 ring-white/30"
+                />
+              ) : null}
+              <span>{hasMounted && isAuthenticated ? (user?.firstName || t('account')) : t('signIn')}</span>
             </Link>
 
             <MiniCart />
