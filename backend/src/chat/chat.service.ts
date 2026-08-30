@@ -395,7 +395,7 @@ RÈGLES STRICTES :
                   type: 'ADD_TO_CART',
                   payload: { product, variant },
                 });
-                toolResult = `✅ "${product.nameFr}" (${variant.name ?? 'variante par défaut'}) ajouté au panier.`;
+                toolResult = `✅ "${product.nameFr}" (${variant.volume || 'variante par défaut'}) ajouté au panier.`;
               }
             }
           }
