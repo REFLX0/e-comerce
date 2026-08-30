@@ -414,6 +414,8 @@ export function ChatWidget() {
                     <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#D4A76A', animation: 'bounce 1s infinite 0.4s' }} />
                   </div>
                 </div>
+              )}
+
               {/* Quick action chips */}
               {showActions && !isLoading && (
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 7, paddingLeft: 36, paddingTop: 4 }}>

@@ -39,15 +39,15 @@ export default function ProfilPage() {
     }
 
     setUploadingPhoto(true)
-    const toastId = toast.loading('Téléchargement de la photo de profil...')
+    const toastId = toast.loading(t('photoUploading'))
 
     try {
       const updatedUser = await authApi.uploadAvatar(file)
       updateUser(updatedUser)
-      toast.success('Photo de profil mise à jour avec succès !', { id: toastId })
+      toast.success(t('photoUploadSuccess'), { id: toastId })
     } catch (err: any) {
       console.error('Avatar upload error:', err)
-      toast.error(err.message || 'Erreur lors de la mise à jour de la photo', { id: toastId })
+      toast.error(err.message || t('photoUploadError'), { id: toastId })
     } finally {
       setUploadingPhoto(false)
       if (fileInputRef.current) {
@@ -59,15 +59,15 @@ export default function ProfilPage() {
   const handleRemovePhoto = async () => {
     if (!user?.image) return
     setUploadingPhoto(true)
-    const toastId = toast.loading('Suppression de la photo de profil...')
+    const toastId = toast.loading(t('photoUploading'))
 
     try {
       const updatedUser = await authApi.deleteAvatar()
       updateUser(updatedUser)
-      toast.success('Photo de profil supprimée', { id: toastId })
+      toast.success(t('photoDeleteSuccess'), { id: toastId })
     } catch (err: any) {
       console.error('Avatar delete error:', err)
-      toast.error('Impossible de supprimer la photo', { id: toastId })
+      toast.error(t('photoDeleteError'), { id: toastId })
     } finally {
       setUploadingPhoto(false)
     }
@@ -86,9 +86,9 @@ export default function ProfilPage() {
         ...(form.birthday ? { birthday: form.birthday } : {}),
       })
       updateUser(updatedUser)
-      toast.success(t('profileUpdated') || 'Profil mis à jour avec succès')
+      toast.success(t('profileUpdated'))
     } catch {
-      toast.error(t('profileUpdateError') || 'Erreur lors de la mise à jour')
+      toast.error(t('profileUpdateError'))
     } finally {
       setSaving(false)
     }
@@ -103,10 +103,10 @@ export default function ProfilPage() {
       <div>
         <div className="inline-flex items-center gap-1.5 rounded-full bg-[#16254c]/5 px-3 py-1 text-xs font-semibold text-[#16254c] mb-2">
           <Sparkles size={13} className="text-[#D4A76A]" />
-          <span>Informations Personnelles</span>
+          <span>{t('personalInfo')}</span>
         </div>
-        <h1 className="text-2xl sm:text-3xl font-black text-[#16254c] tracking-tight">{t('myProfile') || 'Mon Profil'}</h1>
-        <p className="text-xs sm:text-sm text-slate-500 mt-1">{t('myProfileDesc') || 'Gérez votre photo de profil, vos coordonnées et vos préférences.'}</p>
+        <h1 className="text-2xl sm:text-3xl font-black text-[#16254c] tracking-tight">{t('myProfile')}</h1>
+        <p className="text-xs sm:text-sm text-slate-500 mt-1">{t('myProfileDesc')}</p>
       </div>
 
       {/* Avatar Card */}
@@ -132,7 +132,7 @@ export default function ProfilPage() {
               {uploadingPhoto && (
                 <div className="absolute inset-0 bg-[#16254c]/80 backdrop-blur-xs flex flex-col items-center justify-center gap-1.5 text-white z-20">
                   <Loader2 size={24} className="animate-spin text-[#D4A76A]" />
-                  <span className="text-[10px] font-bold">Envoi...</span>
+                  <span className="text-[10px] font-bold">{t('photoUploading')}</span>
                 </div>
               )}
             </div>
@@ -142,7 +142,7 @@ export default function ProfilPage() {
               type="button"
               onClick={() => fileInputRef.current?.click()}
               disabled={uploadingPhoto}
-              aria-label="Changer la photo"
+              aria-label={t('changePhoto')}
               className="absolute -bottom-2 -right-2 flex h-9 w-9 items-center justify-center rounded-2xl bg-[#16254c] text-white shadow-md hover:bg-[#223b76] hover:scale-105 active:scale-95 transition-all border-2 border-white cursor-pointer disabled:opacity-50"
             >
               <Camera size={16} className="text-[#D4A76A]" />
@@ -153,10 +153,10 @@ export default function ProfilPage() {
           <div className="flex-1 space-y-3">
             <div>
               <div className="flex items-center gap-2">
-                <p className="text-lg sm:text-xl font-bold text-[#16254c]">{fullName || 'Client'}</p>
+                <p className="text-lg sm:text-xl font-bold text-[#16254c]">{fullName || t('dearCustomer')}</p>
                 <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-emerald-700 border border-emerald-200">
                   <CheckCircle2 size={11} />
-                  <span>Compte actif</span>
+                  <span>{t('activeAccount')}</span>
                 </span>
               </div>
               <p className="text-xs sm:text-sm text-slate-500">{user?.email}</p>
@@ -178,7 +178,7 @@ export default function ProfilPage() {
                 className="inline-flex items-center gap-2 rounded-2xl bg-[#16254c] hover:bg-[#223b76] px-4 py-2.5 text-xs font-bold text-white shadow-sm transition-all hover:shadow-md active:scale-95 disabled:opacity-60 cursor-pointer"
               >
                 <Camera size={14} className="text-[#D4A76A]" />
-                <span>Changer la photo</span>
+                <span>{t('changePhoto')}</span>
               </button>
 
               {user?.image && (
@@ -189,14 +189,10 @@ export default function ProfilPage() {
                   className="inline-flex items-center gap-1.5 rounded-2xl bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 px-3.5 py-2.5 text-xs font-semibold transition-colors disabled:opacity-60 cursor-pointer"
                 >
                   <Trash2 size={13} />
-                  <span>Supprimer</span>
+                  <span>{t('removePhoto')}</span>
                 </button>
               )}
             </div>
-
-            <p className="text-[11px] text-slate-400">
-              Formats acceptés : JPG, PNG, WEBP. Taille maximale : 5 Mo.
-            </p>
           </div>
         </div>
       </div>
@@ -204,8 +200,8 @@ export default function ProfilPage() {
       {/* Profile Form */}
       <form onSubmit={handleSubmit} className="rounded-3xl border border-slate-200/90 bg-white p-6 sm:p-8 shadow-lg shadow-slate-900/5 space-y-6">
         <div className="border-b border-slate-100 pb-4">
-          <h2 className="text-base font-bold text-[#16254c]">Coordonnées du compte</h2>
-          <p className="text-xs text-slate-500">Mettez à jour vos données de contact pour vos livraisons et factures.</p>
+          <h2 className="text-base font-bold text-[#16254c]">{t('accountCoordinates')}</h2>
+          <p className="text-xs text-slate-500">{t('accountCoordinatesDesc')}</p>
         </div>
 
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">

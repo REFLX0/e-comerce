@@ -1,26 +1,24 @@
 "use client";
 
+import { useState, useRef, useEffect } from 'react'
 import { useLocale, useTranslations } from 'next-intl'
 import { useSearchParams } from 'next/navigation'
 import { useRouter, usePathname } from '@/i18n/routing'
+import { Globe, ChevronDown, Check } from 'lucide-react'
 
-/**
- * 3-locale cycler: fr → en → ar → fr.
- *
- * `ar` renders right-to-left — `dir="rtl"` is applied at the root layout
- * based on the active locale, so the switcher itself only needs to swap
- * the locale segment in the URL.
- */
-const LOCALE_CYCLE: Array<'fr' | 'en' | 'ar'> = ['fr', 'en', 'ar']
-
-// What to show on the button for the *current* locale (the next locale is
-// what the user will switch to — shown as the label so the affordance is
-// "click to switch to this").
-const NEXT_LABEL: Record<'fr' | 'en' | 'ar', string> = {
-  fr: 'EN', // currently fr → click to go to en
-  en: 'AR', // currently en → click to go to ar
-  ar: 'FR', // currently ar → click to go to fr
+interface LocaleOption {
+  code: 'fr' | 'en' | 'ar'
+  label: string
+  nativeName: string
+  flag: string
+  dir: 'ltr' | 'rtl'
 }
+
+const LOCALES: LocaleOption[] = [
+  { code: 'fr', label: 'Français', nativeName: 'Français', flag: '🇫🇷', dir: 'ltr' },
+  { code: 'en', label: 'English', nativeName: 'English', flag: '🇬🇧', dir: 'ltr' },
+  { code: 'ar', label: 'Arabe', nativeName: 'العربية', flag: '🇹🇳', dir: 'rtl' },
+]
 
 export function LanguageSwitcher() {
   const localeRaw = useLocale()
@@ -31,31 +29,76 @@ export function LanguageSwitcher() {
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const t = useTranslations('Layout')
+  
+  const [isOpen, setIsOpen] = useState(false)
+  const menuRef = useRef<HTMLDivElement>(null)
 
-  const currentIndex = LOCALE_CYCLE.indexOf(locale)
-  const nextLocale: 'fr' | 'en' | 'ar' = LOCALE_CYCLE[(currentIndex + 1) % LOCALE_CYCLE.length] ?? 'fr'
+  const currentLocale: LocaleOption = LOCALES.find((l) => l.code === locale) ?? LOCALES[0]!
 
-  const toggleLanguage = () => {
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setIsOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+
+  const switchLocale = (targetLocale: 'fr' | 'en' | 'ar') => {
+    setIsOpen(false)
+    if (targetLocale === locale) return
     const qs = searchParams.toString()
-    router.replace(qs ? `${pathname}?${qs}` : pathname, { locale: nextLocale })
+    router.replace(qs ? `${pathname}?${qs}` : pathname, { locale: targetLocale })
   }
 
   return (
-    <button
-      onClick={toggleLanguage}
-      className="flex h-11 min-w-11 items-center justify-center rounded-lg px-3 text-xs font-bold uppercase tracking-wider text-brand-primary/70 transition-colors duration-200 hover:bg-brand-primary/5 hover:text-brand-primary"
-      aria-label={t('changeLanguage')}
-      title={`${t('changeLanguage')} → ${nextLabelLong(nextLocale)}`}
-    >
-      {NEXT_LABEL[locale]}
-    </button>
-  )
-}
+    <div className="relative inline-block text-left" ref={menuRef}>
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="flex h-10 items-center gap-1.5 rounded-xl border border-slate-200/80 bg-slate-50/80 px-2.5 sm:px-3 text-xs font-bold text-slate-700 shadow-2xs hover:bg-slate-100/80 hover:border-slate-300 transition-all focus:outline-none focus:ring-2 focus:ring-[#16254c]/10"
+        aria-expanded={isOpen}
+        aria-haspopup="true"
+        aria-label={t('changeLanguage')}
+      >
+        <span className="text-sm">{currentLocale.flag}</span>
+        <span className="uppercase tracking-wider">{currentLocale.code}</span>
+        <ChevronDown size={13} className={`text-slate-400 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
+      </button>
 
-function nextLabelLong(locale: 'fr' | 'en' | 'ar'): string {
-  switch (locale) {
-    case 'fr': return 'Français'
-    case 'en': return 'English'
-    case 'ar': return 'العربية'
-  }
+      {isOpen && (
+        <div 
+          className="absolute right-0 mt-2 w-44 rounded-2xl border border-slate-200 bg-white p-1.5 shadow-xl shadow-slate-900/10 z-50 animate-in fade-in zoom-in-95 duration-150"
+          role="menu"
+        >
+          {LOCALES.map((item) => {
+            const isSelected = item.code === locale
+            return (
+              <button
+                key={item.code}
+                onClick={() => switchLocale(item.code)}
+                className={`flex w-full items-center justify-between gap-2.5 rounded-xl px-3 py-2 text-xs font-medium transition-colors ${
+                  isSelected
+                    ? 'bg-[#16254c]/8 text-[#16254c] font-bold'
+                    : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900'
+                }`}
+                role="menuitem"
+              >
+                <div className="flex items-center gap-2">
+                  <span className="text-base">{item.flag}</span>
+                  <div className="text-start">
+                    <p className="leading-tight">{item.nativeName}</p>
+                    <span className="text-[10px] text-slate-400 font-normal">{item.label}</span>
+                  </div>
+                </div>
+                {isSelected && (
+                  <Check size={14} className="text-[#D4A76A]" strokeWidth={2.5} />
+                )}
+              </button>
+            )
+          })}
+        </div>
+      )}
+    </div>
+  )
 }

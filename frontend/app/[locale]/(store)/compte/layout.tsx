@@ -1,12 +1,11 @@
 "use client";
 
 import { useState, useEffect } from 'react'
-import { Link } from '@/i18n/routing'
-import { usePathname, useRouter } from 'next/navigation'
+import { Link, usePathname, useRouter } from '@/i18n/routing'
 import { useAuthStore } from '@/lib/store/auth.store'
 import { useSession } from 'next-auth/react'
 import { authApi } from '@/lib/api/auth'
-import { useTranslations } from 'next-intl'
+import { useTranslations, useLocale } from 'next-intl'
 import {
   LayoutDashboard, Package, Heart, MapPin, ShieldCheck, Car,
   LifeBuoy, LogOut, User, ChevronRight, Menu, X, Sparkles, CheckCircle
@@ -49,7 +48,7 @@ function SidebarContent({
             <p className="truncate text-xs text-white/70 mt-0.5 font-normal">{user?.email}</p>
             <div className="mt-2 inline-flex items-center gap-1 rounded-full bg-white/10 px-2 py-0.5 text-[10px] font-semibold text-[#D4A76A] backdrop-blur-md">
               <Sparkles size={10} />
-              <span>Client Vérifié</span>
+              <span>{t('verifiedClient')}</span>
             </div>
           </div>
         </div>
@@ -106,6 +105,7 @@ function SidebarContent({
 export default function CompteLayout({ children }: { children: React.ReactNode }) {
   const t = useTranslations('Account')
   const layoutT = useTranslations('Layout')
+  const locale = useLocale()
 
   const NAV_ITEMS = [
     { href: '/compte',           icon: LayoutDashboard, label: t('dashboard'),     exact: true },
@@ -124,7 +124,6 @@ export default function CompteLayout({ children }: { children: React.ReactNode }
   const user = useAuthStore((s) => s.user)
   const router = useRouter()
   const pathname = usePathname()
-  const locale = pathname?.split('/')[1] === 'en' ? 'en' : 'fr'
   const [mobileOpen, setMobileOpen] = useState(false)
   const [isMounted, setIsMounted] = useState(false)
   const [isCheckingAuth, setIsCheckingAuth] = useState(true)
@@ -195,7 +194,7 @@ export default function CompteLayout({ children }: { children: React.ReactNode }
       <div className="flex min-h-screen items-center justify-center bg-slate-50">
         <div className="flex flex-col items-center gap-3">
           <div className="h-10 w-10 animate-spin rounded-full border-4 border-[#16254c]/20 border-t-[#16254c]" />
-          <p className="text-xs font-semibold text-slate-500 uppercase tracking-widest">Chargement de votre espace...</p>
+          <p className="text-xs font-semibold text-slate-500 uppercase tracking-widest">{t('loadingSpace')}</p>
         </div>
       </div>
     )
@@ -221,7 +220,7 @@ export default function CompteLayout({ children }: { children: React.ReactNode }
             <Menu size={18} />
           </button>
           <div>
-            <p className="text-xs text-slate-400 font-medium">Mon Espace Client</p>
+            <p className="text-xs text-slate-400 font-medium">{t('myClientSpace')}</p>
             <p className="text-sm font-bold text-[#16254c]">
               {NAV_ITEMS.find((i) => (i.exact ? pathname === i.href : pathname.startsWith(i.href)))?.label ?? t('myAccount')}
             </p>
@@ -243,7 +242,7 @@ export default function CompteLayout({ children }: { children: React.ReactNode }
             <div className="flex items-center justify-between p-4 border-b border-slate-100 bg-slate-50/80">
               <div className="flex items-center gap-2">
                 <div className="h-2 w-2 rounded-full bg-[#D4A76A]" />
-                <p className="font-bold text-sm text-[#16254c]">Menu Navigation</p>
+                <p className="font-bold text-sm text-[#16254c]">{t('navMenu')}</p>
               </div>
               <button 
                 onClick={() => setMobileOpen(false)} 
