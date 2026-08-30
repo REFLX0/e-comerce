@@ -1517,13 +1517,13 @@
         "selectOrder": "Select an order...",
         "returnReason": "Return Reason",
         "selectReason": "Select a reason...",
-        "reasons": {
-            "0": "Defective product",
-            "1": "Product not as described",
-            "2": "Wrong delivery",
-            "3": "Incomplete order",
-            "4": "Other"
-        },
+        "reasons": [
+            "Defective product",
+            "Product not as described",
+            "Wrong delivery",
+            "Incomplete order",
+            "Other"
+        ],
         "description": "Description (optional)",
         "descriptionPlaceholder": "Describe the problem in detail...",
         "submitReturn": "Submit return request",

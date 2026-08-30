@@ -10,14 +10,13 @@ interface LocaleOption {
   code: 'fr' | 'en' | 'ar'
   label: string
   nativeName: string
-  flag: string
   dir: 'ltr' | 'rtl'
 }
 
 const LOCALES: LocaleOption[] = [
-  { code: 'fr', label: 'Français', nativeName: 'Français', flag: '🇫🇷', dir: 'ltr' },
-  { code: 'en', label: 'English', nativeName: 'English', flag: '🇬🇧', dir: 'ltr' },
-  { code: 'ar', label: 'Arabe', nativeName: 'العربية', flag: '🇹🇳', dir: 'rtl' },
+  { code: 'fr', label: 'Français', nativeName: 'Français', dir: 'ltr' },
+  { code: 'en', label: 'English', nativeName: 'English', dir: 'ltr' },
+  { code: 'ar', label: 'عربي', nativeName: 'العربية', dir: 'rtl' },
 ]
 
 export function LanguageSwitcher() {
@@ -61,7 +60,8 @@ export function LanguageSwitcher() {
         aria-haspopup="true"
         aria-label={t('changeLanguage')}
       >
-        <span className="text-lg leading-none">{currentLocale.flag}</span>
+        <Globe size={14} className="text-slate-500" />
+        <span className="uppercase tracking-wider">{currentLocale.code}</span>
         <ChevronDown size={13} className={`text-slate-400 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
       </button>
 
@@ -84,10 +84,9 @@ export function LanguageSwitcher() {
                 role="menuitem"
               >
                 <div className="flex items-center gap-2">
-                  <span className="text-base">{item.flag}</span>
+                  <span className="w-7 text-center text-[11px] font-bold uppercase text-slate-500 bg-slate-100 rounded px-1 py-0.5">{item.code}</span>
                   <div className="text-start">
                     <p className="leading-tight">{item.nativeName}</p>
-                    <span className="text-[10px] text-slate-400 font-normal">{item.label}</span>
                   </div>
                 </div>
                 {isSelected && (

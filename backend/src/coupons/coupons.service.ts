@@ -51,7 +51,14 @@ export class CouponsService {
   }
 
   async remove(id: string) {
-    return this.prisma.coupon.delete({ where: { id } });
+    try {
+      return await this.prisma.coupon.delete({ where: { id } });
+    } catch (err: any) {
+      if (err?.code === 'P2025') {
+        throw new NotFoundException('Coupon not found');
+      }
+      throw err;
+    }
   }
 
   async toggleActive(id: string) {

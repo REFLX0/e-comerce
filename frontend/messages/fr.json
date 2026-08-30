@@ -1517,13 +1517,13 @@
         "selectOrder": "Sélectionner une commande…",
         "returnReason": "Motif du retour",
         "selectReason": "Sélectionner un motif…",
-        "reasons": {
-            "0": "Produit défectueux",
-            "1": "Produit non conforme à la description",
-            "2": "Mauvaise livraison",
-            "3": "Commande incomplète",
-            "4": "Autre"
-        },
+        "reasons": [
+            "Produit défectueux",
+            "Produit non conforme à la description",
+            "Mauvaise livraison",
+            "Commande incomplète",
+            "Autre"
+        ],
         "description": "Description (optionnel)",
         "descriptionPlaceholder": "Décrivez le problème en détail...",
         "submitReturn": "Soumettre la demande de retour",

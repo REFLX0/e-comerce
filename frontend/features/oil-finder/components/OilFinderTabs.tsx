@@ -121,20 +121,20 @@ export function OilFinderTabs() {
                       onClick={() => handleSelectType(type.id)}
                       className="group relative flex min-h-[220px] flex-col items-center justify-end overflow-hidden rounded-2xl border border-slate-200/80 bg-white text-center shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-[#D4A76A] hover:shadow-[0_12px_30px_rgba(212,167,106,0.2)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4A76A]"
                     >
-                      <div className="absolute inset-0 z-0 bg-slate-900 overflow-hidden">
+                      <div className="absolute inset-0 z-0 overflow-hidden rounded-2xl">
                         <img
                           src={type.image}
                           alt={type.label}
                           className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
                           onError={(e) => {
                             e.currentTarget.style.display = 'none';
-                            e.currentTarget.nextElementSibling?.classList.remove('hidden');
+                            (e.currentTarget.nextElementSibling as HTMLElement)?.classList.remove('hidden');
                           }}
                         />
-                        <div className="hidden flex h-full w-full items-center justify-center bg-gray-900 text-gray-400">
+                        <div className="hidden absolute inset-0 flex items-center justify-center bg-slate-100 text-slate-400">
                           <FallbackIcon size={40} />
                         </div>
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
                       </div>
                       <div className="relative w-full z-10 p-3.5 text-center backdrop-blur-md bg-white/95 border-t border-white/40 transition-colors group-hover:bg-white">
                         <span className="block text-sm font-black uppercase tracking-wider text-[#16254c] group-hover:text-[#D4A76A] transition-colors">
