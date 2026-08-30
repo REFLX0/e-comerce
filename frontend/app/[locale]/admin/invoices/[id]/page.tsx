@@ -79,7 +79,7 @@ export default function AdminInvoiceEditorPage({ params: { id, locale } }: { par
 
   const updateLine = (index: number, field: keyof InvoiceLine, value: any) => {
     const newLines = [...(form.lines || [])];
-    newLines[index] = { ...newLines[index], [field]: value };
+    newLines[index] = { ...newLines[index], [field]: value } as any;
     setForm(prev => ({ ...prev, lines: newLines }));
   };
 
