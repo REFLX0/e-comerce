@@ -41,7 +41,7 @@ export default function AdminInvoiceEditorPage({ params: { id, locale } }: { par
   const { data: customers } = useQuery({
     queryKey: ['admin-customers-minimal'],
     queryFn: async () => {
-      const res = await adminApi.getUsers({ limit: 1000, role: 'CUSTOMER' });
+      const res = (await adminApi.getUsers({ limit: 1000, role: 'CUSTOMER' })) as any;
       return res.data;
     }
   });
