@@ -1821,6 +1821,8 @@
         "findPart": "Find a part",
         "identifyPart": "Identify my part",
         "trackOrder": "Track my order",
+        "contactSupport": "Contact support",
+        "helpCenter": "Help center",
         "returnsRefunds": "Returns & Refunds",
         "instantReply": "Instant reply",
         "humanService": "Human service",
@@ -1831,7 +1833,7 @@
         "help": "Help",
         "newConversation": "New conversation",
         "contactAdvisor": "Contact an advisor",
-        "inputPlaceholder": "Type your message…",
+        "inputPlaceholder": "Type your message...",
         "openChat": "Open chat"
     },
     "OilFinder": {

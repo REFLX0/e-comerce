@@ -18,23 +18,34 @@ async function firstNonEmpty(
   limit = 6,
 ): Promise<any[]> {
   for (const q of queries) {
-    if (!q.trim()) continue;
-    const results = await searcher(q, limit);
+    if (!q || !q.trim()) continue;
+    const results = await searcher(q.trim(), limit);
     if (results && results.length > 0) return results;
   }
   return [];
 }
 
+function getProductPrice(p: any): string {
+  const price =
+    p.variants?.[0]?.priceTTC ??
+    p.variants?.[0]?.price ??
+    p.price ??
+    null;
+  return price !== null && price !== undefined ? `${Number(price).toFixed(3)} TND` : 'Prix sur demande';
+}
+
 function formatProducts(products: any[]): string {
   return products
-    .map(
-      (p: any) =>
-        `- [${p.nameFr || p.name}](/produit/${p.slug}) — ${p.price ?? p.variants?.[0]?.price ?? 'N/A'} TND`,
-    )
+    .map((p: any) => {
+      const name = p.nameFr || p.name || 'Produit';
+      const slug = p.slug;
+      const priceStr = getProductPrice(p);
+      return `- [${name}](/produit/${slug}) — ${priceStr}`;
+    })
     .join('\n');
 }
 
-/** Hard cap on messages[] to avoid runaway token costs */
+/** Cap on messages[] to avoid runaway token costs */
 const MAX_HISTORY = 20;
 const MAX_MSG_LEN = 2000;
 
@@ -75,18 +86,27 @@ export class ChatService {
       }));
 
     // ── System prompt ────────────────────────────────────────────────────────
-    let systemPrompt = `Tu es l'assistant IA officiel de Specpart (specpart.tn), une boutique tunisienne spécialisée dans les pièces auto, moto et marine.
+    let systemPrompt = `Tu es l'assistant IA intelligent, chaleureux et expert de Specpart (specpart.tn), la référence en Tunisie pour les pièces auto, lubrifiants & huiles moteur, accessoires moto et marine.
 
-RÈGLES STRICTES :
-1. Tu réponds UNIQUEMENT aux questions liées à Specpart : produits, pièces, huiles, commandes, livraison, retours, compatibilité.
-2. Si la question n'est PAS liée à l'automobile, aux pièces, aux huiles, ou à nos services, réponds : "Je suis uniquement là pour vous aider avec Specpart et ses produits. 😊"
-3. Ne réponds JAMAIS à des questions générales, politiques, ou hors-sujet.
-4. Si on te demande qui t'a créé : "J'ai été développé par l'équipe Specpart."
-5. Utilise les outils disponibles IMMÉDIATEMENT dès qu'un utilisateur cherche une pièce, une huile ou un accessoire.
-6. Inclus TOUJOURS les liens URL des produits trouvés par les outils.
-7. Pour le suivi de commandes : si un numéro est injecté dans le contexte SYSTÈME, communique-le directement. Ne refuse jamais un suivi de commande authentifié.
-8. Pour les huiles : si l'utilisateur donne une marque/modèle de voiture, utilise TOUJOURS l'outil oil_for_vehicle.
-9. INTERDIT : contacter l'admin, modifier des commandes, accéder à des systèmes externes.`;
+TON RÔLE & PERSONNALITÉ :
+- Tu es accueillant, serviable, concis et professionnel.
+- Tu réponds dans la MÊME LANGUE que le client (Français, Arabe / Derja tunisienne, ou Anglais).
+- Tu es un expert automobile : tu conseilles sur les huiles (viscosités 5W-40, 5W-30, 10W-40, normes ACEA/API, VW 504/507, etc.), les filtres, plaquettes et pièces de rechange.
+
+INFORMATIONS IMPORTANTES SUR SPECPART :
+- Boutique & Showroom : Jardin de Carthage, Tunis, Tunisie
+- Téléphone & Service Client : +216 29 294 195 (Lun–Sam 8h–18h)
+- Email : specpart@hotmail.com
+- Livraison : Partout en Tunisie sous 24h à 48h
+- Paiement : Paiement à la livraison (Cash on Delivery), Carte bancaire, Flouci
+- Retours : Garantie satisfait ou remboursé sous 14 jours
+
+RÈGLES D'ACTION :
+1. RECHERCHE PRODUITS & HUILES : Dès qu'un client mentionne un véhicule, une pièce ou une huile, utilise IMMÉDIATEMENT les outils (search_products ou oil_for_vehicle).
+2. LIENS CLIQUABLES : Inclus TOUJOURS les liens markdown fournis par les outils au format [Nom du Produit](/produit/slug) pour que l'utilisateur puisse cliquer dessus.
+3. CONTACT & SUPPORT : Si le client demande à contacter l'admin, un conseiller humain ou le support, fournis-lui gentiment les coordonnées directes (Tél: +216 29 294 195, Email: specpart@hotmail.com, ou [Page Contact](/contact)).
+4. SUIVI DE COMMANDE : Utilise les informations de commande authentifiées injectées par le système. Si non connecté, invite gentiment le client à se connecter ou à contacter le service client avec son numéro.
+5. HORS SUJET : Si la question n'a aucun rapport avec l'automobile, le bricolage auto ou Specpart, réponds poliment que tu es spécialisé dans l'univers automobile Specpart.`;
 
     // ── Inject user's own orders (authenticated only) ────────────────────────
     if (userEmail) {
@@ -96,18 +116,17 @@ RÈGLES STRICTES :
       });
       if (user?.orders.length) {
         systemPrompt +=
-          `\n\nREMARQUE SYSTÈME : L'utilisateur est connecté (${user.name ?? user.email}). Ses ${user.orders.length} dernières commandes :\n` +
+          `\n\nREMARQUE SYSTÈME : L'utilisateur est connecté (${user.name ?? user.email}). Ses dernières commandes :\n` +
           user.orders
             .map(
               (o) =>
-                `- Commande #${o.id.slice(-8).toUpperCase()} du ${o.createdAt.toLocaleDateString('fr-FR')} : ${o.status}, ${o.totalAmount} TND`,
+                `- Commande #${o.id.slice(-8).toUpperCase()} (ID: ${o.id}) du ${o.createdAt.toLocaleDateString('fr-FR')} : Statut: ${o.status}, Montant: ${o.totalAmount} TND`,
             )
             .join('\n');
       }
     }
 
     // ── IDOR-safe order tracking ─────────────────────────────────────────────
-    // Only inject order details if the user is authenticated AND owns the order.
     const lastUserMsg =
       safeMessages.slice().reverse().find((m) => m.role === 'user')?.content ?? '';
     const orderIdMatch = (lastUserMsg as string).match(
@@ -117,10 +136,9 @@ RÈGLES STRICTES :
     if (orderIdMatch && userEmail) {
       const rawId = orderIdMatch[1].toLowerCase();
       const order = await this.prisma.order.findFirst({
-        // Scope to the authenticated user — prevents IDOR
         where: { id: rawId, user: { email: userEmail } },
         include: {
-          items: { include: { product: { select: { nameFr: true } } } },
+          items: { include: { product: { select: { nameFr: true, slug: true } } } },
         },
       });
 
@@ -128,21 +146,19 @@ RÈGLES STRICTES :
         const statusMap: Record<string, string> = {
           PENDING: '⏳ En attente de confirmation',
           PROCESSING: '🔧 En préparation',
-          SHIPPED: '🚚 Expédiée',
-          DELIVERED: '✅ Livrée',
+          SHIPPED: '🚚 Expédiée (en cours de livraison)',
+          DELIVERED: '✅ Livrée avec succès',
           CANCELLED: '❌ Annulée',
         };
         const itemsList = order.items
-          .map((i) => `${i.quantity}x ${i.product.nameFr}`)
+          .map((i) => `${i.quantity}x [${i.product.nameFr}](/produit/${i.product.slug})`)
           .join(', ');
-        systemPrompt += `\n\n📦 COMMANDE TROUVÉE (authentifiée) : #${order.id.slice(-8).toUpperCase()} — Statut: ${statusMap[order.status] ?? order.status} — Total: ${order.totalAmount} TND — Articles: ${itemsList}. Communique ces informations directement.`;
-      } else if (orderIdMatch) {
-        // Order not found under this user — don't reveal whether it belongs to someone else
-        systemPrompt += `\n\n⚠️ Commande introuvable pour votre compte. Informe le client que nous n'avons pas trouvé cette commande.`;
+        systemPrompt += `\n\n📦 DÉTAILS DE LA COMMANDE DEMANDÉE : #${order.id.slice(-8).toUpperCase()} — Statut actuel: ${statusMap[order.status] ?? order.status} — Total: ${order.totalAmount} TND — Articles commandés: ${itemsList}. Réponds directement au client avec ces informations claires et rassurantes.`;
+      } else {
+        systemPrompt += `\n\n⚠️ La commande #${rawId.slice(-8).toUpperCase()} est introuvable sur le compte connecté. Invite le client à vérifier le numéro ou à contacter le support (+216 29 294 195).`;
       }
     } else if (orderIdMatch && !userEmail) {
-      // Unauthenticated — don't look up anything, just tell them to log in
-      systemPrompt += `\n\n⚠️ Le client n'est pas connecté. Pour consulter une commande, invite-le à se connecter d'abord.`;
+      systemPrompt += `\n\n⚠️ L'utilisateur demande le suivi de la commande #${orderIdMatch[1].slice(-8).toUpperCase()} mais n'est pas connecté. Invite-le poliment à [se connecter](/auth/login) pour sécuriser l'accès à ses commandes, ou à contacter le service client au +216 29 294 195.`;
     }
 
     // ── Tools ────────────────────────────────────────────────────────────────
@@ -152,14 +168,14 @@ RÈGLES STRICTES :
         function: {
           name: 'search_products',
           description:
-            'Rechercher des pièces, huiles, et accessoires dans le catalogue Specpart (40k+ produits)',
+            'Rechercher des pièces de rechange, lubrifiants, et accessoires dans le catalogue Specpart',
           parameters: {
             type: 'object',
             properties: {
               query: {
                 type: 'string',
                 description:
-                  "Les mots-clés de recherche (ex: 'plaquettes de frein clio 4', '5W-40 motul')",
+                  "Mots-clés de recherche (ex: 'filtre a huile polo', 'plaquettes clio 4', '5w40 castrol')",
               },
             },
             required: ['query'],
@@ -171,22 +187,22 @@ RÈGLES STRICTES :
         function: {
           name: 'oil_for_vehicle',
           description:
-            "Rechercher les huiles moteur compatibles pour un véhicule. TOUJOURS utiliser cet outil quand un client cherche une huile pour sa voiture.",
+            "Rechercher les huiles moteur recommandées pour un véhicule spécifique (marque, modèle, viscosité)",
           parameters: {
             type: 'object',
             properties: {
               make: {
                 type: 'string',
-                description: "Marque (ex: 'Volkswagen', 'Renault')",
+                description: "Marque (ex: 'Volkswagen', 'Renault', 'Peugeot', 'BMW')",
               },
               model: {
                 type: 'string',
-                description: "Modèle (ex: 'Polo', 'Clio')",
+                description: "Modèle (ex: 'Polo 6', 'Golf 7', 'Clio 4')",
               },
               viscosity: {
                 type: 'string',
                 description:
-                  "Viscosité préférée si connue (ex: '5W-40'). Laisser vide si inconnue.",
+                  "Viscosité optionnelle (ex: '5W-40', '5W-30', '10W-40')",
               },
             },
             required: ['make', 'model'],
@@ -205,12 +221,12 @@ RÈGLES STRICTES :
               make: { type: 'string', description: "Marque (ex: 'Renault')" },
               model: {
                 type: 'string',
-                description: "Modèle (ex: 'Clio 4')",
+                description: "Modèle (ex: 'Clio 4', 'Polo 6')",
               },
               part: {
                 type: 'string',
                 description:
-                  "La pièce recherchée (ex: 'plaquettes de frein')",
+                  "La pièce recherchée (ex: 'filtre a huile', 'plaquettes de frein', 'batterie')",
               },
             },
             required: ['make', 'model', 'part'],
@@ -222,19 +238,19 @@ RÈGLES STRICTES :
         function: {
           name: 'add_to_cart',
           description:
-            'Ajouter un produit au panier du client en utilisant son slug et optionnellement un identifiant de variante',
+            'Ajouter un produit au panier du client',
           parameters: {
             type: 'object',
             properties: {
               slug: {
                 type: 'string',
                 description:
-                  "Le slug du produit (ex: 'motul-8100-x-cess-5w40-5l')",
+                  "Le slug du produit (ex: 'huile-moteur-castrol-5w40-magnatec-c3-5l')",
               },
               variantId: {
                 type: 'string',
                 description:
-                  'ID de la variante si le produit en a plusieurs (ex: taille, contenance). Laisser vide pour prendre la première disponible.',
+                  'ID optionnel de la variante de packaging',
               },
             },
             required: ['slug'],
@@ -296,13 +312,13 @@ RÈGLES STRICTES :
           // ── search_products ───────────────────────────────────────────
           if (toolName === 'search_products') {
             const q = args.query?.trim() ?? '';
-            const products = q.length > 2
+            const products = q.length > 1
               ? await this.searchService.searchProducts(q, 6)
               : [];
             toolResult =
               products.length > 0
                 ? formatProducts(products)
-                : 'Aucun produit trouvé dans le catalogue.';
+                : 'Aucun produit trouvé avec cette recherche exacte dans le catalogue.';
           }
 
           // ── oil_for_vehicle ───────────────────────────────────────────
@@ -312,28 +328,24 @@ RÈGLES STRICTES :
             const viscosity = args.viscosity?.trim() ?? '';
 
             const queries = [
-              viscosity ? `huile moteur ${viscosity} ${make}` : '',
-              `huile moteur ${make} ${model}`,
+              viscosity ? `huile ${viscosity} ${make}` : '',
+              viscosity ? `huile ${viscosity}` : '',
+              `huile ${make} ${model}`,
               `huile moteur ${make}`,
+              'huile moteur 5W-40',
+              'huile moteur 5W-30',
             ];
 
             const products = await firstNonEmpty(
               queries,
               (q, l) => this.searchService.searchProducts(q, l),
+              6,
             );
 
             if (products.length > 0) {
-              toolResult = `Huiles recommandées pour ${make} ${model}${viscosity ? ` (${viscosity})` : ''} :\n${formatProducts(products)}`;
+              toolResult = `Huiles de haute qualité recommandées pour ${make} ${model}${viscosity ? ` (${viscosity})` : ''} :\n${formatProducts(products)}`;
             } else {
-              // Generic fallback
-              const fallback = await this.searchService.searchProducts(
-                'huile moteur 5W-40',
-                4,
-              );
-              toolResult =
-                fallback.length > 0
-                  ? `Nous n'avons pas trouvé d'huile spécifique pour ${make} ${model}. Voici nos huiles moteur polyvalentes :\n${formatProducts(fallback)}`
-                  : `Aucune huile trouvée pour ${make} ${model}. Consultez notre catalogue pour plus de choix.`;
+              toolResult = `Consultez notre catalogue complet d'huiles moteur sur notre boutique.`;
             }
           }
 
@@ -352,7 +364,7 @@ RÈGLES STRICTES :
             toolResult =
               products.length > 0
                 ? formatProducts(products)
-                : 'Aucune pièce compatible trouvée.';
+                : `Aucune pièce trouvée pour "${args.part}".`;
           }
 
           // ── add_to_cart ───────────────────────────────────────────────
@@ -361,7 +373,6 @@ RÈGLES STRICTES :
             const requestedVariantId = args.variantId?.trim() ?? '';
 
             if (!slug) {
-              this.logger.warn('add_to_cart called without a slug argument');
               toolResult = 'Identifiant produit manquant.';
             } else {
               const product = await this.prisma.product.findUnique({
@@ -375,17 +386,10 @@ RÈGLES STRICTES :
               });
 
               if (!product) {
-                this.logger.warn(
-                  `add_to_cart: no product for slug="${slug}"`,
-                );
                 toolResult = `Produit introuvable pour l'identifiant "${slug}".`;
               } else if (product.variants.length === 0) {
-                this.logger.warn(
-                  `add_to_cart: product "${slug}" has 0 variants`,
-                );
                 toolResult = `Le produit "${product.nameFr}" n'a pas de variante disponible.`;
               } else {
-                // Prefer requested variant, fall back to first
                 const variant =
                   (requestedVariantId
                     ? product.variants.find((v) => v.id === requestedVariantId)
@@ -395,7 +399,7 @@ RÈGLES STRICTES :
                   type: 'ADD_TO_CART',
                   payload: { product, variant },
                 });
-                toolResult = `✅ "${product.nameFr}" (${variant.volume || 'variante par défaut'}) ajouté au panier.`;
+                toolResult = `✅ "${product.nameFr}" (${variant.volume || '1 pièce'}) ajouté au panier.`;
               }
             }
           }

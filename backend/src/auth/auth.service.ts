@@ -9,6 +9,7 @@ import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcryptjs';
 import * as crypto from 'crypto';
 import { PrismaService } from '../prisma/prisma.service';
+import { MailService } from '../mail/mail.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { Redis } from 'ioredis';
@@ -21,6 +22,7 @@ export class AuthService {
     private readonly prisma: PrismaService,
     private readonly jwtService: JwtService,
     private readonly config: ConfigService,
+    private readonly mailService: MailService,
   ) {
     this.redis = new Redis({
       host: this.config.get('REDIS_HOST', 'localhost'),
@@ -45,6 +47,13 @@ export class AuthService {
       },
     });
 
+    // Send Welcome Email to User + New User Alert to Admin
+    this.mailService.sendWelcomeEmails({
+      email: user.email,
+      name: user.name ?? 'Client',
+      phone: user.phone,
+    }).catch(() => {});
+
     return this.generateTokens(user);
   }
 
@@ -57,6 +66,13 @@ export class AuthService {
 
     const valid = await bcrypt.compare(dto.password, user.passwordHash);
     if (!valid) throw new UnauthorizedException('Invalid credentials');
+
+    // Send security login notification
+    this.mailService.sendLoginAlerts({
+      email: user.email,
+      name: user.name ?? '',
+      role: user.role,
+    }).catch(() => {});
 
     return this.generateTokens(user);
   }
@@ -131,26 +147,7 @@ export class AuthService {
         where: { id: user.id },
         data: { resetPasswordToken: token, resetPasswordExpires: expires },
       });
-      const resetUrl = `${this.config.get('FRONTEND_URL', 'http://localhost:8082')}/auth/reset-password/${token}`;
-      try {
-        const { Resend } = await import('resend');
-        const resendApiKey = this.config.get('RESEND_API_KEY');
-        if (resendApiKey && resendApiKey !== 'local') {
-          const resend = new Resend(resendApiKey);
-          await resend.emails.send({
-            from: this.config.get('RESEND_FROM', 'noreply@specpart.tn'),
-            to: email,
-            subject: 'Réinitialisation de mot de passe',
-            html: `<p>Cliquez sur le lien ci-dessous pour réinitialiser votre mot de passe :</p><p><a href="${resetUrl}">${resetUrl}</a></p><p>Ce lien expire dans 1 heure.</p>`,
-          });
-        } else {
-          console.log(`[DEV] Password reset link for ${email}: ${resetUrl}`);
-        }
-      } catch (e: any) {
-        console.log(
-          `Email send failed for ${email}: ${e?.message ?? e}. Token: ${resetUrl}`,
-        );
-      }
+      await this.mailService.sendPasswordResetEmail(email, token);
     }
     return { message: 'If an account exists, a reset link was sent.' };
   }

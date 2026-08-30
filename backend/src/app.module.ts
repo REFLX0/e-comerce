@@ -25,6 +25,7 @@ import { SettingsModule } from './settings/settings.module';
 import { ShippingModule } from './shipping/shipping.module';
 import { ChatModule } from './chat/chat.module';
 import { OilFinderModule } from './oil-finder/oil-finder.module';
+import { MailModule } from './mail/mail.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
@@ -35,6 +36,7 @@ import { AppService } from './app.service';
     PrismaModule,
     CacheModule,  // ← Global Redis cache
     KafkaModule,  // ← Global Kafka Message Broker
+    MailModule,   // ← Global Transactional Mail Service
     AuthModule,
     UsersModule,
     ProductsModule,

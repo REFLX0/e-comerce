@@ -1821,6 +1821,8 @@
         "findPart": "ابحث عن قطعة",
         "identifyPart": "تعرّف على قطعتي",
         "trackOrder": "تتبع طلبي",
+        "contactSupport": "التواصل مع الدعم",
+        "helpCenter": "مركز المساعدة",
         "returnsRefunds": "الإرجاع والاسترداد",
         "instantReply": "رد فوري",
         "humanService": "خدمة بشرية",
@@ -1831,7 +1833,7 @@
         "help": "مساعدة",
         "newConversation": "محادثة جديدة",
         "contactAdvisor": "تواصل مع مستشار",
-        "inputPlaceholder": "اكتب رسالتك…",
+        "inputPlaceholder": "اكتب رسالتك...",
         "openChat": "افتح المحادثة"
     },
     "OilFinder": {

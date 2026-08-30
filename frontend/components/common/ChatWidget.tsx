@@ -12,13 +12,14 @@ import {
   RefreshCcw,
   Headset,
   Search,
-  ScanSearch,
-  Truck,
-  RotateCcw,
+  Package,
+  Headphones,
+  FileText,
   Paperclip,
   Mic,
   Zap,
   ShieldCheck,
+  User,
   MessageCircle,
   ChevronDown,
 } from 'lucide-react'
@@ -35,16 +36,76 @@ const now = (locale: string) =>
 
 const QUICK_ACTIONS = [
   { labelKey: 'findPart', icon: Search },
-  { labelKey: 'identifyPart', icon: ScanSearch },
-  { labelKey: 'trackOrder', icon: Truck },
-  { labelKey: 'returnsRefunds', icon: RotateCcw },
+  { labelKey: 'trackOrder', icon: Package },
+  { labelKey: 'contactSupport', icon: Headphones },
+  { labelKey: 'helpCenter', icon: FileText },
 ]
 
 const TRUST_ITEMS = [
-  { labelKey: 'instantReply', icon: Zap },
-  { labelKey: 'humanService', icon: Headset },
   { labelKey: 'secureData', icon: ShieldCheck },
+  { labelKey: 'instantReply', icon: Zap },
+  { labelKey: 'humanService', icon: User },
 ]
+
+function FormattedMessage({ text, locale }: { text: string; locale: string }) {
+  const lines = text.split('\n')
+
+  return (
+    <div className="space-y-1">
+      {lines.map((line, lineIdx) => {
+        if (!line.trim()) return <div key={lineIdx} className="h-1" />
+
+        const elements: React.ReactNode[] = []
+        const regex = /(\[([^\]]+)\]\(([^)]+)\)|\*\*([^*]+)\*\*)/g
+        let lastIdx = 0
+        let match: RegExpExecArray | null
+
+        while ((match = regex.exec(line)) !== null) {
+          if (match.index > lastIdx) {
+            elements.push(line.substring(lastIdx, match.index))
+          }
+
+          if (match[2] && match[3]) {
+            const linkText = match[2]
+            let linkUrl = match[3]
+            if (linkUrl.startsWith('/') && !linkUrl.startsWith(`/${locale}`)) {
+              linkUrl = `/${locale}${linkUrl}`
+            }
+            elements.push(
+              <a
+                key={`link-${match.index}`}
+                href={linkUrl}
+                className="inline-flex items-center font-bold text-[#16254c] bg-amber-50 hover:bg-amber-100 border border-amber-300/60 px-2 py-0.5 rounded-lg text-xs transition-all my-0.5 underline underline-offset-2"
+                target={linkUrl.startsWith('http') ? '_blank' : undefined}
+                rel={linkUrl.startsWith('http') ? 'noopener noreferrer' : undefined}
+              >
+                {linkText}
+              </a>
+            )
+          } else if (match[4]) {
+            elements.push(
+              <strong key={`bold-${match.index}`} className="font-semibold text-[#16254c]">
+                {match[4]}
+              </strong>
+            )
+          }
+
+          lastIdx = regex.lastIndex
+        }
+
+        if (lastIdx < line.length) {
+          elements.push(line.substring(lastIdx))
+        }
+
+        return (
+          <div key={lineIdx} className="leading-relaxed">
+            {elements.length > 0 ? elements : line}
+          </div>
+        )
+      })}
+    </div>
+  )
+}
 
 export function ChatWidget() {
   const { data: session } = useSession()
@@ -63,6 +124,7 @@ export function ChatWidget() {
   const scrollRef = useRef<HTMLDivElement>(null)
   const menuRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
   const addItem = useCartStore((state) => state.addItem)
 
   // Load from localStorage on mount
@@ -81,7 +143,7 @@ export function ChatWidget() {
 
   // Save to localStorage when messages change
   useEffect(() => {
-    if (messages.length > 1) { // Don't save if it's just the welcome message
+    if (messages.length > 1) {
       localStorage.setItem('specpart_chat_history', JSON.stringify({ messages, showActions }))
     }
   }, [messages, showActions])
@@ -188,7 +250,14 @@ export function ChatWidget() {
         .dot-2 { animation: pulseDot 1.2s ease-in-out 0.2s infinite; }
         .dot-3 { animation: pulseDot 1.2s ease-in-out 0.4s infinite; }
         .chat-input:focus { outline: none; }
-        .quick-btn:hover { transform: translateY(-1px); }
+        .quick-action-chip {
+          transition: all 0.15s ease;
+        }
+        .quick-action-chip:hover {
+          transform: translateY(-1px);
+          border-color: #cbd5e1;
+          background: #f8fafc;
+        }
         .scroll-area::-webkit-scrollbar { width: 4px; }
         .scroll-area::-webkit-scrollbar-track { background: transparent; }
         .scroll-area::-webkit-scrollbar-thumb { background: rgba(22,37,76,0.15); border-radius: 4px; }
@@ -201,9 +270,9 @@ export function ChatWidget() {
           <div
             className="chat-window flex flex-col overflow-hidden"
             style={{
-              width: 'min(400px, calc(100vw - 24px))',
-              height: 'min(600px, calc(100vh - 120px))',
-              borderRadius: 20,
+              width: 'min(410px, calc(100vw - 24px))',
+              height: 'min(620px, calc(100vh - 110px))',
+              borderRadius: 22,
               background: '#fff',
               boxShadow: '0 32px 80px -12px rgba(13,22,45,0.32), 0 0 0 1px rgba(22,37,76,0.08)',
             }}
@@ -212,7 +281,7 @@ export function ChatWidget() {
             <div
               style={{
                 background: 'linear-gradient(135deg, #0d162d 0%, #16254c 60%, #1f356b 100%)',
-                padding: '14px 16px 14px 16px',
+                padding: '14px 16px',
                 flexShrink: 0,
               }}
             >
@@ -238,7 +307,7 @@ export function ChatWidget() {
                     <h3 style={{ color: '#fff', fontSize: 14, fontWeight: 700, lineHeight: 1.2 }}>
                       {t('headerTitle')}
                     </h3>
-                    <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: 11, marginTop: 2, display: 'flex', alignItems: 'center', gap: 5 }}>
+                    <p style={{ color: 'rgba(255,255,255,0.65)', fontSize: 11, marginTop: 2, display: 'flex', alignItems: 'center', gap: 5 }}>
                       <span style={{ display: 'inline-block', width: 6, height: 6, borderRadius: '50%', background: '#22c55e' }} />
                       {t('onlineStatus')}
                     </p>
@@ -295,7 +364,7 @@ export function ChatWidget() {
                         <button
                           onClick={() => {
                             setMenuOpen(false)
-                            handleSend({ preventDefault: () => {} } as React.FormEvent, 'Je souhaite parler à un conseiller humain.')
+                            handleSend({ preventDefault: () => {} } as React.FormEvent, 'Je souhaite contacter le service client.')
                           }}
                           style={{
                             width: '100%', display: 'flex', alignItems: 'center', gap: 10,
@@ -324,7 +393,7 @@ export function ChatWidget() {
               </div>
             </div>
 
-            {/* ── Messages ── */}
+            {/* ── Messages Area ── */}
             <div
               ref={scrollRef}
               className="scroll-area"
@@ -362,18 +431,18 @@ export function ChatWidget() {
                   <div style={{
                     display: 'flex', flexDirection: 'column',
                     alignItems: msg.role === 'user' ? 'flex-end' : 'flex-start',
-                    maxWidth: '75%',
+                    maxWidth: '84%',
                   }}>
                     <div style={{
                       padding: '10px 14px',
                       borderRadius: msg.role === 'user' ? '18px 18px 4px 18px' : '18px 18px 18px 4px',
                       fontSize: 13, lineHeight: 1.55,
-                      whiteSpace: 'pre-wrap',
                       ...(msg.role === 'user'
                         ? {
                             background: 'linear-gradient(135deg, #16254c, #1f356b)',
                             color: '#fff',
                             boxShadow: '0 2px 8px rgba(22,37,76,0.2)',
+                            whiteSpace: 'pre-wrap',
                           }
                         : {
                             background: '#fff',
@@ -382,7 +451,11 @@ export function ChatWidget() {
                             border: '1px solid rgba(22,37,76,0.07)',
                           }),
                     }}>
-                      {msg.content}
+                      {msg.role === 'assistant' ? (
+                        <FormattedMessage text={msg.content} locale={locale} />
+                      ) : (
+                        msg.content
+                      )}
                     </div>
                     <span style={{ fontSize: 10, color: '#9ca3af', marginTop: 3, padding: '0 4px' }}>
                       {msg.time}
@@ -415,151 +488,164 @@ export function ChatWidget() {
                   </div>
                 </div>
               )}
+            </div>
 
-              {/* Quick action chips */}
+            {/* ── Bottom Section (Quick Actions + Input Pill + Trust Badges) ── */}
+            <div style={{
+              background: '#fff',
+              borderTop: '1px solid #f1f5f9',
+              padding: '10px 12px 10px',
+              flexShrink: 0,
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 9,
+            }}>
+              {/* Quick action chips (Screenshot Top Row) */}
               {showActions && !isLoading && (
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 7, paddingLeft: 36, paddingTop: 4 }}>
+                <div className="flex items-center gap-2 overflow-x-auto pb-0.5 no-scrollbar">
                   {QUICK_ACTIONS.map(({ labelKey, icon: Icon }) => (
                     <button
                       key={labelKey}
-                      className="quick-btn"
+                      className="quick-action-chip flex items-center gap-1.5 rounded-xl border border-slate-200/90 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 shadow-2xs hover:border-slate-300 hover:bg-slate-50 transition-all cursor-pointer whitespace-nowrap shrink-0"
                       onClick={(e) => handleSend(e, t(labelKey))}
-                      style={{
-                        display: 'flex', alignItems: 'center', gap: 6,
-                        padding: '7px 12px', borderRadius: 20,
-                        border: '1px solid rgba(22,37,76,0.12)',
-                        background: '#fff', color: '#16254c',
-                        fontSize: 11.5, fontWeight: 500, cursor: 'pointer',
-                        boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
-                        transition: 'all 0.15s',
-                      }}
                     >
-                      <Icon size={12} style={{ color: '#D4A76A' }} />
-                      {t(labelKey)}
+                      <Icon size={13} className="text-slate-600 shrink-0" strokeWidth={2} />
+                      <span>{t(labelKey)}</span>
                     </button>
                   ))}
                 </div>
               )}
-            </div>
 
-            {/* ── Composer ── */}
-            <div style={{
-              borderTop: '1px solid rgba(22,37,76,0.07)',
-              background: '#fff',
-              padding: '10px 12px 8px',
-              flexShrink: 0,
-            }}>
-              <form onSubmit={handleSend}>
-                <div style={{
-                  display: 'flex', alignItems: 'center', gap: 6,
-                  background: '#f4f5f9',
-                  borderRadius: 16, padding: '6px 6px 6px 12px',
-                  border: '1.5px solid transparent',
-                  transition: 'border-color 0.15s, box-shadow 0.15s',
+              {/* Hidden file input for attachment */}
+              <input
+                ref={fileInputRef}
+                type="file"
+                className="hidden"
+                accept="image/*"
+                onChange={(e) => {
+                  const file = e.target.files?.[0]
+                  if (file) {
+                    setInput((prev) => prev + ` [Fichier: ${file.name}]`)
+                  }
                 }}
-                  onFocusCapture={(e) => {
-                    (e.currentTarget as HTMLDivElement).style.borderColor = '#D4A76A'
-                    ;(e.currentTarget as HTMLDivElement).style.boxShadow = '0 0 0 3px rgba(212,167,106,0.12)'
-                  }}
-                  onBlurCapture={(e) => {
-                    (e.currentTarget as HTMLDivElement).style.borderColor = 'transparent'
-                    ;(e.currentTarget as HTMLDivElement).style.boxShadow = 'none'
-                  }}
+              />
+
+              {/* Unified Input Card Container (Screenshot Middle Row) */}
+              <form
+                onSubmit={handleSend}
+                className="flex items-center gap-2 rounded-2xl border border-slate-200/90 bg-white p-1.5 pl-3 shadow-2xs focus-within:border-slate-400 focus-within:ring-2 focus-within:ring-slate-100 transition-all"
+              >
+                {/* Paperclip button */}
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="text-slate-400 hover:text-slate-600 transition-colors p-1 rounded-lg hover:bg-slate-50 cursor-pointer shrink-0"
+                  aria-label="Attach file"
                 >
-                  <button type="button" style={{ padding: 5, borderRadius: 8, border: 'none', background: 'transparent', color: '#9ca3af', cursor: 'pointer' }}>
-                    <Paperclip size={15} />
-                  </button>
-                  <input
-                    ref={inputRef}
-                    className="chat-input"
-                    value={input}
-                    onChange={(e) => setInput(e.target.value)}
-                    placeholder={t('inputPlaceholder')}
-                    style={{
-                      flex: 1, background: 'transparent', border: 'none',
-                      fontSize: 13, color: '#1f2937', padding: '6px 0',
-                      outline: 'none',
-                    }}
-                  />
-                  <button type="button" style={{ padding: 5, borderRadius: 8, border: 'none', background: 'transparent', color: '#9ca3af', cursor: 'pointer' }}>
-                    <Mic size={15} />
-                  </button>
-                  <button
-                    type="submit"
-                    disabled={isLoading || !input.trim()}
-                    style={{
-                      width: 36, height: 36, borderRadius: 12, border: 'none',
-                      background: input.trim() ? 'linear-gradient(135deg, #16254c, #1f356b)' : '#e5e7eb',
-                      color: input.trim() ? '#fff' : '#9ca3af',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      cursor: input.trim() ? 'pointer' : 'not-allowed',
-                      transition: 'all 0.2s', flexShrink: 0,
-                      boxShadow: input.trim() ? '0 2px 8px rgba(22,37,76,0.25)' : 'none',
-                    }}
-                  >
-                    <Send size={14} style={{ transform: 'translateX(1px)' }} />
-                  </button>
-                </div>
+                  <Paperclip size={18} strokeWidth={2} />
+                </button>
+
+                {/* Thin vertical separator */}
+                <div className="h-5 w-[1px] bg-slate-200 shrink-0" />
+
+                {/* Text input */}
+                <input
+                  ref={inputRef}
+                  type="text"
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  placeholder={t('inputPlaceholder')}
+                  className="chat-input flex-1 min-w-0 bg-transparent py-1 px-1 text-sm text-slate-800 placeholder:text-slate-400 border-0 outline-none"
+                  disabled={isLoading}
+                />
+
+                {/* Microphone button */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
+                      const recognition = new SpeechRecognition()
+                      recognition.lang = locale === 'ar' ? 'ar-TN' : locale === 'en' ? 'en-US' : 'fr-FR'
+                      recognition.onresult = (event: any) => {
+                        const transcript = event.results[0][0].transcript
+                        setInput(transcript)
+                      }
+                      recognition.start()
+                    }
+                  }}
+                  className="text-slate-400 hover:text-slate-600 transition-colors p-1.5 rounded-lg hover:bg-slate-50 cursor-pointer shrink-0"
+                  aria-label="Voice input"
+                >
+                  <Mic size={18} strokeWidth={2} />
+                </button>
+
+                {/* Solid Send Button (Squircle) */}
+                <button
+                  type="submit"
+                  disabled={!input.trim() || isLoading}
+                  className="flex h-9 w-9 items-center justify-center rounded-[13px] bg-[#0d162d] text-white shadow-xs hover:bg-[#16254c] active:scale-95 transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer shrink-0"
+                  aria-label="Send message"
+                >
+                  <Send size={15} strokeWidth={2.2} />
+                </button>
               </form>
 
-              {/* Trust bar */}
-              <div style={{ display: 'flex', justifyContent: 'center', gap: 16, marginTop: 8 }}>
-                {TRUST_ITEMS.map(({ labelKey, icon: Icon }) => (
-                  <span key={labelKey} style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 10, color: '#9ca3af' }}>
-                    <Icon size={10} style={{ color: '#D4A76A' }} />
-                    {t(labelKey)}
-                  </span>
+              {/* Trust items footer (Screenshot Bottom Row) */}
+              <div className="flex items-center justify-center gap-3 pt-1 text-[11px] font-medium text-slate-500">
+                {TRUST_ITEMS.map(({ labelKey, icon: Icon }, idx) => (
+                  <div key={labelKey} className="flex items-center gap-3">
+                    <span className="flex items-center gap-1.5">
+                      <Icon size={13} className="text-slate-400 shrink-0" strokeWidth={2} />
+                      <span>{t(labelKey)}</span>
+                    </span>
+                    {idx < TRUST_ITEMS.length - 1 && (
+                      <span className="h-3 w-[1px] bg-slate-200 shrink-0" />
+                    )}
+                  </div>
                 ))}
               </div>
             </div>
           </div>
         )}
 
-        {/* ── Floating Button ───────────────────────────────── */}
-        <div className="relative">
-          <button
-            onClick={() => setIsOpen(!isOpen)}
-            style={{
-              width: 58, height: 58, borderRadius: '50%', border: 'none',
-              background: isOpen
-                ? '#374151'
-                : 'linear-gradient(135deg, #0d162d 0%, #16254c 100%)',
-              color: '#fff',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              cursor: 'pointer',
-              boxShadow: isOpen
-                ? '0 4px 16px rgba(0,0,0,0.25)'
-                : '0 8px 28px rgba(13,22,45,0.45)',
-              transform: isOpen ? 'rotate(0deg) scale(0.95)' : 'rotate(0deg) scale(1)',
-              transition: 'all 0.25s cubic-bezier(0.34,1.56,0.64,1)',
-            }}
-            aria-label={t('openChat')}
-          >
-            {isOpen ? (
-              <X size={24} />
-            ) : (
-              <div className="relative flex h-12 w-12 items-center justify-center overflow-hidden rounded-full ring-2 ring-[#D4A76A]/40">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/chatbotlogo.png" alt="Chat AI" className="h-full w-full object-cover" />
-              </div>
-            )}
-          </button>
+        {/* ── Floating Launcher Button ───────────────────────── */}
+        <button
+          onClick={() => setIsOpen((v) => !v)}
+          aria-label={isOpen ? t('closeChat') : t('openChat')}
+          className="relative flex items-center justify-center transition-all duration-300 hover:scale-105 active:scale-95"
+          style={{
+            width: 60,
+            height: 60,
+            borderRadius: '50%',
+            background: 'linear-gradient(135deg, #0d162d 0%, #16254c 50%, #1f356b 100%)',
+            boxShadow: '0 8px 30px rgba(13,22,45,0.4), 0 0 0 2px rgba(212,167,106,0.7)',
+            cursor: 'pointer',
+            border: 'none',
+          }}
+        >
+          {/* Logo icon inside launcher */}
+          <div className="relative h-11 w-11 overflow-hidden rounded-full">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/chatbotlogo.png" alt="Specpart AI" className="h-full w-full object-cover" />
+          </div>
+
+          {/* Online green indicator */}
+          <span
+            className="absolute bottom-0 right-0 h-3.5 w-3.5 rounded-full border-2"
+            style={{ background: '#22c55e', borderColor: '#fff' }}
+          />
 
           {/* Unread badge */}
-          {!isOpen && unread > 0 && (
-            <span style={{
-              position: 'absolute', top: -4, right: -4,
-              width: 20, height: 20, borderRadius: '50%',
-              background: '#ef4444', color: '#fff',
-              fontSize: 11, fontWeight: 700,
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              border: '2px solid #fff',
-              boxShadow: '0 2px 6px rgba(239,68,68,0.4)',
-            }}>
+          {unread > 0 && !isOpen && (
+            <span
+              className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full text-xs font-bold text-white"
+              style={{ background: '#ef4444' }}
+            >
               {unread}
             </span>
           )}
-        </div>
+        </button>
       </div>
     </>
   )

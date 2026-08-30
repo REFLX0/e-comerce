@@ -9,8 +9,8 @@ import { CouponsService } from '../coupons/coupons.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import * as crypto from 'crypto';
 import { generateDeliveryNotePDF } from '../admin/invoice-pdf';
-
 import { ShippingService } from '../shipping/shipping.service';
+import { MailService } from '../mail/mail.service';
 
 @Injectable()
 export class OrdersService {
@@ -19,6 +19,7 @@ export class OrdersService {
     private readonly kafka: KafkaService,
     private readonly couponsService: CouponsService,
     private readonly shippingService: ShippingService,
+    private readonly mailService: MailService,
   ) {}
 
   async create(dto: CreateOrderDto, userId?: string) {
@@ -157,6 +158,39 @@ export class OrdersService {
       totalAmount,
       customerName: dto.shipping.fullName,
     });
+
+    // Send dual order emails (Customer invoice + Admin sale notification)
+    let customerEmail: string | undefined;
+    if (userId) {
+      const user = await this.prisma.user.findUnique({
+        where: { id: userId },
+        select: { email: true },
+      });
+      customerEmail = user?.email;
+    }
+
+    this.mailService
+      .sendOrderEmails({
+        id: order.id,
+        totalAmount,
+        shippingCost: shipping,
+        customerName: dto.shipping.fullName,
+        customerEmail,
+        phone: dto.shipping.phone,
+        wilaya: dto.shipping.wilaya,
+        city: dto.shipping.city,
+        paymentMethod: dto.paymentMethod ?? 'COD',
+        items: dto.items.map((item) => {
+          const variant = variants.find((v) => v.id === item.variantId)!;
+          return {
+            name: variant.product.nameFr,
+            quantity: item.quantity,
+            unitPrice: variant.price,
+            volume: variant.volume,
+          };
+        }),
+      })
+      .catch(() => {});
 
     return order;
   }
