@@ -40,8 +40,9 @@ RUN apk add --no-cache wget \
  && addgroup --system --gid 1001 nodejs \
  && adduser  --system --uid 1001 nextjs
 
-# Public folder
+# Public folder & messages
 COPY --from=builder /app/public ./public
+COPY --from=builder /app/messages ./messages
 
 # Pre-create .next and set ownership
 RUN mkdir .next && chown nextjs:nodejs .next

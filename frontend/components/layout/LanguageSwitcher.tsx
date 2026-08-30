@@ -61,8 +61,7 @@ export function LanguageSwitcher() {
         aria-haspopup="true"
         aria-label={t('changeLanguage')}
       >
-        <span className="text-sm">{currentLocale.flag}</span>
-        <span className="uppercase tracking-wider">{currentLocale.code}</span>
+        <span className="text-lg leading-none">{currentLocale.flag}</span>
         <ChevronDown size={13} className={`text-slate-400 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
       </button>
 

@@ -5,22 +5,24 @@ import { Car, Bike, Truck, Tractor, Search, ArrowLeft, Check, ChevronRight, Rota
 import { EngineSpecFinder } from './EngineSpecFinder'
 import { VehicleFinder } from './VehicleFinder'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useTranslations } from 'next-intl'
 
 type VehicleType = 'automobile' | 'moto' | 'poids_lourd' | 'agricole' | 'marine'
 type SearchMode = 'vehicle' | 'specs'
 
-const VEHICLE_TYPES = [
-  { id: 'automobile' as const, image: '/img/categories/automobile.jpg', fallbackIcon: Car, label: 'Automobile', sub: 'Voitures de tourisme & SUV' },
-  { id: 'moto' as const, image: '/img/categories/moto.jpg', fallbackIcon: Bike, label: 'Moto', sub: '2 roues & scooters' },
-  { id: 'marine' as const, image: '/img/categories/marine.jpg', fallbackIcon: Sparkles, label: 'Marine', sub: 'Bateaux nautiques' },
-  { id: 'poids_lourd' as const, image: '/img/categories/poids_lourd.jpg', fallbackIcon: Truck, label: 'Poids Lourd', sub: 'Camions & utilitaires' },
-  { id: 'agricole' as const, image: '/img/categories/agricole.jpg', fallbackIcon: Tractor, label: 'Agricole', sub: 'Tracteurs & engins' },
-]
-
 export function OilFinderTabs() {
+  const t = useTranslations('OilFinder')
   const [step, setStep] = useState(1)
   const [vehicleType, setVehicleType] = useState<VehicleType | null>(null)
   const [searchMode, setSearchMode] = useState<SearchMode | null>(null)
+
+  const VEHICLE_TYPES = [
+    { id: 'automobile' as const, image: '/img/categories/automobile.jpg', fallbackIcon: Car, label: t('typeAutomobile'), sub: t('typeAutoSub') },
+    { id: 'moto' as const, image: '/img/categories/moto.jpg', fallbackIcon: Bike, label: t('typeMoto'), sub: t('typeMotoSub') },
+    { id: 'marine' as const, image: '/img/categories/marine.jpg', fallbackIcon: Sparkles, label: t('typeMarine'), sub: t('typeMarineSub') },
+    { id: 'poids_lourd' as const, image: '/img/categories/poids_lourd.jpg', fallbackIcon: Truck, label: t('typePL'), sub: t('typePLSub') },
+    { id: 'agricole' as const, image: '/img/categories/agricole.jpg', fallbackIcon: Tractor, label: t('typeAgricole'), sub: t('typeAgricoleSub') },
+  ]
 
   const progress = (step / 3) * 100
   const selectedVehicle = VEHICLE_TYPES.find((type) => type.id === vehicleType)
@@ -41,6 +43,8 @@ export function OilFinderTabs() {
     setSearchMode(null)
   }
 
+  const stepLabels = [t('stepVehicle'), t('stepMethod'), t('stepSearch')]
+
   return (
     <div id="oil-finder" className="mx-auto w-full max-w-6xl px-4">
       <div className="overflow-hidden rounded-[2rem] border border-brand-primary/10 bg-white shadow-[0_24px_70px_rgba(22,37,76,0.12)]">
@@ -51,8 +55,8 @@ export function OilFinderTabs() {
                 <Sparkles size={20} strokeWidth={2.4} />
               </div>
               <div>
-                <p className="text-xs font-bold uppercase tracking-[0.2em] text-brand-accent-light">Assistant de sélection</p>
-                <p className="mt-1 text-sm text-white/75">Une recommandation basée uniquement sur les critères que vous renseignez.</p>
+                <p className="text-xs font-bold uppercase tracking-[0.2em] text-brand-accent-light">{t('selectionAssistant')}</p>
+                <p className="mt-1 text-sm text-white/75">{t('selectionAssistantDesc')}</p>
               </div>
             </div>
             <button
@@ -60,12 +64,12 @@ export function OilFinderTabs() {
               className="inline-flex items-center gap-2 self-start rounded-xl border border-white/15 bg-white/10 px-3 py-2 text-xs font-semibold text-white transition-colors hover:bg-white/20 sm:self-auto"
             >
               <RotateCcw size={14} />
-              Recommencer
+              {t('restart')}
             </button>
           </div>
 
           <div className="mt-6 grid grid-cols-3 gap-2 sm:gap-4">
-            {['Véhicule', 'Méthode', 'Recherche'].map((label, index) => {
+            {stepLabels.map((label, index) => {
               const stage = index + 1
               const isComplete = stage < step
               const isCurrent = stage === step
@@ -101,12 +105,12 @@ export function OilFinderTabs() {
               transition={{ duration: 0.25 }}
               className="p-6 sm:p-8 md:p-10"
             >
-              <p className="mb-2 text-xs font-bold uppercase tracking-[0.18em] text-brand-accent">Étape 1 · véhicule</p>
+              <p className="mb-2 text-xs font-bold uppercase tracking-[0.18em] text-brand-accent">{t('step1Label')}</p>
               <h3 className="text-2xl font-bold tracking-tight text-brand-primary">
-                Quel type de véhicule ?
+                {t('step1Title')}
               </h3>
               <p className="mt-2 max-w-xl text-sm leading-6 text-gray-500">
-                Sélectionnez la catégorie de votre véhicule pour commencer
+                {t('step1Desc')}
               </p>
               <div className="mt-7 grid grid-cols-2 gap-3.5 sm:grid-cols-3 xl:grid-cols-5">
                 {VEHICLE_TYPES.map((type) => {
@@ -117,10 +121,9 @@ export function OilFinderTabs() {
                       onClick={() => handleSelectType(type.id)}
                       className="group relative flex min-h-[220px] flex-col items-center justify-end overflow-hidden rounded-2xl border border-slate-200/80 bg-white text-center shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-[#D4A76A] hover:shadow-[0_12px_30px_rgba(212,167,106,0.2)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4A76A]"
                     >
-                      {/* Image Background with gradient overlay */}
                       <div className="absolute inset-0 z-0 bg-slate-900 overflow-hidden">
-                        <img 
-                          src={type.image} 
+                        <img
+                          src={type.image}
                           alt={type.label}
                           className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
                           onError={(e) => {
@@ -128,15 +131,11 @@ export function OilFinderTabs() {
                             e.currentTarget.nextElementSibling?.classList.remove('hidden');
                           }}
                         />
-                        {/* Fallback Icon */}
                         <div className="hidden flex h-full w-full items-center justify-center bg-gray-900 text-gray-400">
                           <FallbackIcon size={40} />
                         </div>
-                        {/* Top subtle vignette */}
                         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
                       </div>
-
-                      {/* Content Overlay */}
                       <div className="relative w-full z-10 p-3.5 text-center backdrop-blur-md bg-white/95 border-t border-white/40 transition-colors group-hover:bg-white">
                         <span className="block text-sm font-black uppercase tracking-wider text-[#16254c] group-hover:text-[#D4A76A] transition-colors">
                           {type.label}
@@ -165,17 +164,17 @@ export function OilFinderTabs() {
                 <button
                   onClick={handleReset}
                   className="mt-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white text-gray-500 transition-colors hover:border-brand-primary/30 hover:text-brand-primary"
-                  aria-label="Retour au choix du véhicule"
+                  aria-label={t('backToVehicle')}
                 >
                   <ArrowLeft size={16} />
                 </button>
                 <div>
-                  <p className="mb-2 text-xs font-bold uppercase tracking-[0.18em] text-brand-accent">Étape 2 · méthode</p>
+                  <p className="mb-2 text-xs font-bold uppercase tracking-[0.18em] text-brand-accent">{t('step2Label')}</p>
                   <h3 className="text-2xl font-bold tracking-tight text-brand-primary">
-                    Comment rechercher ?
+                    {t('step2Title')}
                   </h3>
                   <p className="mt-2 text-sm text-gray-500">
-                    {selectedVehicle?.label} · Choisissez le parcours le plus adapté aux informations dont vous disposez.
+                    {selectedVehicle?.label} · {t('step2Desc')}
                   </p>
                 </div>
               </div>
@@ -187,9 +186,9 @@ export function OilFinderTabs() {
                 >
                   <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-primary text-white shadow-lg shadow-brand-primary/15"><Car size={24} /></div>
                   <div className="mt-auto">
-                    <span className="block text-lg font-bold text-brand-primary">Par véhicule</span>
-                    <span className="mt-2 block text-sm leading-6 text-gray-500">Sélectionnez marque, modèle et motorisation pour une recherche précise.</span>
-                    <span className="mt-5 inline-flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-brand-primary">Commencer <ChevronRight size={14} /></span>
+                    <span className="block text-lg font-bold text-brand-primary">{t('byVehicle')}</span>
+                    <span className="mt-2 block text-sm leading-6 text-gray-500">{t('byVehicleDesc')}</span>
+                    <span className="mt-5 inline-flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-brand-primary">{t('start')} <ChevronRight size={14} /></span>
                   </div>
                 </button>
                 <button
@@ -198,9 +197,9 @@ export function OilFinderTabs() {
                 >
                   <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-accent text-brand-primary shadow-lg shadow-brand-accent/20"><Search size={24} /></div>
                   <div className="mt-auto">
-                    <span className="block text-lg font-bold text-brand-primary">Par caractéristiques</span>
-                    <span className="mt-2 block text-sm leading-6 text-gray-500">Renseignez cylindres, puissance et carburant si vous ne connaissez pas votre motorisation.</span>
-                    <span className="mt-5 inline-flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-brand-primary">Commencer <ChevronRight size={14} /></span>
+                    <span className="block text-lg font-bold text-brand-primary">{t('bySpecs')}</span>
+                    <span className="mt-2 block text-sm leading-6 text-gray-500">{t('bySpecsDesc')}</span>
+                    <span className="mt-5 inline-flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-brand-primary">{t('start')} <ChevronRight size={14} /></span>
                   </div>
                 </button>
               </div>
@@ -221,7 +220,7 @@ export function OilFinderTabs() {
                   className="flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-gray-800 transition-colors"
                 >
                   <ArrowLeft size={16} />
-                  Retour
+                  {t('back')}
                 </button>
               </div>
               <VehicleFinder onClose={() => {}} initialVehicleType={vehicleType} />
@@ -242,7 +241,7 @@ export function OilFinderTabs() {
                   className="flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-gray-800 transition-colors"
                 >
                   <ArrowLeft size={16} />
-                  Retour
+                  {t('back')}
                 </button>
               </div>
               <EngineSpecFinder onClose={() => {}} initialVehicleType={vehicleType !== 'marine' ? vehicleType : null} />

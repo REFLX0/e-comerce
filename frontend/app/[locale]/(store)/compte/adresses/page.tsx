@@ -7,20 +7,21 @@ import { MapPin, Plus, Trash2, Home, Briefcase } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
+const EMPTY_FORM = {
+  fullName: '',
+  phone: '',
+  address: '',
+  city: '',
+  wilaya: '',
+  postalCode: '',
+  isDefault: false,
+}
+
 export default function AddressesPage() {
   const t = useTranslations('Account')
   const queryClient = useQueryClient()
   const [showForm, setShowForm] = useState(false)
-  
-  const [formData, setFormData] = useState({
-    name: t('home'),
-    street: '',
-    city: '',
-    state: '',
-    zipCode: '',
-    country: 'Tunisie',
-    isDefault: false
-  })
+  const [formData, setFormData] = useState(EMPTY_FORM)
 
   const { data, isLoading } = useQuery<any>({
     queryKey: ['my-addresses'],
@@ -36,7 +37,7 @@ export default function AddressesPage() {
       queryClient.invalidateQueries({ queryKey: ['my-addresses'] })
       toast.success(t('addressAdded'))
       setShowForm(false)
-      setFormData({ name: t('home'), street: '', city: '', state: '', zipCode: '', country: 'Tunisie', isDefault: false })
+      setFormData(EMPTY_FORM)
     },
     onError: () => toast.error(t('addressAddError')),
   })
@@ -49,6 +50,8 @@ export default function AddressesPage() {
     },
     onError: () => toast.error(t('addressRemoveError')),
   })
+
+  const canSubmit = formData.fullName.trim() && formData.phone.trim() && formData.city.trim() && formData.wilaya.trim()
 
   return (
     <div className="space-y-6">
@@ -71,27 +74,46 @@ export default function AddressesPage() {
         <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm max-w-2xl">
           <h2 className="mb-4 text-lg font-bold text-brand-primary">{t('newAddress')}</h2>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <div className="sm:col-span-2">
-              <label className="mb-1.5 block text-sm font-medium text-gray-700">{t('addressNameLabel')}</label>
+
+            {/* Full Name */}
+            <div>
+              <label className="mb-1.5 block text-sm font-medium text-gray-700">{t('fullName')} <span className="text-red-500">*</span></label>
               <input
                 type="text"
-                value={formData.name}
-                onChange={e => setFormData({ ...formData, name: e.target.value })}
+                value={formData.fullName}
+                onChange={e => setFormData({ ...formData, fullName: e.target.value })}
                 className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5 outline-none focus:border-brand-primary focus:bg-white transition-colors"
+                placeholder="Nom Prénom"
               />
             </div>
+
+            {/* Phone */}
+            <div>
+              <label className="mb-1.5 block text-sm font-medium text-gray-700">{t('phone')} <span className="text-red-500">*</span></label>
+              <input
+                type="tel"
+                value={formData.phone}
+                onChange={e => setFormData({ ...formData, phone: e.target.value })}
+                className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5 outline-none focus:border-brand-primary focus:bg-white transition-colors"
+                placeholder="+216 XX XXX XXX"
+              />
+            </div>
+
+            {/* Street Address */}
             <div className="sm:col-span-2">
               <label className="mb-1.5 block text-sm font-medium text-gray-700">{t('fullAddress')}</label>
               <input
                 type="text"
-                value={formData.street}
-                onChange={e => setFormData({ ...formData, street: e.target.value })}
+                value={formData.address}
+                onChange={e => setFormData({ ...formData, address: e.target.value })}
                 className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5 outline-none focus:border-brand-primary focus:bg-white transition-colors"
-                placeholder="123 Rue de l'Exemple..."
+                placeholder="N° Rue, Bâtiment..."
               />
             </div>
+
+            {/* City */}
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-gray-700">{t('city')}</label>
+              <label className="mb-1.5 block text-sm font-medium text-gray-700">{t('city')} <span className="text-red-500">*</span></label>
               <input
                 type="text"
                 value={formData.city}
@@ -99,15 +121,31 @@ export default function AddressesPage() {
                 className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5 outline-none focus:border-brand-primary focus:bg-white transition-colors"
               />
             </div>
+
+            {/* Wilaya / Governorate */}
+            <div>
+              <label className="mb-1.5 block text-sm font-medium text-gray-700">{t('wilaya')} <span className="text-red-500">*</span></label>
+              <input
+                type="text"
+                value={formData.wilaya}
+                onChange={e => setFormData({ ...formData, wilaya: e.target.value })}
+                className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5 outline-none focus:border-brand-primary focus:bg-white transition-colors"
+                placeholder="Ex: Tunis, Sfax, Sousse..."
+              />
+            </div>
+
+            {/* Postal Code */}
             <div>
               <label className="mb-1.5 block text-sm font-medium text-gray-700">{t('postalCode')}</label>
               <input
                 type="text"
-                value={formData.zipCode}
-                onChange={e => setFormData({ ...formData, zipCode: e.target.value })}
+                value={formData.postalCode}
+                onChange={e => setFormData({ ...formData, postalCode: e.target.value })}
                 className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5 outline-none focus:border-brand-primary focus:bg-white transition-colors"
               />
             </div>
+
+            {/* Default */}
             <div className="sm:col-span-2 flex items-center gap-2 mt-2">
               <input
                 type="checkbox"
@@ -121,6 +159,7 @@ export default function AddressesPage() {
               </label>
             </div>
           </div>
+
           <div className="mt-6 flex justify-end gap-3">
             <button
               onClick={() => setShowForm(false)}
@@ -130,7 +169,7 @@ export default function AddressesPage() {
             </button>
             <button
               onClick={() => createMutation.mutate(formData)}
-              disabled={createMutation.isPending || !formData.street || !formData.city}
+              disabled={createMutation.isPending || !canSubmit}
               className="rounded-xl bg-brand-primary px-4 py-2 text-sm font-semibold text-white hover:bg-brand-primary-light transition-colors disabled:opacity-50"
             >
               {t('saveAddress')}
@@ -155,14 +194,14 @@ export default function AddressesPage() {
                   </span>
                 )}
                 <div className="flex items-center gap-2 mb-3 text-brand-primary">
-                  {address.name.toLowerCase().includes('bureau') ? <Briefcase size={18} /> : <Home size={18} />}
-                  <h3 className="font-bold">{address.name}</h3>
+                  {(address.fullName ?? address.name ?? '').toLowerCase().includes('bureau') ? <Briefcase size={18} /> : <Home size={18} />}
+                  <h3 className="font-bold">{address.fullName ?? address.name}</h3>
                 </div>
                 <div className="space-y-1 text-sm text-gray-600">
-                  <p>{address.street}</p>
-                  <p>{address.zipCode} {address.city}</p>
-                  {address.state && <p>{address.state}</p>}
-                  <p>{address.country}</p>
+                  {address.phone && <p className="text-gray-500 text-xs">{address.phone}</p>}
+                  {address.address && <p>{address.address}</p>}
+                  <p>{[address.postalCode, address.city].filter(Boolean).join(' ')}</p>
+                  {address.wilaya && <p>{address.wilaya}</p>}
                 </div>
                 <div className="mt-4 pt-4 border-t border-gray-50 flex justify-end gap-2">
                   <button

@@ -110,13 +110,13 @@ export function CategoryGrid() {
         {/* Section header */}
         <div className="mb-12 text-center">
           <p className="mb-2 text-xs font-bold uppercase tracking-[0.25em] text-brand-accent">
-            Notre catalogue
+            {t('ourCatalog')}
           </p>
           <h2 className="text-3xl font-black uppercase tracking-tight text-brand-primary md:text-4xl">
             {t('shopByCategory')}
           </h2>
           <p className="mt-3 text-sm text-gray-500">
-            Trouvez exactement ce qu&apos;il vous faut
+            {t('findExact')}
           </p>
         </div>
 

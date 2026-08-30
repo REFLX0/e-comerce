@@ -6,6 +6,10 @@ WORKDIR /app
 # Build tools needed for native modules (bcrypt, etc.)
 RUN apk add --no-cache make gcc g++ python3
 
+# Prevent Puppeteer from attempting to download Chromium during docker build
+ENV PUPPETEER_SKIP_DOWNLOAD=true
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+
 # Copy manifests & Prisma schema first for layer caching
 COPY package*.json ./
 COPY prisma ./prisma/

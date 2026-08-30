@@ -26,10 +26,9 @@ export function HeroBanner() {
         <div className="max-w-2xl">
           {/* H1 */}
           <h1 className="text-4xl font-black uppercase leading-[1.1] tracking-tight text-white sm:text-5xl lg:text-6xl">
-            PIÈCES AUTO<br />
-            <span className="text-brand-accent">PERFORMANCE</span><br />
-            POUR CHAQUE<br />
-            TRAJET
+            {t('heroTitle1')}<br />
+            <span className="text-brand-accent">{t('heroTitleHighlight')}</span><br />
+            {t('heroTitle2')}
           </h1>
 
           <p className="mt-6 max-w-lg text-base leading-relaxed text-white/70">
@@ -42,7 +41,7 @@ export function HeroBanner() {
               href="/catalogue"
               className="group inline-flex h-12 min-w-[200px] items-center justify-center gap-2 rounded-lg bg-brand-accent px-8 text-sm font-black uppercase tracking-widest text-brand-primary-dark transition-all duration-200 hover:brightness-110 hover:shadow-[0_0_24px_rgba(230,160,0,0.35)]"
             >
-              SHOP NOW
+              {t('shopNow')}
               <ArrowRight size={16} className="transition-transform group-hover:translate-x-0.5" />
             </Link>
             <Link
@@ -50,7 +49,7 @@ export function HeroBanner() {
               className="inline-flex h-12 min-w-[200px] items-center justify-center gap-2 rounded-lg border border-white/25 px-8 text-sm font-bold uppercase tracking-widest text-white transition-all duration-200 hover:border-white/60 hover:bg-white/8"
             >
               <Search size={16} />
-              FIND MY PART
+              {t('findMyPart')}
             </Link>
           </div>
 
@@ -60,7 +59,7 @@ export function HeroBanner() {
               <Star className="text-brand-accent h-6 w-6" strokeWidth={1.5} />
               <div>
                 <p className="text-sm font-black text-white leading-tight">500+</p>
-                <p className="text-[10px] text-white/60 uppercase tracking-widest">Produits</p>
+                <p className="text-[10px] text-white/60 uppercase tracking-widest">{t('statsProducts')}</p>
               </div>
             </div>
             
@@ -68,7 +67,7 @@ export function HeroBanner() {
               <Award className="text-brand-accent h-6 w-6" strokeWidth={1.5} />
               <div>
                 <p className="text-sm font-black text-white leading-tight">15+</p>
-                <p className="text-[10px] text-white/60 uppercase tracking-widest">Marques</p>
+                <p className="text-[10px] text-white/60 uppercase tracking-widest">{t('statsBrands')}</p>
               </div>
             </div>
             
@@ -76,15 +75,15 @@ export function HeroBanner() {
               <Truck className="text-brand-accent h-6 w-6" strokeWidth={1.5} />
               <div>
                 <p className="text-sm font-black text-white leading-tight">24H</p>
-                <p className="text-[10px] text-white/60 uppercase tracking-widest">{t('deliveryEyebrow')}</p>
+                <p className="text-[10px] text-white/60 uppercase tracking-widest">{t('statsDelivery')}</p>
               </div>
             </div>
             
             <div className="flex items-center gap-3">
               <ShieldCheck className="text-brand-accent h-6 w-6" strokeWidth={1.5} />
               <div>
-                <p className="text-sm font-black text-white leading-tight">QUALITÉ</p>
-                <p className="text-[10px] text-white/60 uppercase tracking-widest">Garantie</p>
+                <p className="text-sm font-black text-white leading-tight">{t('statsQuality')}</p>
+                <p className="text-[10px] text-white/60 uppercase tracking-widest">{t('statsGuaranteed')}</p>
               </div>
             </div>
           </div>

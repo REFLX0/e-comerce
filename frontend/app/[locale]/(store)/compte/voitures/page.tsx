@@ -23,11 +23,11 @@ import {
   Info,
   Check,
   X,
-  ExternalLink
+  ArrowRight
 } from 'lucide-react'
 import { toast } from 'sonner'
-import { useTranslations } from 'next-intl'
-import { useRouter, usePathname } from 'next/navigation'
+import { useTranslations, useLocale } from 'next-intl'
+import { useRouter } from 'next/navigation'
 import { Link } from '@/i18n/routing'
 import { productsApi } from '@/lib/api/products'
 import { carsApi, type CarPayload } from '@/lib/api/cars'
@@ -98,18 +98,18 @@ function toOptionalNumber(value: string) {
 }
 
 function formatKm(value: number) {
-  return value.toLocaleString('fr-TN')
+  return value.toLocaleString()
 }
 
-function getReminder(car: UserCar, t: (k: string, values?: Record<string, string | number>) => string) {
+function getReminder(car: UserCar, t: any) {
   const nextMileage = car.lastOilChangeMileage + car.oilChangeIntervalKm
   const remainingKm = nextMileage - car.currentMileage
 
   if (remainingKm <= 0) {
     return {
       status: 'urgent',
-      title: t('oilChangeOverdueTitle') || 'Vidange dépassée !',
-      text: t('oilChangeOverdueDesc', { km: formatKm(Math.abs(remainingKm)) }) || `Échéance dépassée de ${formatKm(Math.abs(remainingKm))} km`,
+      title: t('oilChangeOverdueTitle'),
+      text: t('oilChangeOverdueDesc', { km: formatKm(Math.abs(remainingKm)) }),
       remainingKm,
       progressColor: 'from-rose-500 to-red-600',
       badgeBg: 'bg-rose-50 border-rose-200 text-rose-800',
@@ -121,8 +121,8 @@ function getReminder(car: UserCar, t: (k: string, values?: Record<string, string
   if (remainingKm <= 1500) {
     return {
       status: 'warning',
-      title: t('oilChangeSoonTitle') || 'Vidange à prévoir bientôt',
-      text: t('oilChangeSoonDesc', { km: formatKm(remainingKm) }) || `Prévoyez l'entretien dans ${formatKm(remainingKm)} km`,
+      title: t('oilChangeSoonTitle'),
+      text: t('oilChangeSoonDesc', { km: formatKm(remainingKm) }),
       remainingKm,
       progressColor: 'from-amber-400 to-orange-500',
       badgeBg: 'bg-amber-50 border-amber-200 text-amber-900',
@@ -133,8 +133,8 @@ function getReminder(car: UserCar, t: (k: string, values?: Record<string, string
 
   return {
     status: 'ok',
-    title: t('oilChangeOkTitle') || `Prochaine vidange dans ${formatKm(remainingKm)} km`,
-    text: t('oilChangeOkDesc', { nextMileage: formatKm(nextMileage) }) || `Prochain intervalle à ${formatKm(nextMileage)} km`,
+    title: t('oilChangeOkTitle', { km: formatKm(remainingKm) }),
+    text: t('oilChangeOkDesc', { nextMileage: formatKm(nextMileage) }),
     remainingKm,
     progressColor: 'from-emerald-400 to-teal-500',
     badgeBg: 'bg-emerald-50 border-emerald-200 text-emerald-900',
@@ -230,8 +230,7 @@ function CarCard({ car }: { car: UserCar }) {
   const t = useTranslations('Vehicle')
   const queryClient = useQueryClient()
   const router = useRouter()
-  const pathname = usePathname()
-  const locale = pathname?.split('/')[1] === 'en' ? 'en' : 'fr'
+  const locale = useLocale()
   const setVehicle = useVehicleStore((state) => state.setVehicle)
   const activeVehicle = useVehicleStore((state) => state.vehicle)
 
@@ -274,7 +273,7 @@ function CarCard({ car }: { car: UserCar }) {
       modelSlug: car.modelSlug ?? '',
       engineCode: car.engine ?? '',
     })
-    toast.success(`Filtre activé pour ${car.name} ! Le catalogue affiche uniquement les pièces compatibles.`)
+    toast.success(t('filterActivatedToast', { name: car.name }))
   }
 
   const reminder = getReminder(car, t)
@@ -310,7 +309,7 @@ function CarCard({ car }: { car: UserCar }) {
       setOilFilterChanged(updated.oilFilterChanged)
       setAirFilterChanged(updated.airFilterChanged)
       setCabinFilterChanged(updated.cabinFilterChanged)
-      toast.success(t('carUpdated') || 'Carnet d\'entretien mis à jour !')
+      toast.success(t('carUpdated'))
     },
     onError: () => toast.error(t('carUpdateError')),
   })
@@ -360,7 +359,7 @@ function CarCard({ car }: { car: UserCar }) {
                 {isSelectedForCatalogue ? (
                   <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/20 border border-emerald-400/40 px-2.5 py-0.5 text-[11px] font-bold text-emerald-300 backdrop-blur-md shadow-sm">
                     <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-                    Véhicule Actif (Filtre catalogue)
+                    {t('activeVehicleBadge')}
                   </span>
                 ) : (
                   <button
@@ -368,7 +367,7 @@ function CarCard({ car }: { car: UserCar }) {
                     className="inline-flex items-center gap-1 rounded-full bg-white/10 hover:bg-white/20 border border-white/10 px-2.5 py-0.5 text-[11px] font-semibold text-white/90 transition-all"
                   >
                     <Zap size={11} className="text-[#D4A76A]" />
-                    Activer
+                    {t('activate')}
                   </button>
                 )}
               </div>
@@ -385,14 +384,14 @@ function CarCard({ car }: { car: UserCar }) {
               className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#D4A76A] to-[#C29557] px-4 py-2.5 text-xs font-bold text-slate-950 shadow-md shadow-[#D4A76A]/20 transition-all hover:scale-[1.02] hover:brightness-110 active:scale-[0.98]"
             >
               <Search size={14} strokeWidth={2.5} />
-              <span>Voir les pièces compatibles</span>
+              <span>{t('viewCompatibleParts')}</span>
             </button>
             <button
               type="button"
               onClick={() => deleteMutation.mutate()}
               disabled={deleteMutation.isPending}
               className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/10 text-white/70 hover:bg-rose-500/20 hover:text-rose-300 hover:border-rose-500/30 border border-transparent transition-colors"
-              title="Supprimer ce véhicule"
+              title={t('deleteVehicleTitle')}
             >
               <Trash2 size={16} />
             </button>
@@ -415,7 +414,7 @@ function CarCard({ car }: { car: UserCar }) {
               </div>
             </div>
             <div className="text-right">
-              <span className="text-xs font-black uppercase tracking-wider opacity-60">Cycle usure</span>
+              <span className="text-xs font-black uppercase tracking-wider opacity-60">{t('wearCycle')}</span>
               <p className="text-sm font-black tracking-tight">{Math.round(progress)}%</p>
             </div>
           </div>
@@ -431,7 +430,7 @@ function CarCard({ car }: { car: UserCar }) {
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           <div className="relative rounded-2xl border border-slate-200/90 bg-slate-50/60 p-3.5 focus-within:border-[#16254c] focus-within:bg-white focus-within:ring-2 focus-within:ring-[#16254c]/10 transition-all">
             <span className="flex items-center gap-1.5 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
-              <Gauge size={13} className="text-[#16254c]" /> Kilométrage Actuel
+              <Gauge size={13} className="text-[#16254c]" /> {t('currentMileageLabel')}
             </span>
             <div className="relative mt-2 flex items-center">
               <input
@@ -447,7 +446,7 @@ function CarCard({ car }: { car: UserCar }) {
 
           <div className="relative rounded-2xl border border-slate-200/90 bg-slate-50/60 p-3.5 focus-within:border-[#16254c] focus-within:bg-white focus-within:ring-2 focus-within:ring-[#16254c]/10 transition-all">
             <span className="flex items-center gap-1.5 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
-              <Wrench size={13} className="text-[#16254c]" /> Dernière Vidange
+              <Wrench size={13} className="text-[#16254c]" /> {t('lastOilMileageLabel')}
             </span>
             <div className="relative mt-2 flex items-center">
               <input
@@ -463,7 +462,7 @@ function CarCard({ car }: { car: UserCar }) {
 
           <div className="relative rounded-2xl border border-slate-200/90 bg-slate-50/60 p-3.5 focus-within:border-[#16254c] focus-within:bg-white focus-within:ring-2 focus-within:ring-[#16254c]/10 transition-all">
             <span className="flex items-center gap-1.5 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
-              <Calendar size={13} className="text-[#16254c]" /> Intervalle Entretien
+              <Calendar size={13} className="text-[#16254c]" /> {t('oilIntervalLabel')}
             </span>
             <div className="relative mt-2 flex items-center">
               <input
@@ -483,9 +482,9 @@ function CarCard({ car }: { car: UserCar }) {
         <div className="space-y-3 pt-1">
           <div className="flex items-center justify-between">
             <p className="text-xs font-bold text-slate-900 uppercase tracking-wider">
-              Entretien & Remplacement de filtres
+              {t('maintenanceAndFilters')}
             </p>
-            <span className="text-[11px] text-slate-500">Cochez les interventions effectuées</span>
+            <span className="text-[11px] text-slate-500">{t('checkInterventions')}</span>
           </div>
 
           <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
@@ -493,32 +492,32 @@ function CarCard({ car }: { car: UserCar }) {
               id={`oil-change-${car.id}`}
               checked={oilChangeDoneNow}
               disabled={updateMutation.isPending}
-              label="Vidange moteur effectuée aujourd'hui"
-              sublabel="Réinitialise le compteur à votre kilométrage actuel"
+              label={t('oilChangeDoneToday')}
+              sublabel={t('oilChangeDoneTodayHint')}
               onChange={setOilChangeDoneNow}
             />
             <ServiceToggle
               id={`oil-filter-${car.id}`}
               checked={oilFilterChanged}
               disabled={updateMutation.isPending}
-              label="Filtre à huile remplacé"
-              sublabel="Protection optimale du circuit lubrifiant"
+              label={t('oilFilterReplaced')}
+              sublabel={t('oilFilterReplacedHint')}
               onChange={setOilFilterChanged}
             />
             <ServiceToggle
               id={`air-filter-${car.id}`}
               checked={airFilterChanged}
               disabled={updateMutation.isPending}
-              label="Filtre à air moteur remplacé"
-              sublabel="Flux d'admission et combustion propre"
+              label={t('airFilterReplaced')}
+              sublabel={t('airFilterReplacedHint')}
               onChange={setAirFilterChanged}
             />
             <ServiceToggle
               id={`cabin-filter-${car.id}`}
               checked={cabinFilterChanged}
               disabled={updateMutation.isPending}
-              label="Filtre d'habitacle (Pollen/Charbon)"
-              sublabel="Qualité de l'air intérieur du véhicule"
+              label={t('cabinFilterReplaced')}
+              sublabel={t('cabinFilterReplacedHint')}
               onChange={setCabinFilterChanged}
             />
           </div>
@@ -537,7 +536,7 @@ function CarCard({ car }: { car: UserCar }) {
             ) : (
               <Save size={15} className="text-[#D4A76A]" />
             )}
-            <span>Enregistrer le carnet d&apos;entretien</span>
+            <span>{t('saveMaintenanceLog')}</span>
           </button>
         </div>
       </div>
@@ -569,7 +568,6 @@ export default function MesVoituresPage() {
   })
 
   const setVehicle = useVehicleStore((state) => state.setVehicle)
-  const activeVehicle = useVehicleStore((state) => state.vehicle)
 
   const cars = useMemo(() => data ?? [], [data])
 
@@ -592,23 +590,23 @@ export default function MesVoituresPage() {
       setForm(EMPTY_FORM)
       setErrors({})
       setShowForm(false)
-      toast.success("Véhicule ajouté et activé ! Le catalogue n'affiche désormais que les pièces compatibles.")
+      toast.success(t('vehicleAddedActivatedToast'))
     },
-    onError: () => toast.error(t('carAddError') || 'Erreur lors de l\'ajout du véhicule.'),
+    onError: () => toast.error(t('carAddError')),
   })
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {}
-    if (!form.name.trim()) newErrors.name = t('nameRequired') || 'Veuillez saisir un nom pour votre véhicule'
+    if (!form.name.trim()) newErrors.name = t('nameRequired')
     
     const vinClean = form.vin.trim().toUpperCase()
     if (vinClean && !/^[A-HJ-NPR-Z0-9]{17}$/.test(vinClean)) {
-      newErrors.vin = t('vinLength') || 'Le numéro VIN doit contenir exactement 17 caractères'
+      newErrors.vin = t('vinLength')
     }
 
     const yearNum = toNumber(form.year)
     if (form.year && (yearNum < 1980 || yearNum > new Date().getFullYear())) {
-      newErrors.year = t('yearRange', { year: new Date().getFullYear() }) || 'Année invalide'
+      newErrors.year = t('yearRange', { year: new Date().getFullYear() })
     }
 
     const currentKm = toNumber(form.currentMileage)
@@ -620,7 +618,7 @@ export default function MesVoituresPage() {
     if (form.oilChangeIntervalKm && intervalKm <= 0) newErrors.oilChangeIntervalKm = t('mustBeGreaterThanZero')
 
     if (form.currentMileage && form.lastOilChangeMileage && currentKm < lastKm) {
-      newErrors.currentMileage = t('currentGteLast') || 'Le kilométrage actuel doit être supérieur à celui de la dernière vidange'
+      newErrors.currentMileage = t('currentGteLast')
     }
 
     setErrors(newErrors)
@@ -630,7 +628,7 @@ export default function MesVoituresPage() {
   const handleCreate = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     if (!validateForm()) {
-      toast.error(t('fixFormErrors') || 'Veuillez corriger les erreurs dans le formulaire.')
+      toast.error(t('fixFormErrors'))
       return
     }
 
@@ -645,13 +643,13 @@ export default function MesVoituresPage() {
         <div>
           <div className="flex items-center gap-2">
             <span className="h-2 w-2 rounded-full bg-[#D4A76A]" />
-            <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Espace Garage Privé</span>
+            <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">{t('privateGarage')}</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-black text-[#16254c] tracking-tight mt-1">
-            {t('myCars') || 'Mes Véhicules & Entretien'}
+            {t('myCars')}
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 mt-1 max-w-xl">
-            {t('myCarsSubtitle') || 'Suivez les échéances de vidange, les remplacements de filtres et profitez du filtrage exclusif de compatibilité sur tout le catalogue.'}
+            {t('myCarsSubtitle')}
           </p>
         </div>
 
@@ -664,53 +662,46 @@ export default function MesVoituresPage() {
             <div className="flex h-5 w-5 items-center justify-center rounded-lg bg-white/20 text-[#D4A76A]">
               <Plus size={14} strokeWidth={3} />
             </div>
-            <span>{t('addCar') || 'Ajouter un véhicule'}</span>
+            <span>{t('addCar')}</span>
           </button>
         )}
       </div>
 
-      {/* Auto-compatibility Explanation Banner */}
-      <div className="relative overflow-hidden rounded-3xl border border-blue-500/30 bg-[#051129] p-5 sm:p-6 text-white shadow-xl shadow-slate-900/10">
-        {/* Background Image: bluebg */}
+      {/* Auto-compatibility Explanation Banner (Matches Image 2) */}
+      <div className="relative overflow-hidden rounded-2xl border border-slate-700/50 bg-[#070e1e] p-6 sm:p-7 text-white shadow-xl shadow-slate-950/20">
+        {/* Background Image: bluebg with blueprint car */}
         <div 
-          className="absolute inset-0 bg-cover bg-right sm:bg-center bg-no-repeat opacity-95 pointer-events-none"
+          className="absolute inset-0 bg-cover bg-right bg-no-repeat opacity-90 pointer-events-none"
           style={{ backgroundImage: "url('/bluebg.png')" }}
         />
-        {/* Subtle gradient vignette to ensure high text readability */}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#030b1e]/90 via-[#030b1e]/60 to-transparent pointer-events-none" />
+        {/* Smooth vignette gradient on the left to guarantee optimal text readability */}
+        <div className="absolute inset-0 bg-gradient-to-r from-[#070e1e] via-[#070e1e]/85 to-transparent pointer-events-none" />
 
-        <div className="relative z-10 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-center gap-4">
-            <div className="relative flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-emerald-400/30 bg-emerald-500/20 text-emerald-400 shadow-inner backdrop-blur-md">
-              <Car size={24} strokeWidth={2} />
-              <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-emerald-500 ring-2 ring-[#051129]">
-                <span className="h-1.5 w-1.5 rounded-full bg-white animate-ping" />
+        <div className="relative z-10 flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+          <div className="max-w-2xl">
+            <div className="flex items-center gap-2.5">
+              <ShieldCheck size={16} className="text-emerald-400 shrink-0" />
+              <span className="text-[11px] font-black uppercase tracking-wider text-emerald-400">
+                {t('compatAutomated')}
+              </span>
+              <span className="rounded-full bg-emerald-500/15 border border-emerald-500/30 px-2.5 py-0.5 text-[10px] font-bold text-emerald-400 backdrop-blur-sm">
+                {t('verified100')}
               </span>
             </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="text-[10px] font-black uppercase tracking-wider text-emerald-400">
-                  Compatibilité Automatisée
-                </span>
-                <span className="rounded-full bg-emerald-500/20 px-2 py-0.5 text-[9px] font-bold text-emerald-300 backdrop-blur-sm">
-                  100% Vérifié
-                </span>
-              </div>
-              <p className="text-sm font-bold text-white mt-0.5">
-                Filtrage intelligent de 46 000+ pièces
-              </p>
-              <p className="text-xs text-white/80 mt-0.5 max-w-xl">
-                Lorsque vous sélectionnez un véhicule actif, l&apos;ensemble du catalogue n&apos;affiche que les pièces, filtres et huiles exactement conformes à votre motorisation.
-              </p>
-            </div>
+            <h3 className="text-lg sm:text-xl font-bold text-white tracking-tight mt-2">
+              {t('smartFilteringTitle')}
+            </h3>
+            <p className="text-xs sm:text-sm text-slate-300/90 mt-1.5 leading-relaxed">
+              {t('smartFilteringDesc')}
+            </p>
           </div>
           
           <Link
             href="/catalogue"
-            className="inline-flex items-center gap-2 self-start sm:self-center rounded-xl bg-white/15 hover:bg-white/25 border border-white/20 px-4 py-2.5 text-xs font-bold text-white transition-all backdrop-blur-md shadow-lg shadow-black/20"
+            className="group inline-flex items-center gap-2.5 self-start sm:self-center rounded-xl bg-[#131e35]/85 hover:bg-[#1b2b4b] border border-white/15 px-5 py-2.5 text-xs sm:text-sm font-semibold text-white transition-all backdrop-blur-md shadow-lg shadow-black/25 whitespace-nowrap"
           >
-            <span>Explorer le catalogue</span>
-            <ExternalLink size={13} className="text-[#D4A76A]" />
+            <span>{t('exploreCatalog')}</span>
+            <ArrowRight size={15} className="text-white/80 transition-transform group-hover:translate-x-1" />
           </Link>
         </div>
       </div>
@@ -724,8 +715,8 @@ export default function MesVoituresPage() {
                 <Car size={20} />
               </div>
               <div>
-                <h2 className="text-lg font-black text-[#16254c]">{t('newCar') || 'Nouveau Véhicule'}</h2>
-                <p className="text-xs text-slate-500">{t('newCarHint') || 'Renseignez les détails pour le suivi et le catalogue.'}</p>
+                <h2 className="text-lg font-black text-[#16254c]">{t('newCar')}</h2>
+                <p className="text-xs text-slate-500">{t('newCarHint')}</p>
               </div>
             </div>
             <button
@@ -740,7 +731,7 @@ export default function MesVoituresPage() {
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <label className="block">
               <span className="mb-1.5 block text-xs font-bold text-slate-700 uppercase tracking-wider">
-                Nom / Surnom du véhicule <span className="text-rose-500">*</span>
+                {t('carName')} <span className="text-rose-500">*</span>
               </span>
               <input
                 value={form.name}
@@ -748,7 +739,7 @@ export default function MesVoituresPage() {
                   setForm((prev) => ({ ...prev, name: e.target.value }))
                   if (errors.name) setErrors(prev => ({ ...prev, name: '' }))
                 }}
-                placeholder="ex: Golfia, Ma Clio, Mon Astra..."
+                placeholder={t('carNamePlaceholder')}
                 className={`w-full rounded-2xl border bg-slate-50/60 px-4 py-3 text-sm font-semibold outline-none transition-all focus:bg-white focus:ring-2 ${errors.name ? 'border-rose-300 focus:border-rose-500 focus:ring-rose-500/10' : 'border-slate-200 focus:border-[#16254c] focus:ring-[#16254c]/10'}`}
               />
               {errors.name && <p className="mt-1.5 text-xs text-rose-500 font-medium">{errors.name}</p>}
@@ -756,7 +747,7 @@ export default function MesVoituresPage() {
 
             <label className="block">
               <span className="mb-1.5 block text-xs font-bold text-slate-700 uppercase tracking-wider">
-                Numéro de châssis (VIN - 17 caractères)
+                {t('vinLabel')}
               </span>
               <input
                 value={form.vin}
@@ -765,7 +756,7 @@ export default function MesVoituresPage() {
                   setForm((prev) => ({ ...prev, vin: e.target.value.toUpperCase() }))
                   if (errors.vin) setErrors(prev => ({ ...prev, vin: '' }))
                 }}
-                placeholder="ex: VF1... / WVWZZZ..."
+                placeholder={t('vinPlaceholder')}
                 className={`w-full rounded-2xl border bg-slate-50/60 px-4 py-3 text-sm font-mono uppercase outline-none transition-all focus:bg-white focus:ring-2 ${errors.vin ? 'border-rose-300 focus:border-rose-500 focus:ring-rose-500/10' : 'border-slate-200 focus:border-[#16254c] focus:ring-[#16254c]/10'}`}
               />
               {errors.vin && <p className="mt-1.5 text-xs text-rose-500 font-medium">{errors.vin}</p>}
@@ -774,7 +765,7 @@ export default function MesVoituresPage() {
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
             <label className="block">
-              <span className="mb-1.5 block text-xs font-bold text-slate-700 uppercase tracking-wider">Marque Constructeur</span>
+              <span className="mb-1.5 block text-xs font-bold text-slate-700 uppercase tracking-wider">{t('makeLabel')}</span>
               <select
                 value={form.make}
                 onChange={(e) => {
@@ -790,18 +781,18 @@ export default function MesVoituresPage() {
                 }}
                 className="w-full rounded-2xl border border-slate-200 bg-slate-50/60 px-4 py-3 text-sm font-semibold outline-none transition-all focus:border-[#16254c] focus:bg-white focus:ring-2 focus:ring-[#16254c]/10"
               >
-                <option value="">-- Choisir une marque --</option>
+                <option value="">{t('selectMake')}</option>
                 {makes.map((m: any) => (
                   <option key={m.id || m.slug} value={m.slug}>
                     {m.name}
                   </option>
                 ))}
-                <option value="Autre">Autre marque</option>
+                <option value="Autre">{t('other')}</option>
               </select>
             </label>
 
             <label className="block">
-              <span className="mb-1.5 block text-xs font-bold text-slate-700 uppercase tracking-wider">Modèle</span>
+              <span className="mb-1.5 block text-xs font-bold text-slate-700 uppercase tracking-wider">{t('modelLabel')}</span>
               <select
                 value={form.model}
                 disabled={!form.make || form.make === 'Autre'}
@@ -816,22 +807,22 @@ export default function MesVoituresPage() {
                 }}
                 className="w-full rounded-2xl border border-slate-200 bg-slate-50/60 px-4 py-3 text-sm font-semibold outline-none transition-all focus:border-[#16254c] focus:bg-white focus:ring-2 focus:ring-[#16254c]/10 disabled:opacity-50"
               >
-                <option value="">-- Choisir un modèle --</option>
+                <option value="">{t('selectModel')}</option>
                 {models.map((m: any) => (
                   <option key={m.id || m.slug} value={m.slug}>
                     {m.name}
                   </option>
                 ))}
-                <option value="Autre">Autre modèle</option>
+                <option value="Autre">{t('otherModel')}</option>
               </select>
             </label>
 
             <label className="block">
-              <span className="mb-1.5 block text-xs font-bold text-slate-700 uppercase tracking-wider">Motorisation</span>
+              <span className="mb-1.5 block text-xs font-bold text-slate-700 uppercase tracking-wider">{t('engineLabel')}</span>
               <input
                 value={form.engine}
                 onChange={(e) => setForm((prev) => ({ ...prev, engine: e.target.value }))}
-                placeholder="ex: 1.5 dCi 90, 1.6 TDI 115..."
+                placeholder={t('enginePlaceholder')}
                 className="w-full rounded-2xl border border-slate-200 bg-slate-50/60 px-4 py-3 text-sm font-semibold outline-none transition-all focus:border-[#16254c] focus:bg-white focus:ring-2 focus:ring-[#16254c]/10"
               />
             </label>
@@ -839,36 +830,36 @@ export default function MesVoituresPage() {
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
             <label className="block">
-              <span className="mb-1.5 block text-xs font-bold text-slate-700 uppercase tracking-wider">Kilométrage Actuel</span>
+              <span className="mb-1.5 block text-xs font-bold text-slate-700 uppercase tracking-wider">{t('currentMileageLabel')}</span>
               <input
                 type="number"
                 min="0"
                 value={form.currentMileage}
                 onChange={(e) => setForm((prev) => ({ ...prev, currentMileage: e.target.value }))}
-                placeholder="ex: 125000"
+                placeholder={t('currentMileagePlaceholder')}
                 className="w-full rounded-2xl border border-slate-200 bg-slate-50/60 px-4 py-3 text-sm font-mono font-semibold outline-none transition-all focus:border-[#16254c] focus:bg-white focus:ring-2 focus:ring-[#16254c]/10"
               />
             </label>
             <label className="block">
-              <span className="mb-1.5 block text-xs font-bold text-slate-700 uppercase tracking-wider">Kilométrage Dernière Vidange</span>
+              <span className="mb-1.5 block text-xs font-bold text-slate-700 uppercase tracking-wider">{t('lastOilMileageLabel')}</span>
               <input
                 type="number"
                 min="0"
                 value={form.lastOilChangeMileage}
                 onChange={(e) => setForm((prev) => ({ ...prev, lastOilChangeMileage: e.target.value }))}
-                placeholder="ex: 120000"
+                placeholder={t('lastOilMileagePlaceholder')}
                 className="w-full rounded-2xl border border-slate-200 bg-slate-50/60 px-4 py-3 text-sm font-mono font-semibold outline-none transition-all focus:border-[#16254c] focus:bg-white focus:ring-2 focus:ring-[#16254c]/10"
               />
             </label>
             <label className="block">
-              <span className="mb-1.5 block text-xs font-bold text-slate-700 uppercase tracking-wider">Intervalle Vidange</span>
+              <span className="mb-1.5 block text-xs font-bold text-slate-700 uppercase tracking-wider">{t('oilIntervalLabel')}</span>
               <input
                 type="number"
                 min="1000"
                 step="500"
                 value={form.oilChangeIntervalKm}
                 onChange={(e) => setForm((prev) => ({ ...prev, oilChangeIntervalKm: e.target.value }))}
-                placeholder="10000"
+                placeholder={t('oilIntervalPlaceholder')}
                 className="w-full rounded-2xl border border-slate-200 bg-slate-50/60 px-4 py-3 text-sm font-mono font-semibold outline-none transition-all focus:border-[#16254c] focus:bg-white focus:ring-2 focus:ring-[#16254c]/10"
               />
             </label>
@@ -880,7 +871,7 @@ export default function MesVoituresPage() {
               onClick={() => setShowForm(false)}
               className="rounded-2xl border border-slate-200 px-5 py-3 text-xs font-bold text-slate-600 hover:bg-slate-50 transition-colors"
             >
-              Annuler
+              {t('cancel')}
             </button>
             <button
               type="submit"
@@ -888,7 +879,7 @@ export default function MesVoituresPage() {
               className="inline-flex items-center gap-2 rounded-2xl bg-[#16254c] px-6 py-3 text-xs font-bold text-white shadow-lg shadow-[#16254c]/15 transition-all hover:bg-[#1f3469] disabled:opacity-50"
             >
               {createMutation.isPending && <Loader2 size={15} className="animate-spin text-[#D4A76A]" />}
-              <span>Enregistrer le véhicule</span>
+              <span>{t('saveVehicle')}</span>
             </button>
           </div>
         </form>
@@ -900,7 +891,7 @@ export default function MesVoituresPage() {
           <div className="flex min-h-64 items-center justify-center rounded-3xl border border-slate-100 bg-slate-50/50">
             <div className="flex flex-col items-center gap-3">
               <Loader2 size={32} className="animate-spin text-[#16254c]" />
-              <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Chargement de votre garage...</p>
+              <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">{t('loadingGarage')}</p>
             </div>
           </div>
         ) : cars.length === 0 ? (
@@ -908,9 +899,9 @@ export default function MesVoituresPage() {
             <div className="flex h-16 w-16 items-center justify-center rounded-3xl bg-slate-100 text-slate-400 shadow-inner">
               <Car size={32} />
             </div>
-            <h3 className="mt-4 text-base font-bold text-slate-900">{t('noCars') || 'Aucun véhicule enregistré'}</h3>
+            <h3 className="mt-4 text-base font-bold text-slate-900">{t('noCars')}</h3>
             <p className="mt-1 max-w-sm text-xs text-slate-500">
-              {t('noCarsDesc') || 'Ajoutez votre première voiture pour activer le suivi d\'entretien et le filtrage exclusif des pièces compatibles.'}
+              {t('noCarsDesc')}
             </p>
             <button
               type="button"
@@ -918,7 +909,7 @@ export default function MesVoituresPage() {
               className="mt-5 inline-flex items-center gap-2 rounded-2xl bg-[#16254c] px-5 py-3 text-xs font-bold text-white shadow-md shadow-[#16254c]/10 hover:bg-[#1f3469] transition-all"
             >
               <Plus size={15} />
-              <span>{t('addFirstCar') || 'Ajouter une voiture'}</span>
+              <span>{t('addFirstCar')}</span>
             </button>
           </div>
         ) : (
