@@ -16,7 +16,8 @@ import { Redis } from 'ioredis';
 
 @Injectable()
 export class AuthService {
-  private redis: Redis;
+  private redis: Redis | null = null;
+  private inMemoryTokens = new Map<string, { userId: string; expiresAt: number }>();
 
   constructor(
     private readonly prisma: PrismaService,
@@ -24,10 +25,22 @@ export class AuthService {
     private readonly config: ConfigService,
     private readonly mailService: MailService,
   ) {
-    this.redis = new Redis({
-      host: this.config.get('REDIS_HOST', 'localhost'),
-      port: this.config.get<number>('REDIS_PORT', 6379),
-    });
+    try {
+      const host = this.config.get('REDIS_HOST', 'redis');
+      const port = this.config.get<number>('REDIS_PORT', 6379);
+      this.redis = new Redis({
+        host,
+        port,
+        lazyConnect: true,
+        maxRetriesPerRequest: 1,
+        connectTimeout: 2000,
+      });
+      this.redis.connect().catch(() => {
+        this.redis = null;
+      });
+    } catch {
+      this.redis = null;
+    }
   }
 
   async register(dto: RegisterDto) {
@@ -78,20 +91,36 @@ export class AuthService {
   }
 
   async refresh(refreshToken: string) {
-    const userId = await this.redis.get(`refresh:${refreshToken}`);
+    let userId: string | null = null;
+    try {
+      if (this.redis) {
+        userId = await this.redis.get(`refresh:${refreshToken}`);
+        if (userId) await this.redis.del(`refresh:${refreshToken}`);
+      }
+    } catch {}
+
+    if (!userId) {
+      const mem = this.inMemoryTokens.get(`refresh:${refreshToken}`);
+      if (mem && mem.expiresAt > Date.now()) {
+        userId = mem.userId;
+        this.inMemoryTokens.delete(`refresh:${refreshToken}`);
+      }
+    }
+
     if (!userId)
       throw new UnauthorizedException('Invalid or expired refresh token');
 
     const user = await this.prisma.user.findUnique({ where: { id: userId } });
     if (!user) throw new UnauthorizedException('User not found');
 
-    // Rotate: delete old, issue new
-    await this.redis.del(`refresh:${refreshToken}`);
     return this.generateTokens(user);
   }
 
   async logout(refreshToken: string) {
-    await this.redis.del(`refresh:${refreshToken}`);
+    try {
+      if (this.redis) await this.redis.del(`refresh:${refreshToken}`);
+    } catch {}
+    this.inMemoryTokens.delete(`refresh:${refreshToken}`);
     return { message: 'Logged out successfully' };
   }
 
@@ -113,7 +142,22 @@ export class AuthService {
 
     const refreshToken = crypto.randomUUID();
     const refreshTtl = 60 * 60 * 24 * 7; // 7 days
-    await this.redis.setex(`refresh:${refreshToken}`, refreshTtl, user.id);
+
+    try {
+      if (this.redis) {
+        await this.redis.setex(`refresh:${refreshToken}`, refreshTtl, user.id);
+      } else {
+        this.inMemoryTokens.set(`refresh:${refreshToken}`, {
+          userId: user.id,
+          expiresAt: Date.now() + refreshTtl * 1000,
+        });
+      }
+    } catch {
+      this.inMemoryTokens.set(`refresh:${refreshToken}`, {
+        userId: user.id,
+        expiresAt: Date.now() + refreshTtl * 1000,
+      });
+    }
 
     const [firstName = '', ...lastNameParts] = (user.name ?? '')
       .trim()

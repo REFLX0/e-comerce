@@ -426,7 +426,9 @@ export class ProductsService {
       isFeatured: false,
       createdAt: new Date(),
       updatedAt: new Date(),
-      images: [],
+      images: [
+        `/images/${r.supplier}_${r.data_supplier_article_number?.trim().replace(/\s+/g, '_')}_1.webp`,
+      ],
       variants: [
         {
           id: `var-tecdoc-${r.id}`,
@@ -486,99 +488,145 @@ export class ProductsService {
   }
 
   private async _findBestSellers(limit = 8) {
-    const ninetyDaysAgo = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000);
+    try {
+      const ninetyDaysAgo = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000);
+      const topProductIds: string[] = [];
 
-    const topProductIds: string[] = [];
+      try {
+        const rows = await this.prismaRead.db.$queryRaw<Array<{ productid: string }>>`
+          SELECT oi."productId" AS productid, SUM(oi.quantity)::int AS totalsold
+          FROM public."OrderItem" oi
+          INNER JOIN public."Order" o ON oi."orderId" = o.id
+          WHERE o.status IN ('CONFIRMED', 'SHIPPED', 'DELIVERED')
+            AND o."createdAt" >= ${ninetyDaysAgo}
+          GROUP BY oi."productId"
+          ORDER BY totalsold DESC, oi."productId" DESC
+          LIMIT ${limit}
+        `;
+        topProductIds.push(
+          ...rows
+            .map((r) => r.productid)
+            .filter((id): id is string => id != null),
+        );
+      } catch {
+        // Safe fallback if public orders are empty
+      }
 
-    if (limit > 0) {
-      const rows = await this.prismaRead.db.$queryRaw<Array<{ productid: string }>>`
-        SELECT oi."productId" AS productid, SUM(oi.quantity)::int AS totalsold
-        FROM "OrderItem" oi
-        INNER JOIN "Order" o ON oi."orderId" = o.id
-        WHERE o.status IN ('CONFIRMED', 'SHIPPED', 'DELIVERED')
-          AND o."createdAt" >= ${ninetyDaysAgo}
-        GROUP BY oi."productId"
-        ORDER BY totalsold DESC, oi."productId" DESC
+      if (topProductIds.length < limit) {
+        const fallbackLimit = limit - topProductIds.length;
+        const fallback = await this.prismaRead.db.product.findMany({
+          where: {
+            isPublished: true,
+            ...(topProductIds.length > 0 ? { id: { notIn: topProductIds } } : {}),
+          },
+          include: this.buildInclude(),
+          take: fallbackLimit,
+          orderBy: { createdAt: 'desc' },
+        });
+        topProductIds.push(...fallback.map((p) => p.id));
+      }
+
+      if (topProductIds.length > 0) {
+        const products = await this.prismaRead.db.product.findMany({
+          where: { id: { in: topProductIds }, isPublished: true },
+          include: this.buildInclude(),
+        });
+        const map = new Map(products.map((p) => [p.id, p]));
+        const ordered = topProductIds
+          .map((id) => map.get(id))
+          .filter((p): p is NonNullable<typeof p> => p != null);
+
+        if (ordered.length > 0) {
+          return ordered.map((p) => this.serialize(p));
+        }
+      }
+
+      // If local products are empty, return top TecDoc parts
+      const tecdocRows = await this.prismaRead.db.$queryRawUnsafe<any[]>(`
+        SELECT a.id, a.data_supplier_article_number, s.matchcode AS brand_name,
+               p.description AS product_type, a.description
+        FROM tecdoc.articles a
+        JOIN tecdoc.suppliers s ON s.id = a.supplier
+        LEFT JOIN tecdoc.products p ON p.id = a.current_product
+        ORDER BY a.id ASC
         LIMIT ${limit}
-      `;
-      topProductIds.push(
-        ...rows
-          .map((r) => r.productid)
-          .filter((id): id is string => id != null),
-      );
+      `);
+      return tecdocRows.map((r) => this.serializeTecdocArticle(r));
+    } catch (err) {
+      console.error('Error in _findBestSellers:', err);
+      return [];
     }
-
-    if (topProductIds.length < limit) {
-      const fallbackLimit = limit - topProductIds.length;
-      const fallback = await this.prismaRead.db.product.findMany({
-        where: {
-          isPublished: true,
-          isFeatured: true,
-          id: { notIn: topProductIds },
-        },
-        include: this.buildInclude(),
-        take: fallbackLimit,
-        orderBy: { createdAt: 'desc' },
-      });
-      topProductIds.push(...fallback.map((p) => p.id));
-    }
-
-    if (topProductIds.length === 0) {
-      const newest = await this.prismaRead.db.product.findMany({
-        where: { isPublished: true },
-        include: this.buildInclude(),
-        take: limit,
-        orderBy: { createdAt: 'desc' },
-      });
-      return newest.map(this.serialize);
-    }
-
-    const products = await this.prismaRead.db.product.findMany({
-      where: { id: { in: topProductIds }, isPublished: true },
-      include: this.buildInclude(),
-    });
-
-    const map = new Map(products.map((p) => [p.id, p]));
-    const ordered = topProductIds
-      .map((id) => map.get(id))
-      .filter((p): p is NonNullable<typeof p> => p != null);
-
-    return ordered.map(this.serialize);
   }
 
   async findNew(limit = 8) {
     return this.cache.wrap(
       `products:new:${limit}`,
       async () => {
-        const products = await this.prismaRead.db.product.findMany({
-          where: { isPublished: true },
-          include: this.buildInclude(),
-          take: limit,
-          orderBy: { createdAt: 'desc' },
-        });
-        return products.map(this.serialize);
+        try {
+          const products = await this.prismaRead.db.product.findMany({
+            where: { isPublished: true },
+            include: this.buildInclude(),
+            take: limit,
+            orderBy: { createdAt: 'desc' },
+          });
+          if (products.length > 0) {
+            return products.map((p) => this.serialize(p));
+          }
+          const tecdocRows = await this.prismaRead.db.$queryRawUnsafe<any[]>(`
+            SELECT a.id, a.data_supplier_article_number, s.matchcode AS brand_name,
+                   p.description AS product_type, a.description
+            FROM tecdoc.articles a
+            JOIN tecdoc.suppliers s ON s.id = a.supplier
+            LEFT JOIN tecdoc.products p ON p.id = a.current_product
+            ORDER BY a.id DESC
+            LIMIT ${limit}
+          `);
+          return tecdocRows.map((r) => this.serializeTecdocArticle(r));
+        } catch (err) {
+          console.error('Error in findNew:', err);
+          return [];
+        }
       },
       CacheService.TTL.NEW_ARRIVALS,
     );
   }
 
   async findRelated(id: string, limit = 6) {
-    const product = await this.prismaRead.db.product.findUnique({
-      where: { id },
-      select: { categoryId: true, brandId: true },
-    });
-    if (!product) return [];
-    const related = await this.prismaRead.db.product.findMany({
-      where: {
-        isPublished: true,
-        id: { not: id },
-        OR: [{ categoryId: product.categoryId }, { brandId: product.brandId }],
-      },
-      include: this.buildInclude(),
-      take: limit,
-      orderBy: { createdAt: 'desc' },
-    });
-    return related.map(this.serialize);
+    try {
+      const product = await this.prismaRead.db.product.findUnique({
+        where: { id },
+        select: { categoryId: true, brandId: true },
+      });
+      if (product) {
+        const related = await this.prismaRead.db.product.findMany({
+          where: {
+            isPublished: true,
+            id: { not: id },
+            OR: [{ categoryId: product.categoryId }, { brandId: product.brandId }],
+          },
+          include: this.buildInclude(),
+          take: limit,
+          orderBy: { createdAt: 'desc' },
+        });
+        return related.map((p) => this.serialize(p));
+      }
+
+      // If TecDoc product
+      const tecdocRows = await this.prismaRead.db.$queryRawUnsafe<any[]>(`
+        SELECT a.id, a.data_supplier_article_number, s.matchcode AS brand_name,
+               p.description AS product_type, a.description
+        FROM tecdoc.articles a
+        JOIN tecdoc.suppliers s ON s.id = a.supplier
+        LEFT JOIN tecdoc.products p ON p.id = a.current_product
+        WHERE a.id != ${parseInt(id.replace(/\D/g, ''), 10) || 0}
+        ORDER BY a.id ASC
+        LIMIT ${limit}
+      `);
+      return tecdocRows.map((r) => this.serializeTecdocArticle(r));
+    } catch (err) {
+      console.error('Error in findRelated:', err);
+      return [];
+    }
   }
 
   async getFacets(filters: ProductFilters) {

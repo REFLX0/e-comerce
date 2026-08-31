@@ -3,8 +3,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { invoicesApi } from '@/lib/api/invoices';
 import { useTranslations } from 'next-intl';
-import { format } from 'date-fns';
-import { fr } from 'date-fns/locale';
 import { FileText, Download } from 'lucide-react';
 
 export default function UserInvoicesPage() {
@@ -78,7 +76,11 @@ export default function UserInvoicesPage() {
                       </div>
                     </td>
                     <td className="px-6 py-4 text-gray-500">
-                      {format(new Date(invoice.issueDate), 'dd MMMM yyyy', { locale: fr })}
+                      {new Date(invoice.issueDate).toLocaleDateString('fr-FR', {
+                        day: '2-digit',
+                        month: 'long',
+                        year: 'numeric',
+                      })}
                     </td>
                     <td className="px-6 py-4 text-right font-bold text-gray-900">
                       {invoice.totalTTC.toFixed(3)} DT

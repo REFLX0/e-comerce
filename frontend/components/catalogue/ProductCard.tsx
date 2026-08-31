@@ -13,15 +13,37 @@ import { toast } from 'sonner'
 import { formatPrice, formatSKU, formatProductName } from '@/lib/utils/format'
 import { useProductCompatibility } from '@/lib/hooks/useProductCompatibility'
 
-/* ── Lazy image with skeleton + error fallback ───────────────────────── */
-function CardImage({ src, alt, t }: { src: string; alt: string; t: any }) {
+/* ── Lazy image with skeleton + branded automotive fallback ───────── */
+function CardImage({
+  src,
+  alt,
+  brand,
+  sku,
+  t,
+}: {
+  src?: string | null
+  alt: string
+  brand?: string
+  sku?: string
+  t: any
+}) {
   const [error, setError] = useState(false)
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(Boolean(src))
 
-  if (error) {
+  if (!src || error) {
     return (
-      <div className="flex h-full w-full items-center justify-center bg-gray-50">
-        <span className="px-3 text-center text-[10px] text-gray-400">{t('imageNotAvailable')}</span>
+      <div className="flex h-full w-full flex-col items-center justify-center bg-gradient-to-b from-slate-50 to-slate-100/90 p-4 text-center select-none transition-colors group-hover:from-slate-100 group-hover:to-slate-200/90">
+        <div className="relative flex h-14 w-14 items-center justify-center rounded-2xl bg-white shadow-sm border border-slate-200/80 mb-2 transition-transform duration-200 group-hover:scale-105">
+          <svg className="h-7 w-7 text-[#16254c]/70" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
+          </svg>
+        </div>
+        {brand && (
+          <span className="text-[11px] font-black text-[#16254c] tracking-wider uppercase truncate max-w-[140px]">{brand}</span>
+        )}
+        {sku && (
+          <span className="text-[10px] font-mono text-slate-400 mt-0.5 max-w-[130px] truncate">{sku}</span>
+        )}
       </div>
     )
   }
@@ -124,13 +146,13 @@ export function ProductCard({ product, viewMode = 'grid' }: Props) {
         {/* Image */}
         <div className="relative aspect-square w-full shrink-0 border-b border-gray-100 bg-white sm:w-48 sm:border-b-0 sm:border-r">
           <Link href={`/produit/${product.slug}`} className="absolute inset-0 z-0">
-            {product.images?.[0] ? (
-              <CardImage src={product.images[0]} alt={product.name} t={t} />
-            ) : (
-              <div className="flex h-full w-full items-center justify-center bg-gray-50">
-                <span className="text-[10px] text-gray-300">{t('imageNotAvailable')}</span>
-              </div>
-            )}
+            <CardImage
+              src={product.images?.[0]}
+              alt={product.name}
+              brand={product.brand?.name}
+              sku={formatSKU(defaultVariant?.sku)}
+              t={t}
+            />
           </Link>
           
           {/* Top-right: Wishlist (Mobile absolute, Desktop hidden as we'll put it in actions) */}
@@ -308,13 +330,13 @@ export function ProductCard({ product, viewMode = 'grid' }: Props) {
 
         {/* Clickable image */}
         <Link href={`/produit/${product.slug}`} className="absolute inset-0 z-0">
-          {product.images?.[0] ? (
-            <CardImage src={product.images[0]} alt={product.name} t={t} />
-          ) : (
-            <div className="flex h-full w-full items-center justify-center bg-gray-50">
-              <span className="text-[10px] text-gray-300">{t('imageNotAvailable')}</span>
-            </div>
-          )}
+          <CardImage
+            src={product.images?.[0]}
+            alt={product.name}
+            brand={product.brand?.name}
+            sku={formatSKU(defaultVariant?.sku)}
+            t={t}
+          />
         </Link>
       </div>
 

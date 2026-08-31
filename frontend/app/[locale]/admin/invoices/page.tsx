@@ -6,8 +6,6 @@ import { invoicesApi } from '@/lib/api/invoices';
 import { useTranslations, useLocale } from 'next-intl';
 import Link from 'next/link';
 import { toast } from 'sonner';
-import { format } from 'date-fns';
-import { fr } from 'date-fns/locale';
 import { Plus, Search, FileText, Copy, Trash, Download } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
@@ -134,7 +132,11 @@ export default function AdminInvoicesPage() {
                       {invoice.clientMf && <span className="block text-[10px] text-gray-400 font-normal">MF: {invoice.clientMf}</span>}
                     </td>
                     <td className="px-6 py-4 text-gray-500">
-                      {format(new Date(invoice.issueDate), 'dd MMM yyyy', { locale: fr })}
+                      {new Date(invoice.issueDate).toLocaleDateString('fr-FR', {
+                        day: '2-digit',
+                        month: 'short',
+                        year: 'numeric',
+                      })}
                     </td>
                     <td className="px-6 py-4 text-right font-bold text-gray-900">
                       {invoice.totalTTC.toFixed(3)} DT
