@@ -110,26 +110,29 @@ enum InvoiceStatus {
 // ─────────────────────────────────────────
 
 model User {
-  id            String          @id @default(cuid())
-  email         String          @unique
-  name          String?
-  phone         String?
-  passwordHash  String?
-  role          Role            @default(CUSTOMER)
-  matriculeFisc String?
-  emailVerified DateTime?
-  image         String?
-  accounts      Account[]
-  sessions      Session[]
-  addresses     Address[]
-  orders        Order[]
-  invoices      Invoice[]
-  reviews       Review[]
-  wishlist      WishlistItem[]
-  cars          UserCar[]
-  tickets       SupportTicket[]
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
+  id                   String          @id @default(cuid())
+  email                String          @unique
+  name                 String?
+  phone                String?
+  passwordHash         String?
+  role                 Role            @default(CUSTOMER)
+  previousRole         Role?
+  matriculeFisc        String?
+  emailVerified        DateTime?
+  resetPasswordToken   String?
+  resetPasswordExpires DateTime?
+  image                String?
+  accounts             Account[]
+  sessions             Session[]
+  addresses            Address[]
+  orders               Order[]
+  invoices             Invoice[]
+  reviews              Review[]
+  wishlist             WishlistItem[]
+  cars                 UserCar[]
+  tickets              SupportTicket[]
+  createdAt            DateTime        @default(now())
+  updatedAt            DateTime        @updatedAt
 
   @@schema("public")
 }
@@ -173,18 +176,19 @@ model VerificationToken {
 }
 
 model Address {
-  id        String   @id @default(cuid())
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  fullName  String
-  phone     String
-  street    String
-  city      String
-  wilaya    String
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  fullName   String
+  phone      String
+  street     String?
+  address    String?
+  city       String
+  wilaya     String
   postalCode String?
-  isDefault Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  isDefault  Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   @@schema("public")
 }
@@ -193,18 +197,32 @@ model UserCar {
   id                   String    @id @default(cuid())
   userId               String
   user                 User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name                 String?
   make                 String
+  makeSlug             String?
   model                String
+  modelSlug            String?
   generation           String?
   year                 Int?
   engine               String?
+  displacement         Float?
+  cylinders            Int?
+  fuel                 String?
   fuelType             String?
+  power                Int?
+  transmission         String?
+  trim                 String?
+  productionDate       String?
   vin                  String?
   registrationPlate    String?
   currentMileage       Int?
   annualMileage        Int?      @default(15000)
   lastOilChangeMileage Int?
   lastOilChangeDate    DateTime?
+  oilChangeIntervalKm  Int?      @default(10000)
+  oilFilterChanged     Boolean   @default(false)
+  airFilterChanged     Boolean   @default(false)
+  cabinFilterChanged   Boolean   @default(false)
   oilCapacity          Float?
   recommendedOilVisc   String?
   recommendedOilSpec   String?

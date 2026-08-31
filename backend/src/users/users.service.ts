@@ -164,9 +164,10 @@ export class UsersService {
   }
 
   async addCar(userId: string, dto: CreateUserCarDto) {
-    if (dto.lastOilChangeMileage > dto.currentMileage) {
+    const count = await this.prisma.userCar.count({ where: { userId } });
+    if (count >= 10) {
       throw new BadRequestException(
-        'Last oil change mileage cannot exceed current mileage',
+        'Maximum 10 vehicles allowed per customer account',
       );
     }
 
@@ -181,10 +182,10 @@ export class UsersService {
       data: {
         userId,
         name: dto.name.trim(),
-        make,
-        makeSlug,
-        model,
-        modelSlug,
+        make: make || 'Autre',
+        makeSlug: makeSlug || null,
+        model: model || 'Autre',
+        modelSlug: modelSlug || null,
         year: dto.year,
         vin: this.optionalString(dto.vin),
         engine: this.optionalString(dto.engine),
@@ -210,13 +211,13 @@ export class UsersService {
     if (!car) throw new NotFoundException('Car not found');
     if (car.userId !== userId) throw new ForbiddenException();
 
-    const currentMileage = dto.currentMileage ?? car.currentMileage;
+    const currentMileage = dto.currentMileage ?? car.currentMileage ?? 0;
     const oilChangeDoneNow = dto.oilChangeDone === true;
     const lastOilChangeMileage = oilChangeDoneNow
       ? currentMileage
-      : (dto.lastOilChangeMileage ?? car.lastOilChangeMileage);
+      : (dto.lastOilChangeMileage ?? car.lastOilChangeMileage ?? 0);
 
-    if (lastOilChangeMileage > currentMileage) {
+    if (lastOilChangeMileage > currentMileage && currentMileage > 0) {
       throw new BadRequestException(
         'Last oil change mileage cannot exceed current mileage',
       );
@@ -239,10 +240,10 @@ export class UsersService {
       where: { id: carId },
       data: {
         name: dto.name?.trim(),
-        make: resolved ? resolved.make : (dto.make === undefined ? undefined : this.optionalString(dto.make)),
-        makeSlug: resolved ? resolved.makeSlug : (dto.makeSlug === undefined ? undefined : this.optionalString(dto.makeSlug)),
-        model: resolved ? resolved.model : (dto.model === undefined ? undefined : this.optionalString(dto.model)),
-        modelSlug: resolved ? resolved.modelSlug : (dto.modelSlug === undefined ? undefined : this.optionalString(dto.modelSlug)),
+        make: resolved?.make || (dto.make !== undefined ? dto.make : undefined),
+        makeSlug: resolved?.makeSlug || (dto.makeSlug !== undefined ? dto.makeSlug : undefined),
+        model: resolved?.model || (dto.model !== undefined ? dto.model : undefined),
+        modelSlug: resolved?.modelSlug || (dto.modelSlug !== undefined ? dto.modelSlug : undefined),
         year: dto.year,
         vin: dto.vin === undefined ? undefined : this.optionalString(dto.vin),
         engine:
@@ -265,7 +266,6 @@ export class UsersService {
         currentMileage,
         lastOilChangeMileage,
         oilChangeIntervalKm: dto.oilChangeIntervalKm,
-        oilChangeDone: false,
         oilFilterChanged: dto.oilFilterChanged,
         airFilterChanged: dto.airFilterChanged,
         cabinFilterChanged: dto.cabinFilterChanged,

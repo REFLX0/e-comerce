@@ -283,7 +283,7 @@ export class ProductsService {
       const whereClause = tecdocWhere.length > 0 ? `WHERE ${tecdocWhere.join(' AND ')}` : '';
 
       try {
-        const [tecdocRows, countRows]: [any[], any[]] = await Promise.all([
+        const [tecdocRows, countRows]: [any[], any[]] = (await Promise.all([
           this.prismaRead.db.$queryRawUnsafe(`
             SELECT a.id, a.data_supplier_article_number, s.matchcode AS brand_name,
                    p.description AS product_type, a.description,
@@ -303,7 +303,7 @@ export class ProductsService {
             LEFT JOIN tecdoc.products p ON p.id = a.current_product
             ${whereClause}
           `, ...params),
-        ]);
+        ])) as [any[], any[]];
 
         total = countRows?.[0]?.count ?? 0;
         data = tecdocRows.map((r) => this.serializeTecdocArticle(r));
@@ -341,7 +341,7 @@ export class ProductsService {
 
         // TecDoc fallback
         try {
-          const tecdocArticles: any[] = await this.prismaRead.db.$queryRawUnsafe(`
+          const tecdocArticles: any[] = (await this.prismaRead.db.$queryRawUnsafe(`
             SELECT a.id, a.data_supplier_article_number, s.matchcode AS brand_name,
                    p.description AS product_type, a.description,
                    pv.price, pv."stockQty", pv."supplierName", pv.warehouse
@@ -352,11 +352,11 @@ export class ProductsService {
             WHERE a.data_supplier_article_number = $1
                OR LOWER(REGEXP_REPLACE(CONCAT(s.matchcode, '-', a.data_supplier_article_number), '[^a-zA-Z0-9]+', '-', 'g')) = $2
             LIMIT 1
-          `, slug.toUpperCase(), slug.toLowerCase());
+          `, slug.toUpperCase(), slug.toLowerCase())) as any[];
 
           if (tecdocArticles.length > 0) {
             const item = tecdocArticles[0];
-            const [oeRows, attrRows, vehRows]: [any[], any[], any[]] = await Promise.all([
+            const [oeRows, attrRows, vehRows]: [any[], any[], any[]] = (await Promise.all([
               this.prismaRead.db.$queryRawUnsafe(`
                 SELECT m.matchcode as manufacturer, oe.oe_nbr
                 FROM tecdoc.article_oe_numbers oe
@@ -379,7 +379,7 @@ export class ProductsService {
                 WHERE tnp.product_id = (SELECT current_product FROM tecdoc.articles WHERE id = $1)
                 LIMIT 30
               `, item.id),
-            ]);
+            ])) as [any[], any[], any[]];
 
             return this.serializeTecdocArticle(item, { oeRows, attrRows, vehRows });
           }
