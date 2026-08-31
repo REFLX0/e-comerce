@@ -283,32 +283,36 @@ export class ProductsService {
       const whereClause = tecdocWhere.length > 0 ? `WHERE ${tecdocWhere.join(' AND ')}` : '';
 
       try {
-        const [tecdocRows, countRows]: [any[], any[]] = (await Promise.all([
-          this.prismaRead.db.$queryRawUnsafe(`
-            SELECT a.id, a.data_supplier_article_number, s.matchcode AS brand_name,
-                   p.description AS product_type, a.description,
-                   pv.price, pv."stockQty", pv."supplierName", pv.warehouse
-            FROM tecdoc.articles a
-            JOIN tecdoc.suppliers s ON s.id = a.supplier
-            LEFT JOIN tecdoc.products p ON p.id = a.current_product
-            LEFT JOIN public."ProductVariant" pv ON pv."tecdocArticleId" = a.id
-            ${whereClause}
-            ORDER BY a.id ASC
-            LIMIT ${limit} OFFSET ${skip}
-          `, ...params),
-          this.prismaRead.db.$queryRawUnsafe(`
+        const query = `
+          SELECT a.id, a.data_supplier_article_number, s.matchcode AS brand_name,
+                 p.description AS product_type, a.description
+          FROM tecdoc.articles a
+          JOIN tecdoc.suppliers s ON s.id = a.supplier
+          LEFT JOIN tecdoc.products p ON p.id = a.current_product
+          ${whereClause}
+          ORDER BY a.id ASC
+          LIMIT ${limit} OFFSET ${skip}
+        `;
+        const tecdocRows: any[] = (await this.prismaRead.db.$queryRawUnsafe(query, ...params)) as any[];
+
+        if (whereClause) {
+          const countRows: any[] = (await this.prismaRead.db.$queryRawUnsafe(`
             SELECT COUNT(*)::int AS count
             FROM tecdoc.articles a
             JOIN tecdoc.suppliers s ON s.id = a.supplier
             LEFT JOIN tecdoc.products p ON p.id = a.current_product
             ${whereClause}
-          `, ...params),
-        ])) as [any[], any[]];
+          `, ...params)) as any[];
+          total = countRows?.[0]?.count ?? 0;
+        } else {
+          total = 6722202;
+        }
 
-        total = countRows?.[0]?.count ?? 0;
         data = tecdocRows.map((r) => this.serializeTecdocArticle(r));
-      } catch {
-        // Fallback to empty
+      } catch (err) {
+        console.error('Error fetching TecDoc articles in findAll:', err);
+        data = [];
+        total = 0;
       }
     }
 
@@ -343,12 +347,10 @@ export class ProductsService {
         try {
           const tecdocArticles: any[] = (await this.prismaRead.db.$queryRawUnsafe(`
             SELECT a.id, a.data_supplier_article_number, s.matchcode AS brand_name,
-                   p.description AS product_type, a.description,
-                   pv.price, pv."stockQty", pv."supplierName", pv.warehouse
+                   p.description AS product_type, a.description
             FROM tecdoc.articles a
             JOIN tecdoc.suppliers s ON s.id = a.supplier
             LEFT JOIN tecdoc.products p ON p.id = a.current_product
-            LEFT JOIN public."ProductVariant" pv ON pv."tecdocArticleId" = a.id
             WHERE a.data_supplier_article_number = $1
                OR LOWER(REGEXP_REPLACE(CONCAT(s.matchcode, '-', a.data_supplier_article_number), '[^a-zA-Z0-9]+', '-', 'g')) = $2
             LIMIT 1
