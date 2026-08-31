@@ -233,8 +233,6 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   const NAV: NavItemShape[] = [
     { label: t('dashboard'), icon: LayoutDashboard, href: '/admin', exact: true },
     { label: t('orders'), icon: ShoppingCart, href: '/admin/orders', badge: t('badgeNew') },
-    { label: 'Factures', icon: FileText, href: '/admin/invoices' },
-    { label: 'Vente en boutique', icon: ShoppingBag, href: '/admin/pos' },
     {
       label: t('catalog'),
       icon: Package,
