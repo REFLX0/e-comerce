@@ -27,7 +27,14 @@ log = logging.getLogger('ImageDownloader')
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 JSON_PATH = os.path.join(BASE_DIR, 'catalogue_products.json')
 UPLOADS_DIR = os.path.join(BASE_DIR, 'uploads', 'products')
-os.makedirs(UPLOADS_DIR, exist_ok=True)
+try:
+    os.makedirs(UPLOADS_DIR, exist_ok=True)
+except PermissionError:
+    try:
+        subprocess.run(['sudo', 'mkdir', '-p', UPLOADS_DIR], check=False)
+        subprocess.run(['sudo', 'chmod', '-R', '777', os.path.join(BASE_DIR, 'uploads')], check=False)
+    except Exception:
+        pass
 
 # Parse backend/.env or .env for DB credentials
 def get_db_credentials():
