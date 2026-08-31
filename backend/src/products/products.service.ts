@@ -318,7 +318,7 @@ export class ProductsService {
                  p.description AS product_type, a.description
           FROM tecdoc.articles a
           JOIN tecdoc.suppliers s ON s.id = a.supplier
-          JOIN tecdoc.products p ON p.id = a.current_product
+          LEFT JOIN tecdoc.products p ON p.id = a.current_product
           ${whereClause}
           ORDER BY a.id ASC
           LIMIT ${limit} OFFSET ${skip}
@@ -330,7 +330,7 @@ export class ProductsService {
             SELECT COUNT(*)::int AS count
             FROM tecdoc.articles a
             JOIN tecdoc.suppliers s ON s.id = a.supplier
-            JOIN tecdoc.products p ON p.id = a.current_product
+            LEFT JOIN tecdoc.products p ON p.id = a.current_product
             ${whereClause}
           `, ...params)) as any[];
           total = countRows?.[0]?.count ?? 0;
