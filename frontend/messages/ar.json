@@ -43,6 +43,8 @@
         "placeholder": "ابحث عن منتج أو علامة تجارية...",
         "ariaLabel": "بحث",
         "suggestedProducts": "منتجات مقترحة",
+        "suggestedCategories": "الفئات المقترحة",
+        "suggestedBrands": "العلامات التجارية المقترحة",
         "viewAllResults": "عرض كل النتائج",
         "noResultsFor": "لا توجد نتائج لـ \"{query}\"",
         "tryOtherKeywords": "جرّب كلمات أخرى",
@@ -50,6 +52,20 @@
         "suggestedResults": "نتائج مقترحة",
         "noResult": "لا توجد نتائج",
         "minChars": "أدخل 3 أحرف على الأقل لبدء البحث"
+    },
+    "Catalogue": {
+        "title": "الكتالوج",
+        "filters": "الفلاتر",
+        "clearFilters": "مسح جميع الفلاتر",
+        "allProducts": "جميع المنتجات",
+        "inStock": "متوفر",
+        "outOfStock": "غير متوفر",
+        "imageNotAvailable": "الصورة غير متوفرة",
+        "addToWishlist": "إضافة إلى المفضلة",
+        "compare": "مقارنة",
+        "compatibility": "توافق المركبات",
+        "oemReferences": "المراجع الأصلية (OEM)",
+        "specifications": "المواصفات الفنية"
     },
     "Footer": {
         "description": "متخصص في الشحوم وقطع غيار السيارات للسيارات الخفيفة والتجارية والصناعية منذ أكثر من 15 عامًا.",

@@ -43,6 +43,8 @@
         "placeholder": "Rechercher un produit, marque...",
         "ariaLabel": "Rechercher",
         "suggestedProducts": "Produits suggérés",
+        "suggestedCategories": "Catégories suggérées",
+        "suggestedBrands": "Marques suggérées",
         "viewAllResults": "Voir tous les résultats",
         "noResultsFor": "Aucun résultat pour \"{query}\"",
         "tryOtherKeywords": "Essayez d'autres mots clés",
@@ -50,6 +52,20 @@
         "suggestedResults": "Résultats suggérés",
         "noResult": "Aucun résultat",
         "minChars": "Saisissez au moins 3 caractères pour lancer la recherche"
+    },
+    "Catalogue": {
+        "title": "Catalogue",
+        "filters": "Filtres",
+        "clearFilters": "Effacer tous les filtres",
+        "allProducts": "Tous les produits",
+        "inStock": "En stock",
+        "outOfStock": "Rupture de stock",
+        "imageNotAvailable": "Image non disponible",
+        "addToWishlist": "Ajouter aux favoris",
+        "compare": "Comparer",
+        "compatibility": "Compatibilité Véhicules",
+        "oemReferences": "Références Constructeurs (OEM)",
+        "specifications": "Caractéristiques Techniques"
     },
     "Footer": {
         "description": "Spécialiste en lubrifiants et pièces automobiles pour véhicules particuliers, commerciaux et industriels depuis plus de 15 ans.",

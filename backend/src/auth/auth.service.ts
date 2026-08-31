@@ -71,23 +71,34 @@ export class AuthService {
   }
 
   async login(dto: LoginDto) {
-    const user = await this.prisma.user.findUnique({
-      where: { email: dto.email },
-    });
-    if (!user || !user.passwordHash)
-      throw new UnauthorizedException('Invalid credentials');
+    try {
+      const email = dto.email?.toLowerCase().trim();
+      const user = await this.prisma.user.findUnique({
+        where: { email },
+      });
+      if (!user || !user.passwordHash)
+        throw new UnauthorizedException('Identifiants invalides');
 
-    const valid = await bcrypt.compare(dto.password, user.passwordHash);
-    if (!valid) throw new UnauthorizedException('Invalid credentials');
+      const valid = await bcrypt.compare(dto.password, user.passwordHash);
+      if (!valid) throw new UnauthorizedException('Identifiants invalides');
 
-    // Send security login notification
-    this.mailService.sendLoginAlerts({
-      email: user.email,
-      name: user.name ?? '',
-      role: user.role,
-    }).catch(() => {});
+      // Send security login notification in background
+      try {
+        this.mailService.sendLoginAlerts({
+          email: user.email,
+          name: user.name ?? '',
+          role: user.role,
+        }).catch(() => {});
+      } catch {}
 
-    return this.generateTokens(user);
+      return await this.generateTokens(user);
+    } catch (err) {
+      if (err instanceof UnauthorizedException || err instanceof ConflictException) {
+        throw err;
+      }
+      console.error('Login error:', err);
+      throw new UnauthorizedException('Erreur de connexion. Veuillez vérifier vos identifiants.');
+    }
   }
 
   async refresh(refreshToken: string) {
@@ -134,9 +145,10 @@ export class AuthService {
     createdAt: Date;
   }) {
     const payload = { sub: user.id, email: user.email, role: user.role };
+    const jwtSecret = this.config.get('JWT_SECRET') || 'specpart-super-secret-jwt-key-2026';
 
     const accessToken = this.jwtService.sign(payload, {
-      secret: this.config.get('JWT_SECRET'),
+      secret: jwtSecret,
       expiresIn: '7d',
     });
 

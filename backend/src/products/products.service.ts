@@ -30,6 +30,33 @@ export interface ProductFilters {
   oem?: string;
 }
 
+const CATEGORY_SYNONYMS: Record<string, string[]> = {
+  'filtres': ['filtre', 'filter'],
+  'auto-filtres': ['filtre', 'filter'],
+  'filtre-a-huile': ['filtre à huile', 'filtre a huile', 'oil filter'],
+  'filtre-a-air': ['filtre à air', 'filtre a air', 'air filter'],
+  'filtre-a-carburant': ['filtre à carburant', 'filtre carburant', 'fuel filter'],
+  'filtre-habitacle': ['filtre d\'habitacle', 'filtre habitacle', 'cabin filter'],
+  'freinage': ['frein', 'brake', 'plaquette', 'disque', 'mâchoire', 'étrier'],
+  'plaquettes-de-frein': ['plaquette', 'brake pad'],
+  'disques-de-frein': ['disque', 'brake disc'],
+  'amortisseurs': ['amortisseur', 'shock absorber'],
+  'suspension-direction': ['suspension', 'direction', 'rotule', 'bras', 'biellette', 'amortisseur'],
+  'allumage-prechauffage': ['allumage', 'bougie', 'bobine', 'préchauffage', 'spark plug', 'glow plug'],
+  'bougies-allumage': ['bougie d\'allumage', 'spark plug'],
+  'bougies-prechauffage': ['bougie de préchauffage', 'glow plug'],
+  'embrayage': ['embrayage', 'clutch', 'volant moteur', 'butée'],
+  'courroies-distribution': ['courroie', 'distribution', 'galet', 'poulie', 'timing belt', 'v-belt'],
+  'echappement': ['échappement', 'silencieux', 'catalyseur', 'fap', 'exhaust'],
+  'refroidissement': ['refroidissement', 'radiateur', 'pompe à eau', 'thermostat', 'ventilateur', 'cooling'],
+  'eclairage': ['phare', 'feu', 'ampoule', 'projecteur', 'clignotant', 'lamp'],
+  'demarreur-alternateur': ['démarreur', 'alternateur', 'starter', 'alternator'],
+  'moteur': ['moteur', 'joint', 'culasse', 'soupape', 'piston', 'engine'],
+  'huiles-moteur': ['huile', 'oil', 'lubrifiant', 'engine oil'],
+  'liquides-auto': ['liquide', 'fluide', 'antigel', 'lave glace', 'frein'],
+  'additifs': ['additif', 'nettoyant', 'traitement'],
+};
+
 @Injectable()
 export class ProductsService {
   constructor(
@@ -272,9 +299,15 @@ export class ProductsService {
         pIdx++;
       }
       if (filters.categorySlug) {
-        tecdocWhere.push(`(LOWER(REGEXP_REPLACE(p.description, '[^a-zA-Z0-9]+', '-', 'g')) ILIKE $${pIdx} OR LOWER(p.description) ILIKE $${pIdx})`);
-        params.push(`%${filters.categorySlug.replace(/-/g, '%')}%`);
-        pIdx++;
+        const slugNorm = filters.categorySlug.toLowerCase().trim();
+        const synonyms = CATEGORY_SYNONYMS[slugNorm] || [slugNorm.replace(/-s$/, '').replace(/-/g, ' ')];
+        const synClauses: string[] = [];
+        for (const syn of synonyms) {
+          synClauses.push(`p.description ILIKE $${pIdx}`);
+          params.push(`%${syn}%`);
+          pIdx++;
+        }
+        tecdocWhere.push(`(${synClauses.join(' OR ')})`);
       }
 
       const whereClause = tecdocWhere.length > 0 ? `WHERE ${tecdocWhere.join(' AND ')}` : '';
