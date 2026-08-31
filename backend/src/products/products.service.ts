@@ -314,29 +314,32 @@ export class ProductsService {
 
       try {
         const query = `
-          SELECT a.id, a.data_supplier_article_number, a.supplier, s.matchcode AS brand_name,
-                 p.description AS product_type, a.description
+          SELECT DISTINCT ON (a.id)
+                 a.id, a.data_supplier_article_number, a.supplier, s.matchcode AS brand_name,
+                 p.description AS product_type, a.description,
+                 mi.picture_name AS picture_name
           FROM tecdoc.articles a
           JOIN tecdoc.suppliers s ON s.id = a.supplier
           LEFT JOIN tecdoc.products p ON p.id = a.current_product
+          JOIN tecdoc.article_mediainformation mi ON mi.article_id = a.id
+            AND mi.picture_name IS NOT NULL AND mi.picture_name <> ''
           ${whereClause}
           ORDER BY a.id ASC
           LIMIT ${limit} OFFSET ${skip}
         `;
         const tecdocRows: any[] = (await this.prismaRead.db.$queryRawUnsafe(query, ...params)) as any[];
 
-        if (whereClause) {
-          const countRows: any[] = (await this.prismaRead.db.$queryRawUnsafe(`
-            SELECT COUNT(*)::int AS count
-            FROM tecdoc.articles a
-            JOIN tecdoc.suppliers s ON s.id = a.supplier
-            LEFT JOIN tecdoc.products p ON p.id = a.current_product
-            ${whereClause}
-          `, ...params)) as any[];
-          total = countRows?.[0]?.count ?? 0;
-        } else {
-          total = 6722202;
-        }
+        const countQuery = `
+          SELECT COUNT(DISTINCT a.id)::int AS count
+          FROM tecdoc.articles a
+          JOIN tecdoc.suppliers s ON s.id = a.supplier
+          LEFT JOIN tecdoc.products p ON p.id = a.current_product
+          JOIN tecdoc.article_mediainformation mi ON mi.article_id = a.id
+            AND mi.picture_name IS NOT NULL AND mi.picture_name <> ''
+          ${whereClause}
+        `;
+        const countRows: any[] = (await this.prismaRead.db.$queryRawUnsafe(countQuery, ...params)) as any[];
+        total = countRows?.[0]?.count ?? 0;
 
         data = tecdocRows.map((r) => this.serializeTecdocArticle(r));
       } catch (err) {
@@ -460,7 +463,11 @@ export class ProductsService {
       createdAt: new Date(),
       updatedAt: new Date(),
       images: [
-        `/images/${r.supplier}_${r.data_supplier_article_number?.trim().replace(/\s+/g, '_')}_1.webp`,
+        r.picture_name
+          ? (r.picture_name.trim().toLowerCase().endsWith('.webp') || r.picture_name.trim().toLowerCase().endsWith('.jpg') || r.picture_name.trim().toLowerCase().endsWith('.png'))
+            ? (r.picture_name.trim().startsWith('/images/') ? r.picture_name.trim() : `/images/${r.picture_name.trim()}`)
+            : `/images/${r.supplier}_${r.picture_name.trim().replace(/\s+/g, '_')}_1.webp`
+          : `/images/${r.supplier}_${r.data_supplier_article_number?.trim().replace(/\s+/g, '_')}_1.webp`,
       ],
       variants: [
         {
@@ -574,13 +581,17 @@ export class ProductsService {
         }
       }
 
-      // If local products are empty, return top TecDoc parts
+      // If local products are empty, return top TecDoc parts with photos
       const tecdocRows = await this.prismaRead.db.$queryRawUnsafe<any[]>(`
-        SELECT a.id, a.data_supplier_article_number, a.supplier, s.matchcode AS brand_name,
-               p.description AS product_type, a.description
+        SELECT DISTINCT ON (a.id)
+               a.id, a.data_supplier_article_number, a.supplier, s.matchcode AS brand_name,
+               p.description AS product_type, a.description,
+               mi.picture_name AS picture_name
         FROM tecdoc.articles a
         JOIN tecdoc.suppliers s ON s.id = a.supplier
-        JOIN tecdoc.products p ON p.id = a.current_product
+        LEFT JOIN tecdoc.products p ON p.id = a.current_product
+        JOIN tecdoc.article_mediainformation mi ON mi.article_id = a.id
+          AND mi.picture_name IS NOT NULL AND mi.picture_name <> ''
         ORDER BY a.id ASC
         LIMIT ${limit}
       `);
@@ -606,11 +617,15 @@ export class ProductsService {
             return products.map((p) => this.serialize(p));
           }
           const tecdocRows = await this.prismaRead.db.$queryRawUnsafe<any[]>(`
-            SELECT a.id, a.data_supplier_article_number, a.supplier, s.matchcode AS brand_name,
-                   p.description AS product_type, a.description
+            SELECT DISTINCT ON (a.id)
+                   a.id, a.data_supplier_article_number, a.supplier, s.matchcode AS brand_name,
+                   p.description AS product_type, a.description,
+                   mi.picture_name AS picture_name
             FROM tecdoc.articles a
             JOIN tecdoc.suppliers s ON s.id = a.supplier
-            JOIN tecdoc.products p ON p.id = a.current_product
+            LEFT JOIN tecdoc.products p ON p.id = a.current_product
+            JOIN tecdoc.article_mediainformation mi ON mi.article_id = a.id
+              AND mi.picture_name IS NOT NULL AND mi.picture_name <> ''
             ORDER BY a.id DESC
             LIMIT ${limit}
           `);
@@ -646,11 +661,15 @@ export class ProductsService {
 
       // If TecDoc product
       const tecdocRows = await this.prismaRead.db.$queryRawUnsafe<any[]>(`
-        SELECT a.id, a.data_supplier_article_number, a.supplier, s.matchcode AS brand_name,
-               p.description AS product_type, a.description
+        SELECT DISTINCT ON (a.id)
+               a.id, a.data_supplier_article_number, a.supplier, s.matchcode AS brand_name,
+               p.description AS product_type, a.description,
+               mi.picture_name AS picture_name
         FROM tecdoc.articles a
         JOIN tecdoc.suppliers s ON s.id = a.supplier
-        JOIN tecdoc.products p ON p.id = a.current_product
+        LEFT JOIN tecdoc.products p ON p.id = a.current_product
+        JOIN tecdoc.article_mediainformation mi ON mi.article_id = a.id
+          AND mi.picture_name IS NOT NULL AND mi.picture_name <> ''
         WHERE a.id != ${parseInt(id.replace(/\D/g, ''), 10) || 0}
         ORDER BY a.id ASC
         LIMIT ${limit}
