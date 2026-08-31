@@ -245,40 +245,24 @@ export class ProductsService {
       filters.viscosity || filters.type || filters.api || filters.acea || filters.volume
     );
 
-    if (isOilSpecific) {
-      if (filters.cursor && !needsManualSort) {
-        const orderBy = this.buildOrderBy(filters.sortBy);
-        data = await this.prismaRead.db.product.findMany({
+    let prismaProducts: any[] = [];
+    let prismaCount = 0;
+    try {
+      [prismaProducts, prismaCount] = await Promise.all([
+        this.prismaRead.db.product.findMany({
           where,
           include: this.buildInclude(),
-          orderBy,
-          take: limit + 1,
-          cursor: { id: filters.cursor },
-          skip: 1,
-        });
-        if (data.length > limit) {
-          data.pop();
-          nextCursor = data[data.length - 1].id;
-        }
-        total = -1;
-      } else if (needsManualSort) {
-        const all = await this.prismaRead.db.product.findMany({ where, include: this.buildInclude() });
-        total = all.length;
-        all.sort((a, b) => {
-          const pa = a.variants?.[0]?.price ?? 0;
-          const pb = b.variants?.[0]?.price ?? 0;
-          return filters.sortBy === 'price_asc' ? pa - pb : pb - pa;
-        });
-        const skip = (Math.max(filters.page ?? 1, 1) - 1) * limit;
-        data = all.slice(skip, skip + limit);
-      } else {
-        const skip = (page - 1) * limit;
-        const orderBy = this.buildOrderBy(filters.sortBy);
-        [data, total] = await Promise.all([
-          this.prismaRead.db.product.findMany({ where, include: this.buildInclude(), orderBy, skip, take: limit }),
-          this.prismaRead.db.product.count({ where }),
-        ]);
-      }
+          orderBy: this.buildOrderBy(filters.sortBy),
+          skip,
+          take: limit,
+        }),
+        this.prismaRead.db.product.count({ where }),
+      ]);
+    } catch {}
+
+    if (prismaCount > 0 && isOilSpecific) {
+      data = prismaProducts.map((p) => this.serialize(p));
+      total = prismaCount;
     } else {
       const tecdocWhere: string[] = [];
       const params: any[] = [];
@@ -312,44 +296,49 @@ export class ProductsService {
 
       const whereClause = tecdocWhere.length > 0 ? `WHERE ${tecdocWhere.join(' AND ')}` : '';
 
+      let tecdocRows: any[] = [];
+      let tecdocTotal = 0;
+
       try {
         const query = `
-          SELECT DISTINCT ON (a.id)
-                 a.id, a.data_supplier_article_number, a.supplier, s.matchcode AS brand_name,
+          SELECT a.id, a.data_supplier_article_number, a.supplier, s.matchcode AS brand_name,
                  p.description AS product_type, a.description,
                  mi.picture_name AS picture_name
           FROM tecdoc.articles a
           JOIN tecdoc.suppliers s ON s.id = a.supplier
           LEFT JOIN tecdoc.products p ON p.id = a.current_product
-          JOIN tecdoc.article_mediainformation mi ON mi.article_id = a.id
-            AND mi.picture_name IS NOT NULL AND mi.picture_name <> ''
+          LEFT JOIN tecdoc.article_mediainformation mi ON mi.article_id = a.id
           ${whereClause}
           ORDER BY a.id ASC
           LIMIT ${limit} OFFSET ${skip}
         `;
-        const tecdocRows: any[] = (await this.prismaRead.db.$queryRawUnsafe(query, ...params)) as any[];
+        tecdocRows = (await this.prismaRead.db.$queryRawUnsafe(query, ...params)) as any[];
 
-        const countQuery = `
-          SELECT COUNT(DISTINCT a.id)::int AS count
-          FROM tecdoc.articles a
-          JOIN tecdoc.suppliers s ON s.id = a.supplier
-          LEFT JOIN tecdoc.products p ON p.id = a.current_product
-          JOIN tecdoc.article_mediainformation mi ON mi.article_id = a.id
-            AND mi.picture_name IS NOT NULL AND mi.picture_name <> ''
-          ${whereClause}
-        `;
-        const countRows: any[] = (await this.prismaRead.db.$queryRawUnsafe(countQuery, ...params)) as any[];
-        total = countRows?.[0]?.count ?? 0;
-
-        data = tecdocRows.map((r) => this.serializeTecdocArticle(r));
+        if (whereClause) {
+          const countQuery = `
+            SELECT COUNT(*)::int AS count
+            FROM tecdoc.articles a
+            JOIN tecdoc.suppliers s ON s.id = a.supplier
+            LEFT JOIN tecdoc.products p ON p.id = a.current_product
+            ${whereClause}
+          `;
+          const countRows: any[] = (await this.prismaRead.db.$queryRawUnsafe(countQuery, ...params)) as any[];
+          tecdocTotal = countRows?.[0]?.count ?? 0;
+        } else {
+          tecdocTotal = 6722202;
+        }
       } catch (err) {
         console.error('Error fetching TecDoc articles in findAll:', err);
-        const skip = (page - 1) * limit;
-        const orderBy = this.buildOrderBy(filters.sortBy);
-        [data, total] = await Promise.all([
-          this.prismaRead.db.product.findMany({ where, include: this.buildInclude(), orderBy, skip, take: limit }),
-          this.prismaRead.db.product.count({ where }),
-        ]);
+      }
+
+      if (tecdocRows.length > 0) {
+        const tecdocSerialized = tecdocRows.map((r) => this.serializeTecdocArticle(r));
+        const localSerialized = prismaProducts.map((p) => this.serialize(p));
+        data = [...localSerialized, ...tecdocSerialized].slice(0, limit);
+        total = prismaCount + tecdocTotal;
+      } else {
+        data = prismaProducts.map((p) => this.serialize(p));
+        total = prismaCount;
       }
     }
 
