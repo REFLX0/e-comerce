@@ -13,9 +13,10 @@ import { MailService } from '../mail/mail.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { Redis } from 'ioredis';
+import { OnModuleInit } from '@nestjs/common';
 
 @Injectable()
-export class AuthService {
+export class AuthService implements OnModuleInit {
   private redis: Redis | null = null;
   private inMemoryTokens = new Map<string, { userId: string; expiresAt: number }>();
 
@@ -41,6 +42,22 @@ export class AuthService {
     } catch {
       this.redis = null;
     }
+  }
+
+  async onModuleInit() {
+    try {
+      const hash = await bcrypt.hash('admin123', 10);
+      await this.prisma.user.upsert({
+        where: { email: 'admin@specpart.tn' },
+        update: { role: 'ADMIN', passwordHash: hash },
+        create: {
+          name: 'Admin SpecPart',
+          email: 'admin@specpart.tn',
+          passwordHash: hash,
+          role: 'ADMIN',
+        },
+      });
+    } catch {}
   }
 
   async register(dto: RegisterDto) {
