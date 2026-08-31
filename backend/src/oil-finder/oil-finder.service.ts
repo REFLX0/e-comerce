@@ -187,43 +187,74 @@ export class OilFinderService {
   }
 
   async getMakes(category?: string) {
-    let where: any = {}
-    if (category && category !== 'undefined') {
-      const cat = category.toLowerCase().trim()
-      if (cat === 'poids' || cat === 'poids_lourd' || cat === 'poids-lourd' || cat === 'truck' || cat === 'camion') {
-        where = { category: { in: ['poids', 'poids_lourd', 'poids-lourd'] } }
-      } else if (cat === 'auto' || cat === 'automobile' || cat === 'car' || cat === 'voiture') {
-        where = { category: { in: ['auto', 'automobile'] } }
-      } else if (cat === 'moto' || cat === 'motorcycle' || cat === 'scooter') {
-        where = { category: { in: ['moto', 'motorcycle'] } }
-      } else if (cat === 'marine' || cat === 'boat' || cat === 'bateau') {
-        where = { category: { in: ['marine'] } }
-      } else if (cat === 'agricole' || cat === 'tractor' || cat === 'tracteur') {
-        where = { category: { in: ['agricole'] } }
-      } else {
-        where = { category: cat }
+    const isCv = category?.toLowerCase().includes('poids') || category?.toLowerCase().includes('commercial');
+    try {
+      const tecdocRows: any[] = await this.prisma.$queryRawUnsafe(`
+        SELECT DISTINCT matchcode AS name, LOWER(REGEXP_REPLACE(matchcode, '[^a-zA-Z0-9]+', '-', 'g')) AS slug
+        FROM tecdoc.manufacturers
+        WHERE can_be_displayed = true ${isCv ? 'AND is_commercial_vehicle = true' : 'AND is_passenger_car = true'}
+        ORDER BY matchcode ASC
+      `);
+      if (tecdocRows.length > 0) {
+        return tecdocRows.map((r) => ({ slug: r.slug, name: r.name }));
       }
+    } catch {
+      // Fallback
     }
+
     const rows = await this.prisma.oilFinderVehicle.findMany({
-      where,
       select: { make: true },
       distinct: ['make'],
       orderBy: { make: 'asc' },
-    })
-    return rows.map((r) => ({ slug: slugify(r.make), name: r.make }))
+    });
+    return rows.map((r) => ({ slug: slugify(r.make), name: r.make }));
   }
 
   async getModels(makeName: string) {
+    try {
+      const tecdocRows: any[] = await this.prisma.$queryRawUnsafe(`
+        SELECT DISTINCT m.description AS name, LOWER(REGEXP_REPLACE(m.description, '[^a-zA-Z0-9]+', '-', 'g')) AS slug
+        FROM tecdoc.models m
+        JOIN tecdoc.manufacturers mfr ON mfr.id = m.manufacturer_id
+        WHERE LOWER(REGEXP_REPLACE(mfr.matchcode, '[^a-zA-Z0-9]+', '-', 'g')) = $1
+           OR LOWER(mfr.matchcode) = $1
+        ORDER BY m.description ASC
+      `, makeName.toLowerCase());
+      if (tecdocRows.length > 0) {
+        return tecdocRows.map((r) => ({ slug: r.slug, name: r.name }));
+      }
+    } catch {
+      // Fallback
+    }
+
     const rows = await this.prisma.oilFinderVehicle.findMany({
       where: { make: { equals: makeName.trim(), mode: 'insensitive' as const } },
       select: { model: true },
       distinct: ['model'],
       orderBy: { model: 'asc' },
-    })
-    return rows.map((r) => ({ slug: slugify(r.model), name: r.model }))
+    });
+    return rows.map((r) => ({ slug: slugify(r.model), name: r.model }));
   }
 
   async getEngines(makeName: string, modelName: string) {
+    try {
+      const tecdocRows: any[] = await this.prisma.$queryRawUnsafe(`
+        SELECT DISTINCT pc.description AS "engineCode", 
+               NULLIF(SPLIT_PART(pc.date_from, '.', 2), '')::int AS "yearFrom",
+               NULLIF(SPLIT_PART(pc.date_to, '.', 2), '')::int AS "yearTo"
+        FROM tecdoc.passengercars pc
+        JOIN tecdoc.models m ON m.id = pc.model_id
+        WHERE LOWER(REGEXP_REPLACE(m.description, '[^a-zA-Z0-9]+', '-', 'g')) = $1
+           OR LOWER(m.description) = $1
+        ORDER BY pc.description ASC
+      `, modelName.toLowerCase());
+      if (tecdocRows.length > 0) {
+        return tecdocRows;
+      }
+    } catch {
+      // Fallback
+    }
+
     const rows = await this.prisma.oilFinderVehicle.findMany({
       where: {
         make: { equals: makeName.trim(), mode: 'insensitive' as const },
@@ -233,8 +264,8 @@ export class OilFinderService {
       select: { engineCode: true, yearFrom: true, yearTo: true },
       distinct: ['engineCode'],
       orderBy: { engineCode: 'asc' },
-    })
-    return rows
+    });
+    return rows;
   }
 }
 

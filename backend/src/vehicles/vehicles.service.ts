@@ -30,38 +30,40 @@ export class VehiclesService {
   ) {}
 
   async getMakes(vehicleType?: string) {
-    const where: any = {};
-    if (vehicleType && vehicleType !== 'undefined') {
-      where.models = { some: { vehicleType: vehicleType.toUpperCase() } };
-    }
-    return this.prisma.vehicleMake.findMany({
-      where,
-      orderBy: { name: 'asc' },
-    });
+    const isCv = vehicleType?.toLowerCase().includes('poids') || vehicleType?.toLowerCase().includes('commercial');
+    const rows: any[] = await this.prisma.$queryRawUnsafe(`
+      SELECT DISTINCT id, matchcode AS name, LOWER(REGEXP_REPLACE(matchcode, '[^a-zA-Z0-9]+', '-', 'g')) AS slug
+      FROM tecdoc.manufacturers
+      WHERE can_be_displayed = true ${isCv ? 'AND is_commercial_vehicle = true' : 'AND is_passenger_car = true'}
+      ORDER BY matchcode ASC
+    `);
+    return rows.map((r) => ({ id: String(r.id), name: r.name, slug: r.slug }));
   }
 
   async getModels(makeSlug: string) {
-    const make = await this.prisma.vehicleMake.findUnique({
-      where: { slug: makeSlug },
-    });
-    if (!make) return [];
-    return this.prisma.vehicleModel.findMany({
-      where: { makeId: make.id },
-      orderBy: { name: 'asc' },
-    });
+    const rows: any[] = await this.prisma.$queryRawUnsafe(`
+      SELECT DISTINCT m.id, m.description AS name, LOWER(REGEXP_REPLACE(m.description, '[^a-zA-Z0-9]+', '-', 'g')) AS slug
+      FROM tecdoc.models m
+      JOIN tecdoc.manufacturers mfr ON mfr.id = m.manufacturer_id
+      WHERE LOWER(REGEXP_REPLACE(mfr.matchcode, '[^a-zA-Z0-9]+', '-', 'g')) = $1
+         OR LOWER(mfr.matchcode) = $1
+      ORDER BY m.description ASC
+    `, makeSlug.toLowerCase());
+    return rows.map((r) => ({ id: String(r.id), makeId: makeSlug, name: r.name, slug: r.slug, vehicleType: 'AUTOMOBILE' as const }));
   }
 
   async getEngines(modelSlug: string) {
-    const model = await this.prisma.vehicleModel.findUnique({
-      where: { slug: modelSlug },
-    });
-    if (!model) return [];
-    const compatibilities = await this.prisma.vehicleCompatibility.findMany({
-      where: { vehicleModelId: model.id, engineCode: { not: null } },
-      select: { engineCode: true, yearFrom: true, yearTo: true },
-      distinct: ['engineCode'],
-    });
-    return compatibilities;
+    const rows: any[] = await this.prisma.$queryRawUnsafe(`
+      SELECT DISTINCT pc.description AS "engineCode", 
+             NULLIF(SPLIT_PART(pc.date_from, '.', 2), '')::int AS "yearFrom",
+             NULLIF(SPLIT_PART(pc.date_to, '.', 2), '')::int AS "yearTo"
+      FROM tecdoc.passengercars pc
+      JOIN tecdoc.models m ON m.id = pc.model_id
+      WHERE LOWER(REGEXP_REPLACE(m.description, '[^a-zA-Z0-9]+', '-', 'g')) = $1
+         OR LOWER(m.description) = $1
+      ORDER BY pc.description ASC
+    `, modelSlug.toLowerCase());
+    return rows;
   }
 
   async getCompatibleProducts(

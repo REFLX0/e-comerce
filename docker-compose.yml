@@ -149,6 +149,7 @@ services:
   db:
     image: postgres:16-alpine
     container_name: specpart-db
+    shm_size: 1gb
     env_file: backend/.env
     environment:
       POSTGRES_USER: ${POSTGRES_USER:?POSTGRES_USER is required}
@@ -171,6 +172,7 @@ services:
   db-replica:
     image: postgres:16-alpine
     container_name: specpart-db-replica
+    shm_size: 1gb
     env_file: backend/.env
     environment:
       PGPASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
