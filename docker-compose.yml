@@ -5,10 +5,14 @@ services:
     image: nginx:alpine
     container_name: specpart-nginx
     ports:
+      - "80:80"
+      - "443:443"
       - "8082:8082"
     volumes:
       - ./nginx/nginx.prod.conf:/etc/nginx/nginx.conf:ro
       - ./autopart_db/images:/srv/product-images:ro
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+      - /var/www/certbot:/var/www/certbot:ro
     depends_on:
       backend:
         condition: service_healthy
