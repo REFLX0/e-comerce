@@ -1,10 +1,9 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PrismaReadService } from '../prisma/prisma-read.service';
 import { CacheService } from '../cache/cache.service';
 import { Prisma } from '@prisma/client';
 import { OilRecommendationsDto } from './dto/oil-recommendations.dto';
 import { calcSpecificity } from '../specificity';
-import * as fs from 'fs';
 
 export interface ProductFilters {
   categorySlug?: string;
@@ -64,85 +63,11 @@ const CATEGORY_SYNONYMS: Record<string, string[]> = {
 };
 
 @Injectable()
-export class ProductsService implements OnModuleInit {
+export class ProductsService {
   constructor(
     private readonly prismaRead: PrismaReadService,
     private readonly cache: CacheService,
   ) {}
-
-  async onModuleInit() {
-    try {
-      await this.prismaRead.db.$executeRawUnsafe(`
-        CREATE TABLE IF NOT EXISTS tecdoc.article_images (
-          supplier INTEGER NOT NULL,
-          article_number VARCHAR(255) NOT NULL,
-          filename VARCHAR(255) NOT NULL,
-          PRIMARY KEY (supplier, article_number)
-        );
-        CREATE INDEX IF NOT EXISTS idx_tecdoc_article_images_sup_art ON tecdoc.article_images(supplier, article_number);
-      `);
-
-      const countRows: any[] = (await this.prismaRead.db.$queryRawUnsafe(`
-        SELECT COUNT(*)::int AS count FROM tecdoc.article_images
-      `)) as any[];
-      const existingCount = countRows?.[0]?.count ?? 0;
-
-      if (existingCount < 1000) {
-        const imageDirs = [
-          '/srv/product-images',
-          '/app/autopart_db/images',
-          './autopart_db/images',
-          '../autopart_db/images',
-        ];
-        let targetDir: string | null = null;
-        for (const d of imageDirs) {
-          if (fs.existsSync(d)) {
-            targetDir = d;
-            break;
-          }
-        }
-
-        if (targetDir) {
-          console.log(`🖼️ Indexing product images from ${targetDir}...`);
-          const files = fs.readdirSync(targetDir);
-          const batchSize = 1000;
-          const rows: { supplier: number; sku: string; filename: string }[] = [];
-
-          for (const file of files) {
-            const match = file.match(/^(\d+)_(.+)_1\.webp$/i);
-            if (match) {
-              rows.push({
-                supplier: parseInt(match[1], 10),
-                sku: match[2],
-                filename: file,
-              });
-            }
-          }
-
-          for (let i = 0; i < rows.length; i += batchSize) {
-            const chunk = rows.slice(i, i + batchSize);
-            const valueClauses = chunk
-              .map((r, idx) => `($${idx * 3 + 1}, $${idx * 3 + 2}, $${idx * 3 + 3})`)
-              .join(', ');
-            const params: any[] = [];
-            chunk.forEach((r) => {
-              params.push(r.supplier, r.sku, r.filename);
-            });
-
-            await this.prismaRead.db.$executeRawUnsafe(
-              `INSERT INTO tecdoc.article_images (supplier, article_number, filename)
-               VALUES ${valueClauses}
-               ON CONFLICT DO NOTHING`,
-              ...params,
-            );
-          }
-          console.log(`✅ Indexed ${rows.length} verified product images into PostgreSQL!`);
-        }
-      }
-    } catch (err) {
-      console.error('Error during article_images table initialization:', err);
-    }
-  }
 
   /** Include every descendant when a catalogue group is selected. */
   async resolveCategoryIds(slug: string) {
