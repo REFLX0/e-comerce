@@ -81,10 +81,10 @@ export function ReviewsSection({ productId, rating, reviewCount }: Props) {
       <div className="lg:col-span-1">
         <h3 className="font-display text-brand-primary mb-6 text-xl font-bold">{t('clientReviews')}</h3>
         <div className="mb-8 flex items-center gap-4">
-          <div className="text-brand-primary text-5xl font-bold">{rating.toFixed(1)}</div>
+          <div className="text-brand-primary text-5xl font-bold">{(rating ?? 0).toFixed(1)}</div>
           <div>
-            <RatingStars rating={rating} count={reviewCount} size={20} />
-            <p className="mt-1 text-sm text-gray-500">{t('basedOn', { count: reviewCount })}</p>
+            <RatingStars rating={rating ?? 0} count={reviewCount ?? 0} size={20} />
+            <p className="mt-1 text-sm text-gray-500">{t('basedOn', { count: reviewCount ?? 0 })}</p>
           </div>
         </div>
 

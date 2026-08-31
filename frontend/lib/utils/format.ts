@@ -1,6 +1,7 @@
-export function formatPrice(amount: number): string {
-  if (amount == null || isNaN(amount)) return '0.000 DT'
-  const parts = amount.toFixed(3).split('.')
+export function formatPrice(amount?: number | null): string {
+  if (amount == null || isNaN(Number(amount))) return '0.000 DT'
+  const num = Number(amount)
+  const parts = num.toFixed(3).split('.')
   const intPart = parts[0] || '0'
   const decPart = parts[1] || '000'
   return `${intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}.${decPart} DT`
