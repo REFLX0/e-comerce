@@ -164,7 +164,7 @@ async function main() {
     where: { isPublished: true },
     include: { brand: true },
   })
-  const products = allProducts.map(p => ({ id: p.id, nameFr: p.nameFr, brandName: p.brand.name }))
+  const products = allProducts.map(p => ({ id: p.id, nameFr: p.nameFr, brandName: p.brand?.name || '' }))
   console.log(`  Found ${products.length} published products in DB`)
 
   let matched = 0
