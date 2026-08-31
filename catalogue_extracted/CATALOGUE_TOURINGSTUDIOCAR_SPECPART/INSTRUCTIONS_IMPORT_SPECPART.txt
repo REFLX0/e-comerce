@@ -1,0 +1,46 @@
+================================================================================
+CATALOGUE TOURINGSTUDIOCAR CONVERTI AU FORMAT SPECPART (.XLSX)
+================================================================================
+
+Bonjour,
+
+Les 462 produits récupérés de touringstudiocar.shop ont été parfaitement normalisés, nettoyés et classés selon l'arborescence et le format exacts de la base de données specpart.
+
+📁 ORGANISATION DES FAMILLES & SOUS-CATÉGORIES :
+--------------------------------------------------------------------------------
+1. "Huiles & Lubrifiants Moteur" :
+   - Huiles moteur (10W40, 5W30, 5W40, 0W20, 0W30, etc.)
+   - Huiles de boîte & Transmission (ATF, DSG, CVT, 75W80, 75W90, 75W140)
+   - Liquides (Refroidissement, Frein, AdBlue)
+2. "Pièces de Rechange / D'origine" :
+   - Filtres (Huile, Air, Habitacle, Carburant)
+   - Électricité & Éclairage (Batteries VARTA/ASSAD, Balais d'essuie-glace)
+3. "Additifs" :
+   - Additifs Carburant & Injection (Diesel, Essence, Nettoyant FAP, Catalyseur)
+   - Additifs Huile & Moteur (Cera Tec, Flush, Anti-fuite)
+   - Additifs Radiateur
+4. "Moto" :
+   - Huiles moteur 2T & 4T
+   - Huiles de fourche
+   - Entretien & Graissage chaîne
+5. "Entretien & Accessoires" :
+   - Lavage, Carrosserie & Detailing
+   - Nettoyage & Entretien Intérieur
+   - Accessoires & Produits Pro
+
+📊 DONNÉES ENRICHIES ET EXTRAITES :
+--------------------------------------------------------------------------------
+- Noms nettoyés
+- Prix en TND (format numérique prêt pour calcul)
+- Marques standardisées (LIQUI MOLY, MANNOL, VARTA, ASSAD, ROWE, CASTROL, WOLF, PRO-TEC, etc.)
+- Viscosités extraites (5W30, 5W40, 10W40, 0W20, etc.)
+- Normes ACEA & API
+- Homologations constructeurs (MB, VW, BMW, Renault, PSA, etc.)
+- Liens des photos haute définition
+- Descriptions complètes
+
+================================================================================
+Total Produits : 462
+Total Fichiers Excel générés : 28
+Date de conversion : 30/08/2026 01:33:52
+================================================================================
