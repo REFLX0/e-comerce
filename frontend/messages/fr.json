@@ -228,6 +228,8 @@
         "oilType": "Type d'huile",
         "apiStandards": "Normes API",
         "aceaStandards": "Normes ACEA",
+        "standardsApi": "Normes API",
+        "standardsAcea": "Normes ACEA",
         "oemApprovals": "Approbations OEM",
         "packaging": "Emballage",
         "options": "Options",

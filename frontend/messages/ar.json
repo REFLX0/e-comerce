@@ -228,6 +228,8 @@
         "oilType": "نوع الزيت",
         "apiStandards": "معايير API",
         "aceaStandards": "معايير ACEA",
+        "standardsApi": "معايير API",
+        "standardsAcea": "معايير ACEA",
         "oemApprovals": "موافقات الشركات المصنّعة",
         "packaging": "التعبئة",
         "options": "خيارات",

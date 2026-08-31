@@ -99,7 +99,7 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
       <Breadcrumb
         items={[
           { label: 'Catalogue', href: '/catalogue' },
-          { label: category?.name || t('loading') },
+          { label: category?.nameFr || category?.name || (catLoading ? t('loading') : slug.replace(/-/g, ' ')) },
         ]}
       />
 
@@ -118,17 +118,17 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
               {t('categoryLoadError')}
             </div>
           ) : (
-            category && (
+            (category || slug) && (
               <div className="mb-6">
-                <h1 className="font-display text-[#111] text-2xl font-bold md:text-3xl">
-                  {category.name}
+                <h1 className="font-display text-[#111] text-2xl font-bold capitalize md:text-3xl">
+                  {category?.nameFr || category?.name || slug.replace(/-/g, ' ')}
                 </h1>
                 {isVehicleSearch && (
                   <p className="mt-1 text-sm font-medium text-[#16254c]">
                     {t('compatiblePartsHint', { vehicle: vehicleLabel })}
                   </p>
                 )}
-                {category.description && (
+                {category?.description && (
                   <p className="mt-2 max-w-3xl text-gray-500">{category.description}</p>
                 )}
               </div>

@@ -228,6 +228,8 @@
         "oilType": "Oil Type",
         "apiStandards": "API Standards",
         "aceaStandards": "ACEA Standards",
+        "standardsApi": "API Standards",
+        "standardsAcea": "ACEA Standards",
         "oemApprovals": "OEM Approvals",
         "packaging": "Packaging",
         "options": "Options",
