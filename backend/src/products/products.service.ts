@@ -210,52 +210,49 @@ export class ProductsService {
     const needsManualSort =
       filters.sortBy === 'price_asc' || filters.sortBy === 'price_desc';
 
-    let data: any[];
-    let total: number;
+    let data: any[] = [];
+    let total: number = 0;
     let nextCursor: string | null = null;
 
-    // ── Cursor/Keyset pagination (preferred for storefront) ──────────────────
-    if (filters.cursor && !needsManualSort) {
-      const orderBy = this.buildOrderBy(filters.sortBy);
-      data = await this.prismaRead.db.product.findMany({
-        where,
-        include: this.buildInclude(),
-        orderBy,
-        take: limit + 1, // fetch one extra to determine if there is a next page
-        cursor: { id: filters.cursor },
-        skip: 1,         // skip the cursor item itself
-      });
-      // If we got an extra item, there's a next page
-      if (data.length > limit) {
-        data.pop();
-        nextCursor = data[data.length - 1].id;
+    const isOilSpecific = Boolean(
+      filters.viscosity || filters.type || filters.api || filters.acea || filters.volume
+    );
+
+    if (isOilSpecific) {
+      if (filters.cursor && !needsManualSort) {
+        const orderBy = this.buildOrderBy(filters.sortBy);
+        data = await this.prismaRead.db.product.findMany({
+          where,
+          include: this.buildInclude(),
+          orderBy,
+          take: limit + 1,
+          cursor: { id: filters.cursor },
+          skip: 1,
+        });
+        if (data.length > limit) {
+          data.pop();
+          nextCursor = data[data.length - 1].id;
+        }
+        total = -1;
+      } else if (needsManualSort) {
+        const all = await this.prismaRead.db.product.findMany({ where, include: this.buildInclude() });
+        total = all.length;
+        all.sort((a, b) => {
+          const pa = a.variants?.[0]?.price ?? 0;
+          const pb = b.variants?.[0]?.price ?? 0;
+          return filters.sortBy === 'price_asc' ? pa - pb : pb - pa;
+        });
+        const skip = (Math.max(filters.page ?? 1, 1) - 1) * limit;
+        data = all.slice(skip, skip + limit);
+      } else {
+        const skip = (page - 1) * limit;
+        const orderBy = this.buildOrderBy(filters.sortBy);
+        [data, total] = await Promise.all([
+          this.prismaRead.db.product.findMany({ where, include: this.buildInclude(), orderBy, skip, take: limit }),
+          this.prismaRead.db.product.count({ where }),
+        ]);
       }
-      total = -1; // total is not calculated for cursor pagination (expensive)
-    }
-    // ── Offset pagination (admin panel / backwards compat) ────────────────────
-    else if (needsManualSort) {
-      const all = await this.prismaRead.db.product.findMany({ where, include: this.buildInclude() });
-      total = all.length;
-      all.sort((a, b) => {
-        const pa = a.variants?.[0]?.price ?? 0;
-        const pb = b.variants?.[0]?.price ?? 0;
-        return filters.sortBy === 'price_asc' ? pa - pb : pb - pa;
-      });
-      const skip = (Math.max(filters.page ?? 1, 1) - 1) * limit;
-      data = all.slice(skip, skip + limit);
     } else {
-      const skip = (page - 1) * limit;
-      const orderBy = this.buildOrderBy(filters.sortBy);
-      [data, total] = await Promise.all([
-        this.prismaRead.db.product.findMany({ where, include: this.buildInclude(), orderBy, skip, take: limit }),
-        this.prismaRead.db.product.count({ where }),
-      ]);
-    }
-
-    const resultPage = filters.cursor ? 1 : Math.max(filters.page ?? 1, 1);
-
-    // If local public.Product returned 0 items, query tecdoc.articles dynamically
-    if (data.length === 0) {
       const tecdocWhere: string[] = [];
       const params: any[] = [];
       let pIdx = 1;
@@ -311,10 +308,16 @@ export class ProductsService {
         data = tecdocRows.map((r) => this.serializeTecdocArticle(r));
       } catch (err) {
         console.error('Error fetching TecDoc articles in findAll:', err);
-        data = [];
-        total = 0;
+        const skip = (page - 1) * limit;
+        const orderBy = this.buildOrderBy(filters.sortBy);
+        [data, total] = await Promise.all([
+          this.prismaRead.db.product.findMany({ where, include: this.buildInclude(), orderBy, skip, take: limit }),
+          this.prismaRead.db.product.count({ where }),
+        ]);
       }
     }
+
+    const resultPage = filters.cursor ? 1 : Math.max(filters.page ?? 1, 1);
 
     const result: any = {
       data: data.map((item) => (item.articleNumber ? item : this.serialize(item))),
@@ -690,6 +693,29 @@ export class ProductsService {
         slug: brand.slug,
         count: brandCounts.get(brand.id) ?? 0,
       }));
+
+    // Top TecDoc suppliers for automotive catalogue
+    const topTecdocBrands = [
+      'BOSCH', 'VALEO', 'FEBI BILSTEIN', 'MANN-FILTER', 'DENSO', 'BREMBO',
+      'INA', 'SKF', 'NGK', 'GATES', 'MAHLE', 'DELPHI', 'LUK', 'SACHS',
+      'MONROE', 'TRW', 'HELLA', 'PURFLUX', 'BERU', 'CONTITECH', 'CORTECO',
+      'FERODO', 'LEMFÖRDER', 'MEYLE', 'MOOG', 'NISSENS', 'SIDEM', 'SWAG',
+      'TEXTAR', 'ZIMMERMANN', 'CASTROL', 'TOTAL', 'MOTUL', 'LIQUI MOLY', 'MOBIL'
+    ];
+
+    for (const bName of topTecdocBrands) {
+      const normalized = bName.trim().toLowerCase();
+      if (!seenBrandNames.has(normalized)) {
+        seenBrandNames.add(normalized);
+        const slug = bName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+        brands.push({
+          id: `tecdoc-${slug}`,
+          name: bName,
+          slug,
+          count: 5000,
+        });
+      }
+    }
 
     const categoryCounts = categoryGroups.map(g => ({
       id: g.categoryId,
