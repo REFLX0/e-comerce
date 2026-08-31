@@ -21,7 +21,6 @@ import { Breadcrumb } from '@/components/common/Breadcrumb'
 import { ProductGridSkeleton } from '@/components/common/Skeleton'
 import { ErrorState } from '@/components/common/ErrorState'
 import { EmptyState } from '@/components/common/EmptyState'
-import { AIOilRecommendation } from '@/components/catalogue/AIOilRecommendation'
 
 const VEHICLE_QUERY_KEYS = ['make', 'model', 'engine', 'vehicleType', 'cylinders', 'power', 'fuelType']
 
@@ -463,14 +462,6 @@ export default function CataloguePage() {
                         </p>
                       )}
                     </div>
-                  )}
-
-                  {isVehicleSearch && activeVehicle && (
-                    <AIOilRecommendation 
-                      make={activeVehicle.makeName} 
-                      model={activeVehicle.modelName} 
-                      engineCode={activeVehicle.engineCode} 
-                    />
                   )}
                   
                   <EmptyState title={emptyTitle} message={emptyMessage} action={emptyAction} />
