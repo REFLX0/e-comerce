@@ -102,14 +102,7 @@ export function ProductCard({ product, viewMode = 'grid' }: Props) {
           </div>
         )
       }
-      return (
-        <div className="mt-2 flex items-start gap-1.5 rounded bg-red-50 px-2 py-1.5 text-red-600">
-          <X size={14} className="mt-0.5 shrink-0" />
-          <span className="text-[11px] font-medium leading-tight">
-            {compact ? t('incompatible') : `Incompatible avec votre ${vehicleLabel}`}
-          </span>
-        </div>
-      )
+      return null;
     }
 
     if (hasCompatCheck) {

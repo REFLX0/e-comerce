@@ -541,19 +541,36 @@ function CarCard({ car }: { car: UserCar }) {
             />
           </div>
 
-          {/* Custom Parts & Maintenance Input */}
-          <div className="rounded-2xl border border-slate-200/90 bg-slate-50/60 p-3.5 focus-within:border-[#16254c] focus-within:bg-white focus-within:ring-2 focus-within:ring-[#16254c]/10 transition-all">
-            <label htmlFor={`custom-notes-${car.id}`} className="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-              {t('customMaintenanceLabel')}
-            </label>
-            <input
-              id={`custom-notes-${car.id}`}
-              type="text"
-              value={customNotes}
-              onChange={(e) => setCustomNotes(e.target.value)}
-              placeholder={t('customMaintenancePlaceholder')}
-              className="w-full bg-transparent font-medium text-xs text-slate-800 placeholder-slate-400 outline-none"
-            />
+          {/* Custom Parts & Maintenance Input - Optimized for Mobile & Touch */}
+          <div className="mt-2 rounded-2xl border-2 border-slate-200 bg-slate-50/80 p-4 sm:p-5 transition-all focus-within:border-[#16254c] focus-within:bg-white focus-within:ring-4 focus-within:ring-[#16254c]/10">
+            <div className="flex items-center gap-2 mb-2.5">
+              <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-[#16254c] text-white shadow-sm">
+                <Wrench size={14} />
+              </div>
+              <label htmlFor={`custom-notes-${car.id}`} className="text-xs font-bold text-slate-900 uppercase tracking-wider cursor-pointer">
+                {t('customMaintenanceLabel')}
+              </label>
+            </div>
+            
+            <div className="relative">
+              <input
+                id={`custom-notes-${car.id}`}
+                type="text"
+                value={customNotes}
+                onChange={(e) => setCustomNotes(e.target.value)}
+                placeholder={t('customMaintenancePlaceholder')}
+                className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3.5 text-sm font-medium text-slate-900 shadow-sm placeholder:text-slate-400 focus:border-[#16254c] focus:outline-none focus:ring-2 focus:ring-[#16254c]/20 transition-all"
+              />
+              {customNotes && (
+                <button
+                  type="button"
+                  onClick={() => setCustomNotes('')}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors"
+                >
+                  <X size={16} />
+                </button>
+              )}
+            </div>
           </div>
         </div>
 
