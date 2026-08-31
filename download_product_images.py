@@ -2,44 +2,30 @@
 """
 download_product_images.py
 ==========================
+Zero external dependencies! Uses only Python standard library:
+(urllib.request, json, os, subprocess, re, time, ssl)
+
 Run directly on the VM:
   cd ~/e-comerce
   python3 download_product_images.py
-
-This script:
-1. Reads all products from CATALOGUE_TOURINGSTUDIOCAR_SPECPART.xlsx
-2. Searches and downloads real product images (MANNOL, LIQUI MOLY, ROWE, VARTA, WOLF, BOSCH, CASTROL, ASSAD, etc.)
-3. Saves images to ./uploads/products/ (served directly by Nginx at /uploads/products/...)
-4. Automatically updates PostgreSQL database with image URLs for every product!
 """
 
 import os
 import re
 import sys
+import json
 import time
-import unicodedata
+import ssl
 import subprocess
 import logging
+import urllib.request
 from urllib.parse import quote_plus
-
-# Auto-install dependencies if missing
-for pkg in ['requests', 'openpyxl']:
-    try:
-        __import__(pkg)
-    except ImportError:
-        print(f"Installing {pkg}...")
-        subprocess.check_call([sys.executable, '-m', 'pip', 'install', pkg])
-
-import requests
-from requests.adapters import HTTPAdapter
-from urllib3.util.retry import Retry
-import openpyxl
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s [%(levelname)s] %(message)s')
 log = logging.getLogger('ImageDownloader')
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-XLSX_PATH = os.path.join(BASE_DIR, 'catalogue_extracted', 'CATALOGUE_TOURINGSTUDIOCAR_SPECPART', '00_TOUS_PRODUITS_MASTER_SPECPART.xlsx')
+JSON_PATH = os.path.join(BASE_DIR, 'catalogue_products.json')
 UPLOADS_DIR = os.path.join(BASE_DIR, 'uploads', 'products')
 os.makedirs(UPLOADS_DIR, exist_ok=True)
 
@@ -60,46 +46,43 @@ def get_db_credentials():
 ENV_VARS = get_db_credentials()
 POSTGRES_USER = ENV_VARS.get('POSTGRES_USER', os.environ.get('POSTGRES_USER', 'postgres'))
 POSTGRES_DB = ENV_VARS.get('POSTGRES_DB', os.environ.get('POSTGRES_DB', 'specpart'))
-POSTGRES_PASSWORD = ENV_VARS.get('POSTGRES_PASSWORD', os.environ.get('POSTGRES_PASSWORD', ''))
 
-# Setup requests session with retries and realistic headers
-session = requests.Session()
-retries = Retry(total=3, backoff_factor=1, status_forcelist=[429, 500, 502, 503, 504])
-session.mount('https://', HTTPAdapter(max_retries=retries))
-session.mount('http://', HTTPAdapter(max_retries=retries))
+# SSL context allowing downloads across CDNs
+ctx = ssl.create_default_context()
+ctx.check_hostname = False
+ctx.verify_mode = ssl.CERT_NONE
+
 HEADERS = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
     'Accept': 'image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8',
     'Accept-Language': 'fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7',
 }
 
-def slugify(text):
-    text = unicodedata.normalize('NFD', str(text).lower())
-    text = ''.join(c for c in text if unicodedata.category(c) != 'Mn')
-    text = re.sub(r'[^\w\s-]', ' ', text)
-    text = re.sub(r'\s+', '-', text).strip('-')
-    return re.sub(r'-+', '-', text)
+def fetch_url(url, timeout=10):
+    """Fetch URL with custom headers and standard urllib."""
+    try:
+        req = urllib.request.Request(url, headers=HEADERS)
+        with urllib.request.urlopen(req, timeout=timeout, context=ctx) as response:
+            return response.read(), response.headers.get('Content-Type', '')
+    except Exception:
+        return None, ''
 
 def download_image(url, dest_path):
-    """Download image if valid and > 4KB."""
+    """Download image to dest_path using urllib."""
     try:
-        r = session.get(url, headers=HEADERS, timeout=12, stream=True)
-        if r.status_code == 200:
-            ct = r.headers.get('Content-Type', '').lower()
-            if 'image' in ct or 'octet-stream' in ct or url.endswith(('.jpg', '.png', '.webp', '.jpeg')):
-                with open(dest_path, 'wb') as f:
-                    for chunk in r.iter_content(8192):
-                        f.write(chunk)
-                if os.path.getsize(dest_path) > 4000:
+        req = urllib.request.Request(url, headers=HEADERS)
+        with urllib.request.urlopen(req, timeout=12, context=ctx) as response:
+            if response.status == 200:
+                data = response.read()
+                if len(data) > 4000:
+                    with open(dest_path, 'wb') as f:
+                        f.write(data)
                     return True
-                else:
-                    if os.path.exists(dest_path):
-                        os.remove(dest_path)
     except Exception:
         pass
     return False
 
-# Brand URL Generators
+# Brand direct CDN candidates
 def get_mannol_candidates(name, sku):
     m = re.search(r'(\d{4,})', str(sku))
     art = m.group(1) if m else None
@@ -127,24 +110,29 @@ def get_liquimoly_candidates(name, sku):
         ]
     return cands
 
-def duckduckgo_search_image(query, max_candidates=4):
+def search_duckduckgo(query, max_candidates=4):
+    """Search DuckDuckGo using standard urllib without pip dependencies."""
     try:
         vqd_url = f'https://duckduckgo.com/?q={quote_plus(query)}&iax=images&ia=images'
-        r = session.get(vqd_url, headers=HEADERS, timeout=8)
-        m = re.search(r"vqd='([^']+)'", r.text) or re.search(r'vqd="([^"]+)"', r.text)
+        html_bytes, _ = fetch_url(vqd_url, timeout=8)
+        if not html_bytes:
+            return []
+        html = html_bytes.decode('utf-8', errors='ignore')
+        m = re.search(r"vqd='([^']+)'", html) or re.search(r'vqd="([^"]+)"', html)
         if not m:
             return []
         vqd = m.group(1)
-        
+
         req_url = f'https://duckduckgo.com/i.js?l=us-en&o=json&q={quote_plus(query)}&vqd={vqd}&f=,,,&p=1'
-        r2 = session.get(req_url, headers={**HEADERS, 'Referer': 'https://duckduckgo.com/'}, timeout=8)
-        data = r2.json()
-        results = []
-        for item in data.get('results', [])[:max_candidates]:
-            img_url = item.get('image', '')
-            if img_url and any(ext in img_url.lower() for ext in ['.jpg', '.jpeg', '.png', '.webp']):
-                results.append(img_url)
-        return results
+        req = urllib.request.Request(req_url, headers={**HEADERS, 'Referer': 'https://duckduckgo.com/'})
+        with urllib.request.urlopen(req, timeout=8, context=ctx) as response:
+            data = json.loads(response.read().decode('utf-8'))
+            results = []
+            for item in data.get('results', [])[:max_candidates]:
+                img_url = item.get('image', '')
+                if img_url and any(ext in img_url.lower() for ext in ['.jpg', '.jpeg', '.png', '.webp']):
+                    results.append(img_url)
+            return results
     except Exception:
         return []
 
@@ -157,7 +145,7 @@ def search_and_download(name, brand, sku, slug):
 
     dest = os.path.join(UPLOADS_DIR, f'{slug}.jpg')
 
-    # 1. Brand specific direct CDN checks
+    # 1. Direct Brand CDN candidates
     brand_upper = (brand or '').upper()
     direct_candidates = []
     if 'MANNOL' in brand_upper:
@@ -170,7 +158,7 @@ def search_and_download(name, brand, sku, slug):
             log.info(f"  ✓ [Brand CDN] {name[:45]} -> {url}")
             return f'/uploads/products/{slug}.jpg'
 
-    # 2. Search engine image resolution
+    # 2. Web search fallback
     search_queries = [
         f"{brand} {name} product bottle pack",
         f"{brand} {sku} {name}",
@@ -178,7 +166,7 @@ def search_and_download(name, brand, sku, slug):
     ]
 
     for q in search_queries:
-        urls = duckduckgo_search_image(q)
+        urls = search_duckduckgo(q)
         for url in urls:
             ext = 'png' if '.png' in url.lower() else ('webp' if '.webp' in url.lower() else 'jpg')
             target_file = os.path.join(UPLOADS_DIR, f'{slug}.{ext}')
@@ -191,7 +179,7 @@ def search_and_download(name, brand, sku, slug):
     return None
 
 def execute_sql(sql):
-    """Execute SQL query using docker compose or direct psql."""
+    """Execute SQL query using docker compose."""
     cmd = [
         'docker', 'compose', 'exec', '-T', 'db',
         'psql', '-U', POSTGRES_USER, '-d', POSTGRES_DB, '-c', sql
@@ -222,28 +210,23 @@ def update_db_for_product(slug, image_url, name):
     execute_sql(sql)
 
 def main():
-    if not os.path.exists(XLSX_PATH):
-        log.error(f"XLSX not found: {XLSX_PATH}")
+    if not os.path.exists(JSON_PATH):
+        log.error(f"JSON not found: {JSON_PATH}")
         sys.exit(1)
 
-    log.info(f"Reading {XLSX_PATH}...")
-    wb = openpyxl.load_workbook(XLSX_PATH, read_only=True)
-    ws = wb.active
-    headers = [c.value for c in next(ws.iter_rows(min_row=1, max_row=1))]
-    rows = []
-    for row in ws.iter_rows(min_row=2, values_only=True):
-        rows.append(dict(zip(headers, row)))
-    wb.close()
+    log.info(f"Reading {JSON_PATH}...")
+    with open(JSON_PATH, 'r', encoding='utf-8') as f:
+        products = json.load(f)
 
-    total = len(rows)
-    log.info(f"Loaded {total} products. Starting real image fetch...")
+    total = len(products)
+    log.info(f"Loaded {total} products. Starting real image fetch (0 external dependencies)...")
 
     success_count = 0
-    for idx, r in enumerate(rows, 1):
-        name = str(r.get('NOM_PRODUIT_FR') or '').strip()
-        sku = str(r.get('SKU_PRODUIT') or r.get('ID_PRODUIT (NE PAS MODIFIER)') or '').strip()
-        brand = str(r.get('MARQUE') or '').strip()
-        slug = str(r.get('SLUG_PRODUIT') or '').strip() or slugify(f"{name}-{sku[-5:]}")
+    for idx, p in enumerate(products, 1):
+        name = p.get('name', '')
+        sku = p.get('sku', '')
+        brand = p.get('brand', '')
+        slug = p.get('slug', '')
 
         if not name or not sku:
             continue

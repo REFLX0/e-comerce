@@ -1,0 +1,2774 @@
+[
+  {
+    "name": "Liqui Moly Molygen New Gene­ra­tion 10W-40 (5L)",
+    "sku": "TSC-00001",
+    "brand": "LIQUI MOLY",
+    "slug": "liqui-moly-molygen-new-generation-10w-40-5l"
+  },
+  {
+    "name": "Liqui Moly Molygen New Gene­ra­tion 5W-40",
+    "sku": "TSC-00002",
+    "brand": "LIQUI MOLY",
+    "slug": "liqui-moly-molygen-new-generation-5w-40"
+  },
+  {
+    "name": "MAFRA Diamant Plast Dressing Pro 750 ML",
+    "sku": "H 1155",
+    "brand": "Générique",
+    "slug": "mafra-diamant-plast-dressing-pro-750-ml"
+  },
+  {
+    "name": "MANNOL Classic 10W-40",
+    "sku": "7501",
+    "brand": "MANNOL",
+    "slug": "mannol-classic-10w-40"
+  },
+  {
+    "name": "MANNOL Defender 10W-40",
+    "sku": "MANNOL Defender 10W-40 7507",
+    "brand": "MANNOL",
+    "slug": "mannol-defender-10w-40"
+  },
+  {
+    "name": "Filtre habitacle MISFAT HB205 FIAT 500 / FORD KA",
+    "sku": "Filtre habitacle MISFAT HB205 FIAT 500 / FORD KA",
+    "brand": "Générique",
+    "slug": "filtre-habitacle-misfat-hb205-fiat-500-ford-ka"
+  },
+  {
+    "name": "BOSCH – A 299 S – (3 397 007 299) Balai d’essuie-glace FIAT 500 / FORD KA",
+    "sku": "BOSCH - A 299 S - (3 397 007 299) Balai d'essuie-glace FIAT 500 / FORD KA",
+    "brand": "BOSCH",
+    "slug": "bosch-a-299-s-3-397-007-299-balai-dessuie-glace"
+  },
+  {
+    "name": "Filtre à Huile MISFAT Z438 FIAT / FORD",
+    "sku": "Filtre à Huile MISFAT Z438 FIAT / FORD",
+    "brand": "Générique",
+    "slug": "filtre-a-huile-misfat-z438-fiat-ford"
+  },
+  {
+    "name": "Filtre à air MISFAT P 301A FIAT / FORD",
+    "sku": "Filtre à air MISFAT P 301A FIAT / FORD",
+    "brand": "Générique",
+    "slug": "filtre-a-air-misfat-p-301a-fiat-ford"
+  },
+  {
+    "name": "MANNOL Additif ester diesel 9930 (100ml)",
+    "sku": "MANNOL Additif ester diesel 9930 (250ml)",
+    "brand": "MANNOL",
+    "slug": "mannol-additif-ester-diesel-9930-250ml"
+  },
+  {
+    "name": "Balai d’Essuie-Glace Plat KRAWEHL MAX – 1 pc 60CM",
+    "sku": "Balai d'Essuie-Glace Plat KRAWEHL MAX - 1 pc 60CM",
+    "brand": "KRAWEHL",
+    "slug": "balai-dessuie-glace-plat-krawehl-max-1-pc-60cm"
+  },
+  {
+    "name": "Balai d’Essuie-Glace Plat KRAWEHL MAX – 1 pc 40CM",
+    "sku": "Balai d'Essuie-Glace Plat KRAWEHL MAX - 1 pc 40CM",
+    "brand": "KRAWEHL",
+    "slug": "balai-dessuie-glace-plat-krawehl-max-1-pc-40cm"
+  },
+  {
+    "name": "FILTRE A AIR MISFAT P460A RENAULT",
+    "sku": "FILTRE A AIR MISFAT P460A RENAULT",
+    "brand": "Générique",
+    "slug": "filtre-a-air-misfat-p460a-renault"
+  },
+  {
+    "name": "FILTRE A HUILE MISFAT Z692 RENAULT",
+    "sku": "FILTRE A HUILE MISFAT Z692 RENAULT",
+    "brand": "Générique",
+    "slug": "filtre-a-huile-misfat-z692-renault"
+  },
+  {
+    "name": "MANN-FILTER  Filtre à huile W 712/94 (WV)",
+    "sku": "MANN-FILTER W 712/94 (WV)",
+    "brand": "Générique",
+    "slug": "mann-filter-filtre-a-huile-w-712-94-wv"
+  },
+  {
+    "name": "Castrol Magnatec Professional E 5W-20 5L",
+    "sku": "Castrol Magnatec Professional E 5W-20 5L",
+    "brand": "CASTROL",
+    "slug": "castrol-magnatec-professional-e-5w-20-5l"
+  },
+  {
+    "name": "CASTROL EDGE C3 5W-40 5L",
+    "sku": "CASTROL EDGE C3 5W-40 5L",
+    "brand": "CASTROL",
+    "slug": "castrol-edge-c3-5w-40-5l"
+  },
+  {
+    "name": "MANN-FILTER (CU 8430 ) Filtre d’habitacle",
+    "sku": "MANN-FILTER (CU 8430 ) Filtre d'habitacle",
+    "brand": "Générique",
+    "slug": "mann-filter-cu-8430-filtre-dhabitacle"
+  },
+  {
+    "name": "MANN-FILTER – (HU 815/2 x) Filtre à huile",
+    "sku": "MANN-FILTER - (HU 815/2 x) Filtre à huile",
+    "brand": "Générique",
+    "slug": "mann-filter-hu-815-2-x-filtre-a-huile"
+  },
+  {
+    "name": "BOSCH 3 397 007 072 – A 072 S –",
+    "sku": "BOSCH 3 397 007 072 Balai d'essuie-glace",
+    "brand": "BOSCH",
+    "slug": "bosch-3-397-007-072-a-072-s"
+  },
+  {
+    "name": "Balai d’Essuie-Glace- Arrière Universel – 1 pc (35cm)",
+    "sku": "Balai d'Essuie-Glace- Arrière Universel - 1 pc (35cm) NER 7031",
+    "brand": "JOTATE",
+    "slug": "balai-dessuie-glace-arriere-universel-1-pc-35cm"
+  },
+  {
+    "name": "MISFAT- Z413 FILTRE A HUILE FORD ECOBOOST",
+    "sku": "MISFAT- Z413 FILTRE A HUILE FORD ECOBOOST",
+    "brand": "Générique",
+    "slug": "misfat-z413-filtre-a-huile-ford-ecoboost"
+  },
+  {
+    "name": "MANNOL Additif Ester de Benzine  9950 (250ml)",
+    "sku": "MANNOL Additif Ester de Benzine 9950 (250ml)",
+    "brand": "MANNOL",
+    "slug": "mannol-additif-ester-de-benzine-9950-250ml"
+  },
+  {
+    "name": "MISFAT – Z646 Filtre à huile vw",
+    "sku": "MISFAT - Z646 Filtre à huile vw",
+    "brand": "Générique",
+    "slug": "misfat-z646-filtre-a-huile-vw"
+  },
+  {
+    "name": "MANNOL Elite 5W-40",
+    "sku": "7903",
+    "brand": "MANNOL",
+    "slug": "mannol-elite-5w-40"
+  },
+  {
+    "name": "MANNOL Energy Combi LL 5W-30",
+    "sku": "7907",
+    "brand": "MANNOL",
+    "slug": "mannol-energy-combi-ll-5w-30-2"
+  },
+  {
+    "name": "PRO TEC Systèmes Diesel Super Clean (375ml)",
+    "sku": "P1241DSSC",
+    "brand": "PRO-TEC",
+    "slug": "pro-tec-systemes-diesel-super-clean-375ml-pro-tec-systemes-diesel-super-clean-375ml"
+  },
+  {
+    "name": "MANNOL Nettoyant à jet diesel 9956",
+    "sku": "TSC-00028",
+    "brand": "MANNOL",
+    "slug": "mannol-nettoyant-a-jet-diesel-9956"
+  },
+  {
+    "name": "MANNOL Nettoyant pour injecteurs 9957",
+    "sku": "TSC-00029",
+    "brand": "MANNOL",
+    "slug": "mannol-nettoyant-pour-injecteurs-9957"
+  },
+  {
+    "name": "Mannol Shampoing super concentré (1L)",
+    "sku": "9808",
+    "brand": "MANNOL",
+    "slug": "mannol-shampoing-super-concentre-1l-mannol-shampoing-super-concentre-1l"
+  },
+  {
+    "name": "WOLF GUARDTECH 10W40 B4",
+    "sku": "23127",
+    "brand": "WOLF",
+    "slug": "wolf-guardtech-10w40-b4"
+  },
+  {
+    "name": "WUNDER filtre à air OPEL CORSA D",
+    "sku": "WUNDER filtre à air OPEL CORSA D",
+    "brand": "Générique",
+    "slug": "wunder-filtre-a-air-opel-corsa-d"
+  },
+  {
+    "name": "MANN-FILTER – C14 130 Filtre à air",
+    "sku": "MANN-FILTER - c 14 130",
+    "brand": "c14130",
+    "slug": "mann-filter-c14-130-filtre-a-air"
+  },
+  {
+    "name": "MANN-FILTER – C 27 009 Filtre à air (golf 7 leon)",
+    "sku": "C 27 009",
+    "brand": "Générique",
+    "slug": "mann-filter-c-27-009-filtre-a-air-golf-7-leon-mann-filter-c-27-009-filtre-a-air-golf-7-leon"
+  },
+  {
+    "name": "MANN-FILTER Filtre à huile W 712/95 (VW)",
+    "sku": "w 712/95",
+    "brand": "filtre à huile mann",
+    "slug": "mann-filter-filtre-a-huile-w-712-95-vw"
+  },
+  {
+    "name": "FEBI AdBlue® 10L",
+    "sku": "FEBI AdBlue® 10L",
+    "brand": "Générique",
+    "slug": "febi-adblue-10l-touring-studio-car"
+  },
+  {
+    "name": "MISFAT Filtre à huile  – L064A",
+    "sku": "MISFAT Filtre à huile - L064A",
+    "brand": "Générique",
+    "slug": "misfat-filtre-a-huile-l064a"
+  },
+  {
+    "name": "VARTA A9 SILVER DYNAMIC AGM XEV 12V 50AH 540A",
+    "sku": "VARTA A9 SILVER DYNAMIC AGM XEV 12V 50AH 540A",
+    "brand": "VARTA",
+    "slug": "varta-a9-silver-dynamic-agm-xev-12v-50ah-540a"
+  },
+  {
+    "name": "VARTA – Silver Dynamic AGM A4 L6 105 Ah 950A",
+    "sku": "VARTA - Silver Dynamic AGM A4 L6 105 Ah 950A",
+    "brand": "VARTA",
+    "slug": "varta-silver-dynamic-agm-a4-l6-105-ah-950a-performance-indispensable"
+  },
+  {
+    "name": "VARTA – Silver Dynamic AGM A5 L5 95 Ah 850A",
+    "sku": "VARTA - Silver Dynamic AGM A5 L5 95 Ah 850A",
+    "brand": "VARTA",
+    "slug": "varta-silver-dynamic-agm-a5-l5-95-ah-850a-experience-captivante-touring-varta-silver-dynamic-agm-a5-l5-95-ah-850a"
+  },
+  {
+    "name": "VARTA silver dynamic A6 AGM 80ah 800A",
+    "sku": "VARTA silver dynamic A6 AGM 80ah 800A",
+    "brand": "VARTA",
+    "slug": "varta-silver-dynamic-a6-agm-80ah-800a"
+  },
+  {
+    "name": "VARTA – Silver Dynamic AGM A7 L3 70 Ah 760A",
+    "sku": "VARTA - Silver Dynamic AGM A7 L3 70 Ah 760A",
+    "brand": "VARTA",
+    "slug": "varta-silver-dynamic-agm-a7-l3-70-ah-760a"
+  },
+  {
+    "name": "VARTA – Silver Dynamic AGM A8 L2 60 Ah 680A",
+    "sku": "VARTA - Silver Dynamic AGM A8 L2 60 Ah 680A",
+    "brand": "VARTA",
+    "slug": "varta-silver-dynamic-agm-a8-l2-60-ah-680a-experience-prodigieuse-touring-studio-car-varta-silver-dynamic-agm-a8-l2-60-ah-680a"
+  },
+  {
+    "name": "VARTA – Silver Dynamic D21 L2B 61 Ah 600A",
+    "sku": "VARTA - Silver Dynamic D21 L2B 61 Ah 600A",
+    "brand": "VARTA",
+    "slug": "varta-silver-dynamic-d21-l2b-61-ah-600a"
+  },
+  {
+    "name": "VARTA Blue Dynamic G8 M11G 95ah 830A",
+    "sku": "VARTA Blue Dynamic G8 M11G 95ah 830A",
+    "brand": "VARTA",
+    "slug": "varta-blue-dynamic-g8-m11g-95ah-830a"
+  },
+  {
+    "name": "VARTA – Blue Dynamic G7 M11 95 Ah 830A",
+    "sku": "VARTA - Blue Dynamic G7 M11 95 Ah 830A",
+    "brand": "VARTA",
+    "slug": "varta-blue-dynamic-g7-m11-95-ah-830a"
+  },
+  {
+    "name": "VARTA – Blue Dynamic E24 M10G 70 Ah 630A",
+    "sku": "VARTA - Blue Dynamic E24 M10G 70 Ah 630A",
+    "brand": "VARTA",
+    "slug": "varta-blue-dynamic-e24-m10g-70ah-630a"
+  },
+  {
+    "name": "VARTA -Blue Dynamic E23 M10 70 Ah 630A",
+    "sku": "VARTA -Blue Dynamic E23 M10 70 Ah 630A",
+    "brand": "VARTA",
+    "slug": "varta-blue-dynamic-e23-m10-70-ah-630a"
+  },
+  {
+    "name": "AREXONS Nettoyant tissus (500ML)",
+    "sku": "31008-AREXONS Nettoyant tissus (500ML)",
+    "brand": "AREXONS",
+    "slug": "arexons-nettoyant-tissus-500ml"
+  },
+  {
+    "name": "AREXONS no insectes (500ML)",
+    "sku": "34019-AREXONS no insectes (500ML)",
+    "brand": "AREXONS",
+    "slug": "arexons-no-insectes-500ml"
+  },
+  {
+    "name": "AREXONS rénovateur pneus (500ML)",
+    "sku": "31021-AREXONS rénovateur pneus (500ML)",
+    "brand": "AREXONS",
+    "slug": "arexons-renovateur-pneus-500ml"
+  },
+  {
+    "name": "AREXONS nettoyant jantes (500ML)",
+    "sku": "31022-AREXONS Nettoyant jantes (500ML)",
+    "brand": "AREXONS",
+    "slug": "arexons-nettoyant-jantes-500ml"
+  },
+  {
+    "name": "AREXONS nettoyant cuir (500ML)",
+    "sku": "31001-AREXONS nettoyant cuir (500ML)",
+    "brand": "AREXONS",
+    "slug": "arexons-nettoyant-cuir-500ml"
+  },
+  {
+    "name": "AREXONS shampooing et cire (1L)",
+    "sku": "31013-AREXONS shampooing et cire (1L)",
+    "brand": "AREXONS",
+    "slug": "touring-studio-car-arexons-shampooing-et-cire-1l"
+  },
+  {
+    "name": "AREXONS Super shampooing (1L)",
+    "sku": "31012-AREXONS Super shampooing (1L)",
+    "brand": "AREXONS",
+    "slug": "arexons-super-shampooing-1l-touring-studio-car"
+  },
+  {
+    "name": "AREXONS Protecteur cockpit mat (400ML)",
+    "sku": "31003-AREXONS Protecteur cockpit mat 400ml",
+    "brand": "PRO-TEC",
+    "slug": "arexons-protecteur-cockpit-mat-400ml"
+  },
+  {
+    "name": "MANNOL Diesel Extra 10W-40",
+    "sku": "TSC-00057",
+    "brand": "MANNOL",
+    "slug": "mannol-diesel-extra-10w-40"
+  },
+  {
+    "name": "Castrol GTX 10W-40 5L A3/B4",
+    "sku": "Castrol GTX 10W-40 5L A3/B4",
+    "brand": "CASTROL",
+    "slug": "castrol-gtx-10w-40-5l-a3-b4"
+  },
+  {
+    "name": "CASTROL EDGE C3 5W-30 5L",
+    "sku": "CASTROL EDGE C3 5W-30 5L",
+    "brand": "CASTROL",
+    "slug": "castrol-edge-c3-5w-30-5l"
+  },
+  {
+    "name": "Liqui Moly Ready Mix RAF 11 (5L)",
+    "sku": "21150 Liqui Moly Ready Mix RAF 11 (5L)",
+    "brand": "LIQUI MOLY",
+    "slug": "liqui-moly-ready-mix-raf-11-5l-liqui-moly-ready-mix-raf-11-5l"
+  },
+  {
+    "name": "Liqui Moly Ready Mix RAF 12+ (5L)",
+    "sku": "8810 Liqui Moly Ready Mix RAF 12+ (5L)",
+    "brand": "LIQUI MOLY",
+    "slug": "liqui-moly-ready-mix-raf-12-5l-touring-studio-car-liqui-moly-ready-mix-raf-12-5l"
+  },
+  {
+    "name": "AREXONS Nettoyant moteur (400ML)",
+    "sku": "31017 - AREXONS Nettoyant moteur (400ML)",
+    "brand": "AREXONS",
+    "slug": "arexons-nettoyant-moteur-400ml"
+  },
+  {
+    "name": "BOSCH F 026 407 006 Filtre à huile",
+    "sku": "BOSCH F 026 407 006 Filtre à huile",
+    "brand": "BOSCH",
+    "slug": "bosch-f-026-407-006-filtre-a-huile-2"
+  },
+  {
+    "name": "NOUR SMART L2 EFB 62AH 560A START & STOP",
+    "sku": "NOUR SMART L2 EFB 62AH 560A START & STOP",
+    "brand": "Générique",
+    "slug": "nour-smart-l2-efb-62ah-560a-start-stop"
+  },
+  {
+    "name": "VARTA Black Dynamic B20 L1G 45 Ah 400A",
+    "sku": "VARTA B20 L1G 45 Ah 400A",
+    "brand": "VARTA",
+    "slug": "varta-black-dynamic-b20-l1g-45-ah-400a"
+  },
+  {
+    "name": "NOUR SMART L5 100AH 850A",
+    "sku": "NOUR SMART L5 100AH 850A",
+    "brand": "Générique",
+    "slug": "nour-smart-l5-100ah-850a"
+  },
+  {
+    "name": "NOUR SMART L1 52AH 500A",
+    "sku": "NOUR SMART L1 52AH 500A",
+    "brand": "Générique",
+    "slug": "nour-smart-l1-52ah-500a"
+  },
+  {
+    "name": "BATTERIE ASSAD 800A, 95AH, L5D",
+    "sku": "BATTERIE ASSAD 800A, 95AH, L5D",
+    "brand": "ASSAD",
+    "slug": "batterie-assad-800a-95ah-l5d"
+  },
+  {
+    "name": "Huile Moteur XTeer G500 SL10W40 (HYUNDAI) – 4L",
+    "sku": "XTeer G500 SL10W40 (HYUNDAI) - 4L",
+    "brand": "HYUNDAI XTeer",
+    "slug": "huile-moteur-xteer-g500-sl10w40-hyundai-4l"
+  },
+  {
+    "name": "Huile Moteur XTeer G500 5W30 (HYUNDAI) – 4L",
+    "sku": "XTeer G500 5W30 (HYUNDAI) - 4L",
+    "brand": "HYUNDAI XTeer",
+    "slug": "huile-moteur-xteer-g500-5w30-hyundai-4l"
+  },
+  {
+    "name": "Borsehung Bouton, lève-vitre (B11415)",
+    "sku": "Borsehung Bouton, lève-vitre (B11415)",
+    "brand": "Générique",
+    "slug": "borsehung-interrupteur-leve-vitre-b11415"
+  },
+  {
+    "name": "DOLZ KD004 (Kit de distribution + pompe à eau)",
+    "sku": "DOLZ KD 004 kit chaine 1.5 DCI",
+    "brand": "Générique",
+    "slug": "dolz-kd004-kit-de-distribution-pompe-a-eau"
+  },
+  {
+    "name": "VARTA – Blue Dynamic D47 D23 60 Ah 540A",
+    "sku": "VARTA D47 D23 60 Ah 540A",
+    "brand": "VARTA",
+    "slug": "varta-blue-dynamic-d47-d23-60-ah-540a"
+  },
+  {
+    "name": "Filtre Habitacle BOSCH (1 987 432 057)",
+    "sku": "1 987 432 057",
+    "brand": "BOSCH",
+    "slug": "filtre-habitacle-bosch-1-987-432-057"
+  },
+  {
+    "name": "MANN FILTER CU 26 009 Filtre habitacle VW",
+    "sku": "CU 26 009",
+    "brand": "filtre habiltacle",
+    "slug": "mann-filter-cu-26-009-filtre-habitacle-vw"
+  },
+  {
+    "name": "MANN-FILTER Filtre Habitacle CU 2939",
+    "sku": "MANN FILTER CU 2939",
+    "brand": "Générique",
+    "slug": "mann-filter-filtre-habitacle-cu-2939"
+  },
+  {
+    "name": "VARTA – Blue Dynamic D48 60 Ah 540A D23G",
+    "sku": "VARTA D48 60 Ah 540A D23G",
+    "brand": "VARTA",
+    "slug": "varta-blue-dynamic-d48-60-ah-540a-d23g"
+  },
+  {
+    "name": "NEOLUX LED Intérieur  (6000 K) 26.8 mm W2.1×9.5d",
+    "sku": "NT1061CW-02B",
+    "brand": "NEOLUX",
+    "slug": "neolux-led-interieur-6000-k-26-8-mm-w2-1x9-5d"
+  },
+  {
+    "name": "PRO TEC Nettoyant DPF/Catalyseur (400ml)",
+    "sku": "P2985DCC",
+    "brand": "PRO-TEC",
+    "slug": "pro-tec-nettoyant-dpf-catalyseur-400ml"
+  },
+  {
+    "name": "Liqui Moly  Nettoyant pour système d’ad­mis­sion diesel Pro-Line (400ml)",
+    "sku": "2388",
+    "brand": "LIQUI MOLY",
+    "slug": "liqui-moly-nettoyant-pour-systeme-dadmission-diesel-pro-line-400ml"
+  },
+  {
+    "name": "Additif lubri­fiant pour huile de boîte (MOS 2) ( 50g )",
+    "sku": "2510",
+    "brand": "LIQUI MOLY",
+    "slug": "additif-lubrifiant-pour-huile-de-boite-mos-2-50g"
+  },
+  {
+    "name": "MANNOL Nettoyant mousse DPF 9694",
+    "sku": "9694",
+    "brand": "MANNOL",
+    "slug": "mannol-nettoyant-mousse-dpf-9694"
+  },
+  {
+    "name": "VARTA -Blue Dynamic E11 L3 74 Ah 680A",
+    "sku": "VARTA E11 L3 74 Ah 680A",
+    "brand": "VARTA",
+    "slug": "varta-blue-dynamic-e11-l3-74-ah-680a"
+  },
+  {
+    "name": "VARTA – Blue Dynamic D43 L2G 60 Ah 540A",
+    "sku": "VARTA D43 L2G 60 Ah 540A",
+    "brand": "VARTA",
+    "slug": "varta-blue-dynamic-d43-l2g-60-ah-540a"
+  },
+  {
+    "name": "VARTA – Blue Dynamic D59 L2 60 Ah 540A",
+    "sku": "VARTA D59 L2 60 Ah 540A",
+    "brand": "VARTA",
+    "slug": "varta-blue-dynamic-d59-l2-60-ah-540a"
+  },
+  {
+    "name": "VARTA – Blue Dynamic B34 B24RS 45 Ah 330A",
+    "sku": "VARTA B34 B24RS 45 Ah 330A",
+    "brand": "VARTA",
+    "slug": "varta-blue-dynamic-b34-b24rs-45-ah-330a"
+  },
+  {
+    "name": "VARTA – Blue Dynamic B32 B24RS 45 Ah 330A",
+    "sku": "VARTA B32 B24RS 45 Ah 330A",
+    "brand": "VARTA",
+    "slug": "varta-blue-dynamic-b32-b24rs-45-ah-330a"
+  },
+  {
+    "name": "VARTA -Blue Dynamic B18 L1B 44 Ah 440A",
+    "sku": "VARTA B18 L1B 44 Ah 440A",
+    "brand": "VARTA",
+    "slug": "varta-blue-dynamic-b18-l1b-44-ah-440a"
+  },
+  {
+    "name": "VARTA – Black Dynamic F6 L5 90 Ah 720A",
+    "sku": "VARTA F6 90 Ah 720A",
+    "brand": "VARTA",
+    "slug": "varta-black-dynamic-f6-l5-90-ah-720a"
+  },
+  {
+    "name": "VARTA Black Dynamic E9 L3 70 Ah 640A",
+    "sku": "VARTA E9 70 Ah 640A",
+    "brand": "VARTA",
+    "slug": "varta-black-dynamic-e9-l3-70-ah-640a"
+  },
+  {
+    "name": "BOSCH – F 026 407 006 Filtre à huile",
+    "sku": "BOSCH - F 026 407 006",
+    "brand": "BOSCH",
+    "slug": "bosch-f-026-407-006-filtre-a-huile"
+  },
+  {
+    "name": "BOSCH – F 026 407 157 Filtre à huile (VW)",
+    "sku": "BOSCH - F 026 407 157",
+    "brand": "BOSCH",
+    "slug": "bosch-f-026-407-157-filtre-a-huile"
+  },
+  {
+    "name": "BOSCH – F 026 407 181 Filtre à huile",
+    "sku": "BOSCH - F 026 407 181 1.2TSI",
+    "brand": "BOSCH",
+    "slug": "bosch-f-026-407-181-filtre-a-huile"
+  },
+  {
+    "name": "MANN-FILTER – HU 7008 z Filtre à huile",
+    "sku": "MANN-FILTER - HU 7008z",
+    "brand": "Générique",
+    "slug": "mann-filter-hu-7008-z-filtre-a-huile"
+  },
+  {
+    "name": "VARTA Black Dynamic C11 L2 53 Ah 500A",
+    "sku": "VARTA C11 L2 53 Ah 500A",
+    "brand": "VARTA",
+    "slug": "varta-black-dynamic-c11-l2-53-ah-500a"
+  },
+  {
+    "name": "VARTA Black Dynamic B19 L1 45 Ah 400A",
+    "sku": "VARTA B19 L1 45 Ah 400A",
+    "brand": "VARTA",
+    "slug": "varta-black-dynamic-b19-l1-45-ah-400a"
+  },
+  {
+    "name": "VARTA Blue Dynamic A14 40ah 330A",
+    "sku": "VARTA A14 40ah 330A",
+    "brand": "VARTA",
+    "slug": "varta-blue-dynamic-a14-40ah-330a"
+  },
+  {
+    "name": "VARTA Blue Dynamic A13 40ah 330A",
+    "sku": "VARTA A13 40ah 330A",
+    "brand": "VARTA",
+    "slug": "varta-blue-dynamic-a13-40ah-330a"
+  },
+  {
+    "name": "ASSAD MF3 D/G 74AH 660A",
+    "sku": "MF3 D/G 74AH 660A",
+    "brand": "ASSAD",
+    "slug": "assad-mf3-d-g-74ah-660a"
+  },
+  {
+    "name": "ASSAD MF2 D/G 62AH 560A",
+    "sku": "MF2 D/G 62AH 560A",
+    "brand": "ASSAD",
+    "slug": "assad-mf2-d-g-62ah-560a"
+  },
+  {
+    "name": "ASSAD MF1 D/G 50AH 480A",
+    "sku": "MF1 D/G 50AH 480A",
+    "brand": "ASSAD",
+    "slug": "assad-mf1-d-g-50ah-480a"
+  },
+  {
+    "name": "ASSAD SUPER TURBO TRUCK MF11G  100AH, 760A",
+    "sku": "ASSAD MF11D/G 100AH 760A",
+    "brand": "ASSAD",
+    "slug": "assad-super-turbo-truck-mf11g-100ah-760a"
+  },
+  {
+    "name": "ASSAD M12P G/D 112AH 750A",
+    "sku": "ASSAD M12P G/D 112AH 750A",
+    "brand": "ASSAD",
+    "slug": "assad-m12p-g-d-112ah-750a"
+  },
+  {
+    "name": "BATTERIE ASSAD TURBO PRO D90G 90AH 680A",
+    "sku": "ASSAD D90G 90AH 680A",
+    "brand": "ASSAD",
+    "slug": "batterie-assad-turbo-pro-d90g-90ah-680a"
+  },
+  {
+    "name": "BATTERIE ASSAD TURBO PRO M10G 65AH 510A",
+    "sku": "ASSAD M10G 65AH 510A",
+    "brand": "ASSAD",
+    "slug": "batterie-assad-turbo-pro-m10g-65ah-510a"
+  },
+  {
+    "name": "ASSAD SUPER TURBO TRUCK MF10G  72AH, 620A",
+    "sku": "ASSAD MF10G 72AH 620A",
+    "brand": "ASSAD",
+    "slug": "assad-super-turbo-truck-mf10g-72ah-620a"
+  },
+  {
+    "name": "BIDON DE VIDANGE D’HUILE  10L",
+    "sku": "7055",
+    "brand": "LIQUI MOLY",
+    "slug": "bidon-de-vidange-dhuile-10l"
+  },
+  {
+    "name": "NOUR SMART L3 75AH 700A",
+    "sku": "NOUR SMART L3 75AH 700A",
+    "brand": "Générique",
+    "slug": "nour-smart-l3-75ah-700a"
+  },
+  {
+    "name": "NOUR SMART L2 62AH 600A",
+    "sku": "NOUR SMART L1 62AH 600A",
+    "brand": "Générique",
+    "slug": "nour-smart-l2-62ah-600a"
+  },
+  {
+    "name": "Motorbike 4T 5W-40 HC Street  (1L)",
+    "sku": "20750",
+    "brand": "LIQUI MOLY",
+    "slug": "motorbike-4t-5w-40-hc-street-1l"
+  },
+  {
+    "name": "BORSEHUNG Filtre à carburant (essence) B12822 VW TSI",
+    "sku": "BORSEHUNG Filtre essence B12822 VW TSI",
+    "brand": "Générique",
+    "slug": "borsehung-filtre-a-carburant-essence-b12822-vw-tsi"
+  },
+  {
+    "name": "MANNOL Pack entretien moto",
+    "sku": "8121, 9692, 7904, 9892",
+    "brand": "MANNOL",
+    "slug": "mannol-pack-entretien-moto"
+  },
+  {
+    "name": "Mannol Nettoyant pour chaîne (400ml)",
+    "sku": "7904",
+    "brand": "MANNOL",
+    "slug": "mannol-nettoyant-pour-chaine-400ml"
+  },
+  {
+    "name": "Mannol Graisse blanche (450ml)",
+    "sku": "8121",
+    "brand": "MANNOL",
+    "slug": "mannol-graisse-blanche-450ml"
+  },
+  {
+    "name": "MANNOL Lubrifiant M-40 (400ml)",
+    "sku": "9892",
+    "brand": "MANNOL",
+    "slug": "mannol-lubrifiant-m-40-400ml"
+  },
+  {
+    "name": "LIQUI MOLY Motorbike Gear Oil 75W-140 (GL5) (500ml)",
+    "sku": "3072",
+    "brand": "LIQUI MOLY",
+    "slug": "liqui-moly-motorbike-gear-oil-75w-140-gl5-500ml"
+  },
+  {
+    "name": "PRO TEC Nettoyant pour corps de papillon (400ml)",
+    "sku": "P2803",
+    "brand": "PRO-TEC",
+    "slug": "pro-tec-nettoyant-pour-corps-de-papillon-400ml"
+  },
+  {
+    "name": "PRO TEC Diesel applicator spray (400ml)",
+    "sku": "P1911",
+    "brand": "PRO-TEC",
+    "slug": "pro-tec-diesel-applicator-spray-400ml"
+  },
+  {
+    "name": "Liqui Moly Motorbike 2T Street (1L)",
+    "sku": "1504",
+    "brand": "LIQUI MOLY",
+    "slug": "liqui-moly-motorbike-2t-street-1l"
+  },
+  {
+    "name": "WOLF MOTO & SCOOTER 2T (1L)",
+    "sku": "1931",
+    "brand": "WOLF",
+    "slug": "wolf-moto-scooter-2t-1l"
+  },
+  {
+    "name": "Additif pour huile ( MOS 2 )",
+    "sku": "8364",
+    "brand": "LIQUI MOLY",
+    "slug": "additif-pour-huile-mos-2"
+  },
+  {
+    "name": "Balai d’essuie-glace BOSCH – A 979 S",
+    "sku": "3 397 118 979",
+    "brand": "BOSCH",
+    "slug": "balai-dessuie-glace-bosch-a-979-s"
+  },
+  {
+    "name": "BOSCH Balai d’essuie-glace Arrière – A 282 H –",
+    "sku": "3 397 008 634",
+    "brand": "BOSCH",
+    "slug": "bosch-balai-dessuie-glace-arriere-a-282-h"
+  },
+  {
+    "name": "BOSCH Balai d’essuie-glace Arrière – A 331 H –",
+    "sku": "3 397 008 713",
+    "brand": "BOSCH",
+    "slug": "bosch-balai-dessuie-glace-a-331-h"
+  },
+  {
+    "name": "MANNOL Toyota Lexus 5W-30 (4L)",
+    "sku": "TSC-00125",
+    "brand": "MANNOL",
+    "slug": "mannol-toyota-lexus-5w-30-4l"
+  },
+  {
+    "name": "MANNOL Extreme 5W-40 (5L)",
+    "sku": "7915",
+    "brand": "MANNOL",
+    "slug": "mannol-extreme-5w-40"
+  },
+  {
+    "name": "MANNOL Molibden 300ml",
+    "sku": "9991",
+    "brand": "MANNOL",
+    "slug": "mannol-molibden-300ml"
+  },
+  {
+    "name": "FAR-BER Polish Plus Aroma 750ML",
+    "sku": "74903",
+    "brand": "Générique",
+    "slug": "far-ber-polish-plus-aroma-750ml"
+  },
+  {
+    "name": "BOSCH Balai d’essuie-glace – A 945 S –",
+    "sku": "3 397 007 945",
+    "brand": "BOSCH",
+    "slug": "bosch-balai-dessuie-glace-a-945-s"
+  },
+  {
+    "name": "JOTATE Balai d’Essuie-Glace Arrière Universel -1 pc (11″ 28cm)",
+    "sku": "7033",
+    "brand": "JOTATE",
+    "slug": "jotate-balai-dessuie-glace-arriere-universel-1-pc-11-28cm"
+  },
+  {
+    "name": "KRAWEHL Balais d’essuie-glace PRIME – 1 pc (28″ 700mm)",
+    "sku": "72700",
+    "brand": "KRAWEHL",
+    "slug": "krawehl-balais-dessuie-glace-prime-1-pc-28-700mm"
+  },
+  {
+    "name": "KRAWEHL Balais d’essuie-glace PRIME – 1 pc (26″ 650mm)",
+    "sku": "72650",
+    "brand": "KRAWEHL",
+    "slug": "krawehl-balais-dessuie-glace-prime-1-pc-26-650mm"
+  },
+  {
+    "name": "KRAWEHL Balais d’essuie-glace PRIME – 1 pc (24″ 600mm)",
+    "sku": "72600",
+    "brand": "KRAWEHL",
+    "slug": "krawehl-balais-dessuie-glace-prime-1-pc-24-600mm"
+  },
+  {
+    "name": "KRAWEHL Balais d’essuie-glace PRIME – 1 pc (22″ 550mm)",
+    "sku": "72550",
+    "brand": "KRAWEHL",
+    "slug": "krawehl-balais-dessuie-glace-prime-1-pc-22-550mm"
+  },
+  {
+    "name": "KRAWEHL Balais d’essuie-glace PRIME – 1 pc (21″ 530mm)",
+    "sku": "72530",
+    "brand": "KRAWEHL",
+    "slug": "krawehl-balais-dessuie-glace-prime-1-pc-21-530mm"
+  },
+  {
+    "name": "KRAWEHL Balais d’essuie-glace PRIME – 1 pc (20″ 510mm)",
+    "sku": "72500",
+    "brand": "KRAWEHL",
+    "slug": "krawehl-balais-dessuie-glace-prime-1-pc-20-510mm"
+  },
+  {
+    "name": "KRAWEHL Balais d’essuie-glace PRIME – 1 pc (19″ 480mm)",
+    "sku": "TSC-00137",
+    "brand": "KRAWEHL",
+    "slug": "krawehl-balais-dessuie-glace-prime-1-pc-19-480mm"
+  },
+  {
+    "name": "KRAWEHL Balais d’essuie-glace PRIME-1 pc (18″ 450mm)",
+    "sku": "72450",
+    "brand": "KRAWEHL",
+    "slug": "krawehl-balais-dessuie-glace-prime-1-pc-18-450mm"
+  },
+  {
+    "name": "KRAWEHL Balais d’essuie-glace PRIME -1 pc  (350mm)",
+    "sku": "72350",
+    "brand": "KRAWEHL",
+    "slug": "krawehl-balais-dessuie-glace-prime-1-pc-350mm"
+  },
+  {
+    "name": "KRAWEHL Balais d’essuie-glace PRIME – 1 pc (16″ 410mm)",
+    "sku": "72410",
+    "brand": "KRAWEHL",
+    "slug": "krawehl-balais-dessuie-glace-prime-1-pc-16-410mm"
+  },
+  {
+    "name": "MANN-FILTER Filtre à huile HU 7008 z (vw)",
+    "sku": "HU 7008 z",
+    "brand": "filtre à huile mann",
+    "slug": "mann-filter-filtre-a-huile-hu-7008-z-vw"
+  },
+  {
+    "name": "JOTATE Balai d’Essuie-Glace Arrière Universel -1 pc (12″ 30cm)",
+    "sku": "7030",
+    "brand": "JOTATE",
+    "slug": "jotate-balai-dessuie-glace-arriere-universel"
+  },
+  {
+    "name": "MAFRA KIT DE REGENERATION JANTES",
+    "sku": "H1003",
+    "brand": "Générique",
+    "slug": "mafra-kit-de-regeneration-jantes"
+  },
+  {
+    "name": "MAFRA KIT DE REGENERATION DES PHARES",
+    "sku": "H0590",
+    "brand": "Générique",
+    "slug": "mafra-kit-de-regeneration-des-phares"
+  },
+  {
+    "name": "MAFRA STOP RAYURES (100ML)",
+    "sku": "H0526",
+    "brand": "Générique",
+    "slug": "mafra-stop-rayures-100ml"
+  },
+  {
+    "name": "MAFRA ENTRETIEN TABLEAU DE BORD BLUE (600ML)",
+    "sku": "H0045",
+    "brand": "Générique",
+    "slug": "mafra-entretien-tableau-de-bord-blue-600ml"
+  },
+  {
+    "name": "MAFRA SHAMPOING AUTO  (1L)",
+    "sku": "H0779",
+    "brand": "Générique",
+    "slug": "mafra-shampoing-auto-1l"
+  },
+  {
+    "name": "MAFRA PULIMAX (500ML)",
+    "sku": "MAFH0841",
+    "brand": "Générique",
+    "slug": "mafra-pulimax-500ml"
+  },
+  {
+    "name": "MANNOL Diesel Extra 10W-40 (10L)",
+    "sku": "7504-10",
+    "brand": "MANNOL",
+    "slug": "mannol-diesel-extra-10w-40-10l"
+  },
+  {
+    "name": "ASSAD TURBO VL L1 D/G 45AH 380A",
+    "sku": "TSC-00150",
+    "brand": "ASSAD",
+    "slug": "assad-turbo-vl-l1-d-g-45ah-380a"
+  },
+  {
+    "name": "ASSAD TURBO VL L2 D/G 57AH 500A",
+    "sku": "ASSAD TURBO VL L2 D/G 57AH 500A",
+    "brand": "ASSAD",
+    "slug": "assad-turbo-vl-l2-d-g-57ah-500a"
+  },
+  {
+    "name": "ROWE HIGHTEC SUPER LEICHTLAUF HC-O SAE 10W-40 (5L)",
+    "sku": "20058-0050-99",
+    "brand": "ROWE",
+    "slug": "rowe-hightec-super-leichtlauf-hc-o-sae-10w-40-5l"
+  },
+  {
+    "name": "ASSAD TURBO VL NS60  45AH 400A",
+    "sku": "ASSAD TURBO VL NS60 45AH 400A",
+    "brand": "ASSAD",
+    "slug": "assad-turbo-vl-ns60-45ah-400a"
+  },
+  {
+    "name": "ASSAD TURBO VL NS40  40AH 330A",
+    "sku": "ASSAD TURBO VL NS40 40AH 330A",
+    "brand": "ASSAD",
+    "slug": "assad-turbo-vl-ns40-40ah-330a"
+  },
+  {
+    "name": "ASSAD TURBO VL L0 D 40AH 380A",
+    "sku": "ASSAD TURBO VL L0 D 40AH 380A",
+    "brand": "ASSAD",
+    "slug": "assad-turbo-vl-l0-d-40ah-380a"
+  },
+  {
+    "name": "ASSAD SUPER TURBO TRUCK MF5 100AH, 840A",
+    "sku": "ASSAD MF5 100AH 840A",
+    "brand": "ASSAD",
+    "slug": "assad-super-turbo-truck-mf5-100ah-840a"
+  },
+  {
+    "name": "ASSAD TURBO VL L3 D/G 70AH 620A",
+    "sku": "TSC-00157",
+    "brand": "ASSAD",
+    "slug": "assad-turbo-vl-l3-d-g-70ah-620a"
+  },
+  {
+    "name": "BMW Pare-boue AV D E92/E93",
+    "sku": "BMW : 51717154416",
+    "brand": "Générique",
+    "slug": "bmw-pare-boue-av-d-e92-e93"
+  },
+  {
+    "name": "TRW BIELLE DE SUSPENSION AV GOLF 6",
+    "sku": "JTS483",
+    "brand": "Générique",
+    "slug": "trw-bielle-de-suspension-av-golf-6"
+  },
+  {
+    "name": "PRO TEC Nettoyant pour freins (400ml)",
+    "sku": "P6111BC",
+    "brand": "PRO-TEC",
+    "slug": "pro-tec-nettoyant-pour-freins-400ml"
+  },
+  {
+    "name": "MANN-FILTER PU 825 X (Filtre à gasoil)",
+    "sku": "MANN-FILTER PU (825 X) (Filtre à gasoil)",
+    "brand": "Générique",
+    "slug": "mann-filter-pu-825-x-filtre-a-gasoil"
+  },
+  {
+    "name": "VALEO – 586142 Filtre à huile",
+    "sku": "VALEO - 586142",
+    "brand": "Générique",
+    "slug": "valeo-586142-filtre-a-huile"
+  },
+  {
+    "name": "MANN-FILTER C35154 Filtre à air (VW GROUPE)",
+    "sku": "MANN-FILTER C35154",
+    "brand": "Générique",
+    "slug": "mann-filter-c35154-filtre-a-air-vw-groupe"
+  },
+  {
+    "name": "MANN-FILTER – HU 710 x  Filtre à huile VW",
+    "sku": "MANN-FILTER - HU 710 x",
+    "brand": "MANN-FILTER - HU 710 x Filtre à huile VW",
+    "slug": "mann-filter-hu-710-x-filtre-a-huile-vw"
+  },
+  {
+    "name": "FEBI BILSTEIN Filtre à air VW POLO",
+    "sku": "24394 polo",
+    "brand": "FEBI BILSTEIN",
+    "slug": "febi-bilstein-filtre-a-air"
+  },
+  {
+    "name": "ROWE MULTI FORMULA SAE 5W-40 (5L)",
+    "sku": "20138-5",
+    "brand": "ROWE",
+    "slug": "rowe-multi-formula-sae-5w-40-5l-2"
+  },
+  {
+    "name": "BARDAHL Décrassant 5 en 1 Diesel (500ml)",
+    "sku": "9365",
+    "brand": "bardahl",
+    "slug": "bardahl-decrassant-5-en-1-diesel-500ml"
+  },
+  {
+    "name": "ROWE MULTI FORMULA SAE 5W-40 (5L)",
+    "sku": "TSC-00168",
+    "brand": "ROWE",
+    "slug": "rowe-multi-formula-sae-5w-40-5l"
+  },
+  {
+    "name": "PRO TEC Common rail diesel system cleaner (375ml)",
+    "sku": "P2101CRDSC",
+    "brand": "PRO-TEC",
+    "slug": "pro-tec-common-rail-diesel-system-cleaner-375ml"
+  },
+  {
+    "name": "PRO TEC Nettoyant pour conduites de carburant (375ml)",
+    "sku": "P1101FLC",
+    "brand": "PRO-TEC",
+    "slug": "pro-tec-nettoyant-pour-conduites-de-carburant-375ml"
+  },
+  {
+    "name": "PRO TEC Radiateur anti fuite (375ml)",
+    "sku": "P1601",
+    "brand": "PRO-TEC",
+    "slug": "pro-tec-radiateur-anti-fuite-375ml"
+  },
+  {
+    "name": "PRO TEC Radiateur Flush (375ml)",
+    "sku": "P1501RF",
+    "brand": "PRO-TEC",
+    "slug": "pro-tec-radiateur-flush-375ml"
+  },
+  {
+    "name": "PRO TEC ELECTRONIC SPRAY (400ml)",
+    "sku": "P2901",
+    "brand": "PRO-TEC",
+    "slug": "pro-tec-electronic-spray-400ml"
+  },
+  {
+    "name": "PRO TEC nettoyant poussoirs hydrauliques (375ml)",
+    "sku": "P2131HLC",
+    "brand": "PRO-TEC",
+    "slug": "pro-tec-nettoyant-poussoirs-hydrauliques-375ml"
+  },
+  {
+    "name": "PRO TEC Oil stop smoke (375ml)",
+    "sku": "P2111QAS",
+    "brand": "PRO-TEC",
+    "slug": "pro-tec-oil-stop-smoke-375ml"
+  },
+  {
+    "name": "PRO TEC FAP Super clean (375ml)",
+    "sku": "P6171DPFSC",
+    "brand": "PRO-TEC",
+    "slug": "pro-tec-fap-super-clean-375ml"
+  },
+  {
+    "name": "PRO TEC Nettoyant pour soupes et injections (375ml)",
+    "sku": "P2233VIC",
+    "brand": "PRO-TEC",
+    "slug": "pro-tec-nettoyant-pour-soupes-et-injections-375ml"
+  },
+  {
+    "name": "PRO TEC Anti-fumée diesel (150ml)",
+    "sku": "P2151 DAS",
+    "brand": "PRO-TEC",
+    "slug": "protec-anti-fumee-diesel-150ml"
+  },
+  {
+    "name": "OIL BOOSTER PROTECTED (375ml)",
+    "sku": "P1301",
+    "brand": "PRO-TEC",
+    "slug": "oil-booster-protected-375ml"
+  },
+  {
+    "name": "NANO ENGINE PROTECTED (375ml)",
+    "sku": "P9201",
+    "brand": "PRO-TEC",
+    "slug": "nano-engine-protected"
+  },
+  {
+    "name": "ROWE  RS LONGLIFE IV SAE 0W-20",
+    "sku": "TSC-00181",
+    "brand": "ROWE",
+    "slug": "rowe-rs-longlife-iv-sae-0w-20-5l"
+  },
+  {
+    "name": "ROWE HIGHTEC MULTI SYNT DPF SAE 0W-30 (5L)",
+    "sku": "20112-5",
+    "brand": "ROWE",
+    "slug": "rowe-hightec-multi-synt-dpf-sae-0w-30-5l"
+  },
+  {
+    "name": "ROWE HIGHTEC SYNT RSF 950 SAE 0W-30 (5L) FORD",
+    "sku": "20150-5",
+    "brand": "ROWE",
+    "slug": "rowe-hightec-synt-rsf-950-sae-0w-30-5l-ford"
+  },
+  {
+    "name": "ROWE HIGHTEC SYNT RS C5 SAE 0W-20 (5L)",
+    "sku": "20379-5",
+    "brand": "ROWE",
+    "slug": "rowe-hightec-synt-rs-c5-sae-0w-20-5l"
+  },
+  {
+    "name": "ROWE HIGHTEC HUILE HYDRAULIQUE ZH-M SYNT (1L)",
+    "sku": "30509",
+    "brand": "ROWE",
+    "slug": "rowe-hightec-huile-hydraulique-zh-m-synt-1l"
+  },
+  {
+    "name": "ROWE HIGHTEC 75W-80 S (1L)",
+    "sku": "25066",
+    "brand": "ROWE",
+    "slug": "rowe-hightec-75w-80-s-1l"
+  },
+  {
+    "name": "ROWE HIGHTEC HYPOID EP SAE 75W-140 S-LS (1L)",
+    "sku": "25029",
+    "brand": "ROWE",
+    "slug": "rowe-hightec-hypoid-ep-sae-75w-140-s-ls-1l"
+  },
+  {
+    "name": "ROWE HIGHTEC ATF 9008 (1L)",
+    "sku": "25063",
+    "brand": "ROWE",
+    "slug": "rowe-hightec-atf-9008-1l"
+  },
+  {
+    "name": "ROWE HIGHTEC ATF 9600 (1L)",
+    "sku": "25036",
+    "brand": "ROWE",
+    "slug": "rowe-hightec-atf-9600-1l"
+  },
+  {
+    "name": "ROWE HIGHTEC ATF 9000 (1L)",
+    "sku": "25020",
+    "brand": "ROWE",
+    "slug": "rowe-hightec-atf-9000-1l"
+  },
+  {
+    "name": "ROWE HIGHTEC ATF 9004 (1L)",
+    "sku": "25050",
+    "brand": "ROWE",
+    "slug": "rowe-hightec-atf-9004-1l"
+  },
+  {
+    "name": "ROWE HUILE DE BOITE ATF DCG II (1L)",
+    "sku": "25067",
+    "brand": "ROWE",
+    "slug": "rowe-huile-de-boite-atf-dcg-ii-1l"
+  },
+  {
+    "name": "ROWE HUILE DE BOITE ATF CVT  (1L)",
+    "sku": "25055",
+    "brand": "ROWE",
+    "slug": "rowe-huile-de-boite-atf-cvt-1l"
+  },
+  {
+    "name": "ROWE HUILE DE BOITE ATF 9006 (1L)",
+    "sku": "25051",
+    "brand": "ROWE",
+    "slug": "rowe-huile-de-boite-atf-9006-1l"
+  },
+  {
+    "name": "ROWE HUILE DE BOITE ATF 9005 (1L)",
+    "sku": "25060",
+    "brand": "ROWE",
+    "slug": "rowe-huile-de-boite-atf-9005-1l"
+  },
+  {
+    "name": "ROWE ANTIGEL HIGHTEC AN 13 (1.5L)",
+    "sku": "21062",
+    "brand": "ROWE",
+    "slug": "rowe-antigel-hightec-an-13-1-5l"
+  },
+  {
+    "name": "ROWE  ANTIGEL HIGHTEC AN-SF 12+ (1.5L)",
+    "sku": "21014",
+    "brand": "ROWE",
+    "slug": "rowe-antigel-hightec-an-sf-12-1-5l"
+  },
+  {
+    "name": "ZF LifeGuardFluid 6 Huile pour boîte automatique 1L",
+    "sku": "S671.090.255",
+    "brand": "Générique",
+    "slug": "zf-lifeguardfluid-6-huile-pour-boite-automatique-1l"
+  },
+  {
+    "name": "MANNOL Dégraissant Tar remover   (450 ml)",
+    "sku": "9668",
+    "brand": "MANNOL",
+    "slug": "mannol-degraissant-tar-remover-450-ml"
+  },
+  {
+    "name": "MANNOL Energy Premium 5W-30 (5L)",
+    "sku": "TSC-00200",
+    "brand": "MANNOL",
+    "slug": "mannol-energy-premium-5w-30-5l"
+  },
+  {
+    "name": "MANNOL Céramique 5W-30 (5L)",
+    "sku": "7720",
+    "brand": "MANNOL",
+    "slug": "mannol-ceramique-5w-30-5l"
+  },
+  {
+    "name": "MANNOL Hydro ISO 68 Long life (20L)",
+    "sku": "2103-20",
+    "brand": "MANNOL",
+    "slug": "mannol-hydro-iso-68-long-life-20l"
+  },
+  {
+    "name": "Liqui Moly Entretien intérieur voiture (500ml)",
+    "sku": "1368",
+    "brand": "LIQUI MOLY",
+    "slug": "liqui-moly-entretien-interieur-voiture-500ml"
+  },
+  {
+    "name": "NEOLUX H7 Lampe Power Light Bleue 80 W 12 V PX26d",
+    "sku": "N499HC",
+    "brand": "bleu light",
+    "slug": "neolux-lampe-power-light-bleue-80-w-12-v-px26d"
+  },
+  {
+    "name": "NEOLUX KIT H7 Power Light Bleue 80 W 12 V PX26d",
+    "sku": "N499HC-2SCB",
+    "brand": "KIT H7 BLUE",
+    "slug": "neolux-kit-power-light-bleue-80-w-12-v-px26d"
+  },
+  {
+    "name": "MANNOL Hydro ISO 46 Longue life (20L)",
+    "sku": "2102",
+    "brand": "MANNOL",
+    "slug": "mannol-hydro-iso-46-longue-life-20l"
+  },
+  {
+    "name": "RUPES Patin velcro 150mm 6+1 – 5/16 «",
+    "sku": "rupes 981.253",
+    "brand": "RUPES",
+    "slug": "rupes-patin-velcro-150mm-61-5-16"
+  },
+  {
+    "name": "KAMOKA balais essuie glace  (650mm)",
+    "sku": "kamoka 27M650",
+    "brand": "KAMOKA",
+    "slug": "kamoka-balais-essuie-glace-650mm"
+  },
+  {
+    "name": "KAMOKA balais essuie glace  (400mm)",
+    "sku": "kamoka 27M400",
+    "brand": "KAMOKA",
+    "slug": "kamoka-balais-essuie-glace-400mm"
+  },
+  {
+    "name": "KAMOKA balais essuie glace arrière (Toyota)",
+    "sku": "Kamoka 29004",
+    "brand": "KAMOKA",
+    "slug": "kamoka-balais-essuie-glace-arriere-toyota-chr"
+  },
+  {
+    "name": "OSRAM COOL BLUE INTENSE (NEXT GEN) H7",
+    "sku": "64210CBN -HCB",
+    "brand": "Générique",
+    "slug": "osram-cool-blue-intense-next-gen-h7"
+  },
+  {
+    "name": "BARDAHL Nettoyant injecteurs Essence (300ml)",
+    "sku": "2101",
+    "brand": "Générique",
+    "slug": "bardahl-nettoyant-injecteurs-essence-300ml"
+  },
+  {
+    "name": "BARDAHL Nettoyant injecteurs Diesel (300ml)",
+    "sku": "1185",
+    "brand": "bardahl injecteur diesel",
+    "slug": "bardahl-nettoyant-injecteurs-diesel-300ml"
+  },
+  {
+    "name": "BARDAHL Nettoyant prévidange (300ml)",
+    "sku": "1032",
+    "brand": "bardahl",
+    "slug": "bardahl-nettoyant-previdange-300ml"
+  },
+  {
+    "name": "MANN-FILTER C 1370 Filtre à air",
+    "sku": "c 1370",
+    "brand": "BMW",
+    "slug": "mann-filter-c-1370-filtre-a-air"
+  },
+  {
+    "name": "MANN-FILTER C 1361 Filtre à air BMW",
+    "sku": "c 1361",
+    "brand": "Générique",
+    "slug": "mann-filter-c-1361-filtre-a-air-bmw"
+  },
+  {
+    "name": "BARDAHL Décrassant 5 en 1 Essence (500ml)",
+    "sku": "1325",
+    "brand": "bardahl décrassant",
+    "slug": "bardahl-decrassant-5-en-1-essence-500ml"
+  },
+  {
+    "name": "Eau Déminéralisée (5L)",
+    "sku": "TSC-00218",
+    "brand": "Générique",
+    "slug": "eau-demineralisee-5l"
+  },
+  {
+    "name": "Nettoyant Radiateur (300ml)",
+    "sku": "8369",
+    "brand": "LIQUI MOLY",
+    "slug": "nettoyant-radiateur-300ml"
+  },
+  {
+    "name": "Anti-fuites pour radia­teurs (250ml)",
+    "sku": "8370",
+    "brand": "LIQUI MOLY",
+    "slug": "anti-fuites-pour-radiateurs-250ml"
+  },
+  {
+    "name": "Liqui Moly Antigel radiateur KFS 11 (1L)",
+    "sku": "1380",
+    "brand": "LIQUI MOLY",
+    "slug": "liqui-moly-antigel-radiateur-kfs-11-1l"
+  },
+  {
+    "name": "Liqui Moly Antigel radiateur KFS 12+ (1L)",
+    "sku": "1381",
+    "brand": "LIQUI MOLY",
+    "slug": "liqui-moly-antigel-radiateur-kfs-12-1l"
+  },
+  {
+    "name": "Liqui Moly Antigel radiateur KFS 13 (1L)",
+    "sku": "21139",
+    "brand": "LIQUI MOLY",
+    "slug": "liqui-moly-antigel-radiateur-kfs-13-1l"
+  },
+  {
+    "name": "MANN-FILTER C 14 006 Filtre à air",
+    "sku": "c 14 006",
+    "brand": "Générique",
+    "slug": "mann-filter-c-14-006-filtre-a-air"
+  },
+  {
+    "name": "Liqui Moly Motorbike 4T Bike-Additive (125ml)",
+    "sku": "1581",
+    "brand": "LIQUI MOLY",
+    "slug": "liqui-moly-motorbike-4t-bike-additive-125ml"
+  },
+  {
+    "name": "Liqui Moly Motorbike Graisse chaîne en aérosol, blanche (400ml)",
+    "sku": "5981",
+    "brand": "LIQUI MOLY",
+    "slug": "liqui-moly-motorbike-graisse-chaine-en-aerosol-blanche-400ml"
+  },
+  {
+    "name": "Liqui Moly Motorbike Nettoyant pour chaînes et freins (500ml)",
+    "sku": "TSC-00227",
+    "brand": "LIQUI MOLY",
+    "slug": "liqui-moly-motorbike-nettoyant-pour-chaines-et-freins-500ml"
+  },
+  {
+    "name": "Liqui Moly Motorbike Speed Shooter (80ml)",
+    "sku": "7817",
+    "brand": "LIQUI MOLY",
+    "slug": "liqui-moly-motorbike-speed-shooter-80ml"
+  },
+  {
+    "name": "Liqui Moly Motorbike Graisse pour chaînes (250ml)",
+    "sku": "5962",
+    "brand": "LIQUI MOLY",
+    "slug": "liqui-moly-motorbike-graisse-pour-chaines-250ml"
+  },
+  {
+    "name": "Liqui Moly Top Tec 4300 5W-30  ( PSA )",
+    "sku": "TSC-00230",
+    "brand": "LIQUI MOLY",
+    "slug": "liqui-moly-top-tec-4300-5w-30-psa"
+  },
+  {
+    "name": "Liqui Moly Motorbike Oil Additive MOS2 (125ml)",
+    "sku": "1580",
+    "brand": "LIQUI MOLY",
+    "slug": "liqui-moly-motorbike-oil-additive-mos2-125ml"
+  },
+  {
+    "name": "Liqui Moly Motorbike Gear Oil (GL4) 80W-90 Scooter (150ml)",
+    "sku": "5929",
+    "brand": "LIQUI MOLY",
+    "slug": "liqui-moly-motorbike-gear-oil-gl4-80w-90-scooter-150ml"
+  },
+  {
+    "name": "Liqui Moly Motorbike Fork Oil 10W medium (500ml)",
+    "sku": "5952",
+    "brand": "LIQUI MOLY",
+    "slug": "liqui-moly-motorbike-fork-oil-10w-medium-500ml"
+  },
+  {
+    "name": "Liqui Moly Motorbike Fork Oil 5W light (500ml)",
+    "sku": "5950",
+    "brand": "LIQUI MOLY",
+    "slug": "liqui-moly-motorbike-fork-oil-5w-light-500ml"
+  },
+  {
+    "name": "Liqui Moly Motorbike Gear Oil 10W-30 (1L)",
+    "sku": "5927",
+    "brand": "LIQUI MOLY",
+    "slug": "liqui-moly-motorbike-gear-oil-10w-30-1l"
+  },
+  {
+    "name": "Liqui Moly Motorbike Gear Oil 75W-90 (500ml)",
+    "sku": "1516",
+    "brand": "LIQUI MOLY",
+    "slug": "liqui-moly-motorbike-gear-oil-75w-90-500ml"
+  },
+  {
+    "name": "Motorbike Engine Flush Shooter (80ml)",
+    "sku": "TSC-00237",
+    "brand": "LIQUI MOLY",
+    "slug": "motorbike-engine-flush-shooter-80ml"
+  },
+  {
+    "name": "Liqui Moly Motorbike MoS2 Shooter (20ml)",
+    "sku": "3444",
+    "brand": "LIQUI MOLY",
+    "slug": "liqui-moly-motorbike-mos2-shooter-20ml"
+  },
+  {
+    "name": "MANNOL Racing + Ester 10W-60 (4L)",
+    "sku": "7902",
+    "brand": "MANNOL",
+    "slug": "mannol-racing-ester-10w-60-4l"
+  },
+  {
+    "name": "MANNOL Extreme 5W-40 (5L)",
+    "sku": "TSC-00240",
+    "brand": "MANNOL",
+    "slug": "mannol-extreme-5w-40-5l"
+  },
+  {
+    "name": "MANNOL Energy Premium 5W-30 (5L)",
+    "sku": "7908",
+    "brand": "MANNOL",
+    "slug": "huile-moteur-mannol-energy-premium-5w-30-5l"
+  },
+  {
+    "name": "MANNOL Energy Formula FR 5W-30 (5L)",
+    "sku": "7707",
+    "brand": "MANNOL",
+    "slug": "mannol-energy-formula-fr-5w-30-5l"
+  },
+  {
+    "name": "MANNOL Légende 504/507 0W-30 (5L)",
+    "sku": "7730",
+    "brand": "MANNOL",
+    "slug": "mannol-legende-504-507-0w-30-5l"
+  },
+  {
+    "name": "MANNOL Longue life 508/509 0W-20 (5L)",
+    "sku": "7722",
+    "brand": "MANNOL",
+    "slug": "mannol-longue-life-508-509-0w-20-5l"
+  },
+  {
+    "name": "MANNOL Légende Formule C5 0W-20 (5L)",
+    "sku": "7921",
+    "brand": "MANNOL",
+    "slug": "mannol-legende-formule-c5-0w-20-5l"
+  },
+  {
+    "name": "MANNOL Graisse universelle multi-usages  MP2 Ester (800g)",
+    "sku": "8106",
+    "brand": "MANNOL",
+    "slug": "mannol-graisse-universelle-multi-usages-mp2-ester-800g"
+  },
+  {
+    "name": "MANNOL Légende Ultra 0W-20 (5L)",
+    "sku": "TSC-00247",
+    "brand": "MANNOL",
+    "slug": "mannol-legende-ultra-0w-20-5l"
+  },
+  {
+    "name": "Huile de boîte de vitesses haute perfor­mance (GL3+) SAE 75W-80 (1L)",
+    "sku": "1134",
+    "brand": "LIQUI MOLY",
+    "slug": "huile-de-boite-de-vitesses-haute-performance-gl3-sae-75w-80-1l"
+  },
+  {
+    "name": "Huile pour système hydrau­lique central (1L)",
+    "sku": "9524",
+    "brand": "LIQUI MOLY",
+    "slug": "huile-pour-systeme-hydraulique-central-1l"
+  },
+  {
+    "name": "Huile de boîte hypoïde entiè­re­ment synthé­tique (GL5) LS SAE 75W-140 (1L)",
+    "sku": "4421",
+    "brand": "API GL5",
+    "slug": "huile-de-boite-hypoide-entierement-synthetique-gl5-ls-sae-75w-140-1l"
+  },
+  {
+    "name": "Top Tec MTF 5200 75W-80",
+    "sku": "TSC-00251",
+    "brand": "LIQUI MOLY",
+    "slug": "2185"
+  },
+  {
+    "name": "Top Tec MTF 5100 75W (1L)",
+    "sku": "TSC-00252",
+    "brand": "LIQUI MOLY",
+    "slug": "top-tec-mtf-5100-75w-1l"
+  },
+  {
+    "name": "Top Tec MTF 5300 70W-75W (1L)",
+    "sku": "21359",
+    "brand": "LIQUI MOLY",
+    "slug": "top-tec-mtf-5300-70w-75w-1l"
+  },
+  {
+    "name": "Huile de boîte de vitesses (GL5) 75W-80 (1L)",
+    "sku": "3658",
+    "brand": "LIQUI MOLY",
+    "slug": "huile-de-boite-de-vitesses-gl5-75w-80-1l"
+  },
+  {
+    "name": "Liqui Moly Top Tec 4310 0W-30 (5L)",
+    "sku": "2362",
+    "brand": "LIQUI MOLY",
+    "slug": "liqui-moly-top-tec-4310-0w-30-5l"
+  },
+  {
+    "name": "Liqui Moly Top Tec 6200 0W-20",
+    "sku": "TSC-00256",
+    "brand": "LIQUI MOLY",
+    "slug": "liqui-moly-top-tec-6200-0w-20"
+  },
+  {
+    "name": "Huile de boîte de vitesses haute perfor­mance (GL4+) SAE 75W-90 (1L)",
+    "sku": "4434",
+    "brand": "LIQUI MOLY",
+    "slug": "huile-de-boite-de-vitesses-haute-performance-gl4-sae-75w-90-1l"
+  },
+  {
+    "name": "Huile hypoïde (GL4/5) TDL SAE 75W-90 (1L)",
+    "sku": "1407",
+    "brand": "LIQUI MOLY",
+    "slug": "huile-hypoide-gl4-5-tdl-sae-75w-90-1l"
+  },
+  {
+    "name": "Liqui Moly Liquide de frein DOT 5.1 (250ml)",
+    "sku": "3092",
+    "brand": "LIQUI MOLY",
+    "slug": "liqui-moly-liquide-de-frein-dot-5-1-250ml"
+  },
+  {
+    "name": "Liqui Moly Liquide de frein DOT 3 (500ml)",
+    "sku": "3089",
+    "brand": "LIQUI MOLY",
+    "slug": "liqui-moly-liquide-de-frein-dot-3-500ml"
+  },
+  {
+    "name": "Liquide de frein DOT 4 (500ml)",
+    "sku": "3093",
+    "brand": "Générique",
+    "slug": "liquide-de-frein-dot-4-500ml"
+  },
+  {
+    "name": "Mannol Liquide de frein DOT-5.1",
+    "sku": "TSC-00262",
+    "brand": "MANNOL",
+    "slug": "mannol-liquide-de-frein-dot-5-1"
+  },
+  {
+    "name": "Mannol Liquide de frein  DOT-3 (0.5L)",
+    "sku": "3003",
+    "brand": "MANNOL",
+    "slug": "mannol-liquide-de-frein-dot-3-0-5l"
+  },
+  {
+    "name": "Mannol Liquide de frein DOT-4 (450ml)",
+    "sku": "3002",
+    "brand": "MANNOL",
+    "slug": "mannol-liquide-de-frein-dot-4-450ml"
+  },
+  {
+    "name": "Liqui Moly Molygen New Gene­ra­tion 5W-30",
+    "sku": "TSC-00265",
+    "brand": "LIQUI MOLY",
+    "slug": "liqui-moly-molygen-new-generation-5w-30"
+  },
+  {
+    "name": "Liqui Moly Super Leicht­lauf 10W-40",
+    "sku": "TSC-00266",
+    "brand": "LIQUI MOLY",
+    "slug": "liqui-moly-super-leichtlauf-10w-40"
+  },
+  {
+    "name": "Liqui Moly MoS2 Leicht­lauf 10W-40",
+    "sku": "TSC-00267",
+    "brand": "LIQUI MOLY",
+    "slug": "mos2-leichtlauf-10w-40"
+  },
+  {
+    "name": "Liqui Moly Special Tec AA 5W-40 Diesel (5L)",
+    "sku": "21332",
+    "brand": "LIQUI MOLY",
+    "slug": "liqui-moly-special-tec-aa-5w-40-diesel-5l"
+  },
+  {
+    "name": "Liqui Moly Special Tec AA 5W-30 (4L)",
+    "sku": "7616",
+    "brand": "LIQUI MOLY",
+    "slug": "liqui-moly-special-tec-aa-5w-30-4l"
+  },
+  {
+    "name": "Liqui Moly Special Tec AA 0W-20 (5L)",
+    "sku": "6739",
+    "brand": "LIQUI MOLY",
+    "slug": "liqui-moly-special-tec-aa-0w-20-5l"
+  },
+  {
+    "name": "Liqui Moly Special Tec AA 5W-20",
+    "sku": "TSC-00271",
+    "brand": "LIQUI MOLY",
+    "slug": "liqui-moly-special-tec-aa-5w-20"
+  },
+  {
+    "name": "Liqui Moly Synthoil Race Tech GT1 10W-60",
+    "sku": "TSC-00272",
+    "brand": "LIQUI MOLY",
+    "slug": "liqui-moly-synthoil-race-tech-gt1-10w-60"
+  },
+  {
+    "name": "Liqui Moly Special Tec F ECO 5W-20",
+    "sku": "TSC-00273",
+    "brand": "LIQUI MOLY",
+    "slug": "liqui-moly-special-tec-f-eco-5w-20"
+  },
+  {
+    "name": "Liqui Moly Special Tec LR 5W-20 (5L)",
+    "sku": "8460",
+    "brand": "LIQUI MOLY",
+    "slug": "liqui-moly-special-tec-lr-5w-20-5l"
+  },
+  {
+    "name": "Liqui Moly Top Tec 6600 0W-20 (5L)",
+    "sku": "21411",
+    "brand": "LIQUI MOLY",
+    "slug": "liqui-moly-top-tec-6600-0w-20-5l"
+  },
+  {
+    "name": "Liqui Moly Special Tec V 0W-20 (5L)",
+    "sku": "20632",
+    "brand": "LIQUI MOLY",
+    "slug": "liqui-moly-special-tec-v-0w-20-5l"
+  },
+  {
+    "name": "Liqui Moly Top Tec 4210 0W-30 (5L)",
+    "sku": "TSC-00277",
+    "brand": "LIQUI MOLY",
+    "slug": "liqui-moly-top-tec-4210-0w-30-5l"
+  },
+  {
+    "name": "Liqui Moly Top Tec 6300 0W-20 (5L)",
+    "sku": "21217",
+    "brand": "LIQUI MOLY",
+    "slug": "liqui-moly-top-tec-6300-0w-20-5l"
+  },
+  {
+    "name": "Liqui Moly Top Tec 6100 0W-30",
+    "sku": "TSC-00279",
+    "brand": "LIQUI MOLY",
+    "slug": "liqui-moly-top-tec-6100-0w-30"
+  },
+  {
+    "name": "Liqui Moly Special Tec F 0W-30",
+    "sku": "TSC-00280",
+    "brand": "LIQUI MOLY",
+    "slug": "liqui-moly-special-tec-f-0w-30"
+  },
+  {
+    "name": "Liqui Moly Special Tec AA 5W-30 (5L)",
+    "sku": "7530",
+    "brand": "LIQUI MOLY",
+    "slug": "liqui-moly-special-tec-aa-5w-30-5l"
+  },
+  {
+    "name": "Liqui Moly Special Tec F 5W-30  (FORD)",
+    "sku": "TSC-00282",
+    "brand": "LIQUI MOLY",
+    "slug": "liqui-moly-special-tec-f-5w-30-ford"
+  },
+  {
+    "name": "Liqui Moly Top Tec 4400 5W-30 (5L) RENAULT",
+    "sku": "2322",
+    "brand": "LIQUI MOLY",
+    "slug": "liqui-moly-top-tec-4400-5w-30-5l-renault"
+  },
+  {
+    "name": "Liqui Moly Top Tec 4410 5W-30  5L ( RENAULT )",
+    "sku": "21404",
+    "brand": "LIQUI MOLY",
+    "slug": "liqui-moly-top-tec-4410-5w-30-5l-renault"
+  },
+  {
+    "name": "Top Tec 4200 5W-30 New Generation",
+    "sku": "TSC-00285",
+    "brand": "LIQUI MOLY",
+    "slug": "top-tec-4200-5w-30-new-generation"
+  },
+  {
+    "name": "Liqui Moly Top Tec 4600 5W-30",
+    "sku": "TSC-00286",
+    "brand": "LIQUI MOLY",
+    "slug": "liqui-moly-top-tec-4600-5w-30"
+  },
+  {
+    "name": "Liqui Moly Top Tec 4110 5W-40",
+    "sku": "TSC-00287",
+    "brand": "LIQUI MOLY",
+    "slug": "liqui-moly-top-tec-4110-5w-40"
+  },
+  {
+    "name": "Liqui Moly Top Tec 4100 5W-40",
+    "sku": "TSC-00288",
+    "brand": "LIQUI MOLY",
+    "slug": "liqui-moly-top-tec-4100-5w-40"
+  },
+  {
+    "name": "Leicht­lauf High Tech 5W-40",
+    "sku": "TSC-00289",
+    "brand": "LIQUI MOLY",
+    "slug": "leichtlauf-high-tech-5w-40"
+  },
+  {
+    "name": "MANNOL Pro Cool prêt à l’emploi (1L)",
+    "sku": "4414",
+    "brand": "MANNOL",
+    "slug": "mannol-pro-cool-pret-a-lemploi-1l"
+  },
+  {
+    "name": "MANNOL Huile de fourche 10W (1L)",
+    "sku": "8303",
+    "brand": "MANNOL",
+    "slug": "mannol-huile-de-fourche-10w-1l"
+  },
+  {
+    "name": "Motorbike 4T Synth 5W-40 Street Race",
+    "sku": "TSC-00292",
+    "brand": "LIQUI MOLY",
+    "slug": "motorbike-4t-synth-5w-40-street-race"
+  },
+  {
+    "name": "Motorbike HD Synth 20W-50 Street",
+    "sku": "TSC-00293",
+    "brand": "LIQUI MOLY",
+    "slug": "motorbike-hd-synth-20w-50-street"
+  },
+  {
+    "name": "Motorbike 4T 20W-50 Basic Street",
+    "sku": "TSC-00294",
+    "brand": "LIQUI MOLY",
+    "slug": "motorbike-4t-20w-50-basic-street"
+  },
+  {
+    "name": "Motorbike 4T Synth 10W-50 Street Race (1L)",
+    "sku": "1502",
+    "brand": "LIQUI MOLY",
+    "slug": "motorbike-4t-synth-10w-50-street-race-1l"
+  },
+  {
+    "name": "Motorbike 4T 10W-40 Scooter MB (1L)",
+    "sku": "20832",
+    "brand": "LIQUI MOLY",
+    "slug": "motorbike-4t-10w-40-scooter-mb-1l"
+  },
+  {
+    "name": "Motorbike Molygen 4T 10W-40 Scooter (1L)",
+    "sku": "21719",
+    "brand": "LIQUI MOLY",
+    "slug": "motorbike-molygen-4t-10w-40-scooter-1l"
+  },
+  {
+    "name": "Motorbike 4T 10W-30 Street (1L)",
+    "sku": "2526",
+    "brand": "LIQUI MOLY",
+    "slug": "motorbike-4t-10w-30-street-1l"
+  },
+  {
+    "name": "Motorbike 4T Synth 10W-60 Street Race",
+    "sku": "TSC-00299",
+    "brand": "LIQUI MOLY",
+    "slug": "motorbike-4t-synth-10w-60-street-race"
+  },
+  {
+    "name": "Motorbike 4T Synth 10W-40 Street Race (4L)",
+    "sku": "20754",
+    "brand": "LIQUI MOLY",
+    "slug": "motorbike-4t-synth-10w-40-street-race-4l"
+  },
+  {
+    "name": "Motorbike 4T Synth 10W-40 Street Race (1L)",
+    "sku": "20753",
+    "brand": "LIQUI MOLY",
+    "slug": "motorbike-4t-synth-10w-40-street-race-1l"
+  },
+  {
+    "name": "Motorbike 4T 15W-50 Offroad (4L)",
+    "sku": "3058",
+    "brand": "LIQUI MOLY",
+    "slug": "motorbike-4t-15w-50-offroad-4l"
+  },
+  {
+    "name": "Motorbike 2T Basic Scooter (1L)",
+    "sku": "1619",
+    "brand": "LIQUI MOLY",
+    "slug": "motorbike-2t-basic-scooter-1l"
+  },
+  {
+    "name": "Liqui Moly Motorbike 4T 10W-40 Street (4L)",
+    "sku": "1243",
+    "brand": "LIQUI MOLY",
+    "slug": "liqui-moly-motorbike-4t-10w-40-street-4l"
+  },
+  {
+    "name": "Liqui Moly Motorbike 4T 10W-40 Street (1L)",
+    "sku": "TSC-00305",
+    "brand": "LIQUI MOLY",
+    "slug": "liqui-moly-motorbike-4t-10w-40-street-1l"
+  },
+  {
+    "name": "MANNOL 2-Temps Plus (4L)",
+    "sku": "7204-4",
+    "brand": "MANNOL",
+    "slug": "mannol-2-temps-plus-4l"
+  },
+  {
+    "name": "MANNOL 2-Temps Plus (1L)",
+    "sku": "7204-1",
+    "brand": "MANNOL",
+    "slug": "mannol-2-temps-plus-1l"
+  },
+  {
+    "name": "MANNOL Moto 4 temps 10W-50 (1L)",
+    "sku": "7814-1",
+    "brand": "MANNOL",
+    "slug": "mannol-moto-4-temps-10w-50-1l"
+  },
+  {
+    "name": "MANNOL Moto 4 temps 10W-50 (4L)",
+    "sku": "TSC-00309",
+    "brand": "MANNOL",
+    "slug": "mannol-moto-4-temps-10w-50-4l"
+  },
+  {
+    "name": "MANNOL Huile moteur 4 temps Powerbike 15W-50 (4L)",
+    "sku": "7832-4",
+    "brand": "MANNOL",
+    "slug": "mannol-huile-moteur-4-temps-powerbike-15w-50-4l"
+  },
+  {
+    "name": "MANNOL Huile moteur 4 temps Powerbike 15W-50 (1L)",
+    "sku": "7832-1",
+    "brand": "MANNOL",
+    "slug": "mannol-huile-moteur-4-temps-powerbike-15w-50-1l"
+  },
+  {
+    "name": "MANNOL 4 temps moto 10W-40  (4L)",
+    "sku": "7812-4",
+    "brand": "MANNOL",
+    "slug": "mannol-4-temps-moto-10w-40-4l"
+  },
+  {
+    "name": "MANNOL 4 temps moto 10W-40  (1L)",
+    "sku": "7812",
+    "brand": "MANNOL",
+    "slug": "mannol-4-temps-moto-10w-40-1l"
+  },
+  {
+    "name": "MANNOL EP-2 Multi-MoS2 Ester (800g)",
+    "sku": "8107",
+    "brand": "MANNOL",
+    "slug": "mannol-ep-2-multi-mos2-ester-800g"
+  },
+  {
+    "name": "MANNOL Octane Plus (450ml)",
+    "sku": "9954",
+    "brand": "MANNOL",
+    "slug": "mannol-octane-plus-450ml"
+  },
+  {
+    "name": "MANNOL Additif boite de vitesse manuel (100ml)",
+    "sku": "9903",
+    "brand": "MANNOL",
+    "slug": "mannol-additif-boite-de-vitesse-manuel-100ml"
+  },
+  {
+    "name": "MANNOL SAE 90 (4L)",
+    "sku": "8113",
+    "brand": "MANNOL",
+    "slug": "mannol-sae-90-4l"
+  },
+  {
+    "name": "MANNOL Hypoïde 80W-90 GL-4/GL-5 LS",
+    "sku": "TSC-00318",
+    "brand": "MANNOL",
+    "slug": "mannol-hypoide-80w-90-gl-4-gl-5-ls"
+  },
+  {
+    "name": "MANNOL CVT NS-3",
+    "sku": "TSC-00319",
+    "brand": "MANNOL",
+    "slug": "mannol-cvt-ns-3"
+  },
+  {
+    "name": "MANNOL multivéhicule ATF JWS",
+    "sku": "TSC-00320",
+    "brand": "MANNOL",
+    "slug": "mannol-multivehicule-atf-jws"
+  },
+  {
+    "name": "AdBlue® (20L)",
+    "sku": "3001-20",
+    "brand": "MANNOL",
+    "slug": "adblue-20l"
+  },
+  {
+    "name": "AdBlue® (10L)",
+    "sku": "3001",
+    "brand": "MANNOL",
+    "slug": "adblue-10l"
+  },
+  {
+    "name": "MANNOL Antigel  AF12+ Longlife concentré (10L)",
+    "sku": "TSC-00323",
+    "brand": "MANNOL",
+    "slug": "mannol-antigel-af12-longlife-concentre-10l"
+  },
+  {
+    "name": "MANNOL ATF AG60",
+    "sku": "TSC-00324",
+    "brand": "MANNOL",
+    "slug": "mannol-atf-ag60"
+  },
+  {
+    "name": "MANNOL AG55",
+    "sku": "TSC-00325",
+    "brand": "MANNOL",
+    "slug": "mannol-ag55"
+  },
+  {
+    "name": "MANNOL AG52",
+    "sku": "TSC-00326",
+    "brand": "MANNOL",
+    "slug": "mannol-ag52"
+  },
+  {
+    "name": "MANNOL ATF T-IV (1L)",
+    "sku": "8208",
+    "brand": "MANNOL",
+    "slug": "mannol-atf-t-iv"
+  },
+  {
+    "name": "MANNOL ATF SP-IV",
+    "sku": "TSC-00328",
+    "brand": "MANNOL",
+    "slug": "mannol-atf-sp-iv"
+  },
+  {
+    "name": "Transmission à variation continue ATF  (CVT) MANNOL",
+    "sku": "TSC-00329",
+    "brand": "MANNOL",
+    "slug": "transmission-a-variation-continue-atf-cvt-mannol"
+  },
+  {
+    "name": "MANNOL Automatique ATF Dexron III",
+    "sku": "8206",
+    "brand": "MANNOL",
+    "slug": "mannol-automatique-atf-dexron-iii"
+  },
+  {
+    "name": "MANNOL ATF SP-III",
+    "sku": "TSC-00331",
+    "brand": "MANNOL",
+    "slug": "mannol-atf-sp-iii"
+  },
+  {
+    "name": "MANNOL Dexron VI (1L)",
+    "sku": "8207",
+    "brand": "MANNOL",
+    "slug": "mannol-dexron-vi-1l"
+  },
+  {
+    "name": "Mannol Automatique ATF Dexron II",
+    "sku": "8205",
+    "brand": "MANNOL",
+    "slug": "mannol-automatique-atf-dexron-ii"
+  },
+  {
+    "name": "MANNOL Cétane Plus (450ml)",
+    "sku": "9955",
+    "brand": "MANNOL",
+    "slug": "mannol-cetane-plus-450ml"
+  },
+  {
+    "name": "MANNOL Motor Doctor + Ester (450ml)",
+    "sku": "9943",
+    "brand": "MANNOL",
+    "slug": "mannol-motor-doctor-ester-450ml"
+  },
+  {
+    "name": "Mannol Burning Booster (450ml)",
+    "sku": "9939",
+    "brand": "MANNOL",
+    "slug": "mannol-burning-booster-450ml"
+  },
+  {
+    "name": "MANNOL Anticor Noir (650ml)",
+    "sku": "9919",
+    "brand": "MANNOL",
+    "slug": "mannol-anticor-noir-650ml"
+  },
+  {
+    "name": "MANNOL Lithium spray (400ml)",
+    "sku": "9881",
+    "brand": "MANNOL",
+    "slug": "mannol-lithium-spray-400ml"
+  },
+  {
+    "name": "Mannol anti-fuite boite de vitesse",
+    "sku": "9968",
+    "brand": "MANNOL",
+    "slug": "mannol-anti-fuite-boite-de-vitesse"
+  },
+  {
+    "name": "Mannol Dissolvant antirouille (450ml)",
+    "sku": "9932",
+    "brand": "MANNOL",
+    "slug": "mannol-dissolvant-antirouille-450ml"
+  },
+  {
+    "name": "Mannol Silicone Spray  (400ml)",
+    "sku": "9863",
+    "brand": "MANNOL",
+    "slug": "mannol-silicone-spray-400ml"
+  },
+  {
+    "name": "Mannol Ester catalytique (450ml)",
+    "sku": "9202",
+    "brand": "MANNOL",
+    "slug": "ester-catalytique"
+  },
+  {
+    "name": "Mannol Huile pour filtre à air (200ml)",
+    "sku": "9964",
+    "brand": "MANNOL",
+    "slug": "huile-pour-filtre-a-air-200ml"
+  },
+  {
+    "name": "Mannol Nettoyant pour montage (500ml)",
+    "sku": "9670",
+    "brand": "MANNOL",
+    "slug": "mannol-nettoyant-pour-montage-500ml"
+  },
+  {
+    "name": "Mannol Nettoyant pour montage  (600ml)",
+    "sku": "9672",
+    "brand": "MANNOL",
+    "slug": "mannol-nettoyant-pour-montage-600ml"
+  },
+  {
+    "name": "Mannol Nettoyant pour freins (450ml)",
+    "sku": "9692",
+    "brand": "MANNOL",
+    "slug": "mannol-nettoyant-pour-freins-450ml"
+  },
+  {
+    "name": "MANNOL Nettoyant pour radiateur (250ml)",
+    "sku": "9965",
+    "brand": "MANNOL",
+    "slug": "mannol-nettoyant-pour-radiateur-250ml"
+  },
+  {
+    "name": "MANNOL Antifuite pour direction assistée",
+    "sku": "9923",
+    "brand": "MANNOL",
+    "slug": "mannol-antifuite-pour-direction-assistee"
+  },
+  {
+    "name": "MANNOL Joint Maker Noir (85g)",
+    "sku": "9912",
+    "brand": "MANNOL",
+    "slug": "mannol-joint-maker-noir-85g"
+  },
+  {
+    "name": "MANNOL Joint Maker gris (85g)",
+    "sku": "9913",
+    "brand": "MANNOL",
+    "slug": "mannol-joint-maker-gris-85g"
+  },
+  {
+    "name": "Lubrifiant pour chaîne (chain lube) (200ml)",
+    "sku": "7901",
+    "brand": "MANNOL",
+    "slug": "lubrifiant-pour-chaine-chain-lube-200ml"
+  },
+  {
+    "name": "Mannol Nettoyant pour carburateur (400ml)",
+    "sku": "9970",
+    "brand": "MANNOL",
+    "slug": "mannol-nettoyant-pour-carburateur-400ml"
+  },
+  {
+    "name": "Mannol Nettoyant pour soupape d’admission (400ml)",
+    "sku": "9873",
+    "brand": "MANNOL",
+    "slug": "mannol-nettoyant-pour-soupape-dadmission-400ml"
+  },
+  {
+    "name": "Mannol Nettoyant pour contacts (450ml)",
+    "sku": "9893",
+    "brand": "MANNOL",
+    "slug": "mannol-nettoyant-pour-contacts-450ml"
+  },
+  {
+    "name": "MANNOL Anti-fuite d’huile (250ml)",
+    "sku": "9423",
+    "brand": "MANNOL",
+    "slug": "mannol-anti-fuite-dhuile-250ml"
+  },
+  {
+    "name": "WOLF ANTIFREEZE EVO LL (1L)",
+    "sku": "20",
+    "brand": "WOLF",
+    "slug": "wolf-antifreeze-evo-ll-1l"
+  },
+  {
+    "name": "WOLF OIL LEAK STOP (325ml)",
+    "sku": "TSC-00357",
+    "brand": "WOLF",
+    "slug": "wolf-oil-leak-stop"
+  },
+  {
+    "name": "WOLF traitement essence (325ml)",
+    "sku": "TSC-00358",
+    "brand": "WOLF",
+    "slug": "wolf-traitement-essence-325ml"
+  },
+  {
+    "name": "WOLF ENGINE FLUSH (325ml)",
+    "sku": "TSC-00359",
+    "brand": "WOLF",
+    "slug": "wolf-engine-flush-325ml"
+  },
+  {
+    "name": "Mannol lave glace super concentré 1:100 (250ml)",
+    "sku": "5022",
+    "brand": "MANNOL",
+    "slug": "mannol-lave-glace-super-concentre-1100-250ml"
+  },
+  {
+    "name": "Liqui Moly Anti rongeurs (200ml)",
+    "sku": "1515",
+    "brand": "LIQUI MOLY",
+    "slug": "liqui-moly-anti-rongeurs-200ml"
+  },
+  {
+    "name": "Mannol entretien tendeur de courroie  (200ml)",
+    "sku": "9897",
+    "brand": "MANNOL",
+    "slug": "mannol-entretien-tendeur-de-courroie-200ml"
+  },
+  {
+    "name": "Mannol nettoyant Moteur spray (450ml)",
+    "sku": "9671",
+    "brand": "MANNOL",
+    "slug": "mannol-nettoyant-moteur-spray-450ml"
+  },
+  {
+    "name": "Mannol Nettoyant pour cuir (450ml)",
+    "sku": "9944",
+    "brand": "MANNOL",
+    "slug": "mannol-nettoyant-pour-cuir-450ml"
+  },
+  {
+    "name": "Liqui Moly Nettoyeur papillon des gaz Pro-Line (400ml)",
+    "sku": "8986",
+    "brand": "LIQUI MOLY",
+    "slug": "liqui-moly-nettoyeur-papillon-des-gaz-pro-line-400ml"
+  },
+  {
+    "name": "Liqui Moly Anti-goudron (400ml)",
+    "sku": "1600",
+    "brand": "LIQUI MOLY",
+    "slug": "liqui-moly-anti-goudron-400ml"
+  },
+  {
+    "name": "Liqui Moly Silicone spary Pro-Line (400ml)",
+    "sku": "7389",
+    "brand": "LIQUI MOLY",
+    "slug": "liqui-moly-silicone-spary-pro-line-400ml"
+  },
+  {
+    "name": "Liqui Moly Nettoyant pour débit­mètre d’air (200ml)",
+    "sku": "4066",
+    "brand": "LIQUI MOLY",
+    "slug": "liqui-moly-nettoyant-pour-debitmetre-dair-200ml"
+  },
+  {
+    "name": "Liqui Moly Aide au démarrage START FIX (200ml)",
+    "sku": "1085",
+    "brand": "LIQUI MOLY",
+    "slug": "liqui-moly-aide-au-demarrage-start-fix-200ml"
+  },
+  {
+    "name": "Liqui Moly élec­tro­nique spray (200ml)",
+    "sku": "1832",
+    "brand": "LIQUI MOLY",
+    "slug": "liqui-moly-electronique-spray-200ml"
+  },
+  {
+    "name": "Liqui Moly LM 40 Spray Multi Fonc­tionnel  (400ml)",
+    "sku": "3391",
+    "brand": "LIQUI MOLY",
+    "slug": "liqui-moly-lm-40-spray-multi-fonctionnel-400ml"
+  },
+  {
+    "name": "Liqui Moly Multi-Spray Plus 7 (300ml)",
+    "sku": "3304",
+    "brand": "LIQUI MOLY",
+    "slug": "liqui-moly-multi-spray-plus-7-300ml"
+  },
+  {
+    "name": "Liqui Moly Nettoyeur rapide (Spray) (500ml)",
+    "sku": "1816",
+    "brand": "LIQUI MOLY",
+    "slug": "liqui-moly-nettoyeur-rapide-spray-500ml"
+  },
+  {
+    "name": "Liqui Moly Dégrip­pant rapide (300ml)",
+    "sku": "1825",
+    "brand": "LIQUI MOLY",
+    "slug": "liqui-moly-degrippant-rapide-300ml"
+  },
+  {
+    "name": "Liqui Moly Nettoyant d’ex­té­rieur de carbu­ra­teur (400ml)",
+    "sku": "1844",
+    "brand": "LIQUI MOLY",
+    "slug": "liqui-moly-nettoyant-dexterieur-de-carburateur-400ml"
+  },
+  {
+    "name": "Liqui Moly Crème de polissage pour chrome (250ml)",
+    "sku": "1529",
+    "brand": "LIQUI MOLY",
+    "slug": "liqui-moly-creme-de-polissage-pour-chrome-250ml"
+  },
+  {
+    "name": "Liqui Moly auto Shampoo",
+    "sku": "1545",
+    "brand": "LIQUI MOLY",
+    "slug": "2441"
+  },
+  {
+    "name": "Antigel MANNOL AG13+ (5L)",
+    "sku": "4014",
+    "brand": "MANNOL",
+    "slug": "antigel-mannol-ag13-5l"
+  },
+  {
+    "name": "Liqui Moly Shampoing auto avec cire (1L)",
+    "sku": "1542",
+    "brand": "LIQUI MOLY",
+    "slug": "liqui-moly-shampoing-auto-avec-cire-1l"
+  },
+  {
+    "name": "Liqui Moly Nettoyant jantes spécial (1L)",
+    "sku": "1597",
+    "brand": "LIQUI MOLY",
+    "slug": "liqui-moly-nettoyant-jantes-special-1l"
+  },
+  {
+    "name": "Liqui Moly Entretien du cuir (250ml)",
+    "sku": "1554",
+    "brand": "LIQUI MOLY",
+    "slug": "liqui-moly-entretien-du-cuir-250ml"
+  },
+  {
+    "name": "Liqui MolyEntretien tableau de bord (600ml)",
+    "sku": "1610",
+    "brand": "LIQUI MOLY",
+    "slug": "liqui-molyentretien-tableau-de-bord-600ml"
+  },
+  {
+    "name": "MANNOL Mousse textile (650ml)",
+    "sku": "9931",
+    "brand": "MANNOL",
+    "slug": "mannol-mousse-textile-650ml"
+  },
+  {
+    "name": "Liqui Moly Étan­chéité moteur (300ml)",
+    "sku": "3327",
+    "brand": "LIQUI MOLY",
+    "slug": "liqui-moly-etancheite-moteur-300ml"
+  },
+  {
+    "name": "Liqui Moly Nettoyant compar­ti­ment moteur (400ML)",
+    "sku": "3326",
+    "brand": "LIQUI MOLY",
+    "slug": "liqui-moly-nettoyant-compartiment-moteur-400ml"
+  },
+  {
+    "name": "Lave-glace super concentré aux agrumes (50ml)",
+    "sku": "1379",
+    "brand": "LIQUI MOLY",
+    "slug": "lave-glace-super-concentre-aux-agrumes-50ml"
+  },
+  {
+    "name": "Entretien des circuits de clima­ti­sa­tion (Spray) 250ml",
+    "sku": "4087",
+    "brand": "LIQUI MOLY",
+    "slug": "entretien-des-circuits-de-climatisation-spray-250ml"
+  },
+  {
+    "name": "Klima Refresh (75ml)",
+    "sku": "20000",
+    "brand": "LIQUI MOLY",
+    "slug": "klima-refresh-75ml"
+  },
+  {
+    "name": "MANNOL Chamois synthétique (43×32 cm)",
+    "sku": "9811",
+    "brand": "MANNOL",
+    "slug": "mannol-chamois-synthetique"
+  },
+  {
+    "name": "MANNOL Micro Fibre Polish  (33×36 cm)",
+    "sku": "9814",
+    "brand": "MANNOL",
+    "slug": "mannol-micro-fibre-polish-33x36-cm"
+  },
+  {
+    "name": "Pro-Line Nettoyant radiateur   (1L)",
+    "sku": "5189",
+    "brand": "LIQUI MOLY",
+    "slug": "pro-line-nettoyant-radiateur-1l"
+  },
+  {
+    "name": "Additif de Diesel anti-bactérien (1L)",
+    "sku": "21317",
+    "brand": "LIQUI MOLY",
+    "slug": "additif-de-diesel-anti-bacterien-1l"
+  },
+  {
+    "name": "Rinçage Diesel  (500ml)",
+    "sku": "8380",
+    "brand": "LIQUI MOLY",
+    "slug": "rincage-diesel-500ml"
+  },
+  {
+    "name": "Diesel stop smoke (150ml)",
+    "sku": "8363",
+    "brand": "LIQUI MOLY",
+    "slug": "diesel-stop-smoke-150ml"
+  },
+  {
+    "name": "Protec­tion du filtre à parti­cules diesel (250ml)",
+    "sku": "5148",
+    "brand": "LIQUI MOLY",
+    "slug": "protection-du-filtre-a-particules-diesel-250ml"
+  },
+  {
+    "name": "Entretien du système diesel (250ml)",
+    "sku": "8372",
+    "brand": "LIQUI MOLY",
+    "slug": "entretien-du-systeme-diesel-250ml"
+  },
+  {
+    "name": "Pro-Line JetClean Nettoyant pour système diesel (500ml)",
+    "sku": "2962",
+    "brand": "LIQUI MOLY",
+    "slug": "pro-line-jetclean-nettoyant-pour-systeme-diesel-500ml"
+  },
+  {
+    "name": "Pro-Line Nettoyant pour système diesel (500ml)",
+    "sku": "1797",
+    "brand": "LIQUI MOLY",
+    "slug": "pro-line-nettoyant-pour-systeme-diesel-500ml"
+  },
+  {
+    "name": "Super Additif Diesel (250ml)",
+    "sku": "8366",
+    "brand": "LIQUI MOLY",
+    "slug": "super-additif-diesel-250ml"
+  },
+  {
+    "name": "nettoyant soupapes (150ml)",
+    "sku": "8373",
+    "brand": "LIQUI MOLY",
+    "slug": "nettoyant-soupapes-150ml"
+  },
+  {
+    "name": "Octane Plus (150ml)",
+    "sku": "8351",
+    "brand": "LIQUI MOLY",
+    "slug": "octane-plus-150ml"
+  },
+  {
+    "name": "Fuel Protect essence",
+    "sku": "2955",
+    "brand": "LIQUI MOLY",
+    "slug": "fuel-protect-essence"
+  },
+  {
+    "name": "Pro-Line Nettoyant pour système essence (500ml)",
+    "sku": "2970",
+    "brand": "LIQUI MOLY",
+    "slug": "pro-line-nettoyant-pour-systeme-essence-500ml"
+  },
+  {
+    "name": "Nettoyant pour systèmes d‘ injection (300ml)",
+    "sku": "8361",
+    "brand": "LIQUI MOLY",
+    "slug": "nettoyant-pour-systemes-d-injection-300ml"
+  },
+  {
+    "name": "MANNOL Légende Ultra 0W-20",
+    "sku": "7918",
+    "brand": "MANNOL",
+    "slug": "mannol-legende-ultra-0w-20"
+  },
+  {
+    "name": "Nettoyant boîte de vitesses (150ml)",
+    "sku": "TSC-00406",
+    "brand": "LIQUI MOLY",
+    "slug": "nettoyant-boite-de-vitesses-150ml"
+  },
+  {
+    "name": "Nettoyeur de boîtes de vitesses auto­ma­tiques (300ml)",
+    "sku": "2512",
+    "brand": "LIQUI MOLY",
+    "slug": "nettoyeur-de-boites-de-vitesses-automatiques-300ml"
+  },
+  {
+    "name": "Stop fuites d’huile pour engre­nages (50ml)",
+    "sku": "1042",
+    "brand": "LIQUI MOLY",
+    "slug": "stop-fuites-dhuile-pour-engrenages-50ml"
+  },
+  {
+    "name": "Anti-​fuite d’huile de direction assistée  (35ML)",
+    "sku": "1099",
+    "brand": "LIQUI MOLY",
+    "slug": "anti-fuite-dhuile-de-direction-assistee-35ml"
+  },
+  {
+    "name": "ATF Additive ( 250ML )",
+    "sku": "8336",
+    "brand": "LIQUI MOLY",
+    "slug": "atf-additive-250ml"
+  },
+  {
+    "name": "Additif poussoirs hydrau­liques",
+    "sku": "8367",
+    "brand": "LIQUI MOLY",
+    "slug": "additif-poussoirs-hydrauliques"
+  },
+  {
+    "name": "Stop fumée d’huile",
+    "sku": "8360",
+    "brand": "LIQUI MOLY",
+    "slug": "stop-fumee-dhuile"
+  },
+  {
+    "name": "Pro-Line Rinçage moteur 5L",
+    "sku": "2428",
+    "brand": "LIQUI MOLY",
+    "slug": "pro-line-rincage-moteur-5l"
+  },
+  {
+    "name": "Pro-Line Rinçage moteur",
+    "sku": "2427",
+    "brand": "LIQUI MOLY",
+    "slug": "pro-line-rincage-moteur"
+  },
+  {
+    "name": "Rinçage boue d‘huile",
+    "sku": "5200",
+    "brand": "LIQUI MOLY",
+    "slug": "rincage-boue-dhuile"
+  },
+  {
+    "name": "Cera Tec",
+    "sku": "3721",
+    "brand": "LIQUI MOLY",
+    "slug": "cera-tec"
+  },
+  {
+    "name": "Huile pour boîtier de direction 3100",
+    "sku": "1145",
+    "brand": "LIQUI MOLY",
+    "slug": "huile-pour-boitier-de-direction-3100"
+  },
+  {
+    "name": "Huile pour système hydrau­lique central 2300",
+    "sku": "TSC-00418",
+    "brand": "LIQUI MOLY",
+    "slug": "huile-pour-systeme-hydraulique-central-2300"
+  },
+  {
+    "name": "Huile de boîte de vitesses à double embrayage 8100",
+    "sku": "TSC-00419",
+    "brand": "LIQUI MOLY",
+    "slug": "huile-de-boite-de-vitesses-a-double-embrayage-8100"
+  },
+  {
+    "name": "Top Tec ATF 1950",
+    "sku": "21378",
+    "brand": "LIQUI MOLY",
+    "slug": "top-tec-atf-1950"
+  },
+  {
+    "name": "Top Tec ATF 1900",
+    "sku": "3648",
+    "brand": "LIQUI MOLY",
+    "slug": "top-tec-atf-1900"
+  },
+  {
+    "name": "Top Tec ATF 1800 R",
+    "sku": "20625",
+    "brand": "LIQUI MOLY",
+    "slug": "top-tec-atf-1800-r"
+  },
+  {
+    "name": "Top Tec ATF 1800",
+    "sku": "TSC-00423",
+    "brand": "LIQUI MOLY",
+    "slug": "top-tec-atf-1800"
+  },
+  {
+    "name": "Top Tec ATF 1600",
+    "sku": "3659",
+    "brand": "LIQUI MOLY",
+    "slug": "top-tec-atf-1600"
+  },
+  {
+    "name": "Top Tec ATF 1400",
+    "sku": "3662",
+    "brand": "LIQUI MOLY",
+    "slug": "top-tec-atf-1400"
+  },
+  {
+    "name": "Top Tec ATF 1200",
+    "sku": "TSC-00426",
+    "brand": "LIQUI MOLY",
+    "slug": "top-tec-atf-1200"
+  },
+  {
+    "name": "Top Tec ATF 1100",
+    "sku": "TSC-00427",
+    "brand": "LIQUI MOLY",
+    "slug": "top-tec-atf-1100"
+  },
+  {
+    "name": "Top Tec MTF 5100 75W",
+    "sku": "20842",
+    "brand": "LIQUI MOLY",
+    "slug": "top-tec-mtf-5100-75w"
+  },
+  {
+    "name": "Huile pour engrenages MANNOL Extra 75W-90 GL-4/GL-5 LS",
+    "sku": "8103",
+    "brand": "MANNOL",
+    "slug": "huile-pour-engrenages-mannol-extra-75w-90-gl-4-gl-5-ls"
+  },
+  {
+    "name": "MANNOL Molibden 10W-40",
+    "sku": "TSC-00430",
+    "brand": "MANNOL",
+    "slug": "mannol-molibden-10w-40"
+  },
+  {
+    "name": "WOLF OFFICIALTECH 5W30 C3 SP EXTRA",
+    "sku": "65648",
+    "brand": "WOLF",
+    "slug": "wolf-officialtech-5w30-c3-sp-extra"
+  },
+  {
+    "name": "MANNOL Diesel Extra 10W-40",
+    "sku": "TSC-00432",
+    "brand": "MANNOL",
+    "slug": "2005"
+  },
+  {
+    "name": "MANNOL Classic 10W-40",
+    "sku": "TSC-00433",
+    "brand": "MANNOL",
+    "slug": "mannol-classic-10w-40-2"
+  },
+  {
+    "name": "MANNOL Diesel Extra 10W-40",
+    "sku": "TSC-00434",
+    "brand": "MANNOL",
+    "slug": "mannol-diesel-extra-10w-40-2"
+  },
+  {
+    "name": "MANNOL Classic 10W-40",
+    "sku": "TSC-00435",
+    "brand": "MANNOL",
+    "slug": "mannol-classic-10w-40-3"
+  },
+  {
+    "name": "WOLF OFFICIALTECH 5W30 MS-Ford",
+    "sku": "TSC-00436",
+    "brand": "WOLF",
+    "slug": "wolf-officialtech-5w30-ms-ford"
+  },
+  {
+    "name": "WOLF OFFICIALTECH 0W30 SP",
+    "sku": "TSC-00437",
+    "brand": "WOLF",
+    "slug": "wolf-officialtech-0w30-sp"
+  },
+  {
+    "name": "WOLF VITALTECH 5W40",
+    "sku": "TSC-00438",
+    "brand": "WOLF",
+    "slug": "wolf-vitaltech-5w40"
+  },
+  {
+    "name": "WOLF GUARDTECH 15W40 SL/CF",
+    "sku": "TSC-00439",
+    "brand": "WOLF",
+    "slug": "wolf-guardtech-15w40-sl-cf"
+  },
+  {
+    "name": "WOLF OFFICIALTECH 75W-85 GL 5",
+    "sku": "23300",
+    "brand": "WOLF",
+    "slug": "wolf-officialtech-75w-85-gl-5"
+  },
+  {
+    "name": "WOLF EXTENDTECH 80W90 LS GL 5",
+    "sku": "2408",
+    "brand": "WOLF",
+    "slug": "wolf-extendtech-80w90-ls-gl-5"
+  },
+  {
+    "name": "WOLF EXTENDTECH 75W90 GL 5",
+    "sku": "TSC-00442",
+    "brand": "WOLF",
+    "slug": "wolf-extendtech-75w90-gl-5"
+  },
+  {
+    "name": "WOLF ECOTECH CVT FLUID",
+    "sku": "TSC-00443",
+    "brand": "WOLF",
+    "slug": "wolf-ecotech-cvt-fluid"
+  },
+  {
+    "name": "WOLF ECOTECH DSG FLUID",
+    "sku": "TSC-00444",
+    "brand": "WOLF",
+    "slug": "wolf-ecotech-dsg-fluid"
+  },
+  {
+    "name": "MANNOL Formule énergétique PSA 5W-30 4L",
+    "sku": "7703",
+    "brand": "MANNOL",
+    "slug": "mannol-formule-energetique-psa-5w-30-4l"
+  },
+  {
+    "name": "MANNOL pour voitures coréennes 5W-30 4L",
+    "sku": "7713",
+    "brand": "MANNOL",
+    "slug": "mannol-pour-voitures-coreennes-5w-30-4l"
+  },
+  {
+    "name": "MANNOL Unigear 75W-80 GL-4/GL-5",
+    "sku": "8109",
+    "brand": "MANNOL",
+    "slug": "mannol-unigear-75w-80-gl-4-gl-5"
+  },
+  {
+    "name": "MANNOL Nettoyant DPF 9958",
+    "sku": "9958",
+    "brand": "MANNOL",
+    "slug": "mannol-nettoyant-dpf-9958"
+  },
+  {
+    "name": "Lubrifiant MANNOL M-40 9899",
+    "sku": "9899",
+    "brand": "MANNOL",
+    "slug": "lubrifiant-mannol-m-40-9899"
+  },
+  {
+    "name": "MANNOL Liquide de refroidissement G11 5L",
+    "sku": "4211-5",
+    "brand": "MANNOL",
+    "slug": "mannol-liquide-de-refroidissement-g11-5l"
+  },
+  {
+    "name": "MANNOL Liquide de refroidissement G12+ 5L",
+    "sku": "4212-5",
+    "brand": "MANNOL",
+    "slug": "mannol-liquide-de-refroidissement-g12-5l"
+  },
+  {
+    "name": "MANNOL Antigel AF12+ Longlife 1L Concentré",
+    "sku": "4112",
+    "brand": "MANNOL",
+    "slug": "mannol-antigel-af12-longlife-1l-concentre"
+  },
+  {
+    "name": "MANNOL Liquide de refroidissement G13 5L",
+    "sku": "4213-5",
+    "brand": "MANNOL",
+    "slug": "mannol-liquide-de-refroidissement-g13-5l"
+  },
+  {
+    "name": "MANNOL Antigel AG13 1L Concentré",
+    "sku": "4113-1",
+    "brand": "MANNOL",
+    "slug": "mannol-antigel-ag13-1l-concentre"
+  },
+  {
+    "name": "MANNOL Motor Doctor + Ester",
+    "sku": "TSC-00455",
+    "brand": "MANNOL",
+    "slug": "mannol-motor-doctor-ester"
+  },
+  {
+    "name": "MANNOL Ceramo Ester",
+    "sku": "9829",
+    "brand": "MANNOL",
+    "slug": "mannol-ceramo-ester"
+  },
+  {
+    "name": "MANNOL Nettoyeur moteur",
+    "sku": "9900",
+    "brand": "MANNOL",
+    "slug": "mannol-nettoyeur-moteur-9900"
+  },
+  {
+    "name": "MANNOL Maxpower 75W-140 GL-5  4*4",
+    "sku": "8102",
+    "brand": "MANNOL",
+    "slug": "mannol-maxpower-75w-140-gl-5-44"
+  },
+  {
+    "name": "Engine Flush",
+    "sku": "TSC-00459",
+    "brand": "LIQUI MOLY",
+    "slug": "2116"
+  },
+  {
+    "name": "Pack Catalytic (nettoyage catalyseur) 7110+8931",
+    "sku": "7110+8931",
+    "brand": "Générique",
+    "slug": "pack-catalytic-nettoyage-catalyseur-71108931"
+  },
+  {
+    "name": "Catalytic-​System Clean",
+    "sku": "7110",
+    "brand": "Générique",
+    "slug": "catalytic-system-clean"
+  },
+  {
+    "name": "Catalytic-​​​​System Cleaner",
+    "sku": "8931",
+    "brand": "Générique",
+    "slug": "catalytic-system-cleaner"
+  }
+]
