@@ -141,155 +141,170 @@ export class ProductsService {
 
   async findAll(filters: ProductFilters) {
     const cacheKey = this.cacheKeyForFilters(filters);
-    const cached = await this.cache.get(cacheKey);
-    if (cached) return cached;
+    try {
+      const cached = await this.cache.get(cacheKey);
+      if (cached) return cached;
+    } catch {}
 
     const page = Math.max(filters.page ?? 1, 1);
     const limit = Math.min(filters.limit ?? 24, 100);
     const skip = (page - 1) * limit;
 
-    const where: Prisma.ProductWhereInput = { isPublished: true };
+    try {
+      const where: Prisma.ProductWhereInput = { isPublished: true };
 
-    if (filters.search) {
-      where.OR = [
-        { nameFr: { contains: filters.search, mode: 'insensitive' } },
-        { description: { contains: filters.search, mode: 'insensitive' } },
-        { sku: { contains: filters.search, mode: 'insensitive' } },
-        { brand: { name: { contains: filters.search, mode: 'insensitive' } } },
-        {
-          category: {
-            nameFr: { contains: filters.search, mode: 'insensitive' },
+      if (filters.search) {
+        where.OR = [
+          { nameFr: { contains: filters.search, mode: 'insensitive' } },
+          { description: { contains: filters.search, mode: 'insensitive' } },
+          { sku: { contains: filters.search, mode: 'insensitive' } },
+          { brand: { name: { contains: filters.search, mode: 'insensitive' } } },
+          {
+            category: {
+              nameFr: { contains: filters.search, mode: 'insensitive' },
+            },
           },
-        },
-        {
-          specs: {
-            viscosity: { contains: filters.search, mode: 'insensitive' },
+          {
+            specs: {
+              viscosity: { contains: filters.search, mode: 'insensitive' },
+            },
           },
-        },
-      ];
-    }
-    if (filters.categorySlug) {
-      const categoryIds = await this.resolveCategoryIds(filters.categorySlug);
-      where.categoryId = { in: categoryIds };
-    }
-    if (filters.brands?.length) {
-      where.brand = { slug: { in: filters.brands } };
-    } else if (filters.brandSlug) {
-      where.brand = { slug: filters.brandSlug };
-    }
-    if (filters.isFeatured) {
-      where.isFeatured = true;
-    }
-    if (filters.isNew) {
-      where.createdAt = {
-        gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
-      };
-    }
-    if (filters.viscosity) {
-      where.specs = { viscosity: this.normalizeViscosity(filters.viscosity) };
-    }
-    const variantSome: Prisma.ProductVariantWhereInput = {};
-    const specsInput: Prisma.ProductSpecsWhereInput = {};
-    if (filters.priceMin !== undefined || filters.priceMax !== undefined) {
-      variantSome.price = {
-        ...(filters.priceMin !== undefined ? { gte: filters.priceMin } : {}),
-        ...(filters.priceMax !== undefined ? { lte: filters.priceMax } : {}),
-      };
-    }
-    if (filters.inStockOnly) {
-      variantSome.stockQty = { gt: 0 };
-    }
-    if (filters.volume) {
-      variantSome.volume = filters.volume;
-    }
-    if (filters.type) {
-      switch (filters.type) {
-        case '100% Synthèse':
-          specsInput.isFullySynth = true;
-          break;
-        case 'Semi-Synthèse':
-          specsInput.isSemiSynth = true;
-          break;
-        case 'Minérale':
-          specsInput.isMinerale = true;
-          break;
+        ];
       }
-    }
-    if (filters.api) {
-      specsInput.apiStandard = {
-        contains: filters.api.replace(/^API\s+/i, ''),
-        mode: 'insensitive',
-      };
-    }
-    if (filters.acea) {
-      specsInput.aeceaStandard = {
-        contains: filters.acea.replace(/^ACEA\s+/i, ''),
-        mode: 'insensitive',
-      };
-    }
-    if (filters.oem) {
-      specsInput.OEMApprovals = {
-        contains: filters.oem,
-        mode: 'insensitive',
-      };
-    }
-    if (Object.keys(variantSome).length > 0)
-      where.variants = { some: variantSome };
-    if (Object.keys(specsInput).length > 0) {
-      where.specs = { ...((where.specs as any) || {}), ...specsInput };
-    }
+      if (filters.categorySlug) {
+        const categoryIds = await this.resolveCategoryIds(filters.categorySlug);
+        where.categoryId = { in: categoryIds };
+      }
+      if (filters.brands?.length) {
+        where.brand = { slug: { in: filters.brands } };
+      } else if (filters.brandSlug) {
+        where.brand = { slug: filters.brandSlug };
+      }
+      if (filters.isFeatured) {
+        where.isFeatured = true;
+      }
+      if (filters.isNew) {
+        where.createdAt = {
+          gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
+        };
+      }
+      if (filters.viscosity) {
+        where.specs = { viscosity: this.normalizeViscosity(filters.viscosity) };
+      }
+      const variantSome: Prisma.ProductVariantWhereInput = {};
+      const specsInput: Prisma.ProductSpecsWhereInput = {};
+      if (filters.priceMin !== undefined || filters.priceMax !== undefined) {
+        variantSome.price = {
+          ...(filters.priceMin !== undefined ? { gte: filters.priceMin } : {}),
+          ...(filters.priceMax !== undefined ? { lte: filters.priceMax } : {}),
+        };
+      }
+      if (filters.inStockOnly) {
+        variantSome.stockQty = { gt: 0 };
+      }
+      if (filters.volume) {
+        variantSome.volume = filters.volume;
+      }
+      if (filters.type) {
+        switch (filters.type) {
+          case '100% Synthèse':
+            specsInput.isFullySynth = true;
+            break;
+          case 'Semi-Synthèse':
+            specsInput.isSemiSynth = true;
+            break;
+          case 'Minérale':
+            specsInput.isMinerale = true;
+            break;
+        }
+      }
+      if (filters.api) {
+        specsInput.apiStandard = {
+          contains: filters.api.replace(/^API\s+/i, ''),
+          mode: 'insensitive',
+        };
+      }
+      if (filters.acea) {
+        specsInput.aeceaStandard = {
+          contains: filters.acea.replace(/^ACEA\s+/i, ''),
+          mode: 'insensitive',
+        };
+      }
+      if (filters.oem) {
+        specsInput.OEMApprovals = {
+          contains: filters.oem,
+          mode: 'insensitive',
+        };
+      }
+      if (Object.keys(variantSome).length > 0)
+        where.variants = { some: variantSome };
+      if (Object.keys(specsInput).length > 0) {
+        where.specs = { ...((where.specs as any) || {}), ...specsInput };
+      }
 
-    const needsManualSort =
-      filters.sortBy === 'price_asc' || filters.sortBy === 'price_desc';
+      // Vehicle compatibility filter
+      if (filters.make || filters.model || filters.engineCode) {
+        const compatConditions: Prisma.ProductWhereInput[] = [];
 
-    // Vehicle compatibility filter (when user selects a car or from OilFinder)
-    if (filters.make || filters.model || filters.engineCode) {
-      const compatConditions: Prisma.ProductWhereInput[] = [];
-
-      compatConditions.push({
-        compatibilities: {
-          some: {
-            ...(filters.make ? { vehicleModel: { make: { name: { contains: filters.make, mode: 'insensitive' } } } } : {}),
-            ...(filters.model ? { vehicleModel: { name: { contains: filters.model, mode: 'insensitive' } } } : {}),
-            ...(filters.engineCode ? { engineCode: { contains: filters.engineCode, mode: 'insensitive' } } : {}),
-          },
-        },
-      });
-
-      if (filters.make) {
         compatConditions.push({
-          specs: {
-            OEMApprovals: { contains: filters.make, mode: 'insensitive' },
+          compatibilities: {
+            some: {
+              ...(filters.make ? { vehicleModel: { make: { name: { contains: filters.make, mode: 'insensitive' } } } } : {}),
+              ...(filters.model ? { vehicleModel: { name: { contains: filters.model, mode: 'insensitive' } } } : {}),
+              ...(filters.engineCode ? { engineCode: { contains: filters.engineCode, mode: 'insensitive' } } : {}),
+            },
           },
         });
+
+        if (filters.make) {
+          compatConditions.push({
+            specs: {
+              OEMApprovals: { contains: filters.make, mode: 'insensitive' },
+            },
+          });
+        }
+
+        where.AND = [{ OR: compatConditions }];
       }
 
-      where.AND = [{ OR: compatConditions }];
+      const [prismaProducts, prismaCount] = await Promise.all([
+        this.prismaRead.db.product.findMany({
+          where,
+          include: this.buildInclude(),
+          orderBy: this.buildOrderBy(filters.sortBy),
+          skip,
+          take: limit,
+        }),
+        this.prismaRead.db.product.count({ where }),
+      ]);
+
+      const resultPage = filters.cursor ? 1 : Math.max(filters.page ?? 1, 1);
+
+      const result: any = {
+        data: prismaProducts.map((p) => this.serialize(p)).filter(Boolean),
+        total: prismaCount,
+        page: resultPage,
+        limit,
+        totalPages: prismaCount > 0 ? Math.ceil(prismaCount / limit) : 0,
+        nextCursor: null,
+      };
+
+      try {
+        await this.cache.set(cacheKey, result, CacheService.TTL.PRODUCT_LIST);
+      } catch {}
+
+      return result;
+    } catch (err) {
+      console.error('[ProductsService.findAll] Error querying products:', err);
+      return {
+        data: [],
+        total: 0,
+        page: 1,
+        limit,
+        totalPages: 0,
+        nextCursor: null,
+      };
     }
-
-    const [prismaProducts, prismaCount] = await Promise.all([
-      this.prismaRead.db.product.findMany({
-        where,
-        include: this.buildInclude(),
-        orderBy: this.buildOrderBy(filters.sortBy),
-        skip,
-        take: limit,
-      }),
-      this.prismaRead.db.product.count({ where }),
-    ]);
-
-    const resultPage = filters.cursor ? 1 : Math.max(filters.page ?? 1, 1);
-
-    const result: any = {
-      data: prismaProducts.map((p) => this.serialize(p)),
-      total: prismaCount,
-      page: resultPage,
-      limit,
-      totalPages: prismaCount > 0 ? Math.ceil(prismaCount / limit) : 0,
-      nextCursor: null,
-    };
-    await this.cache.set(cacheKey, result, CacheService.TTL.PRODUCT_LIST);
-    return result;
   }
 
   async findBySlug(slug: string) {
