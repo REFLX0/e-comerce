@@ -253,13 +253,71 @@ export class ProductsService {
     }
 
     const resultPage = filters.cursor ? 1 : Math.max(filters.page ?? 1, 1);
+
+    // If local public.Product returned 0 items, query tecdoc.articles dynamically
+    if (data.length === 0) {
+      const tecdocWhere: string[] = [];
+      const params: any[] = [];
+      let pIdx = 1;
+
+      if (filters.search) {
+        tecdocWhere.push(`(a.data_supplier_article_number ILIKE $${pIdx} OR s.matchcode ILIKE $${pIdx} OR p.description ILIKE $${pIdx})`);
+        params.push(`%${filters.search}%`);
+        pIdx++;
+      }
+      if (filters.brands?.length) {
+        tecdocWhere.push(`LOWER(s.matchcode) = ANY($${pIdx})`);
+        params.push(filters.brands.map((b) => b.toLowerCase()));
+        pIdx++;
+      } else if (filters.brandSlug) {
+        tecdocWhere.push(`(LOWER(REGEXP_REPLACE(s.matchcode, '[^a-zA-Z0-9]+', '-', 'g')) = $${pIdx} OR LOWER(s.matchcode) = $${pIdx})`);
+        params.push(filters.brandSlug.toLowerCase());
+        pIdx++;
+      }
+      if (filters.categorySlug) {
+        tecdocWhere.push(`(LOWER(REGEXP_REPLACE(p.description, '[^a-zA-Z0-9]+', '-', 'g')) ILIKE $${pIdx} OR LOWER(p.description) ILIKE $${pIdx})`);
+        params.push(`%${filters.categorySlug.replace(/-/g, '%')}%`);
+        pIdx++;
+      }
+
+      const whereClause = tecdocWhere.length > 0 ? `WHERE ${tecdocWhere.join(' AND ')}` : '';
+
+      try {
+        const [tecdocRows, countRows]: [any[], any[]] = await Promise.all([
+          this.prismaRead.db.$queryRawUnsafe(`
+            SELECT a.id, a.data_supplier_article_number, s.matchcode AS brand_name,
+                   p.description AS product_type, a.description,
+                   pv.price, pv."stockQty", pv."supplierName", pv.warehouse
+            FROM tecdoc.articles a
+            JOIN tecdoc.suppliers s ON s.id = a.supplier
+            LEFT JOIN tecdoc.products p ON p.id = a.current_product
+            LEFT JOIN public."ProductVariant" pv ON pv."tecdocArticleId" = a.id
+            ${whereClause}
+            ORDER BY a.id ASC
+            LIMIT ${limit} OFFSET ${skip}
+          `, ...params),
+          this.prismaRead.db.$queryRawUnsafe(`
+            SELECT COUNT(*)::int AS count
+            FROM tecdoc.articles a
+            JOIN tecdoc.suppliers s ON s.id = a.supplier
+            LEFT JOIN tecdoc.products p ON p.id = a.current_product
+            ${whereClause}
+          `, ...params),
+        ]);
+
+        total = countRows?.[0]?.count ?? 0;
+        data = tecdocRows.map((r) => this.serializeTecdocArticle(r));
+      } catch {
+        // Fallback to empty
+      }
+    }
+
     const result: any = {
-      data: data.map(this.serialize),
+      data: data.map((item) => (item.articleNumber ? item : this.serialize(item))),
       total,
       page: resultPage,
       limit,
       totalPages: total > 0 ? Math.ceil(total / limit) : null,
-      // Cursor for next page — null means no more pages
       nextCursor,
     };
     await this.cache.set(cacheKey, result, CacheService.TTL.PRODUCT_LIST);
@@ -279,11 +337,125 @@ export class ProductsService {
             },
           },
         });
-        if (!product) return null;
-        return this.serialize(product);
+        if (product) return this.serialize(product);
+
+        // TecDoc fallback
+        try {
+          const tecdocArticles: any[] = await this.prismaRead.db.$queryRawUnsafe(`
+            SELECT a.id, a.data_supplier_article_number, s.matchcode AS brand_name,
+                   p.description AS product_type, a.description,
+                   pv.price, pv."stockQty", pv."supplierName", pv.warehouse
+            FROM tecdoc.articles a
+            JOIN tecdoc.suppliers s ON s.id = a.supplier
+            LEFT JOIN tecdoc.products p ON p.id = a.current_product
+            LEFT JOIN public."ProductVariant" pv ON pv."tecdocArticleId" = a.id
+            WHERE a.data_supplier_article_number = $1
+               OR LOWER(REGEXP_REPLACE(CONCAT(s.matchcode, '-', a.data_supplier_article_number), '[^a-zA-Z0-9]+', '-', 'g')) = $2
+            LIMIT 1
+          `, slug.toUpperCase(), slug.toLowerCase());
+
+          if (tecdocArticles.length > 0) {
+            const item = tecdocArticles[0];
+            const [oeRows, attrRows, vehRows]: [any[], any[], any[]] = await Promise.all([
+              this.prismaRead.db.$queryRawUnsafe(`
+                SELECT m.matchcode as manufacturer, oe.oe_nbr
+                FROM tecdoc.article_oe_numbers oe
+                LEFT JOIN tecdoc.manufacturers m ON m.id = oe.manufacturer
+                WHERE oe.article_id = $1
+                LIMIT 50
+              `, item.id),
+              this.prismaRead.db.$queryRawUnsafe(`
+                SELECT display_title as name, display_value as value
+                FROM tecdoc.article_attributes
+                WHERE article_id = $1
+              `, item.id),
+              this.prismaRead.db.$queryRawUnsafe(`
+                SELECT DISTINCT m.matchcode AS make, mo.description AS model, pc.description AS trim,
+                       pc.date_from AS "yearFrom", pc.date_to AS "yearTo"
+                FROM tecdoc.tree_node_products tnp
+                JOIN tecdoc.passengercars pc ON pc.id = tnp.item_id
+                JOIN tecdoc.models mo ON mo.id = pc.model_id
+                JOIN tecdoc.manufacturers m ON m.id = mo.manufacturer_id
+                WHERE tnp.product_id = (SELECT current_product FROM tecdoc.articles WHERE id = $1)
+                LIMIT 30
+              `, item.id),
+            ]);
+
+            return this.serializeTecdocArticle(item, { oeRows, attrRows, vehRows });
+          }
+        } catch {
+          // Fallback
+        }
+
+        return null;
       },
       CacheService.TTL.PRODUCT_SLUG,
     );
+  }
+
+  serializeTecdocArticle(r: any, extra?: { oeRows?: any[]; attrRows?: any[]; vehRows?: any[] }) {
+    const slug = `${r.brand_name}-${r.data_supplier_article_number}`.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+    const name = `${r.brand_name} ${r.data_supplier_article_number} - ${r.product_type || 'Pièce détachée'}`;
+    const price = r.price !== null && r.price !== undefined ? Number(r.price) : 0;
+    const stockQty = r.stockQty !== null && r.stockQty !== undefined ? Number(r.stockQty) : 0;
+
+    return {
+      id: `tecdoc-${r.id}`,
+      slug,
+      name,
+      description: r.description || `Pièce d'origine ${r.brand_name} Référence ${r.data_supplier_article_number}. Qualité équipementier certifiée.`,
+      brandId: r.brand_name,
+      brand: {
+        id: r.brand_name,
+        name: r.brand_name,
+        slug: r.brand_name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+        logo: null,
+      },
+      categoryId: r.product_type || 'pieces-rechange',
+      category: {
+        id: r.product_type || 'pieces-rechange',
+        name: r.product_type || 'Pièces de rechange',
+        slug: (r.product_type || 'pieces-rechange').toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+      },
+      isPublished: true,
+      isFeatured: false,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      images: [],
+      variants: [
+        {
+          id: `var-tecdoc-${r.id}`,
+          volume: '1 Pièce',
+          price,
+          stockQty,
+          skuVariant: r.data_supplier_article_number,
+          imageUrl: null,
+          supplierName: r.supplierName || r.brand_name,
+          warehouse: r.warehouse || 'Principal',
+        },
+      ],
+      specs: null,
+      sourcing: [],
+      compatibilities: (extra?.vehRows || []).map((v) => ({
+        id: `compat-${v.make}-${v.model}-${v.trim}`,
+        vehicleModel: {
+          id: v.model,
+          name: v.model,
+          slug: v.model.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+          make: {
+            id: v.make,
+            name: v.make,
+            slug: v.make.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+          },
+        },
+        engineCode: v.trim,
+        yearFrom: v.yearFrom,
+        yearTo: v.yearTo,
+      })),
+      articleNumber: r.data_supplier_article_number,
+      oeNumbers: extra?.oeRows || [],
+      attributes: extra?.attrRows || [],
+    };
   }
 
   /** Call after any admin write to this product to purge stale cache. */
