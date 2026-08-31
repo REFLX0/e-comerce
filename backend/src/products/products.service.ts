@@ -790,14 +790,93 @@ export class ProductsService {
   }
 
   serialize(product: any) {
-    const primaryImage =
-      product.images?.find((img: any) => img.isPrimary) ?? product.images?.[0];
+    if (!product) return null;
+
+    const images = Array.isArray(product.images)
+      ? product.images
+          .map((img: any) => (typeof img === 'string' ? img : img?.url))
+          .filter(Boolean)
+      : [];
+
+    const reviews = Array.isArray(product.reviews) ? product.reviews : [];
+    const rating =
+      reviews.length > 0
+        ? reviews.reduce((sum: number, r: any) => sum + (r.rating || 0), 0) / reviews.length
+        : 5.0;
+
+    const variants = Array.isArray(product.variants)
+      ? product.variants.map((v: any) => ({
+          id: v.id,
+          productId: v.productId,
+          volume: v.volume || '1 Pièce',
+          imageUrl: v.imageUrl ?? (images[0] || null),
+          priceHT: +(Number(v.price || 0) / 1.19).toFixed(3),
+          priceTTC: Number(v.price || 0),
+          stock: Number(v.stockQty ?? 0),
+          sku: v.skuVariant || v.sku || '',
+          status:
+            Number(v.stockQty ?? 0) === 0
+              ? 'out_of_stock'
+              : Number(v.stockQty ?? 0) < 5
+                ? 'low_stock'
+                : 'in_stock',
+        }))
+      : [];
+
+    const specs = product.specs
+      ? {
+          viscosity: product.specs.viscosity || undefined,
+          apiSpec: product.specs.apiStandard || undefined,
+          aceaSpec: product.specs.aeceaStandard || undefined,
+          jasoSpec: product.specs.jasoStandard || undefined,
+          oemApprovals: product.specs.OEMApprovals
+            ? String(product.specs.OEMApprovals)
+                .split(';')
+                .map((approval: string) => approval.trim())
+                .filter(Boolean)
+            : [],
+          dpfCompatible: product.specs.DPFCompatible ?? undefined,
+          turboCompatible: product.specs.TurboCompatible ?? undefined,
+          hybridCompatible: product.specs.HybridCompatible ?? undefined,
+          vehicleTypes: Array.isArray(product.specs.vehicleTypes)
+            ? product.specs.vehicleTypes.map((t: string) => String(t).toLowerCase())
+            : [],
+          fuelTypes: Array.isArray(product.specs.fuelTypes)
+            ? product.specs.fuelTypes.map((f: string) => String(f).toLowerCase())
+            : [],
+          minCylinders: product.specs.minCylinders || undefined,
+          maxCylinders: product.specs.maxCylinders || undefined,
+          minPower: product.specs.minPower || undefined,
+          maxPower: product.specs.maxPower || undefined,
+          type: product.specs.isFullySynth
+            ? 'full_synth'
+            : product.specs.isSemiSynth
+              ? 'semi_synth'
+              : 'mineral',
+        }
+      : null;
+
+    const compatibility = Array.isArray(product.compatibilities)
+      ? product.compatibilities.map((c: any) => ({
+          id: c.id,
+          productId: c.productId,
+          make: c.vehicleModel?.make?.name || '',
+          model: c.vehicleModel?.name || '',
+          yearFrom: c.yearFrom,
+          yearTo: c.yearTo,
+          engine: c.engineCode,
+        }))
+      : [];
+
     return {
       id: product.id,
       slug: product.slug,
-      name: product.nameFr,
-      description: product.description,
-      brandId: product.brandId,
+      name: product.nameFr || product.name || '',
+      sku: product.sku || '',
+      articleNumber: product.sku || '',
+      description: product.description || '',
+      shortDescription: product.description ? product.description.slice(0, 160) : '',
+      brandId: product.brandId || '',
       brand: product.brand
         ? {
             id: product.brand.id,
@@ -806,87 +885,28 @@ export class ProductsService {
             logo: product.brand.logoUrl,
           }
         : null,
-      categoryId: product.categoryId,
+      categoryId: product.categoryId || '',
       category: product.category
         ? {
             id: product.category.id,
-            name: product.category.nameFr,
+            name: product.category.nameFr || product.category.name,
             slug: product.category.slug,
           }
         : null,
-      images: product.images?.map((img: any) => img.url) ?? [],
-      variants:
-        product.variants?.map((v: any) => ({
-          id: v.id,
-          productId: v.productId,
-          volume: v.volume,
-          imageUrl: v.imageUrl ?? null,
-          priceHT: +(v.price / 1.19).toFixed(3),
-          priceTTC: v.price,
-          stock: v.stockQty,
-          sku: v.skuVariant,
-          status:
-            v.stockQty === 0
-              ? 'out_of_stock'
-              : v.stockQty < 5
-                ? 'low_stock'
-                : 'in_stock',
-        })) ?? [],
-      specs: product.specs
-        ? {
-            viscosity: product.specs.viscosity,
-            apiSpec: product.specs.apiStandard,
-            aceaSpec: product.specs.aeceaStandard,
-            jasoSpec: product.specs.jasoStandard,
-            oemApprovals: product.specs.OEMApprovals
-              ?.split(';')
-              .map((approval: string) => approval.trim())
-              .filter(Boolean),
-            dpfCompatible: product.specs.DPFCompatible,
-            turboCompatible: product.specs.TurboCompatible,
-            hybridCompatible: product.specs.HybridCompatible,
-            vehicleTypes: product.specs.vehicleTypes
-              ? product.specs.vehicleTypes.map((t: string) => t.toLowerCase())
-              : undefined,
-            fuelTypes: product.specs.fuelTypes
-              ? product.specs.fuelTypes.map((f: string) => f.toLowerCase())
-              : undefined,
-            minCylinders: product.specs.minCylinders,
-            maxCylinders: product.specs.maxCylinders,
-            minPower: product.specs.minPower,
-            maxPower: product.specs.maxPower,
-            type: product.specs.isFullySynth
-              ? 'full_synth'
-              : product.specs.isSemiSynth
-                ? 'semi_synth'
-                : 'mineral',
-          }
-        : null,
-      compatibility:
-        product.compatibilities?.map((c: any) => ({
-          id: c.id,
-          productId: c.productId,
-          make: c.vehicleModel?.make?.name,
-          model: c.vehicleModel?.name,
-          yearFrom: c.yearFrom,
-          yearTo: c.yearTo,
-          engine: c.engineCode,
-        })) ?? [],
-      isBestSeller: product.isFeatured,
-      isNew:
-        Date.now() - new Date(product.createdAt).getTime() <
-        30 * 24 * 60 * 60 * 1000,
+      images,
+      variants,
+      specs,
+      compatibility,
+      isBestSeller: Boolean(product.isFeatured),
+      isNew: product.createdAt
+        ? Date.now() - new Date(product.createdAt).getTime() < 30 * 24 * 60 * 60 * 1000
+        : false,
       isPromo: false,
-      rating:
-        product.reviews?.length > 0
-          ? +(
-              product.reviews.reduce((s: number, r: any) => s + r.rating, 0) /
-              product.reviews.length
-            ).toFixed(1)
-          : 0,
-      reviewCount: product.reviews?.length ?? 0,
-      createdAt: product.createdAt,
-      updatedAt: product.createdAt,
+      isFeatured: Boolean(product.isFeatured),
+      rating: Math.round(rating * 10) / 10,
+      reviewCount: reviews.length,
+      createdAt: product.createdAt ? new Date(product.createdAt).toISOString() : new Date().toISOString(),
+      updatedAt: product.updatedAt ? new Date(product.updatedAt).toISOString() : new Date().toISOString(),
       tags: [],
     };
   }
