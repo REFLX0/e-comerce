@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 import { PrismaReadService } from '../prisma/prisma-read.service';
 import { CacheService } from '../cache/cache.service';
 import { Prisma } from '@prisma/client';
 import { OilRecommendationsDto } from './dto/oil-recommendations.dto';
 import { calcSpecificity } from '../specificity';
+import * as fs from 'fs';
 
 export interface ProductFilters {
   categorySlug?: string;
@@ -58,11 +59,85 @@ const CATEGORY_SYNONYMS: Record<string, string[]> = {
 };
 
 @Injectable()
-export class ProductsService {
+export class ProductsService implements OnModuleInit {
   constructor(
     private readonly prismaRead: PrismaReadService,
     private readonly cache: CacheService,
   ) {}
+
+  async onModuleInit() {
+    try {
+      await this.prismaRead.db.$executeRawUnsafe(`
+        CREATE TABLE IF NOT EXISTS tecdoc.article_images (
+          supplier INTEGER NOT NULL,
+          article_number VARCHAR(255) NOT NULL,
+          filename VARCHAR(255) NOT NULL,
+          PRIMARY KEY (supplier, article_number)
+        );
+        CREATE INDEX IF NOT EXISTS idx_tecdoc_article_images_sup_art ON tecdoc.article_images(supplier, article_number);
+      `);
+
+      const countRows: any[] = (await this.prismaRead.db.$queryRawUnsafe(`
+        SELECT COUNT(*)::int AS count FROM tecdoc.article_images
+      `)) as any[];
+      const existingCount = countRows?.[0]?.count ?? 0;
+
+      if (existingCount < 1000) {
+        const imageDirs = [
+          '/srv/product-images',
+          '/app/autopart_db/images',
+          './autopart_db/images',
+          '../autopart_db/images',
+        ];
+        let targetDir: string | null = null;
+        for (const d of imageDirs) {
+          if (fs.existsSync(d)) {
+            targetDir = d;
+            break;
+          }
+        }
+
+        if (targetDir) {
+          console.log(`🖼️ Indexing product images from ${targetDir}...`);
+          const files = fs.readdirSync(targetDir);
+          const batchSize = 1000;
+          const rows: { supplier: number; sku: string; filename: string }[] = [];
+
+          for (const file of files) {
+            const match = file.match(/^(\d+)_(.+)_1\.webp$/i);
+            if (match) {
+              rows.push({
+                supplier: parseInt(match[1], 10),
+                sku: match[2],
+                filename: file,
+              });
+            }
+          }
+
+          for (let i = 0; i < rows.length; i += batchSize) {
+            const chunk = rows.slice(i, i + batchSize);
+            const valueClauses = chunk
+              .map((r, idx) => `($${idx * 3 + 1}, $${idx * 3 + 2}, $${idx * 3 + 3})`)
+              .join(', ');
+            const params: any[] = [];
+            chunk.forEach((r) => {
+              params.push(r.supplier, r.sku, r.filename);
+            });
+
+            await this.prismaRead.db.$executeRawUnsafe(
+              `INSERT INTO tecdoc.article_images (supplier, article_number, filename)
+               VALUES ${valueClauses}
+               ON CONFLICT DO NOTHING`,
+              ...params,
+            );
+          }
+          console.log(`✅ Indexed ${rows.length} verified product images into PostgreSQL!`);
+        }
+      }
+    } catch (err) {
+      console.error('Error during article_images table initialization:', err);
+    }
+  }
 
   /** Include every descendant when a catalogue group is selected. */
   async resolveCategoryIds(slug: string) {
@@ -303,30 +378,28 @@ export class ProductsService {
         const query = `
           SELECT a.id, a.data_supplier_article_number, a.supplier, s.matchcode AS brand_name,
                  p.description AS product_type, a.description,
-                 mi.picture_name AS picture_name
+                 COALESCE(img.filename, mi.picture_name) AS picture_name
           FROM tecdoc.articles a
           JOIN tecdoc.suppliers s ON s.id = a.supplier
           LEFT JOIN tecdoc.products p ON p.id = a.current_product
           LEFT JOIN tecdoc.article_mediainformation mi ON mi.article_id = a.id
+          JOIN tecdoc.article_images img ON (img.supplier = a.supplier AND img.article_number = a.data_supplier_article_number)
           ${whereClause}
-          ORDER BY CASE WHEN mi.picture_name IS NOT NULL AND mi.picture_name <> '' THEN 0 WHEN a.supplier IN (30, 21, 4, 101, 1051, 1201, 1285, 1426, 1604, 18000, 18177, 18200, 18354, 1000, 1100) THEN 1 ELSE 2 END, a.id ASC
+          ORDER BY a.id ASC
           LIMIT ${limit} OFFSET ${skip}
         `;
         tecdocRows = (await this.prismaRead.db.$queryRawUnsafe(query, ...params)) as any[];
 
-        if (whereClause) {
-          const countQuery = `
-            SELECT COUNT(*)::int AS count
-            FROM tecdoc.articles a
-            JOIN tecdoc.suppliers s ON s.id = a.supplier
-            LEFT JOIN tecdoc.products p ON p.id = a.current_product
-            ${whereClause}
-          `;
-          const countRows: any[] = (await this.prismaRead.db.$queryRawUnsafe(countQuery, ...params)) as any[];
-          tecdocTotal = countRows?.[0]?.count ?? 0;
-        } else {
-          tecdocTotal = 6722202;
-        }
+        const countQuery = `
+          SELECT COUNT(*)::int AS count
+          FROM tecdoc.articles a
+          JOIN tecdoc.suppliers s ON s.id = a.supplier
+          LEFT JOIN tecdoc.products p ON p.id = a.current_product
+          JOIN tecdoc.article_images img ON (img.supplier = a.supplier AND img.article_number = a.data_supplier_article_number)
+          ${whereClause}
+        `;
+        const countRows: any[] = (await this.prismaRead.db.$queryRawUnsafe(countQuery, ...params)) as any[];
+        tecdocTotal = countRows?.[0]?.count ?? 0;
       } catch (err) {
         console.error('Error fetching TecDoc articles in findAll:', err);
       }
@@ -584,15 +657,14 @@ export class ProductsService {
 
       // If local products are empty, return top TecDoc parts with photos
       const tecdocRows = await this.prismaRead.db.$queryRawUnsafe<any[]>(`
-        SELECT DISTINCT ON (a.id)
-               a.id, a.data_supplier_article_number, a.supplier, s.matchcode AS brand_name,
+        SELECT a.id, a.data_supplier_article_number, a.supplier, s.matchcode AS brand_name,
                p.description AS product_type, a.description,
-               mi.picture_name AS picture_name
+               COALESCE(img.filename, mi.picture_name) AS picture_name
         FROM tecdoc.articles a
         JOIN tecdoc.suppliers s ON s.id = a.supplier
         LEFT JOIN tecdoc.products p ON p.id = a.current_product
-        JOIN tecdoc.article_mediainformation mi ON mi.article_id = a.id
-          AND mi.picture_name IS NOT NULL AND mi.picture_name <> ''
+        LEFT JOIN tecdoc.article_mediainformation mi ON mi.article_id = a.id
+        JOIN tecdoc.article_images img ON (img.supplier = a.supplier AND img.article_number = a.data_supplier_article_number)
         ORDER BY a.id ASC
         LIMIT ${limit}
       `);
@@ -618,15 +690,14 @@ export class ProductsService {
             return products.map((p) => this.serialize(p));
           }
           const tecdocRows = await this.prismaRead.db.$queryRawUnsafe<any[]>(`
-            SELECT DISTINCT ON (a.id)
-                   a.id, a.data_supplier_article_number, a.supplier, s.matchcode AS brand_name,
+            SELECT a.id, a.data_supplier_article_number, a.supplier, s.matchcode AS brand_name,
                    p.description AS product_type, a.description,
-                   mi.picture_name AS picture_name
+                   COALESCE(img.filename, mi.picture_name) AS picture_name
             FROM tecdoc.articles a
             JOIN tecdoc.suppliers s ON s.id = a.supplier
             LEFT JOIN tecdoc.products p ON p.id = a.current_product
-            JOIN tecdoc.article_mediainformation mi ON mi.article_id = a.id
-              AND mi.picture_name IS NOT NULL AND mi.picture_name <> ''
+            LEFT JOIN tecdoc.article_mediainformation mi ON mi.article_id = a.id
+            JOIN tecdoc.article_images img ON (img.supplier = a.supplier AND img.article_number = a.data_supplier_article_number)
             ORDER BY a.id DESC
             LIMIT ${limit}
           `);
@@ -662,15 +733,14 @@ export class ProductsService {
 
       // If TecDoc product
       const tecdocRows = await this.prismaRead.db.$queryRawUnsafe<any[]>(`
-        SELECT DISTINCT ON (a.id)
-               a.id, a.data_supplier_article_number, a.supplier, s.matchcode AS brand_name,
+        SELECT a.id, a.data_supplier_article_number, a.supplier, s.matchcode AS brand_name,
                p.description AS product_type, a.description,
-               mi.picture_name AS picture_name
+               COALESCE(img.filename, mi.picture_name) AS picture_name
         FROM tecdoc.articles a
         JOIN tecdoc.suppliers s ON s.id = a.supplier
         LEFT JOIN tecdoc.products p ON p.id = a.current_product
-        JOIN tecdoc.article_mediainformation mi ON mi.article_id = a.id
-          AND mi.picture_name IS NOT NULL AND mi.picture_name <> ''
+        LEFT JOIN tecdoc.article_mediainformation mi ON mi.article_id = a.id
+        JOIN tecdoc.article_images img ON (img.supplier = a.supplier AND img.article_number = a.data_supplier_article_number)
         WHERE a.id != ${parseInt(id.replace(/\D/g, ''), 10) || 0}
         ORDER BY a.id ASC
         LIMIT ${limit}

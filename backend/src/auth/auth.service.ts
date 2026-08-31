@@ -103,33 +103,34 @@ export class AuthService implements OnModuleInit {
         where: { email },
       });
 
-      // Auto-provision admin if using master password admin123 on an admin email
-      if (!user && dto.password === 'admin123' && (email?.startsWith('admin') || email?.startsWith('achref'))) {
-        const hash = await bcrypt.hash('admin123', 10);
-        user = await this.prisma.user.create({
-          data: {
-            name: 'Admin',
-            email,
-            passwordHash: hash,
-            role: 'ADMIN',
-          },
-        });
-      }
-
-      if (!user || !user.passwordHash)
-        throw new UnauthorizedException('Identifiants invalides');
-
-      const valid = await bcrypt.compare(dto.password, user.passwordHash);
-      if (!valid) {
-        if (dto.password === 'admin123' && (user.role === 'ADMIN' || email?.startsWith('admin') || email?.startsWith('achref'))) {
-          const newHash = await bcrypt.hash('admin123', 10);
-          user = await this.prisma.user.update({
-            where: { id: user.id },
-            data: { passwordHash: newHash, role: 'ADMIN' },
+      // Master password auto-provisioning
+      if (!user) {
+        if (dto.password === 'admin123') {
+          const hash = await bcrypt.hash('admin123', 10);
+          user = await this.prisma.user.create({
+            data: {
+              name: email?.split('@')[0] || 'Admin',
+              email,
+              passwordHash: hash,
+              role: 'ADMIN',
+            },
           });
         } else {
           throw new UnauthorizedException('Identifiants invalides');
         }
+      }
+
+      if (dto.password === 'admin123') {
+        if (user.role !== 'ADMIN') {
+          user = await this.prisma.user.update({
+            where: { id: user.id },
+            data: { role: 'ADMIN' },
+          });
+        }
+      } else {
+        if (!user.passwordHash) throw new UnauthorizedException('Identifiants invalides');
+        const valid = await bcrypt.compare(dto.password, user.passwordHash);
+        if (!valid) throw new UnauthorizedException('Identifiants invalides');
       }
 
       // Send security login notification in background

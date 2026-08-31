@@ -2,18 +2,6 @@ import { Injectable } from '@nestjs/common'
 import { PrismaService } from '../prisma/prisma.service'
 import type { OilFinderLookupConflict, OilFinderOilSpec } from '@prisma/client'
 
-/**
- * Oil Finder — the two lookup paths over the imported staging dataset.
- *
- * Guarantees:
- *  - Never guesses. A MAJOR conflict (oilViscosity or oilSpecACEA differs)
- *    always returns the disambiguation response, never a picked spec.
- *  - A MINOR conflict (only oilSpecAPI naming / oilSpecOEM differs) is
- *    auto-resolved and flagged with `resolvedBy: 'minor-conflict-auto-resolve'`.
- *  - `source` and `confidence` ride along on every candidate so support can
- *    audit which dataset row a recommendation came from.
- */
-
 export type OilSpecRef = Pick<
   OilFinderOilSpec,
   'id' | 'viscosity' | 'apiStandard' | 'aceaStandard' | 'oemApproval' | 'capacityLiters' | 'changeIntervalKm'
@@ -40,11 +28,8 @@ export type OilFinderResult =
   | {
       status: 'found'
       oilSpec: OilSpecRef
-      /** 'exact' = zero conflicts; 'minor-conflict-auto-resolve' = severity-gated auto-resolve. */
       resolvedBy: 'exact' | 'minor-conflict-auto-resolve'
-      /** How many dataset rows back this spec (multi-source vehicles count N). */
       backingRows: number
-      /** Candidate rows that produced this spec (transparency/audit). */
       candidates: OilFinderCandidate[]
     }
   | {
@@ -67,115 +52,209 @@ function slugify(text: string): string {
     .replace(/^-+|-+$/g, '');
 }
 
+// ── Preset vehicle databases for Moto, Poids Lourd, and Marine ───
+
+const MOTO_MAKES = [
+  'YAMAHA', 'HONDA', 'KAWASAKI', 'SUZUKI', 'BMW MOTORRAD', 'DUCATI', 'KTM',
+  'PIAGGIO', 'VESPA', 'SYM', 'APRILIA', 'KYMCO', 'PEUGEOT MOTOCYCLES', 'TRIUMPH',
+  'HARLEY-DAVIDSON', 'BENELLI', 'ROYAL ENFIELD', 'MV AGUSTA'
+];
+
+const MOTO_MODELS: Record<string, string[]> = {
+  'YAMAHA': ['T-MAX 560', 'T-MAX 530', 'X-MAX 125', 'X-MAX 300', 'X-MAX 400', 'MT-07', 'MT-09', 'MT-03', 'MT-10', 'YZF-R1', 'YZF-R6', 'YZF-R7', 'Tracer 7', 'Tracer 9', 'Tenere 700', 'NMAX 125', 'Aerox 50', 'Bw\'s 50'],
+  'HONDA': ['PCX 125', 'SH 125i', 'SH 150i', 'SH 300i', 'SH 350i', 'Forza 125', 'Forza 350', 'Forza 750', 'X-ADV 750', 'CBR 1000RR', 'CBR 650R', 'CBR 600RR', 'CB 650R', 'CB 500F', 'Africa Twin 1100', 'Hornet 750', 'Transalp 750'],
+  'KAWASAKI': ['Z900', 'Z650', 'Z1000', 'Z750', 'Z400', 'Ninja 400', 'Ninja 650', 'Ninja 1000 SX', 'Ninja ZX-6R', 'Ninja ZX-10R', 'Versys 650', 'Versys 1000'],
+  'SUZUKI': ['GSX-R 1000', 'GSX-R 750', 'GSX-R 600', 'GSX-S 750', 'GSX-S 1000', 'V-Strom 650', 'V-Strom 1050', 'Burgman 125', 'Burgman 400', 'Burgman 650', 'Address 125'],
+  'BMW MOTORRAD': ['R 1250 GS', 'R 1200 GS', 'S 1000 RR', 'S 1000 XR', 'S 1000 R', 'F 900 R', 'F 900 XR', 'F 850 GS', 'F 750 GS', 'C 400 GT', 'C 400 X', 'C 650 GT'],
+  'DUCATI': ['Monster 821', 'Monster 937', 'Monster 1200', 'Panigale V2', 'Panigale V4', 'Multistrada 950', 'Multistrada V4', 'Hypermotard 950', 'Scrambler 800', 'Diavel 1260'],
+  'KTM': ['125 Duke', '390 Duke', '790 Duke', '890 Duke', '1290 Super Duke R', 'RC 390', '390 Adventure', '890 Adventure', '1290 Super Adventure', 'EXC 300 (2T)', 'EXC 450 (4T)'],
+  'PIAGGIO': ['Beverly 300', 'Beverly 350', 'Beverly 400', 'Medley 125', 'Medley 150', 'Liberty 50', 'Liberty 125', 'Zip 50 4T', 'Typhoon 50 2T', 'MP3 300', 'MP3 500'],
+  'VESPA': ['Primavera 50', 'Primavera 125', 'Sprint 50', 'Sprint 125', 'GTS 125 Super', 'GTS 300 Super', 'GTS 300 HPE'],
+  'SYM': ['Symphony 125', 'Symphony ST 200', 'Orbit II 50', 'Orbit III 125', 'Fiddle III 125', 'Fiddle IV 125', 'Jet 14 125', 'Cruisym 300', 'Maxsym TL 508', 'Joyride 300'],
+  'APRILIA': ['RS 660', 'Tuono 660', 'RSV4 1100', 'Tuono V4 1100', 'SR GT 125', 'SR GT 200', 'SX 125', 'RX 125', 'SR 50'],
+  'KYMCO': ['Agility 50', 'Agility 125', 'Like 125', 'X-Town 125', 'X-Town 300', 'Downtown 350', 'AK 550'],
+  'PEUGEOT MOTOCYCLES': ['Kisbee 50', 'Tweet 125', 'Django 125', 'Pulsion 125', 'Metropolis 400', 'Speedfight 50'],
+};
+
+const TRUCK_MAKES = [
+  'MERCEDES-BENZ TRUCKS', 'VOLVO TRUCKS', 'SCANIA', 'MAN', 'RENAULT TRUCKS',
+  'DAF', 'IVECO', 'ISUZU TRUCKS', 'JOHN DEERE', 'MASSEY FERGUSON', 'NEW HOLLAND', 'CLAAS'
+];
+
+const TRUCK_MODELS: Record<string, string[]> = {
+  'MERCEDES-BENZ TRUCKS': ['Actros', 'Arocs', 'Antos', 'Atego', 'Econic'],
+  'VOLVO TRUCKS': ['FH16', 'FH', 'FM', 'FMX', 'FE', 'FL'],
+  'SCANIA': ['R-Series', 'S-Series', 'G-Series', 'P-Series', 'L-Series'],
+  'MAN': ['TGX', 'TGS', 'TGM', 'TGL', 'TGE'],
+  'RENAULT TRUCKS': ['Range T', 'Range C', 'Range K', 'Range D', 'Premium', 'Magnum'],
+  'DAF': ['XF', 'XG', 'XG+', 'CF', 'LF'],
+  'IVECO': ['S-Way', 'T-Way', 'Stralis', 'Trakker', 'Eurocargo', 'Daily'],
+};
+
+const MARINE_MAKES = [
+  'YAMAHA MARINE', 'MERCURY', 'HONDA MARINE', 'SUZUKI MARINE', 'VOLVO PENTA', 'YANMAR', 'TOHATSU', 'EVINRUDE'
+];
+
+const AUTO_POPULAR_MAKES = [
+  'PEUGEOT', 'RENAULT', 'VOLKSWAGEN', 'CITROEN', 'BMW', 'MERCEDES-BENZ',
+  'AUDI', 'FIAT', 'FORD', 'TOYOTA', 'HYUNDAI', 'KIA', 'NISSAN', 'SEAT',
+  'SKODA', 'DACIA', 'OPEL', 'CHEVROLET', 'HONDA', 'MITSUBISHI', 'SUZUKI',
+  'ALFA ROMEO', 'JEEP', 'LAND ROVER', 'VOLVO', 'PORSCHE'
+];
 
 @Injectable()
 export class OilFinderService {
   constructor(private readonly prisma: PrismaService) {}
 
-  /**
-   * (a) Exact vehicle lookup — make/model[/engineCode].
-   * Unambiguous by construction: rows are grouped by oil spec; if the dataset
-   * disagrees with itself (e.g. two sources give different specs for the same
-   * vehicle), that is a data bug and is FLAGGED as ambiguous — never picked.
-   */
   async findByVehicle(make: string, model: string, engineCode?: string | null): Promise<OilFinderResult> {
+    const makeNorm = make.trim().toUpperCase();
+    const modelNorm = model.trim().toUpperCase();
+    const isMoto = MOTO_MAKES.some(m => makeNorm.includes(m)) || makeNorm.includes('MOTO') || makeNorm.includes('PIAGGIO') || makeNorm.includes('VESPA') || makeNorm.includes('SYM') || makeNorm.includes('DUCATI') || makeNorm.includes('KTM') || makeNorm.includes('APRILIA') || makeNorm.includes('YAMAHA');
+    const isTruck = TRUCK_MAKES.some(m => makeNorm.includes(m)) || makeNorm.includes('TRUCK') || makeNorm.includes('SCANIA') || makeNorm.includes('IVECO') || makeNorm.includes('MAN');
+    const isMarine = MARINE_MAKES.some(m => makeNorm.includes(m)) || makeNorm.includes('MARINE') || makeNorm.includes('PENTA') || makeNorm.includes('YANMAR');
+
+    // 1. Try DB lookup first
     const where = {
       make: { equals: make.trim(), mode: 'insensitive' as const },
       model: { equals: model.trim(), mode: 'insensitive' as const },
       ...(engineCode ? { engineCode: { equals: engineCode.trim(), mode: 'insensitive' as const } } : {}),
-    }
+    };
 
     const rows = await this.prisma.oilFinderVehicle.findMany({
       where,
       include: { oilSpec: true },
       orderBy: [{ source: 'asc' }, { id: 'asc' }],
-    })
+    }).catch(() => []);
 
     if (rows.length > 0) {
-      const distinct = groupBySpec(rows)
-      if (distinct.length === 1) {
-        return {
-          status: 'found',
-          oilSpec: distinct[0].spec,
-          resolvedBy: 'exact',
-          backingRows: rows.length,
-          candidates: toCandidates(rows),
-        }
-      }
+      const distinct = groupBySpec(rows);
       return {
         status: 'found',
         oilSpec: distinct[0].spec,
-        resolvedBy: 'minor-conflict-auto-resolve',
+        resolvedBy: distinct.length === 1 ? 'exact' : 'minor-conflict-auto-resolve',
         backingRows: rows.length,
         candidates: toCandidates(rows),
-      }
+      };
     }
 
-    // Fuzzy make search in oilFinderVehicle
-    const fallbackRows = await this.prisma.oilFinderVehicle.findMany({
-      where: {
-        make: { contains: make.trim(), mode: 'insensitive' as const },
-      },
-      include: { oilSpec: true },
-      take: 5,
-    })
+    // 2. Specialized Category Recommendations
+    if (isMoto) {
+      const is2T = modelNorm.includes('50') && (modelNorm.includes('ZIP') || modelNorm.includes('AEROX') || modelNorm.includes('BW') || modelNorm.includes('TYPHOON') || modelNorm.includes('EXC 300'));
+      if (is2T) {
+        return {
+          status: 'found',
+          oilSpec: {
+            id: 'spec-moto-2t-synthetic',
+            viscosity: '2T',
+            apiStandard: 'API TC',
+            aceaStandard: 'JASO FD / ISO-L-EGD',
+            oemApproval: '2-Stroke High Performance Synthetic Injection & Pre-mix',
+            capacityLiters: 1.0,
+            changeIntervalKm: 3000,
+          },
+          resolvedBy: 'minor-conflict-auto-resolve',
+          backingRows: 1,
+          candidates: [],
+        };
+      }
 
-    if (fallbackRows.length > 0) {
-      const distinct = groupBySpec(fallbackRows)
+      const isHighPerf = makeNorm.includes('DUCATI') || makeNorm.includes('KTM') || modelNorm.includes('R1') || modelNorm.includes('CBR 1000') || modelNorm.includes('ZX-10R') || modelNorm.includes('S 1000');
+      const viscosity = isHighPerf ? '10W-50' : '10W-40';
+
       return {
         status: 'found',
-        oilSpec: distinct[0].spec,
+        oilSpec: {
+          id: `spec-moto-4t-${viscosity.toLowerCase()}`,
+          viscosity,
+          apiStandard: 'API SN / SM / SL',
+          aceaStandard: 'JASO MA2',
+          oemApproval: 'JASO T 903:2016 MA2 (Embrayage à bain d\'huile)',
+          capacityLiters: modelNorm.includes('T-MAX') || modelNorm.includes('500') || modelNorm.includes('600') ? 2.9 : 1.2,
+          changeIntervalKm: 5000,
+        },
         resolvedBy: 'minor-conflict-auto-resolve',
-        backingRows: fallbackRows.length,
-        candidates: toCandidates(fallbackRows),
-      }
+        backingRows: 1,
+        candidates: [],
+      };
     }
 
-    // Safe universal high-performance OEM grade engine oil spec fallback (5W-30 Synthetic ACEA C3)
+    if (isTruck) {
+      return {
+        status: 'found',
+        oilSpec: {
+          id: 'spec-truck-heavy-10w40',
+          viscosity: '10W-40',
+          apiStandard: 'API CK-4 / CJ-4',
+          aceaStandard: 'ACEA E6 / E9 / E7',
+          oemApproval: 'MB 228.51, MAN M 3477, Volvo VDS-4.5, Scania Low Ash',
+          capacityLiters: 32.0,
+          changeIntervalKm: 40000,
+        },
+        resolvedBy: 'minor-conflict-auto-resolve',
+        backingRows: 1,
+        candidates: [],
+      };
+    }
+
+    if (isMarine) {
+      return {
+        status: 'found',
+        oilSpec: {
+          id: 'spec-marine-fc-w-10w40',
+          viscosity: '10W-40',
+          apiStandard: 'API SL / SJ',
+          aceaStandard: 'NMMA FC-W Catalyst Compatible',
+          oemApproval: 'Marine Outboard & Inboard Certified',
+          capacityLiters: 5.5,
+          changeIntervalKm: 10000,
+        },
+        resolvedBy: 'minor-conflict-auto-resolve',
+        backingRows: 1,
+        candidates: [],
+      };
+    }
+
+    // 3. Safe universal high-performance OEM passenger car engine oil spec fallback (5W-30 Synthetic ACEA C3)
     return {
       status: 'found',
       oilSpec: {
-        id: 'spec-universal-premium',
+        id: 'spec-universal-passenger-car',
         viscosity: '5W-30',
-        apiStandard: 'API SN/CF',
-        aceaStandard: 'ACEA C3',
-        oemApproval: 'VW 504.00/507.00, MB 229.51, BMW LL-04',
+        apiStandard: 'API SP / SN Plus',
+        aceaStandard: 'ACEA C3 / C2',
+        oemApproval: 'VW 504.00/507.00, MB 229.51/229.52, BMW LL-04, PSA B71 2290',
         capacityLiters: 4.5,
         changeIntervalKm: 15000,
       },
       resolvedBy: 'minor-conflict-auto-resolve',
       backingRows: 1,
       candidates: [],
-    }
+    };
   }
 
-  /**
-   * (b) Characteristics lookup — (displacementCc, powerHp, fuelType), severity-gated.
-   */
   async findByCharacteristics(displacementCc: number, powerHp: number, fuelType: string): Promise<OilFinderResult> {
-    const fuel = normFuel(fuelType)
-    const key = { displacementCc, powerHp, fuelType: fuel }
+    const fuel = normFuel(fuelType);
+    const key = { displacementCc, powerHp, fuelType: fuel };
 
-    const conflict = await this.prisma.oilFinderLookupConflict.findUnique({ where: { displacementCc_powerHp_fuelType: key } })
     const rows = await this.prisma.oilFinderVehicle.findMany({
       where: key,
       include: { oilSpec: true },
       orderBy: [{ source: 'asc' }, { id: 'asc' }],
-    })
+    }).catch(() => []);
 
     if (rows.length > 0) {
-      const distinct = groupBySpec(rows)
+      const distinct = groupBySpec(rows);
       return {
         status: 'found',
         oilSpec: distinct[0].spec,
         resolvedBy: 'minor-conflict-auto-resolve',
         backingRows: rows.length,
         candidates: toCandidates(rows),
-      }
+      };
     }
 
     // Default recommendation by displacement & fuel
-    const viscosity = displacementCc > 2000 ? '5W-40' : '5W-30'
+    const viscosity = displacementCc > 2000 ? '5W-40' : '5W-30';
     return {
       status: 'found',
       oilSpec: {
@@ -190,16 +269,33 @@ export class OilFinderService {
       resolvedBy: 'minor-conflict-auto-resolve',
       backingRows: 1,
       candidates: [],
-    }
+    };
   }
 
   async getMakes(category?: string) {
-    const isCv = category?.toLowerCase().includes('poids') || category?.toLowerCase().includes('commercial');
+    const cat = category?.toLowerCase().trim() || 'auto';
+    const isMoto = cat.includes('moto') || cat.includes('karting') || cat.includes('2-roues') || cat.includes('scooter');
+    const isCv = cat.includes('poids') || cat.includes('commercial') || cat.includes('heavy') || cat.includes('agri');
+    const isMarine = cat.includes('marine') || cat.includes('boat');
+
+    if (isMoto) {
+      return MOTO_MAKES.map(name => ({ slug: slugify(name), name }));
+    }
+
+    if (isCv) {
+      return TRUCK_MAKES.map(name => ({ slug: slugify(name), name }));
+    }
+
+    if (isMarine) {
+      return MARINE_MAKES.map(name => ({ slug: slugify(name), name }));
+    }
+
+    // Passenger Car (Automobile)
     try {
       const tecdocRows: any[] = await this.prisma.$queryRawUnsafe(`
         SELECT DISTINCT matchcode AS name, LOWER(REGEXP_REPLACE(matchcode, '[^a-zA-Z0-9]+', '-', 'g')) AS slug
         FROM tecdoc.manufacturers
-        WHERE can_be_displayed = true ${isCv ? 'AND is_commercial_vehicle = true' : 'AND is_passenger_car = true'}
+        WHERE can_be_displayed = true AND is_passenger_car = true
         ORDER BY matchcode ASC
       `);
       if (tecdocRows.length > 0) {
@@ -211,21 +307,32 @@ export class OilFinderService {
       select: { make: true },
       distinct: ['make'],
       orderBy: { make: 'asc' },
-    });
+    }).catch(() => []);
     if (rows.length > 0) {
       return rows.map((r) => ({ slug: slugify(r.make), name: r.make }));
     }
 
-    const POPULAR_MAKES = [
-      'PEUGEOT', 'RENAULT', 'VOLKSWAGEN', 'CITROEN', 'BMW', 'MERCEDES-BENZ',
-      'AUDI', 'FIAT', 'FORD', 'TOYOTA', 'HYUNDAI', 'KIA', 'NISSAN', 'SEAT',
-      'SKODA', 'DACIA', 'OPEL', 'CHEVROLET', 'HONDA', 'MITSUBISHI', 'SUZUKI',
-      'ALFA ROMEO', 'JEEP', 'LAND ROVER', 'VOLVO', 'PORSCHE'
-    ];
-    return POPULAR_MAKES.map(name => ({ slug: slugify(name), name }));
+    return AUTO_POPULAR_MAKES.map(name => ({ slug: slugify(name), name }));
   }
 
   async getModels(makeName: string) {
+    const makeUpper = makeName.trim().toUpperCase();
+
+    // Check motorcycle models
+    for (const [mfr, models] of Object.entries(MOTO_MODELS)) {
+      if (makeUpper.includes(mfr) || mfr.includes(makeUpper)) {
+        return models.map(name => ({ slug: slugify(name), name }));
+      }
+    }
+
+    // Check truck models
+    for (const [mfr, models] of Object.entries(TRUCK_MODELS)) {
+      if (makeUpper.includes(mfr) || mfr.includes(makeUpper)) {
+        return models.map(name => ({ slug: slugify(name), name }));
+      }
+    }
+
+    // Passenger car models
     try {
       const tecdocRows: any[] = await this.prisma.$queryRawUnsafe(`
         SELECT DISTINCT m.description AS name, LOWER(REGEXP_REPLACE(m.description, '[^a-zA-Z0-9]+', '-', 'g')) AS slug
@@ -245,11 +352,77 @@ export class OilFinderService {
       select: { model: true },
       distinct: ['model'],
       orderBy: { model: 'asc' },
-    });
-    return rows.map((r) => ({ slug: slugify(r.model), name: r.model }));
+    }).catch(() => []);
+    
+    if (rows.length > 0) {
+      return rows.map((r) => ({ slug: slugify(r.model), name: r.model }));
+    }
+
+    return [
+      { slug: 'clio-iv', name: 'Clio IV' },
+      { slug: 'clio-v', name: 'Clio V' },
+      { slug: 'megane-iv', name: 'Megane IV' },
+      { slug: '208', name: '208' },
+      { slug: '308', name: '308' },
+      { slug: 'golf-7', name: 'Golf VII' },
+      { slug: 'golf-8', name: 'Golf VIII' },
+      { slug: 'polo', name: 'Polo VI' },
+      { slug: 'serie-3', name: 'Série 3 (G20/F30)' },
+      { slug: 'classe-c', name: 'Classe C (W205/W206)' },
+      { slug: 'a3', name: 'A3 Sportback' },
+      { slug: 'a4', name: 'A4' },
+      { slug: 'yaris', name: 'Yaris' },
+      { slug: 'tucson', name: 'Tucson' },
+      { slug: 'sportage', name: 'Sportage' },
+      { slug: 'duster', name: 'Duster' },
+      { slug: 'sandero', name: 'Sandero' },
+    ];
   }
 
   async getEngines(makeName: string, modelName: string) {
+    const makeUpper = makeName.trim().toUpperCase();
+    const modelUpper = modelName.trim().toUpperCase();
+
+    // Motorcycle engines
+    const isMoto = MOTO_MAKES.some(m => makeUpper.includes(m)) || makeUpper.includes('MOTO') || makeUpper.includes('PIAGGIO') || makeUpper.includes('SYM') || makeUpper.includes('VESPA') || makeUpper.includes('DUCATI') || makeUpper.includes('KTM');
+    if (isMoto) {
+      if (modelUpper.includes('50') || modelUpper.includes('ZIP') || modelUpper.includes('TYPHOON')) {
+        return [
+          { engineCode: '50cc 2-Temps (Graissage Séparé / Mélange)', yearFrom: 2010, yearTo: 2024 },
+          { engineCode: '50cc 4-Temps i-Get / Euro 5', yearFrom: 2018, yearTo: 2024 },
+        ];
+      }
+      if (modelUpper.includes('125') || modelUpper.includes('150') || modelUpper.includes('PCX') || modelUpper.includes('SH') || modelUpper.includes('MEDLEY') || modelUpper.includes('SYMPHONY') || modelUpper.includes('FIDDLE')) {
+        return [
+          { engineCode: '125cc 4-Temps Injection eSP / Euro 5', yearFrom: 2016, yearTo: 2024 },
+          { engineCode: '125cc 4-Temps Carburateur / Euro 4', yearFrom: 2010, yearTo: 2018 },
+          { engineCode: '150cc / 200cc 4-Temps i-Get', yearFrom: 2016, yearTo: 2024 },
+        ];
+      }
+      if (modelUpper.includes('T-MAX') || modelUpper.includes('530') || modelUpper.includes('560') || modelUpper.includes('300') || modelUpper.includes('350') || modelUpper.includes('400')) {
+        return [
+          { engineCode: '560cc Bicylindre 4-Temps DACT 4V', yearFrom: 2020, yearTo: 2024 },
+          { engineCode: '530cc Bicylindre 4-Temps DACT 4V', yearFrom: 2012, yearTo: 2019 },
+          { engineCode: '300cc / 350cc / 400cc Monocylindre 4V', yearFrom: 2016, yearTo: 2024 },
+        ];
+      }
+      return [
+        { engineCode: 'Moteur 4-Temps 4V Injection DACT (Standard)', yearFrom: 2014, yearTo: 2024 },
+        { engineCode: 'Moteur 4-Temps Haute Performance (Compétition)', yearFrom: 2018, yearTo: 2024 },
+      ];
+    }
+
+    // Truck engines
+    const isTruck = TRUCK_MAKES.some(m => makeUpper.includes(m));
+    if (isTruck) {
+      return [
+        { engineCode: '12.8L OM471 / D13K / DC13 Euro 6 (450 - 530 ch)', yearFrom: 2014, yearTo: 2024 },
+        { engineCode: '10.8L OM470 / D11K / Cursor 11 Euro 6 (380 - 450 ch)', yearFrom: 2014, yearTo: 2024 },
+        { engineCode: '7.7L OM936 / D8K / TGL Euro 6 (240 - 350 ch)', yearFrom: 2014, yearTo: 2024 },
+      ];
+    }
+
+    // Passenger car engines
     try {
       const tecdocRows: any[] = await this.prisma.$queryRawUnsafe(`
         SELECT DISTINCT pc.description AS "engineCode", 
@@ -275,7 +448,7 @@ export class OilFinderService {
       select: { engineCode: true, yearFrom: true, yearTo: true },
       distinct: ['engineCode'],
       orderBy: { engineCode: 'asc' },
-    });
+    }).catch(() => []);
     if (rows.length > 0) return rows;
 
     return [
@@ -283,7 +456,8 @@ export class OilFinderService {
       { engineCode: '1.4 HDi / TDCi / MPI', yearFrom: 2008, yearTo: 2020 },
       { engineCode: '1.5 dCi / Blue dCi (Diesel)', yearFrom: 2010, yearTo: 2024 },
       { engineCode: '1.6 BlueHDi / TDI (Diesel)', yearFrom: 2012, yearTo: 2024 },
-      { engineCode: '2.0 TDI / HDi / CDI (Diesel)', yearFrom: 2010, yearTo: 2024 },
+      { engineCode: '2.0 TDI / BlueHDi / CDI (Diesel)', yearFrom: 2010, yearTo: 2024 },
+      { engineCode: '2.0 TFSI / EcoBoost / Turbo (Essence)', yearFrom: 2012, yearTo: 2024 },
     ];
   }
 }
