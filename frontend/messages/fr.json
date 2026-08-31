@@ -1782,6 +1782,10 @@
         "airFilterReplacedHint": "Flux d'admission et combustion propre",
         "cabinFilterReplaced": "Filtre d'habitacle (Pollen/Charbon)",
         "cabinFilterReplacedHint": "Qualité de l'air intérieur du véhicule",
+        "fuelFilterReplaced": "Filtre à carburant remplacé",
+        "fuelFilterReplacedHint": "Protection du circuit d'injection & pompe",
+        "customMaintenanceLabel": "Autre pièce ou intervention personnalisée",
+        "customMaintenancePlaceholder": "Ex: Bougies d'allumage, plaquettes de frein, kit distribution, amortisseurs...",
         "saveMaintenanceLog": "Enregistrer le carnet d'entretien",
         "filterActivatedToast": "Filtre activé pour {name} ! Le catalogue affiche uniquement les pièces compatibles.",
         "vehicleAddedActivatedToast": "Véhicule ajouté et activé ! Le catalogue n'affiche désormais que les pièces compatibles."

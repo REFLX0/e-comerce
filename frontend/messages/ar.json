@@ -1782,6 +1782,10 @@
         "airFilterReplacedHint": "سحب هواء نقي واحتراق مثالي",
         "cabinFilterReplaced": "تم استبدال فلتر المقصورة (مكيف / كربون)",
         "cabinFilterReplacedHint": "جودة هواء نقية لركاب المقصورة",
+        "fuelFilterReplaced": "تم استبدال فلتر الوقود",
+        "fuelFilterReplacedHint": "حماية نظام حقن ومضخة الوقود",
+        "customMaintenanceLabel": "قطع أخرى أو صيانة مخصصة تم إنجازها",
+        "customMaintenancePlaceholder": "مثال: شمعات الإشعال، تيل الفرامل، سير الكاتينة، ممتصات الصدمات...",
         "saveMaintenanceLog": "حفظ سجل الصيانة",
         "filterActivatedToast": "تم تفعيل الفلتر لـ {name}! يعرض الكتالوج الآن القطع المتوافقة فقط.",
         "vehicleAddedActivatedToast": "تمت إضافة المركبة وتفعيلها! يعرض الكتالوج الآن القطع المتوافقة فقط."

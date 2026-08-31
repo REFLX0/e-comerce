@@ -1782,6 +1782,10 @@
         "airFilterReplacedHint": "Clean intake airflow and optimal combustion",
         "cabinFilterReplaced": "Cabin filter replaced (Pollen/Carbon)",
         "cabinFilterReplacedHint": "Interior cabin air quality for passengers",
+        "fuelFilterReplaced": "Fuel filter replaced",
+        "fuelFilterReplacedHint": "Protection for fuel injection & pump",
+        "customMaintenanceLabel": "Other parts or custom maintenance done",
+        "customMaintenancePlaceholder": "e.g. Spark plugs, brake pads, timing belt, shocks...",
         "saveMaintenanceLog": "Save Maintenance Log",
         "filterActivatedToast": "Filter activated for {name}! Catalog now displays compatible parts only.",
         "vehicleAddedActivatedToast": "Vehicle added and activated! The catalog now shows only compatible parts."

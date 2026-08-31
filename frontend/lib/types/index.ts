@@ -198,6 +198,8 @@ export interface UserCar {
   oilFilterChanged: boolean
   airFilterChanged: boolean
   cabinFilterChanged: boolean
+  fuelFilterChanged?: boolean
+  customNotes?: string | null
   createdAt: string
   updatedAt: string
 }

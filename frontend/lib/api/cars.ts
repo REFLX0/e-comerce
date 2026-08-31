@@ -24,6 +24,8 @@ export type CarPayload = {
   oilFilterChanged?: boolean
   airFilterChanged?: boolean
   cabinFilterChanged?: boolean
+  fuelFilterChanged?: boolean
+  customNotes?: string
 }
 
 export const carsApi = {

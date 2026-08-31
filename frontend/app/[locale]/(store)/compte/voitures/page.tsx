@@ -58,6 +58,8 @@ type CarForm = {
   oilFilterChanged: boolean
   airFilterChanged: boolean
   cabinFilterChanged: boolean
+  fuelFilterChanged: boolean
+  customNotes?: string
 }
 
 const EMPTY_FORM: CarForm = {
@@ -84,6 +86,8 @@ const EMPTY_FORM: CarForm = {
   oilFilterChanged: false,
   airFilterChanged: false,
   cabinFilterChanged: false,
+  fuelFilterChanged: false,
+  customNotes: '',
 }
 
 function toNumber(value: string, fallback = 0) {
@@ -295,6 +299,8 @@ function CarCard({ car }: { car: UserCar }) {
   const [oilFilterChanged, setOilFilterChanged] = useState(car.oilFilterChanged)
   const [airFilterChanged, setAirFilterChanged] = useState(car.airFilterChanged)
   const [cabinFilterChanged, setCabinFilterChanged] = useState(car.cabinFilterChanged)
+  const [fuelFilterChanged, setFuelFilterChanged] = useState(car.fuelFilterChanged ?? false)
+  const [customNotes, setCustomNotes] = useState(car.customNotes ?? car.trim ?? '')
 
   const updateMutation = useMutation({
     mutationFn: (payload: Partial<CarPayload>) => carsApi.update(car.id, payload),
@@ -309,6 +315,8 @@ function CarCard({ car }: { car: UserCar }) {
       setOilFilterChanged(updated.oilFilterChanged)
       setAirFilterChanged(updated.airFilterChanged)
       setCabinFilterChanged(updated.cabinFilterChanged)
+      setFuelFilterChanged(updated.fuelFilterChanged ?? false)
+      setCustomNotes(updated.customNotes ?? updated.trim ?? '')
       toast.success(t('carUpdated'))
     },
     onError: () => toast.error(t('carUpdateError')),
@@ -334,6 +342,9 @@ function CarCard({ car }: { car: UserCar }) {
       oilFilterChanged,
       airFilterChanged,
       cabinFilterChanged,
+      fuelFilterChanged,
+      customNotes: customNotes.trim() || undefined,
+      trim: customNotes.trim() || undefined,
     })
   }
 
@@ -519,6 +530,29 @@ function CarCard({ car }: { car: UserCar }) {
               label={t('cabinFilterReplaced')}
               sublabel={t('cabinFilterReplacedHint')}
               onChange={setCabinFilterChanged}
+            />
+            <ServiceToggle
+              id={`fuel-filter-${car.id}`}
+              checked={fuelFilterChanged}
+              disabled={updateMutation.isPending}
+              label={t('fuelFilterReplaced')}
+              sublabel={t('fuelFilterReplacedHint')}
+              onChange={setFuelFilterChanged}
+            />
+          </div>
+
+          {/* Custom Parts & Maintenance Input */}
+          <div className="rounded-2xl border border-slate-200/90 bg-slate-50/60 p-3.5 focus-within:border-[#16254c] focus-within:bg-white focus-within:ring-2 focus-within:ring-[#16254c]/10 transition-all">
+            <label htmlFor={`custom-notes-${car.id}`} className="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+              {t('customMaintenanceLabel')}
+            </label>
+            <input
+              id={`custom-notes-${car.id}`}
+              type="text"
+              value={customNotes}
+              onChange={(e) => setCustomNotes(e.target.value)}
+              placeholder={t('customMaintenancePlaceholder')}
+              className="w-full bg-transparent font-medium text-xs text-slate-800 placeholder-slate-400 outline-none"
             />
           </div>
         </div>
