@@ -2,16 +2,18 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["multiSchema"]
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  schemas  = ["public", "tecdoc"]
 }
 
 // ─────────────────────────────────────────
-//  ENUMS
+//  ENUMS (public schema)
 // ─────────────────────────────────────────
 
 enum Role {
@@ -19,6 +21,8 @@ enum Role {
   ADMIN
   PRO
   BLOCKED
+
+  @@schema("public")
 }
 
 enum OrderStatus {
@@ -28,11 +32,15 @@ enum OrderStatus {
   DELIVERED
   CANCELLED
   RETURNED
+
+  @@schema("public")
 }
 
 enum OrderType {
   DELIVERY      // Placed through checkout, shipped to customer
   STORE_PICKUP  // Placed/collected in person at the boutique
+
+  @@schema("public")
 }
 
 enum PaymentStatus {
@@ -40,17 +48,23 @@ enum PaymentStatus {
   COMPLETED
   FAILED
   REFUNDED
+
+  @@schema("public")
 }
 
 enum CouponType {
   PERCENT
   FIXED
   SHIPPING
+
+  @@schema("public")
 }
 
 enum TicketType {
   RETURN
   SUPPORT
+
+  @@schema("public")
 }
 
 enum TicketStatus {
@@ -58,6 +72,8 @@ enum TicketStatus {
   IN_PROGRESS
   RESOLVED
   CLOSED
+
+  @@schema("public")
 }
 
 enum VehicleType {
@@ -65,45 +81,63 @@ enum VehicleType {
   MOTO
   POIDS_LOURD
   AGRICOLE
+
+  @@schema("public")
 }
 
 enum FuelType {
   ESSENCE
   DIESEL
+  HYBRIDE
+  ELECTRIQUE
+  GPL
+
+  @@schema("public")
+}
+
+enum InvoiceStatus {
+  DRAFT
+  ISSUED
+  PAID
+  OVERDUE
+  CANCELLED
+
+  @@schema("public")
 }
 
 // ─────────────────────────────────────────
-//  AUTH (NextAuth v5 required tables)
+//  AUTHENTICATION & CORE USER (public schema)
 // ─────────────────────────────────────────
 
 model User {
-  id                   String     @id @default(cuid())
-  name                 String?
-  email                String     @unique
-  emailVerified        DateTime?
-  image                String?
-  passwordHash         String?
-  role                 Role       @default(CUSTOMER)
-  previousRole         Role?
-  phone                String?
-  resetPasswordToken   String?    @unique
-  resetPasswordExpires DateTime?
-  createdAt            DateTime   @default(now())
-  updatedAt            DateTime   @updatedAt
-  accounts              Account[]
-  sessions              Session[]
-  addresses             Address[]
-  cars                  UserCar[]
-  orders                Order[]
-  reviews               Review[]
-  wishlistItems         WishlistItem[]
-  supportTickets        SupportTicket[]
-  invoices              Invoice[]
+  id            String          @id @default(cuid())
+  email         String          @unique
+  name          String?
+  phone         String?
+  passwordHash  String?
+  role          Role            @default(CUSTOMER)
+  matriculeFisc String?
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+  addresses     Address[]
+  orders        Order[]
+  invoices      Invoice[]
+  reviews       Review[]
+  wishlist      WishlistItem[]
+  cars          UserCar[]
+  tickets       SupportTicket[]
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+
+  @@schema("public")
 }
 
 model Account {
   id                String  @id @default(cuid())
   userId            String
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   type              String
   provider          String
   providerAccountId String
@@ -114,17 +148,19 @@ model Account {
   scope             String?
   id_token          String? @db.Text
   session_state     String?
-  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
+  @@schema("public")
 }
 
 model Session {
   id           String   @id @default(cuid())
   sessionToken String   @unique
   userId       String
-  expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expires      DateTime
+
+  @@schema("public")
 }
 
 model VerificationToken {
@@ -133,63 +169,55 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+  @@schema("public")
 }
 
-// ─────────────────────────────────────────
-//  ADDRESSES
-// ─────────────────────────────────────────
-
 model Address {
-  id        String  @id @default(cuid())
+  id        String   @id @default(cuid())
   userId    String
-  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   fullName  String
   phone     String
-  address   String?
+  street    String
   city      String
   wilaya    String
   postalCode String?
-  isDefault Boolean @default(false)
-}
+  isDefault Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-// ─────────────────────────────────────────
-//  CUSTOMER CARS / VIDANGE REMINDERS
-// ─────────────────────────────────────────
+  @@schema("public")
+}
 
 model UserCar {
   id                   String    @id @default(cuid())
   userId               String
   user                 User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  name                 String
-  make                 String?   // display name e.g. "Renault" — used for compatibility matching
-  model                String?   // display name e.g. "Clio IV" — used for compatibility matching
-  makeSlug             String?   // slug e.g. "renault" — used for catalogue URL filter
-  modelSlug            String?   // slug e.g. "clio-iv" — used for catalogue URL filter
+  make                 String
+  model                String
+  generation           String?
   year                 Int?
-  vin                  String?   // 17-character VIN / chassis number
-  engine               String?   // motorisation e.g. "1.5 dCi 90" — used for compatibility matching
-  displacement         Float?    // cylinder capacity in litres e.g. 1.2, 1.5, 2.0
-  cylinders            Int?      // number of cylinders e.g. 3, 4, 6
-  fuel                 String?   // "essence" | "diesel" | "hybride" | "electrique" | "gpl"
-  power                Float?    // horsepower e.g. 90
-  transmission         String?   // "manuelle" | "automatique"
-  trim                 String?   // version / finition e.g. "Zen", "GT-Line"
-  productionDate       String?   // "YYYY-MM" production month/year
-  currentMileage       Int       @default(0)
-  lastOilChangeMileage Int       @default(0)
-  oilChangeIntervalKm  Int       @default(10000)
-  oilChangeDone        Boolean   @default(false)
-  oilFilterChanged     Boolean   @default(false)
-  airFilterChanged     Boolean   @default(false)
-  cabinFilterChanged   Boolean   @default(false)
+  engine               String?
+  fuelType             String?
+  vin                  String?
+  registrationPlate    String?
+  currentMileage       Int?
+  annualMileage        Int?      @default(15000)
+  lastOilChangeMileage Int?
+  lastOilChangeDate    DateTime?
+  oilCapacity          Float?
+  recommendedOilVisc   String?
+  recommendedOilSpec   String?
+  isDefault            Boolean   @default(false)
   createdAt            DateTime  @default(now())
   updatedAt            DateTime  @updatedAt
 
-  @@index([userId])
+  @@index([userId, isDefault])
+  @@schema("public")
 }
 
 // ─────────────────────────────────────────
-//  CATALOG
+//  COMMERCIAL CATALOGUE & INVENTORY (public schema)
 // ─────────────────────────────────────────
 
 model Category {
@@ -202,6 +230,8 @@ model Category {
   parent    Category?  @relation("CategoryHierarchy", fields: [parentId], references: [id], onDelete: SetNull)
   children  Category[] @relation("CategoryHierarchy")
   products  Product[]
+
+  @@schema("public")
 }
 
 model Brand {
@@ -210,6 +240,8 @@ model Brand {
   slug     String    @unique
   logoUrl  String?
   products Product[]
+
+  @@schema("public")
 }
 
 model Product {
@@ -220,10 +252,10 @@ model Product {
   description      String                @db.Text
   isFeatured       Boolean               @default(false)
   isPublished      Boolean               @default(true)
-  brandId          String
-  brand            Brand                 @relation(fields: [brandId], references: [id])
-  categoryId       String
-  category         Category              @relation(fields: [categoryId], references: [id])
+  brandId          String?
+  brand            Brand?                @relation(fields: [brandId], references: [id])
+  categoryId       String?
+  category         Category?             @relation(fields: [categoryId], references: [id])
   variants         ProductVariant[]
   images           ProductImage[]
   specs            ProductSpecs?
@@ -233,18 +265,26 @@ model Product {
   reviews          Review[]
   wishlistItems    WishlistItem[]
   createdAt        DateTime              @default(now())
+
+  @@schema("public")
 }
 
 model ProductVariant {
-  id         String      @id @default(cuid())
-  productId  String
-  product    Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
-  volume     String      // e.g., "1L", "5L", "208L"
-  price      Float
-  stockQty   Int         @default(0)
-  skuVariant String      @unique
-  imageUrl   String?     // variant-specific image (different bottles per volume)
-  orderItems OrderItem[]
+  id              String      @id @default(cuid())
+  productId       String
+  product         Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  volume          String      // e.g., "1L", "5L", "1 Pièce"
+  price           Float       // Selling price TTC
+  costPrice       Float?      // Purchase price from supplier
+  stockQty        Int         @default(0)
+  skuVariant      String      @unique
+  tecdocArticleId Int?        @unique // Direct link to tecdoc.articles.id
+  supplierName    String?     // Name of local supplier/grossiste
+  warehouse       String?     // Location/bin in warehouse e.g. "A-04"
+  imageUrl        String?
+  orderItems      OrderItem[]
+
+  @@schema("public")
 }
 
 model ProductImage {
@@ -255,68 +295,70 @@ model ProductImage {
   altFr     String?
   isPrimary Boolean @default(false)
   sortOrder Int     @default(0)
+
+  @@schema("public")
 }
 
-// Oil technical specs (viscosity, API standard, etc.)
 model ProductSpecs {
-  id               String      @id @default(cuid())
-  productId        String      @unique
-  product          Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
-  viscosity        String?     // e.g., "5W-40"
-  apiStandard      String?     // e.g., "API SN"
-  aeceaStandard    String?     // e.g., "ACEA C3"
-  jasoStandard     String?     // e.g., "MA2", "MA", "MB" — motorcycle wet-clutch JASO grade
-  isFullySynth     Boolean     @default(false)
-  isSemiSynth      Boolean     @default(false)
-  isMinerale       Boolean     @default(false)
+  id               String        @id @default(cuid())
+  productId        String        @unique
+  product          Product       @relation(fields: [productId], references: [id], onDelete: Cascade)
+  viscosity        String?
+  apiStandard      String?
+  aeceaStandard    String?
+  jasoStandard     String?
+  isFullySynth     Boolean       @default(false)
+  isSemiSynth      Boolean       @default(false)
+  isMinerale       Boolean       @default(false)
   DPFCompatible    Boolean?
   TurboCompatible  Boolean?
   HybridCompatible Boolean?
-  OEMApprovals     String?     // e.g., "BMW LL-04; MB 229.51"
+  OEMApprovals     String?
   vehicleTypes     VehicleType[]
   fuelTypes        FuelType[]
   minCylinders     Int?
   maxCylinders     Int?
   minPower         Float?
   maxPower         Float?
-}
 
-// ─────────────────────────────────────────
-//  "TROUVER MON HUILE" CONFIGURATOR
-// ─────────────────────────────────────────
+  @@schema("public")
+}
 
 model VehicleMake {
   id       String         @id @default(cuid())
-  name     String         @unique // e.g., "Renault"
+  name     String         @unique
   slug     String         @unique
   models   VehicleModel[]
+
+  @@schema("public")
 }
 
 model VehicleModel {
-  id             String               @id @default(cuid())
-  makeId         String
-  make           VehicleMake          @relation(fields: [makeId], references: [id], onDelete: Cascade)
-  vehicleType    VehicleType @default(AUTOMOBILE)
-  name           String               // e.g., "Clio IV"
-  slug           String               @unique
+  id              String                 @id @default(cuid())
+  makeId          String
+  make            VehicleMake            @relation(fields: [makeId], references: [id], onDelete: Cascade)
+  vehicleType     VehicleType            @default(AUTOMOBILE)
+  name            String
+  slug            String                 @unique
   compatibilities VehicleCompatibility[]
+
+  @@schema("public")
 }
 
 model VehicleCompatibility {
-  id            String       @id @default(cuid())
-  productId     String
-  product       Product      @relation(fields: [productId], references: [id], onDelete: Cascade)
+  id             String       @id @default(cuid())
+  productId      String
+  product        Product      @relation(fields: [productId], references: [id], onDelete: Cascade)
   vehicleModelId String
-  vehicleModel  VehicleModel @relation(fields: [vehicleModelId], references: [id], onDelete: Cascade)
-  engineCode    String?      // e.g., "1.5 dCi 90"
-  yearFrom      Int?
-  yearTo        Int?
+  vehicleModel   VehicleModel @relation(fields: [vehicleModelId], references: [id], onDelete: Cascade)
+  engineCode     String?
+  yearFrom       Int?
+  yearTo         Int?
 
   @@unique([productId, vehicleModelId, engineCode])
+  @@schema("public")
 }
 
-// Administrative provenance for imported lubricant specifications.  This is
-// deliberately kept separate from the customer-facing product data.
 model ProductSourcing {
   id                String   @id @default(cuid())
   productId         String   @unique
@@ -327,10 +369,10 @@ model ProductSourcing {
   derivedValueNotes String?  @db.Text
   confidence        String
   createdAt         DateTime @default(now())
+
+  @@schema("public")
 }
 
-// Captures unsupported vehicle searches so the catalogue team can source the
-// corresponding specifications later.
 model UnmatchedVehicleQuery {
   id                    String   @id @default(cuid())
   make                  String
@@ -344,55 +386,53 @@ model UnmatchedVehicleQuery {
   createdAt             DateTime @default(now())
 
   @@index([make, model, engineCode, createdAt])
+  @@schema("public")
 }
 
 // ─────────────────────────────────────────
-//  OIL FINDER — STAGING DATASET
-//  Vehicle→oil specification lookup data imported from the verified
-//  automobile-{brand}.json files + characteristics-lookup-conflicts.json.
-//  Kept separate from the catalogue (ProductSpecs) and the product
-//  compatibility matcher (VehicleMake/VehicleModel/VehicleCompatibility).
+//  OIL FINDER — STAGING & CAPACITIES (public schema)
 // ─────────────────────────────────────────
 
 model OilFinderOilSpec {
   id               String             @id @default(cuid())
-  viscosity        String // e.g. "5W-40"
-  apiStandard      String? // e.g. "API SN"
-  aceaStandard     String? // e.g. "ACEA A3/B4"
-  oemApproval      String? // e.g. "VW 502.00"
-  capacityLiters   Float? // from oilCapacityLiters
-  changeIntervalKm Int? // from oilChangeIntervalKm
-  fingerprint      String             @unique // canonical key: normalized JSON of (viscosity|api|acea|oem)
+  viscosity        String
+  apiStandard      String?
+  aceaStandard     String?
+  oemApproval      String?
+  capacityLiters   Float?
+  changeIntervalKm Int?
+  fingerprint      String             @unique
   vehicles         OilFinderVehicle[]
+
+  @@schema("public")
 }
 
 model OilFinderVehicle {
-  id              String             @id @default(cuid())
-  make            String
-  model           String
-  category        String             @default("automobile")
-  generation      String             @default("") // "" = not specified (keeps the natural key non-null → idempotent import)
-  yearFrom        Int?
-  yearTo          Int?
-  engineCode      String             @default("") // "" = not specified
-  displacementCc  Int?
-  powerKw         Float?
-  powerHp         Float?
-  fuelType        String // String, not the ESSENCE/DIESEL enum — staging may hold hybride/gpl
-  oilSpecId       String
-  oilSpec         OilFinderOilSpec   @relation(fields: [oilSpecId], references: [id], onDelete: Restrict)
-  source          String // provenance, preserved for support/audit
-  confidence      String // "high" | "medium" | "low" — preserved, queryable
-  matchAmbiguity  Json? // null | { field: "major"|"minor" } — verbatim from input
+  id                           String           @id @default(cuid())
+  make                         String
+  model                        String
+  category                     String           @default("automobile")
+  generation                   String           @default("")
+  yearFrom                     Int?
+  yearTo                       Int?
+  engineCode                   String           @default("")
+  displacementCc               Int?
+  powerKw                      Float?
+  powerHp                      Float?
+  fuelType                     String
+  oilSpecId                    String
+  oilSpec                      OilFinderOilSpec @relation(fields: [oilSpecId], references: [id], onDelete: Restrict)
+  source                       String
+  confidence                   String
+  matchAmbiguity               Json?
+  hydraulicTransmissionOilType String?
+  hydraulicOilSpecOEM          String?
+  hydraulicOilCapacityLiters   Float?
 
-  // Hydraulic fluid fields (specifically for agricole category)
-  hydraulicTransmissionOilType  String?
-  hydraulicOilSpecOEM           String?
-  hydraulicOilCapacityLiters    Float?
-
-  @@unique([make, model, generation, engineCode, source]) // same vehicle from N sources = N rows
+  @@unique([make, model, generation, engineCode, source])
   @@index([make, model, engineCode])
   @@index([displacementCc, powerHp, fuelType])
+  @@schema("public")
 }
 
 model OilFinderLookupConflict {
@@ -400,29 +440,29 @@ model OilFinderLookupConflict {
   displacementCc  Int
   powerHp         Float
   fuelType        String
-  highestSeverity String // "MAJOR" | "MINOR" (derived: any major field → MAJOR)
-  fieldSeverities Json // { oilViscosity: "major", ... } — verbatim from report
+  highestSeverity String
+  fieldSeverities Json
   candidateCount  Int
-  rawReport       Json? // full report line, for audit
+  rawReport       Json?
 
   @@unique([displacementCc, powerHp, fuelType])
+  @@schema("public")
 }
 
 // ─────────────────────────────────────────
-//  ORDERS
+//  ORDERS, BILLING & CUSTOMERS (public schema)
 // ─────────────────────────────────────────
 
 model Order {
-  id             String      @id @default(cuid())
+  id             String          @id @default(cuid())
   userId         String?
-  user           User?       @relation(fields: [userId], references: [id])
-  status         OrderStatus @default(PENDING)
-  orderType      OrderType   @default(DELIVERY)
+  user           User?           @relation(fields: [userId], references: [id])
+  status         OrderStatus     @default(PENDING)
+  orderType      OrderType       @default(DELIVERY)
   totalAmount    Float
-  shippingCost   Float       @default(0)
+  shippingCost   Float           @default(0)
   promoCode      String?
-  idempotencyKey String?     @unique
-  // Shipping snapshot (denormalized for data integrity)
+  idempotencyKey String?         @unique
   shipFullName   String
   shipPhone      String
   shipWilaya     String
@@ -433,73 +473,71 @@ model Order {
   supportTickets SupportTicket[]
   payments       Payment[]
   invoice        Invoice?
-  createdAt      DateTime    @default(now())
-  updatedAt      DateTime    @updatedAt
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
 
   @@index([status, createdAt])
+  @@schema("public")
 }
 
 model OrderItem {
-  id        String         @id @default(cuid())
-  orderId   String
-  order     Order          @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  productId String
-  product   Product        @relation(fields: [productId], references: [id])
-  variantId String
-  variant   ProductVariant @relation(fields: [variantId], references: [id])
-  quantity  Int
-  unitPrice Float          // Snapshot of price at time of purchase
+  id              String          @id @default(cuid())
+  orderId         String
+  order           Order           @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId       String
+  product         Product         @relation(fields: [productId], references: [id])
+  variantId       String
+  variant         ProductVariant  @relation(fields: [variantId], references: [id])
+  tecdocArticleId Int?            // Snapshot of TecDoc Article ID
+  quantity        Int
+  unitPrice       Float           // Snapshot of price at time of purchase
+
+  @@schema("public")
 }
 
 model Review {
-  id          String   @id @default(cuid())
-  productId   String
-  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
-  userId      String?
-  user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
-  authorName  String
-  rating      Int
-  comment     String
-  isApproved  Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-}
+  id         String   @id @default(cuid())
+  productId  String
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  userId     String?
+  user       User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  authorName String
+  rating     Int
+  comment    String
+  isApproved Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
-// ─────────────────────────────────────────
-//  NOTIFICATIONS (Admin)
-// ─────────────────────────────────────────
+  @@schema("public")
+}
 
 model Notification {
   id        String   @id @default(cuid())
-  type      String   // "new_order" | "low_stock" | "new_review" | "new_ticket"
+  type      String
   title     String
   message   String?
-  link      String?  // relative admin URL e.g. "/admin/orders/xxx"
+  link      String?
   read      Boolean  @default(false)
   createdAt DateTime @default(now())
-}
 
-// ─────────────────────────────────────────
-//  COUPONS
-// ─────────────────────────────────────────
+  @@schema("public")
+}
 
 model Coupon {
   id          String     @id @default(cuid())
   code        String     @unique
   type        CouponType
-  value       Float      // Percentage (e.g. 20 = 20%) or fixed TND amount
-  minAmount   Float?     // Minimum cart total to apply coupon
+  value       Float
+  minAmount   Float?
   maxUses     Int?
   currentUses Int        @default(0)
   expiryDate  DateTime?
   isActive    Boolean    @default(true)
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
-}
 
-// ─────────────────────────────────────────
-//  WISHLIST
-// ─────────────────────────────────────────
+  @@schema("public")
+}
 
 model WishlistItem {
   id        String   @id @default(cuid())
@@ -510,11 +548,8 @@ model WishlistItem {
   createdAt DateTime @default(now())
 
   @@unique([userId, productId])
+  @@schema("public")
 }
-
-// ─────────────────────────────────────────
-//  SUPPORT TICKETS
-// ─────────────────────────────────────────
 
 model SupportTicket {
   id        String       @id @default(cuid())
@@ -528,43 +563,37 @@ model SupportTicket {
   status    TicketStatus @default(OPEN)
   createdAt DateTime     @default(now())
   updatedAt DateTime     @updatedAt
-}
 
-// ─────────────────────────────────────────
-//  PAYMENTS
-// ─────────────────────────────────────────
+  @@schema("public")
+}
 
 model Payment {
   id            String        @id @default(cuid())
   orderId       String
   order         Order         @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  method        String        @default("COD") // "COD", "CREDIT_CARD", etc.
+  method        String        @default("COD")
   amount        Float
   status        PaymentStatus @default(PENDING)
-  transactionId String?       // Optional: ID from a payment gateway
+  transactionId String?
   notes         String?       @db.Text
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
-}
 
-// ─────────────────────────────────────────
-//  SHIPPING ZONES
-// ─────────────────────────────────────────
+  @@schema("public")
+}
 
 model ShippingZone {
   id        String   @id @default(cuid())
   name      String
   price     Float
-  eta       String   // e.g. "24-48h"
+  eta       String
   sortOrder Int      @default(0)
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-}
 
-// ─────────────────────────────────────────
-//  CONTACT MESSAGES
-// ─────────────────────────────────────────
+  @@schema("public")
+}
 
 model ContactMessage {
   id             String   @id @default(cuid())
@@ -578,64 +607,45 @@ model ContactMessage {
   createdAt      DateTime @default(now())
 
   @@index([createdAt])
+  @@schema("public")
 }
-
-// ─────────────────────────────────────────
-//  SETTINGS
-// ─────────────────────────────────────────
 
 model Setting {
   id        String   @id @default(cuid())
-  key       String   @unique // e.g., "SITE_NAME", "CONTACT_EMAIL", "COD_ENABLED"
-  value     String   @db.Text // Stored as JSON strings to support booleans, numbers, etc.
+  key       String   @unique
+  value     String   @db.Text
   updatedAt DateTime @updatedAt
-}
 
-// ─────────────────────────────────────────
-//  INVOICES / FACTURES
-// ─────────────────────────────────────────
-
-enum InvoiceStatus {
-  DRAFT
-  ISSUED
-  PAID
-  OVERDUE
-  CANCELLED
+  @@schema("public")
 }
 
 model Invoice {
-  id             String          @id @default(cuid())
-  sequenceNumber Int             @default(autoincrement()) @unique
-  invoiceNumber  String          @unique // e.g. "FACTURE#1"
-  issueDate      DateTime        @default(now())
+  id             String        @id @default(cuid())
+  sequenceNumber Int           @unique @default(autoincrement())
+  invoiceNumber  String        @unique
+  issueDate      DateTime      @default(now())
   dueDate        DateTime?
-  status         InvoiceStatus   @default(DRAFT)
-  
-  // Relations
+  status         InvoiceStatus @default(DRAFT)
   customerId     String?
-  customer       User?           @relation(fields: [customerId], references: [id])
-  
-  orderId        String?         @unique
-  order          Order?          @relation(fields: [orderId], references: [id])
-  
-  // Snapshot data at time of generation/creation
+  customer       User?         @relation(fields: [customerId], references: [id])
+  orderId        String?       @unique
+  order          Order?        @relation(fields: [orderId], references: [id])
   clientName     String
   clientAddress  String?
   clientEmail    String?
   clientPhone    String?
-  clientMf       String?         // Matricule Fiscal of client (B2B)
-  
-  notes          String?         @db.Text
+  clientMf       String?
+  notes          String?       @db.Text
   subtotalHT     Float
   totalTVA       Float
   totalTTC       Float
-  amountInWords  String          @db.Text
-  
+  amountInWords  String        @db.Text
   lines          InvoiceLine[]
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
 
   @@index([status, createdAt])
+  @@schema("public")
 }
 
 model InvoiceLine {
@@ -648,4 +658,149 @@ model InvoiceLine {
   vatRate     Float    @default(0.19)
   vatAmount   Float
   totalTTC    Float
+
+  @@schema("public")
+}
+
+// ─────────────────────────────────────────
+//  TECDOC REFERENCE MODELS (tecdoc schema)
+// ─────────────────────────────────────────
+
+model TecdocSupplier {
+  id                   Int       @id
+  internalId           Int?      @map("internal_id")
+  dataVersion          Int?      @map("data_version")
+  matchcode            String?   @db.VarChar(255)
+  nbrOfArticles        Int?      @map("nbr_of_articles")
+  hasNewVersionArticles Boolean?  @map("has_new_version_articles")
+  description          String?   @db.Text
+
+  @@map("suppliers")
+  @@schema("tecdoc")
+}
+
+model TecdocProduct {
+  id                       Int     @id
+  internalId               Int?    @map("internal_id")
+  normalizedDescription    String? @map("normalized_description") @db.VarChar(255)
+  assemblyGroupDescription String? @map("assembly_group_description") @db.VarChar(255)
+  usageDescription         String? @map("usage_description") @db.VarChar(255)
+  description              String? @db.VarChar(255)
+
+  @@map("products")
+  @@schema("tecdoc")
+}
+
+model TecdocManufacturer {
+  id                   Int      @id
+  matchcode            String?  @db.VarChar(255)
+  isVgl                Boolean? @map("is_vgl")
+  description          String?  @db.VarChar(255)
+  isPassengerCar       Boolean? @default(false) @map("is_passenger_car")
+  isCommercialVehicle  Boolean? @default(false) @map("is_commercial_vehicle")
+  isEngine             Boolean? @default(false) @map("is_engine")
+  isMotorbike          Boolean? @default(false) @map("is_motorbike")
+  isAxle               Boolean? @default(false) @map("is_axle")
+  isTransporter        Boolean? @default(false) @map("is_transporter")
+  isCvManufacturerId   Boolean? @default(false) @map("is_cv_manufacturer_id")
+  canBeDisplayed       Boolean? @default(true) @map("can_be_displayed")
+
+  @@map("manufacturers")
+  @@schema("tecdoc")
+}
+
+model TecdocModel {
+  id                     Int       @id
+  manufacturerId         Int?      @map("manufacturer_id")
+  dateFrom               DateTime? @map("date_from") @db.Date
+  dateTo                 DateTime? @map("date_to") @db.Date
+  description            String?   @db.Text
+  canBeDisplayed         Boolean?  @default(true) @map("can_be_displayed")
+  isPassengerCar         Boolean?  @default(false) @map("is_passenger_car")
+  isCommercialVehicle    Boolean?  @default(false) @map("is_commercial_vehicle")
+  isEngine               Boolean?  @default(false) @map("is_engine")
+  isMotorbike            Boolean?  @default(false) @map("is_motorbike")
+  isAxle                 Boolean?  @default(false) @map("is_axle")
+  isTransporter          Boolean?  @default(false) @map("is_transporter")
+  isCvManufacturerId     Boolean?  @default(false) @map("is_cv_manufacturer_id")
+  hasLink                Boolean?  @default(false) @map("has_link")
+  isValidForCurrentCountry Boolean? @default(true) @map("is_valid_for_current_country")
+
+  @@map("models")
+  @@schema("tecdoc")
+}
+
+model TecdocPassengerCar {
+  id                   Int       @id
+  internalId           Int?      @map("internal_id")
+  modelId              Int?      @map("model_id")
+  manufacturerMatchcode String?  @map("manufacturer_matchcode") @db.VarChar(255)
+  manufacturerId       Int?      @map("manufacturer_id")
+  dateFrom             DateTime? @map("date_from") @db.Date
+  dateTo               DateTime? @map("date_to") @db.Date
+  description          String?   @db.Text
+  fullDescription      String?   @map("full_description") @db.VarChar(255)
+  canBeDisplayed       Boolean?  @default(true) @map("can_be_displayed")
+
+  @@map("passengercars")
+  @@schema("tecdoc")
+}
+
+model TecdocEngine {
+  id               Int       @id
+  internalId       Int?      @map("internal_id")
+  manufacturer     Int?
+  salesDescription String?   @map("sales_description") @db.Text
+  hasLinkitem      Boolean?  @default(false) @map("has_linkitem")
+  description      String?   @db.Text
+  dateFrom         DateTime? @map("date_from") @db.Date
+  dateTo           DateTime? @map("date_to") @db.Date
+  canBeDisplayed   Boolean?  @default(true) @map("can_be_displayed")
+
+  @@map("engines")
+  @@schema("tecdoc")
+}
+
+model TecdocArticle {
+  id                         Int      @id
+  dataSupplierArticleNumber  String   @map("data_supplier_article_number") @db.VarChar(255)
+  supplier                   Int
+  currentProduct             Int?     @map("current_product")
+  normalizedDescription      String?  @map("normalized_description") @db.Text
+  hasLinkitems               Boolean? @default(false) @map("has_linkitems")
+  hasPassengerCar            Boolean? @default(false) @map("has_passenger_car")
+  hasCommercialVehicle       Boolean? @default(false) @map("has_commercial_vehicle")
+  hasMotorbike               Boolean? @default(false) @map("has_motorbike")
+  hasEngine                  Boolean? @default(false) @map("has_engine")
+  hasAxle                    Boolean? @default(false) @map("has_axle")
+  hasCvManuId                Boolean? @default(false) @map("has_cv_manu_id")
+  lotSize1                   Int?     @map("lot_size1")
+  lotSize2                   Int?     @map("lot_size2")
+  flagMaterialCertification  Boolean? @default(false) @map("flag_material_certification")
+  flagSelfServicePacking     Boolean? @default(false) @map("flag_self_service_packing")
+  flagRemanufactured         Boolean? @default(false) @map("flag_remanufactured")
+  flagAccessory              Boolean? @default(false) @map("flag_accessory")
+  isPseudoArticle            Boolean? @default(false) @map("is_pseudo_article")
+  isValid                    Boolean? @default(true) @map("is_valid")
+  description                String?  @db.Text
+  articleStateAttributeGroup String?  @map("article_state_attribute_group") @db.VarChar(255)
+  articleStateAttributeType  String?  @map("article_state_attribute_type") @db.VarChar(255)
+  articleStateDisplayTitle   String?  @map("article_state_display_title") @db.VarChar(255)
+  articleStateDisplayValue   String?  @map("article_state_display_value") @db.VarChar(255)
+  packingUnit                Int?     @map("packing_unit")
+  quantityPerPackingUnit     Int?     @map("quantity_per_packing_unit")
+
+  @@map("articles")
+  @@schema("tecdoc")
+}
+
+model TecdocSearchTree {
+  treeId       Int     @map("tree_id")
+  nodeId       Int     @map("node_id")
+  parentNodeId Int?    @map("parent_node_id")
+  description  String? @db.VarChar(255)
+
+  @@id([treeId, nodeId])
+  @@map("search_trees")
+  @@schema("tecdoc")
 }

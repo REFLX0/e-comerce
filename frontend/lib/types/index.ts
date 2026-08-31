@@ -104,6 +104,12 @@ export interface Product {
   id: string
   slug: string
   name: string
+  sku?: string
+  articleNumber?: string
+  eanNumbers?: string[]
+  oeNumbers?: Array<{ manufacturer: string; oenNumber: string }>
+  attributes?: Array<{ title: string; value: string }>
+  crossList?: Array<{ supplier: string; article: string }>
   shortDescription?: string
   description?: string
   categoryId: string

@@ -94,7 +94,11 @@ function toSpecRows(specs?: Product['specs'], t?: (k: string) => string): Detail
 export function ProductTabs({ product }: Props) {
   const t = useTranslations('Product')
   const details = useMemo(() => splitProductDetails(product.description), [product.description])
-  const specRows = useMemo(() => [...toSpecRows(product.specs, t), ...details.technicalDetails], [product.specs, details.technicalDetails, t])
+  const tecdocAttributeRows = useMemo(() => {
+    if (!product.attributes?.length) return []
+    return product.attributes.map((a) => ({ label: a.title, value: a.value }))
+  }, [product.attributes])
+  const specRows = useMemo(() => [...toSpecRows(product.specs, t), ...tecdocAttributeRows, ...details.technicalDetails], [product.specs, tecdocAttributeRows, details.technicalDetails, t])
 
   return (
     <div className="border-brand-surface-dark mt-16 rounded-2xl border bg-white p-6 shadow-sm md:p-10">
@@ -102,7 +106,13 @@ export function ProductTabs({ product }: Props) {
         <TabsList className="border-brand-surface-dark hide-scrollbar mb-8 h-auto w-full flex-nowrap justify-start overflow-x-auto rounded-none border-b bg-transparent p-0">
           <ProductTab value="description">{t('description')}</ProductTab>
           <ProductTab value="specs">{t('specifications')}</ProductTab>
+          {product.oeNumbers?.length ? (
+            <ProductTab value="oe">Références Constructeur ({product.oeNumbers.length})</ProductTab>
+          ) : null}
           <ProductTab value="compatibility">{t('compatibility')}</ProductTab>
+          {product.crossList?.length ? (
+            <ProductTab value="cross">Équivalences ({product.crossList.length})</ProductTab>
+          ) : null}
           <ProductTab value="reviews">{t('reviews', { count: product.reviewCount })}</ProductTab>
         </TabsList>
 
@@ -129,6 +139,19 @@ export function ProductTabs({ product }: Props) {
           )}
         </TabsContent>
 
+        {product.oeNumbers?.length ? (
+          <TabsContent value="oe" className="mt-0">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+              {product.oeNumbers.map((oe, idx) => (
+                <div key={`${oe.manufacturer}-${oe.oenNumber}-${idx}`} className="flex items-center justify-between p-3 rounded-lg border border-gray-100 bg-gray-50/50">
+                  <span className="text-xs font-semibold uppercase text-gray-500">{oe.manufacturer}</span>
+                  <span className="font-mono text-sm font-bold text-brand-primary">{oe.oenNumber}</span>
+                </div>
+              ))}
+            </div>
+          </TabsContent>
+        ) : null}
+
         <TabsContent value="compatibility" className="mt-0">
           {product.compatibility?.length ? (
             <ul className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
@@ -149,7 +172,20 @@ export function ProductTabs({ product }: Props) {
           )}
         </TabsContent>
 
-        <TabsContent value="reviews" className="mt-0" id="avis">
+        {product.crossList?.length ? (
+          <TabsContent value="cross" className="mt-0">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+              {product.crossList.map((cross, idx) => (
+                <div key={`${cross.supplier}-${cross.article}-${idx}`} className="flex items-center justify-between p-3 rounded-lg border border-gray-100 bg-gray-50/50">
+                  <span className="text-xs font-semibold uppercase text-gray-500">{cross.supplier}</span>
+                  <span className="font-mono text-sm font-bold text-brand-primary">{cross.article}</span>
+                </div>
+              ))}
+            </div>
+          </TabsContent>
+        ) : null}
+
+        <TabsContent value="reviews" className="mt-0">
           <ReviewsSection productId={product.id} rating={product.rating} reviewCount={product.reviewCount} />
         </TabsContent>
       </Tabs>
@@ -158,17 +194,14 @@ export function ProductTabs({ product }: Props) {
 }
 
 const ProductTab = forwardRef<HTMLButtonElement, { value: string; children: React.ReactNode }>(
-  ({ value, children, ...props }, ref) => {
-    return (
-      <TabsTrigger
-        ref={ref}
-        value={value}
-        className="data-[state=active]:border-brand-primary data-[state=active]:text-brand-primary font-display shrink-0 rounded-none border-b-2 border-transparent px-6 pb-4 text-base font-medium text-gray-500 data-[state=active]:bg-transparent md:text-lg"
-        {...props}
-      >
-        {children}
-      </TabsTrigger>
-    )
-  }
+  ({ value, children }, ref) => (
+    <TabsTrigger
+      ref={ref}
+      value={value}
+      className="data-[state=active]:border-brand-primary data-[state=active]:text-brand-primary shrink-0 rounded-none border-b-2 border-transparent px-4 pb-4 pt-2 text-sm font-semibold text-gray-500 transition-colors hover:text-brand-primary data-[state=active]:bg-transparent md:px-6 md:text-base"
+    >
+      {children}
+    </TabsTrigger>
+  )
 )
 ProductTab.displayName = 'ProductTab'
