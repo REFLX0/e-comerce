@@ -32,14 +32,15 @@ jobs:
             
             cd ${{ env.DEPLOY_DIR }}
             
-            # Pull latest changes
+            # Pull latest changes from GitHub
             git fetch origin main
             git reset --hard origin/main
             
-            # Update containers with latest changes
-            docker compose up -d --build nginx backend frontend
+            # Build and update modified containers automatically
+            docker compose build frontend backend
+            docker compose up -d --no-deps frontend backend nginx
             
-            # Clean up dangling images to save disk space
+            # Clean up dangling build cache to save disk space
             docker image prune -f
             
             echo "=== Deployment successful: https://specpart.tech ==="
