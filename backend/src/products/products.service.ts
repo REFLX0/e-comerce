@@ -29,6 +29,11 @@ export interface ProductFilters {
   acea?: string;
   volume?: string;
   oem?: string;
+  make?: string;
+  model?: string;
+  engineCode?: string;
+  year?: number;
+  vehicleType?: string;
 }
 
 const CATEGORY_SYNONYMS: Record<string, string[]> = {
@@ -312,118 +317,51 @@ export class ProductsService implements OnModuleInit {
     const needsManualSort =
       filters.sortBy === 'price_asc' || filters.sortBy === 'price_desc';
 
-    let data: any[] = [];
-    let total: number = 0;
-    let nextCursor: string | null = null;
+    // Vehicle compatibility filter (when user selects a car or from OilFinder)
+    if (filters.make || filters.model || filters.engineCode) {
+      const compatConditions: Prisma.ProductWhereInput[] = [];
 
-    const isOilSpecific = Boolean(
-      filters.viscosity || filters.type || filters.api || filters.acea || filters.volume
-    );
+      compatConditions.push({
+        compatibilities: {
+          some: {
+            ...(filters.make ? { vehicleModel: { make: { name: { contains: filters.make, mode: 'insensitive' } } } } : {}),
+            ...(filters.model ? { vehicleModel: { name: { contains: filters.model, mode: 'insensitive' } } } : {}),
+            ...(filters.engineCode ? { engineCode: { contains: filters.engineCode, mode: 'insensitive' } } : {}),
+          },
+        },
+      });
 
-    let prismaProducts: any[] = [];
-    let prismaCount = 0;
-    try {
-      [prismaProducts, prismaCount] = await Promise.all([
-        this.prismaRead.db.product.findMany({
-          where,
-          include: this.buildInclude(),
-          orderBy: this.buildOrderBy(filters.sortBy),
-          skip,
-          take: limit,
-        }),
-        this.prismaRead.db.product.count({ where }),
-      ]);
-    } catch {}
-
-    if (prismaCount > 0 && isOilSpecific) {
-      data = prismaProducts.map((p) => this.serialize(p));
-      total = prismaCount;
-    } else {
-      const tecdocWhere: string[] = [];
-      const params: any[] = [];
-      let pIdx = 1;
-
-      if (filters.search) {
-        tecdocWhere.push(`(a.data_supplier_article_number ILIKE $${pIdx} OR s.matchcode ILIKE $${pIdx} OR p.description ILIKE $${pIdx})`);
-        params.push(`%${filters.search}%`);
-        pIdx++;
-      }
-      if (filters.brands?.length) {
-        tecdocWhere.push(`LOWER(s.matchcode) = ANY($${pIdx})`);
-        params.push(filters.brands.map((b) => b.toLowerCase()));
-        pIdx++;
-      } else if (filters.brandSlug) {
-        tecdocWhere.push(`(LOWER(REGEXP_REPLACE(s.matchcode, '[^a-zA-Z0-9]+', '-', 'g')) = $${pIdx} OR LOWER(s.matchcode) = $${pIdx})`);
-        params.push(filters.brandSlug.toLowerCase());
-        pIdx++;
-      }
-      if (filters.categorySlug) {
-        const slugNorm = filters.categorySlug.toLowerCase().trim();
-        const synonyms = CATEGORY_SYNONYMS[slugNorm] || [slugNorm.replace(/-s$/, '').replace(/-/g, ' ')];
-        const synClauses: string[] = [];
-        for (const syn of synonyms) {
-          synClauses.push(`p.description ILIKE $${pIdx}`);
-          params.push(`%${syn}%`);
-          pIdx++;
-        }
-        tecdocWhere.push(`(${synClauses.join(' OR ')})`);
+      if (filters.make) {
+        compatConditions.push({
+          specs: {
+            OEMApprovals: { contains: filters.make, mode: 'insensitive' },
+          },
+        });
       }
 
-      const whereClause = tecdocWhere.length > 0 ? `WHERE ${tecdocWhere.join(' AND ')}` : '';
-
-      let tecdocRows: any[] = [];
-      let tecdocTotal = 0;
-
-      try {
-        const query = `
-          SELECT a.id, a.data_supplier_article_number, a.supplier, s.matchcode AS brand_name,
-                 p.description AS product_type, a.description,
-                 COALESCE(img.filename, mi.picture_name) AS picture_name
-          FROM tecdoc.articles a
-          JOIN tecdoc.suppliers s ON s.id = a.supplier
-          LEFT JOIN tecdoc.products p ON p.id = a.current_product
-          LEFT JOIN tecdoc.article_mediainformation mi ON mi.article_id = a.id
-          JOIN tecdoc.article_images img ON (img.supplier = a.supplier AND img.article_number = a.data_supplier_article_number)
-          ${whereClause}
-          ORDER BY a.id ASC
-          LIMIT ${limit} OFFSET ${skip}
-        `;
-        tecdocRows = (await this.prismaRead.db.$queryRawUnsafe(query, ...params)) as any[];
-
-        const countQuery = `
-          SELECT COUNT(*)::int AS count
-          FROM tecdoc.articles a
-          JOIN tecdoc.suppliers s ON s.id = a.supplier
-          LEFT JOIN tecdoc.products p ON p.id = a.current_product
-          JOIN tecdoc.article_images img ON (img.supplier = a.supplier AND img.article_number = a.data_supplier_article_number)
-          ${whereClause}
-        `;
-        const countRows: any[] = (await this.prismaRead.db.$queryRawUnsafe(countQuery, ...params)) as any[];
-        tecdocTotal = countRows?.[0]?.count ?? 0;
-      } catch (err) {
-        console.error('Error fetching TecDoc articles in findAll:', err);
-      }
-
-      if (tecdocRows.length > 0) {
-        const tecdocSerialized = tecdocRows.map((r) => this.serializeTecdocArticle(r));
-        const localSerialized = prismaProducts.map((p) => this.serialize(p));
-        data = [...localSerialized, ...tecdocSerialized].slice(0, limit);
-        total = prismaCount + tecdocTotal;
-      } else {
-        data = prismaProducts.map((p) => this.serialize(p));
-        total = prismaCount;
-      }
+      where.AND = [{ OR: compatConditions }];
     }
+
+    const [prismaProducts, prismaCount] = await Promise.all([
+      this.prismaRead.db.product.findMany({
+        where,
+        include: this.buildInclude(),
+        orderBy: this.buildOrderBy(filters.sortBy),
+        skip,
+        take: limit,
+      }),
+      this.prismaRead.db.product.count({ where }),
+    ]);
 
     const resultPage = filters.cursor ? 1 : Math.max(filters.page ?? 1, 1);
 
     const result: any = {
-      data: data.map((item) => (item.articleNumber ? item : this.serialize(item))),
-      total,
+      data: prismaProducts.map((p) => this.serialize(p)),
+      total: prismaCount,
       page: resultPage,
       limit,
-      totalPages: total > 0 ? Math.ceil(total / limit) : null,
-      nextCursor,
+      totalPages: prismaCount > 0 ? Math.ceil(prismaCount / limit) : 0,
+      nextCursor: null,
     };
     await this.cache.set(cacheKey, result, CacheService.TTL.PRODUCT_LIST);
     return result;
@@ -654,21 +592,7 @@ export class ProductsService implements OnModuleInit {
           return ordered.map((p) => this.serialize(p));
         }
       }
-
-      // If local products are empty, return top TecDoc parts with photos
-      const tecdocRows = await this.prismaRead.db.$queryRawUnsafe<any[]>(`
-        SELECT a.id, a.data_supplier_article_number, a.supplier, s.matchcode AS brand_name,
-               p.description AS product_type, a.description,
-               COALESCE(img.filename, mi.picture_name) AS picture_name
-        FROM tecdoc.articles a
-        JOIN tecdoc.suppliers s ON s.id = a.supplier
-        LEFT JOIN tecdoc.products p ON p.id = a.current_product
-        LEFT JOIN tecdoc.article_mediainformation mi ON mi.article_id = a.id
-        JOIN tecdoc.article_images img ON (img.supplier = a.supplier AND img.article_number = a.data_supplier_article_number)
-        ORDER BY a.id ASC
-        LIMIT ${limit}
-      `);
-      return tecdocRows.map((r) => this.serializeTecdocArticle(r));
+      return [];
     } catch (err) {
       console.error('Error in _findBestSellers:', err);
       return [];
@@ -686,22 +610,7 @@ export class ProductsService implements OnModuleInit {
             take: limit,
             orderBy: { createdAt: 'desc' },
           });
-          if (products.length > 0) {
-            return products.map((p) => this.serialize(p));
-          }
-          const tecdocRows = await this.prismaRead.db.$queryRawUnsafe<any[]>(`
-            SELECT a.id, a.data_supplier_article_number, a.supplier, s.matchcode AS brand_name,
-                   p.description AS product_type, a.description,
-                   COALESCE(img.filename, mi.picture_name) AS picture_name
-            FROM tecdoc.articles a
-            JOIN tecdoc.suppliers s ON s.id = a.supplier
-            LEFT JOIN tecdoc.products p ON p.id = a.current_product
-            LEFT JOIN tecdoc.article_mediainformation mi ON mi.article_id = a.id
-            JOIN tecdoc.article_images img ON (img.supplier = a.supplier AND img.article_number = a.data_supplier_article_number)
-            ORDER BY a.id DESC
-            LIMIT ${limit}
-          `);
-          return tecdocRows.map((r) => this.serializeTecdocArticle(r));
+          return products.map((p) => this.serialize(p));
         } catch (err) {
           console.error('Error in findNew:', err);
           return [];
@@ -730,22 +639,7 @@ export class ProductsService implements OnModuleInit {
         });
         return related.map((p) => this.serialize(p));
       }
-
-      // If TecDoc product
-      const tecdocRows = await this.prismaRead.db.$queryRawUnsafe<any[]>(`
-        SELECT a.id, a.data_supplier_article_number, a.supplier, s.matchcode AS brand_name,
-               p.description AS product_type, a.description,
-               COALESCE(img.filename, mi.picture_name) AS picture_name
-        FROM tecdoc.articles a
-        JOIN tecdoc.suppliers s ON s.id = a.supplier
-        LEFT JOIN tecdoc.products p ON p.id = a.current_product
-        LEFT JOIN tecdoc.article_mediainformation mi ON mi.article_id = a.id
-        JOIN tecdoc.article_images img ON (img.supplier = a.supplier AND img.article_number = a.data_supplier_article_number)
-        WHERE a.id != ${parseInt(id.replace(/\D/g, ''), 10) || 0}
-        ORDER BY a.id ASC
-        LIMIT ${limit}
-      `);
-      return tecdocRows.map((r) => this.serializeTecdocArticle(r));
+      return [];
     } catch (err) {
       console.error('Error in findRelated:', err);
       return [];
