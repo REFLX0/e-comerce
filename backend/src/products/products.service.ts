@@ -281,11 +281,11 @@ export class ProductsService {
 
       try {
         const query = `
-          SELECT a.id, a.data_supplier_article_number, s.matchcode AS brand_name,
+          SELECT a.id, a.data_supplier_article_number, a.supplier, s.matchcode AS brand_name,
                  p.description AS product_type, a.description
           FROM tecdoc.articles a
           JOIN tecdoc.suppliers s ON s.id = a.supplier
-          LEFT JOIN tecdoc.products p ON p.id = a.current_product
+          JOIN tecdoc.products p ON p.id = a.current_product
           ${whereClause}
           ORDER BY a.id ASC
           LIMIT ${limit} OFFSET ${skip}
@@ -297,7 +297,7 @@ export class ProductsService {
             SELECT COUNT(*)::int AS count
             FROM tecdoc.articles a
             JOIN tecdoc.suppliers s ON s.id = a.supplier
-            LEFT JOIN tecdoc.products p ON p.id = a.current_product
+            JOIN tecdoc.products p ON p.id = a.current_product
             ${whereClause}
           `, ...params)) as any[];
           total = countRows?.[0]?.count ?? 0;
@@ -349,7 +349,7 @@ export class ProductsService {
         // TecDoc fallback
         try {
           const tecdocArticles: any[] = (await this.prismaRead.db.$queryRawUnsafe(`
-            SELECT a.id, a.data_supplier_article_number, s.matchcode AS brand_name,
+            SELECT a.id, a.data_supplier_article_number, a.supplier, s.matchcode AS brand_name,
                    p.description AS product_type, a.description
             FROM tecdoc.articles a
             JOIN tecdoc.suppliers s ON s.id = a.supplier
@@ -543,11 +543,11 @@ export class ProductsService {
 
       // If local products are empty, return top TecDoc parts
       const tecdocRows = await this.prismaRead.db.$queryRawUnsafe<any[]>(`
-        SELECT a.id, a.data_supplier_article_number, s.matchcode AS brand_name,
+        SELECT a.id, a.data_supplier_article_number, a.supplier, s.matchcode AS brand_name,
                p.description AS product_type, a.description
         FROM tecdoc.articles a
         JOIN tecdoc.suppliers s ON s.id = a.supplier
-        LEFT JOIN tecdoc.products p ON p.id = a.current_product
+        JOIN tecdoc.products p ON p.id = a.current_product
         ORDER BY a.id ASC
         LIMIT ${limit}
       `);
@@ -573,11 +573,11 @@ export class ProductsService {
             return products.map((p) => this.serialize(p));
           }
           const tecdocRows = await this.prismaRead.db.$queryRawUnsafe<any[]>(`
-            SELECT a.id, a.data_supplier_article_number, s.matchcode AS brand_name,
+            SELECT a.id, a.data_supplier_article_number, a.supplier, s.matchcode AS brand_name,
                    p.description AS product_type, a.description
             FROM tecdoc.articles a
             JOIN tecdoc.suppliers s ON s.id = a.supplier
-            LEFT JOIN tecdoc.products p ON p.id = a.current_product
+            JOIN tecdoc.products p ON p.id = a.current_product
             ORDER BY a.id DESC
             LIMIT ${limit}
           `);
@@ -613,11 +613,11 @@ export class ProductsService {
 
       // If TecDoc product
       const tecdocRows = await this.prismaRead.db.$queryRawUnsafe<any[]>(`
-        SELECT a.id, a.data_supplier_article_number, s.matchcode AS brand_name,
+        SELECT a.id, a.data_supplier_article_number, a.supplier, s.matchcode AS brand_name,
                p.description AS product_type, a.description
         FROM tecdoc.articles a
         JOIN tecdoc.suppliers s ON s.id = a.supplier
-        LEFT JOIN tecdoc.products p ON p.id = a.current_product
+        JOIN tecdoc.products p ON p.id = a.current_product
         WHERE a.id != ${parseInt(id.replace(/\D/g, ''), 10) || 0}
         ORDER BY a.id ASC
         LIMIT ${limit}
