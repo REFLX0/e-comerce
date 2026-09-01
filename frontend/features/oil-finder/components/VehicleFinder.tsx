@@ -214,18 +214,20 @@ export function VehicleFinder({ onClose, initialVehicleType }: VehicleFinderProp
 
   const handleSearch = () => {
     if (!selectedMake || !selectedModel) return
+    const makeSlug = selectedMake.slug || selectedMake.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')
+    const modelSlug = selectedModel.slug || selectedModel.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')
     const params = new URLSearchParams()
-    params.set('make', selectedMake.slug)
-    params.set('model', selectedModel.slug)
+    params.set('make', makeSlug)
+    params.set('model', modelSlug)
     if (selectedEngine) params.set('engine', selectedEngine)
     setVehicle({
-      type: selectedModel.vehicleType,
-      makeId: selectedMake.id,
+      type: selectedModel.vehicleType || initialVehicleType || 'automobile',
+      makeId: selectedMake.id || makeSlug,
       makeName: selectedMake.name,
-      makeSlug: selectedMake.slug,
-      modelId: selectedModel.id,
+      makeSlug: makeSlug,
+      modelId: selectedModel.id || modelSlug,
       modelName: selectedModel.name,
-      modelSlug: selectedModel.slug,
+      modelSlug: modelSlug,
       engineCode: selectedEngine ?? '',
     })
     params.set('isOilFinder', 'true')
@@ -268,19 +270,22 @@ export function VehicleFinder({ onClose, initialVehicleType }: VehicleFinderProp
               Marque
             </label>
             <select
-              value={selectedMake?.id || ''}
+              value={selectedMake?.slug || selectedMake?.name || selectedMake?.id || ''}
               onChange={(e) => {
-                const found = makes.find(m => m.id === e.target.value)
+                const found = makes.find(m => (m.slug || m.name || m.id) === e.target.value)
                 if (found) selectMake(found)
               }}
               className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-xs font-bold text-slate-900 shadow-2xs outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
             >
               <option value="" disabled>Sélectionner une marque...</option>
-              {allMakes.map(m => (
-                <option key={m.id} value={m.id}>
-                  {m.name}
-                </option>
-              ))}
+              {allMakes.map(m => {
+                const val = m.slug || m.name || m.id
+                return (
+                  <option key={val} value={val}>
+                    {m.name}
+                  </option>
+                )
+              })}
             </select>
           </div>
 
@@ -291,10 +296,10 @@ export function VehicleFinder({ onClose, initialVehicleType }: VehicleFinderProp
               Modèle
             </label>
             <select
-              value={selectedModel?.id || ''}
+              value={selectedModel?.slug || selectedModel?.name || selectedModel?.id || ''}
               disabled={!selectedMake || models.length === 0}
               onChange={(e) => {
-                const found = models.find(m => m.id === e.target.value)
+                const found = models.find(m => (m.slug || m.name || m.id) === e.target.value)
                 if (found) selectModel(found)
               }}
               className={`w-full rounded-xl border px-3 py-2.5 text-xs font-bold shadow-2xs outline-none transition ${
@@ -306,11 +311,14 @@ export function VehicleFinder({ onClose, initialVehicleType }: VehicleFinderProp
               <option value="" disabled>
                 {!selectedMake ? 'Sélectionnez d’abord la marque' : 'Sélectionner un modèle...'}
               </option>
-              {models.map(m => (
-                <option key={m.id} value={m.id}>
-                  {m.name}
-                </option>
-              ))}
+              {models.map(m => {
+                const val = m.slug || m.name || m.id
+                return (
+                  <option key={val} value={val}>
+                    {m.name}
+                  </option>
+                )
+              })}
             </select>
           </div>
 
