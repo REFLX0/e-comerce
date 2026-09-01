@@ -334,6 +334,20 @@ export default function CataloguePage() {
               if (products.length > 0) {
                 return (
                   <>
+                    {isVehicleSearch && data?.oilSpec && (
+                      <div className="mb-4 flex flex-wrap items-center justify-between gap-2 rounded-xl border border-blue-200 bg-blue-50/70 px-4 py-2.5 text-xs text-blue-900 shadow-sm">
+                        <div className="flex items-center gap-2">
+                          <span className="font-bold text-blue-800">Spécification recommandée :</span>
+                          <span className="rounded bg-white px-2 py-0.5 font-bold shadow-xs ring-1 ring-blue-300">{data.oilSpec.viscosity}</span>
+                          {data.oilSpec.oemApproval && (
+                            <span className="rounded bg-white px-2 py-0.5 font-medium shadow-xs ring-1 ring-blue-300">{data.oilSpec.oemApproval}</span>
+                          )}
+                        </div>
+                        <span className="text-[11px] text-blue-700/80 italic hidden sm:inline">
+                          ⚠️ Référez-vous toujours au carnet d'entretien de votre véhicule.
+                        </span>
+                      </div>
+                    )}
                     <ProductGrid products={products} viewMode={viewMode} />
                     <Pagination currentPage={data?.page ?? 1} totalPages={data?.totalPages ?? 1} />
                   </>
@@ -346,7 +360,7 @@ export default function CataloguePage() {
                     <div className="mb-8 mt-4 rounded-xl border border-blue-100 bg-blue-50 p-6 text-center shadow-sm">
                       <h3 className="mb-2 text-lg font-bold text-blue-900">Recommandation constructeur</h3>
                       <p className="mb-4 text-sm text-blue-700">
-                        Nous n'avons pas de produit correspondant en stock, mais voici les spécifications recommandées pour votre véhicule :
+                        Nous n'avons pas de produit correspondant actuellement en stock, mais voici les spécifications recommandées pour votre véhicule :
                       </p>
                       <div className="flex flex-wrap justify-center gap-2">
                         {data.oilSpec.viscosity && (
@@ -370,11 +384,14 @@ export default function CataloguePage() {
                           </span>
                         )}
                       </div>
-                      {data.oilSpec.capacityLiters && (
-                        <p className="mt-4 text-xs font-medium text-blue-600/80">
-                          Capacité carter : {data.oilSpec.capacityLiters} L
+                      <div className="mt-4 flex flex-col items-center gap-1 text-xs text-blue-700/90">
+                        <p className="font-semibold">
+                          💡 Conseil niveau : Contrôlez toujours le niveau d'huile à l'aide de la jauge (entre les repères MIN et MAX). Ne jamais dépasser le niveau MAX.
                         </p>
-                      )}
+                        <p className="text-[11px] text-blue-600/80 italic">
+                          ⚠️ Avis de conformité : Recommandation fournie à titre indicatif. Consultez le carnet d'entretien de votre véhicule pour confirmation.
+                        </p>
+                      </div>
                     </div>
                   )}
                   

@@ -214,22 +214,27 @@ export class OilFinderService {
       };
     }
 
-    // 3. Intelligent Constructor OEM Matching for Passenger Cars
+    // 3. Intelligent Constructor OEM Matching for Passenger Cars (Year-Aware & Fuel-Aware)
     const eUpper = (engineCode || '').toUpperCase();
     const isDiesel = eUpper.includes('TDI') || eUpper.includes('DCI') || eUpper.includes('HDI') || eUpper.includes('CDI') || eUpper.includes('CRDI') || eUpper.includes('D-4D') || eUpper.includes('MULTIJET') || eUpper.includes('TD') || eUpper.includes('DIESEL') || eUpper.includes('JTD');
+    
+    // Detect older vehicles (pre-2007 without DPF/FAP) vs modern vehicles (2008+ with DPF/Euro 5/Euro 6)
+    const yearMatches = (engineCode || '').match(/(\d{4})/g);
+    const endYear = yearMatches && yearMatches.length > 1 ? parseInt(yearMatches[1], 10) : (yearMatches ? parseInt(yearMatches[0], 10) : null);
+    const isVintage = endYear !== null && endYear <= 2006;
 
     // VAG (Volkswagen, Audi, Seat, Skoda)
     if (makeNorm.includes('VOLKSWAGEN') || makeNorm.includes('VW') || makeNorm.includes('AUDI') || makeNorm.includes('SEAT') || makeNorm.includes('SKODA')) {
       return {
         status: 'found',
         oilSpec: {
-          id: 'spec-vag-504-507',
-          viscosity: '5W-30',
-          apiStandard: 'API SP / SN Plus',
-          aceaStandard: 'ACEA C3',
-          oemApproval: 'VW 504 00 / 507 00 (LongLife III)',
-          capacityLiters: isDiesel ? 4.7 : 4.0,
-          changeIntervalKm: 15000,
+          id: isVintage ? 'spec-vag-502-505' : 'spec-vag-504-507',
+          viscosity: isVintage ? '10W-40' : '5W-30',
+          apiStandard: isVintage ? 'API SN / CF' : 'API SP / SN Plus',
+          aceaStandard: isVintage ? 'ACEA A3/B4' : 'ACEA C3',
+          oemApproval: isVintage ? 'VW 502 00 / 505 00' : 'VW 504 00 / 507 00 (LongLife III)',
+          capacityLiters: null,
+          changeIntervalKm: isVintage ? 10000 : 15000,
         },
         resolvedBy: 'minor-conflict-auto-resolve',
         backingRows: 1,
@@ -242,12 +247,12 @@ export class OilFinderService {
       return {
         status: 'found',
         oilSpec: {
-          id: 'spec-bmw-ll04',
-          viscosity: '5W-30',
+          id: isVintage ? 'spec-bmw-ll01' : 'spec-bmw-ll04',
+          viscosity: isVintage ? '5W-40' : '5W-30',
           apiStandard: 'API SN / SP',
-          aceaStandard: 'ACEA C3',
-          oemApproval: 'BMW Longlife-04 (LL-04)',
-          capacityLiters: isDiesel ? 5.2 : 4.5,
+          aceaStandard: isVintage ? 'ACEA A3/B4' : 'ACEA C3',
+          oemApproval: isVintage ? 'BMW Longlife-01 (LL-01)' : 'BMW Longlife-04 (LL-04)',
+          capacityLiters: null,
           changeIntervalKm: 15000,
         },
         resolvedBy: 'minor-conflict-auto-resolve',
@@ -261,12 +266,12 @@ export class OilFinderService {
       return {
         status: 'found',
         oilSpec: {
-          id: 'spec-mb-229-51',
-          viscosity: '5W-30',
+          id: isVintage ? 'spec-mb-229-3' : 'spec-mb-229-51',
+          viscosity: isVintage ? '10W-40' : '5W-30',
           apiStandard: 'API SP / SN',
-          aceaStandard: 'ACEA C3',
-          oemApproval: 'MB 229.51 / 229.52',
-          capacityLiters: isDiesel ? 6.5 : 5.0,
+          aceaStandard: isVintage ? 'ACEA A3/B4' : 'ACEA C3',
+          oemApproval: isVintage ? 'MB 229.3 / 229.5' : 'MB 229.51 / 229.52',
+          capacityLiters: null,
           changeIntervalKm: 15000,
         },
         resolvedBy: 'minor-conflict-auto-resolve',
@@ -277,17 +282,17 @@ export class OilFinderService {
 
     // Renault & Dacia
     if (makeNorm.includes('RENAULT') || makeNorm.includes('DACIA')) {
-      const isDpf = isDiesel || eUpper.includes('DCI');
+      const isDpf = !isVintage && (isDiesel || eUpper.includes('DCI'));
       return {
         status: 'found',
         oilSpec: {
-          id: isDpf ? 'spec-rn-0720' : 'spec-rn-0710',
-          viscosity: isDpf ? '5W-30' : '5W-40',
+          id: isDpf ? 'spec-rn-0720' : (isVintage ? 'spec-rn-vintage-10w40' : 'spec-rn-0710'),
+          viscosity: isDpf ? '5W-30' : (isVintage ? '10W-40' : '5W-40'),
           apiStandard: 'API SN / CF',
           aceaStandard: isDpf ? 'ACEA C4' : 'ACEA A3/B4',
           oemApproval: isDpf ? 'Renault RN0720 / RN17' : 'Renault RN0700 / RN0710',
-          capacityLiters: isDpf ? 4.5 : 4.0,
-          changeIntervalKm: 15000,
+          capacityLiters: null,
+          changeIntervalKm: isVintage ? 10000 : 15000,
         },
         resolvedBy: 'minor-conflict-auto-resolve',
         backingRows: 1,
@@ -300,13 +305,13 @@ export class OilFinderService {
       return {
         status: 'found',
         oilSpec: {
-          id: 'spec-psa-b71-2290',
-          viscosity: '5W-30',
+          id: isVintage ? 'spec-psa-b71-2300' : 'spec-psa-b71-2290',
+          viscosity: isVintage ? '10W-40' : '5W-30',
           apiStandard: 'API SN / SP',
-          aceaStandard: 'ACEA C2 / C3',
-          oemApproval: 'PSA B71 2290 / B71 2297',
-          capacityLiters: isDiesel ? 3.75 : 3.5,
-          changeIntervalKm: 15000,
+          aceaStandard: isVintage ? 'ACEA A3/B4' : 'ACEA C2 / C3',
+          oemApproval: isVintage ? 'PSA B71 2300 / B71 2296' : 'PSA B71 2290 / B71 2297',
+          capacityLiters: null,
+          changeIntervalKm: isVintage ? 10000 : 15000,
         },
         resolvedBy: 'minor-conflict-auto-resolve',
         backingRows: 1,
@@ -319,13 +324,13 @@ export class OilFinderService {
       return {
         status: 'found',
         oilSpec: {
-          id: 'spec-fiat-955535',
-          viscosity: '5W-30',
+          id: isVintage ? 'spec-fiat-vintage' : 'spec-fiat-955535',
+          viscosity: isVintage ? '10W-40' : '5W-30',
           apiStandard: 'API SP / SN',
-          aceaStandard: 'ACEA C2 / C3',
-          oemApproval: 'Fiat 9.55535-S1 / 9.55535-S2',
-          capacityLiters: isDiesel ? 4.3 : 3.8,
-          changeIntervalKm: 15000,
+          aceaStandard: isVintage ? 'ACEA A3/B4' : 'ACEA C2 / C3',
+          oemApproval: isVintage ? 'Fiat 9.55535-D2 / G2' : 'Fiat 9.55535-S1 / 9.55535-S2',
+          capacityLiters: null,
+          changeIntervalKm: isVintage ? 10000 : 15000,
         },
         resolvedBy: 'minor-conflict-auto-resolve',
         backingRows: 1,
@@ -338,12 +343,12 @@ export class OilFinderService {
       return {
         status: 'found',
         oilSpec: {
-          id: 'spec-ford-wss',
-          viscosity: '5W-30',
+          id: isVintage ? 'spec-ford-vintage' : 'spec-ford-wss',
+          viscosity: isVintage ? '10W-40' : '5W-30',
           apiStandard: 'API SP / SN',
-          aceaStandard: 'ACEA A5/B5 / C2',
-          oemApproval: 'Ford WSS-M2C913-D / WSS-M2C950-A',
-          capacityLiters: 4.2,
+          aceaStandard: isVintage ? 'ACEA A3/B4' : 'ACEA A5/B5 / C2',
+          oemApproval: isVintage ? 'Ford WSS-M2C913-B' : 'Ford WSS-M2C913-D / WSS-M2C950-A',
+          capacityLiters: null,
           changeIntervalKm: 15000,
         },
         resolvedBy: 'minor-conflict-auto-resolve',
@@ -357,12 +362,12 @@ export class OilFinderService {
       return {
         status: 'found',
         oilSpec: {
-          id: 'spec-asian-api-sp',
-          viscosity: '5W-30',
-          apiStandard: 'API SP / RC, ILSAC GF-6A',
-          aceaStandard: 'ACEA C2 / C3 / A5',
+          id: isVintage ? 'spec-asian-vintage' : 'spec-asian-api-sp',
+          viscosity: isVintage ? '10W-40' : '5W-30',
+          apiStandard: isVintage ? 'API SN / CF' : 'API SP / RC, ILSAC GF-6A',
+          aceaStandard: isVintage ? 'ACEA A3/B4' : 'ACEA C2 / C3 / A5',
           oemApproval: 'Toyota / Hyundai / Kia / Nissan Factory Approved',
-          capacityLiters: isDiesel ? 5.3 : 4.0,
+          capacityLiters: null,
           changeIntervalKm: 10000,
         },
         resolvedBy: 'minor-conflict-auto-resolve',
@@ -371,7 +376,7 @@ export class OilFinderService {
       };
     }
 
-    // 4. Universal high-performance OEM passenger car engine oil spec fallback (5W-30 Synthetic ACEA C3)
+    // 4. Universal high-performance OEM passenger car engine oil spec fallback
     return {
       status: 'found',
       oilSpec: {
@@ -380,7 +385,7 @@ export class OilFinderService {
         apiStandard: 'API SP / SN Plus',
         aceaStandard: 'ACEA C3 / C2',
         oemApproval: 'VW 504.00/507.00, MB 229.51/229.52, BMW LL-04, PSA B71 2290',
-        capacityLiters: 4.5,
+        capacityLiters: null,
         changeIntervalKm: 15000,
       },
       resolvedBy: 'minor-conflict-auto-resolve',
