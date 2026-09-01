@@ -70,10 +70,28 @@ export class ProductsService {
   ) {}
 
   /** Include every descendant when a catalogue group is selected. */
-  async resolveCategoryIds(slug: string) {
-    const category = await this.prismaRead.db.category.findUnique({
-      where: { slug },
-      select: { id: true },
+  async resolveCategoryIds(slug: string): Promise<string[]> {
+    if (!slug) return [];
+
+    const aliases: Record<string, string> = {
+      'huiles-moteur-specifiques': 'huiles-moteur',
+      'huiles-moteur-auto': 'huiles-moteur',
+      'huiles-specifiques': 'huiles-moteur',
+      'huiles-boite-transmission': 'huile-de-boite',
+      'pieces-rechange': 'auto-pieces-rechange',
+      'moto': 'moto-karting',
+    };
+    const targetSlug = aliases[slug] || slug;
+
+    let category = await this.prismaRead.db.category.findFirst({
+      where: {
+        OR: [
+          { slug: targetSlug },
+          { slug: slug },
+          { slug: { startsWith: slug.split('-')[0] } },
+        ],
+      },
+      select: { id: true, slug: true, parentId: true },
     });
     if (!category) return [];
 
@@ -152,28 +170,41 @@ export class ProductsService {
 
     try {
       const where: Prisma.ProductWhereInput = { isPublished: true };
+      const andConditions: Prisma.ProductWhereInput[] = [];
 
       if (filters.search) {
-        where.OR = [
-          { nameFr: { contains: filters.search, mode: 'insensitive' } },
-          { description: { contains: filters.search, mode: 'insensitive' } },
-          { sku: { contains: filters.search, mode: 'insensitive' } },
-          { brand: { name: { contains: filters.search, mode: 'insensitive' } } },
-          {
-            category: {
-              nameFr: { contains: filters.search, mode: 'insensitive' },
-            },
-          },
-          {
-            specs: {
-              viscosity: { contains: filters.search, mode: 'insensitive' },
-            },
-          },
-        ];
+        const terms = filters.search.trim().split(/\s+/).filter(Boolean);
+        for (const term of terms) {
+          const viscMatch = term.replace(/[\s-]/g, '').match(/^(\d+w)(\d+)$/i);
+          const viscAlt = viscMatch ? `${viscMatch[1].toUpperCase()}-${viscMatch[2]}` : term;
+          const viscAlt2 = viscMatch ? `${viscMatch[1].toUpperCase()}${viscMatch[2]}` : term;
+
+          andConditions.push({
+            OR: [
+              { nameFr: { contains: term, mode: 'insensitive' } },
+              { nameFr: { contains: viscAlt, mode: 'insensitive' } },
+              { nameFr: { contains: viscAlt2, mode: 'insensitive' } },
+              { description: { contains: term, mode: 'insensitive' } },
+              { sku: { contains: term, mode: 'insensitive' } },
+              { brand: { name: { contains: term, mode: 'insensitive' } } },
+              { brand: { slug: { contains: term, mode: 'insensitive' } } },
+              { category: { nameFr: { contains: term, mode: 'insensitive' } } },
+              { specs: { viscosity: { contains: term, mode: 'insensitive' } } },
+              { specs: { viscosity: { contains: viscAlt, mode: 'insensitive' } } },
+              { specs: { OEMApprovals: { contains: term, mode: 'insensitive' } } },
+              { specs: { apiStandard: { contains: term, mode: 'insensitive' } } },
+              { specs: { aeceaStandard: { contains: term, mode: 'insensitive' } } },
+              { variants: { some: { volume: { contains: term, mode: 'insensitive' } } } },
+              { variants: { some: { skuVariant: { contains: term, mode: 'insensitive' } } } },
+            ],
+          });
+        }
       }
       if (filters.categorySlug) {
         const categoryIds = await this.resolveCategoryIds(filters.categorySlug);
-        where.categoryId = { in: categoryIds };
+        if (categoryIds.length > 0) {
+          where.categoryId = { in: categoryIds };
+        }
       }
       if (filters.brands?.length) {
         where.brand = { slug: { in: filters.brands } };
@@ -264,7 +295,11 @@ export class ProductsService {
           });
         }
 
-        where.AND = [{ OR: compatConditions }];
+        andConditions.push({ OR: compatConditions });
+      }
+
+      if (andConditions.length > 0) {
+        where.AND = andConditions;
       }
 
       const [prismaProducts, prismaCount] = await Promise.all([
@@ -597,15 +632,33 @@ export class ProductsService {
 
   private async _getFacets(filters: ProductFilters) {
     const where: Prisma.ProductWhereInput = { isPublished: true };
+    const andConditions: Prisma.ProductWhereInput[] = [];
+
     if (filters.categorySlug) {
       const categoryIds = await this.resolveCategoryIds(filters.categorySlug);
-      where.categoryId = { in: categoryIds };
+      if (categoryIds.length > 0) {
+        where.categoryId = { in: categoryIds };
+      }
     }
     if (filters.search) {
-      where.OR = [
-        { nameFr: { contains: filters.search, mode: 'insensitive' } },
-        { brand: { name: { contains: filters.search, mode: 'insensitive' } } },
-      ];
+      const terms = filters.search.trim().split(/\s+/).filter(Boolean);
+      for (const term of terms) {
+        const viscMatch = term.replace(/[\s-]/g, '').match(/^(\d+w)(\d+)$/i);
+        const viscAlt = viscMatch ? `${viscMatch[1].toUpperCase()}-${viscMatch[2]}` : term;
+        andConditions.push({
+          OR: [
+            { nameFr: { contains: term, mode: 'insensitive' } },
+            { nameFr: { contains: viscAlt, mode: 'insensitive' } },
+            { brand: { name: { contains: term, mode: 'insensitive' } } },
+            { category: { nameFr: { contains: term, mode: 'insensitive' } } },
+            { specs: { viscosity: { contains: term, mode: 'insensitive' } } },
+            { specs: { viscosity: { contains: viscAlt, mode: 'insensitive' } } },
+          ],
+        });
+      }
+    }
+    if (andConditions.length > 0) {
+      where.AND = andConditions;
     }
     // Brand and viscosity selections are intentionally NOT applied here so the
     // facet lists stay stable while the user multi-selects brands.
