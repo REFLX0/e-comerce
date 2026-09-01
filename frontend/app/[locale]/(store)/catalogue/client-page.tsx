@@ -217,9 +217,8 @@ export default function CataloguePage() {
           className="pointer-events-none absolute inset-y-0 right-0 w-full bg-[url('/img/hero/hero_car_bg.png')] bg-cover bg-right bg-no-repeat opacity-30 mix-blend-screen lg:w-3/4"
           aria-hidden="true"
         />
-        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,#0B0B0C_0%,rgba(11,11,12,0.92)_46%,rgba(11,11,12,0.28)_100%)]" aria-hidden="true" />
         <div className="section-padding relative py-12 md:py-16">
-          <div className="grid max-w-5xl gap-9 lg:grid-cols-[minmax(0,1fr)_260px] lg:items-end">
+          <div className="max-w-5xl">
             <div>
               <p className="mb-4 flex items-center gap-2 text-[11px] font-black uppercase tracking-[0.24em] text-[#D4A76A]">
                 <span className="h-px w-8 bg-[#D4A76A]" />
@@ -232,91 +231,6 @@ export default function CataloguePage() {
                 {isSearchMode ? t('searchModeIntro') : t('catalogIntro')}
               </p>
             </div>
-            {/* ── Premium Guided Search Card ── */}
-            <Link
-              href={`/${locale}/#oil-finder`}
-              className="group relative flex items-center gap-5 overflow-hidden rounded-2xl p-5 transition-all duration-300 hover:shadow-[0_12px_40px_rgba(212,167,106,0.18)]"
-              style={{
-                background: 'linear-gradient(135deg, rgba(22,37,76,0.7) 0%, rgba(10,17,40,0.85) 100%)',
-                border: '1px solid rgba(212,167,106,0.2)',
-                backdropFilter: 'blur(16px)',
-                boxShadow: '0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.05)',
-              }}
-            >
-              {/* Animated golden shimmer on hover */}
-              <span
-                aria-hidden="true"
-                className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
-                style={{
-                  background: 'radial-gradient(ellipse at 20% 50%, rgba(212,167,106,0.12) 0%, transparent 70%)',
-                }}
-              />
-
-              {/* Custom premium oil-drop illustration */}
-              <span
-                className="relative flex h-[60px] w-[60px] shrink-0 items-center justify-center rounded-xl transition-all duration-300 group-hover:scale-105"
-                style={{
-                  background: 'linear-gradient(135deg, rgba(212,167,106,0.15) 0%, rgba(212,167,106,0.05) 100%)',
-                  border: '1px solid rgba(212,167,106,0.25)',
-                }}
-              >
-                <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path
-                    d="M16 4C16 4 8 13.5 8 19.5C8 23.6 11.6 27 16 27C20.4 27 24 23.6 24 19.5C24 13.5 16 4 16 4Z"
-                    fill="url(#oilGrad)"
-                    opacity="0.9"
-                  />
-                  <path
-                    d="M12.5 14C12.5 14 11 17 11 19.5C11 20.8 11.5 22 12.5 22.8"
-                    stroke="white"
-                    strokeWidth="1.2"
-                    strokeLinecap="round"
-                    opacity="0.35"
-                  />
-                  <circle cx="22" cy="7" r="1.5" fill="#D4A76A" opacity="0.7"/>
-                  <circle cx="25" cy="11" r="1" fill="#D4A76A" opacity="0.4"/>
-                  <defs>
-                    <linearGradient id="oilGrad" x1="16" y1="4" x2="16" y2="27" gradientUnits="userSpaceOnUse">
-                      <stop offset="0%" stopColor="#f0c87a"/>
-                      <stop offset="100%" stopColor="#a87830"/>
-                    </linearGradient>
-                  </defs>
-                </svg>
-              </span>
-
-              {/* Text content */}
-              <span className="min-w-0 flex-1">
-                <span
-                  className="block text-[9px] font-black uppercase tracking-[0.22em]"
-                  style={{ color: 'rgba(212,167,106,0.6)' }}
-                >
-                  {t('vehicleFinderLabel')}
-                </span>
-                <span
-                  className="mt-1.5 block text-[15px] font-bold leading-snug transition-colors duration-300 group-hover:text-white"
-                  style={{ color: 'rgba(255,255,255,0.85)' }}
-                >
-                  {t('findMyOil')}
-                </span>
-              </span>
-
-              {/* Arrow */}
-              <span
-                className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg transition-all duration-300 group-hover:translate-x-0.5"
-                style={{ color: 'rgba(212,167,106,0.5)' }}
-              >
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                  <path d="M2 7H12M8 3L12 7L8 11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </span>
-
-              {/* Bottom gold accent line */}
-              <span
-                aria-hidden="true"
-                className="absolute bottom-0 left-5 right-5 h-px opacity-40 transition-all duration-500 group-hover:left-0 group-hover:right-0 group-hover:opacity-70"
-                style={{ background: 'linear-gradient(90deg, transparent, #D4A76A, transparent)' }}
-              />
-            </Link>
           </div>
 
           {!isSpecSearch && (
