@@ -34,7 +34,7 @@ export class VehiclesService {
     const rows: any[] = await this.prisma.$queryRawUnsafe(`
       SELECT DISTINCT id, matchcode AS name, LOWER(REGEXP_REPLACE(matchcode, '[^a-zA-Z0-9]+', '-', 'g')) AS slug
       FROM tecdoc.manufacturers
-      WHERE can_be_displayed = true ${isCv ? 'AND is_commercial_vehicle = true' : 'AND is_passenger_car = true'}
+      WHERE can_be_displayed = true ${isCv ? 'AND (is_commercial_vehicle = true OR is_passenger_car = true)' : 'AND is_passenger_car = true'}
       ORDER BY matchcode ASC
     `);
     return rows.map((r) => ({ id: String(r.id), name: r.name, slug: r.slug }));

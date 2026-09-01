@@ -17,11 +17,12 @@ interface VehicleFinderProps {
 
 const STEP_LABELS = ['Marque', 'Modèle', 'Motorisation']
 
-// Top popular automotive brands in the region
+// Top popular automotive brands
 const POPULAR_MAKE_NAMES = [
   'RENAULT', 'PEUGEOT', 'VOLKSWAGEN', 'DACIA', 'CITROEN', 'CITROËN',
   'FIAT', 'BMW', 'MERCEDES-BENZ', 'MERCEDES', 'AUDI', 'TOYOTA',
-  'FORD', 'KIA', 'HYUNDAI', 'SEAT', 'NISSAN', 'OPEL', 'SKODA', 'LAND ROVER'
+  'FORD', 'KIA', 'HYUNDAI', 'SEAT', 'NISSAN', 'OPEL', 'SKODA', 'LAND ROVER',
+  'VOLVO', 'JEEP', 'HONDA', 'CHEVROLET', 'SUZUKI', 'MITSUBISHI'
 ]
 
 // Flexible, case-insensitive logo resolver
@@ -69,23 +70,23 @@ function BrandLogo({ make: { slug, name } }: { make: { slug: string; name: strin
 
   if (!logoSrc) {
     return (
-      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-sm font-black text-slate-700 shadow-2xs group-hover:bg-blue-50 group-hover:text-blue-700 transition-colors">
+      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-xs font-black text-slate-700 shadow-2xs group-hover:bg-blue-50 group-hover:text-blue-700 transition-colors">
         {name.substring(0, 2).toUpperCase()}
       </div>
     )
   }
 
   return (
-    <div className="relative flex h-11 w-11 items-center justify-center">
+    <div className="relative flex h-10 w-10 shrink-0 items-center justify-center">
       {!loaded && (
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-xs font-bold text-slate-500">
+        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-100 text-xs font-bold text-slate-500">
           {name.substring(0, 2).toUpperCase()}
         </div>
       )}
       <img
         src={logoSrc}
         alt={name}
-        className={`h-9 w-9 object-contain transition-transform duration-200 group-hover:scale-110 ${loaded ? 'block' : 'hidden'}`}
+        className={`h-8 w-8 object-contain transition-transform duration-200 group-hover:scale-110 ${loaded ? 'block' : 'hidden'}`}
         onLoad={() => setLoaded(true)}
         onError={() => setLoaded(false)}
       />
@@ -106,9 +107,6 @@ export function VehicleFinder({ onClose, initialVehicleType }: VehicleFinderProp
   const [engines, setEngines] = useState<VehicleEngine[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-  
-  const [makeSearch, setMakeSearch] = useState('')
-  const [modelSearch, setModelSearch] = useState('')
 
   const [selectedMake, setSelectedMake] = useState<VehicleMake | null>(null)
   const [selectedModel, setSelectedModel] = useState<VehicleModel | null>(null)
@@ -125,7 +123,11 @@ export function VehicleFinder({ onClose, initialVehicleType }: VehicleFinderProp
       setError('')
 
       try {
-        const data = await productsApi.getMakes(initialVehicleType ?? undefined)
+        let data = await productsApi.getMakes(initialVehicleType ?? undefined)
+        // If the initial vehicle type returned fewer than 5 makes, load all available makes
+        if (!data || data.length < 5) {
+          data = await productsApi.getMakes()
+        }
         if (active) setMakes(data)
       } catch {
         if (active) setError('Impossible de charger les marques de véhicules')
@@ -138,15 +140,8 @@ export function VehicleFinder({ onClose, initialVehicleType }: VehicleFinderProp
     return () => { active = false }
   }, [initialVehicleType])
 
-  // Partition into Popular Makes and Other Makes
-  const { popularMakes, filteredMakes } = useMemo(() => {
-    const search = makeSearch.trim().toLowerCase()
-
-    if (search) {
-      const filtered = makes.filter(m => m.name.toLowerCase().includes(search))
-      return { popularMakes: [], filteredMakes: filtered }
-    }
-
+  // Partition into Popular Makes and All Makes
+  const { popularMakes, allMakes } = useMemo(() => {
     const popularMap = new Map<string, VehicleMake>()
     makes.forEach(m => {
       const upper = m.name.toUpperCase().trim()
@@ -166,23 +161,13 @@ export function VehicleFinder({ onClose, initialVehicleType }: VehicleFinderProp
       }
     })
 
-    const otherList = makes.filter(m => !popularList.some(p => p.id === m.id))
-
-    return { popularMakes: popularList, filteredMakes: otherList }
-  }, [makes, makeSearch])
-
-  // Filter models based on search
-  const filteredModels = useMemo(() => {
-    const search = modelSearch.trim().toLowerCase()
-    if (!search) return models
-    return models.filter(m => m.name.toLowerCase().includes(search))
-  }, [models, modelSearch])
+    return { popularMakes: popularList, allMakes: makes }
+  }, [makes])
 
   const loadModels = (make: VehicleMake) => {
     setLoading(true)
     setError('')
     setModels([])
-    setModelSearch('')
     productsApi.getModels(make.name)
       .then(setModels)
       .catch(() => setError('Impossible de charger les modèles pour cette marque'))
@@ -204,7 +189,6 @@ export function VehicleFinder({ onClose, initialVehicleType }: VehicleFinderProp
     setSelectedMake(make)
     setSelectedModel(null)
     setSelectedEngine(null)
-    setMakeSearch('')
     loadModels(make)
     setStep(2)
   }
@@ -222,12 +206,9 @@ export function VehicleFinder({ onClose, initialVehicleType }: VehicleFinderProp
       setSelectedMake(null)
       setSelectedModel(null)
       setSelectedEngine(null)
-      setMakeSearch('')
-      setModelSearch('')
     } else if (targetStep === 2) {
       setSelectedModel(null)
       setSelectedEngine(null)
-      setModelSearch('')
     }
   }
 
@@ -254,87 +235,134 @@ export function VehicleFinder({ onClose, initialVehicleType }: VehicleFinderProp
 
   return (
     <div className="relative mx-auto w-full max-w-4xl overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-xl">
-      {/* Sleek Top Stepper Header */}
-      <div className="border-b border-slate-100 bg-gradient-to-r from-slate-50 via-white to-slate-50 px-6 py-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      {/* ═══════════════ TOP SECTION: 3 DIRECT SELECT DROPDOWNS ═══════════════ */}
+      <div className="border-b border-slate-200/80 bg-gradient-to-r from-slate-50 via-white to-slate-50 p-5 sm:p-6">
+        <div className="mb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
             <h2 className="text-base font-black text-[#0B1528] flex items-center gap-2">
               <Sparkles size={16} className="text-amber-500" />
               Sélecteur de Véhicule
             </h2>
             <p className="text-xs text-slate-500">
-              Sélectionnez votre véhicule pour filtrer automatiquement les huiles certifiées
+              Choisissez directement votre véhicule dans les listes ci-dessous sans avoir à taper
             </p>
           </div>
 
-          {/* Interactive Stepper Breadcrumbs */}
-          <div className="flex items-center gap-1.5">
-            {STEP_LABELS.map((label, i) => {
-              const s = i + 1
-              const isCompleted = s < step
-              const isActive = s === step
-              return (
-                <div key={label} className="flex items-center gap-1">
-                  <button
-                    onClick={() => isCompleted && resetTo(s)}
-                    disabled={!isCompleted}
-                    className={`
-                      flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold transition-all
-                      ${isCompleted ? 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100 cursor-pointer' : ''}
-                      ${isActive ? 'bg-[#001E3C] text-white shadow-xs' : ''}
-                      ${!isCompleted && !isActive ? 'bg-slate-100 text-slate-400 cursor-not-allowed' : ''}
-                    `}
-                  >
-                    {isCompleted ? <Check size={12} strokeWidth={3} /> : <span>{s}</span>}
-                    <span>{label}</span>
-                  </button>
-                  {i < STEP_LABELS.length - 1 && <ChevronRight size={12} className="text-slate-300" />}
-                </div>
-              )
-            })}
+          {selectedMake && (
+            <button
+              onClick={() => resetTo(1)}
+              className="inline-flex items-center gap-1 text-xs text-slate-400 hover:text-slate-700"
+            >
+              <RotateCcw size={12} />
+              Recommencer
+            </button>
+          )}
+        </div>
+
+        {/* 3 Main Visible Selection Controls */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          {/* Dropdown 1: Marque */}
+          <div className="flex flex-col gap-1.5">
+            <label className="text-[11px] font-bold uppercase tracking-wider text-slate-600 flex items-center gap-1.5">
+              <span className="flex h-4 w-4 items-center justify-center rounded-full bg-[#001E3C] text-[9px] text-white">1</span>
+              Marque
+            </label>
+            <select
+              value={selectedMake?.id || ''}
+              onChange={(e) => {
+                const found = makes.find(m => m.id === e.target.value)
+                if (found) selectMake(found)
+              }}
+              className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-xs font-bold text-slate-900 shadow-2xs outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+            >
+              <option value="" disabled>Sélectionner une marque...</option>
+              {allMakes.map(m => (
+                <option key={m.id} value={m.id}>
+                  {m.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Dropdown 2: Modèle */}
+          <div className="flex flex-col gap-1.5">
+            <label className="text-[11px] font-bold uppercase tracking-wider text-slate-600 flex items-center gap-1.5">
+              <span className={`flex h-4 w-4 items-center justify-center rounded-full text-[9px] ${selectedMake ? 'bg-[#001E3C] text-white' : 'bg-slate-200 text-slate-500'}`}>2</span>
+              Modèle
+            </label>
+            <select
+              value={selectedModel?.id || ''}
+              disabled={!selectedMake || models.length === 0}
+              onChange={(e) => {
+                const found = models.find(m => m.id === e.target.value)
+                if (found) selectModel(found)
+              }}
+              className={`w-full rounded-xl border px-3 py-2.5 text-xs font-bold shadow-2xs outline-none transition ${
+                selectedMake
+                  ? 'border-slate-200 bg-white text-slate-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20'
+                  : 'border-slate-200/60 bg-slate-100 text-slate-400 cursor-not-allowed'
+              }`}
+            >
+              <option value="" disabled>
+                {!selectedMake ? 'Sélectionnez d’abord la marque' : 'Sélectionner un modèle...'}
+              </option>
+              {models.map(m => (
+                <option key={m.id} value={m.id}>
+                  {m.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Dropdown 3: Motorisation */}
+          <div className="flex flex-col gap-1.5">
+            <label className="text-[11px] font-bold uppercase tracking-wider text-slate-600 flex items-center gap-1.5">
+              <span className={`flex h-4 w-4 items-center justify-center rounded-full text-[9px] ${selectedModel ? 'bg-[#001E3C] text-white' : 'bg-slate-200 text-slate-500'}`}>3</span>
+              Motorisation
+            </label>
+            <select
+              value={selectedEngine || ''}
+              disabled={!selectedModel || engines.length === 0}
+              onChange={(e) => setSelectedEngine(e.target.value)}
+              className={`w-full rounded-xl border px-3 py-2.5 text-xs font-bold shadow-2xs outline-none transition ${
+                selectedModel
+                  ? 'border-slate-200 bg-white text-slate-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20'
+                  : 'border-slate-200/60 bg-slate-100 text-slate-400 cursor-not-allowed'
+              }`}
+            >
+              <option value="" disabled>
+                {!selectedModel ? 'Sélectionnez d’abord le modèle' : 'Sélectionner une motorisation...'}
+              </option>
+              {engines.map(eng => {
+                const yearLabel = eng.yearFrom || eng.yearTo ? `(${eng.yearFrom || '…'}-${eng.yearTo || '…'})` : ''
+                return (
+                  <option key={eng.engineCode} value={eng.engineCode}>
+                    {eng.engineCode} {yearLabel}
+                  </option>
+                )
+              })}
+            </select>
           </div>
         </div>
 
-        {/* Selected Vehicle Badge Ribbon */}
-        {selectedMake && (
-          <div className="mt-3 flex flex-wrap items-center gap-2 pt-2 border-t border-slate-100 text-xs">
-            <span className="text-slate-400 font-medium">Sélection en cours :</span>
+        {/* Action Button Bar */}
+        {selectedMake && selectedModel && (
+          <div className="mt-4 flex flex-col sm:flex-row items-center justify-between gap-3 pt-3 border-t border-slate-100">
+            <div className="text-xs text-slate-600 font-medium">
+              Véhicule choisi : <strong className="text-blue-900">{selectedMake.name} {selectedModel.name}</strong> {selectedEngine && <span>({selectedEngine})</span>}
+            </div>
             <button
-              onClick={() => resetTo(1)}
-              className="inline-flex items-center gap-1 rounded-lg bg-blue-50 px-2.5 py-1 font-bold text-blue-900 ring-1 ring-blue-200/70 hover:bg-blue-100 transition-colors"
+              onClick={handleSearch}
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-[#001E3C] hover:bg-[#002B56] px-6 py-2.5 text-xs font-bold text-white shadow-md transition active:scale-95 cursor-pointer"
             >
-              <span>{selectedMake.name}</span>
-              <X size={12} className="text-blue-500" />
-            </button>
-
-            {selectedModel && (
-              <button
-                onClick={() => resetTo(2)}
-                className="inline-flex items-center gap-1 rounded-lg bg-blue-50 px-2.5 py-1 font-bold text-blue-900 ring-1 ring-blue-200/70 hover:bg-blue-100 transition-colors"
-              >
-                <span>{selectedModel.name}</span>
-                <X size={12} className="text-blue-500" />
-              </button>
-            )}
-
-            {selectedEngine && (
-              <span className="inline-flex items-center gap-1 rounded-lg bg-amber-50 px-2.5 py-1 font-bold text-amber-900 ring-1 ring-amber-200">
-                <span>{selectedEngine}</span>
-              </span>
-            )}
-
-            <button
-              onClick={() => resetTo(1)}
-              className="ml-auto text-[11px] text-slate-400 hover:text-slate-700 flex items-center gap-1"
-            >
-              <RotateCcw size={11} />
-              Recommencer
+              <Search size={14} className="text-amber-400" />
+              Voir les huiles compatibles
             </button>
           </div>
         )}
       </div>
 
-      {/* Content Area */}
+      {/* ═══════════════ BOTTOM SECTION: VISUAL POINT & CLICK CARDS ═══════════════ */}
       <div className="p-6">
         {error && (
           <div className="mb-5 flex items-center gap-2.5 rounded-xl bg-red-50 p-3 text-xs font-semibold text-red-700 ring-1 ring-red-200">
@@ -343,152 +371,95 @@ export function VehicleFinder({ onClose, initialVehicleType }: VehicleFinderProp
           </div>
         )}
 
-        {/* ═══════════════ STEP 1: MARQUE ═══════════════ */}
+        {/* STEP 1: VISIBLE BRAND CARDS */}
         {step === 1 && (
           <div>
-            {/* Search Input */}
-            <div className="relative mb-5">
-              <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
-              <input
-                type="text"
-                value={makeSearch}
-                onChange={e => setMakeSearch(e.target.value)}
-                placeholder="Rechercher une marque (Renault, Peugeot, Volkswagen, BMW...)"
-                className="w-full rounded-xl border border-slate-200 bg-slate-50/70 py-3 pl-11 pr-10 text-sm font-medium text-slate-900 placeholder-slate-400 outline-none transition-all focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10"
-              />
-              {makeSearch && (
-                <button
-                  onClick={() => setMakeSearch('')}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 rounded-full p-1 text-slate-400 hover:bg-slate-200 hover:text-slate-700"
-                >
-                  <X size={14} />
-                </button>
-              )}
+            <div className="mb-3 flex items-center justify-between">
+              <span className="text-xs font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
+                <Car size={14} className="text-blue-600" />
+                Cliquez directement sur votre marque :
+              </span>
+              <span className="text-[11px] text-slate-400 font-medium">{allMakes.length} marques disponibles</span>
             </div>
 
             {loading && makes.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-16 text-slate-400">
                 <Loader2 size={30} className="animate-spin text-blue-600 mb-2" />
-                <span className="text-xs font-medium">Chargement des marques constructeurs...</span>
+                <span className="text-xs font-medium">Chargement des marques...</span>
               </div>
             ) : (
-              <div className="space-y-6">
-                {/* Popular Brands Grid (when no search query) */}
-                {!makeSearch && popularMakes.length > 0 && (
-                  <div>
-                    <div className="mb-3 flex items-center justify-between">
-                      <span className="text-xs font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
-                        <Sparkles size={13} className="text-amber-500" />
-                        Marques les plus recherchées
-                      </span>
-                      <span className="text-[11px] text-slate-400 font-medium">{popularMakes.length} marques</span>
-                    </div>
-                    <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 gap-2.5">
-                      {popularMakes.map(make => {
-                        const isSelected = selectedMake?.id === make.id
-                        return (
-                          <button
-                            key={make.id}
-                            onClick={() => selectMake(make)}
-                            className={`
-                              group relative flex items-center gap-3 rounded-xl p-2.5 text-left transition-all duration-200
-                              ${isSelected
-                                ? 'border-2 border-blue-600 bg-blue-50/70 shadow-sm'
-                                : 'border border-slate-200 bg-white hover:border-blue-400 hover:bg-blue-50/20 hover:shadow-md hover:-translate-y-0.5'
-                              }
-                            `}
-                          >
-                            <BrandLogo make={make} />
-                            <div className="min-w-0 flex-1">
-                              <span className="block text-xs font-bold text-slate-800 truncate group-hover:text-blue-900">
-                                {make.name}
-                              </span>
-                            </div>
-                          </button>
-                        )
-                      })}
-                    </div>
-                  </div>
-                )}
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2.5 max-h-[380px] overflow-y-auto pr-1 custom-scrollbar">
+                {/* Popular makes first */}
+                {popularMakes.map(make => {
+                  const isSelected = selectedMake?.id === make.id
+                  return (
+                    <button
+                      key={make.id}
+                      onClick={() => selectMake(make)}
+                      className={`
+                        group relative flex items-center gap-2.5 rounded-xl p-2.5 text-left transition-all duration-200
+                        ${isSelected
+                          ? 'border-2 border-blue-600 bg-blue-50/70 shadow-sm'
+                          : 'border border-slate-200 bg-white hover:border-blue-400 hover:bg-blue-50/20 hover:shadow-sm hover:-translate-y-0.5'
+                        }
+                      `}
+                    >
+                      <BrandLogo make={make} />
+                      <div className="min-w-0 flex-1">
+                        <span className="block text-xs font-bold text-slate-800 truncate group-hover:text-blue-900">
+                          {make.name}
+                        </span>
+                      </div>
+                    </button>
+                  )
+                })}
 
-                {/* All / Filtered Brands */}
-                <div>
-                  <div className="mb-3 flex items-center justify-between">
-                    <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
-                      {makeSearch ? `Résultats pour "${makeSearch}"` : 'Toutes les marques (A-Z)'}
-                    </span>
-                    <span className="text-[11px] text-slate-400 font-medium">
-                      {filteredMakes.length} marques disponibles
-                    </span>
-                  </div>
-
-                  {filteredMakes.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center py-10 text-center text-slate-400">
-                      <Search size={28} className="mb-2 opacity-40" />
-                      <p className="text-sm font-medium text-slate-600">Aucune marque trouvée pour &ldquo;{makeSearch}&rdquo;</p>
-                      <p className="text-xs text-slate-400 mt-1">Vérifiez l'orthographe ou essayez avec une autre marque</p>
-                    </div>
-                  ) : (
-                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 max-h-[280px] overflow-y-auto pr-1 custom-scrollbar">
-                      {filteredMakes.map(make => {
-                        const isSelected = selectedMake?.id === make.id
-                        return (
-                          <button
-                            key={make.id}
-                            onClick={() => selectMake(make)}
-                            className={`
-                              group flex items-center gap-2.5 rounded-xl px-3 py-2 text-left transition-all duration-150
-                              ${isSelected
-                                ? 'border border-blue-500 bg-blue-50 text-blue-900 font-bold'
-                                : 'border border-slate-100 bg-slate-50/50 hover:border-slate-300 hover:bg-white hover:shadow-2xs text-slate-700'
-                              }
-                            `}
-                          >
-                            <BrandLogo make={make} />
-                            <span className="text-xs font-semibold truncate group-hover:text-blue-900">
-                              {make.name}
-                            </span>
-                          </button>
-                        )
-                      })}
-                    </div>
-                  )}
-                </div>
+                {/* Other makes */}
+                {allMakes.filter(m => !popularMakes.some(p => p.id === m.id)).map(make => {
+                  const isSelected = selectedMake?.id === make.id
+                  return (
+                    <button
+                      key={make.id}
+                      onClick={() => selectMake(make)}
+                      className={`
+                        group relative flex items-center gap-2.5 rounded-xl p-2.5 text-left transition-all duration-150
+                        ${isSelected
+                          ? 'border border-blue-500 bg-blue-50 text-blue-900 font-bold'
+                          : 'border border-slate-100 bg-slate-50/70 hover:border-slate-300 hover:bg-white hover:shadow-2xs text-slate-700'
+                        }
+                      `}
+                    >
+                      <BrandLogo make={make} />
+                      <div className="min-w-0 flex-1">
+                        <span className="block text-xs font-semibold truncate group-hover:text-blue-900">
+                          {make.name}
+                        </span>
+                      </div>
+                    </button>
+                  )
+                })}
               </div>
             )}
           </div>
         )}
 
-        {/* ═══════════════ STEP 2: MODÈLE ═══════════════ */}
+        {/* STEP 2: VISIBLE MODEL CARDS */}
         {step === 2 && selectedMake && (
           <div>
-            <div className="mb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div className="mb-4 flex items-center justify-between">
               <div>
                 <h3 className="text-sm font-bold text-slate-800">
-                  Choisissez le modèle pour <span className="text-blue-600">{selectedMake.name}</span>
+                  Cliquez sur le modèle de votre <span className="text-blue-600">{selectedMake.name}</span> :
                 </h3>
                 <p className="text-xs text-slate-400">{models.length} modèles disponibles</p>
               </div>
 
-              {/* Model Search Filter */}
-              <div className="relative w-full sm:w-64">
-                <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-                <input
-                  type="text"
-                  value={modelSearch}
-                  onChange={e => setModelSearch(e.target.value)}
-                  placeholder="Filtrer les modèles..."
-                  className="w-full rounded-xl border border-slate-200 bg-slate-50/70 py-2 pl-9 pr-8 text-xs font-medium text-slate-900 placeholder-slate-400 outline-none focus:border-blue-500 focus:bg-white"
-                />
-                {modelSearch && (
-                  <button
-                    onClick={() => setModelSearch('')}
-                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
-                  >
-                    <X size={12} />
-                  </button>
-                )}
-              </div>
+              <button
+                onClick={() => resetTo(1)}
+                className="text-xs font-semibold text-blue-600 hover:underline"
+              >
+                ← Changer de marque
+              </button>
             </div>
 
             {loading ? (
@@ -496,14 +467,14 @@ export function VehicleFinder({ onClose, initialVehicleType }: VehicleFinderProp
                 <Loader2 size={28} className="animate-spin text-blue-600 mb-2" />
                 <span className="text-xs font-medium">Chargement des modèles {selectedMake.name}...</span>
               </div>
-            ) : filteredModels.length === 0 ? (
+            ) : models.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-12 text-center text-slate-400">
                 <Car size={32} className="mb-2 opacity-40" />
-                <p className="text-sm font-medium text-slate-600">Aucun modèle trouvé pour cette recherche</p>
+                <p className="text-sm font-medium text-slate-600">Aucun modèle trouvé pour {selectedMake.name}</p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5 max-h-[340px] overflow-y-auto pr-1 custom-scrollbar">
-                {filteredModels.map(model => {
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5 max-h-[360px] overflow-y-auto pr-1 custom-scrollbar">
+                {models.map(model => {
                   const isSelected = selectedModel?.id === model.id
                   const vehicleTypeLabel =
                     model.vehicleType === 'poids_lourd' ? 'Poids Lourd' :
@@ -541,23 +512,31 @@ export function VehicleFinder({ onClose, initialVehicleType }: VehicleFinderProp
           </div>
         )}
 
-        {/* ═══════════════ STEP 3: MOTORISATION ═══════════════ */}
+        {/* STEP 3: VISIBLE ENGINE CARDS */}
         {step === 3 && selectedMake && selectedModel && (
           <div>
             <div className="mb-4 flex items-center justify-between">
               <div>
                 <h3 className="text-sm font-bold text-slate-800">
-                  Sélectionnez la motorisation de votre <span className="text-blue-600">{selectedMake.name} {selectedModel.name}</span>
+                  Cliquez sur la motorisation de votre <span className="text-blue-600">{selectedMake.name} {selectedModel.name}</span> :
                 </h3>
-                <p className="text-xs text-slate-400">Précisez le moteur pour une compatibilité d'huile exacte</p>
+                <p className="text-xs text-slate-400">{engines.length} motorisations répertoriées</p>
               </div>
 
-              <button
-                onClick={handleSearch}
-                className="text-xs font-semibold text-blue-600 hover:text-blue-800 hover:underline"
-              >
-                Passer cette étape & voir les huiles →
-              </button>
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={() => resetTo(2)}
+                  className="text-xs font-semibold text-slate-500 hover:underline"
+                >
+                  ← Changer de modèle
+                </button>
+                <button
+                  onClick={handleSearch}
+                  className="text-xs font-bold text-blue-600 hover:underline"
+                >
+                  Passer cette étape →
+                </button>
+              </div>
             </div>
 
             {loading ? (
@@ -568,16 +547,16 @@ export function VehicleFinder({ onClose, initialVehicleType }: VehicleFinderProp
             ) : engines.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-12 text-center text-slate-500">
                 <SlidersHorizontal size={32} className="mb-3 text-slate-300" />
-                <p className="text-sm font-medium text-slate-700">Aucune motorisation détaillée spécifique</p>
+                <p className="text-sm font-medium text-slate-700">Aucune motorisation spécifique détaillée</p>
                 <p className="mt-1 text-xs text-slate-400 max-w-sm">
-                  Vous pouvez directement consulter le catalogue d'huiles homologuées pour votre {selectedMake.name} {selectedModel.name}.
+                  Vous pouvez directement consulter les huiles homologuées pour votre {selectedMake.name} {selectedModel.name}.
                 </p>
                 <button
                   onClick={handleSearch}
                   className="mt-5 inline-flex items-center gap-2 rounded-xl bg-[#001E3C] hover:bg-[#002B56] px-6 py-3 text-xs font-bold text-white shadow-md transition active:scale-95"
                 >
                   <Search size={14} className="text-amber-400" />
-                  Voir les huiles compatibles
+                  Voir les huiles pour {selectedMake.name} {selectedModel.name}
                 </button>
               </div>
             ) : (
@@ -626,7 +605,6 @@ export function VehicleFinder({ onClose, initialVehicleType }: VehicleFinderProp
                   })}
                 </div>
 
-                {/* Final Action Button */}
                 <div className="mt-6 flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-slate-100 pt-4">
                   <span className="text-xs text-slate-500">
                     {selectedEngine ? `Motorisation sélectionnée : ${selectedEngine}` : 'Précision optionnelle'}
