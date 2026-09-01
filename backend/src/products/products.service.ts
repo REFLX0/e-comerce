@@ -234,7 +234,17 @@ export class ProductsService {
         };
       }
       if (filters.viscosity) {
-        where.specs = { viscosity: this.normalizeViscosity(filters.viscosity) };
+        const norm = this.normalizeViscosity(filters.viscosity);
+        const compact = filters.viscosity.replace(/[\s-]/g, '').toUpperCase();
+        andConditions.push({
+          OR: [
+            { specs: { viscosity: { contains: norm, mode: 'insensitive' } } },
+            { specs: { viscosity: { contains: compact, mode: 'insensitive' } } },
+            { nameFr: { contains: norm, mode: 'insensitive' } },
+            { nameFr: { contains: compact, mode: 'insensitive' } },
+            { description: { contains: norm, mode: 'insensitive' } },
+          ],
+        });
       }
       const variantSome: Prisma.ProductVariantWhereInput = {};
       const specsInput: Prisma.ProductSpecsWhereInput = {};

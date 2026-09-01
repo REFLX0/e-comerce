@@ -26,35 +26,33 @@ export class OilFinderController {
       return { data: [], total: 0, status: result.status };
     }
 
+    // 1. Try matching with full specifications (viscosity + OEM/ACEA/API)
     let productsResult = await this.productsService.findAll({
       viscosity: result.oilSpec.viscosity,
       acea: result.oilSpec.aceaStandard ?? undefined,
       api: result.oilSpec.apiStandard ?? undefined,
-      oem: result.oilSpec.oemApproval ?? undefined,
-      categorySlug: 'huiles-moteur', // Ensure we only return oils
+      categorySlug: 'huiles-moteur',
     });
 
-    if (productsResult.total === 0 && result.oilSpec.oemApproval) {
-      productsResult = await this.productsService.findAll({
-        viscosity: result.oilSpec.viscosity,
-        acea: result.oilSpec.aceaStandard ?? undefined,
-        api: result.oilSpec.apiStandard ?? undefined,
-        categorySlug: 'huiles-moteur',
-      });
-    }
-
-    if (productsResult.total === 0 && result.oilSpec.apiStandard && result.oilSpec.aceaStandard) {
-      productsResult = await this.productsService.findAll({
-        viscosity: result.oilSpec.viscosity,
-        acea: result.oilSpec.aceaStandard ?? undefined,
-        categorySlug: 'huiles-moteur',
-      });
-    }
-
+    // 2. Fallback: match by viscosity under huiles-moteur
     if (productsResult.total === 0) {
       productsResult = await this.productsService.findAll({
         viscosity: result.oilSpec.viscosity,
         categorySlug: 'huiles-moteur',
+      });
+    }
+
+    // 3. Fallback: match by viscosity across all categories (in case oil is in 'automobile' or uncategorized)
+    if (productsResult.total === 0) {
+      productsResult = await this.productsService.findAll({
+        viscosity: result.oilSpec.viscosity,
+      });
+    }
+
+    // 4. Ultimate fallback: search by viscosity keyword (e.g. "5W-30" or "5W30")
+    if (productsResult.total === 0 && result.oilSpec.viscosity) {
+      productsResult = await this.productsService.findAll({
+        search: result.oilSpec.viscosity,
       });
     }
 
