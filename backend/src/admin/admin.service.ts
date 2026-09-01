@@ -195,6 +195,7 @@ export class AdminService {
       'nameFr',
       'slug',
       'description',
+      'shortDescription',
       'brandId',
       'categoryId',
       'isPublished',

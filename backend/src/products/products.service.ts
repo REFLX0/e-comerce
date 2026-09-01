@@ -1175,9 +1175,10 @@ export class ProductsService {
       slug: product.slug,
       name: product.nameFr || product.name || '',
       sku: product.sku || '',
-      articleNumber: product.sku || '',
       description: product.description || '',
-      shortDescription: product.description ? product.description.slice(0, 160) : '',
+      shortDescription: product.shortDescription
+        ? product.shortDescription
+        : (product.description ? product.description.replace(/^Description\s*:?\s*/i, '').slice(0, 180).trim() : ''),
       brandId: product.brandId || '',
       brand: product.brand
         ? {

@@ -44,17 +44,31 @@ export class UploadsService {
   }
 
   async uploadImage(file: Express.Multer.File): Promise<string> {
-    if (this.useMinio) {
-      return this.uploadToMinio(file);
+    if (!file) {
+      throw new Error('Aucun fichier reçu.');
     }
+
+    if (this.useMinio && this.s3Client) {
+      try {
+        return await this.uploadToMinio(file);
+      } catch (err: any) {
+        this.logger.warn(`MinIO upload failed (${err?.message}), falling back to local disk.`);
+      }
+    }
+
     if (this.useCloudinary) {
-      return this.uploadToCloudinary(file);
+      try {
+        return await this.uploadToCloudinary(file);
+      } catch (err: any) {
+        this.logger.warn(`Cloudinary upload failed (${err?.message}), falling back to local disk.`);
+      }
     }
+
     return this.uploadToLocalDisk(file);
   }
 
   private async uploadToMinio(file: Express.Multer.File): Promise<string> {
-    const ext = path.extname(file.originalname) || '.jpg';
+    const ext = path.extname(file.originalname || '') || '.jpg';
     const filename = `${Date.now()}-${Math.round(Math.random() * 1e9)}${ext}`;
     
     await this.s3Client!.send(
@@ -62,7 +76,7 @@ export class UploadsService {
         Bucket: this.minioBucket,
         Key: filename,
         Body: file.buffer,
-        ContentType: file.mimetype,
+        ContentType: file.mimetype || 'image/jpeg',
       })
     );
     
@@ -87,7 +101,7 @@ export class UploadsService {
   private async uploadToLocalDisk(file: Express.Multer.File): Promise<string> {
     const uploadDir = path.join(process.cwd(), 'uploads', 'products');
     await fs.promises.mkdir(uploadDir, { recursive: true });
-    const ext = path.extname(file.originalname) || '.jpg';
+    const ext = path.extname(file.originalname || '') || '.jpg';
     const filename = `${Date.now()}-${Math.round(Math.random() * 1e9)}${ext}`;
     const filePath = path.join(uploadDir, filename);
     await fs.promises.writeFile(filePath, file.buffer);

@@ -65,6 +65,7 @@ export default function NewProductPage() {
   const [slug, setSlug] = useState('')
   const [sku, setSku] = useState('')
   const [description, setDescription] = useState('')
+  const [shortDescription, setShortDescription] = useState('')
   const [brandId, setBrandId] = useState('')
   const [categoryId, setCategoryId] = useState('')
   const [isPublished, setIsPublished] = useState(true)
@@ -300,6 +301,7 @@ export default function NewProductPage() {
         slug: slug.trim(),
         sku: sku.trim() || `SKU-${slug.toUpperCase()}-${Date.now().toString().slice(-4)}`,
         description: description.trim() || nameFr.trim(),
+        shortDescription: shortDescription.trim() || undefined,
         brandId,
         categoryId,
         isPublished,
@@ -485,11 +487,36 @@ export default function NewProductPage() {
             </div>
 
             <div className="space-y-1.5 sm:col-span-2">
-              <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">Description détaillée</label>
+              <div className="flex items-center justify-between">
+                <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+                  Description courte / Résumé d&apos;en-tête
+                </label>
+                <span className="text-[11px] text-slate-400 font-medium">
+                  Apparaît en haut sous le stock et le prix (fiche client)
+                </span>
+              </div>
+              <textarea
+                value={shortDescription}
+                onChange={(e) => setShortDescription(e.target.value)}
+                placeholder="Ex: Shampoing-cire auto-séchant pour le nettoyage de la carrosserie..."
+                rows={2}
+                className="w-full rounded-2xl border border-slate-200 bg-slate-50/60 px-4 py-3 text-sm text-slate-800 outline-none transition-all focus:border-[#16254c] focus:bg-white focus:ring-2 focus:ring-[#16254c]/10 resize-none"
+              />
+            </div>
+
+            <div className="space-y-1.5 sm:col-span-2">
+              <div className="flex items-center justify-between">
+                <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+                  Description détaillée (Onglet complet)
+                </label>
+                <span className="text-[11px] text-slate-400 font-medium">
+                  Apparaît dans l&apos;onglet Description en bas de page
+                </span>
+              </div>
               <textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                rows={3}
+                rows={4}
                 placeholder="Spécifications, compatibilités, caractéristiques techniques du produit..."
                 className="w-full rounded-2xl border border-slate-200 bg-slate-50/60 px-4 py-3 text-sm text-slate-800 outline-none transition-all focus:border-[#16254c] focus:bg-white focus:ring-2 focus:ring-[#16254c]/10 resize-none"
               />

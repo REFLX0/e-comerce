@@ -1643,6 +1643,9 @@
     "Taxonomy": {
         "auto": "سيارات",
         "huilesMoteur": "زيت المحرك",
+        "autoSynthese": "100% تخليقي",
+        "autoSemi": "نصف تخليقي",
+        "autoMinerale": "معدني",
         "syntheticHint": "100% صناعي، نصف صناعي، معدني",
         "liquideFrein": "سائل الفرامل",
         "dotHint": "DOT 3, DOT 4",

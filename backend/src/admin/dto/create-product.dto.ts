@@ -57,6 +57,10 @@ export class CreateProductDto {
   @MinLength(1)
   sku?: string;
   @ApiProperty() @IsString() @MinLength(1) description: string;
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  shortDescription?: string;
   @ApiProperty() @IsString() @MinLength(1) brandId: string;
   @ApiProperty() @IsString() @MinLength(1) categoryId: string;
   @ApiProperty({ required: false })

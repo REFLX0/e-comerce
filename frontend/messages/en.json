@@ -1641,8 +1641,11 @@
         "cta": "Request a return"
     },
     "Taxonomy": {
-        "auto": "Automobile",
-        "huilesMoteur": "Engine oil",
+        "auto": "Automotive",
+        "huilesMoteur": "Engine Oil",
+        "autoSynthese": "Full Synthetic",
+        "autoSemi": "Semi-Synthetic",
+        "autoMinerale": "Mineral",
         "syntheticHint": "100% Synthetic, Semi-Synthetic, Mineral",
         "liquideFrein": "Brake fluid",
         "dotHint": "DOT 3, DOT 4",

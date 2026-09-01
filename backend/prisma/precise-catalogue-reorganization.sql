@@ -7,6 +7,8 @@ BEGIN;
 
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
+ALTER TABLE "Product" ADD COLUMN IF NOT EXISTS "shortDescription" TEXT;
+
 -- ─────────────────────────────────────────────────────────────
 -- 1. ROOT CATEGORIES (USER'S EXACT 4 ROOTS)
 -- ─────────────────────────────────────────────────────────────

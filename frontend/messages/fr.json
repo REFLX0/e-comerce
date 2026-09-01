@@ -1643,6 +1643,9 @@
     "Taxonomy": {
         "auto": "Automobile",
         "huilesMoteur": "Huile moteur",
+        "autoSynthese": "100% Synthèse",
+        "autoSemi": "Semi-Synthèse",
+        "autoMinerale": "Minérale",
         "syntheticHint": "100% Synthétique, Semi-Synthétique, Minéral",
         "liquideFrein": "Liquide de frein",
         "dotHint": "DOT 3, DOT 4",
