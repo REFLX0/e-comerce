@@ -1,6 +1,7 @@
 -- Auto-generated per-volume variant & image import
 BEGIN;
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
+ALTER TABLE "public"."ProductVariant" ADD COLUMN IF NOT EXISTS "imageUrl" TEXT;
 
 -- 1. Liqui Moly — Huile de boîte de vitesses à double embrayage 8100
 DO $$
