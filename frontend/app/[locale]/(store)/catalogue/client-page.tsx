@@ -356,12 +356,12 @@ export default function CataloguePage() {
                         )}
                         {data.oilSpec.apiStandard && (
                           <span className="rounded-md bg-white px-3 py-1.5 text-sm font-semibold text-blue-800 shadow-sm ring-1 ring-blue-200">
-                            API {data.oilSpec.apiStandard}
+                            {data.oilSpec.apiStandard.startsWith('API') ? data.oilSpec.apiStandard : `API ${data.oilSpec.apiStandard}`}
                           </span>
                         )}
                         {data.oilSpec.aceaStandard && (
                           <span className="rounded-md bg-white px-3 py-1.5 text-sm font-semibold text-blue-800 shadow-sm ring-1 ring-blue-200">
-                            ACEA {data.oilSpec.aceaStandard}
+                            {data.oilSpec.aceaStandard.startsWith('ACEA') ? data.oilSpec.aceaStandard : `ACEA ${data.oilSpec.aceaStandard}`}
                           </span>
                         )}
                         {data.oilSpec.oemApproval && (
