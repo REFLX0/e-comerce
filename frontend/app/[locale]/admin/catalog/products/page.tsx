@@ -208,7 +208,7 @@ export default function AdminProductsPage() {
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold text-brand-primary">{t('products')}</h1>
-          <p className="text-sm text-gray-500">{t('productsInCatalog', { count: total })}</p>
+
         </div>
         <div className="flex flex-wrap gap-2">
           <input ref={fileInputRef} type="file" accept=".csv,.xls,.xlsx" onChange={importCsv} className="hidden" disabled={isImporting} />
