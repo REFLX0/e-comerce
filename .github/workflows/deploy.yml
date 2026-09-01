@@ -36,6 +36,10 @@ jobs:
             git fetch origin main
             git reset --hard origin/main
             
+            # Apply DB migrations & full catalogue reorganization
+            docker exec -i $(docker ps -q -f name=postgres) psql -U specpart -d specpart < backend/prisma/precise-catalogue-reorganization.sql || true
+            docker compose exec -T redis redis-cli FLUSHALL || true
+            
             # Build and update modified containers automatically
             docker compose build frontend backend
             docker compose up -d --no-deps frontend backend nginx
