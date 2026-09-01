@@ -316,21 +316,27 @@ export class AdminService {
     }
 
     if (specs) {
+      const specsData = {
+        viscosity: specs.viscosity || null,
+        apiStandard: specs.apiStandard || null,
+        aeceaStandard: specs.aeceaStandard || null,
+        jasoStandard: specs.jasoStandard || null,
+        OEMApprovals: specs.OEMApprovals || null,
+        isFullySynth: Boolean(specs.isFullySynth),
+        isSemiSynth: Boolean(specs.isSemiSynth),
+        isMinerale: Boolean(specs.isMinerale),
+        DPFCompatible: specs.DPFCompatible !== undefined ? Boolean(specs.DPFCompatible) : null,
+        TurboCompatible: specs.TurboCompatible !== undefined ? Boolean(specs.TurboCompatible) : null,
+        HybridCompatible: specs.HybridCompatible !== undefined ? Boolean(specs.HybridCompatible) : null,
+      };
+
       await this.prisma.productSpecs.upsert({
         where: { productId: id },
         create: {
           productId: id,
-          viscosity: specs.viscosity || null,
-          apiStandard: specs.apiStandard || null,
-          aeceaStandard: specs.aeceaStandard || null,
-          OEMApprovals: specs.OEMApprovals || null,
+          ...specsData,
         },
-        update: {
-          viscosity: specs.viscosity || null,
-          apiStandard: specs.apiStandard || null,
-          aeceaStandard: specs.aeceaStandard || null,
-          OEMApprovals: specs.OEMApprovals || null,
-        },
+        update: specsData,
       });
     }
 

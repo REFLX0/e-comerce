@@ -84,10 +84,16 @@ export default function NewProductPage() {
     { volume: '1L', price: '', stockQty: '10', imageFile: null, imagePreview: null },
     { volume: '5L', price: '', stockQty: '10', imageFile: null, imagePreview: null },
   ])
+  // Specifications & Compatibility
   const [viscosity, setViscosity] = useState('')
   const [apiStandard, setApiStandard] = useState('')
   const [aeceaStandard, setAeceaStandard] = useState('')
+  const [jasoStandard, setJasoStandard] = useState('')
   const [OEMApprovals, setOEMApprovals] = useState('')
+  const [oilType, setOilType] = useState<'full_synth' | 'semi_synth' | 'mineral' | 'none'>('none')
+  const [DPFCompatible, setDPFCompatible] = useState(false)
+  const [TurboCompatible, setTurboCompatible] = useState(false)
+  const [HybridCompatible, setHybridCompatible] = useState(false)
 
   // Images Management
   const [images, setImages] = useState<ImageItem[]>([])
@@ -315,12 +321,20 @@ export default function NewProductPage() {
         payload.packageUnit = packageUnit.trim() || '1 Pièce'
       } else {
         payload.variants = finalVariants
-        payload.specs = {
-          viscosity: viscosity.trim() || undefined,
-          apiStandard: apiStandard.trim() || undefined,
-          aeceaStandard: aeceaStandard.trim() || undefined,
-          OEMApprovals: OEMApprovals.trim() || undefined,
-        }
+      }
+
+      payload.specs = {
+        viscosity: viscosity.trim() || undefined,
+        apiStandard: apiStandard.trim() || undefined,
+        aeceaStandard: aeceaStandard.trim() || undefined,
+        jasoStandard: jasoStandard.trim() || undefined,
+        OEMApprovals: OEMApprovals.trim() || undefined,
+        isFullySynth: oilType === 'full_synth',
+        isSemiSynth: oilType === 'semi_synth',
+        isMinerale: oilType === 'mineral',
+        DPFCompatible,
+        TurboCompatible,
+        HybridCompatible,
       }
 
       createMutation.mutate(payload)
@@ -675,55 +689,128 @@ export default function NewProductPage() {
                 </div>
               ))}
             </div>
-
-            {/* Technical Lubricant Specs */}
-            <div className="border-t border-slate-100 pt-4 space-y-4">
-              <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block">Spécifications Techniques & Homologations</span>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="space-y-1">
-                  <label className="text-xs font-semibold text-slate-700">Viscosité SAE</label>
-                  <input
-                    type="text"
-                    value={viscosity}
-                    onChange={(e) => setViscosity(e.target.value)}
-                    placeholder="ex: 5W-30, 5W-40, 10W-40..."
-                    className="w-full rounded-2xl border border-slate-200 bg-slate-50/60 px-4 py-2.5 text-sm font-semibold outline-none focus:border-[#16254c] focus:bg-white"
-                  />
-                </div>
-                <div className="space-y-1">
-                  <label className="text-xs font-semibold text-slate-700">Norme ACEA</label>
-                  <input
-                    type="text"
-                    value={aeceaStandard}
-                    onChange={(e) => setAeceaStandard(e.target.value)}
-                    placeholder="ex: C3, A3/B4, C2..."
-                    className="w-full rounded-2xl border border-slate-200 bg-slate-50/60 px-4 py-2.5 text-sm font-semibold outline-none focus:border-[#16254c] focus:bg-white"
-                  />
-                </div>
-                <div className="space-y-1">
-                  <label className="text-xs font-semibold text-slate-700">Norme API</label>
-                  <input
-                    type="text"
-                    value={apiStandard}
-                    onChange={(e) => setApiStandard(e.target.value)}
-                    placeholder="ex: SN/CF, SP, SL..."
-                    className="w-full rounded-2xl border border-slate-200 bg-slate-50/60 px-4 py-2.5 text-sm font-semibold outline-none focus:border-[#16254c] focus:bg-white"
-                  />
-                </div>
-                <div className="space-y-1">
-                  <label className="text-xs font-semibold text-slate-700">Homologations Constructeurs (OEM)</label>
-                  <input
-                    type="text"
-                    value={OEMApprovals}
-                    onChange={(e) => setOEMApprovals(e.target.value)}
-                    placeholder="ex: VW 504.00/507.00, MB 229.51, BMW LL-04..."
-                    className="w-full rounded-2xl border border-slate-200 bg-slate-50/60 px-4 py-2.5 text-sm font-semibold outline-none focus:border-[#16254c] focus:bg-white"
-                  />
-                </div>
-              </div>
-            </div>
           </div>
         )}
+
+        {/* Technical Specifications & Compatibility Card */}
+        <div className="rounded-3xl border border-slate-200/90 bg-white p-5 sm:p-7 shadow-sm space-y-5">
+          <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
+            <Droplets size={17} className="text-[#16254c]" />
+            <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wider">
+              Spécifications Techniques, Normes & Homologations Constructeurs
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-slate-700">Viscosité SAE</label>
+              <input
+                type="text"
+                value={viscosity}
+                onChange={(e) => setViscosity(e.target.value)}
+                placeholder="ex: 5W-30, 5W-40, 10W-40, 75W-80..."
+                className="w-full rounded-2xl border border-slate-200 bg-slate-50/60 px-4 py-2.5 text-sm font-semibold outline-none focus:border-[#16254c] focus:bg-white"
+              />
+            </div>
+
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-slate-700">Norme ACEA</label>
+              <input
+                type="text"
+                value={aeceaStandard}
+                onChange={(e) => setAeceaStandard(e.target.value)}
+                placeholder="ex: C3, A3/B4, C2, E7..."
+                className="w-full rounded-2xl border border-slate-200 bg-slate-50/60 px-4 py-2.5 text-sm font-semibold outline-none focus:border-[#16254c] focus:bg-white"
+              />
+            </div>
+
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-slate-700">Norme API</label>
+              <input
+                type="text"
+                value={apiStandard}
+                onChange={(e) => setApiStandard(e.target.value)}
+                placeholder="ex: SP, SN/CF, SL, GL-4, GL-5..."
+                className="w-full rounded-2xl border border-slate-200 bg-slate-50/60 px-4 py-2.5 text-sm font-semibold outline-none focus:border-[#16254c] focus:bg-white"
+              />
+            </div>
+
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-slate-700">Norme JASO (Motos/2-Roues)</label>
+              <input
+                type="text"
+                value={jasoStandard}
+                onChange={(e) => setJasoStandard(e.target.value)}
+                placeholder="ex: MA2, MB, FD, FC..."
+                className="w-full rounded-2xl border border-slate-200 bg-slate-50/60 px-4 py-2.5 text-sm font-semibold outline-none focus:border-[#16254c] focus:bg-white"
+              />
+            </div>
+
+            <div className="space-y-1 sm:col-span-2 lg:col-span-4">
+              <label className="text-xs font-semibold text-slate-700">
+                Homologations & Approbations Constructeurs (OEM) / Compatibilité
+              </label>
+              <input
+                type="text"
+                value={OEMApprovals}
+                onChange={(e) => setOEMApprovals(e.target.value)}
+                placeholder="ex: VW 504.00/507.00, MB 229.51, BMW LL-04, Porsche C30, RN0720, Ford WSS-M2C913-D..."
+                className="w-full rounded-2xl border border-slate-200 bg-slate-50/60 px-4 py-2.5 text-sm font-semibold outline-none focus:border-[#16254c] focus:bg-white"
+              />
+              <p className="text-[11px] text-slate-400 mt-1">
+                Ces homologations apparaîtront avec des badges officiels dans l&apos;onglet Compatibilité de la page produit.
+              </p>
+            </div>
+
+            {/* Technology Base */}
+            <div className="space-y-1 sm:col-span-2 lg:col-span-2">
+              <label className="text-xs font-semibold text-slate-700">Technologie / Base d&apos;huile</label>
+              <select
+                value={oilType}
+                onChange={(e) => setOilType(e.target.value as any)}
+                className="w-full rounded-2xl border border-slate-200 bg-slate-50/60 px-4 py-2.5 text-sm font-semibold outline-none focus:border-[#16254c] focus:bg-white"
+              >
+                <option value="none">-- Non spécifié / Autre --</option>
+                <option value="full_synth">100% Synthèse (Full Synthetic)</option>
+                <option value="semi_synth">Semi-Synthèse (Technosynthese)</option>
+                <option value="mineral">Minérale</option>
+              </select>
+            </div>
+
+            {/* Compatibility Flags */}
+            <div className="sm:col-span-2 lg:col-span-2 flex flex-wrap gap-4 items-center pt-5">
+              <label className="flex items-center gap-2 cursor-pointer text-xs font-bold text-slate-700">
+                <input
+                  type="checkbox"
+                  checked={DPFCompatible}
+                  onChange={(e) => setDPFCompatible(e.target.checked)}
+                  className="h-4 w-4 rounded border-slate-300 text-[#16254c] focus:ring-[#16254c]"
+                />
+                Compatible FAP / DPF
+              </label>
+
+              <label className="flex items-center gap-2 cursor-pointer text-xs font-bold text-slate-700">
+                <input
+                  type="checkbox"
+                  checked={TurboCompatible}
+                  onChange={(e) => setTurboCompatible(e.target.checked)}
+                  className="h-4 w-4 rounded border-slate-300 text-[#16254c] focus:ring-[#16254c]"
+                />
+                Compatible Turbo
+              </label>
+
+              <label className="flex items-center gap-2 cursor-pointer text-xs font-bold text-slate-700">
+                <input
+                  type="checkbox"
+                  checked={HybridCompatible}
+                  onChange={(e) => setHybridCompatible(e.target.checked)}
+                  className="h-4 w-4 rounded border-slate-300 text-[#16254c] focus:ring-[#16254c]"
+                />
+                Compatible Hybride
+              </label>
+            </div>
+          </div>
+        </div>
 
         {/* Multi-Images Management Card */}
         <div className="rounded-3xl border border-slate-200/90 bg-white p-5 sm:p-7 shadow-sm space-y-5">

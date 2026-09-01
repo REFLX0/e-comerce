@@ -45,7 +45,42 @@ export class ProductSpecsDto {
   @ApiProperty({ required: false })
   @IsOptional()
   @IsString()
+  jasoStandard?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
   OEMApprovals?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsBoolean()
+  isFullySynth?: boolean;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsBoolean()
+  isSemiSynth?: boolean;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsBoolean()
+  isMinerale?: boolean;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsBoolean()
+  DPFCompatible?: boolean;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsBoolean()
+  TurboCompatible?: boolean;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsBoolean()
+  HybridCompatible?: boolean;
 }
 
 export class CreateProductDto {
