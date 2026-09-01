@@ -214,10 +214,11 @@ export function createApiClient(opts: ApiClientOptions) {
         const requestId = res.headers.get('x-request-id') ?? undefined
         if (!res.ok) {
           const data = await res.json().catch(() => null)
+          const msg = data?.message ?? `API ${res.status} on ${path}`
           if (res.status >= 400 && res.status < 500) {
-            throw new HttpClientError(res.status, `API ${res.status} on ${path}`)
+            throw new HttpClientError(res.status, Array.isArray(msg) ? msg.join(', ') : msg)
           }
-          throw new ApiError(res.status, `API ${res.status} on ${path}`, undefined, requestId)
+          throw new ApiError(res.status, Array.isArray(msg) ? msg.join(', ') : msg, undefined, requestId)
         }
         return res.json() as Promise<T>
       })
