@@ -52,12 +52,12 @@ function slugify(text: string): string {
     .replace(/^-+|-+$/g, '');
 }
 
-// ── Preset vehicle databases for Moto, Poids Lourd, and Marine ───
+// ── Preset vehicle databases for Moto, Poids Lourd, Agricole, and Marine ───
 
 const MOTO_MAKES = [
   'YAMAHA', 'HONDA', 'KAWASAKI', 'SUZUKI', 'BMW MOTORRAD', 'DUCATI', 'KTM',
   'PIAGGIO', 'VESPA', 'SYM', 'APRILIA', 'KYMCO', 'PEUGEOT MOTOCYCLES', 'TRIUMPH',
-  'HARLEY-DAVIDSON', 'BENELLI', 'ROYAL ENFIELD', 'MV AGUSTA'
+  'HARLEY-DAVIDSON', 'BENELLI', 'ROYAL ENFIELD', 'MV AGUSTA', 'HUSQVARNA', 'BETA', 'CFMOTO', 'POLARIS', 'CAN-AM'
 ];
 
 const MOTO_MODELS: Record<string, string[]> = {
@@ -78,7 +78,7 @@ const MOTO_MODELS: Record<string, string[]> = {
 
 const TRUCK_MAKES = [
   'MERCEDES-BENZ TRUCKS', 'VOLVO TRUCKS', 'SCANIA', 'MAN', 'RENAULT TRUCKS',
-  'DAF', 'IVECO', 'ISUZU TRUCKS', 'JOHN DEERE', 'MASSEY FERGUSON', 'NEW HOLLAND', 'CLAAS'
+  'DAF', 'IVECO', 'ISUZU TRUCKS', 'MACK', 'HYUNDAI TRUCKS', 'MITSUBISHI FUSO'
 ];
 
 const TRUCK_MODELS: Record<string, string[]> = {
@@ -91,9 +91,37 @@ const TRUCK_MODELS: Record<string, string[]> = {
   'IVECO': ['S-Way', 'T-Way', 'Stralis', 'Trakker', 'Eurocargo', 'Daily'],
 };
 
-const MARINE_MAKES = [
-  'YAMAHA MARINE', 'MERCURY', 'HONDA MARINE', 'SUZUKI MARINE', 'VOLVO PENTA', 'YANMAR', 'TOHATSU', 'EVINRUDE'
+const AGRI_MAKES = [
+  'JOHN DEERE', 'MASSEY FERGUSON', 'NEW HOLLAND', 'CLAAS', 'CASE IH',
+  'DEUTZ-FAHR', 'FENDT', 'KUBOTA', 'VALTRA', 'SAME', 'STEYR', 'LANDINI', 'MCCORMICK'
 ];
+
+const AGRI_MODELS: Record<string, string[]> = {
+  'JOHN DEERE': ['Série 6R (6120M - 6250R)', 'Série 7R (7R 290 - 7R 350)', 'Série 8R / 8RT', 'Série 5M / 5R', 'Série 6M'],
+  'MASSEY FERGUSON': ['MF 5S', 'MF 6S', 'MF 7S', 'MF 8S', 'MF 9S', 'MF 4700 M', 'MF 5700 M'],
+  'NEW HOLLAND': ['T5 AutoCommand / ElectroCommand', 'T6 Dynamic Command', 'T7 Heavy Duty', 'T8 Genesis', 'T4 F/N/V'],
+  'CLAAS': ['Arion 400', 'Arion 500 / 600', 'Axion 800 / 900', 'Xerion 4000 / 5000', 'Nexos 200'],
+  'CASE IH': ['Puma (150 - 240 CV)', 'Maxxum Multicontroller', 'Optum CVXDrive', 'Magnum AFS Connect', 'Farmall C / A'],
+  'FENDT': ['300 Vario', '500 Vario', '700 Vario Gen6/Gen7', '900 Vario', '1000 Vario'],
+  'DEUTZ-FAHR': ['Série 5D / 5G', 'Série 6 / 6 TTV', 'Série 7 TTV', 'Série 8 TTV', 'Série 9 TTV'],
+  'KUBOTA': ['M4003', 'M5002', 'M6002', 'M7003', 'M7173'],
+  'VALTRA': ['Série A', 'Série G', 'Série N', 'Série T', 'Série S'],
+};
+
+const MARINE_MAKES = [
+  'YAMAHA MARINE', 'MERCURY', 'HONDA MARINE', 'SUZUKI MARINE', 'VOLVO PENTA', 'YANMAR', 'TOHATSU', 'EVINRUDE', 'CATERPILLAR MARINE', 'MAN MARINE', 'NANNI DIESEL', 'SELVA'
+];
+
+const MARINE_MODELS: Record<string, string[]> = {
+  'YAMAHA MARINE': ['F25 / F40 FourStroke', 'F70 / F90 / F115', 'F150 / F200 FourStroke', 'F250 / F300 V6', 'XTO Offshore 425 / 450 V8'],
+  'MERCURY': ['FourStroke 40 - 115 HP', 'FourStroke 150 HP', 'Verado V8 250 - 300 HP', 'Verado V12 600 HP', 'Pro XS 115 - 300 HP'],
+  'HONDA MARINE': ['BF 40 / BF 50', 'BF 80 / BF 100', 'BF 115 / BF 150', 'BF 200 / BF 225 / BF 250 V6'],
+  'SUZUKI MARINE': ['DF 40A / DF 60A', 'DF 90A / DF 115A / DF 140A', 'DF 150A / DF 175A / DF 200A', 'DF 250 / DF 300 V6', 'DF 350A Dual Prop'],
+  'VOLVO PENTA': ['D3 Inboard Diesel (110 - 220 HP)', 'D4 Common Rail (150 - 320 HP)', 'D6 Common Rail (300 - 480 HP)', 'D8 / D11 / D13 Heavy Duty', 'V6 / V8 Essence EVC'],
+  'YANMAR': ['3YM / 3JH Voilier (20 - 40 CV)', '4JH Common Rail (45 - 110 CV)', '4LV Inboard (150 - 250 CV)', '6LY / 8LV Haute Performance'],
+  'TOHATSU': ['MFS 20 / 30 FourStroke', 'MFS 40 / 50 FourStroke', 'MFS 75 / 90 / 115 HP'],
+  'EVINRUDE': ['E-TEC G2 150 - 300 HP', 'E-TEC 25 - 90 HP'],
+};
 
 const AUTO_POPULAR_MAKES = [
   'PEUGEOT', 'RENAULT', 'VOLKSWAGEN', 'CITROEN', 'BMW', 'MERCEDES-BENZ',
@@ -437,22 +465,51 @@ export class OilFinderService {
   async getMakes(category?: string) {
     const cat = category?.toLowerCase().trim() || 'auto';
     const isMoto = cat.includes('moto') || cat.includes('karting') || cat.includes('2-roues') || cat.includes('scooter');
-    const isCv = cat.includes('poids') || cat.includes('commercial') || cat.includes('heavy') || cat.includes('agri');
-    const isMarine = cat.includes('marine') || cat.includes('boat');
+    const isAgri = cat.includes('agri') || cat.includes('tractor') || cat.includes('tracteur');
+    const isCv = !isAgri && (cat.includes('poids') || cat.includes('commercial') || cat.includes('heavy') || cat.includes('truck') || cat.includes('camion'));
+    const isMarine = cat.includes('marine') || cat.includes('boat') || cat.includes('bateau');
 
     if (isMoto) {
-      return MOTO_MAKES.map(name => ({ slug: slugify(name), name }));
+      try {
+        const tecdocMotos: any[] = await this.prisma.$queryRawUnsafe(`
+          SELECT DISTINCT matchcode AS name, LOWER(REGEXP_REPLACE(matchcode, '[^a-zA-Z0-9]+', '-', 'g')) AS slug
+          FROM tecdoc.manufacturers
+          WHERE can_be_displayed = true AND is_motorbike = true
+          ORDER BY matchcode ASC
+        `);
+        const tecdocNames = new Set(tecdocMotos.map(r => r.name.toUpperCase()));
+        const presets = MOTO_MAKES.filter(name => !tecdocNames.has(name.toUpperCase())).map(name => ({ slug: slugify(name), name }));
+        return [...tecdocMotos.map(r => ({ slug: r.slug, name: r.name })), ...presets];
+      } catch {
+        return MOTO_MAKES.map(name => ({ slug: slugify(name), name }));
+      }
+    }
+
+    if (isAgri) {
+      return AGRI_MAKES.map(name => ({ slug: slugify(name), name }));
     }
 
     if (isCv) {
-      return TRUCK_MAKES.map(name => ({ slug: slugify(name), name }));
+      try {
+        const tecdocCv: any[] = await this.prisma.$queryRawUnsafe(`
+          SELECT DISTINCT matchcode AS name, LOWER(REGEXP_REPLACE(matchcode, '[^a-zA-Z0-9]+', '-', 'g')) AS slug
+          FROM tecdoc.manufacturers
+          WHERE can_be_displayed = true AND (is_commercial_vehicle = true OR is_transporter = true)
+          ORDER BY matchcode ASC
+        `);
+        const tecdocNames = new Set(tecdocCv.map(r => r.name.toUpperCase()));
+        const presets = TRUCK_MAKES.filter(name => !tecdocNames.has(name.toUpperCase())).map(name => ({ slug: slugify(name), name }));
+        return [...tecdocCv.map(r => ({ slug: r.slug, name: r.name })), ...presets];
+      } catch {
+        return TRUCK_MAKES.map(name => ({ slug: slugify(name), name }));
+      }
     }
 
     if (isMarine) {
       return MARINE_MAKES.map(name => ({ slug: slugify(name), name }));
     }
 
-    // Passenger Car (Automobile)
+    // Passenger Car (Automobile) - Query TecDoc
     try {
       const tecdocRows: any[] = await this.prisma.$queryRawUnsafe(`
         SELECT DISTINCT matchcode AS name, LOWER(REGEXP_REPLACE(matchcode, '[^a-zA-Z0-9]+', '-', 'g')) AS slug
@@ -480,6 +537,20 @@ export class OilFinderService {
   async getModels(makeName: string) {
     const makeUpper = makeName.trim().toUpperCase();
 
+    // Check Marine models
+    for (const [mfr, models] of Object.entries(MARINE_MODELS)) {
+      if (makeUpper.includes(mfr) || mfr.includes(makeUpper)) {
+        return models.map(name => ({ slug: slugify(name), name }));
+      }
+    }
+
+    // Check Agricultural models
+    for (const [mfr, models] of Object.entries(AGRI_MODELS)) {
+      if (makeUpper.includes(mfr) || mfr.includes(makeUpper)) {
+        return models.map(name => ({ slug: slugify(name), name }));
+      }
+    }
+
     // Check motorcycle models
     for (const [mfr, models] of Object.entries(MOTO_MODELS)) {
       if (makeUpper.includes(mfr) || mfr.includes(makeUpper)) {
@@ -494,7 +565,7 @@ export class OilFinderService {
       }
     }
 
-    // Passenger car models
+    // Passenger car models from TecDoc
     try {
       const tecdocRows: any[] = await this.prisma.$queryRawUnsafe(`
         SELECT DISTINCT m.description AS name, LOWER(REGEXP_REPLACE(m.description, '[^a-zA-Z0-9]+', '-', 'g')) AS slug
@@ -545,32 +616,53 @@ export class OilFinderService {
     const makeUpper = makeName.trim().toUpperCase();
     const modelUpper = modelName.trim().toUpperCase();
 
+    // Marine engines
+    const isMarine = MARINE_MAKES.some(m => makeUpper.includes(m)) || makeUpper.includes('MARINE') || makeUpper.includes('PENTA') || makeUpper.includes('YANMAR');
+    if (isMarine) {
+      return [
+        { engineCode: 'Moteur Hors-Bord 4-Temps (NMMA FC-W)', yearFrom: 2012, yearTo: 2024 },
+        { engineCode: 'Moteur Hors-Bord 2-Temps (NMMA TC-W3)', yearFrom: 2005, yearTo: 2024 },
+        { engineCode: 'Moteur Inboard Diesel Common Rail (Heavy Duty)', yearFrom: 2010, yearTo: 2024 },
+        { engineCode: 'Moteur Inboard Essence V6 / V8 (Catalysé)', yearFrom: 2012, yearTo: 2024 },
+      ];
+    }
+
+    // Agricultural engines
+    const isAgri = AGRI_MAKES.some(m => makeUpper.includes(m));
+    if (isAgri) {
+      return [
+        { engineCode: 'Moteur Diesel Stage V / Tier 4 Final Low-SAPS', yearFrom: 2018, yearTo: 2024 },
+        { engineCode: 'Moteur Diesel Stage IV / Tier 4 Interim', yearFrom: 2012, yearTo: 2018 },
+        { engineCode: 'Transmission & Hydraulique Multifonction (UTTO / STOU)', yearFrom: 2010, yearTo: 2024 },
+      ];
+    }
+
     // Motorcycle engines
     const isMoto = MOTO_MAKES.some(m => makeUpper.includes(m)) || makeUpper.includes('MOTO') || makeUpper.includes('PIAGGIO') || makeUpper.includes('SYM') || makeUpper.includes('VESPA') || makeUpper.includes('DUCATI') || makeUpper.includes('KTM');
     if (isMoto) {
       if (modelUpper.includes('50') || modelUpper.includes('ZIP') || modelUpper.includes('TYPHOON')) {
         return [
-          { engineCode: '50cc 2-Temps (Graissage Séparé / Mélange)', yearFrom: 2010, yearTo: 2024 },
-          { engineCode: '50cc 4-Temps i-Get / Euro 5', yearFrom: 2018, yearTo: 2024 },
+          { engineCode: '50cc 2-Temps (Graissage Séparé / Mélange - JASO FD)', yearFrom: 2010, yearTo: 2024 },
+          { engineCode: '50cc 4-Temps i-Get / Euro 5 (JASO MA2)', yearFrom: 2018, yearTo: 2024 },
         ];
       }
       if (modelUpper.includes('125') || modelUpper.includes('150') || modelUpper.includes('PCX') || modelUpper.includes('SH') || modelUpper.includes('MEDLEY') || modelUpper.includes('SYMPHONY') || modelUpper.includes('FIDDLE')) {
         return [
-          { engineCode: '125cc 4-Temps Injection eSP / Euro 5', yearFrom: 2016, yearTo: 2024 },
-          { engineCode: '125cc 4-Temps Carburateur / Euro 4', yearFrom: 2010, yearTo: 2018 },
-          { engineCode: '150cc / 200cc 4-Temps i-Get', yearFrom: 2016, yearTo: 2024 },
+          { engineCode: '125cc 4-Temps Injection eSP / Euro 5 (JASO MB/MA2)', yearFrom: 2016, yearTo: 2024 },
+          { engineCode: '125cc 4-Temps Carburateur / Euro 4 (10W-40 MA2)', yearFrom: 2010, yearTo: 2018 },
+          { engineCode: '150cc / 200cc 4-Temps i-Get (10W-40 MA2)', yearFrom: 2016, yearTo: 2024 },
         ];
       }
       if (modelUpper.includes('T-MAX') || modelUpper.includes('530') || modelUpper.includes('560') || modelUpper.includes('300') || modelUpper.includes('350') || modelUpper.includes('400')) {
         return [
-          { engineCode: '560cc Bicylindre 4-Temps DACT 4V', yearFrom: 2020, yearTo: 2024 },
-          { engineCode: '530cc Bicylindre 4-Temps DACT 4V', yearFrom: 2012, yearTo: 2019 },
-          { engineCode: '300cc / 350cc / 400cc Monocylindre 4V', yearFrom: 2016, yearTo: 2024 },
+          { engineCode: '560cc Bicylindre 4-Temps DACT (10W-40 MA2)', yearFrom: 2020, yearTo: 2024 },
+          { engineCode: '530cc Bicylindre 4-Temps DACT (10W-40 MA2)', yearFrom: 2012, yearTo: 2019 },
+          { engineCode: '300cc / 350cc / 400cc Monocylindre 4V (10W-40 MA2)', yearFrom: 2016, yearTo: 2024 },
         ];
       }
       return [
-        { engineCode: 'Moteur 4-Temps 4V Injection DACT (Standard)', yearFrom: 2014, yearTo: 2024 },
-        { engineCode: 'Moteur 4-Temps Haute Performance (Compétition)', yearFrom: 2018, yearTo: 2024 },
+        { engineCode: 'Moteur 4-Temps 4V Injection DACT (JASO MA2)', yearFrom: 2014, yearTo: 2024 },
+        { engineCode: 'Moteur 4-Temps Haute Performance 10W-50 (JASO MA2)', yearFrom: 2018, yearTo: 2024 },
       ];
     }
 
@@ -578,13 +670,13 @@ export class OilFinderService {
     const isTruck = TRUCK_MAKES.some(m => makeUpper.includes(m));
     if (isTruck) {
       return [
-        { engineCode: '12.8L OM471 / D13K / DC13 Euro 6 (450 - 530 ch)', yearFrom: 2014, yearTo: 2024 },
+        { engineCode: '12.8L OM471 / D13K / DC13 Euro 6 Low-SAPS (450 - 530 ch)', yearFrom: 2014, yearTo: 2024 },
         { engineCode: '10.8L OM470 / D11K / Cursor 11 Euro 6 (380 - 450 ch)', yearFrom: 2014, yearTo: 2024 },
         { engineCode: '7.7L OM936 / D8K / TGL Euro 6 (240 - 350 ch)', yearFrom: 2014, yearTo: 2024 },
       ];
     }
 
-    // Passenger car engines
+    // Passenger car engines - Query TecDoc
     try {
       const tecdocRows: any[] = await this.prisma.$queryRawUnsafe(`
         SELECT DISTINCT pc.description AS "engineCode", 
