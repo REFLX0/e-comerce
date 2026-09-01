@@ -73,62 +73,74 @@ export class ProductsService {
   async resolveCategoryIds(slug: string): Promise<string[]> {
     if (!slug) return [];
 
-    const aliases: Record<string, string> = {
-      'huiles-moteur-specifiques': 'huiles-moteur',
-      'huiles-moteur-auto': 'huiles-moteur',
-      'huiles-specifiques': 'huiles-moteur',
-      'huiles-boite-transmission': 'huile-de-boite',
-      'pieces-rechange': 'auto-pieces-rechange',
-      'moto': 'moto-karting',
-      'moto-huile-moteur': 'moto-huiles',
-      'karting': 'moto-karting',
-      'karting-huiles': 'moto-huiles',
-      'karting-pieces-consommables': 'moto-karting',
-      'marine-huiles-lubrifiants': 'marine',
+    const aliasGroups: Record<string, string[]> = {
+      'moto-huiles': ['moto-huiles', 'huiles-moto-2t-4t', 'moto-huile-moteur', 'karting-huiles'],
+      'huiles-moto-2t-4t': ['moto-huiles', 'huiles-moto-2t-4t', 'moto-huile-moteur', 'karting-huiles'],
+      'moto-huile-moteur': ['moto-huiles', 'huiles-moto-2t-4t', 'moto-huile-moteur'],
+      'moto-huile-boite': ['moto-huile-boite'],
+      'moto-huile-fourche': ['moto-huile-fourche', 'huiles-fourche'],
+      'huiles-fourche': ['moto-huile-fourche', 'huiles-fourche'],
+      'moto-lubrifiants-chaine': ['moto-lubrifiants-chaine', 'entretien-chaine', 'additifs-moto'],
+      'entretien-chaine': ['moto-lubrifiants-chaine', 'entretien-chaine'],
+      'additifs-moto': ['moto-lubrifiants-chaine', 'additifs-moto'],
+      'karting': ['moto-karting', 'karting'],
+      'karting-huiles': ['moto-huiles', 'huiles-moto-2t-4t', 'karting-huiles'],
+      'karting-pieces-consommables': ['moto-karting'],
+      'moto': ['moto-karting', 'moto'],
+      'moto-karting': ['moto-karting', 'moto', 'karting', 'huiles-moto-2t-4t', 'entretien-chaine', 'additifs-moto', 'huiles-fourche', 'moto-huiles', 'moto-huile-boite', 'moto-huile-fourche', 'moto-lubrifiants-chaine'],
+      'auto-filtres': ['auto-filtres', 'filtres', 'filtres-air', 'filtres-huile', 'filtres-carburant', 'filtres-habitacle'],
+      'auto-electricite-eclairage': ['auto-electricite-eclairage', 'batteries', 'essuie-glaces'],
+      'additifs': ['additifs', 'additifs-huile', 'additifs-carburant', 'additif-diesel', 'additif-essence', 'additif-huile'],
+      'direction-assistee': ['direction-assistee'],
+      'liquide-de-frein': ['liquide-de-frein', 'liquide-frein'],
+      'antigel-refroidissement': ['antigel-refroidissement', 'refroidissement'],
+      'huiles-moteur': ['huiles-moteur', 'huiles-moteur-auto', 'huiles-moteur-specifiques', 'auto-synthese', 'auto-semi', 'auto-minerale'],
+      'huile-de-boite': ['huile-de-boite', 'huiles-boite-transmission'],
+      'marine': ['marine', 'marine-moteurs', 'marine-hydraulique', 'marine-graisses', 'marine-huiles-lubrifiants'],
     };
-    const targetSlug = aliases[slug] || slug;
 
-    let category = await this.prismaRead.db.category.findUnique({
-      where: { slug: targetSlug },
+    const targetSlugs = Array.from(new Set([slug, ...(aliasGroups[slug] || [])]));
+
+    const matchingCategories = await this.prismaRead.db.category.findMany({
+      where: { slug: { in: targetSlugs } },
       select: { id: true, slug: true, parentId: true },
     });
 
-    if (!category && targetSlug !== slug) {
-      category = await this.prismaRead.db.category.findUnique({
-        where: { slug },
-        select: { id: true, slug: true, parentId: true },
-      });
-    }
+    let matchedIds = matchingCategories.map((c) => c.id);
 
-    if (!category) {
-      category = await this.prismaRead.db.category.findFirst({
+    // Fallback if none found by exact slug
+    if (matchedIds.length === 0) {
+      const fallback = await this.prismaRead.db.category.findFirst({
         where: {
           OR: [
             { slug: { contains: slug, mode: 'insensitive' } },
             { nameFr: { contains: slug.replace(/-/g, ' '), mode: 'insensitive' } },
           ],
         },
-        select: { id: true, slug: true, parentId: true },
+        select: { id: true },
       });
+      if (fallback) matchedIds.push(fallback.id);
     }
 
-    if (!category) return [];
+    if (matchedIds.length === 0) return [];
 
-    const categories = await this.prismaRead.db.category.findMany({
+    const allCategories = await this.prismaRead.db.category.findMany({
       select: { id: true, parentId: true },
     });
-    const ids = new Set([category.id]);
-    const pending = [category.id];
+
+    const resultIds = new Set(matchedIds);
+    const pending = [...matchedIds];
     while (pending.length > 0) {
       const parentId = pending.shift();
-      for (const child of categories) {
-        if (child.parentId === parentId && !ids.has(child.id)) {
-          ids.add(child.id);
+      for (const child of allCategories) {
+        if (child.parentId === parentId && !resultIds.has(child.id)) {
+          resultIds.add(child.id);
           pending.push(child.id);
         }
       }
     }
-    return [...ids];
+
+    return [...resultIds];
   }
 
   private normalizeViscosity(value: string) {

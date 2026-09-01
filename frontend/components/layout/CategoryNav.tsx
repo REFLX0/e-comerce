@@ -204,13 +204,13 @@ function FlyoutPanel({
         borderRadius: '0 0 16px 16px',
         border: '1px solid rgba(22,37,76,0.1)',
         boxShadow: '0 20px 60px rgba(22,37,76,0.18)',
-        minWidth: 260,
+        minWidth: 320,
         background: '#fff',
         animation: 'flyoutIn 0.18s cubic-bezier(0.16,1,0.3,1) both',
       }}
     >
       {/* LEFT — category list */}
-      <div className="flex flex-col" style={{ minWidth: 260, borderRight: hasSubPanel ? '1px solid rgba(22,37,76,0.07)' : 'none' }}>
+      <div className="flex flex-col" style={{ minWidth: 320, borderRight: hasSubPanel ? '1px solid rgba(22,37,76,0.07)' : 'none' }}>
         {/* Panel header */}
         <div
           className="flex items-center justify-between px-5 py-3"
@@ -250,7 +250,7 @@ function FlyoutPanel({
                     type="button"
                     role="menuitem"
                     onMouseEnter={() => setActiveChild(child.slug)}
-                    className="flyout-item group flex w-full items-center justify-between gap-3 px-5 py-[10px] text-sm transition-all duration-150"
+                    className="flyout-item group flex w-full items-center justify-between gap-3 px-5 py-2.5 text-sm transition-all duration-150 hover:bg-slate-50"
                     style={{
                       background: isActive ? 'rgba(212,167,106,0.08)' : 'transparent',
                       color: isActive ? '#D4A76A' : '#16254c',
@@ -258,16 +258,23 @@ function FlyoutPanel({
                       borderLeft: isActive ? '3px solid #D4A76A' : '3px solid transparent',
                     }}
                   >
-                    <span className="flex items-center gap-2">
+                    <span className="flex items-start gap-2.5 min-w-0">
                       <span
-                        className="h-1.5 w-1.5 shrink-0 rounded-full transition-colors"
+                        className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full transition-colors"
                         style={{ background: isActive ? '#D4A76A' : 'rgba(22,37,76,0.25)' }}
                       />
-                      {label}
+                      <span className="flex flex-col text-start min-w-0">
+                        <span className="font-semibold text-[13px] leading-snug">{label}</span>
+                        {hint && (
+                          <span className="text-[11px] leading-tight opacity-60 font-normal mt-0.5">
+                            {hint}
+                          </span>
+                        )}
+                      </span>
                     </span>
                     <ChevronRight
                       size={13}
-                      className={`transition-colors ${isRtl ? 'rotate-180' : ''}`}
+                      className={`shrink-0 transition-colors ${isRtl ? 'rotate-180' : ''}`}
                       style={{ color: isActive ? '#D4A76A' : 'rgba(22,37,76,0.3)' }}
                     />
                   </button>
@@ -278,22 +285,26 @@ function FlyoutPanel({
                     role="menuitem"
                     onClick={onClose}
                     onMouseEnter={() => setActiveChild(null)}
-                    className="flyout-item group flex items-center gap-2 px-5 py-[10px] text-sm font-medium transition-all duration-150"
+                    className="flyout-item group flex items-start gap-2.5 px-5 py-2.5 text-sm transition-all duration-150 hover:bg-slate-50"
                     style={{
                       color: '#16254c',
                       borderLeft: '3px solid transparent',
                     }}
                   >
                     <span
-                      className="h-1.5 w-1.5 shrink-0 rounded-full transition-colors group-hover:bg-brand-accent"
+                      className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full transition-colors group-hover:bg-[#D4A76A]"
                       style={{ background: 'rgba(22,37,76,0.25)' }}
                     />
-                    <span>{label}</span>
-                    {hint && (
-                      <span className="ms-auto text-[11px]" style={{ color: 'rgba(22,37,76,0.4)' }}>
-                        {hint}
+                    <div className="flex flex-col min-w-0 flex-1">
+                      <span className="font-semibold text-slate-800 text-[13px] leading-snug group-hover:text-[#16254c]">
+                        {label}
                       </span>
-                    )}
+                      {hint && (
+                        <span className="text-[11px] leading-tight text-slate-400 font-normal mt-0.5">
+                          {hint}
+                        </span>
+                      )}
+                    </div>
                   </Link>
                 )}
               </li>
