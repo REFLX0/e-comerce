@@ -316,6 +316,46 @@ export class ProductsService {
         where.AND = andConditions;
       }
 
+      const isSparePart = this.isSparePartCategory(filters.categorySlug);
+
+      // If querying specifically a spare part / filter category
+      if (isSparePart) {
+        const [prismaRes, tecdocRes] = await Promise.all([
+          Promise.all([
+            this.prismaRead.db.product.findMany({
+              where,
+              include: this.buildInclude(),
+              orderBy: this.buildOrderBy(filters.sortBy),
+              skip,
+              take: limit,
+            }),
+            this.prismaRead.db.product.count({ where }),
+          ]),
+          this.findTecdocArticles(filters, limit, skip),
+        ]);
+
+        const [prismaProducts, prismaCount] = prismaRes;
+        const serializedPrisma = prismaProducts.map((p) => this.serialize(p)).filter(Boolean);
+        const combinedData = [...serializedPrisma, ...tecdocRes.items].slice(0, limit);
+        const totalCount = prismaCount + tecdocRes.total;
+
+        const result: any = {
+          data: combinedData,
+          total: totalCount,
+          page,
+          limit,
+          totalPages: totalCount > 0 ? Math.ceil(totalCount / limit) : 0,
+          nextCursor: null,
+        };
+
+        if (totalCount > 0) {
+          try {
+            await this.cache.set(cacheKey, result, CacheService.TTL.PRODUCT_LIST);
+          } catch {}
+        }
+        return result;
+      }
+
       const [prismaProducts, prismaCount] = await Promise.all([
         this.prismaRead.db.product.findMany({
           where,
@@ -327,18 +367,29 @@ export class ProductsService {
         this.prismaRead.db.product.count({ where }),
       ]);
 
+      let combinedProducts = prismaProducts.map((p) => this.serialize(p)).filter(Boolean);
+      let totalCount = prismaCount;
+
+      // If user performed a search, also query TecDoc articles to include matching spare parts & filters
+      if (filters.search && combinedProducts.length < limit) {
+        const tecdocLimit = limit - combinedProducts.length;
+        const tecdocRes = await this.findTecdocArticles(filters, tecdocLimit, 0);
+        combinedProducts = [...combinedProducts, ...tecdocRes.items];
+        totalCount += tecdocRes.total;
+      }
+
       const resultPage = filters.cursor ? 1 : Math.max(filters.page ?? 1, 1);
 
       const result: any = {
-        data: prismaProducts.map((p) => this.serialize(p)).filter(Boolean),
-        total: prismaCount,
+        data: combinedProducts,
+        total: totalCount,
         page: resultPage,
         limit,
-        totalPages: prismaCount > 0 ? Math.ceil(prismaCount / limit) : 0,
+        totalPages: totalCount > 0 ? Math.ceil(totalCount / limit) : 0,
         nextCursor: null,
       };
 
-      if (prismaCount > 0) {
+      if (totalCount > 0) {
         try {
           await this.cache.set(cacheKey, result, CacheService.TTL.PRODUCT_LIST);
         } catch {}
@@ -355,6 +406,137 @@ export class ProductsService {
         totalPages: 0,
         nextCursor: null,
       };
+    }
+  }
+
+  isSparePartCategory(slug?: string): boolean {
+    if (!slug) return false;
+    const s = slug.toLowerCase();
+    return (
+      s.startsWith('auto-') ||
+      s.includes('filtre') ||
+      s.includes('frein') ||
+      s.includes('piece') ||
+      s.includes('suspension') ||
+      s.includes('moteur-distribution') ||
+      s.includes('climatisation') ||
+      s.includes('electricite') ||
+      s.includes('carrosserie') ||
+      s.includes('echappement') ||
+      s.includes('transmission')
+    );
+  }
+
+  async findTecdocArticles(filters: ProductFilters, limit: number, skip: number) {
+    try {
+      const conditions: string[] = ['a.is_valid = true'];
+      const params: any[] = [];
+      let pIdx = 1;
+
+      // 1. Category / generic product filtering
+      if (filters.categorySlug) {
+        const cat = filters.categorySlug.toLowerCase();
+        if (cat.includes('filtre') || cat.includes('filter')) {
+          conditions.push(`(p.description ILIKE '%filtre%' OR p.description ILIKE '%filter%' OR p.normalized_description ILIKE '%filtre%')`);
+        } else if (cat.includes('frein') || cat.includes('brake')) {
+          conditions.push(`(p.description ILIKE '%frein%' OR p.description ILIKE '%brake%' OR p.description ILIKE '%plaquette%' OR p.description ILIKE '%disque%')`);
+        } else if (cat.includes('suspension') || cat.includes('direction') || cat.includes('amortisseur')) {
+          conditions.push(`(p.description ILIKE '%amortisseur%' OR p.description ILIKE '%suspension%' OR p.description ILIKE '%direction%' OR p.description ILIKE '%rotule%' OR p.description ILIKE '%triangle%')`);
+        } else if (cat.includes('moteur') || cat.includes('distribution') || cat.includes('courroie')) {
+          conditions.push(`(p.description ILIKE '%distribution%' OR p.description ILIKE '%courroie%' OR p.description ILIKE '%moteur%' OR p.description ILIKE '%galet%')`);
+        } else if (cat.includes('refroidissement') || cat.includes('climatisation') || cat.includes('radiateur')) {
+          conditions.push(`(p.description ILIKE '%refroidissement%' OR p.description ILIKE '%climatisation%' OR p.description ILIKE '%radiateur%' OR p.description ILIKE '%pompe à eau%')`);
+        } else if (cat.includes('electricite') || cat.includes('eclairage') || cat.includes('bougie')) {
+          conditions.push(`(p.description ILIKE '%bougie%' OR p.description ILIKE '%phare%' OR p.description ILIKE '%alternateur%' OR p.description ILIKE '%démarreur%' OR p.description ILIKE '%ampoule%' OR p.description ILIKE '%bobine%')`);
+        } else if (cat.includes('echappement')) {
+          conditions.push(`(p.description ILIKE '%échappement%' OR p.description ILIKE '%echappement%' OR p.description ILIKE '%silencieux%' OR p.description ILIKE '%catalyseur%')`);
+        } else if (cat.includes('carrosserie') || cat.includes('habitacle')) {
+          conditions.push(`(p.description ILIKE '%carrosserie%' OR p.description ILIKE '%habitacle%' OR p.description ILIKE '%rétroviseur%' OR p.description ILIKE '%lève-vitre%')`);
+        }
+      }
+
+      // 2. Search filtering (multi-word, brand, sku, part number, OE number)
+      if (filters.search) {
+        const rawSearch = filters.search.trim();
+        const cleanSku = rawSearch.replace(/[^a-zA-Z0-9]/g, '');
+        
+        params.push(`%${rawSearch}%`);
+        const pTerm = `$${pIdx++}`;
+        
+        let skuClause = '';
+        if (cleanSku.length >= 3) {
+          params.push(`%${cleanSku}%`);
+          const pSku = `$${pIdx++}`;
+          skuClause = ` OR regexp_replace(upper(a.data_supplier_article_number), '[^A-Z0-9]', '', 'g') ILIKE ${pSku} OR oe.oe_nbr_clean ILIKE ${pSku}`;
+        }
+
+        conditions.push(`(
+          a.data_supplier_article_number ILIKE ${pTerm}
+          OR s.matchcode ILIKE ${pTerm}
+          OR p.description ILIKE ${pTerm}
+          OR a.description ILIKE ${pTerm}
+          ${skuClause}
+        )`);
+      }
+
+      // 3. Brand filtering
+      if (filters.brands?.length) {
+        const brandNames = filters.brands.map(b => b.replace(/-/g, ' '));
+        params.push(brandNames);
+        conditions.push(`s.matchcode = ANY($${pIdx++}::text[])`);
+      } else if (filters.brandSlug) {
+        params.push(filters.brandSlug.replace(/-/g, ' '));
+        conditions.push(`s.matchcode ILIKE $${pIdx++}`);
+      }
+
+      const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
+
+      params.push(limit);
+      const pLimit = `$${pIdx++}`;
+      params.push(skip);
+      const pSkip = `$${pIdx++}`;
+
+      const query = `
+        WITH clean_oe AS (
+          SELECT article_id, regexp_replace(upper(oe_nbr), '[^A-Z0-9]', '', 'g') AS oe_nbr_clean
+          FROM tecdoc.article_oe_numbers
+        )
+        SELECT DISTINCT a.id, a.data_supplier_article_number, a.supplier, s.matchcode AS brand_name,
+               p.description AS product_type, a.description, a.picture_name, a.price, a.stockQty
+        FROM tecdoc.articles a
+        JOIN tecdoc.suppliers s ON s.id = a.supplier
+        LEFT JOIN tecdoc.products p ON p.id = a.current_product
+        LEFT JOIN clean_oe oe ON oe.article_id = a.id
+        ${whereClause}
+        ORDER BY a.id ASC
+        LIMIT ${pLimit} OFFSET ${pSkip}
+      `;
+
+      const countQuery = `
+        WITH clean_oe AS (
+          SELECT article_id, regexp_replace(upper(oe_nbr), '[^A-Z0-9]', '', 'g') AS oe_nbr_clean
+          FROM tecdoc.article_oe_numbers
+        )
+        SELECT COUNT(DISTINCT a.id) as total
+        FROM tecdoc.articles a
+        JOIN tecdoc.suppliers s ON s.id = a.supplier
+        LEFT JOIN tecdoc.products p ON p.id = a.current_product
+        LEFT JOIN clean_oe oe ON oe.article_id = a.id
+        ${whereClause}
+      `;
+
+      const [rows, countRows] = (await Promise.all([
+        this.prismaRead.db.$queryRawUnsafe(query, ...params),
+        this.prismaRead.db.$queryRawUnsafe(countQuery, ...params.slice(0, -2)),
+      ])) as [any[], any[]];
+
+      const items = rows.map((r) => this.serializeTecdocArticle(r));
+      const total = Number(countRows[0]?.total || 0);
+
+      return { items, total };
+    } catch (err) {
+      console.warn('[ProductsService.findTecdocArticles] TecDoc query skipped/error:', (err as Error).message);
+      return { items: [], total: 0 };
     }
   }
 
@@ -449,28 +631,38 @@ export class ProductsService {
       }
     }
 
+    const desc = r.description || `Pièce d'origine ${r.brand_name} Référence ${r.data_supplier_article_number}. Qualité équipementier certifiée.`;
+
     return {
       id: `tecdoc-${r.id}`,
       slug,
       name,
-      description: r.description || `Pièce d'origine ${r.brand_name} Référence ${r.data_supplier_article_number}. Qualité équipementier certifiée.`,
-      brandId: r.brand_name,
+      sku: r.data_supplier_article_number || '',
+      articleNumber: r.data_supplier_article_number || '',
+      description: desc,
+      shortDescription: desc.slice(0, 160),
+      brandId: r.brand_name || '',
       brand: {
-        id: r.brand_name,
-        name: r.brand_name,
-        slug: r.brand_name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+        id: r.brand_name || '',
+        name: r.brand_name || '',
+        slug: (r.brand_name || '').toLowerCase().replace(/[^a-z0-9]+/g, '-'),
         logo: null,
       },
-      categoryId: r.product_type || 'pieces-rechange',
+      categoryId: r.product_type || 'auto-pieces-rechange',
       category: {
-        id: r.product_type || 'pieces-rechange',
+        id: r.product_type || 'auto-pieces-rechange',
         name: r.product_type || 'Pièces de rechange',
-        slug: (r.product_type || 'pieces-rechange').toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+        slug: (r.product_type || 'auto-pieces-rechange').toLowerCase().replace(/[^a-z0-9]+/g, '-'),
       },
       isPublished: true,
       isFeatured: false,
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      isBestSeller: false,
+      isNew: false,
+      isPromo: false,
+      rating: 5.0,
+      reviewCount: 0,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
       images: [imageUrl],
       variants: [
         {
@@ -481,13 +673,22 @@ export class ProductsService {
           priceHT: +(price / 1.19).toFixed(3),
           priceTTC: price,
           stock: stockQty,
-          sku: r.data_supplier_article_number,
+          sku: r.data_supplier_article_number || '',
           status: 'in_stock',
-          supplierName: r.brand_name,
+          supplierName: r.brand_name || '',
           warehouse: 'Principal',
         },
       ],
       specs: null,
+      compatibility: (extra?.vehRows || []).map((v) => ({
+        id: `compat-${v.make}-${v.model}-${v.trim}`,
+        productId: `tecdoc-${r.id}`,
+        make: v.make || '',
+        model: v.model || '',
+        yearFrom: v.yearFrom,
+        yearTo: v.yearTo,
+        engine: v.trim,
+      })),
       sourcing: [],
       compatibilities: (extra?.vehRows || []).map((v) => ({
         id: `compat-${v.make}-${v.model}-${v.trim}`,
@@ -505,9 +706,9 @@ export class ProductsService {
         yearFrom: v.yearFrom,
         yearTo: v.yearTo,
       })),
-      articleNumber: r.data_supplier_article_number,
       oeNumbers: extra?.oeRows || [],
       attributes: extra?.attrRows || [],
+      tags: [],
     };
   }
 
