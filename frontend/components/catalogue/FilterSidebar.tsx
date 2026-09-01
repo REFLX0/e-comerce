@@ -180,7 +180,7 @@ export function FilterSidebar({
           const subChildLabel = subChild.labelKey ? tTax(subChild.labelKey) : (subChildDbNode?.name ?? subChild.label ?? subChild.slug)
           
           const count = facets?.categoryCounts
-             ? facets.categoryCounts.find(c => c.id === subChildDbNode?.id)?.count ?? 0
+             ? (facets.categoryCounts as any[]).find((c) => c.id === subChildDbNode?.id || c.slug === subChild.slug)?.count ?? 0
              : subChildDbNode?.productCount
 
           return {
@@ -191,10 +191,13 @@ export function FilterSidebar({
           }
         })
 
-        const childCount = facets?.categoryCounts
-          ? subSubcategories.reduce((acc, sub) => acc + (sub.productCount ?? 0), 
-               facets.categoryCounts.find(c => c.id === childDbNode?.id)?.count ?? 0)
-          : childDbNode?.productCount
+        const directChildCount = facets?.categoryCounts
+          ? (facets.categoryCounts as any[]).find((c) => c.id === childDbNode?.id || c.slug === child.slug)?.count ?? 0
+          : (childDbNode?.productCount ?? 0)
+
+        const childCount = subSubcategories.length
+          ? subSubcategories.reduce((acc, sub) => acc + (sub.productCount ?? 0), 0)
+          : directChildCount
 
         return {
           id: childDbNode?.id ?? child.slug,
@@ -205,10 +208,13 @@ export function FilterSidebar({
         }
       })
 
-      const rootCount = facets?.categoryCounts
-        ? subcategories.reduce((acc, sub) => acc + (sub.productCount ?? 0), 
-             facets.categoryCounts.find(c => c.id === dbNode?.id)?.count ?? 0)
-        : dbNode?.productCount
+      const directRootCount = facets?.categoryCounts
+        ? (facets.categoryCounts as any[]).find((c) => c.id === dbNode?.id || c.slug === item.slug)?.count ?? 0
+        : (dbNode?.productCount ?? 0)
+
+      const rootCount = subcategories.length
+        ? subcategories.reduce((acc, sub) => acc + (sub.productCount ?? 0), 0)
+        : directRootCount
 
       return {
         id: dbNode?.id ?? item.slug,
