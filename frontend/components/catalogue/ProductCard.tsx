@@ -98,6 +98,13 @@ export function ProductCard({ product, viewMode = 'grid' }: Props) {
   const defaultVariant = product.variants?.[0]
   const isOutOfStock = defaultVariant?.status === 'out_of_stock'
   const isPriceTbd = defaultVariant?.sku.includes('-PRICE-TBD-')
+  const variants = product.variants || []
+  const hasMultipleVariants = variants.length > 1
+  const prices = variants.map(v => v.priceTTC).filter(p => p > 0)
+  const minPrice = prices.length ? Math.min(...prices) : (defaultVariant?.priceTTC || 0)
+  const maxPrice = prices.length ? Math.max(...prices) : (defaultVariant?.priceTTC || 0)
+  const availableVolumes = Array.from(new Set(variants.map(v => v.volume).filter(Boolean)))
+
   const oldPrice =
     product.isPromo &&
     product.promoPercent &&
@@ -244,10 +251,29 @@ export function ProductCard({ product, viewMode = 'grid' }: Props) {
               )}
             </div>
 
+            {/* Volumes available */}
+            {hasMultipleVariants && availableVolumes.length > 0 && (
+              <div className="mb-2 flex flex-wrap gap-1">
+                {availableVolumes.map(vol => (
+                  <span key={vol} className="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-bold text-slate-700">
+                    {vol}
+                  </span>
+                ))}
+              </div>
+            )}
+
             {/* Price */}
             <div className="flex flex-col">
               {isPriceTbd ? (
                 <span className="text-lg font-bold text-[#16254c]">{t('priceNa')}</span>
+              ) : hasMultipleVariants && minPrice !== maxPrice ? (
+                <>
+                  <span className="text-[10px] text-gray-500 font-medium">À partir de</span>
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-xl font-black text-[#16254c]">{formatPrice(minPrice)}</span>
+                    <span className="text-xs font-bold text-gray-500 uppercase tracking-wide">TTC</span>
+                  </div>
+                </>
               ) : defaultVariant ? (
                 <>
                   <div className="flex items-baseline gap-1">
@@ -386,6 +412,17 @@ export function ProductCard({ product, viewMode = 'grid' }: Props) {
           </div>
         )}
 
+        {/* Volumes available */}
+        {hasMultipleVariants && availableVolumes.length > 0 && (
+          <div className="mt-2 flex flex-wrap gap-1">
+            {availableVolumes.map(vol => (
+              <span key={vol} className="rounded bg-slate-100 px-1.5 py-0.5 text-[9px] font-bold text-slate-700">
+                {vol}
+              </span>
+            ))}
+          </div>
+        )}
+
         <div className="mt-3 flex items-end justify-between border-t border-gray-100 pt-3">
           {/* Price */}
           <div className="flex flex-col">
@@ -399,6 +436,16 @@ export function ProductCard({ product, viewMode = 'grid' }: Props) {
             
             {isPriceTbd ? (
               <span className="text-sm font-bold text-[#16254c]">{t('priceNa')}</span>
+            ) : hasMultipleVariants && minPrice !== maxPrice ? (
+              <div>
+                <span className="block text-[9px] text-gray-500 font-medium">À partir de</span>
+                <div className="flex items-baseline gap-1">
+                  <span className="text-base font-black text-[#16254c] sm:text-lg">
+                    {formatPrice(minPrice)}
+                  </span>
+                  <span className="text-[9px] font-bold text-gray-500 uppercase tracking-widest">TTC</span>
+                </div>
+              </div>
             ) : defaultVariant ? (
               <div className="flex items-baseline gap-1">
                 <span className="text-base font-black text-[#16254c] sm:text-lg">
