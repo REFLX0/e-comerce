@@ -11,6 +11,7 @@ import {
   HttpCode,
   HttpStatus,
   BadRequestException,
+  ConflictException,
   Res,
   UseInterceptors,
   UploadedFile,
@@ -73,14 +74,20 @@ export class AdminController {
     try {
       return await this.adminService.createProduct(dto);
     } catch (err: any) {
-      if (
-        err?.code === 'P2002' ||
-        err?.code === 'P2003' ||
-        err?.code === 'P2025'
-      ) {
-        throw new BadRequestException(
-          'Validation failed: the provided brand, category, or unique fields are invalid or already in use.',
+      if (err?.code === 'P2002') {
+        const conflictField = err?.meta?.target?.[0] ?? 'sku';
+        const conflictValue = (dto as any)[conflictField] ?? dto.sku ?? '';
+        throw new ConflictException(
+          `SKU '${conflictValue}' is already in use. Please choose a unique SKU.`,
         );
+      }
+      if (err?.code === 'P2003') {
+        throw new BadRequestException(
+          'Invalid brandId or categoryId — the referenced record does not exist.',
+        );
+      }
+      if (err?.code === 'P2025') {
+        throw new BadRequestException('Record not found during create operation.');
       }
       throw err;
     }

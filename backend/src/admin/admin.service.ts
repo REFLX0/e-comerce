@@ -2,6 +2,7 @@ import {
   Injectable,
   NotFoundException,
   BadRequestException,
+  ConflictException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { KafkaService } from '../kafka/kafka.service';
@@ -207,10 +208,23 @@ export class AdminService {
     }
 
     if (Object.keys(updateData).length > 0) {
-      await this.prisma.product.update({
-        where: { id },
-        data: updateData,
-      });
+      try {
+        await this.prisma.product.update({
+          where: { id },
+          data: updateData,
+        });
+      } catch (err: any) {
+        if (err?.code === 'P2002') {
+          const conflictField = err?.meta?.target?.[0] ?? 'sku';
+          const conflictValue = updateData[conflictField as keyof typeof updateData] ?? '';
+          throw new ConflictException(
+            `SKU '${conflictValue}' is already in use by another product. Please choose a unique SKU.`,
+          );
+        }
+        if (err?.code === 'P2025') throw new NotFoundException(`Product ${id} not found.`);
+        if (err?.code === 'P2003') throw new BadRequestException('Invalid brandId or categoryId reference.');
+        throw err;
+      }
     }
 
     if (Array.isArray(images)) {
