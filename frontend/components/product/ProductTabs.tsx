@@ -153,23 +153,119 @@ export function ProductTabs({ product }: Props) {
         ) : null}
 
         <TabsContent value="compatibility" className="mt-0">
-          {product.compatibility?.length ? (
-            <ul className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
-              {product.compatibility.map((compatibility) => (
-                <li key={compatibility.id} className="flex items-start gap-2 text-sm text-brand-primary">
-                  <Check size={16} className="mt-0.5 shrink-0 text-green-600" />
-                  <div>
-                    <span className="font-semibold">{compatibility.make} {compatibility.model}</span>
-                    <span className="ml-1 text-gray-500">
-                      ({compatibility.yearFrom || '—'} – {compatibility.yearTo || t('today')}{compatibility.engine ? ` · ${compatibility.engine}` : ''})
-                    </span>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="text-gray-500">{t('noCompat')}</p>
-          )}
+          <div className="space-y-8">
+            {/* 1. OEM Approvals / Homologations constructeurs (For Oils & Lubricants) */}
+            {product.specs?.oemApprovals && product.specs.oemApprovals.length > 0 ? (
+              <div>
+                <h3 className="text-base font-bold text-brand-primary mb-3 flex items-center gap-2">
+                  <Check size={18} className="text-green-600" />
+                  Homologations & Approbations Officielles Constructeurs
+                </h3>
+                <p className="text-xs text-gray-500 mb-4">
+                  Cette huile répond et surpasse les exigences techniques et cahiers des charges des constructeurs suivants :
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {product.specs.oemApprovals.map((approval, idx) => (
+                    <div
+                      key={`approval-${idx}`}
+                      className="inline-flex items-center gap-1.5 rounded-lg border border-brand-primary/20 bg-brand-primary/5 px-3 py-2 text-xs font-bold text-brand-primary"
+                    >
+                      <span className="h-1.5 w-1.5 rounded-full bg-green-500"></span>
+                      {approval}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : null}
+
+            {/* 2. Normes Internationales (API, ACEA, JASO) */}
+            {(product.specs?.apiSpec || product.specs?.aceaSpec || product.specs?.jasoSpec) ? (
+              <div className="rounded-xl border border-gray-100 bg-gray-50/70 p-4">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-gray-500 mb-3">
+                  Normes & Spécifications Internationales
+                </h4>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  {product.specs.aceaSpec && (
+                    <div className="p-3 bg-white rounded-lg border border-gray-100">
+                      <span className="text-[11px] font-medium text-gray-400 block">Norme Européenne</span>
+                      <span className="text-sm font-bold text-brand-primary">ACEA {product.specs.aceaSpec}</span>
+                    </div>
+                  )}
+                  {product.specs.apiSpec && (
+                    <div className="p-3 bg-white rounded-lg border border-gray-100">
+                      <span className="text-[11px] font-medium text-gray-400 block">Norme Américaine</span>
+                      <span className="text-sm font-bold text-brand-primary">API {product.specs.apiSpec}</span>
+                    </div>
+                  )}
+                  {product.specs.jasoSpec && (
+                    <div className="p-3 bg-white rounded-lg border border-gray-100">
+                      <span className="text-[11px] font-medium text-gray-400 block">Norme Moto / 2 Roues</span>
+                      <span className="text-sm font-bold text-brand-primary">JASO {product.specs.jasoSpec}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ) : null}
+
+            {/* 3. Direct Vehicle Compatibility List */}
+            {product.compatibility?.length ? (
+              <div>
+                <h3 className="text-base font-bold text-brand-primary mb-3 flex items-center gap-2">
+                  <Check size={18} className="text-green-600" />
+                  Véhicules et Motorisations Compatibles
+                </h3>
+                <ul className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-3">
+                  {product.compatibility.map((compatibility) => (
+                    <li
+                      key={compatibility.id}
+                      className="flex items-start gap-2.5 rounded-lg border border-gray-100 bg-white p-3 shadow-xs hover:border-brand-primary/30 transition-colors"
+                    >
+                      <Check size={16} className="mt-0.5 shrink-0 text-green-600" />
+                      <div className="text-xs">
+                        <span className="font-bold text-brand-primary block text-sm">
+                          {compatibility.make} {compatibility.model}
+                        </span>
+                        <span className="text-gray-500 mt-0.5 block">
+                          Années : {compatibility.yearFrom || '—'} – {compatibility.yearTo || t('today')}
+                          {compatibility.engine ? ` · Moteur : ${compatibility.engine}` : ''}
+                        </span>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : (
+              /* Fallback intelligent compatibility summary for oils based on approvals */
+              <div>
+                <h3 className="text-base font-bold text-brand-primary mb-2 flex items-center gap-2">
+                  <Check size={18} className="text-green-600" />
+                  Compatibilité & Recommandations
+                </h3>
+                <div className="rounded-xl border border-blue-100 bg-blue-50/50 p-5 text-sm text-blue-950 space-y-3">
+                  <p className="leading-relaxed font-medium">
+                    Ce produit est universellement compatible avec l'ensemble des véhicules dont le manuel constructeur préconise :
+                  </p>
+                  <ul className="list-disc list-inside space-y-1 text-xs text-blue-900 ml-2">
+                    {product.specs?.viscosity && (
+                      <li>La viscosité SAE <strong>{product.specs.viscosity}</strong></li>
+                    )}
+                    {product.specs?.aceaSpec && (
+                      <li>Le standard européen <strong>ACEA {product.specs.aceaSpec}</strong> {product.specs.dpfCompatible ? '(compatible Filtre à Particules DPF/FAP)' : ''}</li>
+                    )}
+                    {product.specs?.apiSpec && (
+                      <li>La classification <strong>API {product.specs.apiSpec}</strong></li>
+                    )}
+                    {product.specs?.jasoSpec && (
+                      <li>La spécification moto <strong>JASO {product.specs.jasoSpec}</strong> (adaptée aux embrayages à bain d'huile)</li>
+                    )}
+                  </ul>
+                  <p className="text-xs text-gray-500 pt-2 border-t border-blue-100/60">
+                    💡 Conseil d'expert : Utilisez le sélecteur de véhicule SpecPart en haut de page pour vérifier la compatibilité exacte avec votre carte grise.
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
         </TabsContent>
 
         {product.crossList?.length ? (
