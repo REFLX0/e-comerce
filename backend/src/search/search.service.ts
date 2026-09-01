@@ -342,29 +342,9 @@ export class SearchService implements OnModuleInit {
     if (!query || query.trim().length < 2) return { products: [], categories: [], brands: [] };
     const q = query.trim();
 
-    const [categories, brands, tecdocArticles, tecdocSuppliers] = await Promise.all([
+    const [categories, brands] = await Promise.all([
       this.prismaRead.db.category.findMany({ where: { nameFr: { contains: q, mode: 'insensitive' } }, take: 5 }),
       this.prismaRead.db.brand.findMany({ where: { name: { contains: q, mode: 'insensitive' } }, take: 5 }),
-      this.prismaRead.db.$queryRawUnsafe(`
-        SELECT DISTINCT a.id, a.data_supplier_article_number, s.matchcode AS brand_name,
-               p.description AS product_type, a.description, a.picture_name, a.price
-        FROM tecdoc.articles a
-        JOIN tecdoc.suppliers s ON s.id = a.supplier
-        LEFT JOIN tecdoc.products p ON p.id = a.current_product
-        WHERE a.is_valid = true
-          AND (
-            a.data_supplier_article_number ILIKE $1
-            OR s.matchcode ILIKE $1
-            OR p.description ILIKE $1
-          )
-        LIMIT 6
-      `, `%${q}%`).catch(() => []) as Promise<any[]>,
-      this.prismaRead.db.$queryRawUnsafe(`
-        SELECT id, matchcode as name, LOWER(REGEXP_REPLACE(matchcode, '[^a-zA-Z0-9]+', '-', 'g')) as slug
-        FROM tecdoc.suppliers
-        WHERE matchcode ILIKE $1
-        LIMIT 5
-      `, `%${q}%`).catch(() => []) as Promise<any[]>,
     ]);
 
     // Try OpenSearch first
@@ -388,37 +368,11 @@ export class SearchService implements OnModuleInit {
     const products = await this.prismaRead.db.product.findMany({ where, include: { images: { take: 1 }, variants: { take: 1 }, brand: true }, take: 10 });
     
     const serializedPrisma = products.map((p) => ({ id: p.id, name: p.nameFr, slug: p.slug, image: p.images[0]?.url, price: p.variants[0]?.price, brandName: p.brand?.name }));
-    const serializedTecdoc = (tecdocArticles || []).map((r: any) => {
-      const slug = `${r.brand_name}-${r.data_supplier_article_number}`.toLowerCase().replace(/[^a-z0-9]+/g, '-');
-      const name = `${r.brand_name} ${r.data_supplier_article_number} - ${r.product_type || 'Pièce détachée'}`;
-      let imageUrl = `/images/${r.picture_name || 'part-placeholder.png'}`;
-      return {
-        id: `tecdoc-${r.id}`,
-        name,
-        slug,
-        image: imageUrl,
-        price: r.price ? Number(r.price) : 45.0,
-        brandName: r.brand_name,
-      };
-    });
-
-    const combinedBrands = [
-      ...brands.map((b) => ({ id: b.id, name: b.name, slug: b.slug, logo: b.logoUrl })),
-      ...(tecdocSuppliers || []).map((s: any) => ({ id: `sup-${s.id}`, name: s.name, slug: s.slug, logo: null })),
-    ];
-    // Deduplicate brands
-    const seenBrands = new Set<string>();
-    const uniqueBrands = combinedBrands.filter((b) => {
-      const k = b.name.toLowerCase();
-      if (seenBrands.has(k)) return false;
-      seenBrands.add(k);
-      return true;
-    });
 
     return {
-      products: [...serializedPrisma, ...serializedTecdoc].slice(0, 10),
+      products: serializedPrisma,
       categories: categories.map((c) => ({ id: c.id, name: c.nameFr, slug: c.slug })),
-      brands: uniqueBrands.slice(0, 6),
+      brands: brands.map((b) => ({ id: b.id, name: b.name, slug: b.slug, logo: b.logoUrl })),
     };
   }
 
@@ -439,48 +393,16 @@ export class SearchService implements OnModuleInit {
 
     // Fallback
     const where = this.buildPrismaSearchWhere(q);
-    const [products, total, tecdocRows] = await Promise.all([
+    const [products, total] = await Promise.all([
       this.prismaRead.db.product.findMany({ where, include: this.buildInclude(), skip: (page - 1) * limit, take: limit }),
       this.prismaRead.db.product.count({ where }),
-      this.prismaRead.db.$queryRawUnsafe(`
-        SELECT DISTINCT a.id, a.data_supplier_article_number, s.matchcode AS brand_name,
-               p.description AS product_type, a.description, a.picture_name, a.price
-        FROM tecdoc.articles a
-        JOIN tecdoc.suppliers s ON s.id = a.supplier
-        LEFT JOIN tecdoc.products p ON p.id = a.current_product
-        WHERE a.is_valid = true
-          AND (
-            a.data_supplier_article_number ILIKE $1
-            OR s.matchcode ILIKE $1
-            OR p.description ILIKE $1
-          )
-        LIMIT ${limit}
-      `, `%${q}%`).catch(() => []) as Promise<any[]>,
     ]);
 
     const serializedPrisma = products.map((p) => this.serializeSearch(p));
-    const serializedTecdoc = (tecdocRows || []).map((r: any) => {
-      const slug = `${r.brand_name}-${r.data_supplier_article_number}`.toLowerCase().replace(/[^a-z0-9]+/g, '-');
-      const name = `${r.brand_name} ${r.data_supplier_article_number} - ${r.product_type || 'Pièce détachée'}`;
-      const price = r.price ? Number(r.price) : 45.0;
-      return {
-        id: `tecdoc-${r.id}`,
-        slug,
-        name,
-        sku: r.data_supplier_article_number,
-        images: [`/images/${r.picture_name || 'part-placeholder.png'}`],
-        brand: { name: r.brand_name, slug: r.brand_name.toLowerCase().replace(/[^a-z0-9]+/g, '-') },
-        category: { name: r.product_type || 'Pièces auto', slug: (r.product_type || 'pieces-auto').toLowerCase().replace(/[^a-z0-9]+/g, '-') },
-        variants: [{ id: `var-tecdoc-${r.id}`, priceHT: +(price / 1.19).toFixed(3), priceTTC: price, stock: 10 }],
-        specs: null,
-        isBestSeller: false,
-        isNew: false,
-      };
-    });
 
     return {
-      products: [...serializedPrisma, ...serializedTecdoc].slice(0, limit),
-      total: total + (tecdocRows?.length || 0),
+      products: serializedPrisma,
+      total,
     };
   }
 

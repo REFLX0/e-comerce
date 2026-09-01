@@ -316,47 +316,7 @@ export class ProductsService {
         where.AND = andConditions;
       }
 
-      const isSparePart = this.isSparePartCategory(filters.categorySlug);
-
-      // If querying specifically a spare part / filter category
-      if (isSparePart) {
-        const [prismaRes, tecdocRes] = await Promise.all([
-          Promise.all([
-            this.prismaRead.db.product.findMany({
-              where,
-              include: this.buildInclude(),
-              orderBy: this.buildOrderBy(filters.sortBy),
-              skip,
-              take: limit,
-            }),
-            this.prismaRead.db.product.count({ where }),
-          ]),
-          this.findTecdocArticles(filters, limit, skip),
-        ]);
-
-        const [prismaProducts, prismaCount] = prismaRes;
-        const serializedPrisma = prismaProducts.map((p) => this.serialize(p)).filter(Boolean);
-        const combinedData = [...serializedPrisma, ...tecdocRes.items].slice(0, limit);
-        const totalCount = prismaCount + tecdocRes.total;
-
-        const result: any = {
-          data: combinedData,
-          total: totalCount,
-          page,
-          limit,
-          totalPages: totalCount > 0 ? Math.ceil(totalCount / limit) : 0,
-          nextCursor: null,
-        };
-
-        if (totalCount > 0) {
-          try {
-            await this.cache.set(cacheKey, result, CacheService.TTL.PRODUCT_LIST);
-          } catch {}
-        }
-        return result;
-      }
-
-      const [prismaProducts, prismaCount] = await Promise.all([
+      const [prismaProducts, totalCount] = await Promise.all([
         this.prismaRead.db.product.findMany({
           where,
           include: this.buildInclude(),
@@ -367,21 +327,11 @@ export class ProductsService {
         this.prismaRead.db.product.count({ where }),
       ]);
 
-      let combinedProducts = prismaProducts.map((p) => this.serialize(p)).filter(Boolean);
-      let totalCount = prismaCount;
-
-      // If user performed a search, also query TecDoc articles to include matching spare parts & filters
-      if (filters.search && combinedProducts.length < limit) {
-        const tecdocLimit = limit - combinedProducts.length;
-        const tecdocRes = await this.findTecdocArticles(filters, tecdocLimit, 0);
-        combinedProducts = [...combinedProducts, ...tecdocRes.items];
-        totalCount += tecdocRes.total;
-      }
-
+      const data = prismaProducts.map((p) => this.serialize(p)).filter(Boolean);
       const resultPage = filters.cursor ? 1 : Math.max(filters.page ?? 1, 1);
 
       const result: any = {
-        data: combinedProducts,
+        data,
         total: totalCount,
         page: resultPage,
         limit,
@@ -997,70 +947,11 @@ export class ProductsService {
       return total;
     }
 
-    let tecdocCategoryCounts: Record<string, number> = {
-      'auto-filtres': 48,
-      'auto-freinage': 36,
-      'auto-suspension-direction': 24,
-      'transmission': 18,
-      'auto-moteur-distribution': 32,
-      'auto-refroidissement-climatisation': 20,
-      'auto-electricite-eclairage': 28,
-      'auto-carrosserie-habitacle': 15,
-      'auto-echappement': 12,
-      'auto-autres-pieces': 25,
-      'auto-pieces-rechange': 258,
-    };
-
-    try {
-      const tecdocCounts: any[] = await this.prismaRead.db.$queryRawUnsafe(`
-        SELECT 
-          COUNT(CASE WHEN p.description ILIKE '%filtre%' OR p.description ILIKE '%filter%' THEN 1 END) as filtres,
-          COUNT(CASE WHEN p.description ILIKE '%frein%' OR p.description ILIKE '%brake%' OR p.description ILIKE '%plaquette%' OR p.description ILIKE '%disque%' THEN 1 END) as freinage,
-          COUNT(CASE WHEN p.description ILIKE '%amortisseur%' OR p.description ILIKE '%suspension%' OR p.description ILIKE '%direction%' THEN 1 END) as suspension,
-          COUNT(CASE WHEN p.description ILIKE '%distribution%' OR p.description ILIKE '%courroie%' OR p.description ILIKE '%moteur%' THEN 1 END) as moteur,
-          COUNT(CASE WHEN p.description ILIKE '%refroidissement%' OR p.description ILIKE '%climatisation%' OR p.description ILIKE '%radiateur%' THEN 1 END) as refroidissement,
-          COUNT(CASE WHEN p.description ILIKE '%bougie%' OR p.description ILIKE '%phare%' OR p.description ILIKE '%alternateur%' OR p.description ILIKE '%démarreur%' THEN 1 END) as electricite,
-          COUNT(CASE WHEN p.description ILIKE '%échappement%' OR p.description ILIKE '%silencieux%' THEN 1 END) as echappement,
-          COUNT(*) as total_parts
-        FROM tecdoc.articles a
-        JOIN tecdoc.products p ON p.id = a.current_product
-        WHERE a.is_valid = true
-      `);
-      if (tecdocCounts && tecdocCounts[0] && Number(tecdocCounts[0].total_parts) > 0) {
-        const row = tecdocCounts[0];
-        tecdocCategoryCounts = {
-          'auto-filtres': Number(row.filtres || 48),
-          'auto-freinage': Number(row.freinage || 36),
-          'auto-suspension-direction': Number(row.suspension || 24),
-          'transmission': 18,
-          'auto-moteur-distribution': Number(row.moteur || 32),
-          'auto-refroidissement-climatisation': Number(row.refroidissement || 20),
-          'auto-electricite-eclairage': Number(row.electricite || 28),
-          'auto-carrosserie-habitacle': 15,
-          'auto-echappement': Number(row.echappement || 12),
-          'auto-autres-pieces': 25,
-          'auto-pieces-rechange': Number(row.total_parts || 258),
-        };
-      }
-    } catch {}
-
-    const categoryCounts = [
-      ...allCategories.map((c) => {
-        const dbCount = getSubtreeCount(c.id);
-        const tecdocCount = tecdocCategoryCounts[c.slug] || 0;
-        return {
-          id: c.id,
-          slug: c.slug,
-          count: dbCount > 0 ? dbCount : tecdocCount,
-        };
-      }),
-      // Add any taxonomy categories not yet in DB table
-      ...Object.entries(tecdocCategoryCounts).map(([slug, count]) => ({
-        id: slug,
-        slug,
-        count,
-      })),
-    ];
+    const categoryCounts = allCategories.map((c) => ({
+      id: c.id,
+      slug: c.slug,
+      count: getSubtreeCount(c.id),
+    }));
 
     return {
       volumes,
