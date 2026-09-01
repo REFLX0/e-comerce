@@ -23,6 +23,11 @@ export class PrismaService
 
   async onModuleInit() {
     await this.$connect();
+    try {
+      await this.$executeRawUnsafe(
+        `ALTER TABLE public."Product" ADD COLUMN IF NOT EXISTS "shortDescription" TEXT;`,
+      );
+    } catch {}
   }
 
   async onModuleDestroy() {

@@ -37,7 +37,8 @@ jobs:
             git reset --hard origin/main
             
             # Apply DB migrations & full catalogue reorganization
-            docker exec -i $(docker ps -q -f name=postgres) psql -U specpart -d specpart < backend/prisma/precise-catalogue-reorganization.sql || true
+            docker exec -i specpart-db psql -U specpart -d specpart -c 'ALTER TABLE public."Product" ADD COLUMN IF NOT EXISTS "shortDescription" TEXT;' || true
+            docker exec -i specpart-db psql -U specpart -d specpart < backend/prisma/precise-catalogue-reorganization.sql || true
             docker compose exec -T redis redis-cli FLUSHALL || true
             
             # Build and update modified containers automatically
