@@ -68,6 +68,34 @@ export class ProductsController {
     });
   }
 
+  @Get('category/:categorySlug')
+  findByCategory(
+    @Param('categorySlug') categorySlug: string,
+    @Query() query: Record<string, string>,
+  ) {
+    return this.productsService.findAll({
+      categorySlug,
+      brandSlug: query.brandSlug,
+      brands: query.brands ? query.brands.split(',') : undefined,
+      viscosity: query.viscosity,
+      priceMin: query.priceMin ? +query.priceMin : undefined,
+      priceMax: query.priceMax ? +query.priceMax : undefined,
+      inStockOnly: query.inStockOnly === 'true',
+      isPromo: query.isPromo === 'true',
+      isFeatured: query.isFeatured === 'true',
+      isNew: query.isNew === 'true',
+      search: query.search || query.q,
+      sortBy: query.sortBy,
+      page: query.page ? +query.page : 1,
+      limit: query.limit ? +query.limit : 24,
+      cursor: query.cursor || undefined,
+      type: query.type,
+      api: query.api,
+      acea: query.acea,
+      volume: query.volume,
+    });
+  }
+
   @Get(':slug')
   async findOne(@Param('slug') slug: string) {
     const product = await this.productsService.findBySlug(slug);
