@@ -1070,4 +1070,49 @@ DECLARE prod_id text; BEGIN
   END IF;
 END $$;
 
+-- Liqui Moly — Motorbike HD Synth 20W-50 Street
+DO $$
+DECLARE prod_id text; BEGIN
+  SELECT id INTO prod_id FROM public."Product"
+  WHERE LOWER("nameFr") LIKE LOWER('%Motorbike HD Synth 20W-50%')
+     OR LOWER(slug) LIKE LOWER('%motorbike-hd-synth-20w-50%')
+  LIMIT 1;
+  IF prod_id IS NOT NULL THEN
+    -- Variant 4L with image
+    INSERT INTO public."ProductVariant" (id, "productId", volume, price, "stockQty", "skuVariant", "imageUrl")
+    VALUES (gen_random_uuid()::text, prod_id, '4L', 0.0, 10, 'VAR-LIQU-MOTBIKE-4L', '/uploads/products/motorbike-hd-synth-20w-50-street-4l.png')
+    ON CONFLICT ("skuVariant") DO UPDATE SET
+      volume = '4L',
+      "imageUrl" = '/uploads/products/motorbike-hd-synth-20w-50-street-4l.png',
+      "stockQty" = GREATEST("ProductVariant"."stockQty", 5);
+    INSERT INTO public."ProductImage" (id, "productId", url, "isPrimary", "sortOrder")
+    VALUES (gen_random_uuid()::text, prod_id, '/uploads/products/motorbike-hd-synth-20w-50-street-4l.png', false, 1)
+    ON CONFLICT DO NOTHING;
+    -- Variant 1L with image (correct 1L bottle)
+    INSERT INTO public."ProductVariant" (id, "productId", volume, price, "stockQty", "skuVariant", "imageUrl")
+    VALUES (gen_random_uuid()::text, prod_id, '1L', 0.0, 10, 'VAR-LIQU-MOTBIKE-1L', '/uploads/products/motorbike-hd-synth-20w-50-street-1l.png')
+    ON CONFLICT ("skuVariant") DO UPDATE SET
+      volume = '1L',
+      "imageUrl" = '/uploads/products/motorbike-hd-synth-20w-50-street-1l.png',
+      "stockQty" = GREATEST("ProductVariant"."stockQty", 5);
+    INSERT INTO public."ProductImage" (id, "productId", url, "isPrimary", "sortOrder")
+    VALUES (gen_random_uuid()::text, prod_id, '/uploads/products/motorbike-hd-synth-20w-50-street-1l.png', true, 0)
+    ON CONFLICT DO NOTHING;
+    -- Update existing wrong-image variant to use correct 1L image
+    UPDATE public."ProductVariant"
+    SET "imageUrl" = '/uploads/products/motorbike-hd-synth-20w-50-street-1l.png'
+    WHERE "productId" = prod_id AND volume IN ('1L', '1 L') AND "skuVariant" != 'VAR-LIQU-MOTBIKE-1L';
+    UPDATE public."ProductVariant"
+    SET "imageUrl" = '/uploads/products/motorbike-hd-synth-20w-50-street-4l.png'
+    WHERE "productId" = prod_id AND volume IN ('4L', '4 L') AND "skuVariant" != 'VAR-LIQU-MOTBIKE-4L';
+    -- Fix primary image to be the 1L
+    UPDATE public."ProductImage"
+    SET "isPrimary" = false
+    WHERE "productId" = prod_id;
+    UPDATE public."ProductImage"
+    SET "isPrimary" = true
+    WHERE "productId" = prod_id AND url = '/uploads/products/motorbike-hd-synth-20w-50-street-1l.png';
+  END IF;
+END $$;
+
 COMMIT;
