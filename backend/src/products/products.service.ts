@@ -684,7 +684,7 @@ export class ProductsService {
       .filter((brand) => {
         const normalizedName = brand.name.trim().toLocaleLowerCase();
         if (
-          /^(supplier|unknown)\b/i.test(brand.name) ||
+          /^(supplier|unknown|api gl5|api gl-5)\b/i.test(brand.name) ||
           seenBrandNames.has(normalizedName)
         ) {
           return false;
@@ -697,34 +697,37 @@ export class ProductsService {
         name: brand.name,
         slug: brand.slug,
         count: brandCounts.get(brand.id) ?? 0,
-      }));
+      }))
+      .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
 
-    // Top TecDoc suppliers for automotive catalogue
-    const topTecdocBrands = [
-      'BOSCH', 'VALEO', 'FEBI BILSTEIN', 'MANN-FILTER', 'DENSO', 'BREMBO',
-      'INA', 'SKF', 'NGK', 'GATES', 'MAHLE', 'DELPHI', 'LUK', 'SACHS',
-      'MONROE', 'TRW', 'HELLA', 'PURFLUX', 'BERU', 'CONTITECH', 'CORTECO',
-      'FERODO', 'LEMFÖRDER', 'MEYLE', 'MOOG', 'NISSENS', 'SIDEM', 'SWAG',
-      'TEXTAR', 'ZIMMERMANN', 'CASTROL', 'TOTAL', 'MOTUL', 'LIQUI MOLY', 'MOBIL'
-    ];
-
-    for (const bName of topTecdocBrands) {
-      const normalized = bName.trim().toLowerCase();
-      if (!seenBrandNames.has(normalized)) {
-        seenBrandNames.add(normalized);
-        const slug = bName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-        brands.push({
-          id: `tecdoc-${slug}`,
-          name: bName,
-          slug,
-          count: 5000,
-        });
+    // Roll up category counts across category hierarchy
+    const allCategories = await this.prismaRead.db.category.findMany({
+      select: { id: true, parentId: true },
+    });
+    const directCountMap = new Map<string, number>();
+    for (const g of categoryGroups) {
+      if (g.categoryId) {
+        directCountMap.set(g.categoryId, g._count.categoryId);
       }
     }
-
-    const categoryCounts = categoryGroups.map(g => ({
-      id: g.categoryId,
-      count: g._count.categoryId,
+    const childrenMap = new Map<string, string[]>();
+    for (const c of allCategories) {
+      if (c.parentId) {
+        if (!childrenMap.has(c.parentId)) childrenMap.set(c.parentId, []);
+        childrenMap.get(c.parentId)!.push(c.id);
+      }
+    }
+    function getSubtreeCount(catId: string): number {
+      let total = directCountMap.get(catId) || 0;
+      const children = childrenMap.get(catId) || [];
+      for (const childId of children) {
+        total += getSubtreeCount(childId);
+      }
+      return total;
+    }
+    const categoryCounts = allCategories.map((c) => ({
+      id: c.id,
+      count: getSubtreeCount(c.id),
     }));
 
     return {
