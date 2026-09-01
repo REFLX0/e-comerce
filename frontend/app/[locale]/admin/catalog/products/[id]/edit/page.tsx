@@ -600,8 +600,8 @@ export default function EditProductPage() {
                 value={shortDescription}
                 onChange={(e) => setShortDescription(e.target.value)}
                 placeholder="Ex: Shampoing-cire auto-séchant pour le nettoyage de la carrosserie..."
-                rows={2}
-                className="w-full rounded-2xl border border-slate-200 bg-slate-50/60 px-4 py-3 text-sm text-slate-800 outline-none transition-all focus:border-[#16254c] focus:bg-white focus:ring-2 focus:ring-[#16254c]/10 resize-none"
+                rows={4}
+                className="w-full min-h-[110px] rounded-2xl border border-slate-200 bg-slate-50/60 px-4 py-3 text-sm text-slate-800 leading-relaxed outline-none transition-all focus:border-[#16254c] focus:bg-white focus:ring-2 focus:ring-[#16254c]/10 resize-y"
               />
             </div>
 
@@ -618,8 +618,8 @@ export default function EditProductPage() {
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Description complète, caractéristiques, propriétés..."
-                rows={4}
-                className="w-full rounded-2xl border border-slate-200 bg-slate-50/60 px-4 py-3 text-sm text-slate-800 outline-none transition-all focus:border-[#16254c] focus:bg-white focus:ring-2 focus:ring-[#16254c]/10 resize-none"
+                rows={12}
+                className="w-full min-h-[280px] rounded-2xl border border-slate-200 bg-slate-50/60 px-4 py-3 text-sm text-slate-800 leading-relaxed outline-none transition-all focus:border-[#16254c] focus:bg-white focus:ring-2 focus:ring-[#16254c]/10 resize-y"
               />
             </div>
           </div>
