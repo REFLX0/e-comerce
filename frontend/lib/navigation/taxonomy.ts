@@ -139,10 +139,29 @@ export const NAVIGATION_TAXONOMY: NavigationTaxonomyItem[] = [
     label: 'Moto & Karting',
     labelKey: 'motoKarting',
     children: [
-      { slug: 'moto-huiles', label: 'Huiles spécifiques', labelKey: 'huilesMoteur' },
-      { slug: 'moto-huile-boite', label: 'Huile de boîte', labelKey: 'huileBoite' },
-      { slug: 'moto-huile-fourche', label: 'Huile de fourche', labelKey: 'motoHuileFourche' },
-      { slug: 'moto-lubrifiants-chaine', label: 'Lubrifiants de chaîne et additifs', labelKey: 'lubrifiantsChaine' },
+      {
+        slug: 'moto-huiles',
+        label: 'Huiles Moteur (Moto & Karting)',
+        hint: '2T, 4T & Karting (JASO MA2, JASO FD)',
+      },
+      {
+        slug: 'moto-huile-boite',
+        label: 'Huile de boîte Moto',
+        labelKey: 'huileBoite',
+        hint: 'Transoil, Boîte 2T/4T',
+      },
+      {
+        slug: 'moto-huile-fourche',
+        label: 'Huile de fourche',
+        labelKey: 'motoHuileFourche',
+        hint: 'Fork Oil 5W, 10W, 15W',
+      },
+      {
+        slug: 'moto-lubrifiants-chaine',
+        label: 'Chaîne & Additifs Moto',
+        labelKey: 'lubrifiantsChaine',
+        hint: 'Chain Lube, Chain Clean',
+      },
     ],
   },
   {

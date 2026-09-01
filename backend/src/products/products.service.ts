@@ -80,6 +80,11 @@ export class ProductsService {
       'huiles-boite-transmission': 'huile-de-boite',
       'pieces-rechange': 'auto-pieces-rechange',
       'moto': 'moto-karting',
+      'moto-huile-moteur': 'moto-huiles',
+      'karting': 'moto-karting',
+      'karting-huiles': 'moto-huiles',
+      'karting-pieces-consommables': 'moto-karting',
+      'marine-huiles-lubrifiants': 'marine',
     };
     const targetSlug = aliases[slug] || slug;
 
