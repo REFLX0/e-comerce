@@ -83,16 +83,30 @@ export class ProductsService {
     };
     const targetSlug = aliases[slug] || slug;
 
-    let category = await this.prismaRead.db.category.findFirst({
-      where: {
-        OR: [
-          { slug: targetSlug },
-          { slug: slug },
-          { slug: { startsWith: slug.split('-')[0] } },
-        ],
-      },
+    let category = await this.prismaRead.db.category.findUnique({
+      where: { slug: targetSlug },
       select: { id: true, slug: true, parentId: true },
     });
+
+    if (!category && targetSlug !== slug) {
+      category = await this.prismaRead.db.category.findUnique({
+        where: { slug },
+        select: { id: true, slug: true, parentId: true },
+      });
+    }
+
+    if (!category) {
+      category = await this.prismaRead.db.category.findFirst({
+        where: {
+          OR: [
+            { slug: { contains: slug, mode: 'insensitive' } },
+            { nameFr: { contains: slug.replace(/-/g, ' '), mode: 'insensitive' } },
+          ],
+        },
+        select: { id: true, slug: true, parentId: true },
+      });
+    }
+
     if (!category) return [];
 
     const categories = await this.prismaRead.db.category.findMany({
@@ -324,9 +338,11 @@ export class ProductsService {
         nextCursor: null,
       };
 
-      try {
-        await this.cache.set(cacheKey, result, CacheService.TTL.PRODUCT_LIST);
-      } catch {}
+      if (prismaCount > 0) {
+        try {
+          await this.cache.set(cacheKey, result, CacheService.TTL.PRODUCT_LIST);
+        } catch {}
+      }
 
       return result;
     } catch (err) {

@@ -4,6 +4,7 @@
 BEGIN;
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
 ALTER TABLE "public"."ProductVariant" ADD COLUMN IF NOT EXISTS "imageUrl" TEXT;
+UPDATE public."Product" SET "isPublished" = true;
 
 -- 1. General catalogue cleanup: merge all duplicate products having volume suffixes in name
 DO $$
