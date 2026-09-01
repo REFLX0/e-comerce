@@ -164,8 +164,42 @@ export function FilterSidebar({
     else filterParams.clearAll()
   }
 
+  // Mapping for aliases so subcategories and roots resolve their true product counts
+  const CATEGORY_ALIASES: Record<string, string[]> = useMemo(() => ({
+    'moto-huiles': ['moto-huiles', 'huiles-moto-2t-4t', 'moto-huile-moteur', 'karting-huiles'],
+    'moto-huile-boite': ['moto-huile-boite'],
+    'moto-huile-fourche': ['moto-huile-fourche', 'huiles-fourche'],
+    'moto-lubrifiants-chaine': ['moto-lubrifiants-chaine', 'entretien-chaine', 'additifs-moto'],
+    'moto-karting': ['moto-karting', 'moto', 'karting', 'huiles-moto-2t-4t', 'entretien-chaine', 'additifs-moto', 'huiles-fourche'],
+    'auto-filtres': ['auto-filtres', 'filtres', 'filtres-air', 'filtres-huile', 'filtres-carburant', 'filtres-habitacle'],
+    'auto-electricite-eclairage': ['auto-electricite-eclairage', 'batteries', 'essuie-glaces'],
+    'additifs': ['additifs', 'additifs-huile', 'additifs-carburant', 'additif-diesel', 'additif-essence', 'additif-huile'],
+    'direction-assistee': ['direction-assistee'],
+    'liquide-de-frein': ['liquide-de-frein', 'liquide-frein'],
+    'liquides-auto': ['liquides-auto', 'antigel-refroidissement', 'adblue', 'refroidissement'],
+    'marine': ['marine', 'marine-moteurs', 'marine-hydraulique', 'marine-graisses', 'marine-huiles-lubrifiants'],
+    'huiles-moteur': ['huiles-moteur', 'huiles-moteur-auto', 'huiles-moteur-specifiques', 'auto-synthese', 'auto-semi', 'auto-minerale'],
+    'huile-de-boite': ['huile-de-boite', 'huiles-boite-transmission'],
+  }), [])
+
   // Build the list of categories with resolved taxonomy subcategories
   const resolvedCategories = useMemo(() => {
+    const getCountForSlug = (slug: string, dbId?: string, fallbackCount = 0): number => {
+      if (!facets?.categoryCounts) return fallbackCount
+      const aliases = CATEGORY_ALIASES[slug] || [slug]
+      const counts = facets.categoryCounts as any[]
+      let total = 0
+      const seen = new Set<string>()
+      for (const a of aliases) {
+        const found = counts.find((c) => (c.slug === a || (dbId && c.id === dbId)) && !seen.has(c.id))
+        if (found) {
+          seen.add(found.id)
+          total += (found.count ?? 0)
+        }
+      }
+      return Math.max(total, fallbackCount)
+    }
+
     return NAVIGATION_TAXONOMY.map((item) => {
       const dbNode = findNode(categoriesTree, item.slug)
       const label = item.labelKey ? tTax(item.labelKey) : (dbNode?.name ?? item.label ?? item.slug)
@@ -179,9 +213,7 @@ export function FilterSidebar({
           const subChildDbNode = findNode(categoriesTree, subChild.slug)
           const subChildLabel = subChild.labelKey ? tTax(subChild.labelKey) : (subChildDbNode?.name ?? subChild.label ?? subChild.slug)
           
-          const count = facets?.categoryCounts
-             ? (facets.categoryCounts as any[]).find((c) => c.id === subChildDbNode?.id || c.slug === subChild.slug)?.count ?? 0
-             : subChildDbNode?.productCount
+          const count = getCountForSlug(subChild.slug, subChildDbNode?.id, subChildDbNode?.productCount ?? 0)
 
           return {
             id: subChildDbNode?.id ?? subChild.slug,
@@ -191,13 +223,9 @@ export function FilterSidebar({
           }
         })
 
-        const directChildCount = facets?.categoryCounts
-          ? (facets.categoryCounts as any[]).find((c) => c.id === childDbNode?.id || c.slug === child.slug)?.count ?? 0
-          : (childDbNode?.productCount ?? 0)
-
-        const childCount = subSubcategories.length
-          ? subSubcategories.reduce((acc, sub) => acc + (sub.productCount ?? 0), 0)
-          : directChildCount
+        const directChildCount = getCountForSlug(child.slug, childDbNode?.id, childDbNode?.productCount ?? 0)
+        const subSum = subSubcategories.reduce((acc, sub) => acc + (sub.productCount ?? 0), 0)
+        const childCount = subSubcategories.length ? Math.max(directChildCount, subSum) : directChildCount
 
         return {
           id: childDbNode?.id ?? child.slug,
@@ -208,13 +236,9 @@ export function FilterSidebar({
         }
       })
 
-      const directRootCount = facets?.categoryCounts
-        ? (facets.categoryCounts as any[]).find((c) => c.id === dbNode?.id || c.slug === item.slug)?.count ?? 0
-        : (dbNode?.productCount ?? 0)
-
-      const rootCount = subcategories.length
-        ? subcategories.reduce((acc, sub) => acc + (sub.productCount ?? 0), 0)
-        : directRootCount
+      const directRootCount = getCountForSlug(item.slug, dbNode?.id, dbNode?.productCount ?? 0)
+      const subSum = subcategories.reduce((acc, sub) => acc + (sub.productCount ?? 0), 0)
+      const rootCount = subcategories.length ? Math.max(directRootCount, subSum) : directRootCount
 
       return {
         id: dbNode?.id ?? item.slug,
@@ -225,7 +249,7 @@ export function FilterSidebar({
         subcategories,
       }
     })
-  }, [categoriesTree, tTax, facets?.categoryCounts])
+  }, [categoriesTree, tTax, facets?.categoryCounts, CATEGORY_ALIASES])
 
   if (catLoading || facetsLoading) return <FilterSidebarSkeleton />
 

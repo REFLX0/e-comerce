@@ -974,11 +974,45 @@ export class ProductsService {
       return total;
     }
 
-    const categoryCounts = allCategories.map((c) => ({
-      id: c.id,
-      slug: c.slug,
-      count: getSubtreeCount(c.id),
-    }));
+    const facetAliasGroups: Record<string, string[]> = {
+      'moto-huiles': ['moto-huiles', 'huiles-moto-2t-4t', 'moto-huile-moteur', 'karting-huiles'],
+      'moto-huile-boite': ['moto-huile-boite'],
+      'moto-huile-fourche': ['moto-huile-fourche', 'huiles-fourche'],
+      'moto-lubrifiants-chaine': ['moto-lubrifiants-chaine', 'entretien-chaine', 'additifs-moto'],
+      'moto-karting': ['moto-karting', 'moto', 'karting', 'huiles-moto-2t-4t', 'entretien-chaine', 'additifs-moto', 'huiles-fourche'],
+      'auto-filtres': ['auto-filtres', 'filtres', 'filtres-air', 'filtres-huile', 'filtres-carburant', 'filtres-habitacle'],
+      'auto-electricite-eclairage': ['auto-electricite-eclairage', 'batteries', 'essuie-glaces'],
+      'additifs': ['additifs', 'additifs-huile', 'additifs-carburant', 'additif-diesel', 'additif-essence', 'additif-huile'],
+      'direction-assistee': ['direction-assistee'],
+      'liquide-de-frein': ['liquide-de-frein', 'liquide-frein'],
+      'liquides-auto': ['liquides-auto', 'antigel-refroidissement', 'adblue', 'refroidissement'],
+      'huiles-moteur': ['huiles-moteur', 'huiles-moteur-auto', 'huiles-moteur-specifiques', 'auto-synthese', 'auto-semi', 'auto-minerale'],
+      'huile-de-boite': ['huile-de-boite', 'huiles-boite-transmission'],
+      'marine': ['marine', 'marine-moteurs', 'marine-hydraulique', 'marine-graisses', 'marine-huiles-lubrifiants'],
+    };
+
+    const categoryBySlug = new Map<string, typeof allCategories[0]>();
+    for (const c of allCategories) {
+      categoryBySlug.set(c.slug, c);
+    }
+
+    const categoryCounts = allCategories.map((c) => {
+      const aliases = facetAliasGroups[c.slug] || [c.slug];
+      let total = 0;
+      const seen = new Set<string>();
+      for (const a of aliases) {
+        const targetCat = categoryBySlug.get(a);
+        if (targetCat && !seen.has(targetCat.id)) {
+          seen.add(targetCat.id);
+          total += getSubtreeCount(targetCat.id);
+        }
+      }
+      return {
+        id: c.id,
+        slug: c.slug,
+        count: Math.max(total, getSubtreeCount(c.id)),
+      };
+    });
 
     return {
       volumes,
