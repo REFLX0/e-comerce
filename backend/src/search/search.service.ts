@@ -179,6 +179,86 @@ export class SearchService implements OnModuleInit {
     await this.client.delete({ index: PRODUCT_INDEX, id }).catch(() => {});
   }
 
+  /**
+   * Full re-index: pushes ALL published products from Postgres into OpenSearch.
+   * Run this once after deployment or whenever the index is out of sync.
+   * Uses 500-row batches to avoid memory spikes.
+   */
+  async bulkReindex(): Promise<{ indexed: number; errors: number }> {
+    if (!this.client || !this.isAvailable) {
+      this.logger.warn('bulkReindex: OpenSearch not available.');
+      return { indexed: 0, errors: 0 };
+    }
+
+    const BATCH = 500;
+    let skip = 0;
+    let indexed = 0;
+    let errors = 0;
+
+    await this.ensureIndex();
+
+    while (true) {
+      const products = await this.prismaRead.db.product.findMany({
+        where: { isPublished: true },
+        include: {
+          brand: { select: { id: true, name: true, slug: true } },
+          category: { select: { id: true, nameFr: true, slug: true } },
+          variants: { select: { price: true, stockQty: true }, take: 1, orderBy: { price: 'asc' } },
+          specs: { select: { viscosity: true } },
+        },
+        skip,
+        take: BATCH,
+      });
+
+      if (products.length === 0) break;
+
+      const body: any[] = [];
+      for (const p of products) {
+        const price = p.variants[0]?.price ?? 0;
+        const stockQty = p.variants.reduce((sum: number, v: any) => sum + (v.stockQty ?? 0), 0);
+        body.push({ index: { _index: PRODUCT_INDEX, _id: p.id } });
+        body.push({
+          id: p.id,
+          slug: p.slug,
+          sku: p.sku,
+          name: p.nameFr,
+          brand: p.brand?.name ?? '',
+          brandId: p.brandId ?? '',
+          brandSlug: p.brand?.slug ?? '',
+          categoryId: p.categoryId ?? '',
+          categorySlug: p.category?.slug ?? '',
+          isPublished: p.isPublished,
+          isFeatured: p.isFeatured,
+          price,
+          stockQty,
+          createdAt: p.createdAt,
+          viscosity: p.specs?.viscosity ?? null,
+          description: p.description ?? '',
+        });
+      }
+
+      try {
+        const res = await this.client.bulk({ body });
+        const resErrors = (res.body.items as any[]).filter((i: any) => i.index?.error);
+        indexed += products.length - resErrors.length;
+        errors += resErrors.length;
+        if (resErrors.length > 0) {
+          this.logger.warn(`bulkReindex: ${resErrors.length} errors in batch at skip=${skip}`);
+        }
+      } catch (err) {
+        this.logger.error(`bulkReindex: bulk request failed at skip=${skip}: ${(err as Error).message}`);
+        errors += products.length;
+      }
+
+      this.logger.log(`bulkReindex: processed ${skip + products.length} products...`);
+      skip += BATCH;
+    }
+
+    this.logger.log(`bulkReindex DONE — indexed: ${indexed}, errors: ${errors}`);
+    return { indexed, errors };
+  }
+
+
   // ── Full-text Product Search ───────────────────────────────────────────────
 
   async search(params: {

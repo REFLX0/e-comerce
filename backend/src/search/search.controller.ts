@@ -1,4 +1,4 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Post, Query, Headers, UnauthorizedException } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { SearchService } from './search.service';
 
@@ -28,5 +28,22 @@ export class SearchController {
   @Get('suggestions')
   suggestions(@Query('q') q: string) {
     return this.searchService.getSuggestionsWithFallback(q);
+  }
+
+  /**
+   * POST /api/search/reindex
+   * Admin-only: triggers a full bulk re-index from PostgreSQL → OpenSearch.
+   * Requires header: x-admin-key matching the JWT_SECRET env var.
+   *
+   * Usage from VM:
+   *   curl -X POST https://specpart.tech/api/search/reindex \
+   *        -H "x-admin-key: <JWT_SECRET>"
+   */
+  @Post('reindex')
+  async reindex(@Headers('x-admin-key') key: string) {
+    if (!key || key !== process.env.JWT_SECRET) {
+      throw new UnauthorizedException('Invalid admin key');
+    }
+    return this.searchService.bulkReindex();
   }
 }

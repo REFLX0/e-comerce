@@ -284,3 +284,35 @@ CREATE TABLE IF NOT EXISTS tecdoc.article_replace_numbers (
     supplier INTEGER
 );
 CREATE INDEX IF NOT EXISTS idx_tecdoc_replace_art ON tecdoc.article_replace_numbers(article_id, supplier);
+
+-- ── PERFORMANCE: pg_trgm Trigram indexes ──────────────────────────────────────
+-- These enable fast ILIKE / fuzzy text search on the 6.7M-row articles table.
+-- Required for the PostgreSQL fallback in SearchService when OpenSearch is down.
+-- Run once on the VM:  docker exec -it specpart-db psql -U specparttn -d specparttn -f /tmp/tecdoc_schema.sql
+-- or apply individually as shown below.
+
+CREATE EXTENSION IF NOT EXISTS pg_trgm;
+
+-- Part number fuzzy search (most critical — user types "HU 815" → "HU815/2X")
+CREATE INDEX IF NOT EXISTS idx_tecdoc_articles_partno_trgm
+  ON tecdoc.articles USING gin (data_supplier_article_number gin_trgm_ops);
+
+-- Description fuzzy search (category filtering falls back to description ILIKE)
+CREATE INDEX IF NOT EXISTS idx_tecdoc_articles_desc_trgm
+  ON tecdoc.articles USING gin (description gin_trgm_ops);
+
+-- Normalized description (used in category filter ILIKE queries)
+CREATE INDEX IF NOT EXISTS idx_tecdoc_articles_normdesc_trgm
+  ON tecdoc.articles USING gin (normalized_description gin_trgm_ops);
+
+-- Product type / generic description (e.g. "Brake Disc", "Oil Filter")
+CREATE INDEX IF NOT EXISTS idx_tecdoc_products_desc_trgm
+  ON tecdoc.products USING gin (description gin_trgm_ops);
+
+-- Supplier matchcode (brand name search)
+CREATE INDEX IF NOT EXISTS idx_tecdoc_suppliers_matchcode_trgm
+  ON tecdoc.suppliers USING gin (matchcode gin_trgm_ops);
+
+-- OE number fuzzy search (users often search with dashes/spaces removed)
+CREATE INDEX IF NOT EXISTS idx_tecdoc_oe_nbr_trgm
+  ON tecdoc.article_oe_numbers USING gin (oe_nbr gin_trgm_ops);
