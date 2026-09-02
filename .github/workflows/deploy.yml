@@ -36,14 +36,16 @@ jobs:
             git fetch origin main
             git reset --hard origin/main
             
-            # Apply DB migrations & full catalogue reorganization
-            docker exec -i specpart-db psql -U specpart -d specpart -c 'ALTER TABLE public."Product" ADD COLUMN IF NOT EXISTS "shortDescription" TEXT;' || true
-            docker exec -i specpart-db psql -U specpart -d specpart < backend/prisma/precise-catalogue-reorganization.sql || true
-            docker compose exec -T redis redis-cli FLUSHALL || true
-            
             # Build and update modified containers automatically
             docker compose build frontend backend
             docker compose up -d --no-deps frontend backend nginx
+            
+            # Run Prisma migrations to create/update any new DB tables
+            echo "--- Running DB migrations ---"
+            docker compose exec -T backend npx prisma migrate deploy || true
+            
+            # Flush Redis cache to pick up any code changes
+            docker compose exec -T redis redis-cli FLUSHALL || true
             
             # Clean up dangling build cache to save disk space
             docker image prune -f
