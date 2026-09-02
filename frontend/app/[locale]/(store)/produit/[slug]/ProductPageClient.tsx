@@ -14,7 +14,7 @@ export function ProductPageClient({ product }: { product: Product }) {
   }, [selectedVariant])
 
   return (
-    <div className="grid grid-cols-1 gap-10 lg:grid-cols-2 lg:gap-16">
+    <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 lg:gap-8">
       <div>
         <ProductGallery
           images={product.images}

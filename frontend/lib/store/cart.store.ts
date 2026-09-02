@@ -4,7 +4,7 @@ import type { Cart, CartItem, Product, ProductVariant } from '@/lib/types'
 
 const TVA_RATE = Number(process.env.NEXT_PUBLIC_TVA_RATE || 0.19)
 const DEFAULT_FREE_SHIPPING_THRESHOLD = Number(
-  process.env.NEXT_PUBLIC_FREE_SHIPPING_THRESHOLD || 150
+  process.env.NEXT_PUBLIC_FREE_SHIPPING_THRESHOLD || 250
 )
 const DEFAULT_SHIPPING_COST = Number(process.env.NEXT_PUBLIC_SHIPPING_COST || 7)
 

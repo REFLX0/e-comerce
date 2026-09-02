@@ -856,7 +856,7 @@ export default function EditProductPage() {
                 onChange={(e) => setOilType(e.target.value as any)}
                 className="w-full rounded-2xl border border-slate-200 bg-slate-50/60 px-4 py-2.5 text-sm font-semibold outline-none focus:border-[#16254c] focus:bg-white"
               >
-                <option value="none">-- Non spécifié / Autre --</option>
+                <option value="none">-- Vide (Non spécifié) --</option>
                 <option value="full_synth">100% Synthèse (Full Synthetic)</option>
                 <option value="semi_synth">Semi-Synthèse (Technosynthese)</option>
                 <option value="mineral">Minérale</option>

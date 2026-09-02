@@ -279,7 +279,7 @@ export default function CataloguePage() {
 
         <div className="mb-7 flex flex-col justify-between gap-4 border-b border-black/10 pb-5 sm:flex-row sm:items-end">
           <div>
-            <p className="text-xl font-black tracking-[-0.03em] text-[#111]">{t('productsFound', { count: productCount })}</p>
+            <p className="text-xl font-black tracking-[-0.03em] text-[#111]">{t('catalogTitle')}</p>
             {!isLoading && !isSearchMode && <p className="mt-1 text-sm text-neutral-500">{t('catalogueHint')}</p>}
             {isVehicleSearch && !isLoading && (
               <p className="mt-1 text-sm font-medium text-[#16254c]">

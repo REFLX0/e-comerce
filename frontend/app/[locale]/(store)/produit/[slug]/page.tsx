@@ -58,7 +58,7 @@ export default async function ProductPage({ params }: Props) {
 
   return (
     <div className="bg-brand-surface min-h-screen">
-      <div className="section-padding py-8">
+      <div className="section-padding py-4">
         <Breadcrumb
           items={[
             { label: tNav('catalog'), href: '/catalogue' },
@@ -69,7 +69,7 @@ export default async function ProductPage({ params }: Props) {
           ]}
         />
 
-        <div className="border-brand-surface-dark mt-6 rounded-3xl border bg-white p-6 shadow-card md:p-10 animate-fade-in-up">
+        <div className="border-brand-surface-dark mt-4 rounded-3xl border bg-white p-4 md:p-6 shadow-card animate-fade-in-up">
           <ProductPageClient product={product} />
         </div>
 
