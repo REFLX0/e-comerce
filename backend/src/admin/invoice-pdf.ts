@@ -49,17 +49,17 @@ function formatDt(amount: number): string {
 function formatFrenchDate(date: Date): string {
   const months = [
     'janvier',
-    'f├®vrier',
+    'février',
     'mars',
     'avril',
     'mai',
     'juin',
     'juillet',
-    'ao├╗t',
+    'août',
     'septembre',
     'octobre',
     'novembre',
-    'd├®cembre',
+    'décembre',
   ];
   const d = date.getDate();
   const m = months[date.getMonth()];
@@ -218,7 +218,7 @@ export function generateDeliveryNotePDF(
     codeImgPath = resolveImagePath(settings.FACTURE_CODE_IMG);
   }
 
-  // ÔöÇÔöÇ HEADER: LOGO & COMPANY INFO (LEFT) ÔöÇÔöÇ
+  // ── HEADER: LOGO & COMPANY INFO (LEFT) ──
   let headerLeftTextX = leftMargin;
   const startY = 35;
 
@@ -251,7 +251,7 @@ export function generateDeliveryNotePDF(
       .text(`MF: ${companyMf}`, headerLeftTextX, startY + 52);
   }
 
-  // ÔöÇÔöÇ HEADER: FACTURE TITLE & DATES (RIGHT) ÔöÇÔöÇ
+  // ── HEADER: FACTURE TITLE & DATES (RIGHT) ──
   const orderNumber = (order.id || '').slice(-8).toUpperCase() || '1';
   const orderDate = order.createdAt ? new Date(order.createdAt) : new Date();
   const dateStr = formatFrenchDate(orderDate);
@@ -285,7 +285,7 @@ export function generateDeliveryNotePDF(
     .fontSize(9.5)
     .font('Helvetica-Bold')
     .fillColor(primaryColor)
-    .text(`Date d'├®ch├®ance : `, leftMargin, startY + 44, {
+    .text(`Date d'échéance : `, leftMargin, startY + 44, {
       align: 'right',
       width: contentWidth - 85,
     });
@@ -308,13 +308,13 @@ export function generateDeliveryNotePDF(
     }
   }
 
-  // ÔöÇÔöÇ FACTUR├ë ├Ç (CLIENT INFO) ÔöÇÔöÇ
+  // ── FACTUR├ë à (CLIENT INFO) ──
   const clientStartY = startY + 80;
   doc
     .fontSize(10.5)
     .font('Helvetica-Bold')
     .fillColor(primaryColor)
-    .text('Factur├® ├Ç:', leftMargin, clientStartY);
+    .text('Facturé à:', leftMargin, clientStartY);
 
   const clientName =
     order.shipFullName || order.user?.name || 'Client Particulier';
@@ -340,13 +340,13 @@ export function generateDeliveryNotePDF(
       .fontSize(8.5)
       .fillColor(secondaryColor)
       .text(
-        `T├®l: ${order.shipPhone}`,
+        `Tél: ${order.shipPhone}`,
         leftMargin,
         clientStartY + (clientLocation ? 40 : 28),
       );
   }
 
-  // ÔöÇÔöÇ ARTICLES TABLE ÔöÇÔöÇ
+  // ── ARTICLES TABLE ──
   const tableY = clientStartY + 60;
   const colW = {
     num: 28,
@@ -391,7 +391,7 @@ export function generateDeliveryNotePDF(
     width: colW.name - 12,
     align: 'left',
   });
-  doc.text('Quantit├®', colX.qty, tableY + 6, {
+  doc.text('Quantité', colX.qty, tableY + 6, {
     width: colW.qty,
     align: 'center',
   });
@@ -479,7 +479,7 @@ export function generateDeliveryNotePDF(
     currentY += rowHeight;
   });
 
-  // ÔöÇÔöÇ TOTALS SUMMARY (RIGHT) ÔöÇÔöÇ
+  // ── TOTALS SUMMARY (RIGHT) ──
   const summaryWidth = 200;
   const summaryX = pageWidth - rightMargin - summaryWidth;
   let summaryY = currentY + 12;
@@ -523,6 +523,24 @@ export function generateDeliveryNotePDF(
       .font('Helvetica')
       .fillColor(primaryColor)
       .text(formatDt(order.shippingCost), summaryX + 95, summaryY, {
+        width: summaryWidth - 95,
+        align: 'right',
+      });
+  }
+
+  // Calculate if there's a discount
+  const rawTotalTtc = subtotalHt + totalTva + (order.shippingCost || 0);
+  const discountTtc = rawTotalTtc - order.totalAmount;
+  if (discountTtc > 0.05) { // Account for small floating point errors
+    summaryY += 16;
+    doc
+      .font('Helvetica-Bold')
+      .fillColor('#e63946')
+      .text('Remise Promo', summaryX, summaryY, { width: 90, align: 'right' });
+    doc
+      .font('Helvetica')
+      .fillColor('#e63946')
+      .text(`- ${formatDt(discountTtc)}`, summaryX + 95, summaryY, {
         width: summaryWidth - 95,
         align: 'right',
       });
@@ -572,7 +590,7 @@ export function generateDeliveryNotePDF(
       align: 'right',
     });
 
-  // ÔöÇÔöÇ MONTANT EN LETTRES (LEFT) ÔöÇÔöÇ
+  // ── MONTANT EN LETTRES (LEFT) ──
   const lettersY = currentY + 30;
   doc
     .fontSize(10)
@@ -590,7 +608,7 @@ export function generateDeliveryNotePDF(
       lineGap: 3,
     });
 
-  // ÔöÇÔöÇ THE BLUE THING (TABA3 / CACHET & SIGNATURE) ÔöÇÔöÇ
+  // ── THE BLUE THING (TABA3 / CACHET & SIGNATURE) ──
   const stampBoxY = Math.max(summaryY + 40, lettersY + 60);
   const stampBoxWidth = 140;
   const stampBoxHeight = 85;
@@ -633,7 +651,7 @@ export function generateDeliveryNotePDF(
       });
   }
 
-  // ÔöÇÔöÇ FOOTER / LEGAL MENTIONS ÔöÇÔöÇ
+  // ── FOOTER / LEGAL MENTIONS ──
   const footerY = doc.page.height - 35;
   doc
     .moveTo(leftMargin, footerY - 8)
@@ -646,9 +664,9 @@ export function generateDeliveryNotePDF(
     .font('Helvetica')
     .fillColor('#64748b')
     .text(
-      `${companyName} ÔÇö ${companyAddress} ÔÇö T├®l: ${companyPhone} ÔÇö Email: ${companyEmail}${
-        companyMf ? ' ÔÇö MF: ' + companyMf : ''
-      }${companyRc ? ' ÔÇö RC: ' + companyRc : ''}`,
+      `${companyName} — ${companyAddress} — Tél: ${companyPhone} — Email: ${companyEmail}${
+        companyMf ? ' — MF: ' + companyMf : ''
+      }${companyRc ? ' — RC: ' + companyRc : ''}`,
       leftMargin,
       footerY,
       { align: 'center', width: contentWidth },
