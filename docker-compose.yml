@@ -178,7 +178,7 @@ services:
     environment:
       PGPASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
     # If the data dir is empty, take a base backup from 'db', then start postgres
-    command: >
+    command: |
       sh -c "
       if [ ! -s /var/lib/postgresql/data/PG_VERSION ]; then
         echo 'Initializing replica from primary...'
