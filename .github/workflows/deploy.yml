@@ -36,9 +36,10 @@ jobs:
             git fetch origin main
             git reset --hard origin/main
             
-            # Build and update modified containers automatically
+            # Build custom app images
             docker compose build frontend backend
-            docker compose up -d --no-deps frontend backend nginx
+            # Start/update ALL services defined in docker-compose.yml
+            docker compose up -d
             
             # Run Prisma migrations to create/update any new DB tables
             echo "--- Running DB migrations ---"
