@@ -799,11 +799,11 @@ body.grid-on .grid-toggle .dot {
 
 /* ── Category Nav Flyout Animations ─────────────────────────────────── */
 @keyframes flyoutIn {
-  from { opacity: 0; transform: translateY(-6px); }
+  from { opacity: 0; transform: translateY(-2px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 @keyframes subPanelIn {
-  from { opacity: 0; transform: translateX(-8px); }
+  from { opacity: 0; transform: translateX(-3px); }
   to   { opacity: 1; transform: translateX(0); }
 }
 

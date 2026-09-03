@@ -10,7 +10,8 @@ import { useTranslations } from 'next-intl'
 import { NAVIGATION_TAXONOMY, type NavigationTaxonomyNode } from '@/lib/navigation/taxonomy'
 import type { Category } from '@/lib/types'
 
-const DROPDOWN_CLOSE_DELAY_MS = 180
+const DROPDOWN_CLOSE_DELAY_MS = 280
+const DROPDOWN_OPEN_DELAY_MS = 60
 
 const NAVIGATION_ICONS: Record<string, React.ElementType> = {
   automobile: Car,
@@ -32,38 +33,78 @@ export function CategoryNav() {
 
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null)
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const openTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const t = useTranslations('Navigation')
   const tTax = useTranslations('Taxonomy')
   const locale = useLocale()
   const isRtl = locale === 'ar'
 
-  const openDropdown = useCallback((slug: string) => {
+  const handleMouseEnter = useCallback((slug: string) => {
+    // Clear any pending close timer immediately
+    if (closeTimer.current) {
+      clearTimeout(closeTimer.current)
+      closeTimer.current = null
+    }
+
+    // If another dropdown is already active, switch immediately with zero lag
+    if (activeDropdown) {
+      if (openTimer.current) {
+        clearTimeout(openTimer.current)
+        openTimer.current = null
+      }
+      setActiveDropdown(slug)
+      return
+    }
+
+    // If opening from a closed state, use a tiny intent debounce (60ms) to avoid accidental rapid flashes
+    if (openTimer.current) clearTimeout(openTimer.current)
+    openTimer.current = setTimeout(() => {
+      setActiveDropdown(slug)
+      openTimer.current = null
+    }, DROPDOWN_OPEN_DELAY_MS)
+  }, [activeDropdown])
+
+  const handleMouseLeave = useCallback(() => {
+    // Cancel open timer if cursor left before it opened
+    if (openTimer.current) {
+      clearTimeout(openTimer.current)
+      openTimer.current = null
+    }
+
+    // Schedule close with a comfortable 280ms grace period so moving into the dropdown never flickers
     if (closeTimer.current) clearTimeout(closeTimer.current)
-    closeTimer.current = null
-    setActiveDropdown(slug)
+    closeTimer.current = setTimeout(() => {
+      setActiveDropdown(null)
+      closeTimer.current = null
+    }, DROPDOWN_CLOSE_DELAY_MS)
   }, [])
 
-  const scheduleClose = useCallback(() => {
-    if (closeTimer.current) clearTimeout(closeTimer.current)
-    closeTimer.current = setTimeout(() => setActiveDropdown(null), DROPDOWN_CLOSE_DELAY_MS)
+  const cancelClose = useCallback(() => {
+    if (closeTimer.current) {
+      clearTimeout(closeTimer.current)
+      closeTimer.current = null
+    }
   }, [])
 
   const closeNow = useCallback(() => {
     if (closeTimer.current) clearTimeout(closeTimer.current)
+    if (openTimer.current) clearTimeout(openTimer.current)
     closeTimer.current = null
+    openTimer.current = null
     setActiveDropdown(null)
   }, [])
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setActiveDropdown(null)
+      if (event.key === 'Escape') closeNow()
     }
     window.addEventListener('keydown', onKeyDown)
     return () => {
       window.removeEventListener('keydown', onKeyDown)
       if (closeTimer.current) clearTimeout(closeTimer.current)
+      if (openTimer.current) clearTimeout(openTimer.current)
     }
-  }, [])
+  }, [closeNow])
 
   return (
     <nav
@@ -82,9 +123,9 @@ export function CategoryNav() {
             return (
               <div
                 key={item.slug}
-                className="relative"
-                onMouseEnter={() => openDropdown(item.slug)}
-                onMouseLeave={scheduleClose}
+                className="relative flex items-stretch h-full"
+                onMouseEnter={() => handleMouseEnter(item.slug)}
+                onMouseLeave={handleMouseLeave}
               >
                 {/* ── Nav Button ── */}
                 {item.children.length > 0 ? (
@@ -134,8 +175,8 @@ export function CategoryNav() {
                     rootLabel={rootLabel}
                     categories={categories}
                     onClose={closeNow}
-                    onMouseEnter={() => openDropdown(item.slug)}
-                    onMouseLeave={scheduleClose}
+                    onMouseEnter={cancelClose}
+                    onMouseLeave={handleMouseLeave}
                     isRtl={isRtl}
                     allProductsLabel={t('allProducts')}
                   />
@@ -200,14 +241,14 @@ function FlyoutPanel({
       role="menu"
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
-      className="flyout-panel absolute start-0 top-full z-50 flex overflow-hidden"
+      className="flyout-panel absolute start-0 top-full z-50 flex overflow-hidden before:absolute before:-top-3 before:left-0 before:right-0 before:h-4 before:content-['']"
       style={{
         borderRadius: '0 0 16px 16px',
         border: '1px solid rgba(22,37,76,0.1)',
         boxShadow: '0 20px 60px rgba(22,37,76,0.18)',
         minWidth: 320,
         background: '#fff',
-        animation: 'flyoutIn 0.18s cubic-bezier(0.16,1,0.3,1) both',
+        animation: 'flyoutIn 0.14s ease-out both',
       }}
     >
       {/* LEFT — category list */}
