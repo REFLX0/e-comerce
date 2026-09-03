@@ -28,15 +28,16 @@ export interface TopBuyer {
   score: number
 }
 
-export async function downloadOrderPdf(orderId: string) {
+export async function downloadOrderPdf(orderId: string, type: 'invoice' | 'delivery_slip' = 'invoice') {
   const baseUrl = process.env.NEXT_PUBLIC_API_URL || '/api'
   try {
-    const res = await fetch(`${baseUrl}/admin/orders/${orderId}/pdf`, { credentials: 'include' })
+    const res = await fetch(`${baseUrl}/admin/orders/${orderId}/pdf?type=${type}`, { credentials: 'include' })
     if (!res.ok) throw new Error('PDF download failed')
     const blob = await res.blob()
     const pdfBlob = new Blob([blob], { type: 'application/pdf' })
     const url = URL.createObjectURL(pdfBlob)
-    const fileName = `facture-${orderId.slice(-8).toUpperCase()}.pdf`
+    const prefix = type === 'delivery_slip' ? 'bon-de-livraison' : 'facture'
+    const fileName = `${prefix}-${orderId.slice(-8).toUpperCase()}.pdf`
 
     const a = document.createElement('a')
     a.style.display = 'none'

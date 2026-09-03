@@ -222,6 +222,7 @@ function findDefaultStamp(): string | null {
 export async function generateDeliveryNotePDF(
   order: InvoiceOrder,
   settings: InvoiceSettings = {},
+  docType: 'invoice' | 'delivery_slip' = 'invoice'
 ): Promise<Buffer> {
   const chunks: Buffer[] = [];
   const doc = new PDFDocument({
@@ -323,7 +324,7 @@ export async function generateDeliveryNotePDF(
     .fontSize(22)
     .font('Helvetica-Bold')
     .fillColor('#334155')
-    .text(`FACTURE#${orderNumber}`, leftMargin, startY, {
+    .text(docType === 'delivery_slip' ? `BON DE LIVRAISON#${orderNumber}` : `FACTURE#${orderNumber}`, leftMargin, startY, {
       align: 'right',
       width: contentWidth,
     });
@@ -377,7 +378,7 @@ export async function generateDeliveryNotePDF(
     .fontSize(10.5)
     .font('Helvetica-Bold')
     .fillColor(primaryColor)
-    .text('Facturé à:', leftMargin, clientStartY);
+    .text(docType === 'delivery_slip' ? 'Livré à:' : 'Facturé à:', leftMargin, clientStartY);
 
   const clientName =
     order.shipFullName || order.user?.name || 'Client Particulier';
@@ -590,20 +591,23 @@ export async function generateDeliveryNotePDF(
   }
 
   // Timbre Fiscal
-  const timbreFiscal = parseFloat(settings.FACTURE_TIMBRE_FISCAL || '1.000');
-  if (timbreFiscal > 0) {
-    summaryY += 16;
-    doc
-      .font('Helvetica-Bold')
-      .fillColor(primaryColor)
-      .text('Timbre Fiscal', summaryX, summaryY, { width: 90, align: 'right' });
-    doc
-      .font('Helvetica')
-      .fillColor(primaryColor)
-      .text(formatDt(timbreFiscal), summaryX + 95, summaryY, {
-        width: summaryWidth - 95,
-        align: 'right',
-      });
+  let timbreFiscal = 0;
+  if (docType === 'invoice') {
+    timbreFiscal = parseFloat(settings.FACTURE_TIMBRE_FISCAL || '1.000');
+    if (timbreFiscal > 0) {
+      summaryY += 16;
+      doc
+        .font('Helvetica-Bold')
+        .fillColor(primaryColor)
+        .text('Timbre Fiscal', summaryX, summaryY, { width: 90, align: 'right' });
+      doc
+        .font('Helvetica')
+        .fillColor(primaryColor)
+        .text(formatDt(timbreFiscal), summaryX + 95, summaryY, {
+          width: summaryWidth - 95,
+          align: 'right',
+        });
+    }
   }
 
   const finalTotalTtc = order.totalAmount + (timbreFiscal > 0 ? timbreFiscal : 0);

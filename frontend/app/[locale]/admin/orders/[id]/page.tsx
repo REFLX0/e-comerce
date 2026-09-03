@@ -38,10 +38,10 @@ export default function OrderDetailPage() {
     ]
   }
 
-  const handleDownloadPdf = async (orderId: string) => {
+  const handleDownloadPdf = async (orderId: string, docType: 'invoice' | 'delivery_slip' = 'invoice') => {
     try {
       setIsDownloading(true)
-      await downloadOrderPdf(orderId)
+      await downloadOrderPdf(orderId, docType)
       toast.success(t('invoiceDownloaded'))
     } catch {
       toast.error(t('invoiceDownloadError'))
@@ -84,14 +84,24 @@ export default function OrderDetailPage() {
           <h1 className="text-2xl font-bold text-brand-primary">{t('orderLabel')} #{(order.id ?? '').slice(-8).toUpperCase() || 'N/A'}</h1>
           <p className="text-sm text-gray-500">{order.createdAt ? new Date(order.createdAt).toLocaleDateString(locale) : '—'}</p>
         </div>
-        <button
-          onClick={() => handleDownloadPdf(order.id)}
-          disabled={isDownloading}
-          className="flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 hover:border-brand-primary hover:text-brand-primary transition-all disabled:opacity-50"
-        >
-          {isDownloading ? <Loader2 size={15} className="animate-spin" /> : <Printer size={15} />}
-          {t('invoicePdf')}
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={() => handleDownloadPdf(order.id, 'delivery_slip')}
+            disabled={isDownloading}
+            className="flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 hover:border-brand-primary hover:text-brand-primary transition-all disabled:opacity-50"
+          >
+            {isDownloading ? <Loader2 size={15} className="animate-spin" /> : <Truck size={15} />}
+            Bon de livraison
+          </button>
+          <button
+            onClick={() => handleDownloadPdf(order.id, 'invoice')}
+            disabled={isDownloading}
+            className="flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 hover:border-brand-primary hover:text-brand-primary transition-all disabled:opacity-50"
+          >
+            {isDownloading ? <Loader2 size={15} className="animate-spin" /> : <Printer size={15} />}
+            {t('invoicePdf')}
+          </button>
+        </div>
       </div>
 
       <div className="grid gap-4 lg:grid-cols-3">

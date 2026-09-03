@@ -489,7 +489,7 @@ export class AdminService {
     return { csv: header + rows };
   }
 
-  async exportOrderPdf(id: string) {
+  async exportOrderPdf(id: string, docType: 'invoice' | 'delivery_slip' = 'invoice') {
     const order = await this.prisma.order.findUnique({
       where: { id },
       include: {
@@ -513,7 +513,7 @@ export class AdminService {
         }
       }),
     );
-    return generateDeliveryNotePDF(order, settings);
+    return generateDeliveryNotePDF(order, settings, docType);
   }
 
   async bulkProducts(ids: string[], action: string) {

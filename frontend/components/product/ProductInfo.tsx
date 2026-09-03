@@ -96,7 +96,7 @@ export function ProductInfo({ product, selectedVariant: controlledVariant, onVar
 
       {/* Short Description */}
       {product.shortDescription && (
-        <p className="mb-2 text-sm leading-relaxed text-gray-600 line-clamp-2">{product.shortDescription}</p>
+        <p className="mb-2 text-sm leading-relaxed text-gray-600 line-clamp-3">{product.shortDescription}</p>
       )}
 
       {/* Variant Selector */}

@@ -137,12 +137,18 @@ export class AdminController {
   }
 
   @Get('orders/:id/pdf')
-  async exportOrderPdf(@Param('id') id: string, @Res() res: Response) {
-    const pdfBuffer = await this.adminService.exportOrderPdf(id);
+  async exportOrderPdf(
+    @Param('id') id: string,
+    @Query('type') type: string,
+    @Res() res: Response,
+  ) {
+    const docType = type === 'delivery_slip' ? 'delivery_slip' : 'invoice';
+    const pdfBuffer = await this.adminService.exportOrderPdf(id, docType);
+    const prefix = docType === 'delivery_slip' ? 'bon-de-livraison' : 'facture';
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader(
       'Content-Disposition',
-      `attachment; filename="facture-${id.slice(-8).toUpperCase()}.pdf"`,
+      `attachment; filename="${prefix}-${id.slice(-8).toUpperCase()}.pdf"`,
     );
     res.setHeader('Content-Length', pdfBuffer.length);
     res.end(pdfBuffer);

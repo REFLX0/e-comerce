@@ -55,7 +55,7 @@ export default auth(async (req: NextRequest & { auth?: unknown }) => {
     `script-src 'self' 'unsafe-inline' 'unsafe-eval' blob:`,
     `style-src 'self' 'unsafe-inline' https://fonts.googleapis.com`,
     `font-src 'self' https://fonts.gstatic.com`,
-    `img-src 'self' blob: data: https://res.cloudinary.com https://images.unsplash.com https://www.google.com https://imagedelivery.net`,
+    `img-src 'self' blob: data: https://res.cloudinary.com https://images.unsplash.com https://www.google.com https://lh3.googleusercontent.com https://imagedelivery.net`,
     `media-src 'self' data: blob:`,
     `connect-src 'self' ${env.NEXT_PUBLIC_API_URL ? new URL(env.NEXT_PUBLIC_API_URL, env.NEXT_PUBLIC_SITE_URL).origin : ''} ${isDev ? 'http://localhost:4000' : ''} https://api.cloudinary.com https://www.upstash.io https://www.google-analytics.com`.trim(),
     `object-src 'none'`,

@@ -241,7 +241,14 @@ export default function AdminOrdersPage() {
                           <Eye size={15} />
                         </Link>
                         <button
-                          onClick={() => downloadOrderPdf(order.id)}
+                          onClick={() => downloadOrderPdf(order.id, 'delivery_slip')}
+                          className="rounded-lg p-1.5 text-gray-400 hover:bg-brand-primary/10 hover:text-brand-primary transition-colors"
+                          title="Bon de livraison"
+                        >
+                          <Truck size={15} />
+                        </button>
+                        <button
+                          onClick={() => downloadOrderPdf(order.id, 'invoice')}
                           className="rounded-lg p-1.5 text-gray-400 hover:bg-brand-primary/10 hover:text-brand-primary transition-colors"
                           title={t('downloadInvoiceTitle')}
                         >
@@ -306,7 +313,14 @@ export default function AdminOrdersPage() {
                     <Eye size={16} /> {t('detailsAction')}
                   </Link>
                   <button
-                    onClick={() => downloadOrderPdf(order.id)}
+                    onClick={() => downloadOrderPdf(order.id, 'delivery_slip')}
+                    className="flex items-center justify-center rounded-xl border border-gray-200 bg-white p-2.5 text-gray-500 hover:bg-brand-primary/10 hover:text-brand-primary hover:border-brand-primary transition-colors"
+                    title="Bon de livraison"
+                  >
+                    <Truck size={16} />
+                  </button>
+                  <button
+                    onClick={() => downloadOrderPdf(order.id, 'invoice')}
                     className="flex items-center justify-center rounded-xl border border-gray-200 bg-white p-2.5 text-gray-500 hover:bg-brand-primary/10 hover:text-brand-primary hover:border-brand-primary transition-colors"
                     title={t('downloadInvoiceTitle')}
                   >
