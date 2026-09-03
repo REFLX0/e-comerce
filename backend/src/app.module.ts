@@ -58,6 +58,5 @@ import { InvoicesModule } from './invoices/invoices.module';
     OilFinderModule,
     InvoicesModule,
   ],
-  ],
 })
 export class AppModule {}
