@@ -5,7 +5,7 @@ import { useTranslations } from 'next-intl'
 import Image from 'next/image'
 import { Link } from '@/i18n/routing'
 import { Heart, Check, X, ShoppingCart, AlertTriangle, ShieldCheck, Star } from 'lucide-react'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import type { Product, ProductVariant } from '@/lib/types'
 import { useCartStore } from '@/lib/store/cart.store'
 import { wishlistApi } from '@/lib/api/wishlist'
@@ -49,18 +49,29 @@ function CardImage({
   }
 
   return (
-    <>
+    <div className="relative h-full w-full">
       {loading && <div className="absolute inset-0 animate-pulse bg-gray-100" />}
-      <Image
-        src={src}
-        alt={alt}
-        fill
-        sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-        className={`object-contain p-4 transition-transform duration-300 ease-out group-hover:scale-105 ${loading ? 'opacity-0' : 'opacity-100'}`}
-        onLoad={() => setLoading(false)}
-        onError={() => { setError(true); setLoading(false) }}
-      />
-    </>
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={src}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.3, ease: 'easeInOut' }}
+          className="absolute inset-0"
+        >
+          <Image
+            src={src}
+            alt={alt}
+            fill
+            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+            className={`object-contain p-4 transition-transform duration-300 ease-out group-hover:scale-105 ${loading ? 'opacity-0' : 'opacity-100'}`}
+            onLoad={() => setLoading(false)}
+            onError={() => { setError(true); setLoading(false) }}
+          />
+        </motion.div>
+      </AnimatePresence>
+    </div>
   )
 }
 
@@ -119,20 +130,39 @@ export function ProductCard({ product, viewMode = 'grid' }: Props) {
     return list
   }, [sortedVariants, product.images])
 
+  // All display images for sliding: either from variants or from all distinct product images
+  const carouselImages = useMemo(() => {
+    if (carouselVariants.length > 1) {
+      return carouselVariants.map((v) => v.imageUrl as string)
+    }
+    // For products without multiple volume variants (filters, parts, etc.), use all distinct product images
+    const seen = new Set<string>()
+    const list: string[] = []
+    for (const img of product.images || []) {
+      if (!img) continue
+      const key = img.trim().toLowerCase()
+      if (!seen.has(key)) {
+        seen.add(key)
+        list.push(img)
+      }
+    }
+    return list
+  }, [carouselVariants, product.images])
+
   const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(null)
   const [isManuallySelected, setIsManuallySelected] = useState(false)
   const [carouselIndex, setCarouselIndex] = useState(0)
 
-  // Autoplay loop when product has multiple variant images and user hasn't manually selected
+  // Autoplay loop when ANY product has multiple images (variants or photos) and user hasn't manually selected
   useEffect(() => {
-    if (isManuallySelected || carouselVariants.length <= 1) return
+    if (isManuallySelected || carouselImages.length <= 1) return
 
     const timer = setInterval(() => {
-      setCarouselIndex((prev) => (prev + 1) % carouselVariants.length)
+      setCarouselIndex((prev) => (prev + 1) % carouselImages.length)
     }, 3000)
 
     return () => clearInterval(timer)
-  }, [isManuallySelected, carouselVariants.length])
+  }, [isManuallySelected, carouselImages.length])
 
   // Manual selection handler
   const handleSelectVariant = (e: React.MouseEvent, variant: ProductVariant) => {
@@ -145,7 +175,7 @@ export function ProductCard({ product, viewMode = 'grid' }: Props) {
   // Active variant: manual selection takes precedence, then autoplay carousel variant, then default variant
   const activeVariant = useMemo(() => {
     if (isManuallySelected && selectedVariant) return selectedVariant
-    if (carouselVariants.length > 0) return carouselVariants[carouselIndex]
+    if (carouselVariants.length > 1) return carouselVariants[carouselIndex]
     return sortedVariants[0] || product.variants?.[0]
   }, [isManuallySelected, selectedVariant, carouselVariants, carouselIndex, sortedVariants, product.variants])
 
@@ -154,11 +184,11 @@ export function ProductCard({ product, viewMode = 'grid' }: Props) {
     if (isManuallySelected && selectedVariant?.imageUrl) {
       return selectedVariant.imageUrl
     }
-    if (carouselVariants.length > 0) {
-      return carouselVariants[carouselIndex]?.imageUrl || sortedVariants[0]?.imageUrl || product.images?.[0]
+    if (carouselImages.length > 1) {
+      return carouselImages[carouselIndex] || sortedVariants[0]?.imageUrl || product.images?.[0]
     }
     return sortedVariants[0]?.imageUrl || product.images?.[0]
-  }, [isManuallySelected, selectedVariant, carouselVariants, carouselIndex, sortedVariants, product.images])
+  }, [isManuallySelected, selectedVariant, carouselImages, carouselIndex, sortedVariants, product.images])
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault()
@@ -248,14 +278,14 @@ export function ProductCard({ product, viewMode = 'grid' }: Props) {
             />
           </Link>
           
-          {/* Mini dot indicators if multiple variants sliding */}
-          {carouselVariants.length > 1 && (
+          {/* Mini dot indicators if multiple images sliding */}
+          {carouselImages.length > 1 && (
             <div className="absolute bottom-2 left-1/2 -translate-x-1/2 z-10 flex gap-1 items-center bg-white/80 backdrop-blur-xs px-2 py-0.5 rounded-full shadow-xs">
-              {carouselVariants.map((v, idx) => {
-                const isActive = (isManuallySelected && selectedVariant?.id === v.id) || (!isManuallySelected && carouselIndex === idx)
+              {carouselImages.map((img, idx) => {
+                const isActive = (isManuallySelected && currentImage === img) || (!isManuallySelected && carouselIndex === idx)
                 return (
                   <span
-                    key={v.id || idx}
+                    key={img || idx}
                     className={`h-1.5 rounded-full transition-all duration-300 ${
                       isActive ? 'w-3.5 bg-[#16254c]' : 'w-1.5 bg-slate-300'
                     }`}
@@ -493,14 +523,14 @@ export function ProductCard({ product, viewMode = 'grid' }: Props) {
           />
         </Link>
 
-        {/* Mini dot indicators if multiple variants sliding in autoplay */}
-        {carouselVariants.length > 1 && (
+        {/* Mini dot indicators if multiple images sliding in autoplay */}
+        {carouselImages.length > 1 && (
           <div className="absolute bottom-2 left-1/2 -translate-x-1/2 z-10 flex gap-1 items-center bg-white/80 backdrop-blur-xs px-2 py-0.5 rounded-full shadow-xs">
-            {carouselVariants.map((v, idx) => {
-              const isActive = (isManuallySelected && selectedVariant?.id === v.id) || (!isManuallySelected && carouselIndex === idx)
+            {carouselImages.map((img, idx) => {
+              const isActive = (isManuallySelected && currentImage === img) || (!isManuallySelected && carouselIndex === idx)
               return (
                 <span
-                  key={v.id || idx}
+                  key={img || idx}
                   className={`h-1.5 rounded-full transition-all duration-300 ${
                     isActive ? 'w-3.5 bg-[#16254c]' : 'w-1.5 bg-slate-300'
                   }`}
