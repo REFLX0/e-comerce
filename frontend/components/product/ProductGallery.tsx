@@ -28,7 +28,7 @@ export function ProductGallery({ images, productName, variantImageUrl }: Props) 
   return (
     <div className="flex flex-col gap-4">
       {/* Main image */}
-      <div className="bg-brand-surface border-brand-surface-dark group relative aspect-[4/3] max-h-[320px] overflow-hidden rounded-xl border shadow-card">
+      <div className="group relative aspect-[4/3] max-h-[280px] overflow-hidden rounded-xl">
         {imageUnavailable ? (
           <div className="flex h-full w-full flex-col items-center justify-center gap-3 text-gray-400">
             <Package size={34} strokeWidth={1.5} />
@@ -39,7 +39,7 @@ export function ProductGallery({ images, productName, variantImageUrl }: Props) 
             src={displayImages[currentIndex] || ''}
             alt={`${productName} - Image ${currentIndex + 1}`}
             fill
-            className="object-contain p-4 transition-transform duration-500 group-hover:scale-110"
+            className="object-contain transition-transform duration-500 group-hover:scale-110"
             priority
             onError={() => setImageUnavailable(true)}
           />

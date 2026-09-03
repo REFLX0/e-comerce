@@ -48,26 +48,26 @@ export function ProductInfo({ product, selectedVariant: controlledVariant, onVar
       </div>
 
       {/* Title */}
-      <h1 className="font-display text-brand-primary mb-2 text-xl leading-tight font-bold">
+      <h1 className="font-display text-brand-primary mb-1 text-lg leading-tight font-bold">
         {product.name}
       </h1>
 
       {/* Compatibility Banner */}
       {hasCheckedVehicles && isCompatible && vehicleLabel && (
-        <div className="mb-2 rounded-xl border-2 border-green-500 bg-green-50 p-2.5 flex items-center gap-2 animate-fade-in">
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-green-500 text-white shadow-sm">
-            <Check size={16} strokeWidth={3} />
+        <div className="mb-1.5 rounded-xl border-2 border-green-500 bg-green-50 p-2 flex items-center gap-2 animate-fade-in">
+          <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-green-500 text-white shadow-sm">
+            <Check size={14} strokeWidth={3} />
           </div>
           <div>
             <p className="text-xs font-bold text-green-900">{t('compatibleVehicle')}</p>
-            <p className="text-xs text-green-700 mt-0.5">{vehicleLabel}</p>
+            <p className="text-[11px] text-green-700 mt-0.5">{vehicleLabel}</p>
           </div>
         </div>
       )}
 
       {/* Rating & Reviews Link */}
-      <div className="border-brand-surface-dark mb-2 flex items-center gap-3 border-b pb-2">
-        <RatingStars rating={product.rating} count={product.reviewCount} size={16} />
+      <div className="border-brand-surface-dark mb-1.5 flex items-center gap-3 border-b pb-1.5">
+        <RatingStars rating={product.rating} count={product.reviewCount} size={14} />
         <a
           href="#avis"
           className="text-brand-primary hover:text-brand-primary/70 text-xs underline-offset-4 transition-colors hover:underline"
@@ -77,16 +77,16 @@ export function ProductInfo({ product, selectedVariant: controlledVariant, onVar
       </div>
 
       {/* Price Card */}
-      <div className="mb-2 rounded-xl bg-gradient-to-r from-gray-50 to-brand-surface p-2.5 shadow-sm">
+      <div className="mb-1.5 rounded-xl bg-gradient-to-r from-gray-50 to-brand-surface p-2 shadow-sm">
         <PriceDisplay
           priceHT={selectedVariant.priceHT}
           priceTTC={selectedVariant.priceTTC}
           isPromo={product.isPromo}
           promoPercent={product.promoPercent}
           oldPriceTTC={oldPrice}
-          className="origin-left scale-110"
+          className="origin-left scale-100"
         />
-        <p className="mt-1 text-xs font-medium text-gray-500 italic">+ Frais de livraison (non inclus)</p>
+        <p className="mt-0.5 text-[10px] font-medium text-gray-500 italic">+ Frais de livraison (non inclus)</p>
       </div>
 
       {/* Stock */}
