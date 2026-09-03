@@ -119,9 +119,10 @@ export function OilFinderTabs() {
                     <button
                       key={type.id}
                       onClick={() => handleSelectType(type.id)}
-                      className="group relative flex min-h-[220px] flex-col items-center justify-end overflow-hidden rounded-2xl border border-slate-200/80 bg-white text-center shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-[#D4A76A] hover:shadow-[0_12px_30px_rgba(212,167,106,0.2)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4A76A]"
+                      className="group relative flex h-full min-h-[220px] flex-col overflow-hidden rounded-2xl border border-slate-200/80 bg-white text-center shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-[#D4A76A] hover:shadow-[0_12px_30px_rgba(212,167,106,0.2)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4A76A]"
                     >
-                      <div className="absolute inset-0 z-0 overflow-hidden rounded-2xl">
+                      {/* Image container: strictly confined to the top, stops above the bottom label */}
+                      <div className="relative flex-1 w-full min-h-[145px] overflow-hidden bg-slate-900">
                         <img
                           src={type.image}
                           alt={type.label}
@@ -134,9 +135,11 @@ export function OilFinderTabs() {
                         <div className="hidden absolute inset-0 flex items-center justify-center bg-slate-100 text-slate-400">
                           <FallbackIcon size={40} />
                         </div>
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
                       </div>
-                      <div className="relative w-full z-10 p-3.5 text-center backdrop-blur-md bg-white/95 border-t border-white/40 transition-colors group-hover:bg-white">
+
+                      {/* Label container: clean solid white bottom with no gradient bleed */}
+                      <div className="relative w-full z-10 p-3.5 text-center bg-white border-t border-slate-100 transition-colors group-hover:bg-slate-50/60">
                         <span className="block text-sm font-black uppercase tracking-wider text-[#16254c] group-hover:text-[#D4A76A] transition-colors">
                           {type.label}
                         </span>
