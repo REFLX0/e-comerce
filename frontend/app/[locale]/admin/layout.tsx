@@ -291,9 +291,17 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 
     // ── Fast-path: NextAuth session already has the role (Google OAuth or any provider) ──
     const nextAuthRole = (nextAuthSession?.user as any)?.role
-    if (nextAuthStatus === 'authenticated' && nextAuthRole?.toUpperCase() === 'ADMIN') {
-      setIsCheckingServerAuth(false)
-      return
+    // If authenticated via NextAuth, the role is authoritative — no need to call the backend
+    if (nextAuthStatus === 'authenticated') {
+      if (nextAuthRole?.toUpperCase() === 'ADMIN') {
+        setIsCheckingServerAuth(false)
+        return
+      } else if (nextAuthRole) {
+        // Authenticated but NOT admin (e.g., CUSTOMER via Google) → redirect immediately
+        router.push(`/${locale}/compte`)
+        return
+      }
+      // Role not set in NextAuth session yet — fall through to NestJS check
     }
 
     // ── If not authenticated at all via NextAuth, still try NestJS JWT ──
@@ -322,7 +330,8 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         if (cancelled) return
         console.error("[AdminLayout] authApi.me() failed:", err)
         window.clearTimeout(timeoutId)
-        setIsCheckingServerAuth(false)
+        // DO NOT set isCheckingServerAuth to false here — keep the spinner showing
+        // so the dashboard content is NEVER rendered for unauthorized users.
         router.push(`/${locale}/auth/login?callbackUrl=/${locale}/admin`)
       })
 

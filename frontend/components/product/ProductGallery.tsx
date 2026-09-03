@@ -6,6 +6,20 @@ import Image from 'next/image'
 import { ChevronLeft, ChevronRight, Package } from 'lucide-react'
 import type { ProductVariant } from '@/lib/types'
 
+/**
+ * Parses a volume string like "500ml", "1L", "2.5L", "250mL", "1.5 L"
+ * and returns the numeric value in litres. Returns null if unparseable.
+ */
+function parseVolumeToL(volume?: string | null): number | null {
+  if (!volume) return null
+  const clean = volume.trim().toLowerCase()
+  const match = clean.match(/^([\d.]+)\s*(ml|l)$/)
+  if (!match) return null
+  const val = parseFloat(match[1])
+  if (isNaN(val)) return null
+  return match[2] === 'ml' ? val / 1000 : val
+}
+
 interface Props {
   images: string[]
   productName: string
@@ -21,16 +35,22 @@ export function ProductGallery({ images, productName, variantImageUrl, variants,
   const [hasInteractedWithGallery, setHasInteractedWithGallery] = useState(false)
   const autoplayTimerRef = useRef<NodeJS.Timeout | null>(null)
 
-  // 1. Variant Detection & Sorting
+  // 1. Variant Detection & Sorting — parse the volume string since backend doesn't return volumeL
   const sortedVariantImages = useMemo(() => {
     if (!variants || variants.length === 0) return []
-    // Filter variants that have images and volumes, sort by volume ascending
+    // Filter variants that have images and a parseable volume, sort ascending
     const withImages = variants
-      .filter((v) => !!v.imageUrl && v.volumeL !== undefined)
-      .sort((a, b) => (a.volumeL || 0) - (b.volumeL || 0))
-    
-    // Extract just the image URLs
-    return withImages.map(v => v.imageUrl as string)
+      .filter((v) => !!v.imageUrl && parseVolumeToL(v.volume) !== null)
+      .sort((a, b) => (parseVolumeToL(a.volume) ?? 0) - (parseVolumeToL(b.volume) ?? 0))
+
+    // De-duplicate images (some variants share the same image)
+    const seen = new Set<string>()
+    const deduped: string[] = []
+    for (const v of withImages) {
+      const url = v.imageUrl as string
+      if (!seen.has(url)) { seen.add(url); deduped.push(url) }
+    }
+    return deduped
   }, [variants])
 
   // Combine product images and variant images for the static thumbnail grid, removing duplicates
@@ -98,15 +118,18 @@ export function ProductGallery({ images, productName, variantImageUrl, variants,
           </div>
         ) : (
           <Image
+            key={currentMainImage}
             src={currentMainImage || ''}
             alt={`${productName} - Image ${currentIndex + 1}`}
             fill
-            className="object-contain p-4 transition-transform duration-500 group-hover:scale-105"
+            className="object-contain p-4 transition-all duration-700 ease-in-out group-hover:scale-105"
+            style={{ animation: isAutoplayEligible ? 'galleryFadeIn 0.7s ease-in-out' : undefined }}
             priority
             onError={() => setImageUnavailable(true)}
           />
         )}
 
+        {/* Manual nav arrows — hidden during autoplay */}
         {allThumbnails.length > 1 && !isAutoplayEligible && (
           <>
             <button
@@ -124,10 +147,28 @@ export function ProductGallery({ images, productName, variantImageUrl, variants,
           </>
         )}
 
-        {/* Image counter pill */}
+        {/* Image counter pill — manual mode */}
         {allThumbnails.length > 1 && !isAutoplayEligible && (
           <div className="absolute bottom-4 left-1/2 -translate-x-1/2 rounded-full bg-brand-primary/80 backdrop-blur-sm px-3 py-1 text-xs font-medium text-white">
             {currentIndex + 1} / {allThumbnails.length}
+          </div>
+        )}
+
+        {/* Autoplay dot indicators */}
+        {isAutoplayEligible && sortedVariantImages.length > 1 && (
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5">
+            {sortedVariantImages.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => handleManualNavigation(i)}
+                className={`h-1.5 rounded-full transition-all duration-500 ${
+                  i === currentIndex
+                    ? 'w-6 bg-brand-primary'
+                    : 'w-1.5 bg-brand-primary/30 hover:bg-brand-primary/60'
+                }`}
+                aria-label={`Go to image ${i + 1}`}
+              />
+            ))}
           </div>
         )}
       </div>
