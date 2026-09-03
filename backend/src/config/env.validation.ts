@@ -26,7 +26,7 @@ export const envSchema = Joi.object({
   OPENROUTER_MODEL: Joi.string().allow('').optional(),
   OPENSEARCH_HOST: Joi.string().allow('').optional(),
   FRONTEND_URL: Joi.string().uri().required(),
-  ADMIN_NOTIFICATION_EMAIL: Joi.string().email().required(),
+  ADMIN_NOTIFICATION_EMAIL: Joi.string().email().allow('').optional().default(''),
 });
 
 export function validateEnv(config: Record<string, unknown>) {
