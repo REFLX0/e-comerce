@@ -432,7 +432,8 @@ export async function generateDeliveryNotePDF(
     .fillAndStroke(tableHeaderBg, tableBorderColor);
 
   // Vertical column borders for header
-  Object.values(colX).forEach((x) => {
+  const colXValues = Object.values(colX) as number[];
+  colXValues.forEach((x) => {
     if (x > leftMargin) {
       doc
         .moveTo(x, tableY)
@@ -444,27 +445,12 @@ export async function generateDeliveryNotePDF(
 
   // Header text
   doc.fontSize(9).font('Helvetica-Bold').fillColor(primaryColor);
-  doc.text('#', colX.num, tableY + 6, { width: colW.num, align: 'center' });
-  doc.text('Article(s)', colX.name + 6, tableY + 6, {
-    width: colW.name - 12,
-    align: 'left',
-  });
-  doc.text('Quantité', colX.qty, tableY + 6, {
-    width: colW.qty,
-    align: 'center',
-  });
-  doc.text('PU HT', colX.puHt, tableY + 6, {
-    width: colW.puHt - 6,
-    align: 'right',
-  });
-  doc.text('TVA', colX.tva, tableY + 6, {
-    width: colW.tva - 6,
-    align: 'right',
-  });
-  doc.text('Total', colX.total, tableY + 6, {
-    width: colW.total - 6,
-    align: 'right',
-  });
+  doc.text('#', colX.num, tableY + 6, { width: colW.num, align: 'center', lineBreak: false });
+  doc.text('Article(s)', colX.name + 6, tableY + 6, { width: colW.name - 12, align: 'left', lineBreak: false });
+  doc.text('Quantité', colX.qty, tableY + 6, { width: colW.qty, align: 'center', lineBreak: false });
+  doc.text('PU HT', colX.puHt, tableY + 6, { width: colW.puHt - 6, align: 'right', lineBreak: false });
+  doc.text('TVA', colX.tva, tableY + 6, { width: colW.tva - 6, align: 'right', lineBreak: false });
+  doc.text('Total', colX.total, tableY + 6, { width: colW.total - 6, align: 'right', lineBreak: false });
 
   let currentY = tableY + headerHeight;
   let subtotalHt = 0;
@@ -472,7 +458,14 @@ export async function generateDeliveryNotePDF(
   const tvaRate = parseFloat(settings.FACTURE_TVA_RATE || '19') / 100;
 
   order.items.forEach((item, index) => {
-    const rowHeight = 22;
+    // Dynamic row height based on product name length
+    const itemName = item.product?.nameFr || 'Article';
+    const volume = item.variant?.volume ? ` (${item.variant.volume})` : '';
+    const fullName = `${itemName}${volume}`;
+
+    doc.fontSize(8.5).font('Helvetica');
+    const nameHeight = doc.heightOfString(fullName, { width: colW.name - 12 });
+    const rowHeight = Math.max(22, nameHeight + 12);
 
     // Check page break
     if (currentY + rowHeight > doc.page.height - 130) {
@@ -494,7 +487,7 @@ export async function generateDeliveryNotePDF(
       .fillAndStroke('#ffffff', tableBorderColor);
 
     // Vertical column borders
-    Object.values(colX).forEach((x) => {
+    colXValues.forEach((x) => {
       if (x > leftMargin) {
         doc
           .moveTo(x, currentY)
@@ -504,35 +497,15 @@ export async function generateDeliveryNotePDF(
       }
     });
 
-    const itemName = item.product?.nameFr || 'Article';
-    const volume = item.variant?.volume ? ` (${item.variant.volume})` : '';
+    const midV = (rowHeight - 10) / 2;
 
     doc.fontSize(8.5).font('Helvetica').fillColor(primaryColor);
-    doc.text(String(index + 1), colX.num, currentY + 6, {
-      width: colW.num,
-      align: 'center',
-    });
-    doc.text(`${itemName}${volume}`, colX.name + 6, currentY + 6, {
-      width: colW.name - 12,
-      align: 'left',
-      ellipsis: true,
-    });
-    doc.text(String(item.quantity), colX.qty, currentY + 6, {
-      width: colW.qty,
-      align: 'center',
-    });
-    doc.text(formatDt(puHt), colX.puHt, currentY + 6, {
-      width: colW.puHt - 6,
-      align: 'right',
-    });
-    doc.text(formatDt(itemTva), colX.tva, currentY + 6, {
-      width: colW.tva - 6,
-      align: 'right',
-    });
-    doc.text(formatDt(itemTotalTtc), colX.total, currentY + 6, {
-      width: colW.total - 6,
-      align: 'right',
-    });
+    doc.text(String(index + 1), colX.num, currentY + midV, { width: colW.num, align: 'center', lineBreak: false });
+    doc.text(fullName, colX.name + 6, currentY + 6, { width: colW.name - 12, align: 'left' });
+    doc.text(String(item.quantity), colX.qty, currentY + midV, { width: colW.qty, align: 'center', lineBreak: false });
+    doc.text(formatDt(puHt), colX.puHt, currentY + midV, { width: colW.puHt - 6, align: 'right', lineBreak: false });
+    doc.text(formatDt(itemTva), colX.tva, currentY + midV, { width: colW.tva - 6, align: 'right', lineBreak: false });
+    doc.text(formatDt(itemTotalTtc), colX.total, currentY + midV, { width: colW.total - 6, align: 'right', lineBreak: false });
 
     currentY += rowHeight;
   });
