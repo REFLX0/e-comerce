@@ -6,28 +6,20 @@ const prisma = new PrismaClient()
 async function main() {
   console.log('Seeding massive realistic dataset...')
 
-  // Clear existing
-  await prisma.orderItem.deleteMany()
-  await prisma.order.deleteMany()
-  await prisma.productVariant.deleteMany()
-  await prisma.vehicleCompatibility.deleteMany()
-  await prisma.productImage.deleteMany()
-  await prisma.productSpecs.deleteMany()
-  await prisma.product.deleteMany()
-  await prisma.brand.deleteMany()
-  await prisma.category.deleteMany()
-  await prisma.vehicleModel.deleteMany()
-  await prisma.vehicleMake.deleteMany()
-  await prisma.user.deleteMany()
-
+  // ⚠️  SAFE SEED: Uses upsert — never wipes existing production data.
   // 1. ADMIN USER
-  const passwordHash = await bcrypt.hash('admin123', 10)
-  const admin = await prisma.user.create({
-    data: { name: 'Admin', email: 'admin@specpart.tn', passwordHash, role: 'ADMIN' },
+  const adminPassword = process.env.SEED_ADMIN_PASSWORD || 'SpecPartAdmin@2026!'
+  const passwordHash = await bcrypt.hash(adminPassword, 10)
+  const admin = await prisma.user.upsert({
+    where: { email: 'admin@specpart.tn' },
+    update: {},
+    create: { name: 'Admin', email: 'admin@specpart.tn', passwordHash, role: 'ADMIN' },
   })
 
-  const customer = await prisma.user.create({
-    data: { name: 'Achref', email: 'achref@specpart.tn', passwordHash, role: 'CUSTOMER' },
+  const customer = await prisma.user.upsert({
+    where: { email: 'achref@specpart.tn' },
+    update: {},
+    create: { name: 'Achref', email: 'achref@specpart.tn', passwordHash, role: 'CUSTOMER' },
   })
 
   // 2. BRANDS
