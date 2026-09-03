@@ -84,11 +84,25 @@ function humanizeSpec(key: string, t?: (k: string) => string) {
 function toSpecRows(specs?: Product['specs'], t?: (k: string) => string): DetailRow[] {
   if (!specs) return []
   return Object.entries(specs)
-    .filter(([, value]) => value !== undefined && value !== null && value !== '' && value !== false)
-    .map(([key, value]) => ({
-      label: humanizeSpec(key, t),
-      value: Array.isArray(value) ? value.join(', ') : value === true ? 'Oui' : String(value),
-    }))
+    .filter(([key, value]) => {
+      if (['isFullySynth', 'isSemiSynth', 'isMinerale', 'approvals', 'vehicleTypes', 'fuelTypes', 'minCylinders', 'maxCylinders', 'minPower', 'maxPower', 'baseOil', 'application'].includes(key)) {
+        return false
+      }
+      return value !== undefined && value !== null && value !== '' && value !== false
+    })
+    .map(([key, value]) => {
+      let formattedValue = Array.isArray(value) ? value.join(', ') : value === true ? 'Oui' : String(value)
+      if (key === 'type') {
+        if (value === 'full_synth' || value === '100% Synthèse') formattedValue = '100% Synthèse'
+        else if (value === 'semi_synth' || value === 'Semi-Synthèse') formattedValue = 'Semi-Synthèse'
+        else if (value === 'mineral' || value === 'Minérale') formattedValue = 'Minérale'
+        else formattedValue = String(value)
+      }
+      return {
+        label: humanizeSpec(key, t),
+        value: formattedValue,
+      }
+    })
 }
 
 export function ProductTabs({ product }: Props) {

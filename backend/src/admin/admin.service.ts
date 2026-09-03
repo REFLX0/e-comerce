@@ -9,12 +9,14 @@ import { KafkaService } from '../kafka/kafka.service';
 import { Prisma } from '@prisma/client';
 import { CreateProductDto } from './dto/create-product.dto';
 import { generateDeliveryNotePDF } from './invoice-pdf';
+import { CacheService } from '../cache/cache.service';
 
 @Injectable()
 export class AdminService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly kafka: KafkaService,
+    private readonly cache: CacheService,
   ) {}
 
   // ─── Dashboard Stats ───────────────────────────────────────────────────────
@@ -170,13 +172,20 @@ export class AdminService {
       };
     }
 
-    if (specs && (specs.viscosity || specs.apiStandard || specs.aeceaStandard || specs.OEMApprovals)) {
+    if (specs) {
       data.specs = {
         create: {
           viscosity: specs.viscosity || null,
           apiStandard: specs.apiStandard || null,
           aeceaStandard: specs.aeceaStandard || null,
+          jasoStandard: specs.jasoStandard || null,
           OEMApprovals: specs.OEMApprovals || null,
+          isFullySynth: Boolean(specs.isFullySynth),
+          isSemiSynth: Boolean(specs.isSemiSynth),
+          isMinerale: Boolean(specs.isMinerale),
+          DPFCompatible: specs.DPFCompatible !== undefined ? Boolean(specs.DPFCompatible) : null,
+          TurboCompatible: specs.TurboCompatible !== undefined ? Boolean(specs.TurboCompatible) : null,
+          HybridCompatible: specs.HybridCompatible !== undefined ? Boolean(specs.HybridCompatible) : null,
         },
       };
     }
@@ -360,6 +369,16 @@ export class AdminService {
     });
 
     if (updatedProduct) {
+      try {
+        await Promise.allSettled([
+          this.cache.del(`products:slug:${updatedProduct.slug}`),
+          this.cache.delPattern('products:list:*'),
+          this.cache.delPattern('products:best-sellers:*'),
+          this.cache.delPattern('products:new:*'),
+          this.cache.delPattern('products:facets:*'),
+        ]);
+      } catch {}
+
       await this.kafka.produce('product.updated', updatedProduct.id, {
         productId: updatedProduct.id,
         slug: updatedProduct.slug,

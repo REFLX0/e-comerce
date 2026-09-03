@@ -32,10 +32,11 @@ export class VehiclesService {
   async getMakes(vehicleType?: string) {
     const isCv = vehicleType?.toLowerCase().includes('poids') || vehicleType?.toLowerCase().includes('commercial');
     const rows: any[] = await this.prisma.$queryRawUnsafe(`
-      SELECT DISTINCT id, matchcode AS name, LOWER(REGEXP_REPLACE(matchcode, '[^a-zA-Z0-9]+', '-', 'g')) AS slug
+      SELECT DISTINCT id, COALESCE(NULLIF(description, ''), matchcode) AS name,
+             LOWER(REGEXP_REPLACE(COALESCE(NULLIF(description, ''), matchcode), '[^a-zA-Z0-9]+', '-', 'g')) AS slug
       FROM tecdoc.manufacturers
       WHERE can_be_displayed = true ${isCv ? 'AND (is_commercial_vehicle = true OR is_passenger_car = true)' : 'AND is_passenger_car = true'}
-      ORDER BY matchcode ASC
+      ORDER BY name ASC
     `);
     return rows.map((r) => ({ id: String(r.id), name: r.name, slug: r.slug }));
   }
@@ -45,7 +46,9 @@ export class VehiclesService {
       SELECT DISTINCT m.id, m.description AS name, LOWER(REGEXP_REPLACE(m.description, '[^a-zA-Z0-9]+', '-', 'g')) AS slug
       FROM tecdoc.models m
       JOIN tecdoc.manufacturers mfr ON mfr.id = m.manufacturer_id
-      WHERE LOWER(REGEXP_REPLACE(mfr.matchcode, '[^a-zA-Z0-9]+', '-', 'g')) = $1
+      WHERE LOWER(REGEXP_REPLACE(COALESCE(NULLIF(mfr.description, ''), mfr.matchcode), '[^a-zA-Z0-9]+', '-', 'g')) = $1
+         OR LOWER(COALESCE(NULLIF(mfr.description, ''), mfr.matchcode)) = $1
+         OR LOWER(REGEXP_REPLACE(mfr.matchcode, '[^a-zA-Z0-9]+', '-', 'g')) = $1
          OR LOWER(mfr.matchcode) = $1
       ORDER BY m.description ASC
     `, makeSlug.toLowerCase());

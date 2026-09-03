@@ -551,7 +551,7 @@ export class ProductsService {
             const item = tecdocArticles[0];
             const [oeRows, attrRows, vehRows]: [any[], any[], any[]] = (await Promise.all([
               this.prismaRead.db.$queryRawUnsafe(`
-                SELECT m.matchcode as manufacturer, oe.oe_nbr
+                SELECT COALESCE(NULLIF(m.description, ''), m.matchcode) as manufacturer, oe.oe_nbr
                 FROM tecdoc.article_oe_numbers oe
                 LEFT JOIN tecdoc.manufacturers m ON m.id = oe.manufacturer
                 WHERE oe.article_id = $1
@@ -563,7 +563,7 @@ export class ProductsService {
                 WHERE article_id = $1
               `, item.id),
               this.prismaRead.db.$queryRawUnsafe(`
-                SELECT DISTINCT m.matchcode AS make, mo.description AS model, pc.description AS trim,
+                SELECT DISTINCT COALESCE(NULLIF(m.description, ''), m.matchcode) AS make, mo.description AS model, pc.description AS trim,
                        pc.date_from AS "yearFrom", pc.date_to AS "yearTo"
                 FROM tecdoc.tree_node_products tnp
                 JOIN tecdoc.passengercars pc ON pc.id = tnp.item_id
@@ -1150,13 +1150,16 @@ export class ProductsService {
             : [],
           minCylinders: product.specs.minCylinders || undefined,
           maxCylinders: product.specs.maxCylinders || undefined,
-          minPower: product.specs.minPower || undefined,
-          maxPower: product.specs.maxPower || undefined,
+          isFullySynth: Boolean(product.specs.isFullySynth),
+          isSemiSynth: Boolean(product.specs.isSemiSynth),
+          isMinerale: Boolean(product.specs.isMinerale),
           type: product.specs.isFullySynth
             ? 'full_synth'
             : product.specs.isSemiSynth
               ? 'semi_synth'
-              : 'mineral',
+              : product.specs.isMinerale
+                ? 'mineral'
+                : undefined,
         }
       : null;
 

@@ -125,7 +125,7 @@ export default function AdminInvoiceEditorPage({ params: { id, locale } }: { par
               {isNew ? 'Nouvelle Facture' : form.invoiceNumber || 'Brouillon'}
             </h1>
             <p className="text-sm text-gray-500">
-              {isNew ? 'Créez une facture pour un client' : `Créée le ${format(new Date(form.createdAt || Date.now()), 'dd/MM/yyyy')}`}
+              {isNew ? 'Créez une facture pour un client' : `Créée le ${new Date(form.createdAt || Date.now()).toLocaleDateString('fr-FR')}`}
             </p>
           </div>
         </div>

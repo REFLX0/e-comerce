@@ -1,7 +1,23 @@
 import PDFDocument from 'pdfkit';
 import * as fs from 'fs';
 import * as path from 'path';
+import * as http from 'http';
+import * as https from 'https';
 import { amountToTunisianWords } from './number-to-words';
+
+async function fetchImageBuffer(url: string): Promise<Buffer | null> {
+  return new Promise((resolve) => {
+    const client = url.startsWith('https') ? https : http;
+    client.get(url, (res) => {
+      if (res.statusCode !== 200) {
+        return resolve(null);
+      }
+      const data: Buffer[] = [];
+      res.on('data', (chunk) => data.push(chunk));
+      res.on('end', () => resolve(Buffer.concat(data)));
+    }).on('error', () => resolve(null));
+  });
+}
 
 export interface InvoiceOrder {
   id: string;
@@ -197,36 +213,48 @@ export async function generateDeliveryNotePDF(
   const companyRc = settings.FACTURE_REGISTRE_COMMERCE || '';
 
   // Resolve Logo image
-  let logoPath: string | null = null;
+  let logoData: string | Buffer | null = null;
   if (settings.FACTURE_LOGO) {
-    logoPath = resolveImagePath(settings.FACTURE_LOGO);
+    if (settings.FACTURE_LOGO.startsWith('http://') || settings.FACTURE_LOGO.startsWith('https://')) {
+      logoData = await fetchImageBuffer(settings.FACTURE_LOGO);
+    } else {
+      logoData = resolveImagePath(settings.FACTURE_LOGO);
+    }
   }
-  if (!logoPath) {
-    logoPath = findDefaultLogo();
+  if (!logoData) {
+    logoData = findDefaultLogo();
   }
 
   // Resolve Taba3 (Blue Stamp) image
-  let taba3Path: string | null = null;
+  let taba3Data: string | Buffer | null = null;
   if (settings.FACTURE_TABA3) {
-    taba3Path = resolveImagePath(settings.FACTURE_TABA3);
+    if (settings.FACTURE_TABA3.startsWith('http://') || settings.FACTURE_TABA3.startsWith('https://')) {
+      taba3Data = await fetchImageBuffer(settings.FACTURE_TABA3);
+    } else {
+      taba3Data = resolveImagePath(settings.FACTURE_TABA3);
+    }
   }
-  if (!taba3Path) {
-    taba3Path = findDefaultStamp();
+  if (!taba3Data) {
+    taba3Data = findDefaultStamp();
   }
 
   // Resolve Code Image (QR code / barcode)
-  let codeImgPath: string | null = null;
+  let codeImgData: string | Buffer | null = null;
   if (settings.FACTURE_CODE_IMG) {
-    codeImgPath = resolveImagePath(settings.FACTURE_CODE_IMG);
+    if (settings.FACTURE_CODE_IMG.startsWith('http://') || settings.FACTURE_CODE_IMG.startsWith('https://')) {
+      codeImgData = await fetchImageBuffer(settings.FACTURE_CODE_IMG);
+    } else {
+      codeImgData = resolveImagePath(settings.FACTURE_CODE_IMG);
+    }
   }
 
   // ── HEADER: LOGO & COMPANY INFO (LEFT) ──
   let headerLeftTextX = leftMargin;
   const startY = 35;
 
-  if (logoPath) {
+  if (logoData) {
     try {
-      doc.image(logoPath, leftMargin, startY, { fit: [110, 58] });
+      doc.image(logoData, leftMargin, startY, { fit: [110, 58] });
       headerLeftTextX = leftMargin + 120;
     } catch (e) {
       headerLeftTextX = leftMargin;
@@ -300,9 +328,9 @@ export async function generateDeliveryNotePDF(
     });
 
   // If Code image exists (QR / Barcode), render beside dates
-  if (codeImgPath) {
+  if (codeImgData) {
     try {
-      doc.image(codeImgPath, pageWidth - rightMargin - 50, startY + 60, {
+      doc.image(codeImgData, pageWidth - rightMargin - 50, startY + 60, {
         fit: [50, 50],
       });
     } catch {
@@ -630,9 +658,9 @@ export async function generateDeliveryNotePDF(
     .fillColor(primaryColor)
     .text('Cachet & Signature :', stampBoxX, stampBoxY);
 
-  if (taba3Path) {
+  if (taba3Data) {
     try {
-      doc.image(taba3Path, stampBoxX + 10, stampBoxY + 12, {
+      doc.image(taba3Data, stampBoxX + 10, stampBoxY + 12, {
         fit: [110, 65],
       });
     } catch {
@@ -741,7 +769,14 @@ export async function generatePOSInvoicePDF(data: POSInvoiceData): Promise<Buffe
   const WHITE     = '#ffffff';
 
   // ── Logo ──
-  const logoPath = settings.FACTURE_LOGO ? resolveImagePath(settings.FACTURE_LOGO) : null;
+  let logoData: string | Buffer | null = null;
+  if (settings.FACTURE_LOGO) {
+    if (settings.FACTURE_LOGO.startsWith('http://') || settings.FACTURE_LOGO.startsWith('https://')) {
+      logoData = await fetchImageBuffer(settings.FACTURE_LOGO);
+    } else {
+      logoData = resolveImagePath(settings.FACTURE_LOGO);
+    }
+  }
 
   // ── Totals ──
   const TVA_RATE = parseFloat(settings.FACTURE_TVA_RATE || '19') / 100;
@@ -750,8 +785,8 @@ export async function generatePOSInvoicePDF(data: POSInvoiceData): Promise<Buffe
   const totalTTC = totalHT + tvaAmt;
 
   // ── HEADER ──
-  if (logoPath) {
-    try { doc.image(logoPath, L, 35, { fit: [140, 60], align: 'left', valign: 'top' }); }
+  if (logoData) {
+    try { doc.image(logoData, L, 35, { fit: [140, 60], align: 'left', valign: 'top' }); }
     catch { doc.fontSize(20).fillColor(PRIMARY).font('Helvetica-Bold').text(companyName, L, 35); }
   } else {
     doc.fontSize(20).fillColor(PRIMARY).font('Helvetica-Bold').text(companyName, L, 35);

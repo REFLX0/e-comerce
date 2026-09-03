@@ -472,10 +472,11 @@ export class OilFinderService {
     if (isMoto) {
       try {
         const tecdocMotos: any[] = await this.prisma.$queryRawUnsafe(`
-          SELECT DISTINCT matchcode AS name, LOWER(REGEXP_REPLACE(matchcode, '[^a-zA-Z0-9]+', '-', 'g')) AS slug
+          SELECT DISTINCT COALESCE(NULLIF(description, ''), matchcode) AS name,
+                 LOWER(REGEXP_REPLACE(COALESCE(NULLIF(description, ''), matchcode), '[^a-zA-Z0-9]+', '-', 'g')) AS slug
           FROM tecdoc.manufacturers
           WHERE can_be_displayed = true AND is_motorbike = true
-          ORDER BY matchcode ASC
+          ORDER BY name ASC
         `);
         const tecdocNames = new Set(tecdocMotos.map(r => r.name.toUpperCase()));
         const presets = MOTO_MAKES.filter(name => !tecdocNames.has(name.toUpperCase())).map(name => ({ slug: slugify(name), name }));
@@ -492,10 +493,11 @@ export class OilFinderService {
     if (isCv) {
       try {
         const tecdocCv: any[] = await this.prisma.$queryRawUnsafe(`
-          SELECT DISTINCT matchcode AS name, LOWER(REGEXP_REPLACE(matchcode, '[^a-zA-Z0-9]+', '-', 'g')) AS slug
+          SELECT DISTINCT COALESCE(NULLIF(description, ''), matchcode) AS name,
+                 LOWER(REGEXP_REPLACE(COALESCE(NULLIF(description, ''), matchcode), '[^a-zA-Z0-9]+', '-', 'g')) AS slug
           FROM tecdoc.manufacturers
           WHERE can_be_displayed = true AND (is_commercial_vehicle = true OR is_transporter = true)
-          ORDER BY matchcode ASC
+          ORDER BY name ASC
         `);
         const tecdocNames = new Set(tecdocCv.map(r => r.name.toUpperCase()));
         const presets = TRUCK_MAKES.filter(name => !tecdocNames.has(name.toUpperCase())).map(name => ({ slug: slugify(name), name }));
@@ -512,10 +514,11 @@ export class OilFinderService {
     // Passenger Car (Automobile) - Query TecDoc
     try {
       const tecdocRows: any[] = await this.prisma.$queryRawUnsafe(`
-        SELECT DISTINCT matchcode AS name, LOWER(REGEXP_REPLACE(matchcode, '[^a-zA-Z0-9]+', '-', 'g')) AS slug
+        SELECT DISTINCT COALESCE(NULLIF(description, ''), matchcode) AS name,
+               LOWER(REGEXP_REPLACE(COALESCE(NULLIF(description, ''), matchcode), '[^a-zA-Z0-9]+', '-', 'g')) AS slug
         FROM tecdoc.manufacturers
         WHERE can_be_displayed = true AND is_passenger_car = true
-        ORDER BY matchcode ASC
+        ORDER BY name ASC
       `);
       if (tecdocRows.length > 0) {
         return tecdocRows.map((r) => ({ slug: r.slug, name: r.name }));
@@ -571,7 +574,9 @@ export class OilFinderService {
         SELECT DISTINCT m.description AS name, LOWER(REGEXP_REPLACE(m.description, '[^a-zA-Z0-9]+', '-', 'g')) AS slug
         FROM tecdoc.models m
         JOIN tecdoc.manufacturers mfr ON mfr.id = m.manufacturer_id
-        WHERE LOWER(REGEXP_REPLACE(mfr.matchcode, '[^a-zA-Z0-9]+', '-', 'g')) = $1
+        WHERE LOWER(REGEXP_REPLACE(COALESCE(NULLIF(mfr.description, ''), mfr.matchcode), '[^a-zA-Z0-9]+', '-', 'g')) = $1
+           OR LOWER(COALESCE(NULLIF(mfr.description, ''), mfr.matchcode)) = $1
+           OR LOWER(REGEXP_REPLACE(mfr.matchcode, '[^a-zA-Z0-9]+', '-', 'g')) = $1
            OR LOWER(mfr.matchcode) = $1
         ORDER BY m.description ASC
       `, makeName.toLowerCase());
