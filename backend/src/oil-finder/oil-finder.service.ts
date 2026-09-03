@@ -47,8 +47,12 @@ const normFuel = (fuelType: string): string => fuelType.trim().toLowerCase()
 function slugify(text: string): string {
   return text
     .toLowerCase()
-    .replace(/[^\w\s-]/g, '')
-    .replace(/[\s_-]+/g, '-')
+    // Normalize accented characters (é→e, ë→e, ü→u, etc.)
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    // Replace non-alphanumeric (including parens, slashes, etc.) with dash
+    .replace(/[^a-z0-9]+/g, '-')
+    // Trim leading/trailing dashes
     .replace(/^-+|-+$/g, '');
 }
 
@@ -472,15 +476,14 @@ export class OilFinderService {
     if (isMoto) {
       try {
         const tecdocMotos: any[] = await this.prisma.$queryRawUnsafe(`
-          SELECT DISTINCT COALESCE(NULLIF(description, ''), matchcode) AS name,
-                 LOWER(REGEXP_REPLACE(COALESCE(NULLIF(description, ''), matchcode), '[^a-zA-Z0-9]+', '-', 'g')) AS slug
+          SELECT DISTINCT COALESCE(NULLIF(description, ''), matchcode) AS name
           FROM tecdoc.manufacturers
           WHERE can_be_displayed = true AND is_motorbike = true
           ORDER BY name ASC
         `);
         const tecdocNames = new Set(tecdocMotos.map(r => r.name.toUpperCase()));
         const presets = MOTO_MAKES.filter(name => !tecdocNames.has(name.toUpperCase())).map(name => ({ slug: slugify(name), name }));
-        return [...tecdocMotos.map(r => ({ slug: r.slug, name: r.name })), ...presets];
+        return [...tecdocMotos.map(r => ({ slug: slugify(r.name), name: r.name })), ...presets];
       } catch {
         return MOTO_MAKES.map(name => ({ slug: slugify(name), name }));
       }
@@ -493,15 +496,14 @@ export class OilFinderService {
     if (isCv) {
       try {
         const tecdocCv: any[] = await this.prisma.$queryRawUnsafe(`
-          SELECT DISTINCT COALESCE(NULLIF(description, ''), matchcode) AS name,
-                 LOWER(REGEXP_REPLACE(COALESCE(NULLIF(description, ''), matchcode), '[^a-zA-Z0-9]+', '-', 'g')) AS slug
+          SELECT DISTINCT COALESCE(NULLIF(description, ''), matchcode) AS name
           FROM tecdoc.manufacturers
           WHERE can_be_displayed = true AND (is_commercial_vehicle = true OR is_transporter = true)
           ORDER BY name ASC
         `);
         const tecdocNames = new Set(tecdocCv.map(r => r.name.toUpperCase()));
         const presets = TRUCK_MAKES.filter(name => !tecdocNames.has(name.toUpperCase())).map(name => ({ slug: slugify(name), name }));
-        return [...tecdocCv.map(r => ({ slug: r.slug, name: r.name })), ...presets];
+        return [...tecdocCv.map(r => ({ slug: slugify(r.name), name: r.name })), ...presets];
       } catch {
         return TRUCK_MAKES.map(name => ({ slug: slugify(name), name }));
       }
@@ -514,14 +516,14 @@ export class OilFinderService {
     // Passenger Car (Automobile) - Query TecDoc
     try {
       const tecdocRows: any[] = await this.prisma.$queryRawUnsafe(`
-        SELECT DISTINCT COALESCE(NULLIF(description, ''), matchcode) AS name,
-               LOWER(REGEXP_REPLACE(COALESCE(NULLIF(description, ''), matchcode), '[^a-zA-Z0-9]+', '-', 'g')) AS slug
+        SELECT DISTINCT COALESCE(NULLIF(description, ''), matchcode) AS name
         FROM tecdoc.manufacturers
         WHERE can_be_displayed = true AND is_passenger_car = true
         ORDER BY name ASC
       `);
       if (tecdocRows.length > 0) {
-        return tecdocRows.map((r) => ({ slug: r.slug, name: r.name }));
+        // Use slugify() here (not SQL) so accents and parens are handled correctly
+        return tecdocRows.map((r) => ({ slug: slugify(r.name), name: r.name }));
       }
     } catch {}
 

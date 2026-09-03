@@ -434,14 +434,6 @@ export function FilterSidebar({
                         )}
                       >
                         {volume.volume}
-                        <span
-                          className={cn(
-                            'ml-1.5 text-[10px]',
-                            active ? 'text-[#16254c]/70' : 'text-white/40'
-                          )}
-                        >
-                          ({volume.count})
-                        </span>
                       </button>
                     )
                   })}
@@ -672,11 +664,6 @@ function CategoryWithFlyout({
         </span>
 
         <span className="flex shrink-0 items-center gap-1.5">
-          {typeof count === 'number' && (
-            <span className={cn('text-[11px] font-semibold', isHighlighted ? 'text-[#D4A76A]' : 'text-white/35')}>
-              {count}
-            </span>
-          )}
           {hasSubs && (
             <ChevronRight
               size={13}
@@ -768,17 +755,6 @@ function CategoryWithFlyout({
                       />
                       <span className="truncate">{sub.name}</span>
                     </span>
-
-                    {typeof sub.productCount === 'number' && (
-                      <span
-                        className={cn(
-                          'text-[10px] font-semibold',
-                          isSubActive ? 'text-[#D4A76A]' : 'text-white/35 group-hover:text-white/60'
-                        )}
-                      >
-                        {sub.productCount}
-                      </span>
-                    )}
                   </button>
 
                   {/* Sub-children (e.g. Additifs -> Additif Essence, Additif Diesel, Additif Huile) */}
@@ -802,11 +778,6 @@ function CategoryWithFlyout({
                               )}
                             >
                               <span className="truncate">{subChild.name}</span>
-                              {typeof subChild.productCount === 'number' && (
-                                <span className="text-[10px] text-white/30">
-                                  {subChild.productCount}
-                                </span>
-                              )}
                             </button>
                           </li>
                         )

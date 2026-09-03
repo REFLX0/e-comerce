@@ -55,9 +55,6 @@ export function ViscosityFilter({ viscosities, selected, onChange }: ViscosityFi
                 )}
               >
                 {item.value}
-                <span className={cn('text-[10px]', isActive ? 'text-[#D4A76A]/70' : 'text-white/40')}>
-                  {item.count}
-                </span>
               </button>
             )
           })}

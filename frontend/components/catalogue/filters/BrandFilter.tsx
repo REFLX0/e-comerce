@@ -109,9 +109,6 @@ export function BrandFilter({ brands, selected, onChange }: BrandFilterProps) {
                 >
                   {brand.name}
                 </span>
-                <span className={cn('text-[11px] font-semibold transition-colors', isSelected ? 'text-[#D4A76A]/70' : 'text-white/40')}>
-                  {brand.count}
-                </span>
               </label>
             </li>
           )
