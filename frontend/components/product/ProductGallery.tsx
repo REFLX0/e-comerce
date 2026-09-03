@@ -77,21 +77,24 @@ export function ProductGallery({ images, productName, variantImageUrl, variants,
     return deduped
   }, [variants])
 
-  // Combine variant images (sorted ascending by capacity) and extra product images, eliminating any duplicates
+  // If product has volume variants with images, THOSE are the canonical images of the product.
+  // We avoid appending duplicate entries from the general product images array.
   const allThumbnails = useMemo(() => {
-    const seen = new Set<string>()
-    const result: string[] = []
-
-    // 1. Prioritize sorted variant images (1L, 5L, 20L, 60L...)
-    for (const url of sortedVariantImages) {
-      const key = normalizeImageKey(url)
-      if (key && !seen.has(key)) {
-        seen.add(key)
-        result.push(url)
+    if (sortedVariantImages.length > 0) {
+      if (images && images.length > sortedVariantImages.length) {
+        // Only append truly extra images beyond the variant count (e.g. certificates or spec sheets)
+        const seen = new Set(sortedVariantImages.map((u) => normalizeImageKey(u)))
+        const extra = images
+          .filter((u) => !seen.has(normalizeImageKey(u)))
+          .slice(0, images.length - sortedVariantImages.length)
+        return [...sortedVariantImages, ...extra]
       }
+      return sortedVariantImages
     }
 
-    // 2. Add extra gallery images that are NOT already in the variant images list
+    // For products without volume variants (e.g. filters, parts), use product images deduplicated
+    const seen = new Set<string>()
+    const result: string[] = []
     for (const url of images || []) {
       const key = normalizeImageKey(url)
       if (key && !seen.has(key)) {
@@ -99,7 +102,6 @@ export function ProductGallery({ images, productName, variantImageUrl, variants,
         result.push(url)
       }
     }
-
     return result
   }, [images, sortedVariantImages])
 
