@@ -237,7 +237,7 @@ export class MailService {
 
     if (!this.isConfigured()) {
       this.logger.log(
-        `[MAIL MOCK] Password reset link for ${email}: ${resetUrl}`,
+        `[MAIL MOCK] Password reset link for ${email}: ${this.frontendUrl}/auth/reset-password/******** (token masked for security)`,
       );
       return;
     }

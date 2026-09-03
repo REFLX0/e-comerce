@@ -247,8 +247,6 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
     { label: t('supportTickets'), icon: LifeBuoy, href: '/admin/tickets' },
     { label: t('contactMessages'), icon: Mail, href: '/admin/contact-messages' },
     { label: t('shipping'), icon: Truck, href: '/admin/shipping' },
-    { label: t('payments'), icon: CreditCard, href: '/admin/payments' },
-    { label: t('reviews'), icon: Star, href: '/admin/reviews' },
     { label: t('analytics'), icon: BarChart2, href: '/admin/analytics' },
     { label: t('settings'), icon: Settings, href: '/admin/settings' },
   ]
@@ -453,8 +451,6 @@ function SearchModal({ locale }: { locale: string }) {
     { label: t('contactMessages'), href: '/admin/contact-messages', icon: Mail },
     { label: t('supportTickets'), href: '/admin/tickets', icon: LifeBuoy },
     { label: t('shipping'), href: '/admin/shipping', icon: Truck },
-    { label: t('payments'), href: '/admin/payments', icon: CreditCard },
-    { label: t('reviews'), href: '/admin/reviews', icon: Star },
     { label: t('analytics'), href: '/admin/analytics', icon: BarChart2 },
     { label: t('settings'), href: '/admin/settings', icon: Settings },
   ]

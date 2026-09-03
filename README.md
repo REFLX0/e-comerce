@@ -10,7 +10,7 @@
 
 ```
 ┌─────────────────────────────────────────────────────┐
-│                    Oracle Cloud VM                  │
+│                    AWS EC2 Instance                 │
 │                                                     │
 │  ┌─────────────┐   ┌──────────────────────────┐    │
 │  │   NGINX     │   │  Docker Compose Stack    │    │
@@ -30,7 +30,7 @@
 | **Frontend** | Next.js 16, TypeScript, TailwindCSS, TanStack Query |
 | **Backend** | NestJS, Prisma ORM, PostgreSQL 16, Redis 7 |
 | **Auth** | JWT (HttpOnly cookies), Bcrypt |
-| **Infrastructure** | Docker Compose, NGINX, Oracle Cloud VM |
+| **Infrastructure** | Docker Compose, NGINX, AWS EC2 |
 | **CI/CD** | GitHub Actions — auto-deploy on push to `main` |
 | **Observability** | Structured JSON logging, `/api/health` endpoint |
 
@@ -79,16 +79,16 @@ See [`.env.production.example`](.env.production.example) for the full reference.
 
 ---
 
-## Production Deployment (Oracle VM)
+## Production Deployment (AWS EC2)
 
 ### GitHub Actions Secrets required
 
 | Secret | Value |
 |---|---|
-| `ORACLE_SSH_KEY` | Content of your Oracle VM private key |
+| `SERVER_SSH_KEY` | Content of your AWS EC2 private key |
 | `REPO_URL` | `git@github.com:REFLX0/e-comerce.git` |
 
-### First-time setup on the Oracle VM
+### First-time setup on the AWS EC2
 
 ```bash
 # SSH into your VM

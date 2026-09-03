@@ -292,7 +292,7 @@ services:
     image: opensearchproject/opensearch-dashboards:2.13.0
     container_name: specpart-opensearch-dashboards
     ports:
-      - "5601:5601"   # OpenSearch Dashboards Web UI
+      - "127.0.0.1:5601:5601"   # OpenSearch Dashboards Web UI
     environment:
       - OPENSEARCH_HOSTS=["http://opensearch:9200"]
       - DISABLE_SECURITY_DASHBOARDS_PLUGIN=true
@@ -330,7 +330,7 @@ services:
     image: provectuslabs/kafka-ui:latest
     container_name: specpart-kafka-ui
     ports:
-      - "8080:8080"
+      - "127.0.0.1:8080:8080"
     environment:
       KAFKA_CLUSTERS_0_NAME: specpart
       KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092

@@ -37,7 +37,6 @@ COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package*.json ./
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/prisma ./prisma
-COPY --from=builder /app/scripts ./scripts
 COPY --from=builder /app/uploads ./uploads
 
 ENV NODE_ENV=production

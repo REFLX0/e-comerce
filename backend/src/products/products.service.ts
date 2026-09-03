@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { PrismaReadService } from '../prisma/prisma-read.service';
 import { CacheService } from '../cache/cache.service';
 import { Prisma } from '@prisma/client';
@@ -64,6 +64,8 @@ const CATEGORY_SYNONYMS: Record<string, string[]> = {
 
 @Injectable()
 export class ProductsService {
+  private readonly logger = new Logger(ProductsService.name);
+
   constructor(
     private readonly prismaRead: PrismaReadService,
     private readonly cache: CacheService,
@@ -374,7 +376,7 @@ export class ProductsService {
 
       return result;
     } catch (err) {
-      console.error('[ProductsService.findAll] Error querying products:', err);
+      this.logger.error(`[ProductsService.findAll] Error querying products: ${err}`);
       return {
         data: [],
         total: 0,
@@ -512,7 +514,7 @@ export class ProductsService {
 
       return { items, total };
     } catch (err) {
-      console.warn('[ProductsService.findTecdocArticles] TecDoc query skipped/error:', (err as Error).message);
+      this.logger.warn(`[ProductsService.findTecdocArticles] TecDoc query skipped/error: ${(err as Error).message}`);
       return { items: [], total: 0 };
     }
   }
@@ -763,7 +765,7 @@ export class ProductsService {
       }
       return [];
     } catch (err) {
-      console.error('Error in _findBestSellers:', err);
+      this.logger.error(`Error in _findBestSellers: ${err}`);
       return [];
     }
   }
@@ -780,8 +782,8 @@ export class ProductsService {
             orderBy: { createdAt: 'desc' },
           });
           return products.map((p) => this.serialize(p));
-        } catch (err) {
-          console.error('Error in findNew:', err);
+        } catch (err: any) {
+          this.logger.error(`Error in findNew: ${err.message}`, err.stack);
           return [];
         }
       },
@@ -809,8 +811,8 @@ export class ProductsService {
         return related.map((p) => this.serialize(p));
       }
       return [];
-    } catch (err) {
-      console.error('Error in findRelated:', err);
+    } catch (e: any) {
+      this.logger.error(`Error in findRelated: ${e.message}`, e.stack);
       return [];
     }
   }

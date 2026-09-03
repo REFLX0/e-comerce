@@ -102,8 +102,14 @@ export class OrdersService {
         });
       }
 
+      let newOrderId = String(Math.floor(10000000 + Math.random() * 90000000));
+      while (await tx.order.findUnique({ where: { id: newOrderId } })) {
+        newOrderId = String(Math.floor(10000000 + Math.random() * 90000000));
+      }
+
       const created = await tx.order.create({
         data: {
+          id: newOrderId,
           idempotencyKey: key,
           userId: userId ?? null,
           orderType: 'DELIVERY', // only fulfillment path checkout currently supports

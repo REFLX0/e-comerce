@@ -102,7 +102,7 @@ export default function OrderDetailPage() {
               {(order.items || []).map((item: any, i: number) => (
                 <div key={i} className="flex items-center gap-3 rounded-xl bg-gray-50 px-3 py-2.5">
                   {/* Thumbnail */}
-                  <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-lg border border-gray-200 bg-white">
+                  <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-lg">
                     {item.product?.images?.[0]?.url ? (
                       <Image
                         src={item.product.images[0].url}
