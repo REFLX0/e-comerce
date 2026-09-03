@@ -4,12 +4,14 @@ import { CheckCircle, Package, ArrowRight } from 'lucide-react'
 import { Link } from '@/i18n/routing'
 import { useSearchParams } from 'next/navigation'
 import { useLocale, useTranslations } from 'next-intl'
+import { useAuthStore } from '@/lib/store/auth.store'
 
 export default function CheckoutSuccessPage() {
   const t = useTranslations('Checkout')
   const locale = useLocale()
   const searchParams = useSearchParams()
   const orderId = searchParams.get('orderId')
+  const { isAuthenticated } = useAuthStore()
 
   return (
     <div className="section-padding bg-brand-surface flex min-h-[70vh] items-center justify-center py-16">
@@ -37,9 +39,15 @@ export default function CheckoutSuccessPage() {
         </div>
 
         <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
-          <Link href="/compte/commandes" className="btn-secondary w-full sm:w-auto">
-            {t('trackOrder')}
-          </Link>
+          {isAuthenticated ? (
+            <Link href="/compte/commandes" className="btn-secondary w-full sm:w-auto">
+              {t('trackOrder')}
+            </Link>
+          ) : (
+            <div className="text-sm text-gray-500 w-full sm:w-auto text-center px-4">
+              Vous recevrez les détails de suivi par email.
+            </div>
+          )}
           <Link
             href="/catalogue"
             className="btn-primary flex w-full items-center justify-center gap-2 sm:w-auto"
