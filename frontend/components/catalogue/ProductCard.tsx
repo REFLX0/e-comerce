@@ -1,16 +1,16 @@
 "use client";
 
-import { useState } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { useTranslations } from 'next-intl'
 import Image from 'next/image'
 import { Link } from '@/i18n/routing'
 import { Heart, Check, X, ShoppingCart, AlertTriangle, ShieldCheck, Star } from 'lucide-react'
 import { motion } from 'framer-motion'
-import type { Product } from '@/lib/types'
+import type { Product, ProductVariant } from '@/lib/types'
 import { useCartStore } from '@/lib/store/cart.store'
 import { wishlistApi } from '@/lib/api/wishlist'
 import { toast } from 'sonner'
-import { formatPrice, formatSKU, formatProductName } from '@/lib/utils/format'
+import { formatPrice, formatSKU, formatProductName, parseVolumeToL } from '@/lib/utils/format'
 import { useProductCompatibility } from '@/lib/hooks/useProductCompatibility'
 
 /* ── Lazy image with skeleton + branded automotive fallback ───────── */
@@ -75,9 +75,83 @@ export function ProductCard({ product, viewMode = 'grid' }: Props) {
   const { addItem } = useCartStore()
   const { isCompatible, hasCheckedVehicles, vehicleLabel } = useProductCompatibility(product)
 
+  // 1. Detect size/volume variants with images and sort ascending (250ml -> 500ml -> 1L -> 4L -> 5L -> 20L...)
+  const sortedVariants = useMemo(() => {
+    const raw = product.variants || []
+    if (raw.length === 0) return []
+
+    // Filter variants that have a parseable volume, sort ascending
+    const withVolumes = raw
+      .filter((v) => !!v.volume && parseVolumeToL(v.volume) !== null)
+      .sort((a, b) => (parseVolumeToL(a.volume) ?? 0) - (parseVolumeToL(b.volume) ?? 0))
+
+    if (withVolumes.length > 0) {
+      // De-duplicate any duplicate volumes
+      const seen = new Set<string>()
+      const deduped: ProductVariant[] = []
+      for (const v of withVolumes) {
+        const normVol = (v.volume || '').trim().toLowerCase()
+        if (!seen.has(normVol)) {
+          seen.add(normVol)
+          deduped.push(v)
+        }
+      }
+      return deduped
+    }
+
+    return raw
+  }, [product.variants])
+
+  // Variants eligible for image carousel (must have an imageUrl)
+  const carouselVariants = useMemo(() => {
+    return sortedVariants.filter((v) => Boolean(v.imageUrl))
+  }, [sortedVariants])
+
+  const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(null)
+  const [isManuallySelected, setIsManuallySelected] = useState(false)
+  const [carouselIndex, setCarouselIndex] = useState(0)
+
+  // Autoplay loop when product has multiple variant images and user hasn't manually selected
+  useEffect(() => {
+    if (isManuallySelected || carouselVariants.length <= 1) return
+
+    const timer = setInterval(() => {
+      setCarouselIndex((prev) => (prev + 1) % carouselVariants.length)
+    }, 3000)
+
+    return () => clearInterval(timer)
+  }, [isManuallySelected, carouselVariants.length])
+
+  // Manual selection handler
+  const handleSelectVariant = (e: React.MouseEvent, variant: ProductVariant) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setIsManuallySelected(true)
+    setSelectedVariant(variant)
+  }
+
+  // Active variant: manual selection takes precedence, then autoplay carousel variant, then default variant
+  const activeVariant = useMemo(() => {
+    if (isManuallySelected && selectedVariant) return selectedVariant
+    if (carouselVariants.length > 0) return carouselVariants[carouselIndex]
+    return product.variants?.[0]
+  }, [isManuallySelected, selectedVariant, carouselVariants, carouselIndex, product.variants])
+
+  // Current image to display
+  const currentImage = useMemo(() => {
+    if (isManuallySelected && selectedVariant?.imageUrl) {
+      return selectedVariant.imageUrl
+    }
+    if (carouselVariants.length > 0) {
+      return carouselVariants[carouselIndex]?.imageUrl || product.images?.[0]
+    }
+    return product.images?.[0]
+  }, [isManuallySelected, selectedVariant, carouselVariants, carouselIndex, product.images])
+
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault()
-    const variant = product.variants?.[0]
+    e.stopPropagation()
+    const variant = activeVariant || product.variants?.[0]
     if (!variant) return
     const result = addItem(product, variant, 1)
     if (!result.ok) { toast.error(t('outOfStock')); return }
@@ -96,22 +170,21 @@ export function ProductCard({ product, viewMode = 'grid' }: Props) {
   }
 
   const defaultVariant = product.variants?.[0]
-  const isOutOfStock = defaultVariant?.status === 'out_of_stock'
-  const isPriceTbd = defaultVariant?.sku.includes('-PRICE-TBD-')
+  const isOutOfStock = (activeVariant || defaultVariant)?.status === 'out_of_stock'
+  const isPriceTbd = (activeVariant || defaultVariant)?.sku?.includes('-PRICE-TBD-')
   const variants = product.variants || []
   const hasMultipleVariants = variants.length > 1
   const prices = variants.map(v => v.priceTTC).filter(p => p > 0)
   const minPrice = prices.length ? Math.min(...prices) : (defaultVariant?.priceTTC || 0)
   const maxPrice = prices.length ? Math.max(...prices) : (defaultVariant?.priceTTC || 0)
-  const availableVolumes = Array.from(new Set(variants.map(v => v.volume).filter(Boolean)))
 
   const oldPrice =
     product.isPromo &&
     product.promoPercent &&
     product.promoPercent > 0 &&
     product.promoPercent < 100 &&
-    defaultVariant
-      ? defaultVariant.priceTTC / (1 - product.promoPercent / 100)
+    (activeVariant || defaultVariant)
+      ? (activeVariant || defaultVariant)!.priceTTC / (1 - product.promoPercent / 100)
       : 0
   
   const hasCompatCheck = 'compatLevel' in product && (product as any).compatLevel === 'check'
@@ -154,14 +227,32 @@ export function ProductCard({ product, viewMode = 'grid' }: Props) {
         <div className="relative aspect-square w-full shrink-0 border-b border-gray-100 bg-white sm:w-48 sm:border-b-0 sm:border-r">
           <Link href={`/produit/${product.slug}`} className="absolute inset-0 z-0">
             <CardImage
-              src={product.images?.[0]}
+              key={currentImage}
+              src={currentImage}
               alt={product.name}
               brand={product.brand?.name}
-              sku={formatSKU(defaultVariant?.sku)}
+              sku={formatSKU(activeVariant?.sku || defaultVariant?.sku)}
               t={t}
             />
           </Link>
           
+          {/* Mini dot indicators if multiple variants sliding */}
+          {carouselVariants.length > 1 && (
+            <div className="absolute bottom-2 left-1/2 -translate-x-1/2 z-10 flex gap-1 items-center bg-white/80 backdrop-blur-xs px-2 py-0.5 rounded-full shadow-xs">
+              {carouselVariants.map((v, idx) => {
+                const isActive = (isManuallySelected && selectedVariant?.id === v.id) || (!isManuallySelected && carouselIndex === idx)
+                return (
+                  <span
+                    key={v.id || idx}
+                    className={`h-1.5 rounded-full transition-all duration-300 ${
+                      isActive ? 'w-3.5 bg-[#16254c]' : 'w-1.5 bg-slate-300'
+                    }`}
+                  />
+                )
+              })}
+            </div>
+          )}
+
           {/* Top-right: Wishlist (Mobile absolute, Desktop hidden as we'll put it in actions) */}
           <motion.button
             whileTap={{ scale: 0.88 }}
@@ -251,14 +342,26 @@ export function ProductCard({ product, viewMode = 'grid' }: Props) {
               )}
             </div>
 
-            {/* Volumes available */}
-            {hasMultipleVariants && availableVolumes.length > 0 && (
+            {/* Volumes available — interactive pills */}
+            {hasMultipleVariants && sortedVariants.length > 0 && (
               <div className="mb-2 flex flex-wrap gap-1">
-                {availableVolumes.map(vol => (
-                  <span key={vol} className="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-bold text-slate-700">
-                    {vol}
-                  </span>
-                ))}
+                {sortedVariants.map((v) => {
+                  const isSelected = activeVariant?.id ? activeVariant.id === v.id : activeVariant?.volume === v.volume
+                  return (
+                    <button
+                      key={v.id || v.volume}
+                      type="button"
+                      onClick={(e) => handleSelectVariant(e, v)}
+                      className={`rounded px-1.5 py-0.5 text-[10px] font-bold transition-all duration-150 cursor-pointer ${
+                        isSelected
+                          ? 'bg-[#16254c] text-white shadow-xs ring-1 ring-[#D4A76A]'
+                          : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                      }`}
+                    >
+                      {v.volume}
+                    </button>
+                  )
+                })}
               </div>
             )}
 
@@ -266,6 +369,18 @@ export function ProductCard({ product, viewMode = 'grid' }: Props) {
             <div className="flex flex-col">
               {isPriceTbd ? (
                 <span className="text-lg font-bold text-[#16254c]">{t('priceNa')}</span>
+              ) : isManuallySelected && activeVariant ? (
+                <>
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-xl font-black text-[#16254c]">{formatPrice(activeVariant.priceTTC)}</span>
+                    <span className="text-xs font-bold text-gray-500 uppercase tracking-wide">TTC</span>
+                  </div>
+                  {product.isPromo && oldPrice > 0 && (
+                    <span className="text-sm text-gray-400 line-through mt-0.5">
+                      {formatPrice(oldPrice)}
+                    </span>
+                  )}
+                </>
               ) : hasMultipleVariants && minPrice !== maxPrice ? (
                 <>
                   <span className="text-[10px] text-gray-500 font-medium">À partir de</span>
@@ -357,13 +472,31 @@ export function ProductCard({ product, viewMode = 'grid' }: Props) {
         {/* Clickable image */}
         <Link href={`/produit/${product.slug}`} className="absolute inset-0 z-0">
           <CardImage
-            src={product.images?.[0]}
+            key={currentImage}
+            src={currentImage}
             alt={product.name}
             brand={product.brand?.name}
-            sku={formatSKU(defaultVariant?.sku)}
+            sku={formatSKU(activeVariant?.sku || defaultVariant?.sku)}
             t={t}
           />
         </Link>
+
+        {/* Mini dot indicators if multiple variants sliding in autoplay */}
+        {carouselVariants.length > 1 && (
+          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 z-10 flex gap-1 items-center bg-white/80 backdrop-blur-xs px-2 py-0.5 rounded-full shadow-xs">
+            {carouselVariants.map((v, idx) => {
+              const isActive = (isManuallySelected && selectedVariant?.id === v.id) || (!isManuallySelected && carouselIndex === idx)
+              return (
+                <span
+                  key={v.id || idx}
+                  className={`h-1.5 rounded-full transition-all duration-300 ${
+                    isActive ? 'w-3.5 bg-[#16254c]' : 'w-1.5 bg-slate-300'
+                  }`}
+                />
+              )
+            })}
+          </div>
+        )}
       </div>
 
       {/* ── Content zone ───────────────────────────────────────────── */}
@@ -412,14 +545,26 @@ export function ProductCard({ product, viewMode = 'grid' }: Props) {
           </div>
         )}
 
-        {/* Volumes available */}
-        {hasMultipleVariants && availableVolumes.length > 0 && (
+        {/* Volumes available — interactive swatches */}
+        {hasMultipleVariants && sortedVariants.length > 0 && (
           <div className="mt-2 flex flex-wrap gap-1">
-            {availableVolumes.map(vol => (
-              <span key={vol} className="rounded bg-slate-100 px-1.5 py-0.5 text-[9px] font-bold text-slate-700">
-                {vol}
-              </span>
-            ))}
+            {sortedVariants.map((v) => {
+              const isSelected = activeVariant?.id ? activeVariant.id === v.id : activeVariant?.volume === v.volume
+              return (
+                <button
+                  key={v.id || v.volume}
+                  type="button"
+                  onClick={(e) => handleSelectVariant(e, v)}
+                  className={`rounded px-1.5 py-0.5 text-[9px] font-bold transition-all duration-150 cursor-pointer ${
+                    isSelected
+                      ? 'bg-[#16254c] text-white shadow-xs ring-1 ring-[#D4A76A]'
+                      : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                  }`}
+                >
+                  {v.volume}
+                </button>
+              )
+            })}
           </div>
         )}
 
@@ -436,6 +581,13 @@ export function ProductCard({ product, viewMode = 'grid' }: Props) {
             
             {isPriceTbd ? (
               <span className="text-sm font-bold text-[#16254c]">{t('priceNa')}</span>
+            ) : isManuallySelected && activeVariant ? (
+              <div className="flex items-baseline gap-1">
+                <span className="text-base font-black text-[#16254c] sm:text-lg">
+                  {formatPrice(activeVariant.priceTTC)}
+                </span>
+                <span className="text-[9px] font-bold text-gray-500 uppercase tracking-widest">TTC</span>
+              </div>
             ) : hasMultipleVariants && minPrice !== maxPrice ? (
               <div>
                 <span className="block text-[9px] text-gray-500 font-medium">À partir de</span>

@@ -106,3 +106,19 @@ export function formatProductName(name?: string, brandName?: string): string {
   return title
 }
 
+/**
+ * Parses a volume string like "250ml", "500 mL", "1L", "2.5L", "4 L", "5L", "20L", "60L"
+ * and returns the numeric value in litres. Returns null if unparseable.
+ */
+export function parseVolumeToL(volume?: string | null): number | null {
+  if (!volume) return null
+  const clean = volume.trim().toLowerCase()
+  const match = clean.match(/^([\d.]+)\s*(ml|l)$/)
+  if (!match || !match[1] || !match[2]) return null
+  const numStr = match[1]
+  const unit = match[2]
+  const val = parseFloat(numStr)
+  if (isNaN(val)) return null
+  return unit === 'ml' ? val / 1000 : val
+}
+

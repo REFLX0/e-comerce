@@ -1,26 +1,11 @@
 "use client";
 
-import { useState, useMemo, useEffect, useRef } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { useTranslations } from 'next-intl'
 import Image from 'next/image'
 import { ChevronLeft, ChevronRight, Package } from 'lucide-react'
 import type { ProductVariant } from '@/lib/types'
-
-/**
- * Parses a volume string like "500ml", "1L", "2.5L", "250mL", "1.5 L"
- * and returns the numeric value in litres. Returns null if unparseable.
- */
-function parseVolumeToL(volume?: string | null): number | null {
-  if (!volume) return null
-  const clean = volume.trim().toLowerCase()
-  const match = clean.match(/^([\d.]+)\s*(ml|l)$/)
-  if (!match || !match[1] || !match[2]) return null
-  const numStr = match[1]
-  const unit = match[2]
-  const val = parseFloat(numStr)
-  if (isNaN(val)) return null
-  return unit === 'ml' ? val / 1000 : val
-}
+import { parseVolumeToL } from '@/lib/utils/format'
 
 /**
  * Normalizes an image URL or path to a comparable key (e.g. filename)
@@ -52,8 +37,6 @@ export function ProductGallery({ images, productName, variantImageUrl, variants,
   const t = useTranslations('Product')
   const [currentIndex, setCurrentIndex] = useState(0)
   const [imageUnavailable, setImageUnavailable] = useState(false)
-  const [hasInteractedWithGallery, setHasInteractedWithGallery] = useState(false)
-  const autoplayTimerRef = useRef<NodeJS.Timeout | null>(null)
 
   // 1. Variant Detection & Sorting — parse the volume string since backend doesn't return volumeL
   const sortedVariantImages = useMemo(() => {
@@ -105,41 +88,18 @@ export function ProductGallery({ images, productName, variantImageUrl, variants,
     return result
   }, [images, sortedVariantImages])
 
-  // 2. Determine if Autoplay is eligible
-  // Also stop autoplay if they interacted with the gallery itself (clicked thumbnail/arrows)
-  const isAutoplayEligible = !isVariantManuallySelected && !hasInteractedWithGallery && sortedVariantImages.length > 1
-
-  // 3. Autoplay Loop
-  useEffect(() => {
-    if (isAutoplayEligible) {
-      autoplayTimerRef.current = setInterval(() => {
-        setCurrentIndex((prev) => (prev === sortedVariantImages.length - 1 ? 0 : prev + 1))
-      }, 3500)
-    }
-
-    return () => {
-      if (autoplayTimerRef.current) clearInterval(autoplayTimerRef.current)
-    }
-  }, [isAutoplayEligible, sortedVariantImages.length])
-
-  // 4. Snap to variant image if manually selected
+  // Snap to variant image if manually selected
   useEffect(() => {
     if (isVariantManuallySelected && variantImageUrl) {
-      // Try to sync the thumbnail highlight to match the selected variant image
       const targetKey = normalizeImageKey(variantImageUrl)
       const idx = allThumbnails.findIndex((img) => normalizeImageKey(img) === targetKey)
       if (idx !== -1) setCurrentIndex(idx)
     } else if (!isVariantManuallySelected) {
-      // Reset to first image when selection is cleared
       setCurrentIndex(0)
     }
   }, [isVariantManuallySelected, variantImageUrl, allThumbnails])
 
-  // If autoplaying, display the currently cycling variant image.
-  // If a variant is manually selected and has its own image, show it directly.
-  // Otherwise, fallback to the standard thumbnail grid.
   const currentMainImage = (() => {
-    if (isAutoplayEligible) return sortedVariantImages[currentIndex]
     if (isVariantManuallySelected && variantImageUrl) return variantImageUrl
     return allThumbnails[currentIndex] || allThumbnails[0]
   })()
@@ -154,7 +114,6 @@ export function ProductGallery({ images, productName, variantImageUrl, variants,
   }
 
   const handleManualNavigation = (newIndex: number) => {
-    setHasInteractedWithGallery(true)
     setCurrentIndex(newIndex)
     setImageUnavailable(false)
   }
@@ -174,66 +133,49 @@ export function ProductGallery({ images, productName, variantImageUrl, variants,
             src={currentMainImage || ''}
             alt={`${productName} - Image ${currentIndex + 1}`}
             fill
-            className="object-contain p-4 transition-all duration-700 ease-in-out group-hover:scale-105"
-            style={{ animation: isAutoplayEligible ? 'galleryFadeIn 0.7s ease-in-out' : undefined }}
+            className="object-contain p-4 transition-all duration-300 ease-in-out group-hover:scale-105"
             priority
             onError={() => setImageUnavailable(true)}
           />
         )}
 
-        {/* Manual nav arrows — hidden during autoplay */}
-        {allThumbnails.length > 1 && !isAutoplayEligible && (
+        {/* Manual nav arrows */}
+        {allThumbnails.length > 1 && (
           <>
             <button
               onClick={() => handleManualNavigation(currentIndex === 0 ? allThumbnails.length - 1 : currentIndex - 1)}
               className="text-brand-primary absolute top-1/2 left-4 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 shadow-md backdrop-blur-sm transition-all hover:bg-white hover:shadow-lg hover:scale-110 active:scale-95"
+              aria-label="Previous image"
             >
               <ChevronLeft size={20} />
             </button>
             <button
               onClick={() => handleManualNavigation(currentIndex === allThumbnails.length - 1 ? 0 : currentIndex + 1)}
               className="text-brand-primary absolute top-1/2 right-4 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 shadow-md backdrop-blur-sm transition-all hover:bg-white hover:shadow-lg hover:scale-110 active:scale-95"
+              aria-label="Next image"
             >
               <ChevronRight size={20} />
             </button>
           </>
         )}
 
-        {/* Image counter pill — manual mode */}
-        {allThumbnails.length > 1 && !isAutoplayEligible && (
+        {/* Image counter pill */}
+        {allThumbnails.length > 1 && (
           <div className="absolute bottom-4 left-1/2 -translate-x-1/2 rounded-full bg-brand-primary/80 backdrop-blur-sm px-3 py-1 text-xs font-medium text-white">
             {currentIndex + 1} / {allThumbnails.length}
           </div>
         )}
-
-        {/* Autoplay dot indicators */}
-        {isAutoplayEligible && sortedVariantImages.length > 1 && (
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5">
-            {sortedVariantImages.map((_, i) => (
-              <button
-                key={i}
-                onClick={() => handleManualNavigation(i)}
-                className={`h-1.5 rounded-full transition-all duration-500 ${
-                  i === currentIndex
-                    ? 'w-6 bg-brand-primary'
-                    : 'w-1.5 bg-brand-primary/30 hover:bg-brand-primary/60'
-                }`}
-                aria-label={`Go to image ${i + 1}`}
-              />
-            ))}
-          </div>
-        )}
       </div>
 
-      {/* Thumbnails (Static during autoplay) */}
+      {/* Thumbnails */}
       {allThumbnails.length > 1 && (
         <div className="hide-scrollbar flex gap-3 overflow-x-auto pb-2">
           {allThumbnails.map((img, idx) => (
             <button
               key={idx}
               onClick={() => handleManualNavigation(idx)}
-              className={`relative h-14 w-14 shrink-0 overflow-hidden rounded-lg border-2 bg-white transition-all duration-300 ${
-                (isAutoplayEligible ? (normalizeImageKey(img) === normalizeImageKey(currentMainImage)) : currentIndex === idx)
+              className={`relative h-14 w-14 shrink-0 overflow-hidden rounded-lg border-2 bg-white transition-all duration-200 ${
+                currentIndex === idx
                   ? 'border-brand-primary shadow-md ring-2 ring-brand-primary/20 scale-105'
                   : 'hover:border-brand-primary/40 border-gray-200 opacity-70 hover:opacity-100'
               }`}
