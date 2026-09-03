@@ -165,10 +165,10 @@ function findDefaultStamp(): string | null {
   return null;
 }
 
-export function generateDeliveryNotePDF(
+export async function generateDeliveryNotePDF(
   order: InvoiceOrder,
   settings: InvoiceSettings = {},
-) {
+): Promise<Buffer> {
   const chunks: Buffer[] = [];
   const doc = new PDFDocument({ size: 'A4', margin: 35, autoFirstPage: true, bufferPages: true });
   doc.on('data', (chunk: Buffer) => chunks.push(chunk));
@@ -685,8 +685,13 @@ export function generateDeliveryNotePDF(
       );
   }
 
-  doc.end();
-  return Buffer.concat(chunks);
+  return new Promise((resolve, reject) => {
+    doc.on('end', () => {
+      resolve(Buffer.concat(chunks));
+    });
+    doc.on('error', reject);
+    doc.end();
+  });
 }
 
 // ─── POS Invoice ───────────────────────────────────────────────────────────
@@ -709,7 +714,7 @@ export interface POSInvoiceData {
   settings?: InvoiceSettings;
 }
 
-export function generatePOSInvoicePDF(data: POSInvoiceData): Buffer {
+export async function generatePOSInvoicePDF(data: POSInvoiceData): Promise<Buffer> {
   const chunks: Buffer[] = [];
   const doc = new PDFDocument({ size: 'A4', margin: 40, bufferPages: true });
   doc.on('data', (chunk) => chunks.push(chunk));
@@ -844,7 +849,12 @@ export function generatePOSInvoicePDF(data: POSInvoiceData): Buffer {
       .text(`Matricule Fiscal: ${companyMf}`, L, footerY + 34, { align: 'center', width: contentWidth });
   }
 
-  doc.end();
-  return Buffer.concat(chunks);
+  return new Promise((resolve, reject) => {
+    doc.on('end', () => {
+      resolve(Buffer.concat(chunks));
+    });
+    doc.on('error', reject);
+    doc.end();
+  });
 }
 

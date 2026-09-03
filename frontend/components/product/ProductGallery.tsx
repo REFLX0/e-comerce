@@ -28,7 +28,7 @@ export function ProductGallery({ images, productName, variantImageUrl }: Props) 
   return (
     <div className="flex flex-col gap-4">
       {/* Main image */}
-      <div className="group relative w-full aspect-square sm:aspect-[4/3] bg-white overflow-hidden rounded-2xl border border-gray-100 flex items-center justify-center">
+      <div className="group relative w-full aspect-square sm:aspect-[4/3] bg-white overflow-hidden rounded-2xl flex items-center justify-center">
         {imageUnavailable ? (
           <div className="flex h-full w-full flex-col items-center justify-center gap-3 text-gray-400">
             <Package size={34} strokeWidth={1.5} />
