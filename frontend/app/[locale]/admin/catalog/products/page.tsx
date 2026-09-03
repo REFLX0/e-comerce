@@ -384,26 +384,52 @@ export default function AdminProductsPage() {
       )}
 
       <div className="md:hidden space-y-3">
-        {isLoading ? [...Array(4)].map((_, i) => <div key={i} className="h-24 animate-pulse rounded-2xl bg-gray-100" />
-        ) : filtered.length === 0 ? (
-          <div className="py-12 text-center text-sm text-gray-400">{t('noProductsFound')}</div>
+        {isLoading ? [...Array(4)].map((_, i) => <div key={i} className="h-28 animate-pulse rounded-2xl bg-gray-100" />)
+        : filtered.length === 0 ? (
+          <div className="rounded-2xl border border-gray-100 bg-white py-12 text-center shadow-sm">
+            <Package size={36} className="mx-auto mb-2 text-gray-200" />
+            <p className="text-sm text-gray-400">{t('noProductsFound')}</p>
+          </div>
         ) : filtered.map((product) => (
-          <div key={product.id} className="flex items-center gap-3 rounded-2xl border border-gray-100 bg-white p-4 shadow-sm">
-            <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-xl bg-gray-50">
-              {productImage(product) ? <Image src={productImage(product)!} alt={productName(product, t)} fill className="object-cover" />
-                : <Package size={24} className="absolute inset-0 m-auto text-gray-300" />}
+          <div key={product.id} className="flex gap-3 rounded-2xl border border-gray-100 bg-white p-3 shadow-sm">
+            {/* Product image — larger, object-contain for product photos */}
+            <div className="relative h-[72px] w-[72px] shrink-0 overflow-hidden rounded-xl bg-gray-50 border border-gray-100">
+              {productImage(product)
+                ? <Image src={productImage(product)!} alt={productName(product, t)} fill className="object-contain p-1" />
+                : <Package size={28} className="absolute inset-0 m-auto text-gray-300" />
+              }
             </div>
+
+            {/* Info */}
             <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-semibold text-brand-primary">{productName(product, t)}</p>
-              <p className="text-xs text-gray-400">{brandName(product) ?? t('brandUndefined')}</p>
-              <div className="mt-1.5 flex items-center gap-2">
+              <p className="text-sm font-semibold text-brand-primary leading-snug line-clamp-2">
+                {productName(product, t)}
+              </p>
+              <p className="mt-0.5 text-[11px] text-gray-400">
+                {brandName(product) ?? t('brandUndefined')}
+                {categoryName(product) ? ` · ${categoryName(product)}` : ''}
+              </p>
+              <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
                 <PriceBadge price={productPrice(product)} />
                 <StockBadge qty={productStock(product)} />
               </div>
             </div>
-            <div className="flex flex-col gap-1">
-              <Link href={localizedHref(`/admin/catalog/products/${product.id}/edit`)} className="rounded-lg p-2 text-gray-400 hover:bg-blue-50 hover:text-blue-600 transition-colors"><Edit2 size={16} /></Link>
-              <button onClick={() => setConfirmDelete({ id: product.id, name: productName(product, t) })} className="rounded-lg p-2 text-gray-400 hover:bg-red-50 hover:text-red-500 transition-colors" title={t('deleteAction')}><Trash2 size={16} /></button>
+
+            {/* Actions */}
+            <div className="flex flex-col items-center gap-1 shrink-0">
+              <Link
+                href={localizedHref(`/admin/catalog/products/${product.id}/edit`)}
+                className="flex h-9 w-9 items-center justify-center rounded-xl text-gray-400 hover:bg-blue-50 hover:text-blue-600 transition-colors"
+              >
+                <Edit2 size={16} />
+              </Link>
+              <button
+                onClick={() => setConfirmDelete({ id: product.id, name: productName(product, t) })}
+                className="flex h-9 w-9 items-center justify-center rounded-xl text-gray-400 hover:bg-red-50 hover:text-red-500 transition-colors"
+                title={t('deleteAction')}
+              >
+                <Trash2 size={16} />
+              </button>
             </div>
           </div>
         ))}
