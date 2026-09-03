@@ -14,10 +14,12 @@ function parseVolumeToL(volume?: string | null): number | null {
   if (!volume) return null
   const clean = volume.trim().toLowerCase()
   const match = clean.match(/^([\d.]+)\s*(ml|l)$/)
-  if (!match) return null
-  const val = parseFloat(match[1])
+  if (!match || !match[1] || !match[2]) return null
+  const numStr = match[1]
+  const unit = match[2]
+  const val = parseFloat(numStr)
   if (isNaN(val)) return null
-  return match[2] === 'ml' ? val / 1000 : val
+  return unit === 'ml' ? val / 1000 : val
 }
 
 /**
@@ -27,8 +29,11 @@ function parseVolumeToL(volume?: string | null): number | null {
 function normalizeImageKey(url?: string | null): string {
   if (!url) return ''
   try {
-    const clean = url.trim().split('?')[0].split('#')[0]
-    const filename = clean.split('/').pop()?.toLowerCase() || ''
+    const withoutQuery = url.trim().split('?')[0] ?? ''
+    const clean = withoutQuery.split('#')[0] ?? ''
+    const parts = clean.split('/')
+    const lastPart = parts[parts.length - 1] ?? ''
+    const filename = lastPart.toLowerCase()
     return filename || clean.toLowerCase()
   } catch {
     return (url || '').trim().toLowerCase()
