@@ -79,18 +79,24 @@ export function ProductGallery({ images, productName, variantImageUrl, variants,
   // 4. Snap to variant image if manually selected
   useEffect(() => {
     if (isVariantManuallySelected && variantImageUrl) {
+      // Try to sync the thumbnail highlight to match the selected variant image
       const idx = allThumbnails.indexOf(variantImageUrl)
-      if (idx !== -1) {
-        setCurrentIndex(idx)
-      }
+      if (idx !== -1) setCurrentIndex(idx)
+      // If not found in allThumbnails, the image is still shown via currentMainImage override
+    } else if (!isVariantManuallySelected) {
+      // Reset to first image when selection is cleared
+      setCurrentIndex(0)
     }
   }, [isVariantManuallySelected, variantImageUrl, allThumbnails])
 
   // If autoplaying, display the currently cycling variant image.
-  // Otherwise, fallback to the manual selection or standard grid behavior.
-  const currentMainImage = isAutoplayEligible 
-    ? sortedVariantImages[currentIndex]
-    : allThumbnails[currentIndex]
+  // If a variant is manually selected and has its own image, show it directly.
+  // Otherwise, fallback to the standard thumbnail grid.
+  const currentMainImage = (() => {
+    if (isAutoplayEligible) return sortedVariantImages[currentIndex]
+    if (isVariantManuallySelected && variantImageUrl) return variantImageUrl
+    return allThumbnails[currentIndex] || allThumbnails[0]
+  })()
 
   // Edge Case fallback if absolutely no images exist
   if (!allThumbnails || allThumbnails.length === 0) {

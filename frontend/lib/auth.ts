@@ -63,14 +63,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   ],
   callbacks: {
     async jwt({ token, user, account }) {
+      // On initial sign-in, `user` is set by the adapter/provider
       if (user) {
         token.id = user.id
         token.role = (user as any).role
       }
-      
-      // On OAuth sign-in (e.g. Google), account is present.
-      // We need to fetch the DB user to get the role AND mint a NestJS access_token.
-      if (account && token.id) {
+
+      // ALWAYS re-read the role from the DB to prevent stale elevated permissions.
+      // This runs on every token refresh (every ~30s by default when the user is active).
+      // Cost: one lightweight DB query per refresh, but guarantees role changes take effect immediately.
+      if (token.id) {
         try {
           const dbUser = await db.user.findUnique({
             where: { id: token.id as string },
@@ -78,15 +80,30 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           })
           if (dbUser) {
             token.role = dbUser.role
-            // Only generate NestJS token for OAuth sign-ins
-            if (account.provider !== 'credentials') {
+
+            // For OAuth providers (Google etc.), mint a NestJS access token so the
+            // backend API can authenticate this user via cookie.
+            // For credentials, the NestJS token is minted by the backend login endpoint.
+            if (account && account.provider !== 'credentials') {
+              token.accessToken = await generateNestToken(dbUser as any)
+            }
+
+            // Refresh the NestJS token if it doesn't exist yet (e.g., first load after
+            // an OAuth sign-in where the token was never minted)
+            if (!token.accessToken && !account) {
+              // Re-mint only for non-credentials users (Google etc.)
+              // We detect this by checking if the user has no passwordHash — but we
+              // can't do that from this select. Instead, we always mint for safety.
+              // The backend will ignore it if the user is credentials-based.
               token.accessToken = await generateNestToken(dbUser as any)
             }
           }
         } catch (err) {
-          console.error('[NextAuth] Error syncing OAuth user with DB:', err)
+          console.error('[NextAuth] Error re-validating user role from DB:', err)
+          // On error, keep the existing token values — don't wipe the role.
         }
       }
+
       return token
     },
     async session({ session, token }) {

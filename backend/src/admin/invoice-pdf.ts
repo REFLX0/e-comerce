@@ -310,7 +310,8 @@ export async function generateDeliveryNotePDF(
       .text(`MF: ${companyMf}`, headerLeftTextX, nextY + 22);
   }
 
-  // ── HEADER: FACTURE TITLE & DATES (RIGHT) ──
+  // ── HEADER: TITLE & REFERENCE (RIGHT COLUMN) ──
+  // We draw these at fixed absolute positions so they never overlap the left-side company block.
   let hash = 0;
   const idStr = order.id || '';
   for (let i = 0; i < idStr.length; i++) {
@@ -320,43 +321,63 @@ export async function generateDeliveryNotePDF(
   const orderDate = order.createdAt ? new Date(order.createdAt) : new Date();
   const dateStr = formatFrenchDate(orderDate);
 
+  const titleY = startY; // aligned with top of header
+
+  // Document type title — large, right-aligned
   doc
-    .fontSize(22)
+    .fontSize(20)
     .font('Helvetica-Bold')
-    .fillColor('#334155')
-    .text(docType === 'delivery_slip' ? `BON DE LIVRAISON#${orderNumber}` : `FACTURE#${orderNumber}`, leftMargin, startY, {
+    .fillColor('#1e293b')
+    .text(
+      docType === 'delivery_slip' ? 'BON DE LIVRAISON' : 'FACTURE',
+      leftMargin,
+      titleY,
+      { align: 'right', width: contentWidth, lineBreak: false }
+    );
+
+  // Reference number (BL XXXXX or N° XXXXX) — below the title
+  const refY = titleY + 26;
+  doc
+    .fontSize(10)
+    .font('Helvetica-Bold')
+    .fillColor('#475569')
+    .text(
+      docType === 'delivery_slip' ? `BL ${orderNumber}` : `N° ${orderNumber}`,
+      leftMargin,
+      refY,
+      { align: 'right', width: contentWidth, lineBreak: false }
+    );
+
+  // Date fields below the reference
+  const dateFieldY = refY + 18;
+  doc
+    .fontSize(9)
+    .font('Helvetica-Bold')
+    .fillColor('#1e293b')
+    .text('Date :', leftMargin, dateFieldY, {
+      align: 'right',
+      width: contentWidth - 90,
+    });
+  doc
+    .font('Helvetica')
+    .fillColor('#475569')
+    .text(dateStr, leftMargin, dateFieldY, {
       align: 'right',
       width: contentWidth,
     });
 
   doc
-    .fontSize(9.5)
+    .fontSize(9)
     .font('Helvetica-Bold')
-    .fillColor(primaryColor)
-    .text(`Date: `, leftMargin, startY + 30, {
+    .fillColor('#1e293b')
+    .text("Date d'échéance :", leftMargin, dateFieldY + 14, {
       align: 'right',
-      width: contentWidth - 85,
+      width: contentWidth - 90,
     });
   doc
     .font('Helvetica')
-    .fillColor(secondaryColor)
-    .text(dateStr, leftMargin, startY + 30, {
-      align: 'right',
-      width: contentWidth,
-    });
-
-  doc
-    .fontSize(9.5)
-    .font('Helvetica-Bold')
-    .fillColor(primaryColor)
-    .text(`Date d'échéance : `, leftMargin, startY + 44, {
-      align: 'right',
-      width: contentWidth - 85,
-    });
-  doc
-    .font('Helvetica')
-    .fillColor(secondaryColor)
-    .text(dateStr, leftMargin, startY + 44, {
+    .fillColor('#475569')
+    .text(dateStr, leftMargin, dateFieldY + 14, {
       align: 'right',
       width: contentWidth,
     });
@@ -364,7 +385,7 @@ export async function generateDeliveryNotePDF(
   // If Code image exists (QR / Barcode), render beside dates
   if (codeImgData) {
     try {
-      doc.image(codeImgData, pageWidth - rightMargin - 50, startY + 60, {
+      doc.image(codeImgData, pageWidth - rightMargin - 50, dateFieldY + 30, {
         fit: [50, 50],
       });
     } catch {
