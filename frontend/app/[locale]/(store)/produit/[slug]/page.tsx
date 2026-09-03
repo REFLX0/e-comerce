@@ -25,6 +25,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         languages: {
           fr: `/fr/produit/${slug}`,
           en: `/en/produit/${slug}`,
+          ar: `/ar/produit/${slug}`,
         },
       },
       openGraph: {
@@ -45,8 +46,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function ProductPage({ params }: Props) {
   const tNav = await getTranslations('Nav')
   let product;
+  let slug;
+  let locale;
   try {
-    const { slug } = await params
+    const resolvedParams = await params
+    slug = resolvedParams.slug
+    locale = resolvedParams.locale
     product = await productsApi.getBySlug(slug)
   } catch {
     notFound()
@@ -56,8 +61,68 @@ export default async function ProductPage({ params }: Props) {
     notFound()
   }
 
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://specpart.tech'
+  const productUrl = `${baseUrl}/${locale}/produit/${product.slug}`
+
   return (
     <div className="bg-brand-surface min-h-screen">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'Product',
+            name: product.name,
+            image: product.images?.[0] ? [`${baseUrl}${product.images[0]}`] : [],
+            description: product.description || product.shortDescription,
+            sku: product.sku || product.reference || product.id,
+            brand: {
+              '@type': 'Brand',
+              name: product.brand?.name || 'specpart',
+            },
+            offers: {
+              '@type': 'Offer',
+              url: productUrl,
+              priceCurrency: 'TND',
+              price: product.price,
+              availability: (product.stock ?? 1) > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+            },
+          }),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'BreadcrumbList',
+            itemListElement: [
+              {
+                '@type': 'ListItem',
+                position: 1,
+                name: tNav('catalog'),
+                item: `${baseUrl}/${locale}/catalogue`,
+              },
+              ...(product.category
+                ? [
+                    {
+                      '@type': 'ListItem',
+                      position: 2,
+                      name: product.category.name,
+                      item: `${baseUrl}/${locale}/categorie/${product.category.slug}`,
+                    },
+                  ]
+                : []),
+              {
+                '@type': 'ListItem',
+                position: product.category ? 3 : 2,
+                name: product.name,
+                item: productUrl,
+              },
+            ],
+          }),
+        }}
+      />
       <div className="section-padding py-4">
         <Breadcrumb
           items={[

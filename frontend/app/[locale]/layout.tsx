@@ -52,13 +52,27 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: 'Index' })
 
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://specpart.tech'
+
   return {
+    metadataBase: new URL(siteUrl),
     title: t('title'),
     description: t('description'),
     keywords: LOCALE_KEYWORDS[locale] ?? LOCALE_KEYWORDS.fr,
+    alternates: {
+      canonical: `/${locale}`,
+      languages: {
+        fr: '/fr',
+        en: '/en',
+        ar: '/ar',
+        'x-default': '/fr',
+      },
+    },
     openGraph: {
       title: t('title'),
       description: t('description'),
+      url: `/${locale}`,
+      siteName: 'specpart',
       type: 'website',
       locale: LOCALE_TO_OG[locale] ?? LOCALE_TO_OG.fr,
     },
@@ -103,6 +117,45 @@ export default async function RootLayout({
             >
               {tLayout('skipToContent')}
             </a>
+
+            <script
+              type="application/ld+json"
+              dangerouslySetInnerHTML={{
+                __html: JSON.stringify({
+                  '@context': 'https://schema.org',
+                  '@graph': [
+                    {
+                      '@type': 'WebSite',
+                      '@id': `${process.env.NEXT_PUBLIC_SITE_URL || 'https://specpart.tech'}/#website`,
+                      url: process.env.NEXT_PUBLIC_SITE_URL || 'https://specpart.tech',
+                      name: 'specpart',
+                      description: tLayout('description') || 'specpart',
+                      inLanguage: locale,
+                    },
+                    {
+                      '@type': 'Organization',
+                      '@id': `${process.env.NEXT_PUBLIC_SITE_URL || 'https://specpart.tech'}/#organization`,
+                      name: 'specpart',
+                      url: process.env.NEXT_PUBLIC_SITE_URL || 'https://specpart.tech',
+                      logo: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://specpart.tech'}/icon.jpg`,
+                      contactPoint: {
+                        '@type': 'ContactPoint',
+                        telephone: '+21629294195',
+                        contactType: 'customer service',
+                        email: 'specpart@hotmail.com',
+                      },
+                      address: {
+                        '@type': 'PostalAddress',
+                        streetAddress: '03, rue Mohamed Bayram 5, Sidi Daoud',
+                        addressLocality: 'La Marsa',
+                        postalCode: '2046',
+                        addressCountry: 'TN',
+                      },
+                    },
+                  ],
+                }),
+              }}
+            />
 
             {children}
 

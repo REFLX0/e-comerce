@@ -310,7 +310,12 @@ export async function generateDeliveryNotePDF(
   }
 
   // ── HEADER: FACTURE TITLE & DATES (RIGHT) ──
-  const orderNumber = (order.id || '').slice(-8).toUpperCase() || '1';
+  let hash = 0;
+  const idStr = order.id || '';
+  for (let i = 0; i < idStr.length; i++) {
+    hash = (hash * 31 + idStr.charCodeAt(i)) % 90000;
+  }
+  const orderNumber = idStr ? String(10000 + Math.abs(hash)) : String(Math.floor(10000 + Math.random() * 90000));
   const orderDate = order.createdAt ? new Date(order.createdAt) : new Date();
   const dateStr = formatFrenchDate(orderDate);
 
@@ -541,7 +546,7 @@ export async function generateDeliveryNotePDF(
   doc
     .font('Helvetica-Bold')
     .fillColor(primaryColor)
-    .text('TVA', summaryX, summaryY, { width: 90, align: 'right' });
+    .text('TVA (19%)', summaryX, summaryY, { width: 90, align: 'right' });
   doc
     .font('Helvetica')
     .fillColor(primaryColor)
@@ -661,12 +666,12 @@ export async function generateDeliveryNotePDF(
 
   if (taba3Data) {
     try {
-      doc.image(taba3Data, stampBoxX + 10, stampBoxY + 12, {
+      doc.image(taba3Data, stampBoxX + 10, stampBoxY + 20, {
         fit: [95, 52],
       });
     } catch {
       doc
-        .rect(stampBoxX, stampBoxY + 12, stampBoxWidth, stampBoxHeight - 12)
+        .rect(stampBoxX, stampBoxY + 20, stampBoxWidth, stampBoxHeight - 20)
         .strokeColor('#94a3b8')
         .dash(3, { space: 3 })
         .stroke();
@@ -674,7 +679,7 @@ export async function generateDeliveryNotePDF(
     }
   } else {
     doc
-      .rect(stampBoxX, stampBoxY + 12, stampBoxWidth, stampBoxHeight - 12)
+      .rect(stampBoxX, stampBoxY + 20, stampBoxWidth, stampBoxHeight - 20)
       .strokeColor('#cbd5e1')
       .dash(2, { space: 2 })
       .stroke();

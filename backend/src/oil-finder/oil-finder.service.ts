@@ -141,22 +141,47 @@ export class OilFinderService {
   async findByVehicle(make: string, model: string, engineCode?: string | null): Promise<OilFinderResult> {
     const makeNorm = make.trim().toUpperCase();
     const modelNorm = model.trim().toUpperCase();
-    const isMoto = MOTO_MAKES.some(m => makeNorm.includes(m)) || makeNorm.includes('MOTO') || makeNorm.includes('PIAGGIO') || makeNorm.includes('VESPA') || makeNorm.includes('SYM') || makeNorm.includes('DUCATI') || makeNorm.includes('KTM') || makeNorm.includes('APRILIA') || makeNorm.includes('YAMAHA');
-    const isTruck = TRUCK_MAKES.some(m => makeNorm.includes(m)) || makeNorm.includes('TRUCK') || makeNorm.includes('SCANIA') || makeNorm.includes('IVECO') || makeNorm.includes('MAN');
-    const isMarine = MARINE_MAKES.some(m => makeNorm.includes(m)) || makeNorm.includes('MARINE') || makeNorm.includes('PENTA') || makeNorm.includes('YANMAR');
+    const isMoto = MOTO_MAKES.some(m => makeNorm === m.toUpperCase()) || makeNorm === 'PEUGEOT MOTOCYCLES';
+    const isTruck = TRUCK_MAKES.some(m => makeNorm === m.toUpperCase()) || makeNorm === 'SCANIA' || makeNorm === 'IVECO' || makeNorm === 'MAN' || makeNorm === 'DAF';
+    const isMarine = MARINE_MAKES.some(m => makeNorm === m.toUpperCase()) || makeNorm.includes('MARINE') || makeNorm === 'YANMAR' || makeNorm.includes('PENTA');
 
-    // 1. Try DB lookup first
+    // 1. Try DB lookup first (exact/insensitive match on the raw name)
     const where = {
       make: { equals: make.trim(), mode: 'insensitive' as const },
       model: { equals: model.trim(), mode: 'insensitive' as const },
       ...(engineCode ? { engineCode: { equals: engineCode.trim(), mode: 'insensitive' as const } } : {}),
     };
 
-    const rows = await this.prisma.oilFinderVehicle.findMany({
+    let rows = await this.prisma.oilFinderVehicle.findMany({
       where,
       include: { oilSpec: true },
       orderBy: [{ source: 'asc' }, { id: 'asc' }],
     }).catch(() => []);
+
+    // 1b. If nothing found and the input looks like a slug (all lowercase/dashes),
+    //     try to find by slugified make+model (handles citroen → CITROËN, etc.)
+    if (rows.length === 0) {
+      const makeSlug = slugify(make.trim());
+      const modelSlug = slugify(model.trim());
+      const allRows = await this.prisma.oilFinderVehicle.findMany({
+        select: { make: true, model: true },
+        distinct: ['make', 'model'],
+      }).catch(() => [] as { make: string; model: string }[]);
+      const match = allRows.find(r =>
+        slugify(r.make) === makeSlug && slugify(r.model) === modelSlug
+      );
+      if (match) {
+        rows = await this.prisma.oilFinderVehicle.findMany({
+          where: {
+            make: { equals: match.make, mode: 'insensitive' as const },
+            model: { equals: match.model, mode: 'insensitive' as const },
+            ...(engineCode ? { engineCode: { equals: engineCode.trim(), mode: 'insensitive' as const } } : {}),
+          },
+          include: { oilSpec: true },
+          orderBy: [{ source: 'asc' }, { id: 'asc' }],
+        }).catch(() => []);
+      }
+    }
 
     if (rows.length > 0) {
       const distinct = groupBySpec(rows);
@@ -333,7 +358,7 @@ export class OilFinderService {
     }
 
     // PSA Stellantis (Peugeot, Citroën, DS, Opel)
-    if (makeNorm.includes('PEUGEOT') || makeNorm.includes('CITROEN') || makeNorm.includes('DS') || makeNorm.includes('OPEL')) {
+    if (makeNorm.includes('PEUGEOT') || makeNorm.includes('CITROEN') || makeNorm === 'DS' || makeNorm === 'DS AUTOMOBILES' || makeNorm.includes('OPEL')) {
       return {
         status: 'found',
         oilSpec: {
@@ -525,7 +550,9 @@ export class OilFinderService {
         // Use slugify() here (not SQL) so accents and parens are handled correctly
         return tecdocRows.map((r) => ({ slug: slugify(r.name), name: r.name }));
       }
-    } catch {}
+    } catch (e) {
+      console.error('Error fetching auto makes from TecDoc:', e);
+    }
 
     const rows = await this.prisma.oilFinderVehicle.findMany({
       select: { make: true },
@@ -542,30 +569,30 @@ export class OilFinderService {
   async getModels(makeName: string) {
     const makeUpper = makeName.trim().toUpperCase();
 
-    // Check Marine models
+    // Check Marine models — exact match only
     for (const [mfr, models] of Object.entries(MARINE_MODELS)) {
-      if (makeUpper.includes(mfr) || mfr.includes(makeUpper)) {
+      if (makeUpper === mfr || makeUpper === mfr.toUpperCase()) {
         return models.map(name => ({ slug: slugify(name), name }));
       }
     }
 
-    // Check Agricultural models
+    // Check Agricultural models — exact match only
     for (const [mfr, models] of Object.entries(AGRI_MODELS)) {
-      if (makeUpper.includes(mfr) || mfr.includes(makeUpper)) {
+      if (makeUpper === mfr || makeUpper === mfr.toUpperCase()) {
         return models.map(name => ({ slug: slugify(name), name }));
       }
     }
 
-    // Check motorcycle models
+    // Check motorcycle models — exact match only
     for (const [mfr, models] of Object.entries(MOTO_MODELS)) {
-      if (makeUpper.includes(mfr) || mfr.includes(makeUpper)) {
+      if (makeUpper === mfr || makeUpper === mfr.toUpperCase()) {
         return models.map(name => ({ slug: slugify(name), name }));
       }
     }
 
-    // Check truck models
+    // Check truck models — exact match only
     for (const [mfr, models] of Object.entries(TRUCK_MODELS)) {
-      if (makeUpper.includes(mfr) || mfr.includes(makeUpper)) {
+      if (makeUpper === mfr || makeUpper === mfr.toUpperCase()) {
         return models.map(name => ({ slug: slugify(name), name }));
       }
     }
@@ -585,7 +612,9 @@ export class OilFinderService {
       if (tecdocRows.length > 0) {
         return tecdocRows.map((r) => ({ slug: r.slug, name: r.name }));
       }
-    } catch {}
+    } catch (e) {
+      console.error('Error fetching models from TecDoc for make:', makeName, e);
+    }
 
     const rows = await this.prisma.oilFinderVehicle.findMany({
       where: { make: { equals: makeName.trim(), mode: 'insensitive' as const } },
@@ -623,8 +652,8 @@ export class OilFinderService {
     const makeUpper = makeName.trim().toUpperCase();
     const modelUpper = modelName.trim().toUpperCase();
 
-    // Marine engines
-    const isMarine = MARINE_MAKES.some(m => makeUpper.includes(m)) || makeUpper.includes('MARINE') || makeUpper.includes('PENTA') || makeUpper.includes('YANMAR');
+    // Marine engines — exact match only
+    const isMarine = MARINE_MAKES.some(m => makeUpper === m.toUpperCase()) || makeUpper.includes('MARINE') || makeUpper.includes('PENTA') || makeUpper === 'YANMAR';
     if (isMarine) {
       return [
         { engineCode: 'Moteur Hors-Bord 4-Temps (NMMA FC-W)', yearFrom: 2012, yearTo: 2024 },
@@ -634,8 +663,8 @@ export class OilFinderService {
       ];
     }
 
-    // Agricultural engines
-    const isAgri = AGRI_MAKES.some(m => makeUpper.includes(m));
+    // Agricultural engines — exact match only
+    const isAgri = AGRI_MAKES.some(m => makeUpper === m.toUpperCase());
     if (isAgri) {
       return [
         { engineCode: 'Moteur Diesel Stage V / Tier 4 Final Low-SAPS', yearFrom: 2018, yearTo: 2024 },
@@ -644,8 +673,8 @@ export class OilFinderService {
       ];
     }
 
-    // Motorcycle engines
-    const isMoto = MOTO_MAKES.some(m => makeUpper.includes(m)) || makeUpper.includes('MOTO') || makeUpper.includes('PIAGGIO') || makeUpper.includes('SYM') || makeUpper.includes('VESPA') || makeUpper.includes('DUCATI') || makeUpper.includes('KTM');
+    // Motorcycle engines — exact match only
+    const isMoto = MOTO_MAKES.some(m => makeUpper === m.toUpperCase()) || makeUpper === 'PEUGEOT MOTOCYCLES' || makeUpper.includes('PIAGGIO') || makeUpper.includes('SYM') || makeUpper.includes('VESPA') || makeUpper.includes('DUCATI') || makeUpper.includes('KTM');
     if (isMoto) {
       if (modelUpper.includes('50') || modelUpper.includes('ZIP') || modelUpper.includes('TYPHOON')) {
         return [
@@ -674,7 +703,7 @@ export class OilFinderService {
     }
 
     // Truck engines
-    const isTruck = TRUCK_MAKES.some(m => makeUpper.includes(m));
+    const isTruck = TRUCK_MAKES.some(m => makeUpper === m.toUpperCase()) || makeUpper === 'SCANIA' || makeUpper === 'IVECO' || makeUpper === 'MAN' || makeUpper === 'DAF';
     if (isTruck) {
       return [
         { engineCode: '12.8L OM471 / D13K / DC13 Euro 6 Low-SAPS (450 - 530 ch)', yearFrom: 2014, yearTo: 2024 },
@@ -698,7 +727,9 @@ export class OilFinderService {
       if (tecdocRows.length > 0) {
         return tecdocRows;
       }
-    } catch {}
+    } catch (e) {
+      console.error('Error fetching engines from TecDoc for model:', modelName, e);
+    }
 
     const rows = await this.prisma.oilFinderVehicle.findMany({
       where: {
