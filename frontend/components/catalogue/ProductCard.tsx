@@ -10,7 +10,7 @@ import type { Product, ProductVariant } from '@/lib/types'
 import { useCartStore } from '@/lib/store/cart.store'
 import { wishlistApi } from '@/lib/api/wishlist'
 import { toast } from 'sonner'
-import { formatPrice, formatSKU, formatProductName, parseVolumeToL } from '@/lib/utils/format'
+import { formatPrice, formatSKU, formatProductName, parseVolumeToL, matchVolumeImage } from '@/lib/utils/format'
 import { useProductCompatibility } from '@/lib/hooks/useProductCompatibility'
 
 /* ── Lazy image with skeleton + branded automotive fallback ───────── */
@@ -80,42 +80,44 @@ export function ProductCard({ product, viewMode = 'grid' }: Props) {
     const raw = product.variants || []
     if (raw.length === 0) return []
 
-    // Filter variants that have a parseable volume, sort ascending
+    // Filter variants that have a parseable volume, sort ascending (250ml -> 500ml -> 1L -> 4L -> 5L -> 20L...)
     const withVolumes = raw
       .filter((v) => !!v.volume && parseVolumeToL(v.volume) !== null)
       .sort((a, b) => (parseVolumeToL(a.volume) ?? 0) - (parseVolumeToL(b.volume) ?? 0))
 
     if (withVolumes.length > 0) {
-      // De-duplicate any duplicate volumes
+      // De-duplicate any duplicate volumes and resolve volume-matching image
       const seen = new Set<string>()
       const deduped: ProductVariant[] = []
       for (const v of withVolumes) {
         const normVol = (v.volume || '').trim().toLowerCase()
         if (!seen.has(normVol)) {
           seen.add(normVol)
-          deduped.push(v)
+          const resolvedImg = v.imageUrl || matchVolumeImage(product.images, v.volume) || undefined
+          deduped.push(resolvedImg && resolvedImg !== v.imageUrl ? { ...v, imageUrl: resolvedImg } : v)
         }
       }
       return deduped
     }
 
     return raw
-  }, [product.variants])
+  }, [product.variants, product.images])
 
   // Variants eligible for image carousel (must have an imageUrl and strictly unique image URLs)
   const carouselVariants = useMemo(() => {
     const seen = new Set<string>()
     const list: ProductVariant[] = []
     for (const v of sortedVariants) {
-      if (!v.imageUrl) continue
-      const key = v.imageUrl.trim().toLowerCase()
+      const img = v.imageUrl || matchVolumeImage(product.images, v.volume)
+      if (!img) continue
+      const key = img.trim().toLowerCase()
       if (!seen.has(key)) {
         seen.add(key)
-        list.push(v)
+        list.push({ ...v, imageUrl: img })
       }
     }
     return list
-  }, [sortedVariants])
+  }, [sortedVariants, product.images])
 
   const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(null)
   const [isManuallySelected, setIsManuallySelected] = useState(false)

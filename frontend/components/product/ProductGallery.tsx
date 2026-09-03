@@ -5,7 +5,7 @@ import { useTranslations } from 'next-intl'
 import Image from 'next/image'
 import { ChevronLeft, ChevronRight, Package } from 'lucide-react'
 import type { ProductVariant } from '@/lib/types'
-import { parseVolumeToL } from '@/lib/utils/format'
+import { parseVolumeToL, matchVolumeImage } from '@/lib/utils/format'
 
 /**
  * Normalizes an image URL or path to a comparable key (e.g. filename)
@@ -18,8 +18,7 @@ function normalizeImageKey(url?: string | null): string {
     const clean = withoutQuery.split('#')[0] ?? ''
     const parts = clean.split('/')
     const lastPart = parts[parts.length - 1] ?? ''
-    const filename = lastPart.toLowerCase()
-    return filename || clean.toLowerCase()
+    return lastPart.toLowerCase().replace(/[-_.]/g, '')
   } catch {
     return (url || '').trim().toLowerCase()
   }
@@ -42,8 +41,12 @@ export function ProductGallery({ images, productName, variantImageUrl, variants,
   // 1. Variant Detection & Sorting — parse the volume string and map to variant
   const variantItems = useMemo(() => {
     if (!variants || variants.length === 0) return []
-    // Filter variants that have images and a parseable volume, sort ascending
+    // Resolve volume-matching images for variants and sort ascending (1L -> 5L -> 20L)
     const withImages = variants
+      .map((v) => {
+        const resolved = v.imageUrl || matchVolumeImage(images, v.volume) || undefined
+        return resolved ? { ...v, imageUrl: resolved } : v
+      })
       .filter((v) => !!v.imageUrl && parseVolumeToL(v.volume) !== null)
       .sort((a, b) => (parseVolumeToL(a.volume) ?? 0) - (parseVolumeToL(b.volume) ?? 0))
 
@@ -59,18 +62,23 @@ export function ProductGallery({ images, productName, variantImageUrl, variants,
       }
     }
     return items
-  }, [variants])
+  }, [variants, images])
 
-  // If product has volume variants with images, THOSE are the canonical images of the product.
-  // Strictly prevent appending duplicate entries from the general product images array.
+  // Thumbnails: Variant images in ascending volume order first, followed by any additional distinct product images
   const allThumbnails = useMemo(() => {
-    if (variantItems.length > 0) {
-      return variantItems.map((item) => item.url)
-    }
-
-    // For products without volume variants (e.g. filters, parts), use product images deduplicated
     const seen = new Set<string>()
     const result: string[] = []
+
+    // 1. Variant images in ascending volume order
+    for (const item of variantItems) {
+      const key = normalizeImageKey(item.url)
+      if (key && !seen.has(key)) {
+        seen.add(key)
+        result.push(item.url)
+      }
+    }
+
+    // 2. Any additional product images (e.g. 20L bidon, extra angles) without duplicating
     for (const url of images || []) {
       const key = normalizeImageKey(url)
       if (key && !seen.has(key)) {
@@ -112,8 +120,12 @@ export function ProductGallery({ images, productName, variantImageUrl, variants,
   const handleManualNavigation = (index: number) => {
     setCurrentIndex(index)
     setImageUnavailable(false)
-    if (variantItems[index]?.variant && onVariantChange) {
-      onVariantChange(variantItems[index].variant)
+    const clickedUrl = allThumbnails[index]
+    const matchedItem = variantItems.find(
+      (item) => normalizeImageKey(item.url) === normalizeImageKey(clickedUrl)
+    )
+    if (matchedItem?.variant && onVariantChange) {
+      onVariantChange(matchedItem.variant)
     }
   }
 

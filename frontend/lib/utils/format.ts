@@ -122,3 +122,25 @@ export function parseVolumeToL(volume?: string | null): number | null {
   return unit === 'ml' ? val / 1000 : val
 }
 
+/**
+ * Given a list of product images, finds the image URL matching a specific volume (e.g. "1L", "5L", "20L").
+ */
+export function matchVolumeImage(images?: string[] | null, volume?: string | null): string | null {
+  if (!images || images.length === 0 || !volume) return null
+  const volKey = volume.trim().toLowerCase().replace(/\s+/g, '')
+  if (!volKey) return null
+
+  const matched = images.find((url) => {
+    const lower = url.toLowerCase()
+    return (
+      lower.includes(`-${volKey}.`) ||
+      lower.includes(`_${volKey}.`) ||
+      lower.includes(`-${volKey}-`) ||
+      lower.includes(`_${volKey}_`) ||
+      lower.endsWith(`-${volKey}`) ||
+      lower.endsWith(`_${volKey}`)
+    )
+  })
+  return matched || null
+}
+

@@ -1143,23 +1143,54 @@ export class ProductsService {
         ? reviews.reduce((sum: number, r: any) => sum + (r.rating || 0), 0) / reviews.length
         : 5.0;
 
+    // Sort images so smaller volume bottle images come first (1L before 5L before 20L)
+    const sortedImages = [...images].sort((a, b) => {
+      const extractVol = (url: string) => {
+        const m = url.toLowerCase().match(/[-_](\d+(?:\.\d+)?)\s*(l|ml)\b/);
+        if (!m) return 999;
+        const n = parseFloat(m[1]);
+        return m[2] === 'ml' ? n / 1000 : n;
+      };
+      return extractVol(a) - extractVol(b);
+    });
+
     const variants = Array.isArray(product.variants)
-      ? product.variants.map((v: any) => ({
-          id: v.id,
-          productId: v.productId,
-          volume: v.volume || '1 Pièce',
-          imageUrl: v.imageUrl ?? (images[0] || null),
-          priceHT: +(Number(v.price || 0) / 1.19).toFixed(3),
-          priceTTC: Number(v.price || 0),
-          stock: Number(v.stockQty ?? 0),
-          sku: v.skuVariant || v.sku || '',
-          status:
-            Number(v.stockQty ?? 0) === 0
-              ? 'out_of_stock'
-              : Number(v.stockQty ?? 0) < 5
-                ? 'low_stock'
-                : 'in_stock',
-        }))
+      ? product.variants.map((v: any) => {
+          let variantImg = v.imageUrl;
+          if (!variantImg && images.length > 0) {
+            const volStr = (v.volume || '').trim().toLowerCase().replace(/\s+/g, '');
+            if (volStr) {
+              const matched = images.find((imgUrl: string) => {
+                const lower = imgUrl.toLowerCase();
+                return (
+                  lower.includes(`-${volStr}.`) ||
+                  lower.includes(`_${volStr}.`) ||
+                  lower.includes(`-${volStr}-`) ||
+                  lower.includes(`_${volStr}_`) ||
+                  lower.endsWith(`-${volStr}`) ||
+                  lower.endsWith(`_${volStr}`)
+                );
+              });
+              if (matched) variantImg = matched;
+            }
+          }
+          return {
+            id: v.id,
+            productId: v.productId,
+            volume: v.volume || '1 Pièce',
+            imageUrl: variantImg ?? (sortedImages[0] || null),
+            priceHT: +(Number(v.price || 0) / 1.19).toFixed(3),
+            priceTTC: Number(v.price || 0),
+            stock: Number(v.stockQty ?? 0),
+            sku: v.skuVariant || v.sku || '',
+            status:
+              Number(v.stockQty ?? 0) === 0
+                ? 'out_of_stock'
+                : Number(v.stockQty ?? 0) < 5
+                  ? 'low_stock'
+                  : 'in_stock',
+          };
+        })
       : [];
 
     const specs = product.specs
@@ -1236,7 +1267,7 @@ export class ProductsService {
             slug: product.category.slug,
           }
         : null,
-      images,
+      images: sortedImages,
       variants,
       specs,
       compatibility,
