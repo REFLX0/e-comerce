@@ -266,18 +266,18 @@ export default function AdminSettingsPage() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-1.5">
                       <label className="text-sm font-semibold text-gray-700">{t('matriculeFiscale')}</label>
-                      <input type="text" placeholder="1823940/A/P/000" value={String(form.FACTURE_MATRICULE_FISCALE ?? '1823940/A/P/000')} onChange={e => set('FACTURE_MATRICULE_FISCALE', e.target.value)} className="w-full rounded-xl border border-gray-200 px-4 py-2 text-sm outline-none focus:border-brand-accent font-mono" />
+                      <input type="text" placeholder="100000/A/P/000" value={String(form.FACTURE_MATRICULE_FISCALE ?? '100000/A/P/000')} onChange={e => set('FACTURE_MATRICULE_FISCALE', e.target.value)} className="w-full rounded-xl border border-gray-200 px-4 py-2 text-sm outline-none focus:border-brand-accent font-mono" />
                     </div>
                     <div className="space-y-1.5">
                       <label className="text-sm font-semibold text-gray-700">{t('registreCommerce')}</label>
-                      <input type="text" placeholder="B0123452026" value={String(form.FACTURE_REGISTRE_COMMERCE ?? '')} onChange={e => set('FACTURE_REGISTRE_COMMERCE', e.target.value)} className="w-full rounded-xl border border-gray-200 px-4 py-2 text-sm outline-none focus:border-brand-accent font-mono" />
+                      <input type="text" placeholder="B0123452026" value={String(form.FACTURE_REGISTRE_COMMERCE ?? 'B0123452026')} onChange={e => set('FACTURE_REGISTRE_COMMERCE', e.target.value)} className="w-full rounded-xl border border-gray-200 px-4 py-2 text-sm outline-none focus:border-brand-accent font-mono" />
                     </div>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="space-y-1.5">
                       <label className="text-sm font-semibold text-gray-700">{t('invoiceAddress')}</label>
-                      <input type="text" placeholder="Jardins De Carthage 1090, Tunis" value={String(form.FACTURE_ADDRESS ?? 'Jardins De Carthage 1090, Tunis')} onChange={e => set('FACTURE_ADDRESS', e.target.value)} className="w-full rounded-xl border border-gray-200 px-4 py-2 text-sm outline-none focus:border-brand-accent" />
+                      <input type="text" placeholder="03, rue Mohamed Bayram 5, Sidi Daoud la Marsa, 2046" value={String(form.FACTURE_ADDRESS ?? '03, rue Mohamed Bayram 5, Sidi Daoud la Marsa, 2046')} onChange={e => set('FACTURE_ADDRESS', e.target.value)} className="w-full rounded-xl border border-gray-200 px-4 py-2 text-sm outline-none focus:border-brand-accent" />
                     </div>
                     <div className="space-y-1.5">
                       <label className="text-sm font-semibold text-gray-700">{t('invoicePhone')}</label>

@@ -23,9 +23,9 @@ const DEFAULT_SETTINGS: Record<string, string> = {
   FACTURE_LOGO: '"/logo.jpg"',
   FACTURE_TABA3: '""',
   FACTURE_CODE_IMG: '""',
-  FACTURE_MATRICULE_FISCALE: '"1823940/A/P/000"',
+  FACTURE_MATRICULE_FISCALE: '"100000/A/P/000"',
   FACTURE_REGISTRE_COMMERCE: '"B0123452026"',
-  FACTURE_ADDRESS: '"Jardins De Carthage 1090, Tunis"',
+  FACTURE_ADDRESS: '"03, rue Mohamed Bayram 5, Sidi Daoud la Marsa, 2046"',
   FACTURE_PHONE: '"29294195"',
   FACTURE_EMAIL: '"specpart@hotmail.com"',
   FACTURE_TVA_RATE: '"19"',
@@ -45,6 +45,25 @@ export class SettingsService implements OnModuleInit {
         update: {}, // Don't overwrite existing values
       });
     }
+
+    // Force update address and matricule if they still have old Carthage or Chaker values
+    try {
+      const currentAddr = await this.prisma.setting.findUnique({ where: { key: 'FACTURE_ADDRESS' } });
+      if (currentAddr && (currentAddr.value.includes('Carthage') || currentAddr.value.includes('Chaker'))) {
+        await this.prisma.setting.update({
+          where: { key: 'FACTURE_ADDRESS' },
+          data: { value: JSON.stringify('03, rue Mohamed Bayram 5, Sidi Daoud la Marsa, 2046') },
+        });
+      }
+
+      const currentMf = await this.prisma.setting.findUnique({ where: { key: 'FACTURE_MATRICULE_FISCALE' } });
+      if (currentMf && currentMf.value.includes('1823940')) {
+        await this.prisma.setting.update({
+          where: { key: 'FACTURE_MATRICULE_FISCALE' },
+          data: { value: JSON.stringify('100000/A/P/000') },
+        });
+      }
+    } catch {}
   }
 
   async getAll(): Promise<Record<string, unknown>> {

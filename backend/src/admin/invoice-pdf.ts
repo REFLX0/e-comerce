@@ -83,7 +83,7 @@ function formatFrenchDate(date: Date): string {
   return `${d} ${m} ${y}`;
 }
 
-function resolveImagePath(imageRef?: string | null): string | null {
+async function resolveImage(imageRef?: string | null): Promise<string | Buffer | null> {
   if (!imageRef || typeof imageRef !== 'string' || imageRef.trim() === '') {
     return null;
   }
@@ -91,22 +91,51 @@ function resolveImagePath(imageRef?: string | null): string | null {
   const clean = imageRef.trim().replace(/^["']|["']$/g, '');
   if (!clean) return null;
 
+  // 1. Direct remote HTTP/HTTPS URL
+  if (clean.startsWith('http://') || clean.startsWith('https://')) {
+    const buf = await fetchImageBuffer(clean);
+    if (buf) return buf;
+  }
+
+  // 2. Storage / MinIO URL (e.g. /storage/specpart/... or /storage/...)
+  if (clean.startsWith('/storage/')) {
+    const minioEndpoints = [
+      process.env.MINIO_ENDPOINT,
+      'http://minio:9000',
+      'http://localhost:9000',
+      'http://127.0.0.1:9000',
+    ].filter(Boolean) as string[];
+
+    const subPath = clean.replace(/^\/storage\//, '');
+    for (const ep of minioEndpoints) {
+      try {
+        const fullUrl = `${ep.replace(/\/$/, '')}/${subPath}`;
+        const buf = await fetchImageBuffer(fullUrl);
+        if (buf) return buf;
+      } catch {}
+    }
+  }
+
+  // 3. Check filesystem across known search roots
   const searchRoots = [
+    __dirname,
+    path.join(__dirname, '..', 'admin'),
+    path.join(__dirname, '..', '..', 'src', 'admin'),
     process.cwd(),
     path.join(process.cwd(), 'uploads'),
+    path.join(process.cwd(), 'uploads', 'products'),
     path.join(process.cwd(), 'public'),
+    path.join(process.cwd(), '..', 'uploads'),
     path.join(process.cwd(), '..', 'frontend', 'public'),
     path.join(__dirname, '..', '..', 'uploads'),
+    path.join(__dirname, '..', '..', 'uploads', 'products'),
     path.join(__dirname, '..', '..', 'public'),
     path.join(__dirname, '..', '..', '..', 'frontend', 'public'),
   ];
 
-  const baseName = path.basename(clean);
-
-  // Direct check
   if (fs.existsSync(clean)) return clean;
 
-  // Search each root
+  const baseName = path.basename(clean);
   for (const root of searchRoots) {
     const p1 = path.join(root, clean.replace(/^\//, ''));
     if (fs.existsSync(p1)) return p1;
@@ -120,9 +149,14 @@ function resolveImagePath(imageRef?: string | null): string | null {
 
 function findDefaultLogo(): string | null {
   const searchRoots = [
+    __dirname,
+    path.join(__dirname, '..', 'admin'),
+    path.join(__dirname, '..', '..', 'src', 'admin'),
     process.cwd(),
     path.join(process.cwd(), 'uploads'),
+    path.join(process.cwd(), 'uploads', 'products'),
     path.join(process.cwd(), 'public'),
+    path.join(process.cwd(), '..', 'uploads'),
     path.join(process.cwd(), '..', 'frontend', 'public'),
     path.join(__dirname, '..', '..', 'uploads'),
     path.join(__dirname, '..', '..', 'public'),
@@ -130,12 +164,12 @@ function findDefaultLogo(): string | null {
   ];
 
   const logoFilenames = [
-    'facturelogo.jpeg',
-    'facturelogo.jpg',
-    'facturelogo.png',
     'logo.jpg',
     'logo.png',
     'logo.jpeg',
+    'facturelogo.jpeg',
+    'facturelogo.jpg',
+    'facturelogo.png',
   ];
 
   for (const root of searchRoots) {
@@ -152,9 +186,13 @@ function findDefaultLogo(): string | null {
 
 function findDefaultStamp(): string | null {
   const searchRoots = [
+    __dirname,
+    path.join(__dirname, '..', 'admin'),
+    path.join(__dirname, '..', '..', 'src', 'admin'),
     process.cwd(),
     path.join(process.cwd(), 'uploads'),
     path.join(process.cwd(), 'public'),
+    path.join(process.cwd(), '..', 'uploads'),
     path.join(process.cwd(), '..', 'frontend', 'public'),
     path.join(__dirname, '..', '..', 'uploads'),
     path.join(__dirname, '..', '..', 'public'),
@@ -186,7 +224,12 @@ export async function generateDeliveryNotePDF(
   settings: InvoiceSettings = {},
 ): Promise<Buffer> {
   const chunks: Buffer[] = [];
-  const doc = new PDFDocument({ size: 'A4', margin: 35, autoFirstPage: true, bufferPages: true });
+  const doc = new PDFDocument({
+    size: 'A4',
+    margins: { top: 35, bottom: 10, left: 35, right: 35 },
+    autoFirstPage: true,
+    bufferPages: true,
+  });
   doc.on('data', (chunk: Buffer) => chunks.push(chunk));
   const pageWidth = 595.28;
   const leftMargin = 35;
@@ -200,8 +243,11 @@ export async function generateDeliveryNotePDF(
   const tableBorderColor = '#334155'; // crisp accounting grid
 
   const companyName = settings.SITE_NAME || 'SPECPART';
-  const companyAddress =
-    settings.FACTURE_ADDRESS || 'Jardins De Carthage 1090, Tunis';
+  let companyAddress =
+    settings.FACTURE_ADDRESS || '03, rue Mohamed Bayram 5, Sidi Daoud la Marsa, 2046';
+  if (!companyAddress || companyAddress.includes('Carthage') || companyAddress.includes('Chaker')) {
+    companyAddress = '03, rue Mohamed Bayram 5, Sidi Daoud la Marsa, 2046';
+  }
   const companyEmail =
     settings.FACTURE_EMAIL ||
     settings.CONTACT_EMAIL ||
@@ -209,44 +255,23 @@ export async function generateDeliveryNotePDF(
   const companyPhone =
     settings.FACTURE_PHONE || settings.CONTACT_PHONE || '29294195';
   const companyMf =
-    settings.FACTURE_MATRICULE_FISCALE || '1823940/A/P/000';
-  const companyRc = settings.FACTURE_REGISTRE_COMMERCE || '';
+    settings.FACTURE_MATRICULE_FISCALE || '100000/A/P/000';
+  const companyRc = settings.FACTURE_REGISTRE_COMMERCE || 'B0123452026';
 
   // Resolve Logo image
-  let logoData: string | Buffer | null = null;
-  if (settings.FACTURE_LOGO) {
-    if (settings.FACTURE_LOGO.startsWith('http://') || settings.FACTURE_LOGO.startsWith('https://')) {
-      logoData = await fetchImageBuffer(settings.FACTURE_LOGO);
-    } else {
-      logoData = resolveImagePath(settings.FACTURE_LOGO);
-    }
-  }
+  let logoData: string | Buffer | null = await resolveImage(settings.FACTURE_LOGO);
   if (!logoData) {
     logoData = findDefaultLogo();
   }
 
   // Resolve Taba3 (Blue Stamp) image
-  let taba3Data: string | Buffer | null = null;
-  if (settings.FACTURE_TABA3) {
-    if (settings.FACTURE_TABA3.startsWith('http://') || settings.FACTURE_TABA3.startsWith('https://')) {
-      taba3Data = await fetchImageBuffer(settings.FACTURE_TABA3);
-    } else {
-      taba3Data = resolveImagePath(settings.FACTURE_TABA3);
-    }
-  }
+  let taba3Data: string | Buffer | null = await resolveImage(settings.FACTURE_TABA3);
   if (!taba3Data) {
     taba3Data = findDefaultStamp();
   }
 
   // Resolve Code Image (QR code / barcode)
-  let codeImgData: string | Buffer | null = null;
-  if (settings.FACTURE_CODE_IMG) {
-    if (settings.FACTURE_CODE_IMG.startsWith('http://') || settings.FACTURE_CODE_IMG.startsWith('https://')) {
-      codeImgData = await fetchImageBuffer(settings.FACTURE_CODE_IMG);
-    } else {
-      codeImgData = resolveImagePath(settings.FACTURE_CODE_IMG);
-    }
-  }
+  let codeImgData: string | Buffer | null = await resolveImage(settings.FACTURE_CODE_IMG);
 
   // ── HEADER: LOGO & COMPANY INFO (LEFT) ──
   let headerLeftTextX = leftMargin;
@@ -268,17 +293,20 @@ export async function generateDeliveryNotePDF(
     .text(companyName.toUpperCase(), headerLeftTextX, startY + 2);
 
   doc
-    .fontSize(9)
+    .fontSize(8.5)
     .font('Helvetica')
     .fillColor(secondaryColor)
-    .text(companyAddress, headerLeftTextX, startY + 16);
-  doc.text(companyEmail, headerLeftTextX, startY + 28);
-  doc.text(companyPhone, headerLeftTextX, startY + 40);
+    .text(companyAddress, headerLeftTextX, startY + 16, { width: 190 });
+
+  const nextY = Math.max(startY + 30, doc.y + 2);
+  doc.text(companyEmail, headerLeftTextX, nextY);
+  doc.text(companyPhone, headerLeftTextX, nextY + 11);
   if (companyMf) {
     doc
+      .fontSize(8.5)
       .font('Helvetica-Bold')
       .fillColor(primaryColor)
-      .text(`MF: ${companyMf}`, headerLeftTextX, startY + 52);
+      .text(`MF: ${companyMf}`, headerLeftTextX, nextY + 22);
   }
 
   // ── HEADER: FACTURE TITLE & DATES (RIGHT) ──
@@ -646,9 +674,9 @@ export async function generateDeliveryNotePDF(
     });
 
   // ── THE BLUE THING (TABA3 / CACHET & SIGNATURE) ──
-  const stampBoxY = Math.max(summaryY + 40, lettersY + 60);
-  const stampBoxWidth = 140;
-  const stampBoxHeight = 85;
+  const stampBoxY = Math.min(Math.max(summaryY + 20, lettersY + 40), doc.page.height - 120);
+  const stampBoxWidth = 130;
+  const stampBoxHeight = 70;
   const stampBoxX = pageWidth - rightMargin - stampBoxWidth;
 
   // Stamp header label
@@ -661,7 +689,7 @@ export async function generateDeliveryNotePDF(
   if (taba3Data) {
     try {
       doc.image(taba3Data, stampBoxX + 10, stampBoxY + 12, {
-        fit: [110, 65],
+        fit: [95, 52],
       });
     } catch {
       doc
@@ -682,7 +710,7 @@ export async function generateDeliveryNotePDF(
       .fontSize(7.5)
       .font('Helvetica')
       .fillColor('#94a3b8')
-      .text('Emplacement Taba3 / Cachet', stampBoxX, stampBoxY + 38, {
+      .text('Emplacement Taba3 / Cachet', stampBoxX, stampBoxY + 30, {
         width: stampBoxWidth,
         align: 'center',
       });
@@ -692,10 +720,11 @@ export async function generateDeliveryNotePDF(
   const range = doc.bufferedPageRange();
   for (let pi = range.start; pi < range.start + range.count; pi++) {
     doc.switchToPage(pi);
-    const footerY = doc.page.height - 35;
+    const lineY1 = doc.page.height - 32;
+    const lineY2 = doc.page.height - 21;
     doc
-      .moveTo(leftMargin, footerY - 8)
-      .lineTo(pageWidth - rightMargin, footerY - 8)
+      .moveTo(leftMargin, lineY1 - 6)
+      .lineTo(pageWidth - rightMargin, lineY1 - 6)
       .strokeColor('#e2e8f0')
       .stroke();
 
@@ -704,12 +733,20 @@ export async function generateDeliveryNotePDF(
       .font('Helvetica')
       .fillColor('#64748b')
       .text(
-        `${companyName} — ${companyAddress} — Tél: ${companyPhone} — Email: ${companyEmail}${
+        `${companyName} — ${companyAddress}`,
+        leftMargin,
+        lineY1,
+        { align: 'center', width: contentWidth, lineBreak: false },
+      );
+
+    doc
+      .text(
+        `Tél: ${companyPhone} — Email: ${companyEmail}${
           companyMf ? ' — MF: ' + companyMf : ''
         }${companyRc ? ' — RC: ' + companyRc : ''}`,
         leftMargin,
-        footerY,
-        { align: 'center', width: contentWidth },
+        lineY2,
+        { align: 'center', width: contentWidth, lineBreak: false },
       );
   }
 
@@ -744,7 +781,11 @@ export interface POSInvoiceData {
 
 export async function generatePOSInvoicePDF(data: POSInvoiceData): Promise<Buffer> {
   const chunks: Buffer[] = [];
-  const doc = new PDFDocument({ size: 'A4', margin: 40, bufferPages: true });
+  const doc = new PDFDocument({
+    size: 'A4',
+    margins: { top: 35, bottom: 10, left: 40, right: 40 },
+    bufferPages: true,
+  });
   doc.on('data', (chunk) => chunks.push(chunk));
 
   const settings = data.settings ?? {};
@@ -755,10 +796,14 @@ export async function generatePOSInvoicePDF(data: POSInvoiceData): Promise<Buffe
 
   // ── Company info from settings (same source as delivery note) ──
   const companyName    = settings.SITE_NAME || 'SPECPART';
-  const companyAddress = settings.FACTURE_ADDRESS || 'Jardins De Carthage 1090, Tunis';
-  const companyPhone   = settings.FACTURE_PHONE   || settings.CONTACT_PHONE  || '29 294 195';
+  let companyAddress = settings.FACTURE_ADDRESS || '03, rue Mohamed Bayram 5, Sidi Daoud la Marsa, 2046';
+  if (!companyAddress || companyAddress.includes('Carthage') || companyAddress.includes('Chaker')) {
+    companyAddress = '03, rue Mohamed Bayram 5, Sidi Daoud la Marsa, 2046';
+  }
+  const companyPhone   = settings.FACTURE_PHONE   || settings.CONTACT_PHONE  || '29294195';
   const companyEmail   = settings.FACTURE_EMAIL   || settings.CONTACT_EMAIL  || 'specpart@hotmail.com';
-  const companyMf      = settings.FACTURE_MATRICULE_FISCALE || '1823940/A/P/000';
+  const companyMf      = settings.FACTURE_MATRICULE_FISCALE || '100000/A/P/000';
+  const companyRc      = settings.FACTURE_REGISTRE_COMMERCE || 'B0123452026';
 
   // ── Colors (matching delivery note palette) ──
   const PRIMARY   = '#0B1D3A';
@@ -769,13 +814,9 @@ export async function generatePOSInvoicePDF(data: POSInvoiceData): Promise<Buffe
   const WHITE     = '#ffffff';
 
   // ── Logo ──
-  let logoData: string | Buffer | null = null;
-  if (settings.FACTURE_LOGO) {
-    if (settings.FACTURE_LOGO.startsWith('http://') || settings.FACTURE_LOGO.startsWith('https://')) {
-      logoData = await fetchImageBuffer(settings.FACTURE_LOGO);
-    } else {
-      logoData = resolveImagePath(settings.FACTURE_LOGO);
-    }
+  let logoData: string | Buffer | null = await resolveImage(settings.FACTURE_LOGO);
+  if (!logoData) {
+    logoData = findDefaultLogo();
   }
 
   // ── Totals ──
@@ -875,13 +916,28 @@ export async function generatePOSInvoicePDF(data: POSInvoiceData): Promise<Buffe
   const range = doc.bufferedPageRange();
   for (let i = range.start; i < range.start + range.count; i++) {
     doc.switchToPage(i);
-    const footerY = doc.page.height - 55;
-    doc.moveTo(L, footerY).lineTo(pageWidth - R, footerY).strokeColor(BORDER).stroke();
-    doc.fontSize(7.5).fillColor(GRAY).font('Helvetica')
-      .text(`${companyName} — ${companyAddress}`, L, footerY + 8, { align: 'center', width: contentWidth })
-      .text(`Tél: ${companyPhone} | ${companyEmail}`, L, footerY + 21, { align: 'center', width: contentWidth });
-    doc.fontSize(7.5).fillColor(PRIMARY).font('Helvetica-Bold')
-      .text(`Matricule Fiscal: ${companyMf}`, L, footerY + 34, { align: 'center', width: contentWidth });
+    const lineY1 = doc.page.height - 32;
+    const lineY2 = doc.page.height - 21;
+    doc.moveTo(L, lineY1 - 6).lineTo(pageWidth - R, lineY1 - 6).strokeColor(BORDER).stroke();
+    doc
+      .fontSize(7.5)
+      .fillColor(GRAY)
+      .font('Helvetica')
+      .text(
+        `${companyName} — ${companyAddress}`,
+        L,
+        lineY1,
+        { align: 'center', width: contentWidth, lineBreak: false },
+      );
+    doc
+      .text(
+        `Tél: ${companyPhone} — Email: ${companyEmail}${
+          companyMf ? ' — MF: ' + companyMf : ''
+        }${companyRc ? ' — RC: ' + companyRc : ''}`,
+        L,
+        lineY2,
+        { align: 'center', width: contentWidth, lineBreak: false },
+      );
   }
 
   return new Promise((resolve, reject) => {
