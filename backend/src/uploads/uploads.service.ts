@@ -29,7 +29,7 @@ export class UploadsService {
 
     // MinIO init
     this.useMinio = !!process.env.MINIO_ENDPOINT;
-    this.minioBucket = process.env.MINIO_BUCKET || 'specpart-images';
+    this.minioBucket = process.env.MINIO_BUCKET || 'specpart';
     if (this.useMinio) {
       this.s3Client = new S3Client({
         region: process.env.MINIO_REGION || 'us-east-1',
