@@ -3,6 +3,7 @@
 import { useMemo } from 'react'
 import { useTranslations } from 'next-intl'
 import type { ProductVariant } from '@/lib/types'
+import { parseVolumeToL } from '@/lib/utils/format'
 
 interface Props {
   variants: ProductVariant[]
@@ -13,7 +14,7 @@ interface Props {
 export function VariantSelector({ variants, selectedVariant, onChange }: Props) {
   const t = useTranslations('Product')
 
-  // Deduplicate variants by normalized volume & sort naturally (1L, 4L, 5L, 7L, etc.)
+  // Deduplicate variants by normalized volume & sort ascending (250ml -> 500ml -> 1L -> 4L -> 5L...)
   const uniqueVariants = useMemo(() => {
     if (!variants || variants.length === 0) return []
     const seen = new Map<string, ProductVariant>()
@@ -32,9 +33,12 @@ export function VariantSelector({ variants, selectedVariant, onChange }: Props) 
     }
 
     return Array.from(seen.values()).sort((a, b) => {
-      const volA = parseFloat(a.volume || a.label || '0') || 0
-      const volB = parseFloat(b.volume || b.label || '0') || 0
-      return volA - volB
+      const volA = parseVolumeToL(a.volume || a.label)
+      const volB = parseVolumeToL(b.volume || b.label)
+      if (volA !== null && volB !== null) return volA - volB
+      if (volA !== null) return -1
+      if (volB !== null) return 1
+      return 0
     })
   }, [variants])
 

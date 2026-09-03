@@ -102,9 +102,19 @@ export function ProductCard({ product, viewMode = 'grid' }: Props) {
     return raw
   }, [product.variants])
 
-  // Variants eligible for image carousel (must have an imageUrl)
+  // Variants eligible for image carousel (must have an imageUrl and strictly unique image URLs)
   const carouselVariants = useMemo(() => {
-    return sortedVariants.filter((v) => Boolean(v.imageUrl))
+    const seen = new Set<string>()
+    const list: ProductVariant[] = []
+    for (const v of sortedVariants) {
+      if (!v.imageUrl) continue
+      const key = v.imageUrl.trim().toLowerCase()
+      if (!seen.has(key)) {
+        seen.add(key)
+        list.push(v)
+      }
+    }
+    return list
   }, [sortedVariants])
 
   const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(null)
@@ -134,8 +144,8 @@ export function ProductCard({ product, viewMode = 'grid' }: Props) {
   const activeVariant = useMemo(() => {
     if (isManuallySelected && selectedVariant) return selectedVariant
     if (carouselVariants.length > 0) return carouselVariants[carouselIndex]
-    return product.variants?.[0]
-  }, [isManuallySelected, selectedVariant, carouselVariants, carouselIndex, product.variants])
+    return sortedVariants[0] || product.variants?.[0]
+  }, [isManuallySelected, selectedVariant, carouselVariants, carouselIndex, sortedVariants, product.variants])
 
   // Current image to display
   const currentImage = useMemo(() => {
@@ -143,10 +153,10 @@ export function ProductCard({ product, viewMode = 'grid' }: Props) {
       return selectedVariant.imageUrl
     }
     if (carouselVariants.length > 0) {
-      return carouselVariants[carouselIndex]?.imageUrl || product.images?.[0]
+      return carouselVariants[carouselIndex]?.imageUrl || sortedVariants[0]?.imageUrl || product.images?.[0]
     }
-    return product.images?.[0]
-  }, [isManuallySelected, selectedVariant, carouselVariants, carouselIndex, product.images])
+    return sortedVariants[0]?.imageUrl || product.images?.[0]
+  }, [isManuallySelected, selectedVariant, carouselVariants, carouselIndex, sortedVariants, product.images])
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault()

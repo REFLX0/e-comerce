@@ -17,13 +17,15 @@ import { formatSKU } from '@/lib/utils/format'
 
 interface Props {
   product: Product
+  variants?: ProductVariant[]
   selectedVariant?: ProductVariant
   onVariantChange?: (variant: ProductVariant) => void
 }
 
-export function ProductInfo({ product, selectedVariant: controlledVariant, onVariantChange }: Props) {
+export function ProductInfo({ product, variants: externalVariants, selectedVariant: controlledVariant, onVariantChange }: Props) {
   const t = useTranslations('Product')
-  const [internalVariant, setInternalVariant] = useState(product.variants[0])
+  const availableVariants = externalVariants ?? product.variants
+  const [internalVariant, setInternalVariant] = useState(availableVariants[0])
   const selectedVariant = controlledVariant ?? internalVariant
   const setSelectedVariant = onVariantChange ?? setInternalVariant
   const { isCompatible, vehicleLabel, hasCheckedVehicles } = useProductCompatibility(product)
@@ -101,7 +103,7 @@ export function ProductInfo({ product, selectedVariant: controlledVariant, onVar
 
       {/* Variant Selector */}
       <VariantSelector
-        variants={product.variants}
+        variants={availableVariants}
         selectedVariant={selectedVariant}
         onChange={setSelectedVariant}
       />

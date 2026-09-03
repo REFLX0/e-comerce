@@ -31,48 +31,41 @@ interface Props {
   variantImageUrl?: string | null
   variants?: ProductVariant[]
   isVariantManuallySelected?: boolean
+  onVariantChange?: (variant: ProductVariant) => void
 }
 
-export function ProductGallery({ images, productName, variantImageUrl, variants, isVariantManuallySelected }: Props) {
+export function ProductGallery({ images, productName, variantImageUrl, variants, isVariantManuallySelected, onVariantChange }: Props) {
   const t = useTranslations('Product')
   const [currentIndex, setCurrentIndex] = useState(0)
   const [imageUnavailable, setImageUnavailable] = useState(false)
 
-  // 1. Variant Detection & Sorting — parse the volume string since backend doesn't return volumeL
-  const sortedVariantImages = useMemo(() => {
+  // 1. Variant Detection & Sorting — parse the volume string and map to variant
+  const variantItems = useMemo(() => {
     if (!variants || variants.length === 0) return []
     // Filter variants that have images and a parseable volume, sort ascending
     const withImages = variants
       .filter((v) => !!v.imageUrl && parseVolumeToL(v.volume) !== null)
       .sort((a, b) => (parseVolumeToL(a.volume) ?? 0) - (parseVolumeToL(b.volume) ?? 0))
 
-    // De-duplicate images (some variants share the same image)
+    // De-duplicate images strictly (no duplicate bottle images)
     const seen = new Set<string>()
-    const deduped: string[] = []
+    const items: { url: string; variant: ProductVariant }[] = []
     for (const v of withImages) {
       const url = v.imageUrl as string
       const key = normalizeImageKey(url)
       if (key && !seen.has(key)) {
         seen.add(key)
-        deduped.push(url)
+        items.push({ url, variant: v })
       }
     }
-    return deduped
+    return items
   }, [variants])
 
   // If product has volume variants with images, THOSE are the canonical images of the product.
-  // We avoid appending duplicate entries from the general product images array.
+  // Strictly prevent appending duplicate entries from the general product images array.
   const allThumbnails = useMemo(() => {
-    if (sortedVariantImages.length > 0) {
-      if (images && images.length > sortedVariantImages.length) {
-        // Only append truly extra images beyond the variant count (e.g. certificates or spec sheets)
-        const seen = new Set(sortedVariantImages.map((u) => normalizeImageKey(u)))
-        const extra = images
-          .filter((u) => !seen.has(normalizeImageKey(u)))
-          .slice(0, images.length - sortedVariantImages.length)
-        return [...sortedVariantImages, ...extra]
-      }
-      return sortedVariantImages
+    if (variantItems.length > 0) {
+      return variantItems.map((item) => item.url)
     }
 
     // For products without volume variants (e.g. filters, parts), use product images deduplicated
@@ -86,7 +79,7 @@ export function ProductGallery({ images, productName, variantImageUrl, variants,
       }
     }
     return result
-  }, [images, sortedVariantImages])
+  }, [images, variantItems])
 
   // Snap to variant image if manually selected
   useEffect(() => {
@@ -108,14 +101,20 @@ export function ProductGallery({ images, productName, variantImageUrl, variants,
   if (!allThumbnails || allThumbnails.length === 0) {
     return (
       <div className="bg-brand-surface border-brand-surface-dark flex aspect-square items-center justify-center rounded-2xl border">
-        <span className="text-gray-400">{t('imageNotAvailable')}</span>
+        <div className="flex flex-col items-center gap-3 text-gray-400">
+          <Package size={48} strokeWidth={1.5} />
+          <span className="text-sm font-medium">{t('imageNotAvailable')}</span>
+        </div>
       </div>
     )
   }
 
-  const handleManualNavigation = (newIndex: number) => {
-    setCurrentIndex(newIndex)
+  const handleManualNavigation = (index: number) => {
+    setCurrentIndex(index)
     setImageUnavailable(false)
+    if (variantItems[index]?.variant && onVariantChange) {
+      onVariantChange(variantItems[index].variant)
+    }
   }
 
   return (
