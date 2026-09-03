@@ -32,6 +32,8 @@ export type NavigationTaxonomyNode = {
   hint?: string
   /** Translation key for the hint (Taxonomy namespace). */
   hintKey?: string
+  /** Optional direct link URL (e.g. category with query filters) */
+  href?: string
   children?: NavigationTaxonomyNode[]
 }
 
@@ -58,9 +60,9 @@ export const NAVIGATION_TAXONOMY: NavigationTaxonomyItem[] = [
         hint: '100% Synthétique, Semi-Synthétique, Minérale',
         hintKey: 'syntheticHint',
         children: [
-          { slug: 'auto-synthese', label: '100% Synthèse', labelKey: 'autoSynthese' },
-          { slug: 'auto-semi', label: 'Semi-Synthèse', labelKey: 'autoSemi' },
-          { slug: 'auto-minerale', label: 'Minérale', labelKey: 'autoMinerale' },
+          { slug: 'auto-synthese', label: '100% Synthèse', labelKey: 'autoSynthese', href: '/categorie/huiles-moteur?type=100%25+Synth%C3%A8se' },
+          { slug: 'auto-semi', label: 'Semi-Synthèse', labelKey: 'autoSemi', href: '/categorie/huiles-moteur?type=Semi-Synth%C3%A8se' },
+          { slug: 'auto-minerale', label: 'Minérale', labelKey: 'autoMinerale', href: '/categorie/huiles-moteur?type=Min%C3%A9rale' },
         ],
       },
       {

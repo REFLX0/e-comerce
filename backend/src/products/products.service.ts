@@ -97,6 +97,12 @@ export class ProductsService {
       'liquide-de-frein': ['liquide-de-frein', 'liquide-frein'],
       'antigel-refroidissement': ['antigel-refroidissement', 'refroidissement'],
       'huiles-moteur': ['huiles-moteur', 'huiles-moteur-auto', 'huiles-moteur-specifiques', 'auto-synthese', 'auto-semi', 'auto-minerale'],
+      'auto-synthese': ['huiles-moteur', 'huiles-moteur-auto', 'auto-synthese'],
+      'auto-semi': ['huiles-moteur', 'huiles-moteur-auto', 'auto-semi'],
+      'auto-minerale': ['huiles-moteur', 'huiles-moteur-auto', 'auto-minerale'],
+      'additif-essence': ['additifs', 'additifs-carburant'],
+      'additif-diesel': ['additifs', 'additifs-carburant'],
+      'additif-huile': ['additifs', 'additifs-huile'],
       'huile-de-boite': ['huile-de-boite', 'huiles-boite-transmission'],
       'marine': ['marine', 'marine-moteurs', 'marine-hydraulique', 'marine-graisses', 'marine-huiles-lubrifiants'],
     };
@@ -279,8 +285,13 @@ export class ProductsService {
       if (filters.volume) {
         variantSome.volume = filters.volume;
       }
-      if (filters.type) {
-        switch (filters.type) {
+      const requestedType = filters.type || (
+        filters.categorySlug === 'auto-synthese' ? '100% Synthèse' :
+        filters.categorySlug === 'auto-semi' ? 'Semi-Synthèse' :
+        filters.categorySlug === 'auto-minerale' ? 'Minérale' : undefined
+      );
+      if (requestedType) {
+        switch (requestedType) {
           case '100% Synthèse':
             specsInput.isFullySynth = true;
             break;

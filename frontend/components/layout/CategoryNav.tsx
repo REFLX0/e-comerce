@@ -88,8 +88,9 @@ export function CategoryNav() {
               >
                 {/* ── Nav Button ── */}
                 {item.children.length > 0 ? (
-                  <button
-                    type="button"
+                  <Link
+                    href={`/categorie/${item.slug}`}
+                    onClick={closeNow}
                     aria-expanded={isOpen}
                     aria-haspopup="menu"
                     className="nav-tab-btn group relative flex h-full items-center gap-2 px-5 text-sm font-semibold transition-all duration-200"
@@ -113,7 +114,7 @@ export function CategoryNav() {
                     {!isOpen && (
                       <span className="nav-underline absolute bottom-0 left-0 h-[2px] w-0 bg-brand-accent transition-all duration-200 group-hover:w-full" />
                     )}
-                  </button>
+                  </Link>
                 ) : (
                   <Link
                     href={`/categorie/${item.slug}`}
@@ -245,10 +246,11 @@ function FlyoutPanel({
             return (
               <li key={child.slug} role="none">
                 {hasSubs ? (
-                  // Item with sub-children: hover reveals right panel
-                  <button
-                    type="button"
+                  // Item with sub-children: hover reveals right panel, clicking navigates to category
+                  <Link
+                    href={`/categorie/${child.slug}`}
                     role="menuitem"
+                    onClick={onClose}
                     onMouseEnter={() => setActiveChild(child.slug)}
                     className="flyout-item group flex w-full items-center justify-between gap-3 px-5 py-2.5 text-sm transition-all duration-150 hover:bg-slate-50"
                     style={{
@@ -277,7 +279,7 @@ function FlyoutPanel({
                       className={`shrink-0 transition-colors ${isRtl ? 'rotate-180' : ''}`}
                       style={{ color: isActive ? '#D4A76A' : 'rgba(22,37,76,0.3)' }}
                     />
-                  </button>
+                  </Link>
                 ) : (
                   // Leaf item: direct link
                   <Link
@@ -389,11 +391,12 @@ function SubPanel({
         {(node.children ?? []).map((subChild) => {
           const subDbNode = dbNode?.children?.find((c) => c.slug === subChild.slug)
           const subLabel = subChild.labelKey ? tTax(subChild.labelKey) : (subDbNode?.name ?? subChild.label ?? subChild.slug)
+          const targetHref = subChild.href || `/categorie/${subChild.slug}`
 
           return (
             <li key={subChild.slug} role="none">
               <Link
-                href={`/categorie/${subChild.slug}`}
+                href={targetHref}
                 role="menuitem"
                 onClick={onClose}
                 className="sub-item group flex items-center gap-3 px-5 py-[10px] text-sm font-medium transition-all duration-150"
