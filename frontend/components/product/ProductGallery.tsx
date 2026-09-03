@@ -20,6 +20,21 @@ function parseVolumeToL(volume?: string | null): number | null {
   return match[2] === 'ml' ? val / 1000 : val
 }
 
+/**
+ * Normalizes an image URL or path to a comparable key (e.g. filename)
+ * so that full URLs and relative URLs referring to the same file are properly deduplicated.
+ */
+function normalizeImageKey(url?: string | null): string {
+  if (!url) return ''
+  try {
+    const clean = url.trim().split('?')[0].split('#')[0]
+    const filename = clean.split('/').pop()?.toLowerCase() || ''
+    return filename || clean.toLowerCase()
+  } catch {
+    return (url || '').trim().toLowerCase()
+  }
+}
+
 interface Props {
   images: string[]
   productName: string
@@ -48,15 +63,39 @@ export function ProductGallery({ images, productName, variantImageUrl, variants,
     const deduped: string[] = []
     for (const v of withImages) {
       const url = v.imageUrl as string
-      if (!seen.has(url)) { seen.add(url); deduped.push(url) }
+      const key = normalizeImageKey(url)
+      if (key && !seen.has(key)) {
+        seen.add(key)
+        deduped.push(url)
+      }
     }
     return deduped
   }, [variants])
 
-  // Combine product images and variant images for the static thumbnail grid, removing duplicates
+  // Combine variant images (sorted ascending by capacity) and extra product images, eliminating any duplicates
   const allThumbnails = useMemo(() => {
-    const combined = [...images, ...sortedVariantImages]
-    return Array.from(new Set(combined))
+    const seen = new Set<string>()
+    const result: string[] = []
+
+    // 1. Prioritize sorted variant images (1L, 5L, 20L, 60L...)
+    for (const url of sortedVariantImages) {
+      const key = normalizeImageKey(url)
+      if (key && !seen.has(key)) {
+        seen.add(key)
+        result.push(url)
+      }
+    }
+
+    // 2. Add extra gallery images that are NOT already in the variant images list
+    for (const url of images || []) {
+      const key = normalizeImageKey(url)
+      if (key && !seen.has(key)) {
+        seen.add(key)
+        result.push(url)
+      }
+    }
+
+    return result
   }, [images, sortedVariantImages])
 
   // 2. Determine if Autoplay is eligible
@@ -80,9 +119,9 @@ export function ProductGallery({ images, productName, variantImageUrl, variants,
   useEffect(() => {
     if (isVariantManuallySelected && variantImageUrl) {
       // Try to sync the thumbnail highlight to match the selected variant image
-      const idx = allThumbnails.indexOf(variantImageUrl)
+      const targetKey = normalizeImageKey(variantImageUrl)
+      const idx = allThumbnails.findIndex((img) => normalizeImageKey(img) === targetKey)
       if (idx !== -1) setCurrentIndex(idx)
-      // If not found in allThumbnails, the image is still shown via currentMainImage override
     } else if (!isVariantManuallySelected) {
       // Reset to first image when selection is cleared
       setCurrentIndex(0)
@@ -186,13 +225,13 @@ export function ProductGallery({ images, productName, variantImageUrl, variants,
             <button
               key={idx}
               onClick={() => handleManualNavigation(idx)}
-              className={`relative h-14 w-14 shrink-0 overflow-hidden rounded-lg border-2 transition-all duration-300 ${
-                (isAutoplayEligible ? (img === currentMainImage) : currentIndex === idx)
+              className={`relative h-14 w-14 shrink-0 overflow-hidden rounded-lg border-2 bg-white transition-all duration-300 ${
+                (isAutoplayEligible ? (normalizeImageKey(img) === normalizeImageKey(currentMainImage)) : currentIndex === idx)
                   ? 'border-brand-primary shadow-md ring-2 ring-brand-primary/20 scale-105'
                   : 'hover:border-brand-primary/40 border-gray-200 opacity-70 hover:opacity-100'
               }`}
             >
-              <Image src={img} alt="" fill className="object-cover" />
+              <Image src={img} alt="" fill className="object-contain p-1" />
             </button>
           ))}
         </div>

@@ -1,12 +1,11 @@
 "use client"
 
 import { useTranslations } from 'next-intl'
-import { Truck, ShieldCheck, RotateCcw, CreditCard } from 'lucide-react'
+import { Truck, ShieldCheck, CreditCard } from 'lucide-react'
 
 const BADGES = [
   { icon: ShieldCheck, titleKey: 'authentic', descKey: 'authenticDesc', color: 'text-emerald-600', bg: 'bg-emerald-50' },
   { icon: Truck, titleKey: 'fastDelivery', descKey: 'fastDeliveryDesc', color: 'text-blue-600', bg: 'bg-blue-50' },
-  { icon: RotateCcw, titleKey: 'easyReturns', descKey: 'easyReturnsDesc', color: 'text-violet-600', bg: 'bg-violet-50' },
   { icon: CreditCard, titleKey: 'securePayment', descKey: 'securePaymentDesc', color: 'text-amber-600', bg: 'bg-amber-50' },
 ]
 
@@ -18,13 +17,12 @@ interface TrustBadgesProps {
 export function TrustBadges({ variant = 'grid', className }: TrustBadgesProps) {
   const t = useTranslations('Common')
 
-  // Compact variant: 3 key items horizontal (under Add to Cart)
+  // Compact variant: 3 key items horizontal (under Add to Cart on product page)
   if (variant === 'compact') {
-    const compactBadges = BADGES.slice(1)
     return (
       <div className={`${className ?? ''}`}>
         <div className="flex items-center justify-center gap-4 sm:gap-6">
-          {compactBadges.map((b) => (
+          {BADGES.map((b) => (
             <div key={b.titleKey} className="flex items-center gap-2 text-xs text-gray-500">
               <b.icon size={14} className="shrink-0 text-gray-400" />
               <span className="leading-tight">{t(b.descKey)}</span>
