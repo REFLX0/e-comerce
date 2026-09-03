@@ -37,7 +37,8 @@
         "changeLanguage": "Changer de langue",
         "skipToContent": "Aller au contenu principal",
         "madeBy": "Réalisé par Mohamed Harbi & Mohamed Aziz Jlassi",
-        "allRightsReserved": "Tous droits réservés."
+        "allRightsReserved": "Tous droits réservés.",
+        "description": "Votre spécialiste en pièces automobiles et lubrifiants en Tunisie. Pièces détachées d'origine, huiles moteur, filtres et accessoires."
     },
     "Search": {
         "placeholder": "Rechercher un produit, marque...",
@@ -53,20 +54,7 @@
         "noResult": "Aucun résultat",
         "minChars": "Saisissez au moins 3 caractères pour lancer la recherche"
     },
-    "Catalogue": {
-        "title": "Catalogue",
-        "filters": "Filtres",
-        "clearFilters": "Effacer tous les filtres",
-        "allProducts": "Tous les produits",
-        "inStock": "En stock",
-        "outOfStock": "Rupture de stock",
-        "imageNotAvailable": "Image non disponible",
-        "addToWishlist": "Ajouter aux favoris",
-        "compare": "Comparer",
-        "compatibility": "Compatibilité Véhicules",
-        "oemReferences": "Références Constructeurs (OEM)",
-        "specifications": "Caractéristiques Techniques"
-    },
+
     "Footer": {
         "description": "Spécialiste en lubrifiants et pièces automobiles pour véhicules particuliers, commerciaux et industriels.",
         "newsletterPlaceholder": "votre@email.com",
@@ -236,6 +224,17 @@
         "shippingNotIncluded": "+ Frais de livraison (non inclus)"
     },
     "Catalogue": {
+        "title": "Catalogue",
+        "clearFilters": "Effacer tous les filtres",
+        "allProducts": "Tous les produits",
+        "inStock": "En stock",
+        "outOfStock": "Rupture de stock",
+        "imageNotAvailable": "Image non disponible",
+        "addToWishlist": "Ajouter aux favoris",
+        "compare": "Comparer",
+        "compatibility": "Compatibilité Véhicules",
+        "oemReferences": "Références Constructeurs (OEM)",
+        "specifications": "Caractéristiques Techniques",
         "filters": "Filtres",
         "clear": "Effacer",
         "categories": "Catégories",

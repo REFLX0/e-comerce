@@ -37,7 +37,8 @@
         "changeLanguage": "Change language",
         "skipToContent": "Skip to main content",
         "madeBy": "Made by Mohamed Harbi & Mohamed Aziz Jlassi",
-        "allRightsReserved": "All rights reserved."
+        "allRightsReserved": "All rights reserved.",
+        "description": "Your specialist in automotive parts and lubricants in Tunisia. Original spare parts, engine oils, filters and accessories."
     },
     "Search": {
         "placeholder": "Search for a product, brand...",
@@ -53,20 +54,7 @@
         "noResult": "No results",
         "minChars": "Enter at least 3 characters to start searching"
     },
-    "Catalogue": {
-        "title": "Catalog",
-        "filters": "Filters",
-        "clearFilters": "Clear all filters",
-        "allProducts": "All products",
-        "inStock": "In Stock",
-        "outOfStock": "Out of stock",
-        "imageNotAvailable": "Image not available",
-        "addToWishlist": "Add to wishlist",
-        "compare": "Compare",
-        "compatibility": "Vehicle Compatibility",
-        "oemReferences": "OEM References",
-        "specifications": "Technical Specifications"
-    },
+
     "Footer": {
         "description": "Specialist in lubricants and auto parts for passenger, commercial and industrial vehicles.",
         "newsletterPlaceholder": "your@email.com",
@@ -236,6 +224,17 @@
         "shippingNotIncluded": "+ Shipping fees (not included)"
     },
     "Catalogue": {
+        "title": "Catalog",
+        "clearFilters": "Clear all filters",
+        "allProducts": "All products",
+        "inStock": "In Stock",
+        "outOfStock": "Out of stock",
+        "imageNotAvailable": "Image not available",
+        "addToWishlist": "Add to wishlist",
+        "compare": "Compare",
+        "compatibility": "Vehicle Compatibility",
+        "oemReferences": "OEM References",
+        "specifications": "Technical Specifications",
         "filters": "Filters",
         "clear": "Clear",
         "categories": "Categories",

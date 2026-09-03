@@ -37,7 +37,8 @@
         "changeLanguage": "تغيير اللغة",
         "skipToContent": "الانتقال إلى المحتوى الرئيسي",
         "madeBy": "إعداد محمد حربي ومحمد عزيز الجلاصي",
-        "allRightsReserved": "جميع الحقوق محفوظة."
+        "allRightsReserved": "جميع الحقوق محفوظة.",
+        "description": "متخصصون في قطع غيار السيارات وزيوت المحركات في تونس. قطع أصلية، زيوت، فلاتر وإكسسوارات."
     },
     "Search": {
         "placeholder": "ابحث عن منتج أو علامة تجارية...",
@@ -53,20 +54,7 @@
         "noResult": "لا توجد نتائج",
         "minChars": "أدخل 3 أحرف على الأقل لبدء البحث"
     },
-    "Catalogue": {
-        "title": "الكتالوج",
-        "filters": "الفلاتر",
-        "clearFilters": "مسح جميع الفلاتر",
-        "allProducts": "جميع المنتجات",
-        "inStock": "متوفر",
-        "outOfStock": "غير متوفر",
-        "imageNotAvailable": "الصورة غير متوفرة",
-        "addToWishlist": "إضافة إلى المفضلة",
-        "compare": "مقارنة",
-        "compatibility": "توافق المركبات",
-        "oemReferences": "المراجع الأصلية (OEM)",
-        "specifications": "المواصفات الفنية"
-    },
+
     "Footer": {
         "description": "متخصص في الشحوم وقطع غيار السيارات للسيارات الخفيفة والتجارية والصناعية.",
         "newsletterPlaceholder": "بريدك@الإلكتروني.com",
@@ -236,6 +224,17 @@
         "shippingNotIncluded": "+ رسوم التوصيل (غير مشمولة)"
     },
     "Catalogue": {
+        "title": "الكتالوج",
+        "clearFilters": "مسح جميع الفلاتر",
+        "allProducts": "جميع المنتجات",
+        "inStock": "متوفر",
+        "outOfStock": "غير متوفر",
+        "imageNotAvailable": "الصورة غير متوفرة",
+        "addToWishlist": "إضافة إلى المفضلة",
+        "compare": "مقارنة",
+        "compatibility": "توافق المركبات",
+        "oemReferences": "المراجع الأصلية (OEM)",
+        "specifications": "المواصفات الفنية",
         "filters": "الفلاتر",
         "clear": "مسح",
         "categories": "الفئات",

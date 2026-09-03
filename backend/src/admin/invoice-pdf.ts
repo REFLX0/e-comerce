@@ -322,65 +322,70 @@ export async function generateDeliveryNotePDF(
   const dateStr = formatFrenchDate(orderDate);
 
   const titleY = startY; // aligned with top of header
+  const rightColWidth = 230;
+  const rightColX = pageWidth - rightMargin - rightColWidth;
 
-  // Document type title — large, right-aligned
+  // Document type title — large, right-aligned, fully isolated on its own in right column
   doc
-    .fontSize(20)
+    .fontSize(22)
     .font('Helvetica-Bold')
     .fillColor('#1e293b')
     .text(
-      docType === 'delivery_slip' ? 'BON DE LIVRAISON' : 'FACTURE',
-      leftMargin,
+      docType === 'delivery_slip' ? 'Bon de livraison' : 'Facture',
+      rightColX,
       titleY,
-      { align: 'right', width: contentWidth, lineBreak: false }
+      { align: 'right', width: rightColWidth, lineBreak: false }
     );
 
-  // Reference number (BL XXXXX or N° XXXXX) — below the title
-  const refY = titleY + 26;
+  // Reference number (e.g. BL 12345 or N° 12345) — directly underneath the title
+  const refY = titleY + 28;
   doc
-    .fontSize(10)
+    .fontSize(11)
     .font('Helvetica-Bold')
     .fillColor('#475569')
     .text(
-      docType === 'delivery_slip' ? `BL ${orderNumber}` : `N° ${orderNumber}`,
-      leftMargin,
+      docType === 'delivery_slip' ? `BL : ${orderNumber}` : `N° : ${orderNumber}`,
+      rightColX,
       refY,
-      { align: 'right', width: contentWidth, lineBreak: false }
+      { align: 'right', width: rightColWidth, lineBreak: false }
     );
 
-  // Date fields below the reference
-  const dateFieldY = refY + 18;
+  // Date field below the reference
+  const dateFieldY = refY + 20;
   doc
     .fontSize(9)
     .font('Helvetica-Bold')
     .fillColor('#1e293b')
-    .text('Date :', leftMargin, dateFieldY, {
+    .text('Date :', rightColX, dateFieldY, {
       align: 'right',
-      width: contentWidth - 90,
+      width: rightColWidth - 90,
     });
   doc
     .font('Helvetica')
     .fillColor('#475569')
-    .text(dateStr, leftMargin, dateFieldY, {
+    .text(dateStr, rightColX, dateFieldY, {
       align: 'right',
-      width: contentWidth,
+      width: rightColWidth,
     });
 
-  doc
-    .fontSize(9)
-    .font('Helvetica-Bold')
-    .fillColor('#1e293b')
-    .text("Date d'échéance :", leftMargin, dateFieldY + 14, {
-      align: 'right',
-      width: contentWidth - 90,
-    });
-  doc
-    .font('Helvetica')
-    .fillColor('#475569')
-    .text(dateStr, leftMargin, dateFieldY + 14, {
-      align: 'right',
-      width: contentWidth,
-    });
+  // Only show Date d'échéance for Invoices (not applicable on delivery slips)
+  if (docType === 'invoice') {
+    doc
+      .fontSize(9)
+      .font('Helvetica-Bold')
+      .fillColor('#1e293b')
+      .text("Date d'échéance :", rightColX, dateFieldY + 14, {
+        align: 'right',
+        width: rightColWidth - 90,
+      });
+    doc
+      .font('Helvetica')
+      .fillColor('#475569')
+      .text(dateStr, rightColX, dateFieldY + 14, {
+        align: 'right',
+        width: rightColWidth,
+      });
+  }
 
   // If Code image exists (QR / Barcode), render beside dates
   if (codeImgData) {

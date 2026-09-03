@@ -9,7 +9,7 @@ import { useLocale, useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 import {
   Search, Plus, Edit2, Trash2, Copy, Eye,
-  Upload, Download, Package, Star
+  Upload, Download, Package, Star, ExternalLink
 } from 'lucide-react'
 
 function PriceBadge({ price }: { price: number }) {
@@ -420,8 +420,17 @@ export default function AdminProductsPage() {
               <Link
                 href={localizedHref(`/admin/catalog/products/${product.id}/edit`)}
                 className="flex h-9 w-9 items-center justify-center rounded-xl text-gray-400 hover:bg-blue-50 hover:text-blue-600 transition-colors"
+                title={t('editAction')}
               >
                 <Edit2 size={16} />
+              </Link>
+              <Link
+                href={localizedHref(`/produit/${product.slug}`)}
+                target="_blank"
+                className="flex h-9 w-9 items-center justify-center rounded-xl text-gray-400 hover:bg-green-50 hover:text-green-600 transition-colors"
+                title="Voir le produit"
+              >
+                <Eye size={16} />
               </Link>
               <button
                 onClick={() => setConfirmDelete({ id: product.id, name: productName(product, t) })}
