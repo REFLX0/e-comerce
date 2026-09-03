@@ -169,7 +169,9 @@ export function generateDeliveryNotePDF(
   order: InvoiceOrder,
   settings: InvoiceSettings = {},
 ) {
-  const doc = new PDFDocument({ size: 'A4', margin: 35, autoFirstPage: true });
+  const chunks: Buffer[] = [];
+  const doc = new PDFDocument({ size: 'A4', margin: 35, autoFirstPage: true, bufferPages: true });
+  doc.on('data', (chunk: Buffer) => chunks.push(chunk));
   const pageWidth = 595.28;
   const leftMargin = 35;
   const rightMargin = 35;
@@ -480,6 +482,13 @@ export function generateDeliveryNotePDF(
   });
 
   // ── TOTALS SUMMARY (RIGHT) ──
+  // Estimate space needed: summaryRows * 16 + totalBox 22 + letters 40 + stamp 100 + footer 50 = ~240px
+  const BOTTOM_RESERVE = 250;
+  if (currentY + BOTTOM_RESERVE > doc.page.height) {
+    doc.addPage();
+    currentY = 40;
+  }
+
   const summaryWidth = 200;
   const summaryX = pageWidth - rightMargin - summaryWidth;
   let summaryY = currentY + 12;
@@ -651,28 +660,33 @@ export function generateDeliveryNotePDF(
       });
   }
 
-  // ── FOOTER / LEGAL MENTIONS ──
-  const footerY = doc.page.height - 35;
-  doc
-    .moveTo(leftMargin, footerY - 8)
-    .lineTo(pageWidth - rightMargin, footerY - 8)
-    .strokeColor('#e2e8f0')
-    .stroke();
+  // ── FOOTER / LEGAL MENTIONS — rendered on every page via bufferedPageRange ──
+  const range = doc.bufferedPageRange();
+  for (let pi = range.start; pi < range.start + range.count; pi++) {
+    doc.switchToPage(pi);
+    const footerY = doc.page.height - 35;
+    doc
+      .moveTo(leftMargin, footerY - 8)
+      .lineTo(pageWidth - rightMargin, footerY - 8)
+      .strokeColor('#e2e8f0')
+      .stroke();
 
-  doc
-    .fontSize(7.5)
-    .font('Helvetica')
-    .fillColor('#64748b')
-    .text(
-      `${companyName} — ${companyAddress} — Tél: ${companyPhone} — Email: ${companyEmail}${
-        companyMf ? ' — MF: ' + companyMf : ''
-      }${companyRc ? ' — RC: ' + companyRc : ''}`,
-      leftMargin,
-      footerY,
-      { align: 'center', width: contentWidth },
-    );
+    doc
+      .fontSize(7.5)
+      .font('Helvetica')
+      .fillColor('#64748b')
+      .text(
+        `${companyName} — ${companyAddress} — Tél: ${companyPhone} — Email: ${companyEmail}${
+          companyMf ? ' — MF: ' + companyMf : ''
+        }${companyRc ? ' — RC: ' + companyRc : ''}`,
+        leftMargin,
+        footerY,
+        { align: 'center', width: contentWidth },
+      );
+  }
 
-  return doc;
+  doc.end();
+  return Buffer.concat(chunks);
 }
 
 // ─── POS Invoice ───────────────────────────────────────────────────────────

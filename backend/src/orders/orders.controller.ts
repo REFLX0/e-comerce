@@ -61,13 +61,13 @@ export class OrdersController {
     @CurrentUser('id') userId: string,
     @Res() res: Response,
   ) {
-    const doc = await this.ordersService.exportOrderPdf(id, userId);
+    const pdfBuffer = await this.ordersService.exportOrderPdf(id, userId);
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader(
       'Content-Disposition',
       `attachment; filename="facture-${id.slice(-8).toUpperCase()}.pdf"`,
     );
-    doc.pipe(res);
-    doc.end();
+    res.setHeader('Content-Length', pdfBuffer.length);
+    res.end(pdfBuffer);
   }
 }

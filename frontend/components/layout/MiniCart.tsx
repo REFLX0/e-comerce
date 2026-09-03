@@ -2,7 +2,7 @@
 
 import { useCartStore } from '@/lib/store/cart.store'
 import { formatPrice } from '@/lib/utils/format'
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetClose } from '@/components/ui/sheet'
 import { ShoppingCart, Trash2, Plus, Minus, Package, ArrowRight, ShoppingBag } from 'lucide-react'
 import { Link } from '@/i18n/routing'
 import Image from 'next/image'
@@ -235,18 +235,18 @@ export default function MiniCart() {
             </div>
             {/* CTA buttons */}
             <div className="grid grid-cols-2 gap-2.5">
-              <Link
+              <SheetClose render={<Link
                 href="/panier"
                 className="flex items-center justify-center gap-1.5 rounded-xl border-2 border-brand-primary/20 bg-brand-primary/5 py-3 text-sm font-bold text-brand-primary transition-all hover:border-brand-primary/40 hover:bg-brand-primary/10 active:scale-95"
-              >
+              />}>
                 {t('viewCart')}
-              </Link>
-              <Link
+              </SheetClose>
+              <SheetClose render={<Link
                 href="/checkout"
                 className="flex items-center justify-center gap-1.5 rounded-xl bg-brand-primary py-3 text-sm font-bold text-white transition-all hover:bg-brand-primary-light hover:shadow-lg hover:shadow-brand-primary/30 active:scale-95"
-              >
+              />}>
                 {t('checkout')} <ArrowRight size={14} />
-              </Link>
+              </SheetClose>
             </div>
           </div>
         )}

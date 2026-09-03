@@ -15,8 +15,6 @@
  */
 import { PrismaClient } from '@prisma/client';
 import { S3Client, PutObjectCommand, HeadObjectCommand } from '@aws-sdk/client-s3';
-import * as https from 'https';
-import * as http from 'http';
 import * as path from 'path';
 import * as fs from 'fs';
 
@@ -43,40 +41,32 @@ const s3 = new S3Client({
 // ─── Helpers ───────────────────────────────────────────────────────────────────
 
 /** Download any URL or read a local file from /app/uploads/<rest> */
-function downloadUrl(rawUrl: string): Promise<{ buffer: Buffer; contentType: string }> {
-  return new Promise((resolve, reject) => {
-    // Relative local path — resolve inside the container volume
-    if (rawUrl.startsWith('/uploads/') || rawUrl.startsWith('uploads/')) {
-      const localPath = path.join('/app', rawUrl.startsWith('/') ? rawUrl : `/${rawUrl}`);
-      if (!fs.existsSync(localPath)) return reject(new Error(`Local file not found: ${localPath}`));
-      const buffer = fs.readFileSync(localPath);
-      const ext = path.extname(localPath).toLowerCase();
-      const ct = ext === '.png' ? 'image/png' : ext === '.webp' ? 'image/webp' : 'image/jpeg';
-      return resolve({ buffer, contentType: ct });
+async function downloadUrl(rawUrl: string): Promise<{ buffer: Buffer; contentType: string }> {
+  // Relative local path — resolve inside the container volume
+  if (rawUrl.startsWith('/uploads/') || rawUrl.startsWith('uploads/')) {
+    const localPath = path.join('/app', rawUrl.startsWith('/') ? rawUrl : `/${rawUrl}`);
+    if (!fs.existsSync(localPath)) throw new Error(`Local file not found: ${localPath}`);
+    const buffer = fs.readFileSync(localPath);
+    const ext = path.extname(localPath).toLowerCase();
+    const ct = ext === '.png' ? 'image/png' : ext === '.webp' ? 'image/webp' : 'image/jpeg';
+    return { buffer, contentType: ct };
+  }
+
+  const response = await fetch(rawUrl, {
+    headers: {
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
     }
-
-    const client = rawUrl.startsWith('https') ? https : http;
-    const options = rawUrl.startsWith('https')
-      ? { rejectUnauthorized: false }   // Cloudinary / imagedelivery — no cert issues
-      : {};
-
-    client.get(rawUrl, options as any, (res) => {
-      if (res.statusCode && res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
-        // Follow single redirect
-        return resolve(downloadUrl(res.headers.location));
-      }
-      if (!res.statusCode || res.statusCode >= 400) {
-        return reject(new Error(`HTTP ${res.statusCode} for ${rawUrl}`));
-      }
-      const chunks: Buffer[] = [];
-      res.on('data', (c: Buffer) => chunks.push(c));
-      res.on('end', () => resolve({
-        buffer: Buffer.concat(chunks),
-        contentType: res.headers['content-type'] || 'image/jpeg',
-      }));
-      res.on('error', reject);
-    }).on('error', reject);
   });
+
+  if (!response.ok) {
+    throw new Error(`HTTP ${response.status} ${response.statusText} for ${rawUrl}`);
+  }
+
+  const arrayBuffer = await response.arrayBuffer();
+  const buffer = Buffer.from(arrayBuffer);
+  const contentType = response.headers.get('content-type') || 'image/jpeg';
+
+  return { buffer, contentType };
 }
 
 /** Derive a stable filename from the URL */

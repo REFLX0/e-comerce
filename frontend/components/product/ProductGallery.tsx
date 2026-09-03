@@ -28,7 +28,7 @@ export function ProductGallery({ images, productName, variantImageUrl }: Props) 
   return (
     <div className="flex flex-col gap-4">
       {/* Main image */}
-      <div className="bg-brand-surface border-brand-surface-dark group relative aspect-square overflow-hidden rounded-2xl border shadow-card">
+      <div className="bg-brand-surface border-brand-surface-dark group relative aspect-[4/3] max-h-[320px] overflow-hidden rounded-xl border shadow-card">
         {imageUnavailable ? (
           <div className="flex h-full w-full flex-col items-center justify-center gap-3 text-gray-400">
             <Package size={34} strokeWidth={1.5} />
@@ -39,7 +39,7 @@ export function ProductGallery({ images, productName, variantImageUrl }: Props) 
             src={displayImages[currentIndex] || ''}
             alt={`${productName} - Image ${currentIndex + 1}`}
             fill
-            className="object-contain p-8 transition-transform duration-500 group-hover:scale-110"
+            className="object-contain p-4 transition-transform duration-500 group-hover:scale-110"
             priority
             onError={() => setImageUnavailable(true)}
           />
@@ -77,7 +77,7 @@ export function ProductGallery({ images, productName, variantImageUrl }: Props) 
             <button
               key={idx}
               onClick={() => { setCurrentIndex(idx); setImageUnavailable(false) }}
-              className={`relative h-20 w-20 shrink-0 overflow-hidden rounded-xl border-2 transition-all duration-300 ${
+              className={`relative h-14 w-14 shrink-0 overflow-hidden rounded-lg border-2 transition-all duration-300 ${
                 currentIndex === idx
                   ? 'border-brand-primary shadow-md ring-2 ring-brand-primary/20 scale-105'
                   : 'hover:border-brand-primary/40 border-gray-200 opacity-70 hover:opacity-100'

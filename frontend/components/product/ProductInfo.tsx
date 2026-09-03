@@ -35,7 +35,7 @@ export function ProductInfo({ product, selectedVariant: controlledVariant, onVar
   return (
     <div className="flex h-full flex-col">
       {/* Brand & Reference */}
-      <div className="mb-2 flex items-center justify-between">
+      <div className="mb-1.5 flex items-center justify-between">
         {product.brand && (
           <Link
             href={`/marque/${product.brand.slug}`}
@@ -48,13 +48,13 @@ export function ProductInfo({ product, selectedVariant: controlledVariant, onVar
       </div>
 
       {/* Title */}
-      <h1 className="font-display text-brand-primary mb-3 text-2xl leading-tight font-bold">
+      <h1 className="font-display text-brand-primary mb-2 text-xl leading-tight font-bold">
         {product.name}
       </h1>
 
       {/* Compatibility Banner */}
       {hasCheckedVehicles && isCompatible && vehicleLabel && (
-        <div className="mb-3 rounded-xl border-2 border-green-500 bg-green-50 p-3 flex items-center gap-3 animate-fade-in">
+        <div className="mb-2 rounded-xl border-2 border-green-500 bg-green-50 p-2.5 flex items-center gap-2 animate-fade-in">
           <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-green-500 text-white shadow-sm">
             <Check size={16} strokeWidth={3} />
           </div>
@@ -66,7 +66,7 @@ export function ProductInfo({ product, selectedVariant: controlledVariant, onVar
       )}
 
       {/* Rating & Reviews Link */}
-      <div className="border-brand-surface-dark mb-3 flex items-center gap-3 border-b pb-3">
+      <div className="border-brand-surface-dark mb-2 flex items-center gap-3 border-b pb-2">
         <RatingStars rating={product.rating} count={product.reviewCount} size={16} />
         <a
           href="#avis"
@@ -77,7 +77,7 @@ export function ProductInfo({ product, selectedVariant: controlledVariant, onVar
       </div>
 
       {/* Price Card */}
-      <div className="mb-3 rounded-xl bg-gradient-to-r from-gray-50 to-brand-surface p-3 shadow-sm">
+      <div className="mb-2 rounded-xl bg-gradient-to-r from-gray-50 to-brand-surface p-2.5 shadow-sm">
         <PriceDisplay
           priceHT={selectedVariant.priceHT}
           priceTTC={selectedVariant.priceTTC}
@@ -90,13 +90,13 @@ export function ProductInfo({ product, selectedVariant: controlledVariant, onVar
       </div>
 
       {/* Stock */}
-      <div className="mb-3">
+      <div className="mb-2">
         <StockIndicator status={selectedVariant.status} />
       </div>
 
       {/* Short Description */}
       {product.shortDescription && (
-        <p className="mb-3 text-sm leading-relaxed text-gray-600 line-clamp-3">{product.shortDescription}</p>
+        <p className="mb-2 text-sm leading-relaxed text-gray-600 line-clamp-2">{product.shortDescription}</p>
       )}
 
       {/* Variant Selector */}
@@ -118,7 +118,7 @@ export function ProductInfo({ product, selectedVariant: controlledVariant, onVar
       <AddToCartButton product={product} variant={selectedVariant} />
 
       {/* Reassurance */}
-      <TrustBadges variant="compact" className="mb-3" />
+      <TrustBadges variant="compact" className="mb-2" />
 
       {/* Quick Actions */}
       <div className="border-brand-surface-dark flex items-center gap-4 border-t pt-3">

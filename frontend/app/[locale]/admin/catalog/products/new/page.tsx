@@ -68,7 +68,7 @@ export default function NewProductPage() {
   const [shortDescription, setShortDescription] = useState('')
   const [brandId, setBrandId] = useState('')
   const [categoryId, setCategoryId] = useState('')
-  const [isPublished, setIsPublished] = useState(true)
+  const [isPublished, setIsPublished] = useState(false)
   const [isFeatured, setIsFeatured] = useState(false)
 
   // Product Nature: "piece" (Single auto part) vs "oil" (Multi-packaging lubricant)
@@ -938,8 +938,8 @@ export default function NewProductPage() {
                 className="h-4 w-4 rounded border-slate-300 text-[#16254c] focus:ring-[#16254c]"
               />
               <div>
-                <p className="text-sm font-bold text-slate-900">Publier immédiatement dans le catalogue</p>
-                <p className="text-xs text-slate-500">Le produit sera visible et commandable en ligne par les clients.</p>
+                <p className="text-sm font-bold text-slate-900">Publier dans le catalogue client</p>
+                <p className="text-xs text-slate-500">Si décoché, le produit sera sauvegardé en <span className="font-bold text-amber-600">brouillon</span> et non visible en ligne.</p>
               </div>
             </label>
 

@@ -67,7 +67,7 @@ export default function EditProductPage() {
   const [shortDescription, setShortDescription] = useState('')
   const [brandId, setBrandId] = useState('')
   const [categoryId, setCategoryId] = useState('')
-  const [isPublished, setIsPublished] = useState(true)
+  const [isPublished, setIsPublished] = useState(false)
   const [isFeatured, setIsFeatured] = useState(false)
 
   // Product Nature: "piece" (Single auto part) vs "oil" (Multi-packaging lubricant)
@@ -121,7 +121,7 @@ export default function EditProductPage() {
       setShortDescription(product.shortDescription ?? (product.description ? product.description.replace(/^Description\s*:?\s*/i, '').slice(0, 180).trim() : ''))
       setBrandId(product.brandId ?? '')
       setCategoryId(product.categoryId ?? '')
-      setIsPublished(product.isPublished ?? true)
+      setIsPublished(product.isPublished ?? false)
       setIsFeatured(product.isFeatured ?? false)
 
       // Specs & Compatibility

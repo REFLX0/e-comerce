@@ -138,14 +138,14 @@ export class AdminController {
 
   @Get('orders/:id/pdf')
   async exportOrderPdf(@Param('id') id: string, @Res() res: Response) {
-    const doc = await this.adminService.exportOrderPdf(id);
+    const pdfBuffer = await this.adminService.exportOrderPdf(id);
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader(
       'Content-Disposition',
       `attachment; filename="facture-${id.slice(-8).toUpperCase()}.pdf"`,
     );
-    doc.pipe(res);
-    doc.end();
+    res.setHeader('Content-Length', pdfBuffer.length);
+    res.end(pdfBuffer);
   }
 
   @Post('pos/invoice')

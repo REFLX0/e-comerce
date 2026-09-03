@@ -69,7 +69,7 @@ export default async function ProductPage({ params }: Props) {
           ]}
         />
 
-        <div className="border-brand-surface-dark mt-4 rounded-3xl border bg-white p-4 md:p-6 shadow-card animate-fade-in-up">
+        <div className="border-brand-surface-dark mt-3 rounded-2xl border bg-white p-3 md:p-4 shadow-card animate-fade-in-up">
           <ProductPageClient product={product} />
         </div>
 

@@ -134,7 +134,7 @@ export class AdminService {
       sku,
       brand: { connect: { id: brandId } },
       category: { connect: { id: categoryId } },
-      isPublished: dto.isPublished ?? true,
+      isPublished: dto.isPublished ?? false,
       isFeatured: dto.isFeatured ?? false,
     };
 
@@ -608,10 +608,11 @@ export class AdminService {
             product: {
               select: {
                 nameFr: true,
+                sku: true,
                 images: { take: 1, select: { url: true } },
               },
             },
-            variant: { select: { volume: true } },
+            variant: { select: { volume: true, skuVariant: true } },
           },
         },
         user: { select: { name: true, email: true } },

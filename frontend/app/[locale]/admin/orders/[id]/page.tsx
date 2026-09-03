@@ -6,6 +6,7 @@ import { adminApi, downloadOrderPdf } from '@/lib/api/admin'
 import { useParams } from 'next/navigation'
 import { ArrowLeft, Package, Truck, CheckCircle2, Clock, XCircle, MapPin, Printer, Loader2, Car } from 'lucide-react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { toast } from 'sonner'
 import { useLocale, useTranslations } from 'next-intl'
 
@@ -99,12 +100,29 @@ export default function OrderDetailPage() {
             <h2 className="font-bold text-brand-primary mb-4">{t('orderItems')}</h2>
             <div className="space-y-3">
               {(order.items || []).map((item: any, i: number) => (
-                <div key={i} className="flex items-center justify-between rounded-xl bg-gray-50 px-4 py-3">
-                  <div>
-                    <p className="text-sm font-medium text-gray-800">{item.product?.nameFr || item.productName || `${t('productColumn')} #${item.productId?.slice(-6) || '?'}`}</p>
-                    <p className="text-xs text-gray-400">{item.quantity} x {item.unitPrice?.toFixed(2) || '0.00'} TND{item.variant?.volume ? ` (${item.variant.volume})` : ''}</p>
+                <div key={i} className="flex items-center gap-3 rounded-xl bg-gray-50 px-3 py-2.5">
+                  {/* Thumbnail */}
+                  <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-lg border border-gray-200 bg-white">
+                    {item.product?.images?.[0]?.url ? (
+                      <Image
+                        src={item.product.images[0].url}
+                        alt={item.product?.nameFr || ''}
+                        fill
+                        sizes="40px"
+                        className="object-contain p-0.5"
+                      />
+                    ) : (
+                      <div className="flex h-full w-full items-center justify-center">
+                        <Package size={16} className="text-gray-300" />
+                      </div>
+                    )}
                   </div>
-                  <span className="text-sm font-bold text-brand-primary">{(item.quantity * (item.unitPrice || 0)).toFixed(2)} TND</span>
+                  {/* Name + SKU */}
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-gray-800 truncate">{item.product?.nameFr || item.productName || `${t('productColumn')} #${item.productId?.slice(-6) || '?'}`}</p>
+                    <p className="text-[10px] font-mono text-gray-400">{item.variant?.skuVariant || item.product?.sku || ''} · {item.quantity} × {item.unitPrice?.toFixed(2) || '0.00'} TND{item.variant?.volume ? ` · ${item.variant.volume}` : ''}</p>
+                  </div>
+                  <span className="text-sm font-bold text-brand-primary shrink-0">{(item.quantity * (item.unitPrice || 0)).toFixed(2)} TND</span>
                 </div>
               ))}
             </div>
