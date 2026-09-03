@@ -64,21 +64,25 @@ export function ProductGallery({ images, productName, variantImageUrl, variants,
     return items
   }, [variants, images])
 
-  // Thumbnails: Variant images in ascending volume order first, followed by any additional distinct product images
+  // Thumbnails: When product has volume variants with images, THOSE are the canonical images of the product.
+  // One thumbnail per variant in ascending volume order (1L -> 4L -> 5L...) with strictly NO duplicates.
   const allThumbnails = useMemo(() => {
-    const seen = new Set<string>()
-    const result: string[] = []
-
-    // 1. Variant images in ascending volume order
-    for (const item of variantItems) {
-      const key = normalizeImageKey(item.url)
-      if (key && !seen.has(key)) {
-        seen.add(key)
-        result.push(item.url)
+    if (variantItems.length > 0) {
+      const seen = new Set<string>()
+      const result: string[] = []
+      for (const item of variantItems) {
+        const key = normalizeImageKey(item.url)
+        if (key && !seen.has(key)) {
+          seen.add(key)
+          result.push(item.url)
+        }
       }
+      return result
     }
 
-    // 2. Any additional product images (e.g. 20L bidon, extra angles) without duplicating
+    // For products without volume variants (filters, parts, etc.), use product images deduplicated
+    const seen = new Set<string>()
+    const result: string[] = []
     for (const url of images || []) {
       const key = normalizeImageKey(url)
       if (key && !seen.has(key)) {
@@ -87,7 +91,7 @@ export function ProductGallery({ images, productName, variantImageUrl, variants,
       }
     }
     return result
-  }, [images, variantItems])
+  }, [variantItems, images])
 
   // Snap to variant image if manually selected
   useEffect(() => {
