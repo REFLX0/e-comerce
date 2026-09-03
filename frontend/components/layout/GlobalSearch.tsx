@@ -175,15 +175,27 @@ export function GlobalSearch({ className }: GlobalSearchProps) {
                             <div className="h-full w-full bg-gray-200" />
                           )}
                         </div>
-                        <div className="flex flex-col min-w-0">
+                        <div className="flex flex-col min-w-0 flex-1">
                           <span className="text-sm font-semibold text-brand-primary truncate group-hover/item:text-brand-primary/70 transition-colors">
                             {product.name}
                           </span>
-                          {product.brandName && (
-                            <span className="text-xs text-gray-500 uppercase tracking-widest font-medium">
-                              {product.brandName}
-                            </span>
-                          )}
+                          <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
+                            {product.brandName && (
+                              <span className="text-[11px] text-gray-500 uppercase tracking-wider font-semibold">
+                                {product.brandName}
+                              </span>
+                            )}
+                            {product.viscosity && (
+                              <span className="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-bold text-slate-700">
+                                {product.viscosity}
+                              </span>
+                            )}
+                            {product.oemApprovals && (
+                              <span className="rounded bg-blue-50 border border-blue-200 px-1.5 py-0.5 text-[10px] font-semibold text-blue-700 truncate max-w-[200px]" title={product.oemApprovals}>
+                                {product.oemApprovals.split(';')[0]?.trim()}
+                              </span>
+                            )}
+                          </div>
                         </div>
                       </Link>
                     ))}

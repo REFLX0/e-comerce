@@ -4,6 +4,7 @@ import { CacheService } from '../cache/cache.service';
 import { Prisma } from '@prisma/client';
 import { OilRecommendationsDto } from './dto/oil-recommendations.dto';
 import { calcSpecificity } from '../specificity';
+import { extractHomologationTokens } from '../common/utils/homologations';
 
 export interface ProductFilters {
   categorySlug?: string;
@@ -148,7 +149,69 @@ export class ProductsService {
       }
     }
 
-    return [...resultIds];
+    return Array.from(resultIds);
+  }
+
+  /**
+   * Generates comprehensive search conditions supporting:
+   * 1. Multi-word search (name, SKU, brand, category, description)
+   * 2. Viscosity normalizations (5w30, 5W-30, 5W 30)
+   * 3. Full Manufacturer Homologations & Approvals (VW 504.00, MB 229.51, BMW LL-04, etc.)
+   */
+  buildSearchConditions(searchQuery: string): Prisma.ProductWhereInput[] {
+    const raw = searchQuery.trim();
+    if (!raw) return [];
+
+    const andConditions: Prisma.ProductWhereInput[] = [];
+    const { tokens: homologationTokens, remainingQuery } = extractHomologationTokens(raw);
+
+    if (homologationTokens.length > 0) {
+      andConditions.push({
+        OR: homologationTokens.flatMap((token) => [
+          { specs: { OEMApprovals: { contains: token, mode: 'insensitive' } } },
+          { specs: { aeceaStandard: { contains: token, mode: 'insensitive' } } },
+          { specs: { apiStandard: { contains: token, mode: 'insensitive' } } },
+          { specs: { jasoStandard: { contains: token, mode: 'insensitive' } } },
+          { description: { contains: token, mode: 'insensitive' } },
+          { nameFr: { contains: token, mode: 'insensitive' } },
+        ]),
+      });
+    }
+
+    const effectiveQuery = homologationTokens.length > 0 ? remainingQuery : raw;
+    const terms = effectiveQuery
+      .trim()
+      .split(/\s+/)
+      .filter((t) => t.length > 0 && !['vw', 'mb', 'bmw', 'psa', 'renault', 'porsche', 'ford', 'gm', 'fiat'].includes(t.toLowerCase()));
+
+    for (const term of terms) {
+      const viscMatch = term.replace(/[\s-]/g, '').match(/^(\d+w)(\d+)$/i);
+      const viscAlt = viscMatch ? `${viscMatch[1].toUpperCase()}-${viscMatch[2]}` : term;
+      const viscAlt2 = viscMatch ? `${viscMatch[1].toUpperCase()}${viscMatch[2]}` : term;
+
+      andConditions.push({
+        OR: [
+          { nameFr: { contains: term, mode: 'insensitive' } },
+          { nameFr: { contains: viscAlt, mode: 'insensitive' } },
+          { nameFr: { contains: viscAlt2, mode: 'insensitive' } },
+          { description: { contains: term, mode: 'insensitive' } },
+          { sku: { contains: term, mode: 'insensitive' } },
+          { brand: { name: { contains: term, mode: 'insensitive' } } },
+          { brand: { slug: { contains: term, mode: 'insensitive' } } },
+          { category: { nameFr: { contains: term, mode: 'insensitive' } } },
+          { specs: { viscosity: { contains: term, mode: 'insensitive' } } },
+          { specs: { viscosity: { contains: viscAlt, mode: 'insensitive' } } },
+          { specs: { OEMApprovals: { contains: term, mode: 'insensitive' } } },
+          { specs: { apiStandard: { contains: term, mode: 'insensitive' } } },
+          { specs: { aeceaStandard: { contains: term, mode: 'insensitive' } } },
+          { specs: { jasoStandard: { contains: term, mode: 'insensitive' } } },
+          { variants: { some: { volume: { contains: term, mode: 'insensitive' } } } },
+          { variants: { some: { skuVariant: { contains: term, mode: 'insensitive' } } } },
+        ],
+      });
+    }
+
+    return andConditions;
   }
 
   private normalizeViscosity(value: string) {
@@ -212,32 +275,7 @@ export class ProductsService {
       const andConditions: Prisma.ProductWhereInput[] = [];
 
       if (filters.search) {
-        const terms = filters.search.trim().split(/\s+/).filter(Boolean);
-        for (const term of terms) {
-          const viscMatch = term.replace(/[\s-]/g, '').match(/^(\d+w)(\d+)$/i);
-          const viscAlt = viscMatch ? `${viscMatch[1].toUpperCase()}-${viscMatch[2]}` : term;
-          const viscAlt2 = viscMatch ? `${viscMatch[1].toUpperCase()}${viscMatch[2]}` : term;
-
-          andConditions.push({
-            OR: [
-              { nameFr: { contains: term, mode: 'insensitive' } },
-              { nameFr: { contains: viscAlt, mode: 'insensitive' } },
-              { nameFr: { contains: viscAlt2, mode: 'insensitive' } },
-              { description: { contains: term, mode: 'insensitive' } },
-              { sku: { contains: term, mode: 'insensitive' } },
-              { brand: { name: { contains: term, mode: 'insensitive' } } },
-              { brand: { slug: { contains: term, mode: 'insensitive' } } },
-              { category: { nameFr: { contains: term, mode: 'insensitive' } } },
-              { specs: { viscosity: { contains: term, mode: 'insensitive' } } },
-              { specs: { viscosity: { contains: viscAlt, mode: 'insensitive' } } },
-              { specs: { OEMApprovals: { contains: term, mode: 'insensitive' } } },
-              { specs: { apiStandard: { contains: term, mode: 'insensitive' } } },
-              { specs: { aeceaStandard: { contains: term, mode: 'insensitive' } } },
-              { variants: { some: { volume: { contains: term, mode: 'insensitive' } } } },
-              { variants: { some: { skuVariant: { contains: term, mode: 'insensitive' } } } },
-            ],
-          });
-        }
+        andConditions.push(...this.buildSearchConditions(filters.search));
       }
       if (filters.categorySlug) {
         const categoryIds = await this.resolveCategoryIds(filters.categorySlug);
@@ -848,21 +886,7 @@ export class ProductsService {
       }
     }
     if (filters.search) {
-      const terms = filters.search.trim().split(/\s+/).filter(Boolean);
-      for (const term of terms) {
-        const viscMatch = term.replace(/[\s-]/g, '').match(/^(\d+w)(\d+)$/i);
-        const viscAlt = viscMatch ? `${viscMatch[1].toUpperCase()}-${viscMatch[2]}` : term;
-        andConditions.push({
-          OR: [
-            { nameFr: { contains: term, mode: 'insensitive' } },
-            { nameFr: { contains: viscAlt, mode: 'insensitive' } },
-            { brand: { name: { contains: term, mode: 'insensitive' } } },
-            { category: { nameFr: { contains: term, mode: 'insensitive' } } },
-            { specs: { viscosity: { contains: term, mode: 'insensitive' } } },
-            { specs: { viscosity: { contains: viscAlt, mode: 'insensitive' } } },
-          ],
-        });
-      }
+      andConditions.push(...this.buildSearchConditions(filters.search));
     }
     if (andConditions.length > 0) {
       where.AND = andConditions;

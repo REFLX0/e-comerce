@@ -8,6 +8,8 @@ export interface SuggestionProduct {
   image?: string // first image URL
   price?: number
   brandName?: string
+  viscosity?: string
+  oemApprovals?: string
 }
 
 export interface SuggestionCategory {

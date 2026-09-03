@@ -142,15 +142,27 @@ export function MobileSearchSheet() {
                               <div className="h-full w-full bg-gray-200" />
                             )}
                           </div>
-                          <div className="flex flex-col min-w-0">
+                          <div className="flex flex-col min-w-0 flex-1">
                             <span className="text-sm font-semibold text-brand-primary truncate">
                               {product.name}
                             </span>
-                            {product.brandName && (
-                              <span className="text-xs text-brand-accent font-bold uppercase tracking-widest mt-1">
-                                {product.brandName}
-                              </span>
-                            )}
+                            <div className="flex items-center gap-1.5 mt-1 flex-wrap">
+                              {product.brandName && (
+                                <span className="text-xs text-brand-accent font-bold uppercase tracking-wider">
+                                  {product.brandName}
+                                </span>
+                              )}
+                              {product.viscosity && (
+                                <span className="rounded bg-slate-100 px-1.5 py-0.5 text-[9px] font-bold text-slate-700">
+                                  {product.viscosity}
+                                </span>
+                              )}
+                              {product.oemApprovals && (
+                                <span className="rounded bg-blue-50 border border-blue-200 px-1.5 py-0.5 text-[9px] font-semibold text-blue-700 truncate max-w-[170px]" title={product.oemApprovals}>
+                                  {product.oemApprovals.split(';')[0]?.trim()}
+                                </span>
+                              )}
+                            </div>
                           </div>
                         </Link>
                       ))}

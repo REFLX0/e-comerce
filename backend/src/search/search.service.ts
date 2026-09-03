@@ -1,9 +1,9 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { PrismaService } from '../prisma/prisma.service';
 import { PrismaReadService } from '../prisma/prisma-read.service';
 import { Client } from '@opensearch-project/opensearch';
 import { Prisma } from '@prisma/client';
+import { extractHomologationTokens } from '../common/utils/homologations';
 
 const PRODUCT_INDEX = 'specpart_products';
 
@@ -373,6 +373,10 @@ export class SearchService implements OnModuleInit {
     }
     const stripped = q.replace(/[\s-]/g, '');
     if (stripped !== q) tokens.push(stripped);
+
+    const { tokens: homologationTokens } = extractHomologationTokens(q);
+    tokens.push(...homologationTokens);
+
     return [...new Set(tokens)];
   }
 
@@ -385,6 +389,11 @@ export class SearchService implements OnModuleInit {
         { sku: { contains: term, mode: 'insensitive' } },
         { brand: { name: { contains: term, mode: 'insensitive' } } },
         { specs: { viscosity: { contains: term, mode: 'insensitive' } } },
+        { specs: { OEMApprovals: { contains: term, mode: 'insensitive' } } },
+        { specs: { aeceaStandard: { contains: term, mode: 'insensitive' } } },
+        { specs: { apiStandard: { contains: term, mode: 'insensitive' } } },
+        { specs: { jasoStandard: { contains: term, mode: 'insensitive' } } },
+        { description: { contains: term, mode: 'insensitive' } },
         { category: { nameFr: { contains: term, mode: 'insensitive' } } },
       ]),
     };
@@ -432,12 +441,21 @@ export class SearchService implements OnModuleInit {
     if (osSlugs) {
       const products = await this.prismaRead.db.product.findMany({
         where: { slug: { in: osSlugs } },
-        include: { images: { take: 1 }, variants: { take: 1 }, brand: true },
+        include: { images: { take: 1 }, variants: { take: 1 }, brand: true, specs: true },
       });
       const map = new Map(products.map((p) => [p.slug, p]));
       const ordered = osSlugs.map((s) => map.get(s)).filter(Boolean);
       return {
-        products: ordered.map((p: any) => ({ id: p.id, name: p.nameFr, slug: p.slug, image: p.images[0]?.url, price: p.variants[0]?.price, brandName: p.brand?.name })),
+        products: ordered.map((p: any) => ({
+          id: p.id,
+          name: p.nameFr,
+          slug: p.slug,
+          image: p.images[0]?.url,
+          price: p.variants[0]?.price,
+          brandName: p.brand?.name,
+          viscosity: p.specs?.viscosity,
+          oemApprovals: p.specs?.OEMApprovals,
+        })),
         categories: categories.map((c) => ({ id: c.id, name: c.nameFr, slug: c.slug })),
         brands: brands.map((b) => ({ id: b.id, name: b.name, slug: b.slug, logo: b.logoUrl })),
       };
@@ -445,9 +463,22 @@ export class SearchService implements OnModuleInit {
 
     // Fallback to PostgreSQL
     const where = this.buildPrismaSearchWhere(q);
-    const products = await this.prismaRead.db.product.findMany({ where, include: { images: { take: 1 }, variants: { take: 1 }, brand: true }, take: 10 });
+    const products = await this.prismaRead.db.product.findMany({
+      where,
+      include: { images: { take: 1 }, variants: { take: 1 }, brand: true, specs: true },
+      take: 10,
+    });
     
-    const serializedPrisma = products.map((p) => ({ id: p.id, name: p.nameFr, slug: p.slug, image: p.images[0]?.url, price: p.variants[0]?.price, brandName: p.brand?.name }));
+    const serializedPrisma = products.map((p: any) => ({
+      id: p.id,
+      name: p.nameFr,
+      slug: p.slug,
+      image: p.images[0]?.url,
+      price: p.variants[0]?.price,
+      brandName: p.brand?.name,
+      viscosity: p.specs?.viscosity,
+      oemApprovals: p.specs?.OEMApprovals,
+    }));
 
     return {
       products: serializedPrisma,
