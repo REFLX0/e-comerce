@@ -30,12 +30,30 @@ export class VehiclesService {
   ) {}
 
   async getMakes(vehicleType?: string) {
-    const isCv = vehicleType?.toLowerCase().includes('poids') || vehicleType?.toLowerCase().includes('commercial');
+    const cat = vehicleType?.toLowerCase().trim() || '';
+    const isMoto = cat.includes('moto') || cat.includes('karting') || cat.includes('2-roues') || cat.includes('scooter');
+    const isAgri = cat.includes('agri') || cat.includes('tractor') || cat.includes('tracteur');
+    const isCv = !isAgri && (cat.includes('poids') || cat.includes('commercial') || cat.includes('heavy') || cat.includes('truck') || cat.includes('camion'));
+    const isMarine = cat.includes('marine') || cat.includes('boat') || cat.includes('bateau');
+
+    let whereClause = 'can_be_displayed = true';
+    if (isMoto) {
+      whereClause += ' AND is_motorbike = true';
+    } else if (isCv) {
+      whereClause += ' AND (is_commercial_vehicle = true OR is_transporter = true)';
+    } else if (isAgri) {
+      whereClause += ' AND (is_commercial_vehicle = true OR is_engine = true)';
+    } else if (isMarine) {
+      whereClause += ' AND (is_engine = true OR is_commercial_vehicle = true)';
+    } else if (cat) {
+      whereClause += ' AND is_passenger_car = true';
+    }
+
     const rows: any[] = await this.prisma.$queryRawUnsafe(`
       SELECT DISTINCT id, COALESCE(NULLIF(description, ''), matchcode) AS name,
              LOWER(REGEXP_REPLACE(COALESCE(NULLIF(description, ''), matchcode), '[^a-zA-Z0-9]+', '-', 'g')) AS slug
       FROM tecdoc.manufacturers
-      WHERE can_be_displayed = true ${isCv ? 'AND (is_commercial_vehicle = true OR is_passenger_car = true)' : 'AND is_passenger_car = true'}
+      WHERE ${whereClause}
       ORDER BY name ASC
     `);
     return rows.map((r) => ({ id: String(r.id), name: r.name, slug: r.slug }));

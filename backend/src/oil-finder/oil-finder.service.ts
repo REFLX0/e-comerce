@@ -56,84 +56,6 @@ function slugify(text: string): string {
     .replace(/^-+|-+$/g, '');
 }
 
-// ── Preset vehicle databases for Moto, Poids Lourd, Agricole, and Marine ───
-
-const MOTO_MAKES = [
-  'YAMAHA', 'HONDA', 'KAWASAKI', 'SUZUKI', 'BMW MOTORRAD', 'DUCATI', 'KTM',
-  'PIAGGIO', 'VESPA', 'SYM', 'APRILIA', 'KYMCO', 'PEUGEOT MOTOCYCLES', 'TRIUMPH',
-  'HARLEY-DAVIDSON', 'BENELLI', 'ROYAL ENFIELD', 'MV AGUSTA', 'HUSQVARNA', 'BETA', 'CFMOTO', 'POLARIS', 'CAN-AM'
-];
-
-const MOTO_MODELS: Record<string, string[]> = {
-  'YAMAHA': ['T-MAX 560', 'T-MAX 530', 'X-MAX 125', 'X-MAX 300', 'X-MAX 400', 'MT-07', 'MT-09', 'MT-03', 'MT-10', 'YZF-R1', 'YZF-R6', 'YZF-R7', 'Tracer 7', 'Tracer 9', 'Tenere 700', 'NMAX 125', 'Aerox 50', 'Bw\'s 50'],
-  'HONDA': ['PCX 125', 'SH 125i', 'SH 150i', 'SH 300i', 'SH 350i', 'Forza 125', 'Forza 350', 'Forza 750', 'X-ADV 750', 'CBR 1000RR', 'CBR 650R', 'CBR 600RR', 'CB 650R', 'CB 500F', 'Africa Twin 1100', 'Hornet 750', 'Transalp 750'],
-  'KAWASAKI': ['Z900', 'Z650', 'Z1000', 'Z750', 'Z400', 'Ninja 400', 'Ninja 650', 'Ninja 1000 SX', 'Ninja ZX-6R', 'Ninja ZX-10R', 'Versys 650', 'Versys 1000'],
-  'SUZUKI': ['GSX-R 1000', 'GSX-R 750', 'GSX-R 600', 'GSX-S 750', 'GSX-S 1000', 'V-Strom 650', 'V-Strom 1050', 'Burgman 125', 'Burgman 400', 'Burgman 650', 'Address 125'],
-  'BMW MOTORRAD': ['R 1250 GS', 'R 1200 GS', 'S 1000 RR', 'S 1000 XR', 'S 1000 R', 'F 900 R', 'F 900 XR', 'F 850 GS', 'F 750 GS', 'C 400 GT', 'C 400 X', 'C 650 GT'],
-  'DUCATI': ['Monster 821', 'Monster 937', 'Monster 1200', 'Panigale V2', 'Panigale V4', 'Multistrada 950', 'Multistrada V4', 'Hypermotard 950', 'Scrambler 800', 'Diavel 1260'],
-  'KTM': ['125 Duke', '390 Duke', '790 Duke', '890 Duke', '1290 Super Duke R', 'RC 390', '390 Adventure', '890 Adventure', '1290 Super Adventure', 'EXC 300 (2T)', 'EXC 450 (4T)'],
-  'PIAGGIO': ['Beverly 300', 'Beverly 350', 'Beverly 400', 'Medley 125', 'Medley 150', 'Liberty 50', 'Liberty 125', 'Zip 50 4T', 'Typhoon 50 2T', 'MP3 300', 'MP3 500'],
-  'VESPA': ['Primavera 50', 'Primavera 125', 'Sprint 50', 'Sprint 125', 'GTS 125 Super', 'GTS 300 Super', 'GTS 300 HPE'],
-  'SYM': ['Symphony 125', 'Symphony ST 200', 'Orbit II 50', 'Orbit III 125', 'Fiddle III 125', 'Fiddle IV 125', 'Jet 14 125', 'Cruisym 300', 'Maxsym TL 508', 'Joyride 300'],
-  'APRILIA': ['RS 660', 'Tuono 660', 'RSV4 1100', 'Tuono V4 1100', 'SR GT 125', 'SR GT 200', 'SX 125', 'RX 125', 'SR 50'],
-  'KYMCO': ['Agility 50', 'Agility 125', 'Like 125', 'X-Town 125', 'X-Town 300', 'Downtown 350', 'AK 550'],
-  'PEUGEOT MOTOCYCLES': ['Kisbee 50', 'Tweet 125', 'Django 125', 'Pulsion 125', 'Metropolis 400', 'Speedfight 50'],
-};
-
-const TRUCK_MAKES = [
-  'MERCEDES-BENZ TRUCKS', 'VOLVO TRUCKS', 'SCANIA', 'MAN', 'RENAULT TRUCKS',
-  'DAF', 'IVECO', 'ISUZU TRUCKS', 'MACK', 'HYUNDAI TRUCKS', 'MITSUBISHI FUSO'
-];
-
-const TRUCK_MODELS: Record<string, string[]> = {
-  'MERCEDES-BENZ TRUCKS': ['Actros', 'Arocs', 'Antos', 'Atego', 'Econic'],
-  'VOLVO TRUCKS': ['FH16', 'FH', 'FM', 'FMX', 'FE', 'FL'],
-  'SCANIA': ['R-Series', 'S-Series', 'G-Series', 'P-Series', 'L-Series'],
-  'MAN': ['TGX', 'TGS', 'TGM', 'TGL', 'TGE'],
-  'RENAULT TRUCKS': ['Range T', 'Range C', 'Range K', 'Range D', 'Premium', 'Magnum'],
-  'DAF': ['XF', 'XG', 'XG+', 'CF', 'LF'],
-  'IVECO': ['S-Way', 'T-Way', 'Stralis', 'Trakker', 'Eurocargo', 'Daily'],
-};
-
-const AGRI_MAKES = [
-  'JOHN DEERE', 'MASSEY FERGUSON', 'NEW HOLLAND', 'CLAAS', 'CASE IH',
-  'DEUTZ-FAHR', 'FENDT', 'KUBOTA', 'VALTRA', 'SAME', 'STEYR', 'LANDINI', 'MCCORMICK'
-];
-
-const AGRI_MODELS: Record<string, string[]> = {
-  'JOHN DEERE': ['Série 6R (6120M - 6250R)', 'Série 7R (7R 290 - 7R 350)', 'Série 8R / 8RT', 'Série 5M / 5R', 'Série 6M'],
-  'MASSEY FERGUSON': ['MF 5S', 'MF 6S', 'MF 7S', 'MF 8S', 'MF 9S', 'MF 4700 M', 'MF 5700 M'],
-  'NEW HOLLAND': ['T5 AutoCommand / ElectroCommand', 'T6 Dynamic Command', 'T7 Heavy Duty', 'T8 Genesis', 'T4 F/N/V'],
-  'CLAAS': ['Arion 400', 'Arion 500 / 600', 'Axion 800 / 900', 'Xerion 4000 / 5000', 'Nexos 200'],
-  'CASE IH': ['Puma (150 - 240 CV)', 'Maxxum Multicontroller', 'Optum CVXDrive', 'Magnum AFS Connect', 'Farmall C / A'],
-  'FENDT': ['300 Vario', '500 Vario', '700 Vario Gen6/Gen7', '900 Vario', '1000 Vario'],
-  'DEUTZ-FAHR': ['Série 5D / 5G', 'Série 6 / 6 TTV', 'Série 7 TTV', 'Série 8 TTV', 'Série 9 TTV'],
-  'KUBOTA': ['M4003', 'M5002', 'M6002', 'M7003', 'M7173'],
-  'VALTRA': ['Série A', 'Série G', 'Série N', 'Série T', 'Série S'],
-};
-
-const MARINE_MAKES = [
-  'YAMAHA MARINE', 'MERCURY', 'HONDA MARINE', 'SUZUKI MARINE', 'VOLVO PENTA', 'YANMAR', 'TOHATSU', 'EVINRUDE', 'CATERPILLAR MARINE', 'MAN MARINE', 'NANNI DIESEL', 'SELVA'
-];
-
-const MARINE_MODELS: Record<string, string[]> = {
-  'YAMAHA MARINE': ['F25 / F40 FourStroke', 'F70 / F90 / F115', 'F150 / F200 FourStroke', 'F250 / F300 V6', 'XTO Offshore 425 / 450 V8'],
-  'MERCURY': ['FourStroke 40 - 115 HP', 'FourStroke 150 HP', 'Verado V8 250 - 300 HP', 'Verado V12 600 HP', 'Pro XS 115 - 300 HP'],
-  'HONDA MARINE': ['BF 40 / BF 50', 'BF 80 / BF 100', 'BF 115 / BF 150', 'BF 200 / BF 225 / BF 250 V6'],
-  'SUZUKI MARINE': ['DF 40A / DF 60A', 'DF 90A / DF 115A / DF 140A', 'DF 150A / DF 175A / DF 200A', 'DF 250 / DF 300 V6', 'DF 350A Dual Prop'],
-  'VOLVO PENTA': ['D3 Inboard Diesel (110 - 220 HP)', 'D4 Common Rail (150 - 320 HP)', 'D6 Common Rail (300 - 480 HP)', 'D8 / D11 / D13 Heavy Duty', 'V6 / V8 Essence EVC'],
-  'YANMAR': ['3YM / 3JH Voilier (20 - 40 CV)', '4JH Common Rail (45 - 110 CV)', '4LV Inboard (150 - 250 CV)', '6LY / 8LV Haute Performance'],
-  'TOHATSU': ['MFS 20 / 30 FourStroke', 'MFS 40 / 50 FourStroke', 'MFS 75 / 90 / 115 HP'],
-  'EVINRUDE': ['E-TEC G2 150 - 300 HP', 'E-TEC 25 - 90 HP'],
-};
-
-const AUTO_POPULAR_MAKES = [
-  'PEUGEOT', 'RENAULT', 'VOLKSWAGEN', 'CITROEN', 'BMW', 'MERCEDES-BENZ',
-  'AUDI', 'FIAT', 'FORD', 'TOYOTA', 'HYUNDAI', 'KIA', 'NISSAN', 'SEAT',
-  'SKODA', 'DACIA', 'OPEL', 'CHEVROLET', 'HONDA', 'MITSUBISHI', 'SUZUKI',
-  'ALFA ROMEO', 'JEEP', 'LAND ROVER', 'VOLVO', 'PORSCHE'
-];
-
 @Injectable()
 export class OilFinderService {
   private readonly logger = new Logger(OilFinderService.name)
@@ -143,10 +65,7 @@ export class OilFinderService {
   async findByVehicle(make: string, model: string, engineCode?: string | null): Promise<OilFinderResult> {
     const makeNorm = make.trim().toUpperCase();
     const modelNorm = model.trim().toUpperCase();
-    const isMoto = MOTO_MAKES.some(m => makeNorm === m.toUpperCase()) || makeNorm === 'PEUGEOT MOTOCYCLES';
-    const isTruck = TRUCK_MAKES.some(m => makeNorm === m.toUpperCase()) || makeNorm === 'SCANIA' || makeNorm === 'IVECO' || makeNorm === 'MAN' || makeNorm === 'DAF' || makeNorm.includes('TRUCK') || makeNorm.includes('CAMION');
-    const isMarine = MARINE_MAKES.some(m => makeNorm === m.toUpperCase()) || makeNorm.includes('MARINE') || makeNorm === 'YANMAR' || makeNorm.includes('PENTA') || makeNorm.includes('BATEAU');
-    const isAgri = AGRI_MAKES.some(m => makeNorm === m.toUpperCase()) || makeNorm.includes('TRACTOR') || makeNorm.includes('TRACTEUR') || makeNorm.includes('AGRI');
+    const eUpper = (engineCode || '').toUpperCase();
 
     // 1. Try DB lookup first (exact/insensitive match on the raw name)
     const where = {
@@ -197,11 +116,90 @@ export class OilFinderService {
       };
     }
 
-    const eUpper = (engineCode || '').toUpperCase();
+    // 2. Fetch category and production years dynamically from TecDoc
+    let isTruck = false;
+    let isMoto = false;
+    let isEngineCategory = false;
+    let isPassengerCar = false;
+    let tecdocEndYear: number | null = null;
+
+    try {
+      const tecdocInfo: any[] = await this.prisma.$queryRawUnsafe(`
+        SELECT 
+          COALESCE(m.is_commercial_vehicle, mfr.is_commercial_vehicle, false) AS is_truck,
+          COALESCE(m.is_motorbike, mfr.is_motorbike, false) AS is_moto,
+          COALESCE(m.is_engine, mfr.is_engine, false) AS is_engine,
+          COALESCE(m.is_passenger_car, mfr.is_passenger_car, false) AS is_car,
+          COALESCE(m.is_transporter, mfr.is_transporter, false) AS is_van,
+          m.date_from,
+          m.date_to
+        FROM tecdoc.models m
+        JOIN tecdoc.manufacturers mfr ON mfr.id = m.manufacturer_id
+        WHERE (
+          LOWER(REGEXP_REPLACE(mfr.matchcode, '[^a-zA-Z0-9]+', '-', 'g')) = $1
+          OR LOWER(mfr.matchcode) = $1
+          OR LOWER(COALESCE(NULLIF(mfr.description, ''), mfr.matchcode)) = $1
+          OR LOWER(REGEXP_REPLACE(COALESCE(NULLIF(mfr.description, ''), mfr.matchcode), '[^a-zA-Z0-9]+', '-', 'g')) = $1
+        )
+        AND (
+          LOWER(REGEXP_REPLACE(m.description, '[^a-zA-Z0-9]+', '-', 'g')) = $2
+          OR LOWER(m.description) = $2
+          OR $2 ILIKE '%' || LOWER(m.description) || '%'
+          OR LOWER(m.description) ILIKE '%' || $2 || '%'
+        )
+        LIMIT 1
+      `, slugify(make), slugify(model));
+
+      if (tecdocInfo.length > 0) {
+        const r = tecdocInfo[0];
+        isTruck = Boolean(r.is_truck || r.is_van);
+        isMoto = Boolean(r.is_moto);
+        isEngineCategory = Boolean(r.is_engine);
+        isPassengerCar = Boolean(r.is_car);
+
+        if (r.date_to && typeof r.date_to === 'string' && r.date_to !== '0000-00-00') {
+          const matchYear = r.date_to.match(/^([12]\d{3})/);
+          if (matchYear) {
+            tecdocEndYear = parseInt(matchYear[1], 10);
+          }
+        }
+      } else {
+        const mfrRows: any[] = await this.prisma.$queryRawUnsafe(`
+          SELECT is_commercial_vehicle, is_motorbike, is_engine, is_passenger_car, is_transporter
+          FROM tecdoc.manufacturers
+          WHERE LOWER(REGEXP_REPLACE(matchcode, '[^a-zA-Z0-9]+', '-', 'g')) = $1
+             OR LOWER(matchcode) = $1
+             OR LOWER(COALESCE(NULLIF(description, ''), matchcode)) = $1
+             OR LOWER(REGEXP_REPLACE(COALESCE(NULLIF(description, ''), matchcode), '[^a-zA-Z0-9]+', '-', 'g')) = $1
+          LIMIT 1
+        `, slugify(make));
+        if (mfrRows.length > 0) {
+          const m = mfrRows[0];
+          isTruck = Boolean(m.is_commercial_vehicle || m.is_transporter);
+          isMoto = Boolean(m.is_motorbike);
+          isEngineCategory = Boolean(m.is_engine);
+          isPassengerCar = Boolean(m.is_passenger_car);
+        }
+      }
+    } catch (err) {
+      this.logger.error(`Error querying TecDoc classification for ${make} ${model}`, err);
+    }
+
+    // Additional contextual checks for Marine or Agriculture
+    const isMarine = isEngineCategory && (
+      makeNorm.includes('MARINE') || makeNorm.includes('PENTA') || makeNorm.includes('YANMAR') || makeNorm.includes('MERCURY') ||
+      modelNorm.includes('BOAT') || modelNorm.includes('BATEAU') || modelNorm.includes('HORS-BORD') || modelNorm.includes('OUTBOARD') ||
+      modelNorm.includes('INBOARD') || eUpper.includes('MARINE')
+    ) || makeNorm.includes('MARINE') || makeNorm.includes('BATEAU');
+
+    const isAgri = (isEngineCategory || isTruck) && (
+      makeNorm.includes('AGRI') || makeNorm.includes('TRACT') || modelNorm.includes('TRACT') ||
+      ['DEUTZ', 'FENDT', 'CLAAS', 'KUBOTA', 'VALTRA', 'SAME', 'STEYR', 'LANDINI', 'MCCORMICK', 'AGCO', 'JOHN DEERE', 'MASSEY'].some(m => makeNorm.includes(m))
+    ) || makeNorm.includes('TRACTEUR') || makeNorm.includes('TRACTOR');
 
     // 2. Specialized Category Recommendations
     if (isMoto) {
-      const is2T = modelNorm.includes('50') && (modelNorm.includes('ZIP') || modelNorm.includes('AEROX') || modelNorm.includes('BW') || modelNorm.includes('TYPHOON') || modelNorm.includes('EXC 300')) || eUpper.includes('2T') || eUpper.includes('2-TEMPS');
+      const is2T = (modelNorm.includes('50') && (modelNorm.includes('ZIP') || modelNorm.includes('AEROX') || modelNorm.includes('BW') || modelNorm.includes('TYPHOON') || modelNorm.includes('EXC 300'))) || eUpper.includes('2T') || eUpper.includes('2-TEMPS');
       if (is2T) {
         return {
           status: 'found',
@@ -241,7 +239,7 @@ export class OilFinderService {
     }
 
     if (isTruck) {
-      const isVintageTruck = eUpper.includes('15W') || eUpper.includes('EURO 3') || eUpper.includes('EURO 2') || modelNorm.includes('PREMIUM') || modelNorm.includes('MAGNUM');
+      const isVintageTruck = (tecdocEndYear !== null && tecdocEndYear <= 2006) || eUpper.includes('15W') || eUpper.includes('EURO 3') || eUpper.includes('EURO 2') || modelNorm.includes('PREMIUM') || modelNorm.includes('MAGNUM');
       return {
         status: 'found',
         oilSpec: {
@@ -249,7 +247,7 @@ export class OilFinderService {
           viscosity: isVintageTruck ? '15W-40' : '10W-40',
           apiStandard: 'API CK-4 / CJ-4',
           aceaStandard: isVintageTruck ? 'ACEA E7' : 'ACEA E6 / E9 / E7',
-          oemApproval: isVintageTruck ? 'MB 228.3, Volvo VDS-3, MAN M 3275' : 'MB 228.51, MAN M 3477, Volvo VDS-4.5, Scania Low Ash',
+          oemApproval: isVintageTruck ? 'MB 228.3, Volvo VDS-3, MAN M 3275, Scania LDF-2' : 'Scania Low Ash (LDF-4 / LA), MB 228.51, MAN M 3477, Volvo VDS-4.5',
           capacityLiters: 32.0,
           changeIntervalKm: 40000,
         },
@@ -349,7 +347,7 @@ export class OilFinderService {
       /\b(CORSA\s*(A|B|C)\b|ASTRA\s*(F|G)\b|VECTRA\s*(A|B)\b)/i,
       /\b(FIESTA\s*(III|3|IV|4|V|5)\b|ESCORT|SIERRA|MONDEO\s*(I|1|II|2)\b)/i,
     ];
-    let isVintage = VINTAGE_REGEXES.some(re => re.test(modelClean)) || (endYear !== null && endYear <= 2006);
+    let isVintage = (tecdocEndYear !== null && tecdocEndYear <= 2006) || VINTAGE_REGEXES.some(re => re.test(modelClean)) || (endYear !== null && endYear <= 2006);
 
     if (!isVintage) {
       try {
@@ -369,8 +367,8 @@ export class OilFinderService {
         `, model.toLowerCase(), ...(engineCode ? [engineCode.toLowerCase()] : []));
         
         if (tecdocDateRows.length > 0 && tecdocDateRows[0].date_to) {
-          const tecdocEndYear = new Date(tecdocDateRows[0].date_to).getFullYear();
-          if (tecdocEndYear <= 2006) {
+          const dt = new Date(tecdocDateRows[0].date_to);
+          if (!isNaN(dt.getTime()) && dt.getFullYear() <= 2006) {
             isVintage = true;
           }
         }
@@ -597,60 +595,31 @@ export class OilFinderService {
     const isCv = !isAgri && (cat.includes('poids') || cat.includes('commercial') || cat.includes('heavy') || cat.includes('truck') || cat.includes('camion'));
     const isMarine = cat.includes('marine') || cat.includes('boat') || cat.includes('bateau');
 
+    let whereClause = 'mfr.can_be_displayed = true';
     if (isMoto) {
-      try {
-        const tecdocMotos: any[] = await this.prisma.$queryRawUnsafe(`
-          SELECT DISTINCT COALESCE(NULLIF(description, ''), matchcode) AS name
-          FROM tecdoc.manufacturers
-          WHERE can_be_displayed = true AND is_motorbike = true
-          ORDER BY name ASC
-        `);
-        const tecdocNames = new Set(tecdocMotos.map(r => r.name.toUpperCase()));
-        const presets = MOTO_MAKES.filter(name => !tecdocNames.has(name.toUpperCase())).map(name => ({ slug: slugify(name), name }));
-        return [...tecdocMotos.map(r => ({ slug: slugify(r.name), name: r.name })), ...presets];
-      } catch {
-        return MOTO_MAKES.map(name => ({ slug: slugify(name), name }));
-      }
+      whereClause += ' AND mfr.is_motorbike = true';
+    } else if (isCv) {
+      whereClause += ' AND (mfr.is_commercial_vehicle = true OR mfr.is_transporter = true)';
+    } else if (isAgri) {
+      whereClause += ' AND (mfr.is_commercial_vehicle = true OR mfr.is_engine = true)';
+    } else if (isMarine) {
+      whereClause += ' AND (mfr.is_engine = true OR mfr.is_commercial_vehicle = true)';
+    } else {
+      whereClause += ' AND mfr.is_passenger_car = true';
     }
 
-    if (isAgri) {
-      return AGRI_MAKES.map(name => ({ slug: slugify(name), name }));
-    }
-
-    if (isCv) {
-      try {
-        const tecdocCv: any[] = await this.prisma.$queryRawUnsafe(`
-          SELECT DISTINCT COALESCE(NULLIF(description, ''), matchcode) AS name
-          FROM tecdoc.manufacturers
-          WHERE can_be_displayed = true AND (is_commercial_vehicle = true OR is_transporter = true)
-          ORDER BY name ASC
-        `);
-        const tecdocNames = new Set(tecdocCv.map(r => r.name.toUpperCase()));
-        const presets = TRUCK_MAKES.filter(name => !tecdocNames.has(name.toUpperCase())).map(name => ({ slug: slugify(name), name }));
-        return [...tecdocCv.map(r => ({ slug: slugify(r.name), name: r.name })), ...presets];
-      } catch {
-        return TRUCK_MAKES.map(name => ({ slug: slugify(name), name }));
-      }
-    }
-
-    if (isMarine) {
-      return MARINE_MAKES.map(name => ({ slug: slugify(name), name }));
-    }
-
-    // Passenger Car (Automobile) - Query TecDoc
     try {
       const tecdocRows: any[] = await this.prisma.$queryRawUnsafe(`
-        SELECT DISTINCT COALESCE(NULLIF(description, ''), matchcode) AS name
-        FROM tecdoc.manufacturers
-        WHERE can_be_displayed = true AND is_passenger_car = true
+        SELECT DISTINCT COALESCE(NULLIF(mfr.description, ''), mfr.matchcode) AS name
+        FROM tecdoc.manufacturers mfr
+        WHERE ${whereClause}
         ORDER BY name ASC
       `);
       if (tecdocRows.length > 0) {
-        // Use slugify() here (not SQL) so accents and parens are handled correctly
         return tecdocRows.map((r) => ({ slug: slugify(r.name), name: r.name }));
       }
     } catch (e) {
-      this.logger.error('Error fetching auto makes from TecDoc', e);
+      this.logger.error('Error fetching makes from TecDoc', e);
     }
 
     const rows = await this.prisma.oilFinderVehicle.findMany({
@@ -662,52 +631,24 @@ export class OilFinderService {
       return rows.map((r) => ({ slug: slugify(r.make), name: r.make }));
     }
 
-    return AUTO_POPULAR_MAKES.map(name => ({ slug: slugify(name), name }));
+    return [];
   }
 
   async getModels(makeName: string) {
-    const makeUpper = makeName.trim().toUpperCase();
-
-    // Check Marine models — exact match only
-    for (const [mfr, models] of Object.entries(MARINE_MODELS)) {
-      if (makeUpper === mfr || makeUpper === mfr.toUpperCase()) {
-        return models.map(name => ({ slug: slugify(name), name }));
-      }
-    }
-
-    // Check Agricultural models — exact match only
-    for (const [mfr, models] of Object.entries(AGRI_MODELS)) {
-      if (makeUpper === mfr || makeUpper === mfr.toUpperCase()) {
-        return models.map(name => ({ slug: slugify(name), name }));
-      }
-    }
-
-    // Check motorcycle models — exact match only
-    for (const [mfr, models] of Object.entries(MOTO_MODELS)) {
-      if (makeUpper === mfr || makeUpper === mfr.toUpperCase()) {
-        return models.map(name => ({ slug: slugify(name), name }));
-      }
-    }
-
-    // Check truck models — exact match only
-    for (const [mfr, models] of Object.entries(TRUCK_MODELS)) {
-      if (makeUpper === mfr || makeUpper === mfr.toUpperCase()) {
-        return models.map(name => ({ slug: slugify(name), name }));
-      }
-    }
-
-    // Passenger car models from TecDoc
     try {
       const tecdocRows: any[] = await this.prisma.$queryRawUnsafe(`
         SELECT DISTINCT m.description AS name, LOWER(REGEXP_REPLACE(m.description, '[^a-zA-Z0-9]+', '-', 'g')) AS slug
         FROM tecdoc.models m
         JOIN tecdoc.manufacturers mfr ON mfr.id = m.manufacturer_id
-        WHERE LOWER(REGEXP_REPLACE(COALESCE(NULLIF(mfr.description, ''), mfr.matchcode), '[^a-zA-Z0-9]+', '-', 'g')) = $1
-           OR LOWER(COALESCE(NULLIF(mfr.description, ''), mfr.matchcode)) = $1
-           OR LOWER(REGEXP_REPLACE(mfr.matchcode, '[^a-zA-Z0-9]+', '-', 'g')) = $1
-           OR LOWER(mfr.matchcode) = $1
+        WHERE m.can_be_displayed = true
+          AND (
+            LOWER(REGEXP_REPLACE(COALESCE(NULLIF(mfr.description, ''), mfr.matchcode), '[^a-zA-Z0-9]+', '-', 'g')) = $1
+            OR LOWER(COALESCE(NULLIF(mfr.description, ''), mfr.matchcode)) = $1
+            OR LOWER(REGEXP_REPLACE(mfr.matchcode, '[^a-zA-Z0-9]+', '-', 'g')) = $1
+            OR LOWER(mfr.matchcode) = $1
+          )
         ORDER BY m.description ASC
-      `, makeName.toLowerCase());
+      `, makeName.toLowerCase().trim());
       if (tecdocRows.length > 0) {
         return tecdocRows.map((r) => ({ slug: r.slug, name: r.name }));
       }
@@ -726,110 +667,88 @@ export class OilFinderService {
       return rows.map((r) => ({ slug: slugify(r.model), name: r.model }));
     }
 
-    return [
-      { slug: 'clio-iv', name: 'Clio IV' },
-      { slug: 'clio-v', name: 'Clio V' },
-      { slug: 'megane-iv', name: 'Megane IV' },
-      { slug: '208', name: '208' },
-      { slug: '308', name: '308' },
-      { slug: 'golf-7', name: 'Golf VII' },
-      { slug: 'golf-8', name: 'Golf VIII' },
-      { slug: 'polo', name: 'Polo VI' },
-      { slug: 'serie-3', name: 'Série 3 (G20/F30)' },
-      { slug: 'classe-c', name: 'Classe C (W205/W206)' },
-      { slug: 'a3', name: 'A3 Sportback' },
-      { slug: 'a4', name: 'A4' },
-      { slug: 'yaris', name: 'Yaris' },
-      { slug: 'tucson', name: 'Tucson' },
-      { slug: 'sportage', name: 'Sportage' },
-      { slug: 'duster', name: 'Duster' },
-      { slug: 'sandero', name: 'Sandero' },
-    ];
+    return [];
   }
 
   async getEngines(makeName: string, modelName: string) {
-    const makeUpper = makeName.trim().toUpperCase();
-    const modelUpper = modelName.trim().toUpperCase();
+    const makeNorm = makeName.trim().toLowerCase();
+    const modelNorm = modelName.trim().toLowerCase();
 
-    // Marine engines — exact match only
-    const isMarine = MARINE_MAKES.some(m => makeUpper === m.toUpperCase()) || makeUpper.includes('MARINE') || makeUpper.includes('PENTA') || makeUpper === 'YANMAR';
-    if (isMarine) {
-      return [
-        { engineCode: 'Moteur Hors-Bord 4-Temps (NMMA FC-W)', yearFrom: 2012, yearTo: 2024 },
-        { engineCode: 'Moteur Hors-Bord 2-Temps (NMMA TC-W3)', yearFrom: 2005, yearTo: 2024 },
-        { engineCode: 'Moteur Inboard Diesel Common Rail (Heavy Duty)', yearFrom: 2010, yearTo: 2024 },
-        { engineCode: 'Moteur Inboard Essence V6 / V8 (Catalysé)', yearFrom: 2012, yearTo: 2024 },
-      ];
-    }
-
-    // Agricultural engines — exact match only
-    const isAgri = AGRI_MAKES.some(m => makeUpper === m.toUpperCase());
-    if (isAgri) {
-      return [
-        { engineCode: 'Moteur Diesel Stage V / Tier 4 Final Low-SAPS', yearFrom: 2018, yearTo: 2024 },
-        { engineCode: 'Moteur Diesel Stage IV / Tier 4 Interim', yearFrom: 2012, yearTo: 2018 },
-        { engineCode: 'Transmission & Hydraulique Multifonction (UTTO / STOU)', yearFrom: 2010, yearTo: 2024 },
-      ];
-    }
-
-    // Motorcycle engines — exact match only
-    const isMoto = MOTO_MAKES.some(m => makeUpper === m.toUpperCase()) || makeUpper === 'PEUGEOT MOTOCYCLES' || makeUpper.includes('PIAGGIO') || makeUpper.includes('SYM') || makeUpper.includes('VESPA') || makeUpper.includes('DUCATI') || makeUpper.includes('KTM');
-    if (isMoto) {
-      if (modelUpper.includes('50') || modelUpper.includes('ZIP') || modelUpper.includes('TYPHOON')) {
-        return [
-          { engineCode: '50cc 2-Temps (Graissage Séparé / Mélange - JASO FD)', yearFrom: 2010, yearTo: 2024 },
-          { engineCode: '50cc 4-Temps i-Get / Euro 5 (JASO MA2)', yearFrom: 2018, yearTo: 2024 },
-        ];
-      }
-      if (modelUpper.includes('125') || modelUpper.includes('150') || modelUpper.includes('PCX') || modelUpper.includes('SH') || modelUpper.includes('MEDLEY') || modelUpper.includes('SYMPHONY') || modelUpper.includes('FIDDLE')) {
-        return [
-          { engineCode: '125cc 4-Temps Injection eSP / Euro 5 (JASO MB/MA2)', yearFrom: 2016, yearTo: 2024 },
-          { engineCode: '125cc 4-Temps Carburateur / Euro 4 (10W-40 MA2)', yearFrom: 2010, yearTo: 2018 },
-          { engineCode: '150cc / 200cc 4-Temps i-Get (10W-40 MA2)', yearFrom: 2016, yearTo: 2024 },
-        ];
-      }
-      if (modelUpper.includes('T-MAX') || modelUpper.includes('530') || modelUpper.includes('560') || modelUpper.includes('300') || modelUpper.includes('350') || modelUpper.includes('400')) {
-        return [
-          { engineCode: '560cc Bicylindre 4-Temps DACT (10W-40 MA2)', yearFrom: 2020, yearTo: 2024 },
-          { engineCode: '530cc Bicylindre 4-Temps DACT (10W-40 MA2)', yearFrom: 2012, yearTo: 2019 },
-          { engineCode: '300cc / 350cc / 400cc Monocylindre 4V (10W-40 MA2)', yearFrom: 2016, yearTo: 2024 },
-        ];
-      }
-      return [
-        { engineCode: 'Moteur 4-Temps 4V Injection DACT (JASO MA2)', yearFrom: 2014, yearTo: 2024 },
-        { engineCode: 'Moteur 4-Temps Haute Performance 10W-50 (JASO MA2)', yearFrom: 2018, yearTo: 2024 },
-      ];
-    }
-
-    // Truck engines
-    const isTruck = TRUCK_MAKES.some(m => makeUpper === m.toUpperCase()) || makeUpper === 'SCANIA' || makeUpper === 'IVECO' || makeUpper === 'MAN' || makeUpper === 'DAF';
-    if (isTruck) {
-      return [
-        { engineCode: '12.8L OM471 / D13K / DC13 Euro 6 Low-SAPS (450 - 530 ch)', yearFrom: 2014, yearTo: 2024 },
-        { engineCode: '10.8L OM470 / D11K / Cursor 11 Euro 6 (380 - 450 ch)', yearFrom: 2014, yearTo: 2024 },
-        { engineCode: '7.7L OM936 / D8K / TGL Euro 6 (240 - 350 ch)', yearFrom: 2014, yearTo: 2024 },
-      ];
-    }
-
-    // Passenger car engines - Query TecDoc
+    // 1. Query tecdoc.passengercars joined with tecdoc.models and tecdoc.manufacturers
     try {
-      const tecdocRows: any[] = await this.prisma.$queryRawUnsafe(`
-        SELECT DISTINCT pc.description AS "engineCode", 
-               NULLIF(SPLIT_PART(pc.date_from, '.', 2), '')::int AS "yearFrom",
-               NULLIF(SPLIT_PART(pc.date_to, '.', 2), '')::int AS "yearTo"
+      const tecdocPassCars: any[] = await this.prisma.$queryRawUnsafe(`
+        SELECT DISTINCT 
+          COALESCE(NULLIF(pc.full_description, ''), pc.description) AS "engineCode",
+          CASE 
+            WHEN pc.date_from::text ~ '^[12]\\d{3}' THEN SUBSTRING(pc.date_from::text, 1, 4)::int
+            WHEN pc.date_from::text ~ '\\d{4}$' THEN SUBSTRING(pc.date_from::text, LENGTH(pc.date_from::text)-3, 4)::int
+            ELSE NULL 
+          END AS "yearFrom",
+          CASE 
+            WHEN pc.date_to::text ~ '^[12]\\d{3}' AND SUBSTRING(pc.date_to::text, 1, 4) != '0000' THEN SUBSTRING(pc.date_to::text, 1, 4)::int
+            WHEN pc.date_to::text ~ '\\d{4}$' AND SUBSTRING(pc.date_to::text, LENGTH(pc.date_to::text)-3, 4) != '0000' THEN SUBSTRING(pc.date_to::text, LENGTH(pc.date_to::text)-3, 4)::int
+            ELSE NULL 
+          END AS "yearTo"
         FROM tecdoc.passengercars pc
         JOIN tecdoc.models m ON m.id = pc.model_id
-        WHERE LOWER(REGEXP_REPLACE(m.description, '[^a-zA-Z0-9]+', '-', 'g')) = $1
-           OR LOWER(m.description) = $1
-        ORDER BY pc.description ASC
-      `, modelName.toLowerCase());
-      if (tecdocRows.length > 0) {
-        return tecdocRows;
+        JOIN tecdoc.manufacturers mfr ON mfr.id = m.manufacturer_id
+        WHERE pc.can_be_displayed = true
+          AND (
+            LOWER(REGEXP_REPLACE(m.description, '[^a-zA-Z0-9]+', '-', 'g')) = $1
+            OR LOWER(m.description) = $1
+            OR $1 ILIKE '%' || LOWER(m.description) || '%'
+            OR LOWER(m.description) ILIKE '%' || $1 || '%'
+          )
+          AND (
+            LOWER(REGEXP_REPLACE(COALESCE(NULLIF(mfr.description, ''), mfr.matchcode), '[^a-zA-Z0-9]+', '-', 'g')) = $2
+            OR LOWER(COALESCE(NULLIF(mfr.description, ''), mfr.matchcode)) = $2
+            OR LOWER(REGEXP_REPLACE(mfr.matchcode, '[^a-zA-Z0-9]+', '-', 'g')) = $2
+            OR LOWER(mfr.matchcode) = $2
+          )
+        ORDER BY "engineCode" ASC
+      `, modelNorm, makeNorm);
+
+      if (tecdocPassCars.length > 0) {
+        return tecdocPassCars;
       }
     } catch (e) {
-      this.logger.error(`Error fetching engines from TecDoc for model: ${modelName}`, e);
+      this.logger.error(`Error fetching passenger car engines from TecDoc for ${makeName} ${modelName}`, e);
     }
 
+    // 2. Query tecdoc.engines for this manufacturer (covers commercial vehicles, marine, industrial, motorbikes)
+    try {
+      const tecdocEngines: any[] = await this.prisma.$queryRawUnsafe(`
+        SELECT DISTINCT
+          COALESCE(NULLIF(e.sales_description, ''), e.description) AS "engineCode",
+          CASE 
+            WHEN e.date_from::text ~ '^[12]\\d{3}' THEN SUBSTRING(e.date_from::text, 1, 4)::int
+            ELSE NULL 
+          END AS "yearFrom",
+          CASE 
+            WHEN e.date_to::text ~ '^[12]\\d{3}' AND SUBSTRING(e.date_to::text, 1, 4) != '0000' THEN SUBSTRING(e.date_to::text, 1, 4)::int
+            ELSE NULL 
+          END AS "yearTo"
+        FROM tecdoc.engines e
+        JOIN tecdoc.manufacturers mfr ON mfr.id = e.manufacturer
+        WHERE e.can_be_displayed = true
+          AND (
+            LOWER(REGEXP_REPLACE(COALESCE(NULLIF(mfr.description, ''), mfr.matchcode), '[^a-zA-Z0-9]+', '-', 'g')) = $1
+            OR LOWER(COALESCE(NULLIF(mfr.description, ''), mfr.matchcode)) = $1
+            OR LOWER(REGEXP_REPLACE(mfr.matchcode, '[^a-zA-Z0-9]+', '-', 'g')) = $1
+            OR LOWER(mfr.matchcode) = $1
+          )
+        ORDER BY "engineCode" ASC
+        LIMIT 50
+      `, makeNorm);
+
+      if (tecdocEngines.length > 0) {
+        return tecdocEngines;
+      }
+    } catch (e) {
+      this.logger.error(`Error fetching engines from TecDoc for manufacturer ${makeName}`, e);
+    }
+
+    // 3. Fallback to oilFinderVehicle table in DB if populated
     const rows = await this.prisma.oilFinderVehicle.findMany({
       where: {
         make: { equals: makeName.trim(), mode: 'insensitive' as const },
@@ -842,14 +761,31 @@ export class OilFinderService {
     }).catch(() => []);
     if (rows.length > 0) return rows;
 
-    return [
-      { engineCode: '1.2 PureTech / TCe / TSI (Essence)', yearFrom: 2012, yearTo: 2024 },
-      { engineCode: '1.4 HDi / TDCi / MPI', yearFrom: 2008, yearTo: 2020 },
-      { engineCode: '1.5 dCi / Blue dCi (Diesel)', yearFrom: 2010, yearTo: 2024 },
-      { engineCode: '1.6 BlueHDi / TDI (Diesel)', yearFrom: 2012, yearTo: 2024 },
-      { engineCode: '2.0 TDI / BlueHDi / CDI (Diesel)', yearFrom: 2010, yearTo: 2024 },
-      { engineCode: '2.0 TFSI / EcoBoost / Turbo (Essence)', yearFrom: 2012, yearTo: 2024 },
-    ];
+    // 4. Return the model from tecdoc.models as the standard engine configuration
+    try {
+      const modelRow: any[] = await this.prisma.$queryRawUnsafe(`
+        SELECT 
+          m.description || ' (Moteur d''origine)' AS "engineCode",
+          CASE WHEN m.date_from::text ~ '^[12]\\d{3}' THEN SUBSTRING(m.date_from::text, 1, 4)::int ELSE NULL END AS "yearFrom",
+          CASE WHEN m.date_to::text ~ '^[12]\\d{3}' AND SUBSTRING(m.date_to::text, 1, 4) != '0000' THEN SUBSTRING(m.date_to::text, 1, 4)::int ELSE NULL END AS "yearTo"
+        FROM tecdoc.models m
+        WHERE (
+          LOWER(REGEXP_REPLACE(m.description, '[^a-zA-Z0-9]+', '-', 'g')) = $1
+          OR LOWER(m.description) = $1
+          OR $1 ILIKE '%' || LOWER(m.description) || '%'
+          OR LOWER(m.description) ILIKE '%' || $1 || '%'
+        )
+        LIMIT 1
+      `, modelNorm);
+
+      if (modelRow.length > 0) {
+        return modelRow;
+      }
+    } catch {
+      // ignore
+    }
+
+    return [];
   }
 }
 
