@@ -278,9 +278,44 @@ export class OilFinderService {
     const isDiesel = eUpper.includes('TDI') || eUpper.includes('DCI') || eUpper.includes('HDI') || eUpper.includes('CDI') || eUpper.includes('CRDI') || eUpper.includes('D-4D') || eUpper.includes('MULTIJET') || eUpper.includes('TD') || eUpper.includes('DIESEL') || eUpper.includes('JTD');
     
     // Detect older vehicles (pre-2007 without DPF/FAP) vs modern vehicles (2008+ with DPF/Euro 5/Euro 6)
-    const yearMatches = (engineCode || '').match(/(\d{4})/g);
+    const yearMatches = `${model} ${engineCode || ''}`.match(/(\d{4})/g);
     const endYear = yearMatches && yearMatches.length > 1 ? parseInt(yearMatches[1], 10) : (yearMatches ? parseInt(yearMatches[0], 10) : null);
-    const isVintage = endYear !== null && endYear <= 2006;
+    
+    const VINTAGE_MODELS = [
+      'SAXO', '106', '205', '206', '306', '309', '405', '406', '605', '806', 'XSARA', 'XANTIA', 'ZX', 'AX', 'C15',
+      'CLIO I', 'CLIO 1', 'CLIO II', 'CLIO 2', 'MEGANE I', 'MEGANE 1', 'LAGUNA I', 'LAGUNA 1', 'TWINGO I', 'TWINGO 1', 'SUPER 5', 'EXPRESS', 'R19', 'R21',
+      'GOLF I', 'GOLF 1', 'GOLF II', 'GOLF 2', 'GOLF III', 'GOLF 3', 'GOLF IV', 'GOLF 4', 'VENTO', 'BORA', 'PASSAT B3', 'PASSAT B4', 'PASSAT B5',
+      'PUNTO I', 'PUNTO 1', 'PUNTO II', 'PUNTO 2', 'UNO', 'PALIO', 'SIENA', 'SEICENTO', 'CINQUECENTO'
+    ];
+    let isVintage = VINTAGE_MODELS.some(m => modelNorm.includes(m)) || (endYear !== null && endYear <= 2006);
+
+    if (!isVintage) {
+      try {
+        const tecdocDateRows: any[] = await this.prisma.$queryRawUnsafe(`
+          SELECT pc.date_to
+          FROM tecdoc.passengercars pc
+          JOIN tecdoc.models m ON m.id = pc.model_id
+          WHERE (
+            LOWER(REGEXP_REPLACE(m.description, '[^a-zA-Z0-9]+', '-', 'g')) = $1 
+            OR LOWER(m.description) = $1 
+            OR $1 ILIKE '%' || LOWER(m.description) || '%'
+            OR LOWER(m.description) ILIKE '%' || $1 || '%'
+          )
+          ${engineCode ? `AND (LOWER(pc.description) = $2 OR LOWER(pc.description) ILIKE '%' || $2 || '%')` : ''}
+          ORDER BY pc.date_to DESC NULLS LAST
+          LIMIT 1
+        `, model.toLowerCase(), ...(engineCode ? [engineCode.toLowerCase()] : []));
+        
+        if (tecdocDateRows.length > 0 && tecdocDateRows[0].date_to) {
+          const tecdocEndYear = new Date(tecdocDateRows[0].date_to).getFullYear();
+          if (tecdocEndYear <= 2006) {
+            isVintage = true;
+          }
+        }
+      } catch (err) {
+        // non-blocking fallback
+      }
+    }
 
     // VAG (Volkswagen, Audi, Seat, Skoda)
     if (makeNorm.includes('VOLKSWAGEN') || makeNorm.includes('VW') || makeNorm.includes('AUDI') || makeNorm.includes('SEAT') || makeNorm.includes('SKODA')) {
