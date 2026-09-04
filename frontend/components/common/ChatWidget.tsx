@@ -545,18 +545,7 @@ export function ChatWidget() {
                 onSubmit={handleSend}
                 className="flex items-center gap-2 rounded-2xl border border-slate-200/90 bg-white p-1.5 pl-3 shadow-2xs focus-within:border-slate-400 focus-within:ring-2 focus-within:ring-slate-100 transition-all"
               >
-                {/* Paperclip button */}
-                <button
-                  type="button"
-                  onClick={() => fileInputRef.current?.click()}
-                  className="text-slate-400 hover:text-slate-600 transition-colors p-1 rounded-lg hover:bg-slate-50 cursor-pointer shrink-0"
-                  aria-label="Attach file"
-                >
-                  <Paperclip size={18} strokeWidth={2} />
-                </button>
 
-                {/* Thin vertical separator */}
-                <div className="h-5 w-[1px] bg-slate-200 shrink-0" />
 
                 {/* Text input */}
                 <input
@@ -569,26 +558,7 @@ export function ChatWidget() {
                   disabled={isLoading}
                 />
 
-                {/* Microphone button */}
-                <button
-                  type="button"
-                  onClick={() => {
-                    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-                      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
-                      const recognition = new SpeechRecognition()
-                      recognition.lang = locale === 'ar' ? 'ar-TN' : locale === 'en' ? 'en-US' : 'fr-FR'
-                      recognition.onresult = (event: any) => {
-                        const transcript = event.results[0][0].transcript
-                        setInput(transcript)
-                      }
-                      recognition.start()
-                    }
-                  }}
-                  className="text-slate-400 hover:text-slate-600 transition-colors p-1.5 rounded-lg hover:bg-slate-50 cursor-pointer shrink-0"
-                  aria-label="Voice input"
-                >
-                  <Mic size={18} strokeWidth={2} />
-                </button>
+
 
                 {/* Solid Send Button (Squircle) */}
                 <button
