@@ -292,7 +292,7 @@ export default function CataloguePage() {
               </p>
             )}
           </div>
-          <div className="flex w-full items-center justify-end gap-3 sm:w-auto">
+          <div className="flex w-full flex-wrap items-center justify-between gap-3 sm:w-auto sm:justify-end">
             <div className="flex h-10 items-center rounded border border-black/10 bg-white p-1">
               <button
                 type="button"
