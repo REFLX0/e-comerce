@@ -281,13 +281,13 @@ export class OilFinderService {
     const yearMatches = `${model} ${engineCode || ''}`.match(/(\d{4})/g);
     const endYear = yearMatches && yearMatches.length > 1 ? parseInt(yearMatches[1], 10) : (yearMatches ? parseInt(yearMatches[0], 10) : null);
     
-    const VINTAGE_MODELS = [
-      'SAXO', '106', '205', '206', '306', '309', '405', '406', '605', '806', 'XSARA', 'XANTIA', 'ZX', 'AX', 'C15',
-      'CLIO I', 'CLIO 1', 'CLIO II', 'CLIO 2', 'MEGANE I', 'MEGANE 1', 'LAGUNA I', 'LAGUNA 1', 'TWINGO I', 'TWINGO 1', 'SUPER 5', 'EXPRESS', 'R19', 'R21',
-      'GOLF I', 'GOLF 1', 'GOLF II', 'GOLF 2', 'GOLF III', 'GOLF 3', 'GOLF IV', 'GOLF 4', 'VENTO', 'BORA', 'PASSAT B3', 'PASSAT B4', 'PASSAT B5',
-      'PUNTO I', 'PUNTO 1', 'PUNTO II', 'PUNTO 2', 'UNO', 'PALIO', 'SIENA', 'SEICENTO', 'CINQUECENTO'
+    const VINTAGE_REGEXES = [
+      /\b(SAXO|106|205|206|306|309|405|406|605|806|XSARA|XANTIA|ZX|AX|C15)\b/i,
+      /\b(CLIO\s*(I\b|1\b|II\b|2\b)|MEGANE\s*(I\b|1\b)|LAGUNA\s*(I\b|1\b)|TWINGO\s*(I\b|1\b)|SUPER\s*5|EXPRESS|R19|R21)\b/i,
+      /\b(GOLF\s*(I\b|1\b|II\b|2\b|III\b|3\b|IV\b|4\b)|VENTO|BORA|PASSAT\s*(B3|B4|B5))\b/i,
+      /\b(PUNTO\s*(I\b|1\b|II\b|2\b)|UNO|PALIO|SIENA|SEICENTO|CINQUECENTO)\b/i,
     ];
-    let isVintage = VINTAGE_MODELS.some(m => modelNorm.includes(m)) || (endYear !== null && endYear <= 2006);
+    let isVintage = VINTAGE_REGEXES.some(re => re.test(modelNorm)) || (endYear !== null && endYear <= 2006);
 
     if (!isVintage) {
       try {
