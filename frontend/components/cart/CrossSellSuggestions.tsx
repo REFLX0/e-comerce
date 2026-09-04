@@ -39,7 +39,7 @@ export function CrossSellSuggestions({ variant = 'compact' }: Props) {
     if (!variant) return
     const result = addItem(product, variant, 1)
     if (result.ok) {
-      toast.success(t('addedToCart'))
+      toast.success(t('addedToCart'), { preset: 'bouncy' })
     }
   }
 

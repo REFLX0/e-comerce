@@ -198,14 +198,14 @@ export function ProductCard({ product, viewMode = 'grid' }: Props) {
     const result = addItem(product, variant, 1)
     if (!result.ok) { toast.error(t('outOfStock')); return }
     if (result.capped) toast.warning(t('stockLimit'))
-    else toast.success(t('addedToCart'))
+    else toast.success(t('addedToCart'), { preset: 'bouncy' })
   }
 
   const handleAddToWishlist = async (e: React.MouseEvent) => {
     e.preventDefault()
     try {
       await wishlistApi.toggle(product.id)
-      toast.success(t('addedToWishlist'))
+      toast.success(t('addedToWishlist'), { preset: 'bouncy' })
     } catch {
       toast.error(t('wishlistError'))
     }

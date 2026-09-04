@@ -319,7 +319,7 @@ function CarCard({ car }: { car: UserCar }) {
       setCustomNotes(updated.customNotes ?? updated.trim ?? '')
       toast.success(t('carUpdated'))
     },
-    onError: () => toast.error(t('carUpdateError')),
+    onError: () => toast.error(t('carUpdateError'), { preset: 'bouncy' }),
   })
 
   const deleteMutation = useMutation({
@@ -641,7 +641,7 @@ export default function MesVoituresPage() {
       setForm(EMPTY_FORM)
       setErrors({})
       setShowForm(false)
-      toast.success(t('vehicleAddedActivatedToast'))
+      toast.success(t('vehicleAddedActivatedToast'), { preset: 'bouncy' })
     },
     onError: () => toast.error(t('carAddError')),
   })

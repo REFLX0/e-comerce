@@ -26,7 +26,7 @@ export default function WishlistPage() {
     mutationFn: (productId: string) => wishlistApi.toggle(productId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['wishlist'] })
-      toast.success(t('wishlistUpdated'))
+      toast.success(t('wishlistUpdated'), { preset: 'bouncy' })
     },
     onError: () => toast.error(t('wishlistUpdateError')),
   })
@@ -79,7 +79,7 @@ export default function WishlistPage() {
                         if (!variant) return
                         const result = addItem(product, variant, 1)
                         if (!result.ok) toast.error(t('outOfStockMsg'))
-                        else toast.success(t('productAddedToCart'))
+                        else toast.success(t('productAddedToCart'), { preset: 'bouncy' })
                       }}
                       className="flex items-center gap-1.5 rounded-xl bg-brand-primary px-3 py-1.5 text-xs font-semibold text-white hover:bg-brand-primary-light transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >

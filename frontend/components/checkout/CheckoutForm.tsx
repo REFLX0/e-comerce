@@ -144,7 +144,7 @@ export function CheckoutForm() {
       )
 
       clearCart()
-      toast.success(t('orderPlaced'))
+      toast.success(t('orderPlaced'), { preset: 'bouncy' })
       router.push(`/checkout/success?orderId=${order.id}`)
     } catch (error) {
       toast.error(

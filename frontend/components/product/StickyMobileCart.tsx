@@ -39,7 +39,7 @@ export function StickyMobileCart({ product, variant }: Props) {
       window.open(buildWhatsAppUrl(buildProductMessage(product, variant, 1)), '_blank', 'noopener')
       return
     }
-    toast.success(t('addedToCart'))
+    toast.success(t('addedToCart'), { preset: 'bouncy' })
   }
 
   return (

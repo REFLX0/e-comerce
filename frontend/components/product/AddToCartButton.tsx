@@ -36,7 +36,7 @@ export function AddToCartButton({ product, variant }: Props) {
     if (result.capped) {
       toast.warning(t('stockLimit'))
     } else {
-      toast.success(t('addedToCart'))
+      toast.success(t('addedToCart'), { preset: 'bouncy' })
     }
   }
 
