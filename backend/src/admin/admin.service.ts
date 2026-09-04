@@ -275,15 +275,23 @@ export class AdminService {
         (vid) => !incomingVariantIds.includes(vid),
       );
       if (toDelete.length > 0) {
-        try {
-          await this.prisma.productVariant.deleteMany({
-            where: { id: { in: toDelete } },
-          });
-        } catch (err: any) {
-          if (err?.code === 'P2003') {
-            throw new BadRequestException('Impossible de supprimer une variante de produit qui a déjà été commandée par un client. Veuillez plutôt mettre son stock à 0.');
+        for (const vid of toDelete) {
+          try {
+            await this.prisma.productVariant.delete({
+              where: { id: vid },
+            });
+          } catch (err: any) {
+            if (err?.code === 'P2003') {
+              // Instead of failing the update, gracefully set stock to 0
+              // for variants that are already tied to orders.
+              await this.prisma.productVariant.update({
+                where: { id: vid },
+                data: { stockQty: 0 },
+              });
+            } else {
+              throw err;
+            }
           }
-          throw err;
         }
       }
 
