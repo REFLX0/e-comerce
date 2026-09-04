@@ -15,6 +15,8 @@ export function HeroBanner() {
           src="/img/hero/auto-parts-bg.png"
           alt=""
           fill
+          sizes="100vw"
+          quality={60}
           className="object-cover object-center"
           priority
         />

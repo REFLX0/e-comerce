@@ -273,9 +273,16 @@ export class AdminService {
         (vid) => !incomingVariantIds.includes(vid),
       );
       if (toDelete.length > 0) {
-        await this.prisma.productVariant.deleteMany({
-          where: { id: { in: toDelete } },
-        });
+        try {
+          await this.prisma.productVariant.deleteMany({
+            where: { id: { in: toDelete } },
+          });
+        } catch (err: any) {
+          if (err?.code === 'P2003') {
+            throw new BadRequestException('Impossible de supprimer une variante de produit qui a déjà été commandée par un client. Veuillez plutôt mettre son stock à 0.');
+          }
+          throw err;
+        }
       }
 
       for (let idx = 0; idx < variants.length; idx++) {

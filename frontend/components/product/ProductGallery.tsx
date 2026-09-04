@@ -148,7 +148,7 @@ export function ProductGallery({ images, productName, variantImageUrl, variants,
             src={currentMainImage || ''}
             alt={`${productName} - Image ${currentIndex + 1}`}
             fill
-            className="object-contain p-4 transition-all duration-300 ease-in-out group-hover:scale-105"
+            className="object-contain transition-transform duration-500 group-hover:scale-105"
             priority
             onError={() => setImageUnavailable(true)}
           />
