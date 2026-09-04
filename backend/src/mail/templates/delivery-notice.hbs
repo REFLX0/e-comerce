@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <style>
+    body { margin:0; padding:20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #f8fafc; }
+    .container { max-width: 540px; margin: 0 auto; background: #ffffff; border-radius: 16px; border: 1px solid #e2e8f0; overflow: hidden; }
+    .header { background: #16a34a; padding: 24px; text-align: center; }
+    .header h1 { color: #ffffff; margin: 0; font-size: 24px; font-weight: 800; letter-spacing: 1px; }
+    .header p { color: #dcfce7; margin: 6px 0 0 0; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; }
+    .content { padding: 32px 24px; }
+    .title { color: #0f172a; font-size: 20px; margin-top: 0; font-weight: 700; }
+    .text { color: #475569; font-size: 15px; line-height: 1.6; margin-bottom: 24px; }
+    .info-box { background: #f8fafc; border-radius: 12px; padding: 16px 20px; margin: 24px 0; font-size: 14px; color: #475569; line-height: 1.6; border: 1px solid #e2e8f0; text-align: center; }
+    .info-box strong { color: #1e293b; font-size: 18px; display: block; margin-top: 4px; }
+    .button-container { text-align: center; margin: 32px 0; }
+    .button { background: #16254c; color: #ffffff; padding: 14px 28px; border-radius: 10px; text-decoration: none; font-weight: bold; font-size: 15px; display: inline-block; }
+    .footer { text-align: center; padding-top: 24px; border-top: 1px solid #f1f5f9; color: #94a3b8; font-size: 13px; line-height: 1.5; }
+    .footer strong { color: #64748b; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>SPECPART</h1>
+      <p>Votre commande est en route !</p>
+    </div>
+    <div class="content">
+      <h2 class="title">Bonne nouvelle, {{customerName}} ! 🚚</h2>
+      <p class="text">
+        Votre commande <strong>#{{orderRef}}</strong> a été expédiée et est actuellement en cours de livraison vers <strong>{{city}}</strong>. 
+        Notre transporteur vous contactera très prochainement au <strong>{{phone}}</strong> pour coordonner la remise de votre colis.
+      </p>
+      
+      <div class="info-box">
+        Montant à régler à la livraison :
+        <strong>{{formatPrice totalAmount}} TND</strong>
+      </div>
+
+      <div class="button-container">
+        <a href="{{frontendUrl}}/compte/commandes" class="button">Suivre ma commande</a>
+      </div>
+      <div class="footer">
+        En cas de besoin, contactez notre support au <strong>+216 29 294 195</strong>.<br/>
+        &copy; {{year}} Specpart. Tous droits réservés.
+      </div>
+    </div>
+  </div>
+</body>
+</html>

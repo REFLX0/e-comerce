@@ -11,6 +11,7 @@ import { Prisma } from '@prisma/client';
 import { CreateProductDto } from './dto/create-product.dto';
 import { generateDeliveryNotePDF } from './invoice-pdf';
 import { CacheService } from '../cache/cache.service';
+import { MailService, OrderEmailPayload } from '../mail/mail.service';
 
 @Injectable()
 export class AdminService {
@@ -20,6 +21,7 @@ export class AdminService {
     private readonly prisma: PrismaService,
     private readonly kafka: KafkaService,
     private readonly cache: CacheService,
+    private readonly mail: MailService,
   ) {}
 
   // ─── Dashboard Stats ───────────────────────────────────────────────────────
@@ -659,7 +661,36 @@ export class AdminService {
     const updated = await this.prisma.order.update({
       where: { id },
       data: { status: status as any },
+      include: {
+        items: {
+          include: {
+            product: true,
+            variant: true,
+          }
+        }
+      }
     });
+
+    if (status === 'SHIPPED') {
+      const orderPayload: OrderEmailPayload = {
+        id: updated.id,
+        totalAmount: updated.totalAmount,
+        shippingCost: updated.shippingCost,
+        customerName: updated.shipFullName,
+        customerEmail: (await this.prisma.user.findUnique({ where: { id: updated.userId || '' } }))?.email || null,
+        phone: updated.shipPhone,
+        wilaya: updated.shipWilaya,
+        city: updated.shipCity,
+        paymentMethod: 'COD', // Defaulting for now
+        items: updated.items.map(i => ({
+          name: i.product.nameFr,
+          quantity: i.quantity,
+          unitPrice: i.unitPrice,
+          volume: i.variant?.volume || undefined
+        }))
+      };
+      this.mail.sendDeliveryNotice(orderPayload).catch(err => this.logger.error(err));
+    }
 
     // Auto-sync payment status when order status changes
     if (status === 'DELIVERED') {

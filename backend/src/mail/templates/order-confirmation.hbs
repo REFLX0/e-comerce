@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <style>
+    body { margin:0; padding:20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #f8fafc; }
+    .container { max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 16px; border: 1px solid #e2e8f0; overflow: hidden; }
+    .header { background: #16254c; padding: 24px; text-align: center; }
+    .header h1 { color: #ffffff; margin: 0; font-size: 24px; font-weight: 800; letter-spacing: 1px; }
+    .header p { color: #D4A76A; margin: 6px 0 0 0; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; }
+    .content { padding: 32px 24px; }
+    .title { color: #0f172a; font-size: 20px; margin-top: 0; font-weight: 700; }
+    .text { color: #475569; font-size: 15px; line-height: 1.6; }
+    .table { width: 100%; border-collapse: collapse; margin: 24px 0; }
+    .table th { background: #f8fafc; padding: 10px 12px; text-align: left; color: #475569; font-size: 12px; text-transform: uppercase; border-bottom: 2px solid #e2e8f0; }
+    .table th.right { text-align: right; }
+    .table td { padding: 12px; border-bottom: 1px solid #f1f5f9; color: #334155; font-size: 14px; }
+    .table td.right { text-align: right; font-weight: 600; color: #0f172a; }
+    .table .subtext { color: #94a3b8; font-size: 12px; display: block; margin-top: 4px; }
+    .table tfoot td { padding: 12px; color: #64748b; font-size: 14px; border-bottom: none; }
+    .table tfoot td.right { text-align: right; }
+    .table tfoot tr.total td { font-size: 18px; font-weight: 700; color: #16254c; border-top: 2px solid #e2e8f0; }
+    .info-box { background: #f8fafc; border-radius: 12px; padding: 16px 20px; margin: 24px 0; font-size: 14px; color: #475569; line-height: 1.6; border: 1px solid #e2e8f0; }
+    .info-box strong { color: #1e293b; }
+    .info-item { margin-bottom: 8px; }
+    .footer { text-align: center; padding-top: 24px; border-top: 1px solid #f1f5f9; color: #94a3b8; font-size: 13px; line-height: 1.5; }
+    .footer strong { color: #64748b; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>SPECPART</h1>
+      <p>Confirmation de commande</p>
+    </div>
+    <div class="content">
+      <h2 class="title">Merci pour votre commande, {{customerName}} ! 👋</h2>
+      <p class="text">
+        Votre commande <strong>#{{orderRef}}</strong> a bien été enregistrée. Nos équipes logistiques s'occupent de sa préparation avec le plus grand soin.
+      </p>
+
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Article</th>
+            <th class="right">Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each items}}
+          <tr>
+            <td>
+              <strong>{{name}}</strong> {{#if volume}}<span style="color: #64748b; font-size: 12px;">({{volume}})</span>{{/if}}
+              <span class="subtext">Qté : {{quantity}} × {{formatPrice unitPrice}} TND</span>
+            </td>
+            <td class="right">
+              {{formatPrice totalLinePrice}} TND
+            </td>
+          </tr>
+          {{/each}}
+        </tbody>
+        <tfoot>
+          <tr>
+            <td>Frais de livraison ({{wilaya}})</td>
+            <td class="right">{{formatPrice shippingCost}} TND</td>
+          </tr>
+          <tr class="total">
+            <td>Total TTC</td>
+            <td class="right">{{formatPrice totalAmount}} TND</td>
+          </tr>
+        </tfoot>
+      </table>
+
+      <div class="info-box">
+        <div class="info-item">📍 <strong>Adresse de livraison :</strong> {{city}}, {{wilaya}}</div>
+        <div class="info-item">📞 <strong>Téléphone :</strong> {{phone}}</div>
+        <div class="info-item">💳 <strong>Paiement :</strong> {{paymentMethod}}</div>
+      </div>
+
+      <div class="footer">
+        Une question sur votre livraison ? Contactez notre support au <strong>+216 29 294 195</strong>.<br/>
+        &copy; {{year}} Specpart. Tous droits réservés.
+      </div>
+    </div>
+  </div>
+</body>
+</html>

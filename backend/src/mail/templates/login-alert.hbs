@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <style>
+    body { margin:0; padding:20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #f8fafc; }
+    .container { max-width: 500px; margin: 0 auto; background: #ffffff; border-radius: 12px; border: 1px solid #e2e8f0; overflow: hidden; }
+    .header { background: #dc2626; padding: 20px; text-align: center; }
+    .header h1 { color: #ffffff; margin: 0; font-size: 20px; font-weight: 700; letter-spacing: 1px; }
+    .content { padding: 24px; }
+    .title { color: #0f172a; font-size: 18px; margin-top: 0; font-weight: 700; }
+    .text { color: #475569; font-size: 14px; line-height: 1.6; margin-bottom: 16px; }
+    .footer { text-align: left; padding-top: 20px; border-top: 1px solid #f1f5f9; color: #94a3b8; font-size: 12px; line-height: 1.5; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Alerte de sécurité</h1>
+    </div>
+    <div class="content">
+      <h2 class="title">Bonjour {{name}},</h2>
+      <p class="text">
+        Une nouvelle connexion à votre compte Specpart a été enregistrée le <strong>{{time}}</strong>.
+      </p>
+      <div class="footer">
+        Si vous n'êtes pas à l'origine de cette activité, nous vous conseillons de changer votre mot de passe immédiatement ou de contacter notre support.
+      </div>
+    </div>
+  </div>
+</body>
+</html>

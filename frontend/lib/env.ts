@@ -80,7 +80,7 @@ const envSchema = z.object({
   CLOUDINARY_API_SECRET: z.string().optional(),
 
   // ── Resend (email — optional) ────────────────────────────────────────
-  RESEND_API_KEY: z.string().optional(),
+  BREVO_API_KEY: z.string().optional(),
 
   // ── Twilio (SMS — optional) ──────────────────────────────────────────
   TWILIO_ACCOUNT_SID: z.string().optional(),
@@ -126,7 +126,7 @@ export const env = validateEnv()
 // Use these to guard optional features rather than checking env vars directly
 
 export const capabilities = {
-  email:      !!env.RESEND_API_KEY,
+  email:      !!env.BREVO_API_KEY,
   sms:        !!(env.TWILIO_ACCOUNT_SID && env.TWILIO_AUTH_TOKEN),
   storage:    !!(env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME && env.CLOUDINARY_API_SECRET),
   rateLimit:  !!(env.UPSTASH_REDIS_REST_URL && env.UPSTASH_REDIS_REST_TOKEN),

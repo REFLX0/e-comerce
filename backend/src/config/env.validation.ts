@@ -16,7 +16,7 @@ export const envSchema = Joi.object({
   CLOUDINARY_CLOUD_NAME: Joi.string().allow('').optional(),
   CLOUDINARY_API_KEY: Joi.string().allow('').optional(),
   CLOUDINARY_API_SECRET: Joi.string().allow('').optional(),
-  RESEND_API_KEY: Joi.string().allow('').optional(),
+  BREVO_API_KEY: Joi.string().allow('').optional(),
   DATABASE_REPLICA_URL: Joi.string().allow('').optional(),
   SENTRY_DSN: Joi.string().allow('').optional(),
   REDIS_HOST: Joi.string().allow('').optional(),
