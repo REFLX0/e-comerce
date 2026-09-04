@@ -11,6 +11,7 @@ import {
 } from '@nestjs/common';
 import type { Response } from 'express';
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
+import { Throttle } from '@nestjs/throttler';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
@@ -27,6 +28,7 @@ export class OrdersController {
   @UseGuards(OptionalJwtAuthGuard)
   @Post()
   @HttpCode(HttpStatus.CREATED)
+  @Throttle({ default: { limit: 10, ttl: 60000 } })
   create(@Body() dto: CreateOrderDto, @CurrentUser('id') userId?: string) {
     return this.ordersService.create(dto, userId);
   }

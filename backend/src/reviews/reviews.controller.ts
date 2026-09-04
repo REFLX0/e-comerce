@@ -1,5 +1,6 @@
 import { Controller, Get, Param, Post, Body, Query, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
+import { Throttle } from '@nestjs/throttler';
 import { ReviewsService } from './reviews.service';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
@@ -17,6 +18,7 @@ export class ReviewsController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Post('products/:id/reviews')
+  @Throttle({ default: { limit: 5, ttl: 60000 } })
   createReview(
     @Param('id') id: string,
     @CurrentUser('id') userId: string,

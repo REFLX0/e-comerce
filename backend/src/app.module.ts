@@ -1,7 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { APP_GUARD } from '@nestjs/core';
 import { validateEnv } from './config/env.validation';
-import { ThrottlerModule } from '@nestjs/throttler';
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { PrismaModule } from './prisma/prisma.module';
 import { CacheModule } from './cache/cache.module';
 import { KafkaModule } from './kafka/kafka.module';
@@ -31,6 +32,8 @@ import { InvoicesModule } from './invoices/invoices.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, validate: validateEnv }),
+    // Global default: 100 requests per 60 seconds.
+    // Individual routes override this with @Throttle({ default: { limit: N, ttl: T } }).
     ThrottlerModule.forRoot([{ ttl: 60000, limit: 100 }]),
     PrismaModule,
     CacheModule,  // ← Global Redis cache
@@ -57,6 +60,12 @@ import { InvoicesModule } from './invoices/invoices.module';
     ChatModule,
     OilFinderModule,
     InvoicesModule,
+  ],
+  providers: [
+    // Wire ThrottlerGuard globally so @Throttle() decorators are enforced at
+    // the NestJS layer (not just by Nginx). Without this provider the
+    // ThrottlerModule is imported but decorators have no effect.
+    { provide: APP_GUARD, useClass: ThrottlerGuard },
   ],
 })
 export class AppModule {}

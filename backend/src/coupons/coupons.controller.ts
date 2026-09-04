@@ -12,6 +12,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
+import { Throttle } from '@nestjs/throttler';
 import { CouponsService } from './coupons.service';
 import { CreateCouponDto } from './dto/create-coupon.dto';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
@@ -70,6 +71,7 @@ export class CouponsController {
   // ─── CLIENT ENDPOINTS ────────────────────────────────────────────────────────
 
   @Get('validate')
+  @Throttle({ default: { limit: 20, ttl: 60000 } })
   validateCode(
     @Query('code') code: string,
     @Query('cartTotal') cartTotal: string,

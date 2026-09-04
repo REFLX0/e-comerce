@@ -11,6 +11,7 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
+import { Throttle } from '@nestjs/throttler';
 import { TicketsService } from './tickets.service';
 import { CreateTicketDto } from './dto/create-ticket.dto';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
@@ -28,6 +29,7 @@ export class TicketsController {
   // ─── CLIENT ENDPOINTS ────────────────────────────────────────────────────────
 
   @Post()
+  @Throttle({ default: { limit: 5, ttl: 60000 } })
   create(@CurrentUser('id') userId: string, @Body() dto: CreateTicketDto) {
     return this.ticketsService.create(userId, dto);
   }
