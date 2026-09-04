@@ -1,6 +1,6 @@
 import * as Sentry from '@sentry/nestjs';
 import { NestFactory } from '@nestjs/core';
-import { ValidationPipe } from '@nestjs/common';
+import { ValidationPipe, Logger } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import helmet from 'helmet';
 import { AppModule } from './app.module';
@@ -9,6 +9,8 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
 
 async function bootstrap() {
+  const logger = new Logger('Bootstrap');
+
   Sentry.init({
     dsn: process.env.SENTRY_DSN || '',
     environment: process.env.NODE_ENV || 'development',
@@ -59,7 +61,7 @@ async function bootstrap() {
 
   const port = process.env.PORT ?? 4000;
   await app.listen(port);
-  console.log(`🚀 Backend running on http://localhost:${port}/api`);
+  logger.log(`🚀 Backend running on http://localhost:${port}/api`);
 }
 
 void bootstrap();

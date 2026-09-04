@@ -1,5 +1,6 @@
 import {
   Injectable,
+  Logger,
   NotFoundException,
   BadRequestException,
   ConflictException,
@@ -13,6 +14,8 @@ import { CacheService } from '../cache/cache.service';
 
 @Injectable()
 export class AdminService {
+  private readonly logger = new Logger(AdminService.name);
+
   constructor(
     private readonly prisma: PrismaService,
     private readonly kafka: KafkaService,
@@ -1284,7 +1287,7 @@ export class AdminService {
                 created++;
               }
             } catch (err) {
-              console.error('Import row error:', err);
+              this.logger.error('Import row error', err);
               errors++;
             }
           }
@@ -1292,7 +1295,7 @@ export class AdminService {
           resolve({ ok: true, created, updated, errors, message: `Import terminé : ${created} créés, ${updated} mis à jour, ${errors} erreurs` });
         })
         .on('error', (err: any) => {
-          console.error('CSV parse error:', err);
+          this.logger.error('CSV parse error', err);
           reject(err);
         });
     });

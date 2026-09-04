@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, Logger } from '@nestjs/common'
 import { PrismaService } from '../prisma/prisma.service'
 import type { OilFinderLookupConflict, OilFinderOilSpec } from '@prisma/client'
 
@@ -136,6 +136,8 @@ const AUTO_POPULAR_MAKES = [
 
 @Injectable()
 export class OilFinderService {
+  private readonly logger = new Logger(OilFinderService.name)
+
   constructor(private readonly prisma: PrismaService) {}
 
   async findByVehicle(make: string, model: string, engineCode?: string | null): Promise<OilFinderResult> {
@@ -551,7 +553,7 @@ export class OilFinderService {
         return tecdocRows.map((r) => ({ slug: slugify(r.name), name: r.name }));
       }
     } catch (e) {
-      console.error('Error fetching auto makes from TecDoc:', e);
+      this.logger.error('Error fetching auto makes from TecDoc', e);
     }
 
     const rows = await this.prisma.oilFinderVehicle.findMany({
@@ -613,7 +615,7 @@ export class OilFinderService {
         return tecdocRows.map((r) => ({ slug: r.slug, name: r.name }));
       }
     } catch (e) {
-      console.error('Error fetching models from TecDoc for make:', makeName, e);
+      this.logger.error(`Error fetching models from TecDoc for make: ${makeName}`, e);
     }
 
     const rows = await this.prisma.oilFinderVehicle.findMany({
@@ -728,7 +730,7 @@ export class OilFinderService {
         return tecdocRows;
       }
     } catch (e) {
-      console.error('Error fetching engines from TecDoc for model:', modelName, e);
+      this.logger.error(`Error fetching engines from TecDoc for model: ${modelName}`, e);
     }
 
     const rows = await this.prisma.oilFinderVehicle.findMany({
