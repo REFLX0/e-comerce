@@ -24,6 +24,9 @@ import {
   ChevronDown,
 } from 'lucide-react'
 import { useCartStore } from '@/lib/store/cart.store'
+import { useAuthStore } from '@/lib/store/auth.store'
+
+const CHATBOT_LOGO = '/chatbotlogo.png?v=2'
 
 interface ChatMessage {
   role: 'user' | 'assistant'
@@ -109,6 +112,8 @@ function FormattedMessage({ text, locale }: { text: string; locale: string }) {
 
 export function ChatWidget() {
   const { data: session } = useSession()
+  const authUser = useAuthStore((s) => s.user)
+  const userEmail = authUser?.email || session?.user?.email
   const t = useTranslations('Chat')
   const locale = useLocale()
   const welcomeMessage = t('welcomeMessage')
@@ -182,12 +187,14 @@ export function ChatWidget() {
     setIsLoading(true)
 
     try {
+      const currentEmail =
+        userEmail || useAuthStore.getState().user?.email || session?.user?.email
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           messages: history.map((m) => ({ role: m.role, content: m.content })),
-          userEmail: session?.user?.email,
+          userEmail: currentEmail || undefined,
         }),
       })
 
@@ -297,7 +304,7 @@ export function ChatWidget() {
                     }}
                   >
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src="/chatbotlogo.png" alt="Specpart AI" className="h-full w-full object-contain p-1" />
+                    <img src={CHATBOT_LOGO} alt="Specpart AI" className="h-full w-full object-contain p-1" />
                     <span
                       className="absolute bottom-0.5 right-0.5 h-2.5 w-2.5 rounded-full border-2"
                       style={{ background: '#22c55e', borderColor: '#ffffff' }}
@@ -425,7 +432,7 @@ export function ChatWidget() {
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
                     }}>
                       {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src="/chatbotlogo.png" alt="Specpart AI" style={{ width: '88%', height: '88%', objectFit: 'contain' }} />
+                      <img src={CHATBOT_LOGO} alt="Specpart AI" style={{ width: '88%', height: '88%', objectFit: 'contain' }} />
                     </div>
                   )}
 
@@ -476,7 +483,7 @@ export function ChatWidget() {
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                   }}>
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src="/chatbotlogo.png" alt="Specpart AI" style={{ width: '88%', height: '88%', objectFit: 'contain' }} />
+                    <img src={CHATBOT_LOGO} alt="Specpart AI" style={{ width: '88%', height: '88%', objectFit: 'contain' }} />
                   </div>
                   <div style={{
                     padding: '10px 14px', borderRadius: '18px 18px 18px 4px',
@@ -632,7 +639,7 @@ export function ChatWidget() {
             style={{ background: '#ffffff', boxShadow: '0 0 0 2px rgba(212,167,106,0.8)' }}
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/chatbotlogo.png" alt="Specpart AI" className="h-full w-full object-contain p-1" />
+            <img src={CHATBOT_LOGO} alt="Specpart AI" className="h-full w-full object-contain p-1" />
           </div>
 
           {/* Online green indicator */}

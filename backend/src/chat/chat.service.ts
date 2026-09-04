@@ -117,17 +117,54 @@ RÈGLES D'ACTION :
     if (userEmail) {
       const user = await this.prisma.user.findUnique({
         where: { email: userEmail },
-        include: { orders: { orderBy: { createdAt: 'desc' }, take: 5 } },
+        include: {
+          orders: {
+            orderBy: { createdAt: 'desc' },
+            take: 5,
+            include: {
+              items: { include: { product: { select: { nameFr: true, slug: true } } } },
+            },
+          },
+        },
       });
-      if (user?.orders.length) {
-        systemPrompt +=
-          `\n\nREMARQUE SYSTÈME : L'utilisateur est connecté (${user.name ?? user.email}). Ses dernières commandes :\n` +
-          user.orders
-            .map(
-              (o) =>
-                `- Commande #${o.id.slice(-8).toUpperCase()} (ID: ${o.id}) du ${o.createdAt.toLocaleDateString('fr-FR')} : Statut: ${o.status}, Montant: ${o.totalAmount} TND`,
-            )
+
+      const statusMap: Record<string, string> = {
+        PENDING: '⏳ En attente de confirmation / Pending confirmation',
+        PROCESSING: '🔧 En préparation / Processing',
+        SHIPPED: '🚚 Expédiée (en cours de livraison) / Shipped',
+        DELIVERED: '✅ Livrée avec succès / Delivered',
+        CANCELLED: '❌ Annulée / Cancelled',
+      };
+
+      if (user) {
+        const userName = user.name || (user as any).firstName || user.email;
+        if (user.orders && user.orders.length > 0) {
+          const ordersList = user.orders
+            .map((o) => {
+              const items = o.items?.length
+                ? ` (${o.items.map((i) => `${i.quantity}x [${i.product?.nameFr || 'Article'}](/produit/${i.product?.slug || ''})`).join(', ')})`
+                : '';
+              return `- Commande #${o.id.slice(-8).toUpperCase()} (Réf: ${o.id}) passée le ${o.createdAt.toLocaleDateString('fr-FR')} — Statut: ${statusMap[o.status] ?? o.status} — Total: ${o.totalAmount} TND${items}`;
+            })
             .join('\n');
+
+          systemPrompt +=
+            `\n\n🟢 SESSION UTILISATEUR CONNECTÉ :` +
+            `\nLe client est actuellement connecté sur son compte (${userName}, Email: ${user.email}).` +
+            `\nVoici ses commandes récentes sur Specpart :\n${ordersList}` +
+            `\n\nRÈGLE ABSOLUE POUR LE SUIVI DE COMMANDE :` +
+            `\n- NE DEMANDE JAMAIS au client de se connecter car il est DÉJÀ CONNECTÉ.` +
+            `\n- Si le client demande à suivre sa commande ou ses commandes (ex: "Track my order", "Suivre ma commande", "Où est ma commande ?", etc.), présente-lui DIRECTEMENT ses commandes ci-dessus avec leur statut, référence et articles de manière claire et rassurante.` +
+            `\n- Réponds TOUJOURS dans la même langue que la demande du client (Anglais s'il écrit en anglais, Français s'il écrit en français, Arabe s'il écrit en arabe).`;
+        } else {
+          systemPrompt +=
+            `\n\n🟢 SESSION UTILISATEUR CONNECTÉ :` +
+            `\nLe client est actuellement connecté sur son compte (${userName}, Email: ${user.email}), mais il n'a encore passé AUCUNE commande sur le site.` +
+            `\n\nRÈGLE ABSOLUE POUR LE SUIVI DE COMMANDE :` +
+            `\n- NE DEMANDE JAMAIS au client de se connecter car il est DÉJÀ CONNECTÉ.` +
+            `\n- Si le client demande à suivre sa commande (ex: "Track my order", "Suivre ma commande", etc.), informe-le gentiment qu'il n'a actuellement aucune commande enregistrée sur son compte connecté (${user.email}). Propose-lui avec bienveillance de l'aider à trouver les pièces ou huiles dont il a besoin pour son véhicule.` +
+            `\n- Réponds TOUJOURS dans la même langue que la demande du client (Anglais s'il écrit en anglais, Français s'il écrit en français, Arabe s'il écrit en arabe).`;
+        }
       }
     }
 
@@ -135,7 +172,7 @@ RÈGLES D'ACTION :
     const lastUserMsg =
       safeMessages.slice().reverse().find((m) => m.role === 'user')?.content ?? '';
     const orderIdMatch = (lastUserMsg as string).match(
-      /\b(cm[a-z0-9]{20,30})\b/i,
+      /\b(cm[a-z0-9]{20,30}|test[0-9]+)\b/i,
     );
 
     if (orderIdMatch && userEmail) {
@@ -149,18 +186,18 @@ RÈGLES D'ACTION :
 
       if (order) {
         const statusMap: Record<string, string> = {
-          PENDING: '⏳ En attente de confirmation',
-          PROCESSING: '🔧 En préparation',
-          SHIPPED: '🚚 Expédiée (en cours de livraison)',
-          DELIVERED: '✅ Livrée avec succès',
-          CANCELLED: '❌ Annulée',
+          PENDING: '⏳ En attente de confirmation / Pending confirmation',
+          PROCESSING: '🔧 En préparation / Processing',
+          SHIPPED: '🚚 Expédiée (en cours de livraison) / Shipped',
+          DELIVERED: '✅ Livrée avec succès / Delivered',
+          CANCELLED: '❌ Annulée / Cancelled',
         };
         const itemsList = order.items
           .map((i) => `${i.quantity}x [${i.product.nameFr}](/produit/${i.product.slug})`)
           .join(', ');
-        systemPrompt += `\n\n📦 DÉTAILS DE LA COMMANDE DEMANDÉE : #${order.id.slice(-8).toUpperCase()} — Statut actuel: ${statusMap[order.status] ?? order.status} — Total: ${order.totalAmount} TND — Articles commandés: ${itemsList}. Réponds directement au client avec ces informations claires et rassurantes.`;
+        systemPrompt += `\n\n📦 DÉTAILS DE LA COMMANDE DEMANDÉE : #${order.id.slice(-8).toUpperCase()} — Statut actuel: ${statusMap[order.status] ?? order.status} — Total: ${order.totalAmount} TND — Articles commandés: ${itemsList}. Réponds directement au client dans sa langue avec ces informations claires et rassurantes.`;
       } else {
-        systemPrompt += `\n\n⚠️ La commande #${rawId.slice(-8).toUpperCase()} est introuvable sur le compte connecté. Invite le client à vérifier le numéro ou à contacter le support (+216 29 294 195).`;
+        systemPrompt += `\n\n⚠️ La commande #${rawId.slice(-8).toUpperCase()} est introuvable sur le compte connecté. Invite le client à vérifier le numéro ou à contacter le support (+216 29 294 195). Ne lui dis pas de se connecter puisqu'il est déjà connecté.`;
       }
     } else if (orderIdMatch && !userEmail) {
       systemPrompt += `\n\n⚠️ L'utilisateur demande le suivi de la commande #${orderIdMatch[1].slice(-8).toUpperCase()} mais n'est pas connecté. Invite-le poliment à [se connecter](/auth/login) pour sécuriser l'accès à ses commandes, ou à contacter le service client au +216 29 294 195.`;
