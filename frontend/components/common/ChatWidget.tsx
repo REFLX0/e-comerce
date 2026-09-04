@@ -27,6 +27,7 @@ import { useCartStore } from '@/lib/store/cart.store'
 import { useAuthStore } from '@/lib/store/auth.store'
 
 const CHATBOT_LOGO = '/chatbotlogo.png?v=2'
+const CHATBOT_LOGO_WHITE = '/chatbotlogo-white.png?v=3'
 
 interface ChatMessage {
   role: 'user' | 'assistant'
@@ -298,16 +299,16 @@ export function ChatWidget() {
                   <div
                     className="relative flex items-center justify-center overflow-hidden rounded-full"
                     style={{
-                      width: 44, height: 44,
-                      background: '#ffffff',
-                      boxShadow: '0 0 0 2px rgba(212,167,106,0.8)',
+                      width: 46, height: 46,
+                      background: 'linear-gradient(135deg, #0d162d, #16254c)',
+                      boxShadow: '0 0 0 2px rgba(212,167,106,0.85)',
                     }}
                   >
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={CHATBOT_LOGO} alt="Specpart AI" className="h-full w-full object-contain p-1" />
+                    <img src={CHATBOT_LOGO_WHITE} alt="Specpart AI" className="h-full w-full object-contain p-1" />
                     <span
                       className="absolute bottom-0.5 right-0.5 h-2.5 w-2.5 rounded-full border-2"
-                      style={{ background: '#22c55e', borderColor: '#ffffff' }}
+                      style={{ background: '#22c55e', borderColor: '#16254c' }}
                     />
                   </div>
                   <div>
@@ -425,14 +426,14 @@ export function ChatWidget() {
                   {/* Bot avatar in messages */}
                   {msg.role === 'assistant' && (
                     <div style={{
-                      width: 30, height: 30, borderRadius: '50%',
+                      width: 32, height: 32, borderRadius: '50%',
                       overflow: 'hidden', flexShrink: 0,
-                      background: '#ffffff',
-                      boxShadow: '0 0 0 2px rgba(212,167,106,0.6)',
+                      background: 'linear-gradient(135deg, #0d162d, #16254c)',
+                      boxShadow: '0 0 0 1.5px rgba(212,167,106,0.7)',
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
                     }}>
                       {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={CHATBOT_LOGO} alt="Specpart AI" style={{ width: '88%', height: '88%', objectFit: 'contain' }} />
+                      <img src={CHATBOT_LOGO_WHITE} alt="Specpart AI" style={{ width: '85%', height: '85%', objectFit: 'contain' }} />
                     </div>
                   )}
 
@@ -476,14 +477,14 @@ export function ChatWidget() {
               {isLoading && (
                 <div className="msg-bubble" style={{ display: 'flex', alignItems: 'flex-end', gap: 8 }}>
                   <div style={{
-                    width: 30, height: 30, borderRadius: '50%',
+                    width: 32, height: 32, borderRadius: '50%',
                     overflow: 'hidden', flexShrink: 0,
-                    background: '#ffffff',
-                    boxShadow: '0 0 0 2px rgba(212,167,106,0.6)',
+                    background: 'linear-gradient(135deg, #0d162d, #16254c)',
+                    boxShadow: '0 0 0 1.5px rgba(212,167,106,0.7)',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                   }}>
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={CHATBOT_LOGO} alt="Specpart AI" style={{ width: '88%', height: '88%', objectFit: 'contain' }} />
+                    <img src={CHATBOT_LOGO_WHITE} alt="Specpart AI" style={{ width: '85%', height: '85%', objectFit: 'contain' }} />
                   </div>
                   <div style={{
                     padding: '10px 14px', borderRadius: '18px 18px 18px 4px',
@@ -620,32 +621,32 @@ export function ChatWidget() {
 
         {/* ── Floating Launcher Button ───────────────────────── */}
         <button
-          onClick={() => setIsOpen((v) => !v)}
-          aria-label={isOpen ? t('closeChat') : t('openChat')}
-          className="relative flex items-center justify-center transition-all duration-300 hover:scale-105 active:scale-95"
+          onClick={() => setIsOpen((prev) => !prev)}
+          aria-label="Specpart AI Assistant"
+          className="relative flex items-center justify-center transition-all duration-300 hover:scale-105 active:scale-95 p-2"
           style={{
-            width: 60,
-            height: 60,
+            width: 62,
+            height: 62,
             borderRadius: '50%',
             background: 'linear-gradient(135deg, #0d162d 0%, #16254c 50%, #1f356b 100%)',
-            boxShadow: '0 8px 30px rgba(13,22,45,0.4), 0 0 0 2px rgba(212,167,106,0.7)',
+            boxShadow: '0 8px 30px rgba(13,22,45,0.45), 0 0 0 2.5px rgba(212,167,106,0.85)',
             cursor: 'pointer',
             border: 'none',
           }}
         >
-          {/* Logo icon inside launcher */}
-          <div
-            className="relative h-11 w-11 flex items-center justify-center overflow-hidden rounded-full"
-            style={{ background: '#ffffff', boxShadow: '0 0 0 2px rgba(212,167,106,0.8)' }}
-          >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={CHATBOT_LOGO} alt="Specpart AI" className="h-full w-full object-contain p-1" />
-          </div>
+          {/* Logo icon inside launcher directly - bigger & no inner circle */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={CHATBOT_LOGO_WHITE}
+            alt="Specpart AI"
+            className="h-[50px] w-[50px] object-contain"
+            style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.25))' }}
+          />
 
           {/* Online green indicator */}
           <span
-            className="absolute bottom-0 right-0 h-3.5 w-3.5 rounded-full border-2"
-            style={{ background: '#22c55e', borderColor: '#fff' }}
+            className="absolute bottom-0.5 right-0.5 h-3.5 w-3.5 rounded-full border-2"
+            style={{ background: '#22c55e', borderColor: '#0d162d' }}
           />
 
           {/* Unread badge */}
