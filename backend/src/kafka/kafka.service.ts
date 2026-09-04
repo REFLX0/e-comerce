@@ -11,19 +11,25 @@ export class KafkaService implements OnModuleInit, OnModuleDestroy {
   private consumers: Consumer[] = [];
 
   constructor(private readonly config: ConfigService) {
-    const brokers = this.config?.get?.('KAFKA_BROKERS') || process.env.KAFKA_BROKERS || 'kafka:9092';
-    this.kafka = new Kafka({
-      clientId: 'specpart-backend',
-      brokers: brokers.split(','),
-      retry: {
-        initialRetryTime: 1000,
-        retries: 8,
-      },
-    });
-    this.producer = this.kafka.producer();
+    const brokers = this.config?.get?.('KAFKA_BROKERS') || process.env.KAFKA_BROKERS;
+    if (brokers && process.env.NODE_ENV !== 'test') {
+      this.kafka = new Kafka({
+        clientId: 'specpart-backend',
+        brokers: brokers.split(','),
+        retry: {
+          initialRetryTime: 1000,
+          retries: 3,
+        },
+      });
+      this.producer = this.kafka.producer();
+    }
   }
 
   async onModuleInit() {
+    if (!this.producer) {
+      this.logger.log('Kafka brokers not configured or test environment — skipping Kafka initialization');
+      return;
+    }
     try {
       await this.producer.connect();
       this.isConnected = true;
@@ -35,14 +41,16 @@ export class KafkaService implements OnModuleInit, OnModuleDestroy {
   }
 
   async onModuleDestroy() {
-    await Promise.all(this.consumers.map(c => c.disconnect().catch(() => {})));
-    if (this.isConnected) {
+    if (this.consumers?.length) {
+      await Promise.all(this.consumers.map(c => c.disconnect().catch(() => {})));
+    }
+    if (this.isConnected && this.producer) {
       await this.producer.disconnect().catch(() => {});
     }
   }
 
   async produce(topic: string, key: string, message: any): Promise<void> {
-    if (!this.isConnected) {
+    if (!this.producer || !this.isConnected) {
       this.logger.debug(`Kafka not connected. Skipping message for topic ${topic}`);
       return;
     }
@@ -61,6 +69,9 @@ export class KafkaService implements OnModuleInit, OnModuleDestroy {
   }
 
   async createConsumer(groupId: string, topics: string[], eachMessage: (payload: any) => Promise<void>) {
+    if (!this.kafka || process.env.NODE_ENV === 'test') {
+      return;
+    }
     const consumer = this.kafka.consumer({ groupId });
     this.consumers.push(consumer);
 

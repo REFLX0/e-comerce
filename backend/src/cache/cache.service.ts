@@ -30,10 +30,21 @@ export class CacheService implements OnModuleInit, OnModuleDestroy {
   constructor(private readonly config: ConfigService) {}
 
   onModuleInit() {
-    const host = this.config.get<string>('REDIS_HOST') || 'redis';
+    const host = this.config.get<string>('REDIS_HOST');
     const port = this.config.get<number>('REDIS_PORT') || 6379;
 
-    this.client = new Redis({ host, port, lazyConnect: true });
+    if (!host || process.env.NODE_ENV === 'test') {
+      this.logger.log('Redis host not configured or test environment — running without cache');
+      return;
+    }
+
+    this.client = new Redis({
+      host,
+      port,
+      lazyConnect: true,
+      maxRetriesPerRequest: 1,
+      retryStrategy: () => null,
+    });
 
     this.client.on('connect', () => {
       this.isConnected = true;
@@ -50,7 +61,13 @@ export class CacheService implements OnModuleInit, OnModuleDestroy {
   }
 
   async onModuleDestroy() {
-    await this.client?.quit();
+    if (this.client) {
+      try {
+        this.client.disconnect();
+      } catch {
+        // ignore
+      }
+    }
   }
 
   // ── Core helpers ──────────────────────────────────────────────────────────

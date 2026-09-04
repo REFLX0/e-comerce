@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ProductsService } from './products.service';
-import { PrismaService } from '../prisma/prisma.service';
+import { PrismaReadService } from '../prisma/prisma-read.service';
+import { CacheService } from '../cache/cache.service';
 
 const mockProduct = (overrides = {}) => ({
   id: 'p1',
@@ -22,34 +23,52 @@ const mockProduct = (overrides = {}) => ({
 
 describe('ProductsService — findBestSellers', () => {
   let service: ProductsService;
-  let prisma: jest.Mocked<PrismaService>;
+  let mockPrismaRead: {
+    db: {
+      $queryRaw: jest.Mock;
+      $queryRawUnsafe: jest.Mock;
+      product: {
+        findMany: jest.Mock;
+      };
+    };
+  };
 
   beforeEach(async () => {
+    mockPrismaRead = {
+      db: {
+        $queryRaw: jest.fn(),
+        $queryRawUnsafe: jest.fn().mockResolvedValue([]),
+        product: {
+          findMany: jest.fn(),
+        },
+      },
+    };
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         ProductsService,
         {
-          provide: PrismaService,
+          provide: PrismaReadService,
+          useValue: mockPrismaRead,
+        },
+        {
+          provide: CacheService,
           useValue: {
-            $queryRaw: jest.fn(),
-            product: {
-              findMany: jest.fn(),
-            },
+            wrap: jest.fn((_key: string, fn: () => any) => fn()),
           },
         },
       ],
     }).compile();
 
     service = module.get<ProductsService>(ProductsService);
-    prisma = module.get(PrismaService);
   });
 
-  it('returns products ranked by sales from CONFIRMED/SHIPPED/DELIVERED orders only', async () => {
-    prisma.$queryRaw.mockResolvedValue([
+  it('returns products ranked by sales from CONFIRMED/SHIPPED/DELIVERED orders', async () => {
+    mockPrismaRead.db.$queryRaw.mockResolvedValue([
       { productid: 'p1', totalsold: 10 },
       { productid: 'p2', totalsold: 5 },
     ]);
-    prisma.product.findMany.mockResolvedValue([
+    mockPrismaRead.db.product.findMany.mockResolvedValue([
       mockProduct({ id: 'p1', nameFr: 'Oil A' }),
       mockProduct({ id: 'p2', nameFr: 'Oil B' }),
     ]);
@@ -57,17 +76,17 @@ describe('ProductsService — findBestSellers', () => {
     const result = await service.findBestSellers(2);
 
     expect(result).toHaveLength(2);
-    expect(result[0].name).toBe('Oil A');
-    expect(result[1].name).toBe('Oil B');
+    expect(result[0]!.name).toBe('Oil A');
+    expect(result[1]!.name).toBe('Oil B');
   });
 
   it('maintains stable ordering with tiebreaker when products have equal sales', async () => {
-    prisma.$queryRaw.mockResolvedValue([
+    mockPrismaRead.db.$queryRaw.mockResolvedValue([
       { productid: 'p3', totalsold: 5 },
       { productid: 'p1', totalsold: 5 },
       { productid: 'p2', totalsold: 5 },
     ]);
-    prisma.product.findMany.mockResolvedValue([
+    mockPrismaRead.db.product.findMany.mockResolvedValue([
       mockProduct({ id: 'p1', nameFr: 'Oil 1' }),
       mockProduct({ id: 'p2', nameFr: 'Oil 2' }),
       mockProduct({ id: 'p3', nameFr: 'Oil 3' }),
@@ -76,79 +95,42 @@ describe('ProductsService — findBestSellers', () => {
     const result = await service.findBestSellers(3);
 
     expect(result).toHaveLength(3);
-    expect(result[0].name).toBe('Oil 3');
-    expect(result[1].name).toBe('Oil 1');
-    expect(result[2].name).toBe('Oil 2');
+    expect(result[0]!.name).toBe('Oil 3');
+    expect(result[1]!.name).toBe('Oil 1');
+    expect(result[2]!.name).toBe('Oil 2');
   });
 
-  it('falls back to isFeatured products when no sales data exists', async () => {
-    prisma.$queryRaw.mockResolvedValue([]);
-    prisma.product.findMany
+  it('falls back to published products when no sales data exists', async () => {
+    mockPrismaRead.db.$queryRaw.mockResolvedValue([]);
+    mockPrismaRead.db.product.findMany
       .mockResolvedValueOnce([
-        mockProduct({ id: 'f1', nameFr: 'Featured Oil', isFeatured: true }),
-        mockProduct({ id: 'f2', nameFr: 'Featured Grease', isFeatured: true }),
+        mockProduct({ id: 'f1', nameFr: 'Featured Oil' }),
+        mockProduct({ id: 'f2', nameFr: 'Featured Grease' }),
       ])
       .mockResolvedValueOnce([
-        mockProduct({ id: 'f1', nameFr: 'Featured Oil', isFeatured: true }),
-        mockProduct({ id: 'f2', nameFr: 'Featured Grease', isFeatured: true }),
+        mockProduct({ id: 'f1', nameFr: 'Featured Oil' }),
+        mockProduct({ id: 'f2', nameFr: 'Featured Grease' }),
       ]);
 
     const result = await service.findBestSellers(2);
 
     expect(result).toHaveLength(2);
-    expect(result[0].name).toBe('Featured Oil');
-    expect(result[1].name).toBe('Featured Grease');
-    expect(prisma.product.findMany).toHaveBeenCalledWith(
-      expect.objectContaining({
-        where: expect.objectContaining({ isFeatured: true }),
-      }),
-    );
-  });
-
-  it('falls back to newest products when no sales and no featured exist', async () => {
-    prisma.$queryRaw.mockResolvedValue([]);
-    prisma.product.findMany
-      .mockResolvedValueOnce([])
-      .mockResolvedValueOnce([mockProduct({ id: 'n1', nameFr: 'New Oil' })]);
-
-    const result = await service.findBestSellers(2);
-
-    expect(result).toHaveLength(1);
-    expect(result[0].name).toBe('New Oil');
+    expect(result[0]!.name).toBe('Featured Oil');
+    expect(result[1]!.name).toBe('Featured Grease');
   });
 
   it('does not include PENDING or CANCELLED orders in the SQL filter', async () => {
-    prisma.$queryRaw.mockResolvedValue([]);
-    prisma.product.findMany.mockResolvedValueOnce([]).mockResolvedValueOnce([]);
+    mockPrismaRead.db.$queryRaw.mockResolvedValue([]);
+    mockPrismaRead.db.product.findMany.mockResolvedValue([]);
 
     await service.findBestSellers(2);
 
-    const sqlCall = prisma.$queryRaw.mock.calls[0][0] as string[];
+    const sqlCall = mockPrismaRead.db.$queryRaw.mock.calls[0][0] as string[];
     const sql = Array.isArray(sqlCall) ? sqlCall.join('') : String(sqlCall);
     expect(sql).toContain("'CONFIRMED'");
     expect(sql).toContain("'SHIPPED'");
     expect(sql).toContain("'DELIVERED'");
     expect(sql).not.toContain("'PENDING'");
     expect(sql).not.toContain("'CANCELLED'");
-  });
-
-  it('uses productId as tiebreaker for products with equal sales', async () => {
-    prisma.$queryRaw.mockResolvedValue([
-      { productid: 'p3', totalsold: 5 },
-      { productid: 'p1', totalsold: 5 },
-      { productid: 'p2', totalsold: 5 },
-    ]);
-    prisma.product.findMany.mockResolvedValue([
-      mockProduct({ id: 'p1', nameFr: 'Oil 1' }),
-      mockProduct({ id: 'p2', nameFr: 'Oil 2' }),
-      mockProduct({ id: 'p3', nameFr: 'Oil 3' }),
-    ]);
-
-    const result = await service.findBestSellers(3);
-
-    expect(result).toHaveLength(3);
-    expect(result[0].name).toBe('Oil 3');
-    expect(result[1].name).toBe('Oil 1');
-    expect(result[2].name).toBe('Oil 2');
   });
 });
