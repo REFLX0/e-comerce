@@ -203,7 +203,12 @@ export class SearchService implements OnModuleInit {
         include: {
           brand: { select: { id: true, name: true, slug: true } },
           category: { select: { id: true, nameFr: true, slug: true } },
-          variants: { select: { price: true, stockQty: true }, take: 1, orderBy: { price: 'asc' } },
+          variants: { 
+            select: { price: true, stockQty: true }, 
+            where: { volume: { not: { startsWith: '[ARCHIVED]' } } },
+            take: 1, 
+            orderBy: { price: 'asc' } 
+          },
           specs: { select: { viscosity: true } },
         },
         skip,
@@ -441,7 +446,12 @@ export class SearchService implements OnModuleInit {
     if (osSlugs) {
       const products = await this.prismaRead.db.product.findMany({
         where: { slug: { in: osSlugs } },
-        include: { images: { take: 1 }, variants: { take: 1 }, brand: true, specs: true },
+        include: { 
+          images: { take: 1 }, 
+          variants: { where: { volume: { not: { startsWith: '[ARCHIVED]' } } }, take: 1 }, 
+          brand: true, 
+          specs: true 
+        },
       });
       const map = new Map(products.map((p) => [p.slug, p]));
       const ordered = osSlugs.map((s) => map.get(s)).filter(Boolean);
@@ -465,7 +475,12 @@ export class SearchService implements OnModuleInit {
     const where = this.buildPrismaSearchWhere(q);
     const products = await this.prismaRead.db.product.findMany({
       where,
-      include: { images: { take: 1 }, variants: { take: 1 }, brand: true, specs: true },
+      include: { 
+        images: { take: 1 }, 
+        variants: { where: { volume: { not: { startsWith: '[ARCHIVED]' } } }, take: 1 }, 
+        brand: true, 
+        specs: true 
+      },
       take: 10,
     });
     
