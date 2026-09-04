@@ -155,7 +155,7 @@ export default function EditProductPage() {
       }
 
       // Determine product type (piece vs multi-volume oil)
-      const rawVariants = product.variants ?? []
+      const rawVariants = (product.variants ?? []).filter((v: any) => !v.volume.startsWith('[ARCHIVED]'))
       if (
         rawVariants.length === 1 &&
         (rawVariants[0].volume === '1 Pièce' ||

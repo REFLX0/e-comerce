@@ -225,7 +225,11 @@ export class ProductsService {
       brand: true,
       category: true,
       images: { orderBy: { sortOrder: 'asc' as const } },
-      variants: true,
+      variants: {
+        where: {
+          volume: { not: { startsWith: '[ARCHIVED]' } }
+        }
+      },
       specs: true,
       reviews: {
         where: { isApproved: true },

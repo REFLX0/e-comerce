@@ -283,10 +283,14 @@ export class AdminService {
           } catch (err: any) {
             if (err?.code === 'P2003') {
               // Instead of failing the update, gracefully set stock to 0
-              // for variants that are already tied to orders.
+              // and archive it so it doesn't show up in the UI.
+              const existingVariant = await this.prisma.productVariant.findUnique({ where: { id: vid } });
+              const currentVol = existingVariant?.volume || '';
+              const newVolume = currentVol.startsWith('[ARCHIVED]') ? currentVol : `[ARCHIVED] ${currentVol}`;
+              
               await this.prisma.productVariant.update({
                 where: { id: vid },
-                data: { stockQty: 0 },
+                data: { stockQty: 0, volume: newVolume },
               });
             } else {
               throw err;
