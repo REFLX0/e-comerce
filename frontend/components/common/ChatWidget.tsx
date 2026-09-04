@@ -289,18 +289,18 @@ export function ChatWidget() {
                 <div className="flex items-center gap-3">
                   {/* Logo avatar in header */}
                   <div
-                    className="relative overflow-hidden rounded-full"
+                    className="relative flex items-center justify-center overflow-hidden rounded-full"
                     style={{
                       width: 44, height: 44,
-                      background: '#0d162d',
-                      boxShadow: '0 0 0 2px rgba(212,167,106,0.6)',
+                      background: '#ffffff',
+                      boxShadow: '0 0 0 2px rgba(212,167,106,0.8)',
                     }}
                   >
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src="/chatbotlogo.png" alt="Specpart AI" className="h-full w-full object-cover" />
+                    <img src="/chatbotlogo.png" alt="Specpart AI" className="h-full w-full object-contain p-1" />
                     <span
                       className="absolute bottom-0.5 right-0.5 h-2.5 w-2.5 rounded-full border-2"
-                      style={{ background: '#22c55e', borderColor: '#16254c' }}
+                      style={{ background: '#22c55e', borderColor: '#ffffff' }}
                     />
                   </div>
                   <div>
@@ -420,11 +420,12 @@ export function ChatWidget() {
                     <div style={{
                       width: 30, height: 30, borderRadius: '50%',
                       overflow: 'hidden', flexShrink: 0,
-                      background: '#0d162d',
-                      boxShadow: '0 0 0 2px rgba(212,167,106,0.5)',
+                      background: '#ffffff',
+                      boxShadow: '0 0 0 2px rgba(212,167,106,0.6)',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
                     }}>
                       {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src="/chatbotlogo.png" alt="Specpart AI" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      <img src="/chatbotlogo.png" alt="Specpart AI" style={{ width: '88%', height: '88%', objectFit: 'contain' }} />
                     </div>
                   )}
 
@@ -470,11 +471,12 @@ export function ChatWidget() {
                   <div style={{
                     width: 30, height: 30, borderRadius: '50%',
                     overflow: 'hidden', flexShrink: 0,
-                    background: '#0d162d',
-                    boxShadow: '0 0 0 2px rgba(212,167,106,0.5)',
+                    background: '#ffffff',
+                    boxShadow: '0 0 0 2px rgba(212,167,106,0.6)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
                   }}>
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src="/chatbotlogo.png" alt="Specpart AI" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    <img src="/chatbotlogo.png" alt="Specpart AI" style={{ width: '88%', height: '88%', objectFit: 'contain' }} />
                   </div>
                   <div style={{
                     padding: '10px 14px', borderRadius: '18px 18px 18px 4px',
@@ -625,9 +627,12 @@ export function ChatWidget() {
           }}
         >
           {/* Logo icon inside launcher */}
-          <div className="relative h-11 w-11 overflow-hidden rounded-full">
+          <div
+            className="relative h-11 w-11 flex items-center justify-center overflow-hidden rounded-full"
+            style={{ background: '#ffffff', boxShadow: '0 0 0 2px rgba(212,167,106,0.8)' }}
+          >
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/chatbotlogo.png" alt="Specpart AI" className="h-full w-full object-cover" />
+            <img src="/chatbotlogo.png" alt="Specpart AI" className="h-full w-full object-contain p-1" />
           </div>
 
           {/* Online green indicator */}
