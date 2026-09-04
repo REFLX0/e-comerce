@@ -443,7 +443,7 @@ export class SearchService implements OnModuleInit {
 
     // Try OpenSearch first
     const osSlugs = await this.getSuggestions(q, 10);
-    if (osSlugs) {
+    if (osSlugs && osSlugs.length > 0) {
       const products = await this.prismaRead.db.product.findMany({
         where: { slug: { in: osSlugs } },
         include: { 
@@ -507,7 +507,7 @@ export class SearchService implements OnModuleInit {
     const q = query.trim();
 
     const osResult = await this.search({ query: q, page, limit });
-    if (osResult) {
+    if (osResult && osResult.total > 0) {
       const products = await this.prismaRead.db.product.findMany({
         where: { id: { in: osResult.ids } },
         include: this.buildInclude(),
