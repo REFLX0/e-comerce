@@ -3,6 +3,7 @@ import {
   ConflictException,
   UnauthorizedException,
   BadRequestException,
+  Logger,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
@@ -16,6 +17,7 @@ import { Redis } from 'ioredis';
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger(AuthService.name);
   private redis: Redis | null = null;
   private inMemoryTokens = new Map<string, { userId: string; expiresAt: number }>();
 
@@ -106,8 +108,7 @@ export class AuthService {
       if (err instanceof UnauthorizedException || err instanceof ConflictException) {
         throw err;
       }
-      // Use NestJS Logger instead of console.error
-      // this.logger.error('Login error:', err);
+      this.logger.error(`Login error for ${dto.email}: ${err.message}`, err.stack);
       throw new UnauthorizedException(err.message || 'Erreur de connexion. Veuillez vérifier vos identifiants.');
     }
   }
