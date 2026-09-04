@@ -490,12 +490,12 @@ export function ProductCard({ product, viewMode = 'grid' }: Props) {
             </span>
           )}
           {product.isNew && (
-            <span className="bg-[#16254c] px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-white">
+            <span className="bg-[#16254c] px-2 py-0.5 text-[8px] sm:text-[9px] font-bold uppercase tracking-wider text-white">
               {t('new')}
             </span>
           )}
           {product.isPromo && (
-            <span className="bg-[#D4A76A] px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-[#16254c]">
+            <span className="bg-[#D4A76A] px-2 py-0.5 text-[8px] sm:text-[9px] font-bold uppercase tracking-wider text-[#16254c]">
               {t('promo')}{product.promoPercent ? ` -${product.promoPercent}%` : ''}
             </span>
           )}
@@ -542,23 +542,23 @@ export function ProductCard({ product, viewMode = 'grid' }: Props) {
       </div>
 
       {/* ── Content zone ───────────────────────────────────────────── */}
-      <div className="flex flex-1 flex-col p-3.5">
+      <div className="flex flex-1 flex-col p-2 sm:p-3.5">
         
         {/* Brand & SKU */}
-        <div className="flex items-center justify-between gap-2">
+        <div className="flex items-center justify-between gap-1 sm:gap-2">
           {product.brand ? (
-            <span className="text-[10px] font-black uppercase tracking-[0.1em] text-[#16254c]/70">
+            <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-[0.1em] text-[#16254c]/70">
               {product.brand.name}
             </span>
           ) : <span />}
-          <span className="text-[9px] font-semibold uppercase text-gray-400 tracking-wider">
+          <span className="text-[8px] sm:text-[9px] font-semibold uppercase text-gray-400 tracking-wider">
             Réf: {formatSKU(defaultVariant?.sku)}
           </span>
         </div>
 
         {/* Product name */}
         <Link href={`/produit/${product.slug}`} className="mt-1 focus:outline-none">
-          <h3 className="line-clamp-2 min-h-[2.5rem] text-xs font-bold leading-relaxed text-gray-900 transition-colors group-hover:text-[#16254c] sm:text-[13px]">
+          <h3 className="line-clamp-2 min-h-[2.5rem] text-[11px] font-bold leading-relaxed text-gray-900 transition-colors group-hover:text-[#16254c] sm:text-[13px]">
             {formatProductName(product.name, product.brand?.name)}
           </h3>
         </Link>
@@ -597,7 +597,7 @@ export function ProductCard({ product, viewMode = 'grid' }: Props) {
                   key={v.id || v.volume}
                   type="button"
                   onClick={(e) => handleSelectVariant(e, v)}
-                  className={`rounded px-1.5 py-0.5 text-[9px] font-bold transition-all duration-150 cursor-pointer ${
+                  className={`rounded px-1.5 py-0.5 text-[8px] sm:text-[9px] font-bold transition-all duration-150 cursor-pointer ${
                     isSelected
                       ? 'bg-[#16254c] text-white shadow-xs ring-1 ring-[#D4A76A]'
                       : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
