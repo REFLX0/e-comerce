@@ -5,6 +5,7 @@ import { useState } from 'react'
 import { OfflineIndicator } from '@/components/OfflineIndicator'
 import { SessionProvider } from 'next-auth/react'
 import { AuthSync } from '@/components/auth/AuthSync'
+import { GooeyToaster } from 'goey-toast'
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(
@@ -26,6 +27,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
         <AuthSync />
         <OfflineIndicator />
         {children}
+        <GooeyToaster position="bottom-right" closeButton preset="bouncy" />
       </QueryClientProvider>
     </SessionProvider>
   )

@@ -146,7 +146,7 @@ export default function AdminProductsPage() {
     setSelected((prev) => prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id])
 
   const exportCsv = async () => {
-    const toastId = toast.loading('Export en cours...')
+    const toastId = toast('Export en cours...')
     try {
       const response = await fetch('/api/admin/products/export')
       if (!response.ok) throw new Error('Export failed')
@@ -185,7 +185,7 @@ export default function AdminProductsPage() {
     const file = e.target.files?.[0]
     if (!file) return
     setIsImporting(true)
-    const toastId = toast.loading(t('importing'))
+    const toastId = toast(t('importing'))
     try {
       const res = await adminApi.importProducts(file)
       const data = res as unknown as { ok: boolean; created: number; updated: number; errors: number; message: string }

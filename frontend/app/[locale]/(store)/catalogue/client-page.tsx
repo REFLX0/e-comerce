@@ -52,7 +52,12 @@ export default function CataloguePage() {
   const vehicleModel = searchParams.get('model')
   const vehicleEngine = searchParams.get('engine')
   const isOilFinder = searchParams.get('isOilFinder') === 'true'
-  const isVehicleSearch = Boolean(vehicleMake && vehicleModel)
+
+  const effectiveMake = vehicleMake || storedVehicle?.makeSlug
+  const effectiveModel = vehicleModel || storedVehicle?.modelSlug
+  const effectiveEngine = vehicleEngine || storedVehicle?.engineCode
+  
+  const isVehicleSearch = Boolean(effectiveMake && effectiveModel)
 
   const specType = searchParams.get('vehicleType')
   const specDisplacement = searchParams.get('displacementCc')
@@ -92,23 +97,23 @@ export default function CataloguePage() {
 
   const { data, isLoading, isError, refetch } = useQuery<any>({
     queryKey: isVehicleSearch
-      ? ['compatible-products', vehicleMake, vehicleModel, vehicleEngine, filters, isOilFinder]
+      ? ['compatible-products', effectiveMake, effectiveModel, effectiveEngine, filters, isOilFinder]
       : isSpecSearch
-        ? ['oil-recommendations', specType, specDisplacement, specPower, specFuelType, searchParams.get('make') || undefined]
+        ? ['oil-recommendations', specType, specDisplacement, specPower, specFuelType, effectiveMake || undefined]
         : ['products', filters],
     queryFn: () => {
       if (isVehicleSearch) {
         if (isOilFinder || filters.categorySlug === 'huiles-moteur') {
           return productsApi.getOilByVehicle({
-            make: vehicleMake!,
-            model: vehicleModel!,
-            engineCode: vehicleEngine || undefined,
+            make: effectiveMake!,
+            model: effectiveModel!,
+            engineCode: effectiveEngine || undefined,
           })
         }
         return productsApi.getCompatible({
-          make: vehicleMake!,
-          model: vehicleModel!,
-          engine: vehicleEngine || undefined,
+          make: effectiveMake!,
+          model: effectiveModel!,
+          engine: effectiveEngine || undefined,
           categorySlug: filters.categorySlug as string | undefined,
           search: filters.search as string | undefined,
           brands: filters.brands as string | undefined,
@@ -334,37 +339,19 @@ export default function CataloguePage() {
               if (products.length > 0) {
                 return (
                   <>
-                    {isVehicleSearch && data?.oilSpec && (
-                      <div className="mb-5 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-blue-100 bg-gradient-to-r from-blue-50/80 via-white to-blue-50/50 p-4 text-xs shadow-xs">
-                        <div className="flex items-center gap-3">
-                          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-blue-600 text-white shadow-2xs">
-                            <ShieldCheck size={18} />
-                          </div>
-                          <div>
-                            <div className="flex flex-wrap items-center gap-2">
-                              <span className="font-bold text-blue-950">Spécification constructeur recommandée :</span>
-                              <span className="rounded-md bg-blue-900 px-2.5 py-0.5 font-black text-white shadow-xs">
-                                {data.oilSpec.viscosity}
-                              </span>
-                              {data.oilSpec.oemApproval && (
-                                <span className="rounded-md bg-white px-2.5 py-0.5 font-semibold text-blue-900 ring-1 ring-blue-200">
-                                  {data.oilSpec.oemApproval}
-                                </span>
-                              )}
-                            </div>
-                            <p className="mt-0.5 text-[11px] text-blue-700/80">
-                              Ces huiles répondent aux normes d'origine prescrites pour votre moteur.
-                            </p>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-1.5 rounded-lg bg-white/80 px-3 py-1.5 text-[11px] font-medium text-neutral-600 ring-1 ring-black/5">
-                          <BookOpen size={13} className="text-blue-600" />
-                          <span>Vérifiez toujours votre carnet d'entretien</span>
-                        </div>
+                    <ProductGrid
+                      products={products}
+                      viewMode={viewMode}
+                    />
+                    
+                    {data && (
+                      <div className="mt-12 flex justify-center pb-8">
+                        <Pagination 
+                          currentPage={data?.page ?? 1}
+                          totalPages={data?.totalPages ?? 1}
+                        />
                       </div>
                     )}
-                    <ProductGrid products={products} viewMode={viewMode} />
-                    <Pagination currentPage={data?.page ?? 1} totalPages={data?.totalPages ?? 1} />
                   </>
                 )
               }

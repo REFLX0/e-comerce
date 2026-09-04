@@ -39,7 +39,7 @@ export default function ProfilPage() {
     }
 
     setUploadingPhoto(true)
-    const toastId = toast.loading(t('photoUploading'))
+    const toastId = toast(t('photoUploading'))
 
     try {
       const updatedUser = await authApi.uploadAvatar(file)
@@ -59,7 +59,7 @@ export default function ProfilPage() {
   const handleRemovePhoto = async () => {
     if (!user?.image) return
     setUploadingPhoto(true)
-    const toastId = toast.loading(t('photoUploading'))
+    const toastId = toast(t('photoUploading'))
 
     try {
       const updatedUser = await authApi.deleteAvatar()

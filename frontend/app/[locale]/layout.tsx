@@ -2,7 +2,6 @@ import type { Metadata } from 'next'
 import { Inter, Poppins, JetBrains_Mono, Cairo } from 'next/font/google'
 import '../globals.css'
 import { Providers } from '@/components/Providers'
-import { GooeyToaster } from 'goey-toast'
 import 'goey-toast/styles.css'
 import { NextIntlClientProvider } from 'next-intl'
 import { getMessages } from 'next-intl/server'
@@ -159,8 +158,6 @@ export default async function RootLayout({
             />
 
             {children}
-
-            <GooeyToaster position="bottom-right" closeButton />
           </Providers>
         </NextIntlClientProvider>
       </body>
