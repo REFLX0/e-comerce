@@ -3,8 +3,6 @@ import { ApiTags } from '@nestjs/swagger';
 import { OilFinderService } from './oil-finder.service';
 import { ProductsService } from '../products/products.service';
 
-const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
-
 @ApiTags('oil-finder')
 @Controller('oil-finder')
 export class OilFinderController {
@@ -23,7 +21,7 @@ export class OilFinderController {
     
     const result = await this.oilFinderService.findByVehicle(make, model, engineCode);
     if (result.status !== 'found') {
-      return { data: [], total: 0, status: result.status };
+      return { data: [], total: 0, status: result.status, message: result.message };
     }
 
     // 1. Try matching with full specifications (viscosity + OEM/ACEA/API)
@@ -82,7 +80,7 @@ export class OilFinderController {
     );
 
     if (result.status !== 'found') {
-      return { data: [], total: 0, status: result.status };
+      return { data: [], total: 0, status: result.status, message: result.message };
     }
 
     let productsResult = await this.productsService.findAll({
@@ -144,48 +142,5 @@ export class OilFinderController {
     @Param('model') model: string,
   ) {
     return this.oilFinderService.getEngines(make, model);
-  }
-
-  @Get('ai-recommendation')
-  async getAIRecommendation(
-    @Query('make') make: string,
-    @Query('model') model: string,
-    @Query('engineCode') engineCode?: string,
-  ) {
-    if (!OPENROUTER_API_KEY) {
-      return { recommendation: "L'assistant IA n'est pas configuré." };
-    }
-
-    const vehicleStr = `${make} ${model} ${engineCode || ''}`.trim();
-    const prompt = `Tu es un expert mécanicien pour Specpart. Un client cherche de l'huile pour le véhicule suivant : ${vehicleStr}. 
-Donne-lui brièvement les spécifications d'huile recommandées (Viscosité, ACEA, API, approbations constructeurs) en 2 ou 3 phrases maximum.
-Ensuite, ajoute OBLIGATOIREMENT le texte suivant à la fin : "Nous n'avons pas de produit compatible en stock pour le moment, mais vous pouvez contacter Specpart pour faire une commande spéciale."`;
-
-    try {
-      const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
-          'Content-Type': 'application/json',
-          'HTTP-Referer': 'http://localhost:8082',
-          'X-Title': 'Specpart Oil Finder',
-        },
-        body: JSON.stringify({
-          model: 'openai/gpt-4o-mini',
-          messages: [
-            { role: 'system', content: prompt }
-          ]
-        })
-      });
-
-      if (!response.ok) {
-        throw new Error('OpenRouter API error');
-      }
-
-      const data = await response.json();
-      return { recommendation: data.choices[0].message.content };
-    } catch (error) {
-      return { recommendation: "L'assistant IA est temporairement indisponible. Veuillez contacter Specpart." };
-    }
   }
 }

@@ -133,46 +133,40 @@ describe('OilFinderService', () => {
       expect(result.candidates).toHaveLength(2);
     });
 
-    it('falls back to VAG OEM specification when vehicle is not in DB', async () => {
+    it('returns status not_found enriched with TecDoc motorcycle classification when detected as moto', async () => {
       prisma.oilFinderVehicle.findMany.mockResolvedValue([]);
+      prisma.$queryRawUnsafe.mockResolvedValueOnce([{ is_moto: true }]);
 
-      const result = await service.findByVehicle('Volkswagen', 'Golf VII', '2.0 TDI');
+      const result = await service.findByVehicle('Yamaha', 'YZF-R1');
 
-      expect(result.status).toBe('found');
-      if (result.status !== 'found') return;
-      expect(result.oilSpec.viscosity).toBe('5W-30');
-      expect(result.oilSpec.oemApproval).toContain('VW 504 00 / 507 00');
-      expect(result.resolvedBy).toBe('category-default');
-      expect(result.confidence).toBe('medium');
-      expect(result.backingRows).toBe(0);
+      expect(result.status).toBe('not_found');
+      if (result.status === 'not_found') {
+        expect(result.message).toContain('moto');
+      }
     });
 
-    it('falls back to BMW LL-04 OEM specification when vehicle is not in DB', async () => {
+    it('returns status not_found enriched with TecDoc truck classification when detected as truck', async () => {
       prisma.oilFinderVehicle.findMany.mockResolvedValue([]);
+      prisma.$queryRawUnsafe.mockResolvedValueOnce([{ is_truck: true }]);
 
-      const result = await service.findByVehicle('BMW', 'Serie 3', '2.0d');
+      const result = await service.findByVehicle('Scania', 'R500');
 
-      expect(result.status).toBe('found');
-      if (result.status !== 'found') return;
-      expect(result.oilSpec.viscosity).toBe('5W-30');
-      expect(result.oilSpec.oemApproval).toContain('BMW Longlife-04');
-      expect(result.resolvedBy).toBe('category-default');
-      expect(result.confidence).toBe('medium');
-      expect(result.backingRows).toBe(0);
+      expect(result.status).toBe('not_found');
+      if (result.status === 'not_found') {
+        expect(result.message).toContain('poids lourd');
+      }
     });
 
-    it('falls back to universal passenger car OEM recommendation for unknown makes', async () => {
+    it('returns status not_found for unknown makes with no rows in DB', async () => {
       prisma.oilFinderVehicle.findMany.mockResolvedValue([]);
+      prisma.$queryRawUnsafe.mockResolvedValue([]);
 
       const result = await service.findByVehicle('UnknownBrand', 'ModelX', '1.6L');
 
-      expect(result.status).toBe('found');
-      if (result.status !== 'found') return;
-      expect(result.oilSpec.viscosity).toBe('5W-30');
-      expect(result.oilSpec.id).toBe('spec-universal-passenger-car');
-      expect(result.resolvedBy).toBe('category-default');
-      expect(result.confidence).toBe('low');
-      expect(result.backingRows).toBe(0);
+      expect(result.status).toBe('not_found');
+      if (result.status === 'not_found') {
+        expect(result.message).toContain('Aucune spécification d\'huile trouvée');
+      }
     });
   });
 
@@ -202,28 +196,13 @@ describe('OilFinderService', () => {
       );
     });
 
-    it('returns displacement & fuel-aware recommendation when no DB rows match', async () => {
+    it('returns status not_found when no DB rows match characteristics', async () => {
       prisma.oilFinderVehicle.findMany.mockResolvedValue([]);
 
-      // Small essence engine (< 2000cc)
-      const resSmall = await service.findByCharacteristics(1400, 90, 'essence');
-      expect(resSmall.status).toBe('found');
-      if (resSmall.status === 'found') {
-        expect(resSmall.oilSpec.viscosity).toBe('5W-30');
-        expect(resSmall.resolvedBy).toBe('category-default');
-        expect(resSmall.confidence).toBe('medium');
-        expect(resSmall.backingRows).toBe(0);
-      }
-
-      // Large diesel engine (> 2000cc)
-      const resLarge = await service.findByCharacteristics(2500, 190, 'diesel');
-      expect(resLarge.status).toBe('found');
-      if (resLarge.status === 'found') {
-        expect(resLarge.oilSpec.viscosity).toBe('5W-40');
-        expect(resLarge.oilSpec.apiStandard).toContain('CK-4');
-        expect(resLarge.resolvedBy).toBe('category-default');
-        expect(resLarge.confidence).toBe('medium');
-        expect(resLarge.backingRows).toBe(0);
+      const res = await service.findByCharacteristics(1400, 90, 'essence');
+      expect(res.status).toBe('not_found');
+      if (res.status === 'not_found') {
+        expect(res.message).toContain('Aucune spécification d\'huile trouvée pour les caractéristiques');
       }
     });
   });
