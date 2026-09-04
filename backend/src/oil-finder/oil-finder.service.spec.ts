@@ -133,6 +133,21 @@ describe('OilFinderService', () => {
       expect(result.candidates).toHaveLength(2);
     });
 
+    it('picks the spec with more supporting rows when sources disagree', async () => {
+      prisma.oilFinderVehicle.findMany.mockResolvedValue([
+        row({ source: 'oponeo.fr', oilSpec: spec5w30C3 }),
+        row({ source: 'autodoc.fr', oilSpec: spec5w30C3 }),
+        row({ source: 'ovoko.fr', oilSpec: spec5w40 }),
+      ]);
+
+      const result = await service.findByVehicle('Renault', 'Clio IV', 'K4M');
+
+      expect(result.status).toBe('found');
+      if (result.status !== 'found') return;
+      expect(result.oilSpec.id).toBe(spec5w30C3.id); // 2 votes vs 1
+      expect(result.resolvedBy).toBe('minor-conflict-auto-resolve');
+    });
+
     it('returns status not_found enriched with TecDoc motorcycle classification when detected as moto', async () => {
       prisma.oilFinderVehicle.findMany.mockResolvedValue([]);
       prisma.$queryRawUnsafe.mockResolvedValueOnce([{ is_moto: true }]);

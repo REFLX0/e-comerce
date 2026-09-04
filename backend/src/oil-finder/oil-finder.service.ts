@@ -472,7 +472,11 @@ function groupBySpec(rows: Array<{ oilSpec: OilFinderOilSpec }>): Array<{ spec: 
     entry.count += 1
     map.set(row.oilSpec.id, entry)
   }
-  return [...map.values()].sort((a, b) => a.spec.id.localeCompare(b.spec.id))
+  return [...map.values()].sort((a, b) => {
+    // Most-supported spec wins. Tie-break on id for stable, deterministic output.
+    if (b.count !== a.count) return b.count - a.count
+    return a.spec.id.localeCompare(b.spec.id)
+  })
 }
 
 function toCandidates(rows: Array<OilFinderCandidate>): OilFinderCandidate[] {
