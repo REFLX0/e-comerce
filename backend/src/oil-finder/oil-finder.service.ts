@@ -144,8 +144,9 @@ export class OilFinderService {
     const makeNorm = make.trim().toUpperCase();
     const modelNorm = model.trim().toUpperCase();
     const isMoto = MOTO_MAKES.some(m => makeNorm === m.toUpperCase()) || makeNorm === 'PEUGEOT MOTOCYCLES';
-    const isTruck = TRUCK_MAKES.some(m => makeNorm === m.toUpperCase()) || makeNorm === 'SCANIA' || makeNorm === 'IVECO' || makeNorm === 'MAN' || makeNorm === 'DAF';
-    const isMarine = MARINE_MAKES.some(m => makeNorm === m.toUpperCase()) || makeNorm.includes('MARINE') || makeNorm === 'YANMAR' || makeNorm.includes('PENTA');
+    const isTruck = TRUCK_MAKES.some(m => makeNorm === m.toUpperCase()) || makeNorm === 'SCANIA' || makeNorm === 'IVECO' || makeNorm === 'MAN' || makeNorm === 'DAF' || makeNorm.includes('TRUCK') || makeNorm.includes('CAMION');
+    const isMarine = MARINE_MAKES.some(m => makeNorm === m.toUpperCase()) || makeNorm.includes('MARINE') || makeNorm === 'YANMAR' || makeNorm.includes('PENTA') || makeNorm.includes('BATEAU');
+    const isAgri = AGRI_MAKES.some(m => makeNorm === m.toUpperCase()) || makeNorm.includes('TRACTOR') || makeNorm.includes('TRACTEUR') || makeNorm.includes('AGRI');
 
     // 1. Try DB lookup first (exact/insensitive match on the raw name)
     const where = {
@@ -196,9 +197,11 @@ export class OilFinderService {
       };
     }
 
+    const eUpper = (engineCode || '').toUpperCase();
+
     // 2. Specialized Category Recommendations
     if (isMoto) {
-      const is2T = modelNorm.includes('50') && (modelNorm.includes('ZIP') || modelNorm.includes('AEROX') || modelNorm.includes('BW') || modelNorm.includes('TYPHOON') || modelNorm.includes('EXC 300'));
+      const is2T = modelNorm.includes('50') && (modelNorm.includes('ZIP') || modelNorm.includes('AEROX') || modelNorm.includes('BW') || modelNorm.includes('TYPHOON') || modelNorm.includes('EXC 300')) || eUpper.includes('2T') || eUpper.includes('2-TEMPS');
       if (is2T) {
         return {
           status: 'found',
@@ -217,7 +220,7 @@ export class OilFinderService {
         };
       }
 
-      const isHighPerf = makeNorm.includes('DUCATI') || makeNorm.includes('KTM') || modelNorm.includes('R1') || modelNorm.includes('CBR 1000') || modelNorm.includes('ZX-10R') || modelNorm.includes('S 1000');
+      const isHighPerf = makeNorm.includes('DUCATI') || makeNorm.includes('KTM') || modelNorm.includes('R1') || modelNorm.includes('CBR 1000') || modelNorm.includes('ZX-10R') || modelNorm.includes('S 1000') || modelNorm.includes('PANIGALE');
       const viscosity = isHighPerf ? '10W-50' : '10W-40';
 
       return {
@@ -238,14 +241,15 @@ export class OilFinderService {
     }
 
     if (isTruck) {
+      const isVintageTruck = eUpper.includes('15W') || eUpper.includes('EURO 3') || eUpper.includes('EURO 2') || modelNorm.includes('PREMIUM') || modelNorm.includes('MAGNUM');
       return {
         status: 'found',
         oilSpec: {
-          id: 'spec-truck-heavy-10w40',
-          viscosity: '10W-40',
+          id: isVintageTruck ? 'spec-truck-heavy-15w40' : 'spec-truck-heavy-10w40',
+          viscosity: isVintageTruck ? '15W-40' : '10W-40',
           apiStandard: 'API CK-4 / CJ-4',
-          aceaStandard: 'ACEA E6 / E9 / E7',
-          oemApproval: 'MB 228.51, MAN M 3477, Volvo VDS-4.5, Scania Low Ash',
+          aceaStandard: isVintageTruck ? 'ACEA E7' : 'ACEA E6 / E9 / E7',
+          oemApproval: isVintageTruck ? 'MB 228.3, Volvo VDS-3, MAN M 3275' : 'MB 228.51, MAN M 3477, Volvo VDS-4.5, Scania Low Ash',
           capacityLiters: 32.0,
           changeIntervalKm: 40000,
         },
@@ -256,6 +260,25 @@ export class OilFinderService {
     }
 
     if (isMarine) {
+      const is2TMarine = eUpper.includes('2-TEMPS') || eUpper.includes('2T') || eUpper.includes('TC-W3') || modelNorm.includes('2T');
+      if (is2TMarine) {
+        return {
+          status: 'found',
+          oilSpec: {
+            id: 'spec-marine-tc-w3-2t',
+            viscosity: '2T',
+            apiStandard: 'NMMA TC-W3',
+            aceaStandard: 'NMMA TC-W3 Certified (Outboard)',
+            oemApproval: 'Yamaha / Mercury / Evinrude 2-Stroke Outboard Approved',
+            capacityLiters: 2.0,
+            changeIntervalKm: 5000,
+          },
+          resolvedBy: 'minor-conflict-auto-resolve',
+          backingRows: 1,
+          candidates: [],
+        };
+      }
+
       return {
         status: 'found',
         oilSpec: {
@@ -263,7 +286,7 @@ export class OilFinderService {
           viscosity: '10W-40',
           apiStandard: 'API SL / SJ',
           aceaStandard: 'NMMA FC-W Catalyst Compatible',
-          oemApproval: 'Marine Outboard & Inboard Certified',
+          oemApproval: 'Marine Outboard & Inboard Certified (Mercury, Yamaha, Volvo Penta)',
           capacityLiters: 5.5,
           changeIntervalKm: 10000,
         },
@@ -273,8 +296,44 @@ export class OilFinderService {
       };
     }
 
+    if (isAgri) {
+      const isUtto = eUpper.includes('TRANSMISSION') || eUpper.includes('HYDRAULIQUE') || eUpper.includes('UTTO') || eUpper.includes('PONT');
+      if (isUtto) {
+        return {
+          status: 'found',
+          oilSpec: {
+            id: 'spec-agri-utto-10w30',
+            viscosity: '10W-30',
+            apiStandard: 'API GL-4',
+            aceaStandard: 'UTTO Multifonction (Freins immergés)',
+            oemApproval: 'John Deere J20C, Massey Ferguson CMS M1145, Ford M2C134-D, Case MS 1207/1209',
+            capacityLiters: 45.0,
+            changeIntervalKm: 15000,
+          },
+          resolvedBy: 'minor-conflict-auto-resolve',
+          backingRows: 1,
+          candidates: [],
+        };
+      }
+
+      return {
+        status: 'found',
+        oilSpec: {
+          id: 'spec-agri-heavy-15w40',
+          viscosity: '15W-40',
+          apiStandard: 'API CK-4 / CJ-4 / CI-4',
+          aceaStandard: 'ACEA E9 / E7',
+          oemApproval: 'John Deere Plus-50 II, Deutz DQC III-10 LA, CNH MAT 3521, Case MS 1121',
+          capacityLiters: 22.0,
+          changeIntervalKm: 20000,
+        },
+        resolvedBy: 'minor-conflict-auto-resolve',
+        backingRows: 1,
+        candidates: [],
+      };
+    }
+
     // 3. Intelligent Constructor OEM Matching for Passenger Cars (Year-Aware & Fuel-Aware)
-    const eUpper = (engineCode || '').toUpperCase();
     const isDiesel = eUpper.includes('TDI') || eUpper.includes('DCI') || eUpper.includes('HDI') || eUpper.includes('CDI') || eUpper.includes('CRDI') || eUpper.includes('D-4D') || eUpper.includes('MULTIJET') || eUpper.includes('TD') || eUpper.includes('DIESEL') || eUpper.includes('JTD');
     
     // Detect older vehicles (pre-2007 without DPF/FAP) vs modern vehicles (2008+ with DPF/Euro 5/Euro 6)
