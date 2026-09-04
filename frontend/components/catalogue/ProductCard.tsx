@@ -574,7 +574,7 @@ export function ProductCard({ product, viewMode = 'grid' }: Props) {
             {product.specs.oemApprovals.slice(0, 2).map((approval) => (
               <span
                 key={approval}
-                className="rounded border border-blue-200 bg-blue-50 px-1.5 py-0.5 text-[9px] font-semibold text-blue-700 leading-tight"
+                className="rounded border border-blue-200 bg-blue-50 px-1.5 py-0.5 text-[8px] sm:text-[9px] font-semibold text-blue-700 leading-tight truncate max-w-full"
               >
                 {approval}
               </span>
@@ -610,7 +610,7 @@ export function ProductCard({ product, viewMode = 'grid' }: Props) {
           </div>
         )}
 
-        <div className="mt-3 flex items-end justify-between border-t border-gray-100 pt-3">
+        <div className="mt-auto pt-3 border-t border-gray-100 flex items-center justify-between gap-1">
           {/* Price */}
           <div className="flex flex-col">
             <span className="mb-0.5 flex items-center gap-1 text-[10px] font-bold">
@@ -624,28 +624,28 @@ export function ProductCard({ product, viewMode = 'grid' }: Props) {
             {isPriceTbd ? (
               <span className="text-sm font-bold text-[#16254c]">{t('priceNa')}</span>
             ) : isManuallySelected && activeVariant ? (
-              <div className="flex items-baseline gap-1">
-                <span className="text-base font-black text-[#16254c] sm:text-lg">
+              <div className="flex items-baseline gap-0.5 sm:gap-1 flex-wrap">
+                <span className="text-sm font-black text-[#16254c] sm:text-lg">
                   {formatPrice(activeVariant.priceTTC)}
                 </span>
-                <span className="text-[9px] font-bold text-gray-500 uppercase tracking-widest">TTC</span>
+                <span className="text-[8px] sm:text-[9px] font-bold text-gray-500 uppercase tracking-widest">TTC</span>
               </div>
             ) : hasMultipleVariants && minPrice !== maxPrice ? (
               <div>
                 <span className="block text-[9px] text-gray-500 font-medium">À partir de</span>
-                <div className="flex items-baseline gap-1">
-                  <span className="text-base font-black text-[#16254c] sm:text-lg">
+                <div className="flex items-baseline gap-0.5 sm:gap-1 flex-wrap">
+                  <span className="text-sm font-black text-[#16254c] sm:text-lg">
                     {formatPrice(minPrice)}
                   </span>
-                  <span className="text-[9px] font-bold text-gray-500 uppercase tracking-widest">TTC</span>
+                  <span className="text-[8px] sm:text-[9px] font-bold text-gray-500 uppercase tracking-widest">TTC</span>
                 </div>
               </div>
             ) : defaultVariant ? (
-              <div className="flex items-baseline gap-1">
-                <span className="text-base font-black text-[#16254c] sm:text-lg">
+              <div className="flex items-baseline gap-0.5 sm:gap-1 flex-wrap">
+                <span className="text-sm font-black text-[#16254c] sm:text-lg">
                   {formatPrice(defaultVariant.priceTTC)}
                 </span>
-                <span className="text-[9px] font-bold text-gray-500 uppercase tracking-widest">TTC</span>
+                <span className="text-[8px] sm:text-[9px] font-bold text-gray-500 uppercase tracking-widest">TTC</span>
               </div>
             ) : (
               <span className="text-sm text-gray-400">{t('priceNa')}</span>
@@ -657,7 +657,7 @@ export function ProductCard({ product, viewMode = 'grid' }: Props) {
             whileTap={{ scale: 0.9 }}
             onClick={handleAddToCart}
             disabled={isOutOfStock}
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#16254c] text-white shadow-sm transition-colors hover:bg-[#1f356b] hover:text-[#D4A76A] disabled:cursor-not-allowed disabled:bg-gray-300 sm:h-10 sm:w-10"
+            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#16254c] text-white shadow-sm transition-colors hover:bg-[#1f356b] hover:text-[#D4A76A] disabled:cursor-not-allowed disabled:bg-gray-300 sm:h-10 sm:w-10"
             aria-label={t('addToCart')}
           >
             <ShoppingCart size={16} />

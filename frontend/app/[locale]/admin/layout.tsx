@@ -155,7 +155,7 @@ function Sidebar({
     <div className="flex h-full flex-col bg-brand-primary-dark">
       {/* Logo */}
       <div className="flex h-20 shrink-0 items-center gap-3 border-b border-white/10 px-4">
-        <Link href="/admin" className="flex items-center gap-2 group">
+        <Link href={`/${locale}`} className="flex items-center gap-2 group" title={t('backToSite', { fallback: 'Back to Site' })}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/logo.jpg"
