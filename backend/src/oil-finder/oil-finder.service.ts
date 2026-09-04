@@ -278,16 +278,19 @@ export class OilFinderService {
     const isDiesel = eUpper.includes('TDI') || eUpper.includes('DCI') || eUpper.includes('HDI') || eUpper.includes('CDI') || eUpper.includes('CRDI') || eUpper.includes('D-4D') || eUpper.includes('MULTIJET') || eUpper.includes('TD') || eUpper.includes('DIESEL') || eUpper.includes('JTD');
     
     // Detect older vehicles (pre-2007 without DPF/FAP) vs modern vehicles (2008+ with DPF/Euro 5/Euro 6)
-    const yearMatches = `${model} ${engineCode || ''}`.match(/(\d{4})/g);
+    const modelClean = modelNorm.replace(/[-_]+/g, ' ');
+    const yearMatches = `${modelClean} ${engineCode || ''}`.match(/(\d{4})/g);
     const endYear = yearMatches && yearMatches.length > 1 ? parseInt(yearMatches[1], 10) : (yearMatches ? parseInt(yearMatches[0], 10) : null);
     
     const VINTAGE_REGEXES = [
       /\b(SAXO|106|205|206|306|309|405|406|605|806|XSARA|XANTIA|ZX|AX|C15)\b/i,
       /\b(CLIO\s*(I\b|1\b|II\b|2\b)|MEGANE\s*(I\b|1\b)|LAGUNA\s*(I\b|1\b)|TWINGO\s*(I\b|1\b)|SUPER\s*5|EXPRESS|R19|R21)\b/i,
-      /\b(GOLF\s*(I\b|1\b|II\b|2\b|III\b|3\b|IV\b|4\b)|VENTO|BORA|PASSAT\s*(B3|B4|B5))\b/i,
+      /\b(GOLF\s*(I\b|1\b|II\b|2\b|III\b|3\b|IV\b|4\b)|VENTO|BORA|PASSAT\s*(B3|B4|B5)|POLO\s*(6N|3|III))\b/i,
       /\b(PUNTO\s*(I\b|1\b|II\b|2\b)|UNO|PALIO|SIENA|SEICENTO|CINQUECENTO)\b/i,
+      /\b(CORSA\s*(A|B|C)\b|ASTRA\s*(F|G)\b|VECTRA\s*(A|B)\b)/i,
+      /\b(FIESTA\s*(III|3|IV|4|V|5)\b|ESCORT|SIERRA|MONDEO\s*(I|1|II|2)\b)/i,
     ];
-    let isVintage = VINTAGE_REGEXES.some(re => re.test(modelNorm)) || (endYear !== null && endYear <= 2006);
+    let isVintage = VINTAGE_REGEXES.some(re => re.test(modelClean)) || (endYear !== null && endYear <= 2006);
 
     if (!isVintage) {
       try {
