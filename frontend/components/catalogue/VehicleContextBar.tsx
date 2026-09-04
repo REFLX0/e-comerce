@@ -8,7 +8,7 @@ import { useVehicleStore } from '@/lib/store/vehicle.store'
 import { useAuthStore } from '@/lib/store/auth.store'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { carsApi } from '@/lib/api/cars'
-import { toast } from 'sonner'
+import { gooeyToast as toast } from 'goey-toast'
 import clsx from 'clsx'
 
 const VEHICLE_PARAM_KEYS = ['make', 'model', 'engine']

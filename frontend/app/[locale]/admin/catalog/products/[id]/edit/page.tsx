@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { adminApi } from '@/lib/api/admin'
 import { useRouter, useParams } from 'next/navigation'
-import { toast } from 'sonner'
+import { gooeyToast as toast } from 'goey-toast'
 import {
   Save,
   ArrowLeft,

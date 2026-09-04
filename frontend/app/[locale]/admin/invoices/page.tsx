@@ -5,7 +5,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { invoicesApi } from '@/lib/api/invoices';
 import { useTranslations, useLocale } from 'next-intl';
 import Link from 'next/link';
-import { toast } from 'sonner';
+import { gooeyToast as toast } from 'goey-toast';
 import { Plus, Search, FileText, Copy, Trash, Download } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 

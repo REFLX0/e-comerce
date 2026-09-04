@@ -9,7 +9,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import type { Product, ProductVariant } from '@/lib/types'
 import { useCartStore } from '@/lib/store/cart.store'
 import { wishlistApi } from '@/lib/api/wishlist'
-import { toast } from 'sonner'
+import { gooeyToast as toast } from 'goey-toast'
 import { formatPrice, formatSKU, formatProductName, parseVolumeToL, matchVolumeImage } from '@/lib/utils/format'
 import { useProductCompatibility } from '@/lib/hooks/useProductCompatibility'
 

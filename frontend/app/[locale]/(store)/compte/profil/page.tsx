@@ -5,7 +5,7 @@ import { useAuthStore } from '@/lib/store/auth.store'
 import { authApi } from '@/lib/api/auth'
 import { Save, User, Mail, Phone, Calendar, Camera, Trash2, Loader2, Sparkles, CheckCircle2 } from 'lucide-react'
 import { useTranslations } from 'next-intl'
-import { toast } from 'sonner'
+import { gooeyToast as toast } from 'goey-toast'
 import Image from 'next/image'
 
 export default function ProfilPage() {

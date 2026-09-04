@@ -5,7 +5,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { ticketsApi } from '@/lib/api/tickets'
 import { useLocale, useTranslations } from 'next-intl'
 import { LifeBuoy, CheckCircle2, PackageSearch, ChevronLeft, ChevronRight, Eye } from 'lucide-react'
-import { toast } from 'sonner'
+import { gooeyToast as toast } from 'goey-toast'
 import Link from 'next/link'
 
 export default function AdminTicketsPage() {

@@ -7,7 +7,7 @@ import { useParams } from 'next/navigation'
 import { useLocale, useTranslations } from 'next-intl'
 import { ArrowLeft, LifeBuoy, PackageSearch, CheckCircle2, Mail, Calendar } from 'lucide-react'
 import Link from 'next/link'
-import { toast } from 'sonner'
+import { gooeyToast as toast } from 'goey-toast'
 
 export default function TicketDetailPage() {
   const params = useParams()

@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { adminApi } from '@/lib/api/admin'
-import { toast } from 'sonner'
+import { gooeyToast as toast } from 'goey-toast'
 import { Search, AlertTriangle, TrendingDown, Package, Edit2, Download } from 'lucide-react'
 import { useTranslations, useLocale } from 'next-intl'
 

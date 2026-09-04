@@ -6,7 +6,7 @@ import { adminApi, type TopBuyer } from '@/lib/api/admin'
 import Link from 'next/link'
 import { useLocale, useTranslations } from 'next-intl'
 import { Search, Mail, Phone, ShoppingBag, UserCheck, ChevronLeft, ChevronRight, Ban, ShieldOff, Crown, TrendingUp, Repeat2, ShoppingCart } from 'lucide-react'
-import { toast } from 'sonner'
+import { gooeyToast as toast } from 'goey-toast'
 
 export default function AdminCustomersPage() {
   const t = useTranslations('Admin')

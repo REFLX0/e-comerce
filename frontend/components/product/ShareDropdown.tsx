@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { Share2, Link2, Mail, Check } from 'lucide-react'
-import { toast } from 'sonner'
+import { gooeyToast as toast } from 'goey-toast'
 import { cn } from '@/lib/utils'
 
 const Facebook = ({ size = 24 }: { size?: number }) => (

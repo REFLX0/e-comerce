@@ -6,7 +6,7 @@ import { ShoppingCart, MessageCircle } from 'lucide-react'
 import type { Product, ProductVariant } from '@/lib/types'
 import { useCartStore } from '@/lib/store/cart.store'
 import { PriceDisplay } from '../common/PriceDisplay'
-import { toast } from 'sonner'
+import { gooeyToast as toast } from 'goey-toast'
 import { buildProductMessage, buildWhatsAppUrl, isPartsCategory } from '@/lib/whatsapp'
 
 interface Props {

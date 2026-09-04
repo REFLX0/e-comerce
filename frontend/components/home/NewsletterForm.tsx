@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { ArrowRight } from 'lucide-react'
-import { toast } from 'sonner'
+import { gooeyToast as toast } from 'goey-toast'
 import { useTranslations } from 'next-intl'
 import { authApi } from '@/lib/api/auth'
 

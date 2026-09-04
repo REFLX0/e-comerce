@@ -6,7 +6,7 @@ import { ticketsApi } from '@/lib/api/tickets'
 import { ordersApi } from '@/lib/api/orders'
 import { useSearchParams } from 'next/navigation'
 import { LifeBuoy, PackageSearch, Plus } from 'lucide-react'
-import { toast } from 'sonner'
+import { gooeyToast as toast } from 'goey-toast'
 import { useTranslations } from 'next-intl'
 
 export default function SupportPage() {

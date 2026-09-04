@@ -5,7 +5,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { addressesApi } from '@/lib/api/addresses'
 import { MapPin, Plus, Trash2, Home, Briefcase } from 'lucide-react'
 import { useTranslations } from 'next-intl'
-import { toast } from 'sonner'
+import { gooeyToast as toast } from 'goey-toast'
 
 const EMPTY_FORM = {
   fullName: '',

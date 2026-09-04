@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { adminApi } from '@/lib/api/admin'
 import Link from 'next/link'
-import { toast } from 'sonner'
+import { gooeyToast as toast } from 'goey-toast'
 import { useLocale, useTranslations } from 'next-intl'
 import {
   Search, Download, Clock, CheckCircle2, Truck,

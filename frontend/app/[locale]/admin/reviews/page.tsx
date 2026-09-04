@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { adminApi } from '@/lib/api/admin'
 import { Star, CheckCircle2, XCircle, Trash2, ChevronLeft, ChevronRight } from 'lucide-react'
-import { toast } from 'sonner'
+import { gooeyToast as toast } from 'goey-toast'
 import Image from 'next/image'
 import { useLocale, useTranslations } from 'next-intl'
 

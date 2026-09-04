@@ -6,7 +6,7 @@ import { Heart, ShoppingCart, Trash2 } from 'lucide-react'
 import Image from 'next/image'
 import { Link } from '@/i18n/routing'
 import { useTranslations } from 'next-intl'
-import { toast } from 'sonner'
+import { gooeyToast as toast } from 'goey-toast'
 import { useCartStore } from '@/lib/store/cart.store'
 
 export default function WishlistPage() {

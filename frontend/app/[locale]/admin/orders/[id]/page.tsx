@@ -10,7 +10,7 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { toast } from 'sonner'
+import { gooeyToast as toast } from 'goey-toast'
 import { useLocale, useTranslations } from 'next-intl'
 
 export default function OrderDetailPage() {

@@ -5,7 +5,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { couponsApi } from '@/lib/api/coupons'
 import { useAuthStore } from '@/lib/store/auth.store'
 import { Plus, Percent, Banknote, Gift, Trash2, ToggleLeft, ToggleRight, Edit2, ChevronLeft, ChevronRight } from 'lucide-react'
-import { toast } from 'sonner'
+import { gooeyToast as toast } from 'goey-toast'
 import { useLocale, useTranslations } from 'next-intl'
 
 export default function AdminPromotionsPage() {

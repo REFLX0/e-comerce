@@ -7,7 +7,7 @@ import Image from 'next/image'
 import { Link } from '@/i18n/routing'
 import { Plus, Sparkles } from 'lucide-react'
 import { formatPrice } from '@/lib/utils/format'
-import { toast } from 'sonner'
+import { gooeyToast as toast } from 'goey-toast'
 import { useTranslations } from 'next-intl'
 import { motion } from 'framer-motion'
 

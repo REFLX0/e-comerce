@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { Lock, Smartphone, Monitor, LogOut, Eye, EyeOff, Save } from 'lucide-react'
-import { toast } from 'sonner'
+import { gooeyToast as toast } from 'goey-toast'
 import { useTranslations } from 'next-intl'
 import { authApi } from '@/lib/api/auth'
 

@@ -11,7 +11,7 @@ import {
   Package, Clock, CheckCircle2, Truck, XCircle,
   ArrowRight, RefreshCw, Printer, ChevronDown, ChevronUp, ShoppingBag, Eye, Loader2
 } from 'lucide-react'
-import { toast } from 'sonner'
+import { gooeyToast as toast } from 'goey-toast'
 
 const STATUS_CONFIG = {
   PENDING:   { labelKey: 'pending',    icon: Clock,        cls: 'bg-yellow-100 text-yellow-700', step: 1 },

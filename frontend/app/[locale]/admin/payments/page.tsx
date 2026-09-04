@@ -8,7 +8,7 @@ import {
   Check, ArrowRight, Package, Calculator, Store
 } from 'lucide-react'
 import { useState, useMemo, useEffect } from 'react'
-import { toast } from 'sonner'
+import { gooeyToast as toast } from 'goey-toast'
 import { useLocale, useTranslations } from 'next-intl'
 import Image from 'next/image'
 

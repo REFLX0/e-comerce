@@ -3,7 +3,7 @@
 import { Link } from '@/i18n/routing'
 import { Phone, Mail, MapPin, Clock, Send } from 'lucide-react'
 import { useState } from 'react'
-import { toast } from 'sonner'
+import { gooeyToast as toast } from 'goey-toast'
 import Image from 'next/image'
 import { useTranslations } from 'next-intl'
 // Logo is served directly from public/logo.jpg

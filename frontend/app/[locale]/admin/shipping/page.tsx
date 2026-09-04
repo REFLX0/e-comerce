@@ -3,7 +3,7 @@
 import { useMemo, useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { adminApi, downloadOrderPdf } from '@/lib/api/admin'
-import { toast } from 'sonner'
+import { gooeyToast as toast } from 'goey-toast'
 import {
   AlertTriangle, CheckCircle2, Clock, Download, FileText, MapPin,
   PackageCheck, Search, Settings2, Truck, Plus, X, Save, Trash2,

@@ -25,7 +25,7 @@ import {
   X,
   ArrowRight
 } from 'lucide-react'
-import { toast } from 'sonner'
+import { gooeyToast as toast } from 'goey-toast'
 import { useTranslations, useLocale } from 'next-intl'
 import { useRouter } from 'next/navigation'
 import { Link } from '@/i18n/routing'

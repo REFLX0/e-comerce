@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useLocale, useTranslations } from 'next-intl'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { toast } from 'sonner'
+import { gooeyToast as toast } from 'goey-toast'
 import { settingsApi } from '@/lib/api/admin'
 import Link from 'next/link'
 import Image from 'next/image'

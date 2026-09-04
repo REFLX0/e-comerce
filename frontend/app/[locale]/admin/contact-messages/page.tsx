@@ -7,7 +7,7 @@ import {
   Mail, CheckCheck, Trash2, ChevronLeft, ChevronRight, Briefcase,
   Search, Phone, MessageSquare, Inbox, ArrowUpDown, Clock,
 } from 'lucide-react'
-import { toast } from 'sonner'
+import { gooeyToast as toast } from 'goey-toast'
 import { useLocale, useTranslations } from 'next-intl'
 
 const FILTERS = [

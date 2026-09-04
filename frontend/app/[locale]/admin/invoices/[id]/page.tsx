@@ -6,7 +6,7 @@ import { invoicesApi, Invoice, InvoiceLine } from '@/lib/api/invoices';
 import { adminApi } from '@/lib/api/admin';
 import { useTranslations, useLocale } from 'next-intl';
 import { useRouter } from 'next/navigation';
-import { toast } from 'sonner';
+import { gooeyToast as toast } from 'goey-toast';
 import { ArrowLeft, Save, Plus, Trash, Download, FileText } from 'lucide-react';
 import Link from 'next/link';
 

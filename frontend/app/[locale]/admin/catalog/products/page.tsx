@@ -6,7 +6,7 @@ import { adminApi } from '@/lib/api/admin'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useLocale, useTranslations } from 'next-intl'
-import { toast } from 'sonner'
+import { gooeyToast as toast } from 'goey-toast'
 import {
   Search, Plus, Edit2, Trash2, Copy, Eye,
   Upload, Download, Package, Star, ExternalLink

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from 'react'
-import { toast } from 'sonner'
+import { gooeyToast as toast } from 'goey-toast'
 import { WifiOff, Wifi, ServerCrash } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
