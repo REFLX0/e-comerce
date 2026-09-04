@@ -28,7 +28,8 @@ export type OilFinderResult =
   | {
       status: 'found'
       oilSpec: OilSpecRef
-      resolvedBy: 'exact' | 'minor-conflict-auto-resolve'
+      resolvedBy: 'exact' | 'minor-conflict-auto-resolve' | 'category-default'
+      confidence: 'high' | 'medium' | 'low'
       backingRows: number
       candidates: OilFinderCandidate[]
     }
@@ -111,6 +112,7 @@ export class OilFinderService {
         status: 'found',
         oilSpec: distinct[0].spec,
         resolvedBy: distinct.length === 1 ? 'exact' : 'minor-conflict-auto-resolve',
+        confidence: distinct.length === 1 ? 'high' : 'medium',
         backingRows: rows.length,
         candidates: toCandidates(rows),
       };
@@ -212,8 +214,9 @@ export class OilFinderService {
             capacityLiters: 1.0,
             changeIntervalKm: 3000,
           },
-          resolvedBy: 'minor-conflict-auto-resolve',
-          backingRows: 1,
+          resolvedBy: 'category-default',
+          confidence: 'medium',
+          backingRows: 0,
           candidates: [],
         };
       }
@@ -232,8 +235,9 @@ export class OilFinderService {
           capacityLiters: modelNorm.includes('T-MAX') || modelNorm.includes('500') || modelNorm.includes('600') ? 2.9 : 1.2,
           changeIntervalKm: 5000,
         },
-        resolvedBy: 'minor-conflict-auto-resolve',
-        backingRows: 1,
+        resolvedBy: 'category-default',
+        confidence: 'medium',
+        backingRows: 0,
         candidates: [],
       };
     }
@@ -251,8 +255,9 @@ export class OilFinderService {
           capacityLiters: 32.0,
           changeIntervalKm: 40000,
         },
-        resolvedBy: 'minor-conflict-auto-resolve',
-        backingRows: 1,
+        resolvedBy: 'category-default',
+        confidence: 'medium',
+        backingRows: 0,
         candidates: [],
       };
     }
@@ -271,8 +276,9 @@ export class OilFinderService {
             capacityLiters: 2.0,
             changeIntervalKm: 5000,
           },
-          resolvedBy: 'minor-conflict-auto-resolve',
-          backingRows: 1,
+          resolvedBy: 'category-default',
+          confidence: 'medium',
+          backingRows: 0,
           candidates: [],
         };
       }
@@ -288,8 +294,9 @@ export class OilFinderService {
           capacityLiters: 5.5,
           changeIntervalKm: 10000,
         },
-        resolvedBy: 'minor-conflict-auto-resolve',
-        backingRows: 1,
+        resolvedBy: 'category-default',
+        confidence: 'medium',
+        backingRows: 0,
         candidates: [],
       };
     }
@@ -308,8 +315,9 @@ export class OilFinderService {
             capacityLiters: 45.0,
             changeIntervalKm: 15000,
           },
-          resolvedBy: 'minor-conflict-auto-resolve',
-          backingRows: 1,
+          resolvedBy: 'category-default',
+          confidence: 'medium',
+          backingRows: 0,
           candidates: [],
         };
       }
@@ -325,8 +333,9 @@ export class OilFinderService {
           capacityLiters: 22.0,
           changeIntervalKm: 20000,
         },
-        resolvedBy: 'minor-conflict-auto-resolve',
-        backingRows: 1,
+        resolvedBy: 'category-default',
+        confidence: 'medium',
+        backingRows: 0,
         candidates: [],
       };
     }
@@ -390,8 +399,9 @@ export class OilFinderService {
           capacityLiters: null,
           changeIntervalKm: isVintage ? 10000 : 15000,
         },
-        resolvedBy: 'minor-conflict-auto-resolve',
-        backingRows: 1,
+        resolvedBy: 'category-default',
+        confidence: 'medium',
+        backingRows: 0,
         candidates: [],
       };
     }
@@ -409,8 +419,9 @@ export class OilFinderService {
           capacityLiters: null,
           changeIntervalKm: 15000,
         },
-        resolvedBy: 'minor-conflict-auto-resolve',
-        backingRows: 1,
+        resolvedBy: 'category-default',
+        confidence: 'medium',
+        backingRows: 0,
         candidates: [],
       };
     }
@@ -428,8 +439,9 @@ export class OilFinderService {
           capacityLiters: null,
           changeIntervalKm: 15000,
         },
-        resolvedBy: 'minor-conflict-auto-resolve',
-        backingRows: 1,
+        resolvedBy: 'category-default',
+        confidence: 'medium',
+        backingRows: 0,
         candidates: [],
       };
     }
@@ -448,8 +460,9 @@ export class OilFinderService {
           capacityLiters: null,
           changeIntervalKm: isVintage ? 10000 : 15000,
         },
-        resolvedBy: 'minor-conflict-auto-resolve',
-        backingRows: 1,
+        resolvedBy: 'category-default',
+        confidence: 'medium',
+        backingRows: 0,
         candidates: [],
       };
     }
@@ -467,8 +480,9 @@ export class OilFinderService {
           capacityLiters: null,
           changeIntervalKm: isVintage ? 10000 : 15000,
         },
-        resolvedBy: 'minor-conflict-auto-resolve',
-        backingRows: 1,
+        resolvedBy: 'category-default',
+        confidence: 'medium',
+        backingRows: 0,
         candidates: [],
       };
     }
@@ -486,8 +500,9 @@ export class OilFinderService {
           capacityLiters: null,
           changeIntervalKm: isVintage ? 10000 : 15000,
         },
-        resolvedBy: 'minor-conflict-auto-resolve',
-        backingRows: 1,
+        resolvedBy: 'category-default',
+        confidence: 'medium',
+        backingRows: 0,
         candidates: [],
       };
     }
@@ -505,8 +520,9 @@ export class OilFinderService {
           capacityLiters: null,
           changeIntervalKm: 15000,
         },
-        resolvedBy: 'minor-conflict-auto-resolve',
-        backingRows: 1,
+        resolvedBy: 'category-default',
+        confidence: 'medium',
+        backingRows: 0,
         candidates: [],
       };
     }
@@ -524,8 +540,9 @@ export class OilFinderService {
           capacityLiters: null,
           changeIntervalKm: 10000,
         },
-        resolvedBy: 'minor-conflict-auto-resolve',
-        backingRows: 1,
+        resolvedBy: 'category-default',
+        confidence: 'medium',
+        backingRows: 0,
         candidates: [],
       };
     }
@@ -542,8 +559,9 @@ export class OilFinderService {
         capacityLiters: null,
         changeIntervalKm: 15000,
       },
-      resolvedBy: 'minor-conflict-auto-resolve',
-      backingRows: 1,
+      resolvedBy: 'category-default',
+      confidence: 'low',
+      backingRows: 0,
       candidates: [],
     };
   }
@@ -563,7 +581,8 @@ export class OilFinderService {
       return {
         status: 'found',
         oilSpec: distinct[0].spec,
-        resolvedBy: 'minor-conflict-auto-resolve',
+        resolvedBy: distinct.length === 1 ? 'exact' : 'minor-conflict-auto-resolve',
+        confidence: distinct.length === 1 ? 'high' : 'medium',
         backingRows: rows.length,
         candidates: toCandidates(rows),
       };
@@ -582,8 +601,9 @@ export class OilFinderService {
         capacityLiters: +(displacementCc / 450).toFixed(1),
         changeIntervalKm: 15000,
       },
-      resolvedBy: 'minor-conflict-auto-resolve',
-      backingRows: 1,
+      resolvedBy: 'category-default',
+      confidence: 'medium',
+      backingRows: 0,
       candidates: [],
     };
   }
@@ -622,13 +642,17 @@ export class OilFinderService {
       this.logger.error('Error fetching makes from TecDoc', e);
     }
 
-    const rows = await this.prisma.oilFinderVehicle.findMany({
-      select: { make: true },
-      distinct: ['make'],
-      orderBy: { make: 'asc' },
-    }).catch(() => []);
-    if (rows.length > 0) {
-      return rows.map((r) => ({ slug: slugify(r.make), name: r.make }));
+    try {
+      const rows = await this.prisma.oilFinderVehicle?.findMany?.({
+        select: { make: true },
+        distinct: ['make'],
+        orderBy: { make: 'asc' },
+      });
+      if (rows && rows.length > 0) {
+        return rows.map((r) => ({ slug: slugify(r.make), name: r.make }));
+      }
+    } catch {
+      // ignore
     }
 
     return [];
@@ -656,15 +680,18 @@ export class OilFinderService {
       this.logger.error(`Error fetching models from TecDoc for make: ${makeName}`, e);
     }
 
-    const rows = await this.prisma.oilFinderVehicle.findMany({
-      where: { make: { equals: makeName.trim(), mode: 'insensitive' as const } },
-      select: { model: true },
-      distinct: ['model'],
-      orderBy: { model: 'asc' },
-    }).catch(() => []);
-    
-    if (rows.length > 0) {
-      return rows.map((r) => ({ slug: slugify(r.model), name: r.model }));
+    try {
+      const rows = await this.prisma.oilFinderVehicle?.findMany?.({
+        where: { make: { equals: makeName.trim(), mode: 'insensitive' as const } },
+        select: { model: true },
+        distinct: ['model'],
+        orderBy: { model: 'asc' },
+      });
+      if (rows && rows.length > 0) {
+        return rows.map((r) => ({ slug: slugify(r.model), name: r.model }));
+      }
+    } catch {
+      // ignore
     }
 
     return [];

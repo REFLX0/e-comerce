@@ -60,6 +60,10 @@ export class OilFinderController {
       ...productsResult,
       oilFinderStatus: result.status,
       oilSpec: result.oilSpec,
+      resolvedBy: result.resolvedBy,
+      confidence: result.confidence,
+      backingRows: result.backingRows,
+      candidates: result.candidates,
     };
   }
 
@@ -117,6 +121,10 @@ export class OilFinderController {
       ...productsResult,
       oilFinderStatus: result.status,
       oilSpec: result.oilSpec,
+      resolvedBy: result.resolvedBy,
+      confidence: result.confidence,
+      backingRows: result.backingRows,
+      candidates: result.candidates,
     };
   }
 

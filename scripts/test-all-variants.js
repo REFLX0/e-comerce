@@ -1,6 +1,15 @@
 /**
- * Comprehensive Automated Test Suite for Oil Finder (TecDoc Production Grade)
+ * Comprehensive Automated Regression & Verification Suite for Oil Finder (TecDoc Production Grade)
  * Validates Passenger Cars, Commercial Trucks, Motorcycles, Agriculture, and Marine.
+ * 
+ * Strict Regression Gate:
+ * Asserts both oil specifications (viscosity, ACEA/API/OEM) AND resolution metadata:
+ *   - resolvedBy: 'exact' | 'minor-conflict-auto-resolve' | 'category-default'
+ *   - confidence: 'high' | 'medium' | 'low'
+ *   - backingRows: number of DB rows backing this recommendation (0 for fallbacks)
+ * 
+ * Distinguishes genuine DB row matches from category/brand defaults.
+ * Rejects heuristic results masquerading as 'minor-conflict-auto-resolve'.
  * 
  * Usage:
  *   node scripts/test-all-variants.js [optional_base_url]
@@ -36,6 +45,9 @@ const TEST_CASES = [
     engineCode: 'DC13 Euro 6',
     expectedViscosity: '10W-40',
     expectedAcea: 'ACEA E6 / E9 / E7',
+    expectedResolvedBy: 'category-default',
+    expectedConfidence: 'medium',
+    expectedBackingRows: 0,
     label: 'Scania Modern Truck (Euro 6 Low-SAPS)',
   },
   {
@@ -45,6 +57,9 @@ const TEST_CASES = [
     engineCode: 'Euro 5 Low-SAPS',
     expectedViscosity: '10W-40',
     expectedAcea: 'ACEA E6 / E9 / E7',
+    expectedResolvedBy: 'category-default',
+    expectedConfidence: 'medium',
+    expectedBackingRows: 0,
     label: 'Scania Omnilink Heavy Bus',
   },
   {
@@ -54,6 +69,9 @@ const TEST_CASES = [
     engineCode: 'D13K Euro 6',
     expectedViscosity: '10W-40',
     expectedAcea: 'ACEA E6 / E9 / E7',
+    expectedResolvedBy: 'category-default',
+    expectedConfidence: 'medium',
+    expectedBackingRows: 0,
     label: 'Volvo FH Heavy Truck (VDS-4.5)',
   },
   {
@@ -63,6 +81,9 @@ const TEST_CASES = [
     engineCode: 'Euro 2/3 (15W-40)',
     expectedViscosity: '15W-40',
     expectedAcea: 'ACEA E7',
+    expectedResolvedBy: 'category-default',
+    expectedConfidence: 'medium',
+    expectedBackingRows: 0,
     label: 'Renault Magnum Vintage Truck',
   },
 
@@ -74,6 +95,9 @@ const TEST_CASES = [
     engineCode: 'Moteur Diesel Stage IV',
     expectedViscosity: '15W-40',
     expectedAcea: 'ACEA E9 / E7',
+    expectedResolvedBy: 'category-default',
+    expectedConfidence: 'medium',
+    expectedBackingRows: 0,
     label: 'AGCO DT Series Tractor Engine',
   },
   {
@@ -83,6 +107,9 @@ const TEST_CASES = [
     engineCode: 'Transmission & Relevage Hydraulique (UTTO)',
     expectedViscosity: '10W-30',
     expectedAcea: 'UTTO Multifonction (Freins immergés)',
+    expectedResolvedBy: 'category-default',
+    expectedConfidence: 'medium',
+    expectedBackingRows: 0,
     label: 'John Deere Tractor UTTO Transmission',
   },
 
@@ -94,6 +121,9 @@ const TEST_CASES = [
     engineCode: '125cc 4T',
     expectedViscosity: '10W-40',
     expectedAcea: 'JASO MA2',
+    expectedResolvedBy: 'category-default',
+    expectedConfidence: 'medium',
+    expectedBackingRows: 0,
     label: 'Adiva AD Scooter (TecDoc Motorbike)',
   },
   {
@@ -103,6 +133,9 @@ const TEST_CASES = [
     engineCode: '50cc 2-Temps',
     expectedViscosity: '2T',
     expectedAcea: 'JASO FD / ISO-L-EGD',
+    expectedResolvedBy: 'category-default',
+    expectedConfidence: 'medium',
+    expectedBackingRows: 0,
     label: 'Piaggio Zip 50 2-Stroke Scooter',
   },
   {
@@ -112,6 +145,9 @@ const TEST_CASES = [
     engineCode: '1100cc V4 Racing',
     expectedViscosity: '10W-50',
     expectedAcea: 'JASO MA2',
+    expectedResolvedBy: 'category-default',
+    expectedConfidence: 'medium',
+    expectedBackingRows: 0,
     label: 'Ducati Panigale V4 Superbike (10W-50)',
   },
 
@@ -123,6 +159,9 @@ const TEST_CASES = [
     engineCode: 'Hors-Bord 4-Temps',
     expectedViscosity: '10W-40',
     expectedAcea: 'NMMA FC-W Catalyst Compatible',
+    expectedResolvedBy: 'category-default',
+    expectedConfidence: 'medium',
+    expectedBackingRows: 0,
     label: 'Yamaha Marine 4-Stroke Outboard',
   },
   {
@@ -132,6 +171,9 @@ const TEST_CASES = [
     engineCode: 'Hors-Bord 2-Temps (TC-W3)',
     expectedViscosity: '2T',
     expectedAcea: 'NMMA TC-W3 Certified (Outboard)',
+    expectedResolvedBy: 'category-default',
+    expectedConfidence: 'medium',
+    expectedBackingRows: 0,
     label: 'Mercury 2-Stroke Outboard (TC-W3)',
   },
 
@@ -143,6 +185,9 @@ const TEST_CASES = [
     engineCode: '1.1 X,SX',
     expectedViscosity: '10W-40',
     expectedAcea: 'ACEA A3/B4',
+    expectedResolvedBy: 'category-default',
+    expectedConfidence: 'medium',
+    expectedBackingRows: 0,
     label: 'Citroën Saxo 1.1 (Vintage PSA Petrol)',
   },
   {
@@ -152,6 +197,9 @@ const TEST_CASES = [
     engineCode: '1.4 i',
     expectedViscosity: '10W-40',
     expectedAcea: 'ACEA A3/B4',
+    expectedResolvedBy: 'category-default',
+    expectedConfidence: 'medium',
+    expectedBackingRows: 0,
     label: 'Peugeot 206 1.4 i (Vintage PSA Petrol)',
   },
   {
@@ -161,6 +209,9 @@ const TEST_CASES = [
     engineCode: '1.2 16V',
     expectedViscosity: '10W-40',
     expectedAcea: 'ACEA A3/B4',
+    expectedResolvedBy: 'category-default',
+    expectedConfidence: 'medium',
+    expectedBackingRows: 0,
     label: 'Renault Clio II 1.2 (Vintage RN0700)',
   },
   {
@@ -170,6 +221,9 @@ const TEST_CASES = [
     engineCode: '1.6',
     expectedViscosity: '10W-40',
     expectedAcea: 'ACEA A3/B4',
+    expectedResolvedBy: 'category-default',
+    expectedConfidence: 'medium',
+    expectedBackingRows: 0,
     label: 'VW Golf IV 1.6 (Vintage VW 502/505)',
   },
 
@@ -181,6 +235,9 @@ const TEST_CASES = [
     engineCode: '1.6 BlueHDi',
     expectedViscosity: '5W-30',
     expectedAcea: 'ACEA C2 / C3',
+    expectedResolvedBy: 'category-default',
+    expectedConfidence: 'medium',
+    expectedBackingRows: 0,
     label: 'Peugeot 208 1.6 BlueHDi (Modern PSA DPF)',
   },
   {
@@ -190,6 +247,9 @@ const TEST_CASES = [
     engineCode: '1.5 dCi 90',
     expectedViscosity: '5W-30',
     expectedAcea: 'ACEA C4',
+    expectedResolvedBy: 'category-default',
+    expectedConfidence: 'medium',
+    expectedBackingRows: 0,
     label: 'Renault Clio IV 1.5 dCi (RN0720 DPF)',
   },
   {
@@ -199,13 +259,30 @@ const TEST_CASES = [
     engineCode: '2.0 TDI',
     expectedViscosity: '5W-30',
     expectedAcea: 'ACEA C3',
+    expectedResolvedBy: 'category-default',
+    expectedConfidence: 'medium',
+    expectedBackingRows: 0,
     label: 'VW Golf VII 2.0 TDI (VW 504/507)',
+  },
+
+  // ── 7. Universal Unknown Passenger Car Fallback ──
+  {
+    category: 'CAR (UNIVERSAL)',
+    make: 'UnknownGenericBrandXYZ',
+    model: 'GenericCar',
+    engineCode: '1.6L Petrol',
+    expectedViscosity: '5W-30',
+    expectedAcea: 'ACEA C3',
+    expectedResolvedBy: 'category-default',
+    expectedConfidence: 'low',
+    expectedBackingRows: 0,
+    label: 'Unknown Manufacturer (Universal Fallback, Low Confidence)',
   },
 ];
 
 async function runTests() {
   console.log('='.repeat(80));
-  console.log('SPECPART MULTI-CATEGORY OIL FINDER VERIFICATION SUITE (TECDOC DRIVEN)');
+  console.log('SPECPART MULTI-CATEGORY OIL FINDER REGRESSION SUITE (TECDOC DRIVEN)');
   console.log(`Target URL: ${BASE_URL}`);
   console.log('='.repeat(80));
 
@@ -217,19 +294,37 @@ async function runTests() {
     try {
       const res = await requestJson(url);
       const spec = res.body?.oilSpec;
+      const resolvedBy = res.body?.resolvedBy;
+      const confidence = res.body?.confidence;
+      const backingRows = res.body?.backingRows;
 
-      const viscMatch = spec && spec.viscosity === tc.expectedViscosity;
-      const aceaMatch = !tc.expectedAcea || (spec && spec.aceaStandard && spec.aceaStandard.includes(tc.expectedAcea.split(' ')[0]));
+      const viscMatch = Boolean(spec && spec.viscosity === tc.expectedViscosity);
+      const aceaMatch = !tc.expectedAcea || Boolean(spec && spec.aceaStandard && spec.aceaStandard.includes(tc.expectedAcea.split(' ')[0]));
+      const resolvedByMatch = resolvedBy === tc.expectedResolvedBy;
+      const confidenceMatch = !tc.expectedConfidence || confidence === tc.expectedConfidence;
+      const backingRowsMatch = tc.expectedBackingRows === undefined || backingRows === tc.expectedBackingRows;
 
-      if (viscMatch && aceaMatch) {
+      const isPass = viscMatch && aceaMatch && resolvedByMatch && confidenceMatch && backingRowsMatch;
+
+      if (isPass) {
         passed++;
         console.log(`[PASS] [${tc.category}] ${tc.label}`);
         console.log(`       Viscosity: ${spec.viscosity} | Spec: ${spec.aceaStandard || spec.oemApproval}`);
+        console.log(`       Resolution: resolvedBy=${resolvedBy} | confidence=${confidence} | backingRows=${backingRows}`);
       } else {
         failed++;
         console.log(`[FAIL] [${tc.category}] ${tc.label}`);
-        console.log(`       Expected: ${tc.expectedViscosity} (${tc.expectedAcea})`);
-        console.log(`       Got:      ${spec ? spec.viscosity : 'NO SPEC'} (${spec ? spec.aceaStandard : 'none'})`);
+        if (!viscMatch || !aceaMatch) {
+          console.log(`       Spec Expected: ${tc.expectedViscosity} (${tc.expectedAcea})`);
+          console.log(`       Spec Got:      ${spec ? spec.viscosity : 'NO SPEC'} (${spec ? spec.aceaStandard : 'none'})`);
+        }
+        if (!resolvedByMatch || !confidenceMatch || !backingRowsMatch) {
+          console.log(`       Resolution Expected: resolvedBy=${tc.expectedResolvedBy} | confidence=${tc.expectedConfidence} | backingRows=${tc.expectedBackingRows}`);
+          console.log(`       Resolution Got:      resolvedBy=${resolvedBy} | confidence=${confidence} | backingRows=${backingRows}`);
+        }
+        if (resolvedBy === 'minor-conflict-auto-resolve' && tc.expectedResolvedBy === 'category-default') {
+          console.log(`       REGRESSION: Result was marked 'minor-conflict-auto-resolve' instead of 'category-default'! Fallbacks must not masquerade as DB row conflict resolutions.`);
+        }
       }
     } catch (err) {
       failed++;

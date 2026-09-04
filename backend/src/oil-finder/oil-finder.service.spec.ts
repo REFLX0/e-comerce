@@ -142,6 +142,9 @@ describe('OilFinderService', () => {
       if (result.status !== 'found') return;
       expect(result.oilSpec.viscosity).toBe('5W-30');
       expect(result.oilSpec.oemApproval).toContain('VW 504 00 / 507 00');
+      expect(result.resolvedBy).toBe('category-default');
+      expect(result.confidence).toBe('medium');
+      expect(result.backingRows).toBe(0);
     });
 
     it('falls back to BMW LL-04 OEM specification when vehicle is not in DB', async () => {
@@ -153,6 +156,9 @@ describe('OilFinderService', () => {
       if (result.status !== 'found') return;
       expect(result.oilSpec.viscosity).toBe('5W-30');
       expect(result.oilSpec.oemApproval).toContain('BMW Longlife-04');
+      expect(result.resolvedBy).toBe('category-default');
+      expect(result.confidence).toBe('medium');
+      expect(result.backingRows).toBe(0);
     });
 
     it('falls back to universal passenger car OEM recommendation for unknown makes', async () => {
@@ -164,6 +170,9 @@ describe('OilFinderService', () => {
       if (result.status !== 'found') return;
       expect(result.oilSpec.viscosity).toBe('5W-30');
       expect(result.oilSpec.id).toBe('spec-universal-passenger-car');
+      expect(result.resolvedBy).toBe('category-default');
+      expect(result.confidence).toBe('low');
+      expect(result.backingRows).toBe(0);
     });
   });
 
@@ -176,6 +185,8 @@ describe('OilFinderService', () => {
       expect(result.status).toBe('found');
       if (result.status !== 'found') return;
       expect(result.oilSpec.viscosity).toBe('5W-40');
+      expect(result.resolvedBy).toBe('exact');
+      expect(result.confidence).toBe('high');
       expect(result.backingRows).toBe(1);
     });
 
@@ -199,6 +210,9 @@ describe('OilFinderService', () => {
       expect(resSmall.status).toBe('found');
       if (resSmall.status === 'found') {
         expect(resSmall.oilSpec.viscosity).toBe('5W-30');
+        expect(resSmall.resolvedBy).toBe('category-default');
+        expect(resSmall.confidence).toBe('medium');
+        expect(resSmall.backingRows).toBe(0);
       }
 
       // Large diesel engine (> 2000cc)
@@ -207,12 +221,20 @@ describe('OilFinderService', () => {
       if (resLarge.status === 'found') {
         expect(resLarge.oilSpec.viscosity).toBe('5W-40');
         expect(resLarge.oilSpec.apiStandard).toContain('CK-4');
+        expect(resLarge.resolvedBy).toBe('category-default');
+        expect(resLarge.confidence).toBe('medium');
+        expect(resLarge.backingRows).toBe(0);
       }
     });
   });
 
   describe('getMakes & getEngines — presets and catalogue helper', () => {
     it('returns motorcycle make presets when category is moto', async () => {
+      prisma.$queryRawUnsafe.mockResolvedValueOnce([
+        { name: 'HONDA' },
+        { name: 'KAWASAKI' },
+        { name: 'YAMAHA' },
+      ]);
       const makes = await service.getMakes('moto');
       const names = makes.map((m) => m.name);
       expect(names).toContain('YAMAHA');
@@ -221,6 +243,11 @@ describe('OilFinderService', () => {
     });
 
     it('returns truck make presets when category is cv / poids lourd', async () => {
+      prisma.$queryRawUnsafe.mockResolvedValueOnce([
+        { name: 'MERCEDES-BENZ TRUCKS' },
+        { name: 'SCANIA' },
+        { name: 'VOLVO TRUCKS' },
+      ]);
       const makes = await service.getMakes('poids-lourds');
       const names = makes.map((m) => m.name);
       expect(names).toContain('MERCEDES-BENZ TRUCKS');
@@ -229,6 +256,11 @@ describe('OilFinderService', () => {
     });
 
     it('returns agricultural make presets when category is agri', async () => {
+      prisma.$queryRawUnsafe.mockResolvedValueOnce([
+        { name: 'JOHN DEERE' },
+        { name: 'MASSEY FERGUSON' },
+        { name: 'NEW HOLLAND' },
+      ]);
       const makes = await service.getMakes('agricole');
       const names = makes.map((m) => m.name);
       expect(names).toContain('JOHN DEERE');
