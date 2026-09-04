@@ -1,6 +1,6 @@
 # specpart — Tunisian E-commerce Platform
 
-> **Production-grade** full-stack e-commerce platform built for the Tunisian market, featuring a Next.js 16 storefront, NestJS REST API, and enterprise DevOps infrastructure.
+> **Production-ready** full-stack e-commerce platform built for the Tunisian market, featuring a Next.js 16 storefront, NestJS REST API, and enterprise DevOps infrastructure.
 
 [![Deploy to Oracle VM](https://github.com/REFLX0/e-comerce/actions/workflows/deploy.yml/badge.svg)](https://github.com/REFLX0/e-comerce/actions/workflows/deploy.yml)
 
@@ -141,11 +141,17 @@ docker-compose logs -f frontend
 
 ## Security
 
-- JWT stored in **HttpOnly cookies** (XSS-proof)
-- NGINX **rate limiting** on all API routes (10r/s general, 5r/min auth)
+- JWT stored in **HttpOnly cookies** (XSS-proof); no fallback secret in any code path
+- **NestJS application-layer rate limiting** (`ThrottlerGuard` as `APP_GUARD`) with per-route limits:
+  - Login: 5/min · Register: 10/min · Forgot-password: 3/min · Reset-password: 5/min
+  - Checkout: 10/min · Coupon validate: 20/min · Review submit: 5/min · Ticket create: 5/min
+- NGINX **rate limiting** on all API routes (10r/s general, 5r/min auth) — defence-in-depth
 - Helmet.js security headers on NestJS
-- Input validation via `class-validator` DTOs
+- Input validation via `class-validator` DTOs (whitelist + forbidNonWhitelisted)
 - Prisma parameterised queries (SQL injection proof)
+- Multer file upload validation — MIME type filter rejects non-image files (JPEG/PNG/WebP/GIF/AVIF)
+- Environment validated at startup via Joi schema; missing `JWT_SECRET` throws immediately
+- Structured NestJS logging everywhere — no raw `console.error/log` in production paths
 - Automated daily DB backups via `scripts/backup.sh`
 
 ---
@@ -170,43 +176,31 @@ e-comerce/
 
 ## Audit & Known Issues
 
-### Dead Code
+### Resolved in last hardening pass
+
+| Item | Status |
+|---|---|
+| `ThrottlerGuard` not registered — `@Throttle()` decorators had no effect | ✅ Fixed |
+| JWT strategy used `'fallback-dev-secret'` as default | ✅ Fixed |
+| `console.error/log` in production code paths | ✅ Fixed — replaced with `NestJS Logger` |
+| No unit tests for `auth`, `orders`, `coupons`, `invoices` | ✅ Fixed — 40 unit tests added |
+| No throttle regression test | ✅ Fixed — e2e test asserts 429 on 6th login attempt |
+| Multer accepted all file types (no MIME filter) | ✅ Fixed |
+| 29 stray dev/scrape files in `backend/` root | ✅ Deleted |
+| `.gitignore` had corrupted UTF-16 section | ✅ Fixed |
+
+### Still Open
+
+#### Dead Code
 
 | File | Issue |
 |---|---|
-| `backend/src/app.controller.ts` | Not imported in any NestJS module — completely inactive |
-| `backend/src/app.service.ts` | Only referenced by dead AppController — completely inactive |
-| `backend/prisma/import-vehicle-compat.ts` | Standalone one-shot import script (legacy) |
-| `backend/prisma/import-lubricant-data.ts` | Standalone one-shot import script; TS errors break frontend build because prisma/ is copied into the frontend Docker image |
-| `backend/prisma/seed-test-db.ts` | Standalone test seed script (not the official seed) |
-| `backend/src/products/dto/oil-recommendations.dto.spec.ts` | Test file for a removed feature |
-| `backend/src/app.controller.spec.ts` | Test for dead controller |
-| `backend/src/specificity.spec.ts` | Unclear purpose |
-| `frontend/tests/example.spec.ts` | Default Playwright example — not a real test |
-| `scripts/fix-frontend.sh` | One-shot fix script |
-| `scripts/fix-frontend2.sh` | One-shot fix script |
-| `scripts/fix-commandes.sh` | One-shot fix script |
-| `scripts/fix-api.sh` | One-shot fix script |
-| `scripts/fix-types.js` | One-shot fix script |
-| `scripts/fix-tokens.js` | One-shot fix script |
-| `scripts/deploy-setup.sh` | One-shot script |
-| `scripts/deploy-setup-vm.sh` | One-shot script |
-| `scripts/deploy-frontend.sh` | One-shot script |
-| `scripts/download-logos.js` | One-shot utility |
-| `scripts/generate-logos.js` | One-shot utility |
+| `backend/src/app.controller.ts` | Not imported in any module — inactive |
+| `backend/src/app.service.ts` | Only referenced by dead AppController |
+| `backend/prisma/import-vehicle-compat.ts` | Legacy one-shot import script |
+| `backend/src/products/dto/oil-recommendations.dto.spec.ts` | Test for removed feature |
 
-### Console.log Leaks in Production Code
-
-| File | Line | Code | Severity |
-|---|---|---|---|
-| `backend/src/auth/auth.service.ts` | 132 | `console.log([DEV] Password reset link for ${email}: ${resetUrl})` | **High** — leaks reset tokens in production logs |
-| `backend/src/auth/auth.service.ts` | 135 | `console.log(Email send failed for ${email}: ...)` | Medium — should use proper logger |
-| `backend/src/main.ts` | 50 | `console.log(Backend running on ...)` | Low — acceptable startup log |
-| `backend/src/app.controller.ts` | 15 | `console.log(Received contact message: ...)` | Low — dead code anyway |
-
-### Broken Navigation Links
-
-These routes are linked in the UI but have no matching page file:
+#### Broken Navigation Links
 
 | File | Broken Path |
 |---|---|
@@ -216,62 +210,18 @@ These routes are linked in the UI but have no matching page file:
 | `frontend/app/[locale]/admin/layout.tsx:64` | `/admin/payments` |
 | `frontend/app/[locale]/admin/layout.tsx:69` | `/admin/reviews` |
 
-Clicking any of these links navigates to a 404 page.
+#### Unused Dependencies
 
-### Unused Dependencies
-
-| Package | Location | Notes |
-|---|---|---|
-| `bullmq` | `backend/package.json` | Never imported anywhere — background jobs were planned but not implemented |
-| `isomorphic-dompurify` | `frontend/package.json` | Never imported — was likely intended for review HTML sanitization |
-| `next-sitemap` | `frontend/package.json` | Not imported; no config file; no npm script usage. A manual `app/sitemap.ts` exists instead |
-| `dotenv` | `frontend/package.json` | Only appears in commented-out lines in `playwright.config.ts` |
-
-### Unused Stores
-
-| Store | Notes |
+| Package | Notes |
 |---|---|
-| `frontend/lib/store/vehicle.store.ts` | Zustand persist store for selected vehicle — created but never consumed by any component |
-| `frontend/lib/store/settings.store.ts` | Created but may not be consumed |
+| `bullmq` | Never imported — background jobs planned but not implemented |
+| `isomorphic-dompurify` | Never imported in frontend |
 
-### Missing Error Boundaries
+#### Frontend Gaps
 
-No React error boundaries (`ErrorBoundary` component) are used anywhere in the frontend. A runtime crash in any component will either:
-- Blank the whole page (client components)
-- Show Next.js default error overlay (dev) or generic error screen (prod)
-
-### Hardcoded Values
-
-- `backend/src/main.ts` — CORS origin `http://localhost:3000` is hardcoded (should read from env)
-- `frontend/lib/api/*.ts` — Base URLs may be hardcoded in multiple API client files
-- Admin layout `admin/layout.tsx` — Locale detection splits `pathname` manually instead of using next-intl
-
-### Accessibility Gaps
-
-- No `aria-label` or `role` attributes on icon-only admin sidebar links (when collapsed)
+- No React error boundaries anywhere — a crash will blank the whole page
+- No `aria-label` on icon-only admin sidebar links
 - No focus trap in mobile drawer overlays
-- Search input in admin has no associated `label` element
-- Color contrast may be insufficient in several places (gray-400 text on dark backgrounds)
-
-### No Unit Tests
-
-- 5 test files exist but are either dead (backend) or example boilerplate (frontend Playwright)
-- No meaningful unit tests for API controllers, services, or frontend components
-- No integration or E2E tests for critical flows (auth, checkout, oil finder)
-
-### Stale Prisma Client
-
-The `@prisma/client` in the frontend is from an earlier schema generation and does not match the current backend schema. When the `prisma/` directory is copied into the frontend Docker image, Next.js type-checks it and may fail on enum/type mismatches unless workarounds are applied.
-
-### Missing Environment Validation
-
-- No runtime validation that all required env vars are present at startup
-- Missing env vars cause cryptic runtime errors instead of clear startup messages
-- No `.env.example` for every required variable with documentation
-
-### TODO / FIXME Comments
-
-None found anywhere in the codebase — the codebase is clean of these annotations.
 
 ---
 

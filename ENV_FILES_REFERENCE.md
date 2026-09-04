@@ -165,15 +165,25 @@ NEXT_PUBLIC_SENTRY_DSN=
 | `DOMAIN` | App | Yes | Primary domain (e.g., `specpart.tn` or `localhost`) |
 | `FRONTEND_URL` | App | Yes | Base frontend URL |
 | `DATABASE_URL` | Database | Yes | PostgreSQL connection string |
-| `JWT_SECRET` | Auth | Yes | Secret key for signing backend JWTs (min 16 chars) |
+| `JWT_SECRET` | Auth | **Yes** | Secret key for signing backend JWTs (**min 16 chars** — validated by Joi at startup) |
 | `NEXTAUTH_SECRET` | Auth | Yes | NextAuth session encryption secret |
 | `NEXTAUTH_URL` | Auth | Yes | Canonical URL for NextAuth callbacks |
 | `OPENROUTER_API_KEY` | AI Chatbot | Yes | OpenRouter API Key for the GPT-4o chatbot |
+| `OPENROUTER_MODEL` | AI Chatbot | No | Model override (default: `openai/gpt-4o-mini`) |
 | `RESEND_API_KEY` | Mail | Yes (Prod) | API key for transactional emails & OTP |
 | `RESEND_FROM` | Mail | Yes | Verified sender address (e.g. `Specpart <noreply@specpart.tn>`) |
 | `ADMIN_NOTIFICATION_EMAIL`| Mail | Yes | Destination inbox for new order alerts (`specpart@hotmail.com`) |
 | `CLOUDINARY_CLOUD_NAME` | Media | Optional | Cloudinary storage bucket name |
 | `CLOUDINARY_API_KEY` | Media | Optional | Cloudinary API Key |
 | `CLOUDINARY_API_SECRET` | Media | Optional | Cloudinary Secret |
+| `MINIO_ENDPOINT` | Media | Optional | Full MinIO S3-compatible endpoint URL (e.g. `http://minio:9000`). If set, uploads go to MinIO instead of Cloudinary. |
+| `MINIO_BUCKET` | Media | Optional | MinIO bucket name (default: `specpart`) |
+| `MINIO_ACCESS_KEY` | Media | Optional | MinIO access key ID (default: `admin`) |
+| `MINIO_SECRET_KEY` | Media | Optional | MinIO secret key |
+| `MINIO_REGION` | Media | Optional | MinIO region (default: `us-east-1`) |
 | `REDIS_HOST` / `REDIS_PORT` | Cache | Yes | Redis cache host (`redis`) and port (`6379`) |
 | `KAFKA_BROKERS` | Messaging | Yes | Kafka broker address (`kafka:9092`) |
+| `OPENSEARCH_HOST` | Search | Optional | OpenSearch endpoint URL (e.g. `http://opensearch:9200`). Required for full-text product search. |
+| `SENTRY_DSN` | Observability | Optional | Sentry DSN for error tracking |
+
+> **Note on upload priority:** The backend tries `MinIO → Cloudinary → local disk` in that order. If neither `MINIO_ENDPOINT` nor `CLOUDINARY_*` are set, images are saved to `backend/uploads/products/` on the server — this is fine for development but should not be used in production.
