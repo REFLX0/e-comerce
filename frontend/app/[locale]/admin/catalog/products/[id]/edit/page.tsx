@@ -384,6 +384,7 @@ export default function EditProductPage() {
         payload.packageUnit = packageUnit.trim() || '1 Pièce'
         payload.variants = [
           {
+            id: product.variants?.[0]?.id, // Preserve existing ID
             volume: packageUnit.trim() || '1 Pièce',
             price: parseFloat(price) || 0,
             stockQty: parseInt(stock, 10) || 0,
