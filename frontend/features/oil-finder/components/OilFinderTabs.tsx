@@ -6,6 +6,7 @@ import { EngineSpecFinder } from './EngineSpecFinder'
 import { VehicleFinder } from './VehicleFinder'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useTranslations } from 'next-intl'
+import Image from 'next/image'
 
 type VehicleType = 'automobile' | 'moto' | 'poids_lourd' | 'agricole' | 'marine'
 type SearchMode = 'vehicle' | 'specs'
@@ -75,10 +76,10 @@ export function OilFinderTabs() {
               const isCurrent = stage === step
               return (
                 <div key={label} className="flex min-w-0 items-center gap-2">
-                  <div className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-bold ${isComplete ? 'bg-brand-accent text-brand-primary' : isCurrent ? 'bg-white text-brand-primary' : 'bg-white/10 text-white/55'}`}>
+                  <div className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-bold ${isComplete ? 'bg-brand-accent text-brand-primary' : isCurrent ? 'bg-white text-brand-primary' : 'bg-white/10 text-white/70'}`}>
                     {isComplete ? <Check size={14} strokeWidth={3} /> : stage}
                   </div>
-                  <span className={`hidden truncate text-xs font-semibold sm:block ${isCurrent || isComplete ? 'text-white' : 'text-white/50'}`}>{label}</span>
+                  <span className={`hidden truncate text-xs font-semibold sm:block ${isCurrent || isComplete ? 'text-white' : 'text-white/70'}`}>{label}</span>
                   {stage < 3 && <div className={`ml-auto h-px flex-1 ${isComplete ? 'bg-brand-accent' : 'bg-white/15'}`} />}
                 </div>
               )
@@ -123,10 +124,12 @@ export function OilFinderTabs() {
                     >
                       {/* Image container: strictly confined to the top, stops above the bottom label */}
                       <div className="relative flex-1 w-full min-h-[145px] overflow-hidden bg-slate-900">
-                        <img
+                        <Image
                           src={type.image}
                           alt={type.label}
-                          className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+                          fill
+                          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
+                          className="object-cover transition-transform duration-700 ease-out group-hover:scale-110"
                           onError={(e) => {
                             e.currentTarget.style.display = 'none';
                             (e.currentTarget.nextElementSibling as HTMLElement)?.classList.remove('hidden');

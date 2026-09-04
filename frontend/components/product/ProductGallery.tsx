@@ -148,6 +148,7 @@ export function ProductGallery({ images, productName, variantImageUrl, variants,
             src={currentMainImage || ''}
             alt={`${productName} - Image ${currentIndex + 1}`}
             fill
+            sizes="(max-width: 768px) 100vw, 50vw"
             className="object-contain transition-transform duration-500 group-hover:scale-105"
             priority
             onError={() => setImageUnavailable(true)}
@@ -195,7 +196,7 @@ export function ProductGallery({ images, productName, variantImageUrl, variants,
                   : 'hover:border-brand-primary/40 border-gray-200 opacity-70 hover:opacity-100'
               }`}
             >
-              <Image src={img} alt="" fill className="object-contain p-1" />
+              <Image src={img} alt="" fill sizes="60px" className="object-contain p-1" />
             </button>
           ))}
         </div>

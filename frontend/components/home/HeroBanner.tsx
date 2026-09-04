@@ -19,6 +19,7 @@ export function HeroBanner() {
           quality={60}
           className="object-cover object-center"
           priority
+          fetchPriority="high"
         />
         <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(5,12,24,0.98)_0%,rgba(5,12,24,0.88)_35%,rgba(5,12,24,0.35)_72%,rgba(5,12,24,0.12)_100%)]" />
       </div>
@@ -61,7 +62,7 @@ export function HeroBanner() {
               <Star className="text-brand-accent h-6 w-6" strokeWidth={1.5} />
               <div>
                 <p className="text-sm font-black text-white leading-tight">500+</p>
-                <p className="text-[10px] text-white/60 uppercase tracking-widest">{t('statsProducts')}</p>
+                <p className="text-[10px] text-white/75 uppercase tracking-widest">{t('statsProducts')}</p>
               </div>
             </div>
             
@@ -69,7 +70,7 @@ export function HeroBanner() {
               <Award className="text-brand-accent h-6 w-6" strokeWidth={1.5} />
               <div>
                 <p className="text-sm font-black text-white leading-tight">15+</p>
-                <p className="text-[10px] text-white/60 uppercase tracking-widest">{t('statsBrands')}</p>
+                <p className="text-[10px] text-white/75 uppercase tracking-widest">{t('statsBrands')}</p>
               </div>
             </div>
             
@@ -77,7 +78,7 @@ export function HeroBanner() {
               <Truck className="text-brand-accent h-6 w-6" strokeWidth={1.5} />
               <div>
                 <p className="text-sm font-black text-white leading-tight">24H</p>
-                <p className="text-[10px] text-white/60 uppercase tracking-widest">{t('statsDelivery')}</p>
+                <p className="text-[10px] text-white/75 uppercase tracking-widest">{t('statsDelivery')}</p>
               </div>
             </div>
             
@@ -85,7 +86,7 @@ export function HeroBanner() {
               <ShieldCheck className="text-brand-accent h-6 w-6" strokeWidth={1.5} />
               <div>
                 <p className="text-sm font-black text-white leading-tight">{t('statsQuality')}</p>
-                <p className="text-[10px] text-white/60 uppercase tracking-widest">{t('statsGuaranteed')}</p>
+                <p className="text-[10px] text-white/75 uppercase tracking-widest">{t('statsGuaranteed')}</p>
               </div>
             </div>
           </div>

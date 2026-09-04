@@ -97,8 +97,7 @@ export default function Footer() {
           {/* Col 1: Brand */}
           <div className="sm:col-span-2 lg:col-span-1">
             <Link href="/" className="mb-5 inline-flex items-center">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/logo.jpg" alt="specpart" className="h-20 w-auto object-contain sm:h-24" />
+              <Image src="/logo.jpg" alt="specpart" width={147} height={80} className="h-20 w-auto object-contain sm:h-24" />
             </Link>
             <p className="mb-6 max-w-xs text-sm leading-relaxed text-white/40">
               {tFooter('description')}
