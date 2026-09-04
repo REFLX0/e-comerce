@@ -37,7 +37,7 @@ export function TrustBadges({ variant = 'grid', className }: TrustBadgesProps) {
   if (variant === 'inline') {
     return (
       <div className={`${className ?? ''}`}>
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
           {BADGES.map((b) => (
             <div key={b.titleKey} className="flex items-center gap-3 text-sm text-gray-600">
               <b.icon size={16} className={`shrink-0 ${b.color}`} />
@@ -52,7 +52,7 @@ export function TrustBadges({ variant = 'grid', className }: TrustBadgesProps) {
   // Default grid variant — homepage reassurance bar
   return (
     <div className={`${className ?? ''}`}>
-      <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 md:gap-6">
         {BADGES.map((b) => (
           <div
             key={b.titleKey}
