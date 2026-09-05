@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { OilFinderService } from './oil-finder.service';
+import { OilFinderService, resolveBrandSlugs } from './oil-finder.service';
 import { PrismaService } from '../prisma/prisma.service';
 
 // ── Fixtures (mirroring staging vehicle & spec rows) ──────────────────────────
@@ -296,6 +296,47 @@ describe('OilFinderService', () => {
       expect(names).toContain('JOHN DEERE');
       expect(names).toContain('MASSEY FERGUSON');
       expect(names).toContain('NEW HOLLAND');
+    });
+  });
+
+  describe('resolveBrandSlugs — manufacturer alias mapping', () => {
+    it('maps Volkswagen to include vw and volkswagen', () => {
+      const slugs = resolveBrandSlugs('Volkswagen');
+      expect(slugs).toContain('vw');
+      expect(slugs).toContain('volkswagen');
+    });
+
+    it('maps Mercedes to include mercedes-benz and merce', () => {
+      const slugs = resolveBrandSlugs('Mercedes');
+      expect(slugs).toContain('mercedes-benz');
+      expect(slugs).toContain('merce');
+    });
+
+    it('maps Citroen to include citroen, citroën, and citro', () => {
+      const slugs = resolveBrandSlugs('Citroen');
+      expect(slugs).toContain('citroen');
+      expect(slugs).toContain('citro');
+    });
+
+    it('maps Yamaha to include yamah, yamaha, and yamaha-motorcycles', () => {
+      const slugs = resolveBrandSlugs('Yamaha');
+      expect(slugs).toContain('yamah');
+      expect(slugs).toContain('yamaha');
+      expect(slugs).toContain('yamaha-motorcycles');
+      expect(slugs).toContain('yamaha-mot');
+    });
+
+    it('maps Harley-Davidson to include harley-dav and harley-davidson-mc', () => {
+      const slugs = resolveBrandSlugs('Harley-Davidson');
+      expect(slugs).toContain('harley-dav');
+      expect(slugs).toContain('harley-davidson-mc');
+    });
+
+    it('maps Vespa to include vespa, vespa-motorcycles, and piaggio', () => {
+      const slugs = resolveBrandSlugs('Vespa');
+      expect(slugs).toContain('vespa');
+      expect(slugs).toContain('vespa-motorcycles');
+      expect(slugs).toContain('piaggio');
     });
   });
 });
