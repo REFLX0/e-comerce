@@ -4,11 +4,12 @@ import { useEffect, useMemo, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useSearchParams } from 'next/navigation'
 import { useLocale, useTranslations } from 'next-intl'
-import { Search, Sparkles, X, LayoutGrid, List, Phone, Mail, Droplets, ShieldCheck, Gauge, Info, BookOpen } from 'lucide-react'
+import { Search, Sparkles, X, LayoutGrid, List, Phone, Mail, Droplets, ShieldCheck, Gauge, Info, BookOpen, MessageCircle } from 'lucide-react'
 import Link from 'next/link'
 import { productsApi } from '@/lib/api/products'
 import { useRouter } from '@/i18n/routing'
 import { formatVehicleDisplayLabel } from '@/lib/utils/compatibility'
+import { buildWhatsAppUrl } from '@/lib/whatsapp'
 import { useVehicleStore } from '@/lib/store/vehicle.store'
 import { useVehicleUrlSync } from '@/lib/hooks/useVehicleUrlSync'
 import { FilterSidebar } from '@/components/catalogue/FilterSidebar'
@@ -353,141 +354,142 @@ export default function CataloguePage() {
                 )
               }
 
+              if (isVehicleSearch) {
+                const whatsappMsg = `Bonjour SpecPart, je recherche l'huile moteur pour mon véhicule ${vehicleLabel}. Pourriez-vous m'indiquer la disponibilité et le tarif ?`
+                const whatsappUrl = buildWhatsAppUrl(whatsappMsg)
+                const contactSubject = `Disponibilité huile pour ${vehicleLabel}`
+
+                return (
+                  <div className="border border-black/10 bg-neutral-50 px-5 py-6 sm:px-8 sm:py-10">
+                    <div className="mx-auto max-w-3xl overflow-hidden rounded-2xl border border-amber-200 bg-white shadow-sm">
+                      {/* Header */}
+                      <div className="border-b border-amber-100 bg-gradient-to-b from-amber-50/80 to-amber-50/20 px-6 py-8 text-center">
+                        <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-500 text-white shadow-sm">
+                          <Droplets size={28} />
+                        </div>
+                        <h3 className="text-xl sm:text-2xl font-black tracking-tight text-neutral-900">
+                          Contacter SpecPart pour cette huile
+                        </h3>
+                        <p className="mt-2 text-sm sm:text-base text-neutral-600 max-w-xl mx-auto leading-relaxed">
+                          L'huile moteur pour votre <strong className="text-neutral-900">{vehicleLabel}</strong> n'est pas disponible immédiatement à l'achat en ligne dans notre catalogue.
+                        </p>
+                        <p className="mt-1 text-xs sm:text-sm text-neutral-500 max-w-lg mx-auto">
+                          Nos experts vérifient notre inventaire physique en boutique ou commandent directement le bidon certifié auprès de nos fournisseurs partenaires.
+                        </p>
+
+                        {/* Constructeur recommendation pills if known */}
+                        {data?.oilSpec && (
+                          <div className="mt-5 pt-5 border-t border-amber-200/60">
+                            <span className="text-[11px] font-bold uppercase tracking-wider text-amber-900 block mb-2.5">
+                              Spécifications constructeur recommandées
+                            </span>
+                            <div className="flex flex-wrap justify-center gap-2">
+                              {data.oilSpec.viscosity && (
+                                <div className="flex items-center gap-1.5 rounded-xl bg-[#001E3C] px-3.5 py-1.5 text-xs sm:text-sm font-black text-white shadow-xs">
+                                  <span>Viscosité :</span>
+                                  <span className="text-amber-300">{data.oilSpec.viscosity}</span>
+                                </div>
+                              )}
+                              {data.oilSpec.apiStandard && (
+                                <div className="rounded-xl bg-white px-3 py-1.5 text-xs font-bold text-neutral-800 shadow-xs ring-1 ring-neutral-200">
+                                  {data.oilSpec.apiStandard.startsWith('API') ? data.oilSpec.apiStandard : `API ${data.oilSpec.apiStandard}`}
+                                </div>
+                              )}
+                              {data.oilSpec.aceaStandard && (
+                                <div className="rounded-xl bg-white px-3 py-1.5 text-xs font-bold text-neutral-800 shadow-xs ring-1 ring-neutral-200">
+                                  {data.oilSpec.aceaStandard.startsWith('ACEA') ? data.oilSpec.aceaStandard : `ACEA ${data.oilSpec.aceaStandard}`}
+                                </div>
+                              )}
+                              {data.oilSpec.oemApproval && (
+                                <div className="rounded-xl bg-white px-3 py-1.5 text-xs font-bold text-neutral-800 shadow-xs ring-1 ring-neutral-200">
+                                  Norme : {data.oilSpec.oemApproval}
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Direct Action Buttons */}
+                      <div className="p-6 sm:p-8 bg-neutral-50/50">
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                          {/* 1. Phone Call */}
+                          <a
+                            href="tel:+21629294195"
+                            className="flex flex-col items-center justify-center gap-1 rounded-xl bg-[#001E3C] hover:bg-[#002B56] p-4 text-center text-white shadow-xs transition active:scale-95"
+                          >
+                            <Phone size={20} className="mb-0.5 text-amber-400" />
+                            <span className="text-xs font-bold uppercase tracking-wider text-white/80">Appel direct</span>
+                            <span className="text-sm font-black">+216 29 294 195</span>
+                          </a>
+
+                          {/* 2. WhatsApp */}
+                          <a
+                            href={whatsappUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex flex-col items-center justify-center gap-1 rounded-xl bg-[#25D366] hover:bg-[#20bd5a] p-4 text-center text-white shadow-xs transition active:scale-95"
+                          >
+                            <MessageCircle size={20} className="mb-0.5 text-white" />
+                            <span className="text-xs font-bold uppercase tracking-wider text-white/90">WhatsApp</span>
+                            <span className="text-sm font-black">Commander par chat</span>
+                          </a>
+
+                          {/* 3. Contact message form */}
+                          <Link
+                            href={`/${locale}/contact?subject=${encodeURIComponent(contactSubject)}`}
+                            className="flex flex-col items-center justify-center gap-1 rounded-xl border border-neutral-300 bg-white hover:bg-neutral-50 p-4 text-center text-neutral-900 shadow-2xs transition active:scale-95"
+                          >
+                            <Mail size={20} className="mb-0.5 text-neutral-600" />
+                            <span className="text-xs font-bold uppercase tracking-wider text-neutral-500">Par message</span>
+                            <span className="text-sm font-black">Envoyer un message</span>
+                          </Link>
+                        </div>
+
+                        {/* Dual Compliance & Manual Notice Grid if spec exists */}
+                        {data?.oilSpec && (
+                          <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-3 text-left">
+                            <div className="rounded-xl border border-slate-200 bg-white p-3.5 shadow-2xs">
+                              <div className="flex items-start gap-2.5">
+                                <ShieldCheck size={16} className="text-blue-600 shrink-0 mt-0.5" />
+                                <p className="text-xs text-slate-600 leading-relaxed">
+                                  <strong>Conformité constructeur :</strong> vérifiez toujours le carnet d'entretien de votre véhicule pour les tolérances recommandées.
+                                </p>
+                              </div>
+                            </div>
+                            <div className="rounded-xl border border-slate-200 bg-white p-3.5 shadow-2xs">
+                              <div className="flex items-start gap-2.5">
+                                <Gauge size={16} className="text-emerald-600 shrink-0 mt-0.5" />
+                                <p className="text-xs text-slate-600 leading-relaxed">
+                                  <strong>Niveau à la jauge :</strong> l'appoint s'effectue moteur froid entre les repères MIN et MAX sans jamais dépasser le MAX.
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Footer secondary action: Browse all oils */}
+                        <div className="mt-6 pt-5 border-t border-neutral-200/80 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+                          <p className="text-xs text-neutral-500">
+                            Vous souhaitez explorer d'autres huiles disponibles ?
+                          </p>
+                          <button
+                            type="button"
+                            onClick={clearVehicle}
+                            className="inline-flex items-center gap-1.5 rounded-lg border border-neutral-300 bg-white px-3.5 py-1.5 text-xs font-bold text-neutral-700 hover:bg-neutral-100 transition"
+                          >
+                            Parcourir toutes les huiles du catalogue
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )
+              }
+
               return (
                 <div className="border border-black/10 bg-neutral-50 px-5 py-3 sm:px-8">
-                  {isVehicleSearch && data?.oilSpec && (
-                    <div className="mb-8 mt-4 overflow-hidden rounded-2xl border border-blue-200 bg-white shadow-sm">
-                      {/* Header */}
-                      <div className="border-b border-blue-100 bg-gradient-to-b from-blue-50/90 to-blue-50/30 px-6 py-6 text-center">
-                        <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-600 text-white shadow-xs">
-                          <Droplets size={24} />
-                        </div>
-                        <h3 className="text-xl font-black tracking-tight text-blue-950">
-                          Recommandation Huile Constructeur
-                        </h3>
-                        <p className="mt-1 text-xs sm:text-sm text-blue-800/80 max-w-xl mx-auto">
-                          Cette référence n'est pas disponible immédiatement en ligne. Voici les spécifications techniques officielles pour votre véhicule :
-                        </p>
-                        
-                        {/* Spec Pills */}
-                        <div className="mt-4 flex flex-wrap justify-center gap-2.5">
-                          {data.oilSpec.viscosity && (
-                            <div className="flex items-center gap-1.5 rounded-xl bg-blue-900 px-3.5 py-1.5 text-sm font-black text-white shadow-xs">
-                              <span>Viscosité :</span>
-                              <span className="text-amber-300">{data.oilSpec.viscosity}</span>
-                            </div>
-                          )}
-                          {data.oilSpec.apiStandard && (
-                            <div className="rounded-xl bg-white px-3.5 py-1.5 text-xs sm:text-sm font-bold text-blue-900 shadow-xs ring-1 ring-blue-200">
-                              {data.oilSpec.apiStandard.startsWith('API') ? data.oilSpec.apiStandard : `API ${data.oilSpec.apiStandard}`}
-                            </div>
-                          )}
-                          {data.oilSpec.aceaStandard && (
-                            <div className="rounded-xl bg-white px-3.5 py-1.5 text-xs sm:text-sm font-bold text-blue-900 shadow-xs ring-1 ring-blue-200">
-                              {data.oilSpec.aceaStandard.startsWith('ACEA') ? data.oilSpec.aceaStandard : `ACEA ${data.oilSpec.aceaStandard}`}
-                            </div>
-                          )}
-                          {data.oilSpec.oemApproval && (
-                            <div className="rounded-xl bg-white px-3.5 py-1.5 text-xs sm:text-sm font-bold text-blue-900 shadow-xs ring-1 ring-blue-200">
-                              Norme : {data.oilSpec.oemApproval}
-                            </div>
-                          )}
-                        </div>
-                      </div>
-
-                      {/* Contact SpecPart Availability Block */}
-                      <div className="p-6">
-                        <div className="rounded-2xl border border-amber-200/90 bg-gradient-to-r from-amber-50/90 via-amber-50/50 to-amber-100/40 p-5 shadow-xs">
-                          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                            <div className="flex items-start gap-3.5">
-                              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-amber-500 text-white shadow-2xs">
-                                <Phone size={20} />
-                              </div>
-                              <div>
-                                <h4 className="text-sm font-bold text-amber-950">
-                                  Contacter SpecPart pour commander cette huile
-                                </h4>
-                                <p className="mt-0.5 text-xs text-amber-800/90 max-w-md leading-relaxed">
-                                  Nos experts vérifient l'inventaire en boutique ou commandent directement votre bidon auprès de nos fournisseurs certifiés.
-                                </p>
-                              </div>
-                            </div>
-                            <div className="flex flex-wrap items-center gap-2.5 w-full sm:w-auto">
-                              <a
-                                href="tel:+21629294195"
-                                className="flex-1 sm:flex-none inline-flex justify-center items-center gap-2 rounded-xl bg-[#001E3C] hover:bg-[#002B56] px-4 py-2.5 text-xs font-bold text-white shadow-xs transition active:scale-95"
-                              >
-                                <Phone size={14} />
-                                +216 29 294 195
-                              </a>
-                              <Link
-                                href={`/${locale}/contact?subject=${encodeURIComponent(`Disponibilité huile ${data.oilSpec.viscosity} pour ${vehicleMake || ''} ${vehicleModel || ''}`)}`}
-                                className="flex-1 sm:flex-none inline-flex justify-center items-center gap-2 rounded-xl border border-amber-300 bg-white px-4 py-2.5 text-xs font-bold text-neutral-900 shadow-2xs transition hover:bg-amber-50/50 active:scale-95"
-                              >
-                                <Mail size={14} />
-                                Envoyer un message
-                              </Link>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Dual Compliance & Manual Notice Grid */}
-                        <div className="mt-5 grid grid-cols-1 md:grid-cols-2 gap-3.5 text-left">
-                          {/* Card 1: Official Manufacturer Manual Compliance Notice */}
-                          <div className="rounded-xl border border-slate-200/80 bg-slate-50/80 p-4 transition-all hover:bg-slate-50">
-                            <div className="flex items-start gap-3">
-                              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-100 text-blue-700">
-                                <ShieldCheck size={17} />
-                              </div>
-                              <div>
-                                <div className="flex items-center gap-2">
-                                  <h5 className="text-xs font-bold uppercase tracking-wider text-slate-800">
-                                    Conformité Manuel Constructeur
-                                  </h5>
-                                  <span className="rounded bg-blue-100 px-1.5 py-0.2 text-[10px] font-bold text-blue-700">OEM</span>
-                                </div>
-                                <p className="mt-1 text-xs text-slate-600 leading-relaxed">
-                                  Les viscosités et homologations ci-dessus sont issues des cahiers des charges constructeurs. Pour préserver votre moteur et la garantie constructeur, consultez toujours les préconisations exactes figurant dans votre <strong>manuel d'utilisation / carnet d'entretien</strong>.
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-
-                          {/* Card 2: Level & Dipstick Filling Guideline */}
-                          <div className="rounded-xl border border-slate-200/80 bg-slate-50/80 p-4 transition-all hover:bg-slate-50">
-                            <div className="flex items-start gap-3">
-                              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-emerald-100 text-emerald-700">
-                                <Gauge size={17} />
-                              </div>
-                              <div>
-                                <div className="flex items-center gap-2">
-                                  <h5 className="text-xs font-bold uppercase tracking-wider text-slate-800">
-                                    Contrôle du Niveau à la Jauge
-                                  </h5>
-                                  <span className="rounded bg-emerald-100 px-1.5 py-0.2 text-[10px] font-bold text-emerald-700">Sécurité</span>
-                                </div>
-                                <p className="mt-1 text-xs text-slate-600 leading-relaxed">
-                                  Ajustez la quantité d'huile progressivement moteur froid sur sol horizontal. Le niveau doit impérativement se situer <strong>entre les repères MIN et MAX</strong> de la jauge manuelle. <strong>Ne dépassez jamais le repère MAX</strong>.
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                  
                   <EmptyState title={emptyTitle} message={emptyMessage} action={emptyAction} />
-                  
-                  {isVehicleSearch && (
-                    <div className="mb-8 border-t border-black/10 pt-6 text-center">
-                      <p className="mb-3 text-sm text-neutral-500">{t('vehicleNotFoundHint')}</p>
-                      <Link href={`/${locale}/#oil-finder`} className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-[#D4A76A] px-5 text-xs font-black uppercase tracking-[0.12em] text-[#16254c] shadow-[0_0_15px_rgba(212,167,106,0.3)] transition-all hover:bg-[#e8b975] hover:shadow-[0_0_20px_rgba(212,167,106,0.5)]">
-                        <svg width="15" height="15" viewBox="0 0 32 32" fill="none"><path d="M16 4C16 4 8 13.5 8 19.5C8 23.6 11.6 27 16 27C20.4 27 24 23.6 24 19.5C24 13.5 16 4 16 4Z" fill="currentColor" opacity="0.9"/></svg>
-                        {t('searchBySpecs')}
-                      </Link>
-                    </div>
-                  )}
                 </div>
               )
             })()}

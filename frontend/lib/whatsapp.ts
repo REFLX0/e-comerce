@@ -1,7 +1,7 @@
 import type { CartItem, Product, ProductVariant } from '@/lib/types'
 
 // The support WhatsApp number.
-export const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '+21655555555'
+export const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '+21629294195'
 
 // Categories that are NOT physical automotive parts: fluids, lubricants,
 // additives, coolants, maintenance/consumable products, and non-car domains.
