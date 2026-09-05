@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { PrismaService } from '../prisma/prisma.service'
-import type { OilFinderLookupConflict, OilFinderOilSpec } from '@prisma/client'
+import type { OilFinderOilSpec } from '@prisma/client'
 
 export type OilSpecRef = Pick<
   OilFinderOilSpec,
@@ -300,8 +300,8 @@ export class OilFinderService {
       if (rows && rows.length > 0) {
         return rows.map((r) => ({ slug: slugify(r.make), name: r.make }));
       }
-    } catch {
-      // ignore
+    } catch (e) {
+      this.logger.warn('Failed to query oilFinderVehicle makes fallback', e);
     }
 
     return [];
@@ -339,8 +339,8 @@ export class OilFinderService {
       if (rows && rows.length > 0) {
         return rows.map((r) => ({ slug: slugify(r.model), name: r.model }));
       }
-    } catch {
-      // ignore
+    } catch (e) {
+      this.logger.warn(`Failed to query oilFinderVehicle models fallback for make ${makeName}`, e);
     }
 
     return [];

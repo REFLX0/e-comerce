@@ -1,7 +1,9 @@
-import { Controller, Get, Query, Param } from '@nestjs/common';
+import { Controller, Get, Query, Param, BadRequestException, UsePipes, ValidationPipe } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { OilFinderService } from './oil-finder.service';
 import { ProductsService } from '../products/products.service';
+import { FindByVehicleDto } from './dto/find-by-vehicle.dto';
+import { FindByCharacteristicsDto } from './dto/find-by-characteristics.dto';
 
 @ApiTags('oil-finder')
 @Controller('oil-finder')
@@ -12,12 +14,18 @@ export class OilFinderController {
   ) {}
 
   @Get('vehicle')
-  async findByVehicle(
-    @Query('make') make: string,
-    @Query('model') model: string,
-    @Query('engineCode') engineCode?: string,
-  ) {
-    if (!make || !model) return { data: [], total: 0 };
+  @UsePipes(new ValidationPipe({ transform: true, whitelist: true }))
+  async findByVehicle(@Query() dto: FindByVehicleDto) {
+    const make = dto.make?.trim();
+    const model = dto.model?.trim();
+    const engineCode = dto.engineCode?.trim() || undefined;
+
+    if (!make || !model) {
+      throw new BadRequestException('make and model are required query parameters');
+    }
+    if (make.length > 100 || model.length > 100 || (engineCode && engineCode.length > 100)) {
+      throw new BadRequestException('make, model, and engineCode must not exceed 100 characters');
+    }
     
     const result = await this.oilFinderService.findByVehicle(make, model, engineCode);
     if (result.status !== 'found') {
@@ -66,16 +74,23 @@ export class OilFinderController {
   }
 
   @Get('specs')
-  async findByCharacteristics(
-    @Query('displacementCc') displacementCc: string,
-    @Query('powerHp') powerHp: string,
-    @Query('fuelType') fuelType: string,
-  ) {
-    if (!displacementCc || !powerHp || !fuelType) return { data: [], total: 0 };
+  @UsePipes(new ValidationPipe({ transform: true, whitelist: true }))
+  async findByCharacteristics(@Query() dto: FindByCharacteristicsDto) {
+    const displacement = Number(dto.displacementCc);
+    const power = Number(dto.powerHp);
+
+    if (!Number.isFinite(displacement) || displacement <= 0 || !Number.isFinite(power) || power <= 0) {
+      throw new BadRequestException('displacementCc and powerHp must be positive finite numbers');
+    }
+
+    const fuelType = dto.fuelType?.trim();
+    if (!fuelType) {
+      throw new BadRequestException('fuelType is required');
+    }
 
     const result = await this.oilFinderService.findByCharacteristics(
-      Number(displacementCc),
-      Number(powerHp),
+      displacement,
+      power,
       fuelType,
     );
 
