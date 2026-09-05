@@ -119,6 +119,15 @@ export function FilterSidebar({
     else filterParams.patchFilters(updates)
   }
 
+  const [isMobileScreen, setIsMobileScreen] = useState(false)
+  useEffect(() => {
+    const check = () => setIsMobileScreen(window.innerWidth < 1024)
+    check()
+    window.addEventListener('resize', check)
+    return () => window.removeEventListener('resize', check)
+  }, [])
+  const isMobileOrDraft = inDraft || isMobileScreen
+
   const selectedBrands = useMemo(
     () =>
       (read('brands') || '')
@@ -294,15 +303,6 @@ export function FilterSidebar({
 
   const toggleSingle = (key: string, value: string) =>
     patch({ [key]: read(key) === value ? null : value })
-
-  const [isMobileScreen, setIsMobileScreen] = useState(false)
-  useEffect(() => {
-    const check = () => setIsMobileScreen(window.innerWidth < 1024)
-    check()
-    window.addEventListener('resize', check)
-    return () => window.removeEventListener('resize', check)
-  }, [])
-  const isMobileOrDraft = inDraft || isMobileScreen
 
   const currentCategorySlug = read('categorySlug')
   const isBattery =

@@ -15,6 +15,7 @@ export default function Error({
   const t = useTranslations('Common')
   const notFoundT = useTranslations('NotFound')
   const [requestId, setRequestId] = useState<string | null>(null)
+  const [showDetails, setShowDetails] = useState(false)
 
   useEffect(() => {
     // Attempt to extract the request ID from the document if the page crashed
@@ -61,7 +62,7 @@ export default function Error({
         <p className="mx-auto mb-2 max-w-md text-base leading-relaxed text-gray-500">
           {t('errorDesc')}
         </p>
-        <p className="mb-10 text-sm text-gray-400">
+        <p className="mb-6 text-sm text-gray-400">
           {t('errorHint')}
           {(error.digest || requestId) && (
             <span className="text-brand-primary/40 mt-2 block font-mono text-xs">
@@ -69,6 +70,29 @@ export default function Error({
             </span>
           )}
         </p>
+
+        {/* Expandable Technical Details */}
+        {error?.message && (
+          <div className="mx-auto mb-8 max-w-lg">
+            <button
+              type="button"
+              onClick={() => setShowDetails((prev) => !prev)}
+              className="text-xs font-medium text-gray-400 hover:text-gray-600 underline transition-colors"
+            >
+              {showDetails ? 'Masquer les détails techniques' : 'Afficher les détails techniques'}
+            </button>
+            {showDetails && (
+              <div className="mt-2 max-h-44 overflow-y-auto rounded-xl border border-red-100 bg-red-50/70 p-3 text-start text-xs font-mono text-red-800">
+                <p className="font-bold">{error.name || 'Error'}: {error.message}</p>
+                {error.stack && (
+                  <pre className="mt-1.5 text-[10px] text-gray-600 whitespace-pre-wrap break-all leading-tight">
+                    {error.stack.split('\n').slice(0, 8).join('\n')}
+                  </pre>
+                )}
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Actions */}
         <div className="flex flex-col items-center justify-center gap-3 sm:flex-row">
