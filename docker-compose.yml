@@ -60,6 +60,7 @@ services:
   # ── Backend API (NestJS) ──────────────────────────────────────────
   backend:
     image: specpart-backend:latest
+    container_name: specpart-backend
     build:
       context: ./backend
       dockerfile: Dockerfile
