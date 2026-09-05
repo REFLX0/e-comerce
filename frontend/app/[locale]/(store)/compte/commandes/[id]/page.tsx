@@ -9,7 +9,36 @@ import { Link, useRouter } from '@/i18n/routing'
 import { useParams } from 'next/navigation'
 import Image from 'next/image'
 import { useTranslations } from 'next-intl'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
+
+function OrderItemThumbnail({
+  src,
+  alt,
+}: {
+  src?: string | null
+  alt: string
+}) {
+  const [error, setError] = useState(false)
+
+  if (!src || error) {
+    return (
+      <div className="flex h-full w-full items-center justify-center bg-gray-50 text-gray-400">
+        <Package size={28} className="text-gray-300" />
+      </div>
+    )
+  }
+
+  return (
+    <Image
+      src={src}
+      alt={alt}
+      fill
+      sizes="80px"
+      className="object-contain p-1.5 transition-transform duration-200 hover:scale-105"
+      onError={() => setError(true)}
+    />
+  )
+}
 
 export default function OrderDetailsPage() {
   const params = useParams()
@@ -139,34 +168,38 @@ export default function OrderDetailsPage() {
               {t('orderedItems')}
             </h3>
             <div className="space-y-6">
-              {order.items.map((item: any) => (
-                <div key={item.id} className="flex items-center gap-4">
-                  <div className="bg-brand-surface relative h-20 w-20 shrink-0 overflow-hidden rounded-xl">
-                    {item.product?.images?.[0] ? (
-                      <Image
-                        src={item.product.images[0]}
-                        alt={item.product.nameFr}
-                        fill
-                        className="object-cover p-2"
-                      />
-                    ) : (
-                      <div className="h-full w-full bg-gray-200" />
-                    )}
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <h4 className="text-brand-primary line-clamp-1 font-bold">
-                      {item.product?.nameFr ?? t('article')}
-                    </h4>
-                    <p className="mt-1 text-sm text-gray-500">{t('volume')}: {item.variant?.volume ?? '-'}</p>
-                    <p className="mt-1 text-sm text-gray-500">{t('quantityLabel')}: {item.quantity}</p>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-brand-primary font-bold">
-                      {formatPrice(item.unitPrice * item.quantity)}
+              {order.items.map((item: any) => {
+                const rawImg = item.variant?.imageUrl || item.product?.images?.[0]
+                const imgSrc = typeof rawImg === 'string' ? rawImg : rawImg?.url || null
+
+                return (
+                  <div key={item.id} className="flex items-center gap-4">
+                    <div className="bg-brand-surface relative h-20 w-20 shrink-0 overflow-hidden rounded-xl border border-gray-100 shadow-2xs">
+                      <OrderItemThumbnail src={imgSrc} alt={item.product?.nameFr ?? t('article')} />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      {item.product?.slug ? (
+                        <Link href={`/produit/${item.product.slug}`} className="hover:underline">
+                          <h4 className="text-brand-primary line-clamp-1 font-bold">
+                            {item.product?.nameFr ?? t('article')}
+                          </h4>
+                        </Link>
+                      ) : (
+                        <h4 className="text-brand-primary line-clamp-1 font-bold">
+                          {item.product?.nameFr ?? t('article')}
+                        </h4>
+                      )}
+                      <p className="mt-1 text-sm text-gray-500">{t('volume')}: {item.variant?.volume ?? '-'}</p>
+                      <p className="mt-1 text-sm text-gray-500">{t('quantityLabel')}: {item.quantity}</p>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-brand-primary font-bold">
+                        {formatPrice(item.unitPrice * item.quantity)}
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                )
+              })}
             </div>
           </div>
         </div>

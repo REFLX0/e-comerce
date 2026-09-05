@@ -652,10 +652,14 @@ export class AdminService {
               select: {
                 nameFr: true,
                 sku: true,
-                images: { take: 1, select: { url: true } },
+                images: {
+                  take: 1,
+                  select: { id: true, url: true, isPrimary: true },
+                  orderBy: [{ isPrimary: 'desc' }, { sortOrder: 'asc' }],
+                },
               },
             },
-            variant: { select: { volume: true, skuVariant: true } },
+            variant: { select: { volume: true, skuVariant: true, imageUrl: true } },
           },
         },
         user: { select: { name: true, email: true } },

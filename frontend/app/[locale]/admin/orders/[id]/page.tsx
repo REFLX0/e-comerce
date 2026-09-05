@@ -13,6 +13,35 @@ import Image from 'next/image'
 import { gooeyToast as toast } from 'goey-toast'
 import { useLocale, useTranslations } from 'next-intl'
 
+function AdminOrderItemThumbnail({
+  src,
+  alt,
+}: {
+  src?: string | null
+  alt: string
+}) {
+  const [error, setError] = useState(false)
+
+  if (!src || error) {
+    return (
+      <div className="flex h-full w-full items-center justify-center">
+        <Package size={18} className="text-gray-300" />
+      </div>
+    )
+  }
+
+  return (
+    <Image
+      src={src}
+      alt={alt}
+      fill
+      sizes="48px"
+      className="object-contain p-1"
+      onError={() => setError(true)}
+    />
+  )
+}
+
 export default function OrderDetailPage() {
   const t = useTranslations('Admin')
   const locale = useLocale()
@@ -138,24 +167,19 @@ export default function OrderDetailPage() {
               <h2 className="font-bold text-brand-primary text-sm">{t('orderItems')}</h2>
             </div>
             <div className="divide-y divide-gray-50">
-              {(order.items || []).map((item: any, i: number) => (
-                <div key={i} className="flex items-start gap-3 p-3 sm:p-4">
-                  {/* Thumbnail */}
-                  <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-xl border border-gray-100 bg-gray-50">
-                    {item.product?.images?.[0]?.url ? (
-                      <Image
-                        src={item.product.images[0].url}
+              {(order.items || []).map((item: any, i: number) => {
+                const rawImg = item.variant?.imageUrl || item.product?.images?.[0]
+                const imgSrc = typeof rawImg === 'string' ? rawImg : rawImg?.url || null
+
+                return (
+                  <div key={i} className="flex items-start gap-3 p-3 sm:p-4">
+                    {/* Thumbnail */}
+                    <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-xl border border-gray-100 bg-gray-50">
+                      <AdminOrderItemThumbnail
+                        src={imgSrc}
                         alt={item.product?.nameFr || ''}
-                        fill
-                        sizes="48px"
-                        className="object-contain p-1"
                       />
-                    ) : (
-                      <div className="flex h-full w-full items-center justify-center">
-                        <Package size={18} className="text-gray-300" />
-                      </div>
-                    )}
-                  </div>
+                    </div>
 
                   {/* Info */}
                   <div className="flex-1 min-w-0">
@@ -178,7 +202,8 @@ export default function OrderDetailPage() {
                     {(item.quantity * (item.unitPrice || 0)).toFixed(2)} TND
                   </span>
                 </div>
-              ))}
+                )
+              })}
             </div>
 
             {/* Totals */}

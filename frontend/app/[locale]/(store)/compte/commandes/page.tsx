@@ -6,12 +6,42 @@ import { useCartStore } from '@/lib/store/cart.store'
 import { useRouter } from '@/i18n/routing'
 import { Link } from '@/i18n/routing'
 import { useState } from 'react'
+import Image from 'next/image'
 import { useTranslations } from 'next-intl'
 import {
   Package, Clock, CheckCircle2, Truck, XCircle,
   ArrowRight, RefreshCw, Printer, ChevronDown, ChevronUp, ShoppingBag, Eye, Loader2
 } from 'lucide-react'
 import { gooeyToast as toast } from 'goey-toast'
+
+function OrderItemThumbnail({
+  src,
+  alt,
+}: {
+  src?: string | null
+  alt: string
+}) {
+  const [error, setError] = useState(false)
+
+  if (!src || error) {
+    return (
+      <div className="flex h-full w-full items-center justify-center bg-gray-50 text-gray-400">
+        <Package size={18} className="text-gray-300" />
+      </div>
+    )
+  }
+
+  return (
+    <Image
+      src={src}
+      alt={alt}
+      fill
+      sizes="40px"
+      className="object-contain p-1"
+      onError={() => setError(true)}
+    />
+  )
+}
 
 const STATUS_CONFIG = {
   PENDING:   { labelKey: 'pending',    icon: Clock,        cls: 'bg-yellow-100 text-yellow-700', step: 1 },
@@ -168,7 +198,7 @@ function OrderCard({ order }: { order: OrderShape }) {
           id: p.id ?? '',
           slug: p.slug,
           name: p.nameFr ?? t('article'),
-          images: p.images?.map((img) => img.url) ?? [],
+          images: p.images?.map((img: any) => typeof img === 'string' ? img : img?.url).filter(Boolean) ?? [],
         } as any
         const variant = {
           id: v.id,
@@ -233,17 +263,22 @@ function OrderCard({ order }: { order: OrderShape }) {
       {/* Expanded items */}
       {expanded && order.items && order.items.length > 0 && (
         <div className="divide-y divide-gray-50 px-4">
-          {order.items.map((item) => (
-            <div key={item.id} className="flex items-center gap-3 py-3">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gray-100">
-                <Package size={18} className="text-gray-400" />
+          {order.items.map((item) => {
+            const rawImg = item.variant?.imageUrl || item.product?.images?.[0]
+            const imgSrc = typeof rawImg === 'string' ? rawImg : rawImg?.url || null
+
+            return (
+              <div key={item.id} className="flex items-center gap-3 py-3">
+                <div className="relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-gray-100 bg-gray-50">
+                  <OrderItemThumbnail src={imgSrc} alt={item.product?.nameFr ?? t('article')} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="truncate text-sm font-medium text-brand-primary">{item.product?.nameFr ?? t('article')}</p>
+                  <p className="text-xs text-gray-400">{t('quantity')} {item.quantity ?? 1}</p>
+                </div>
               </div>
-              <div className="flex-1 min-w-0">
-                <p className="truncate text-sm font-medium text-brand-primary">{item.product?.nameFr ?? t('article')}</p>
-                <p className="text-xs text-gray-400">{t('quantity')} {item.quantity ?? 1}</p>
-              </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
       )}
 

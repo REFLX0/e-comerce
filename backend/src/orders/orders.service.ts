@@ -253,7 +253,18 @@ export class OrdersService {
       include: {
         items: {
           include: {
-            product: { select: { id: true, slug: true, nameFr: true, images: { take: 1 } } },
+            product: {
+              select: {
+                id: true,
+                slug: true,
+                nameFr: true,
+                images: {
+                  select: { id: true, url: true, isPrimary: true },
+                  orderBy: [{ isPrimary: 'desc' }, { sortOrder: 'asc' }],
+                  take: 1,
+                },
+              },
+            },
             variant: {
               select: {
                 id: true,
@@ -280,8 +291,26 @@ export class OrdersService {
       include: {
         items: {
           include: {
-            product: { select: { nameFr: true, images: { take: 1 } } },
-            variant: { select: { volume: true, price: true } },
+            product: {
+              select: {
+                id: true,
+                slug: true,
+                nameFr: true,
+                images: {
+                  select: { id: true, url: true, isPrimary: true },
+                  orderBy: [{ isPrimary: 'desc' }, { sortOrder: 'asc' }],
+                  take: 1,
+                },
+              },
+            },
+            variant: {
+              select: {
+                id: true,
+                volume: true,
+                price: true,
+                imageUrl: true,
+              },
+            },
           },
         },
       },
