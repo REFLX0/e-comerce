@@ -129,19 +129,17 @@ export function MobileFiltersSheet({
           </SheetTitle>
         </SheetHeader>
 
-        <div className="h-[62dvh] max-h-[640px] min-h-[320px] overflow-y-auto">
-          {/* We pass a prop or just let FilterSidebar render its gradient inside the sheet.
-              Since FilterSidebar has rounded-2xl, it'll look like a floating card inside the sheet. */}
-          <div className="p-3">
-            <FilterSidebar
-              mode="draft"
-              draft={draft}
-              onDraftChange={handleDraftChange}
-              hideCategories={hideCategories}
-              hideBrands={hideBrands}
-              baseFilters={baseFilters}
-            />
-          </div>
+        <div className="h-[75dvh] max-h-[750px] min-h-[320px] overflow-y-auto px-4 py-3 custom-scrollbar">
+          <FilterSidebar
+            mode="draft"
+            draft={draft}
+            onDraftChange={handleDraftChange}
+            hideCategories={hideCategories}
+            hideBrands={hideBrands}
+            baseFilters={baseFilters}
+            hideHeader
+            nested
+          />
         </div>
 
         <div className="sticky bottom-0 flex gap-3 border-t border-white/10 bg-[#0a1128]/95 p-4 backdrop-blur-md">

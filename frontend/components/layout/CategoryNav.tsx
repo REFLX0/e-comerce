@@ -1,6 +1,7 @@
 'use client'
 
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { usePathname } from 'next/navigation'
 import { Link } from '@/i18n/routing'
 import { Bike, Car, ChevronDown, ChevronRight, Package, ShipWheel, Wrench } from 'lucide-react'
 import { useLocale } from 'next-intl'
@@ -9,6 +10,7 @@ import { categoriesApi } from '@/lib/api/categories'
 import { useTranslations } from 'next-intl'
 import { NAVIGATION_TAXONOMY, type NavigationTaxonomyNode } from '@/lib/navigation/taxonomy'
 import type { Category } from '@/lib/types'
+import { cn } from '@/lib/utils'
 
 const DROPDOWN_CLOSE_DELAY_MS = 280
 const DROPDOWN_OPEN_DELAY_MS = 60
@@ -38,6 +40,7 @@ export function CategoryNav() {
   const tTax = useTranslations('Taxonomy')
   const locale = useLocale()
   const isRtl = locale === 'ar'
+  const pathname = usePathname()
 
   const handleMouseEnter = useCallback((slug: string) => {
     // Clear any pending close timer immediately
@@ -107,101 +110,141 @@ export function CategoryNav() {
   }, [closeNow])
 
   return (
-    <nav
-      aria-label={t('catalog')}
-      className="hidden border-b border-slate-200 bg-white md:block"
-      style={{ boxShadow: '0 2px 12px rgba(22,37,76,0.06)' }}
-    >
-      <div className="section-padding flex h-[52px] items-stretch gap-0">
-        <div className="flex min-w-0 items-stretch">
-          {NAVIGATION_TAXONOMY.map((item) => {
-            const Icon = NAVIGATION_ICONS[item.slug] ?? Package
-            const root = findNode(categories, item.slug)
-            const rootLabel = item.labelKey ? tTax(item.labelKey) : (root?.name ?? item.label ?? item.slug)
-            const isOpen = activeDropdown === item.slug
+    <>
+      {/* ── Desktop Nav Bar ── */}
+      <nav
+        aria-label={t('catalog')}
+        className="hidden border-b border-slate-200 bg-white md:block"
+        style={{ boxShadow: '0 2px 12px rgba(22,37,76,0.06)' }}
+      >
+        <div className="section-padding flex h-[52px] items-stretch gap-0">
+          <div className="flex min-w-0 items-stretch">
+            {NAVIGATION_TAXONOMY.map((item) => {
+              const Icon = NAVIGATION_ICONS[item.slug] ?? Package
+              const root = findNode(categories, item.slug)
+              const rootLabel = item.labelKey ? tTax(item.labelKey) : (root?.name ?? item.label ?? item.slug)
+              const isOpen = activeDropdown === item.slug
 
-            return (
-              <div
-                key={item.slug}
-                className="relative flex items-stretch h-full"
-                onMouseEnter={() => handleMouseEnter(item.slug)}
-                onMouseLeave={handleMouseLeave}
-              >
-                {/* ── Nav Button ── */}
-                {item.children.length > 0 ? (
-                  <Link
-                    href={`/categorie/${item.slug}`}
-                    onClick={closeNow}
-                    aria-expanded={isOpen}
-                    aria-haspopup="menu"
-                    className="nav-tab-btn group relative flex h-full items-center gap-2 px-5 text-sm font-semibold transition-all duration-200"
-                    style={{
-                      color: isOpen ? '#D4A76A' : '#16254c',
-                      borderBottom: isOpen ? '2px solid #D4A76A' : '2px solid transparent',
-                    }}
-                  >
-                    <Icon
-                      size={15}
-                      style={{ color: isOpen ? '#D4A76A' : 'rgba(22,37,76,0.5)' }}
-                      className="transition-colors duration-200"
+              return (
+                <div
+                  key={item.slug}
+                  className="relative flex items-stretch h-full"
+                  onMouseEnter={() => handleMouseEnter(item.slug)}
+                  onMouseLeave={handleMouseLeave}
+                >
+                  {/* ── Nav Button ── */}
+                  {item.children.length > 0 ? (
+                    <Link
+                      href={`/categorie/${item.slug}`}
+                      onClick={closeNow}
+                      aria-expanded={isOpen}
+                      aria-haspopup="menu"
+                      className="nav-tab-btn group relative flex h-full items-center gap-2 px-5 text-sm font-semibold transition-all duration-200"
+                      style={{
+                        color: isOpen ? '#D4A76A' : '#16254c',
+                        borderBottom: isOpen ? '2px solid #D4A76A' : '2px solid transparent',
+                      }}
+                    >
+                      <Icon
+                        size={15}
+                        style={{ color: isOpen ? '#D4A76A' : 'rgba(22,37,76,0.5)' }}
+                        className="transition-colors duration-200"
+                      />
+                      <span>{rootLabel}</span>
+                      <ChevronDown
+                        size={13}
+                        className={`transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
+                        style={{ color: isOpen ? '#D4A76A' : 'rgba(22,37,76,0.4)' }}
+                      />
+                      {/* hover underline animation */}
+                      {!isOpen && (
+                        <span className="nav-underline absolute bottom-0 left-0 h-[2px] w-0 bg-brand-accent transition-all duration-200 group-hover:w-full" />
+                      )}
+                    </Link>
+                  ) : (
+                    <Link
+                      href={`/categorie/${item.slug}`}
+                      className="group relative flex h-full items-center gap-2 px-5 text-sm font-semibold transition-all duration-200"
+                      style={{ color: '#16254c', borderBottom: '2px solid transparent' }}
+                    >
+                      <Icon size={15} style={{ color: 'rgba(22,37,76,0.5)' }} />
+                      <span>{rootLabel}</span>
+                      <span className="absolute bottom-0 left-0 h-[2px] w-0 bg-brand-accent transition-all duration-200 group-hover:w-full" />
+                    </Link>
+                  )}
+
+                  {/* ── Flyout Panel ── */}
+                  {isOpen && item.children.length > 0 && (
+                    <FlyoutPanel
+                      item={item}
+                      rootLabel={rootLabel}
+                      categories={categories}
+                      onClose={closeNow}
+                      onMouseEnter={cancelClose}
+                      onMouseLeave={handleMouseLeave}
+                      isRtl={isRtl}
+                      allProductsLabel={t('allProducts')}
                     />
-                    <span>{rootLabel}</span>
-                    <ChevronDown
-                      size={13}
-                      className={`transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
-                      style={{ color: isOpen ? '#D4A76A' : 'rgba(22,37,76,0.4)' }}
-                    />
-                    {/* hover underline animation */}
-                    {!isOpen && (
-                      <span className="nav-underline absolute bottom-0 left-0 h-[2px] w-0 bg-brand-accent transition-all duration-200 group-hover:w-full" />
-                    )}
-                  </Link>
-                ) : (
-                  <Link
-                    href={`/categorie/${item.slug}`}
-                    className="group relative flex h-full items-center gap-2 px-5 text-sm font-semibold transition-all duration-200"
-                    style={{ color: '#16254c', borderBottom: '2px solid transparent' }}
-                  >
-                    <Icon size={15} style={{ color: 'rgba(22,37,76,0.5)' }} />
-                    <span>{rootLabel}</span>
-                    <span className="absolute bottom-0 left-0 h-[2px] w-0 bg-brand-accent transition-all duration-200 group-hover:w-full" />
-                  </Link>
-                )}
+                  )}
+                </div>
+              )
+            })}
+          </div>
 
-                {/* ── Flyout Panel ── */}
-                {isOpen && item.children.length > 0 && (
-                  <FlyoutPanel
-                    item={item}
-                    rootLabel={rootLabel}
-                    categories={categories}
-                    onClose={closeNow}
-                    onMouseEnter={cancelClose}
-                    onMouseLeave={handleMouseLeave}
-                    isRtl={isRtl}
-                    allProductsLabel={t('allProducts')}
-                  />
-                )}
-              </div>
-            )
-          })}
+          <div className="ms-auto flex items-center">
+            <Link
+              href="/catalogue"
+              className="inline-flex h-9 items-center gap-2 rounded-lg px-4 text-xs font-bold tracking-wider uppercase transition-all duration-200 hover:opacity-90"
+              style={{
+                background: 'linear-gradient(135deg, #16254c 0%, #1f356b 100%)',
+                color: '#fff',
+                boxShadow: '0 2px 8px rgba(22,37,76,0.25)',
+              }}
+            >
+              {t('fullCatalog')}
+              <ChevronRight size={14} className={isRtl ? 'rotate-180' : ''} />
+            </Link>
+          </div>
         </div>
+      </nav>
 
-        <div className="ms-auto flex items-center">
-          <Link
-            href="/catalogue"
-            className="inline-flex h-9 items-center gap-2 rounded-lg px-4 text-xs font-bold tracking-wider uppercase transition-all duration-200 hover:opacity-90"
-            style={{
-              background: 'linear-gradient(135deg, #16254c 0%, #1f356b 100%)',
-              color: '#fff',
-              boxShadow: '0 2px 8px rgba(22,37,76,0.25)',
-            }}
-          >
-            {t('fullCatalog')}
-            <ChevronRight size={14} className={isRtl ? 'rotate-180' : ''} />
-          </Link>
-        </div>
-      </div>
-    </nav>
+      {/* ── Mobile Horizontal Category Pills Strip ── */}
+      <nav
+        aria-label={t('catalog')}
+        className="flex md:hidden border-b border-slate-200/80 bg-white/95 backdrop-blur-md overflow-x-auto hide-scrollbar py-2 px-3 gap-2"
+      >
+        {NAVIGATION_TAXONOMY.map((item) => {
+          const Icon = NAVIGATION_ICONS[item.slug] ?? Package
+          const root = findNode(categories, item.slug)
+          const rootLabel = item.labelKey ? tTax(item.labelKey) : (root?.name ?? item.label ?? item.slug)
+          const isActive = pathname?.includes(`/categorie/${item.slug}`)
+
+          return (
+            <Link
+              key={item.slug}
+              href={`/categorie/${item.slug}`}
+              className={cn(
+                'flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold transition-all duration-150 active:scale-95 border',
+                isActive
+                  ? 'border-[#16254c] bg-[#16254c] text-white shadow-sm'
+                  : 'border-slate-200 bg-slate-50 text-slate-700 hover:border-slate-300 hover:bg-slate-100'
+              )}
+            >
+              <Icon size={14} className={isActive ? 'text-[#D4A76A]' : 'text-slate-500'} />
+              <span>{rootLabel}</span>
+            </Link>
+          )
+        })}
+
+        <Link
+          href="/catalogue"
+          className="flex shrink-0 items-center gap-1 rounded-full border border-brand-primary/20 bg-brand-surface px-3 py-1.5 text-xs font-bold text-brand-primary transition-all hover:bg-brand-primary hover:text-white"
+        >
+          <span>{t('catalog')}</span>
+          <ChevronRight size={12} className={isRtl ? 'rotate-180' : ''} />
+        </Link>
+      </nav>
+    </>
   )
 }
 

@@ -6,7 +6,7 @@ import { adminApi, downloadOrderPdf } from '@/lib/api/admin'
 import { gooeyToast as toast } from 'goey-toast'
 import {
   AlertTriangle, CheckCircle2, Clock, Download, FileText, MapPin,
-  PackageCheck, Search, Settings2, Truck, Plus, X, Save, Trash2,
+  PackageCheck, Search, Settings2, Truck, Plus, X, Save, Trash2, Loader2,
 } from 'lucide-react'
 import { useLocale, useTranslations } from 'next-intl'
 
@@ -42,6 +42,18 @@ export default function AdminShippingPage() {
   const [zoneForm, setZoneForm] = useState<{ name: string; price: string; eta: string }>({ name: '', price: '', eta: '' })
   const [editingZone, setEditingZone] = useState<Zone | null>(null)
   const [deleteTarget, setDeleteTarget] = useState<Zone | null>(null)
+  const [downloading, setDownloading] = useState<{ id: string; type: 'delivery_slip' | 'invoice' } | null>(null)
+
+  const handleDownload = async (orderId: string, type: 'delivery_slip' | 'invoice') => {
+    try {
+      setDownloading({ id: orderId, type })
+      await downloadOrderPdf(orderId, type)
+    } catch {
+      toast.error(t('genericError'))
+    } finally {
+      setDownloading(null)
+    }
+  }
 
   const { data, isLoading, isError, refetch } = useQuery<any>({
     queryKey: ['admin-shipping-orders'],
@@ -173,9 +185,9 @@ export default function AdminShippingPage() {
               </thead>
               <tbody>
                 {isLoading ? [...Array(5)].map((_, i) => (
-                  <tr key={i} className="border-t border-gray-50"><td colSpan={4} className="px-4 py-3"><div className="h-5 animate-pulse rounded bg-gray-100" /></td></tr>
+                  <tr key={i} className="border-t border-gray-50"><td colSpan={5} className="px-4 py-3"><div className="h-5 animate-pulse rounded bg-gray-100" /></td></tr>
                 )) : filtered.length === 0 ? (
-                  <tr><td colSpan={4} className="py-14 text-center text-sm text-gray-400">{t('noExpeditions')}</td></tr>
+                  <tr><td colSpan={5} className="py-14 text-center text-sm text-gray-400">{t('noExpeditions')}</td></tr>
                 ) : filtered.map((order) => {
                   const s = STATUS[order.status] ?? STATUS.PENDING; const Icon = s.icon
                   return (
@@ -197,9 +209,34 @@ export default function AdminShippingPage() {
                         </span>
                       </td>
                       <td className="px-4 py-3">
-                        <button onClick={() => downloadOrderPdf(order.id)} className="flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-medium text-brand-primary hover:bg-brand-primary/5 transition-colors" title={t('deliveryNotePdf')}>
-                          <FileText size={14} /> PDF
-                        </button>
+                        <div className="flex items-center gap-1.5 whitespace-nowrap">
+                          <button
+                            onClick={() => handleDownload(order.id, 'delivery_slip')}
+                            disabled={downloading?.id === order.id}
+                            className="flex items-center gap-1.5 rounded-lg border border-purple-200 bg-purple-50 px-2.5 py-1.5 text-xs font-bold text-purple-700 hover:bg-purple-100 transition-colors shadow-sm disabled:opacity-50"
+                            title={t('deliveryNotePdf')}
+                          >
+                            {downloading?.id === order.id && downloading?.type === 'delivery_slip' ? (
+                              <Loader2 size={13} className="animate-spin" />
+                            ) : (
+                              <Truck size={13} />
+                            )}
+                            <span>BL</span>
+                          </button>
+                          <button
+                            onClick={() => handleDownload(order.id, 'invoice')}
+                            disabled={downloading?.id === order.id}
+                            className="flex items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50 transition-colors shadow-sm disabled:opacity-50"
+                            title={t('downloadInvoiceTitle')}
+                          >
+                            {downloading?.id === order.id && downloading?.type === 'invoice' ? (
+                              <Loader2 size={13} className="animate-spin" />
+                            ) : (
+                              <FileText size={13} />
+                            )}
+                            <span>PDF</span>
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   )

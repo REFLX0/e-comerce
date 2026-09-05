@@ -83,6 +83,10 @@ interface FilterSidebarProps {
   hideBrands?: boolean
   /** Base filters to apply to the facets query (e.g. { brandSlug: slug } on brand pages) */
   baseFilters?: Record<string, any>
+  /** Hide the top header (used inside sheets/drawers with their own header) */
+  hideHeader?: boolean
+  /** Remove container border/background for nested embedding */
+  nested?: boolean
 }
 
 export function FilterSidebar({
@@ -92,6 +96,8 @@ export function FilterSidebar({
   hideCategories = false,
   hideBrands = false,
   baseFilters = {},
+  hideHeader = false,
+  nested = false,
 }: FilterSidebarProps) {
   const t = useTranslations('Catalogue')
   const tTax = useTranslations('Taxonomy')
@@ -289,6 +295,15 @@ export function FilterSidebar({
   const toggleSingle = (key: string, value: string) =>
     patch({ [key]: read(key) === value ? null : value })
 
+  const [isMobileScreen, setIsMobileScreen] = useState(false)
+  useEffect(() => {
+    const check = () => setIsMobileScreen(window.innerWidth < 1024)
+    check()
+    window.addEventListener('resize', check)
+    return () => window.removeEventListener('resize', check)
+  }, [])
+  const isMobileOrDraft = inDraft || isMobileScreen
+
   const currentCategorySlug = read('categorySlug')
   const isBattery =
     currentCategorySlug === 'batteries' ||
@@ -296,37 +311,45 @@ export function FilterSidebar({
     searchParams.get('categorySlug') === 'batteries'
 
   return (
-    <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-[#16254c] to-[#0a1128] shadow-2xl backdrop-blur-xl">
+    <div
+      className={cn(
+        nested
+          ? 'w-full text-white'
+          : 'rounded-2xl border border-white/10 bg-gradient-to-br from-[#16254c] to-[#0a1128] shadow-2xl backdrop-blur-xl'
+      )}
+    >
       {/* ── Header ─────────────────────────────────────────────────────── */}
-      <div className="flex items-center justify-between border-b border-white/10 px-5 py-4">
-        <div className="flex items-center gap-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/5 bg-white/10 text-white shadow-inner">
-            <SlidersHorizontal size={16} aria-hidden="true" />
+      {!hideHeader && (
+        <div className="flex items-center justify-between border-b border-white/10 px-5 py-4">
+          <div className="flex items-center gap-3">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/5 bg-white/10 text-white shadow-inner">
+              <SlidersHorizontal size={16} aria-hidden="true" />
+            </div>
+            <div>
+              <h2 className="text-sm font-black uppercase tracking-[0.16em] text-[#D4A76A]">
+                {t('filters')}
+              </h2>
+              {activeCount > 0 && (
+                <p className="mt-0.5 text-[11px] font-medium text-white/60">
+                  {t('filtersActive', { count: activeCount })}
+                </p>
+              )}
+            </div>
           </div>
-          <div>
-            <h2 className="text-sm font-black uppercase tracking-[0.16em] text-[#D4A76A]">
-              {t('filters')}
-            </h2>
-            {activeCount > 0 && (
-              <p className="mt-0.5 text-[11px] font-medium text-white/60">
-                {t('filtersActive', { count: activeCount })}
-              </p>
-            )}
-          </div>
+          {!inDraft && activeCount > 0 && (
+            <button
+              type="button"
+              onClick={clearAll}
+              className="inline-flex items-center gap-1.5 rounded-lg bg-white/5 px-2.5 py-1.5 text-[10px] font-bold uppercase tracking-widest text-[#D4A76A] outline-none transition-all hover:bg-white/10 hover:text-white focus-visible:ring-2 focus-visible:ring-[#D4A76A]/30"
+            >
+              <RotateCcw size={13} aria-hidden="true" />
+              {t('clearAllFilters')}
+            </button>
+          )}
         </div>
-        {!inDraft && activeCount > 0 && (
-          <button
-            type="button"
-            onClick={clearAll}
-            className="inline-flex items-center gap-1.5 rounded-lg bg-white/5 px-2.5 py-1.5 text-[10px] font-bold uppercase tracking-widest text-[#D4A76A] outline-none transition-all hover:bg-white/10 hover:text-white focus-visible:ring-2 focus-visible:ring-[#D4A76A]/30"
-          >
-            <RotateCcw size={13} aria-hidden="true" />
-            {t('clearAllFilters')}
-          </button>
-        )}
-      </div>
+      )}
 
-      <div className="space-y-6 p-5">
+      <div className={cn('space-y-6', nested ? 'p-1' : 'p-5')}>
         {/* ── Categories ───────────────────────────────────────────────── */}
         {!hideCategories && (
           <section aria-label={t('categories')}>
@@ -348,7 +371,7 @@ export function FilterSidebar({
                 <span>{t('allCategories')}</span>
               </button>
 
-              {/* Taxonomy categories with hover flyout */}
+              {/* Taxonomy categories with hover flyout or inline accordion */}
               {resolvedCategories.map((cat) => (
                 <CategoryWithFlyout
                   key={cat.slug}
@@ -361,6 +384,7 @@ export function FilterSidebar({
                   subcategories={cat.subcategories}
                   activeChildSlug={currentCategorySlug}
                   onChildClick={(slug) => patch({ categorySlug: slug })}
+                  isMobileOrDraft={isMobileOrDraft}
                 />
               ))}
             </div>
@@ -640,6 +664,7 @@ function CategoryWithFlyout({
   subcategories,
   activeChildSlug,
   onChildClick,
+  isMobileOrDraft = false,
 }: {
   slug: string
   label: string
@@ -650,6 +675,7 @@ function CategoryWithFlyout({
   subcategories: SubcategoryOption[]
   activeChildSlug: string | null
   onChildClick: (slug: string) => void
+  isMobileOrDraft?: boolean
 }) {
   const [isOpen, setIsOpen] = useState(false)
   const [mounted, setMounted] = useState(false)
@@ -671,54 +697,77 @@ function CategoryWithFlyout({
     })
   }, [subcategories, activeChildSlug])
 
+  // Automatically keep accordion open if a child is selected
+  useEffect(() => {
+    if (hasActiveSub) {
+      setIsOpen(true)
+    }
+  }, [hasActiveSub])
+
   const isHighlighted = active || hasActiveSub
 
   const openFlyout = useCallback(() => {
-    if (!hasSubs) return
+    if (!hasSubs || isMobileOrDraft) return
     if (closeTimer.current) clearTimeout(closeTimer.current)
     if (rowRef.current) {
       const rect = rowRef.current.getBoundingClientRect()
-      setFlyoutPos({ top: Math.max(12, rect.top), left: rect.right + 6 })
+      const maxLeft = typeof window !== 'undefined' ? window.innerWidth - 330 : 0
+      setFlyoutPos({ top: Math.max(12, rect.top), left: Math.min(rect.right + 6, Math.max(10, maxLeft)) })
     }
     setIsOpen(true)
-  }, [hasSubs])
+  }, [hasSubs, isMobileOrDraft])
 
   const scheduleClose = useCallback(() => {
+    if (isMobileOrDraft) return
     if (closeTimer.current) clearTimeout(closeTimer.current)
     closeTimer.current = setTimeout(() => setIsOpen(false), 220)
-  }, [])
+  }, [isMobileOrDraft])
 
   const cancelClose = useCallback(() => {
+    if (isMobileOrDraft) return
     if (closeTimer.current) clearTimeout(closeTimer.current)
-  }, [])
+  }, [isMobileOrDraft])
 
-  // Close when window scrolls to keep clean UI
+  // Close desktop flyout when window scrolls to keep clean UI
   useEffect(() => {
-    if (!isOpen) return
+    if (!isOpen || isMobileOrDraft) return
     const onScroll = () => setIsOpen(false)
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
-  }, [isOpen])
+  }, [isOpen, isMobileOrDraft])
+
+  const handleRowClick = () => {
+    onClick()
+    if (isMobileOrDraft && hasSubs) {
+      setIsOpen((prev) => !prev)
+    }
+  }
+
+  const handleChevronToggle = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    setIsOpen((prev) => !prev)
+  }
 
   return (
     <div
       ref={rowRef}
-      className="relative"
+      className="relative flex flex-col"
       onMouseEnter={openFlyout}
       onMouseLeave={scheduleClose}
     >
       {/* The main category row button */}
       <button
         type="button"
-        onClick={onClick}
+        onClick={handleRowClick}
         aria-pressed={isHighlighted}
-        aria-haspopup={hasSubs ? 'menu' : undefined}
+        aria-haspopup={hasSubs && !isMobileOrDraft ? 'menu' : undefined}
         aria-expanded={hasSubs ? isOpen : undefined}
-        className={`flex min-h-10 w-full items-center justify-between gap-2.5 rounded-xl px-3.5 text-start text-[13px] transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4A76A]/40 ${
+        className={cn(
+          'flex min-h-10 w-full items-center justify-between gap-2.5 rounded-xl px-3.5 text-start text-[13px] transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4A76A]/40',
           isHighlighted
             ? 'border border-[#D4A76A]/40 bg-white/10 font-bold text-white shadow-inner'
             : 'border border-transparent text-white/75 hover:border-white/10 hover:bg-white/5 hover:text-white'
-        }`}
+        )}
       >
         <span className="flex min-w-0 items-center gap-2.5">
           <Icon
@@ -733,19 +782,101 @@ function CategoryWithFlyout({
 
         <span className="flex shrink-0 items-center gap-1.5">
           {hasSubs && (
-            <ChevronRight
-              size={13}
-              className={cn(
-                'transition-all duration-200',
-                isOpen ? 'translate-x-0.5 text-[#D4A76A]' : 'text-white/30'
-              )}
-            />
+            <span
+              role="button"
+              tabIndex={0}
+              onClick={handleChevronToggle}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.stopPropagation()
+                  setIsOpen((prev) => !prev)
+                }
+              }}
+              className="p-1 -mr-1 rounded-md hover:bg-white/10 text-white/40 hover:text-white transition-colors"
+              aria-label={isOpen ? 'Fermer' : 'Ouvrir'}
+            >
+              <ChevronRight
+                size={14}
+                className={cn(
+                  'transition-transform duration-200',
+                  isOpen ? 'rotate-90 text-[#D4A76A]' : 'text-white/40'
+                )}
+              />
+            </span>
           )}
         </span>
       </button>
 
-      {/* Flyout Subcategories Panel rendered via React Portal directly into body */}
-      {mounted && isOpen && hasSubs && flyoutPos && typeof document !== 'undefined' && createPortal(
+      {/* ── Mobile / Draft Inline Accordion ── */}
+      {isMobileOrDraft && isOpen && hasSubs && (
+        <div className="ms-3 my-1.5 space-y-1 rounded-xl bg-white/[0.04] p-2 border-s-2 border-[#D4A76A]/40 ps-3">
+          {/* Button to select entire parent category */}
+          <button
+            type="button"
+            onClick={onClick}
+            className={cn(
+              'flex min-h-9 w-full items-center justify-between rounded-lg px-2.5 py-1.5 text-start text-xs font-semibold transition-colors',
+              active && !activeChildSlug
+                ? 'bg-[#D4A76A]/20 text-[#D4A76A] font-bold shadow-inner'
+                : 'text-white/60 hover:text-white hover:bg-white/5'
+            )}
+          >
+            <span>Tous les {label}</span>
+            {active && !activeChildSlug && <Check size={13} className="text-[#D4A76A]" />}
+          </button>
+
+          {/* Subcategories */}
+          {subcategories.map((sub) => {
+            const isSubActive = activeChildSlug === sub.slug
+            const hasSubChildren = (sub.children?.length ?? 0) > 0
+
+            return (
+              <div key={sub.slug} className="flex flex-col space-y-1 pt-0.5">
+                <button
+                  type="button"
+                  onClick={() => onChildClick(sub.slug)}
+                  className={cn(
+                    'group flex min-h-9 w-full items-center justify-between gap-2 rounded-lg px-2.5 py-1.5 text-start text-xs transition-colors',
+                    isSubActive
+                      ? 'bg-[#D4A76A] text-[#16254c] font-bold shadow-sm'
+                      : 'text-white/80 hover:bg-white/10 hover:text-white'
+                  )}
+                >
+                  <span className="truncate">{sub.name}</span>
+                  {isSubActive && <Check size={13} className="text-[#16254c] shrink-0" />}
+                </button>
+
+                {/* Level 3 sub-items if present (e.g. 100% Synthèse, DOT 3/4) */}
+                {hasSubChildren && (
+                  <div className="ms-2 flex flex-wrap gap-1 border-s border-white/10 ps-2 py-1">
+                    {sub.children!.map((subChild) => {
+                      const isSubChildActive = activeChildSlug === subChild.slug
+                      return (
+                        <button
+                          key={subChild.slug}
+                          type="button"
+                          onClick={() => onChildClick(subChild.slug)}
+                          className={cn(
+                            'rounded-md px-2 py-1 text-[11px] font-medium transition-colors',
+                            isSubChildActive
+                              ? 'bg-[#D4A76A] text-[#16254c] font-bold shadow-sm'
+                              : 'bg-white/5 text-white/70 hover:bg-white/10 hover:text-white'
+                          )}
+                        >
+                          {subChild.name}
+                        </button>
+                      )
+                    })}
+                  </div>
+                )}
+              </div>
+            )
+          })}
+        </div>
+      )}
+
+      {/* ── Desktop Flyout Subcategories Panel (Portal to body, only when not mobile/draft) ── */}
+      {!isMobileOrDraft && mounted && isOpen && hasSubs && flyoutPos && typeof document !== 'undefined' && createPortal(
         <div
           role="menu"
           onMouseEnter={cancelClose}

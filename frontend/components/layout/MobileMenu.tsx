@@ -2,19 +2,43 @@
 
 import { useQuery } from '@tanstack/react-query'
 import { categoriesApi } from '@/lib/api/categories'
-import { Menu, X, ChevronRight, ChevronDown, ChevronUp, Home, BookOpen, Info, Phone, Tag, Search } from 'lucide-react'
+import {
+  Menu,
+  X,
+  ChevronRight,
+  ChevronDown,
+  ChevronUp,
+  Home,
+  BookOpen,
+  Info,
+  Phone,
+  Search,
+  Car,
+  Wrench,
+  Bike,
+  ShipWheel,
+  Package,
+} from 'lucide-react'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { Link } from '@/i18n/routing'
 import { useState } from 'react'
 import { useTranslations, useLocale } from 'next-intl'
+import { NAVIGATION_TAXONOMY } from '@/lib/navigation/taxonomy'
+
+const NAVIGATION_ICONS: Record<string, React.ElementType> = {
+  automobile: Car,
+  'auto-pieces-rechange': Wrench,
+  'moto-karting': Bike,
+  marine: ShipWheel,
+}
 
 export default function MobileMenu() {
   const [open, setOpen] = useState(false)
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set())
   const tNav = useTranslations('Navigation')
   const tLayout = useTranslations('Layout')
+  const tTax = useTranslations('Taxonomy')
   const locale = useLocale()
-  // Flip right-pointing chevrons in RTL so they still indicate "into the submenu".
   const chevronRtlClass = locale === 'ar' ? 'rtl-flip' : ''
 
   const { data: categories } = useQuery({
@@ -22,11 +46,11 @@ export default function MobileMenu() {
     queryFn: categoriesApi.getTree,
   })
 
-  const toggleCategory = (id: string) => {
-    setExpandedCategories(prev => {
+  const toggleCategory = (slug: string) => {
+    setExpandedCategories((prev) => {
       const next = new Set(prev)
-      if (next.has(id)) next.delete(id)
-      else next.add(id)
+      if (next.has(slug)) next.delete(slug)
+      else next.add(slug)
       return next
     })
   }
@@ -85,97 +109,144 @@ export default function MobileMenu() {
           </Link>
 
           {/* Catalogue section */}
-          <div className="mt-2 mb-1 px-4">
-            <p className="text-[10px] font-bold tracking-normal text-brand-muted uppercase">{tNav('catalog')}</p>
-          </div>
-
-          {categories && categories.length > 0 ? (
-            <div className="flex flex-col gap-0.5">
-              {categories.map((category) => {
-                const hasChildren = category.children && category.children.length > 0
-                const isExpanded = expandedCategories.has(category.id)
-                return hasChildren ? (
-                  <div key={category.id} className="flex flex-col">
-                    <button
-                      onClick={() => toggleCategory(category.id)}
-                      className="flex min-h-11 w-full items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-brand-primary/76 transition-all duration-150 hover:bg-brand-surface hover:text-brand-primary"
-                    >
-                      <Tag size={17} className="shrink-0 text-brand-muted" />
-                      <span className="flex-1 text-start">{category.name}</span>
-                      {isExpanded ? (
-                        <ChevronUp size={14} className="shrink-0 text-brand-muted transition-transform duration-150" />
-                      ) : (
-                        <ChevronDown size={14} className="shrink-0 text-brand-muted transition-transform duration-150" />
-                      )}
-                    </button>
-                    <div
-                      className={`overflow-hidden transition-all duration-200 ease-in-out ${
-                        isExpanded ? 'max-h-[800px] opacity-100' : 'max-h-0 opacity-0'
-                      }`}
-                    >
-                      <div className="ms-4 mb-2 flex flex-col gap-1 border-s-2 border-brand-border ps-4">
-                        <Link
-                          href={`/categorie/${category.slug}`}
-                          className="flex min-h-11 items-center gap-2 rounded-lg px-3 py-2 text-sm text-brand-muted transition-all duration-150 hover:bg-brand-surface hover:text-brand-primary"
-                          onClick={() => setOpen(false)}
-                        >
-                          <ChevronRight size={13} className={chevronRtlClass} />
-                          {tNav('allProducts')}
-                        </Link>
-                        {category.children?.map((sub) => (
-                          <div key={sub.id} className="flex flex-col mb-2">
-                            <Link
-                              href={`/categorie/${sub.slug}`}
-                              className="flex min-h-10 items-center gap-2 rounded-lg px-3 py-2 text-sm font-bold text-brand-primary transition-all duration-150 hover:bg-brand-surface hover:text-brand-accent"
-                              onClick={() => setOpen(false)}
-                            >
-                              <ChevronRight size={13} className={chevronRtlClass} />
-                              {sub.name}
-                            </Link>
-                            {sub.children && sub.children.length > 0 && (
-                              <div className="ms-5 mt-1 flex flex-col gap-0.5 border-s border-brand-border/50 ps-3">
-                                {sub.children.map((child) => (
-                                  <Link
-                                    key={child.id}
-                                    href={`/categorie/${child.slug}`}
-                                    className="flex min-h-9 items-center gap-2 rounded-lg px-2 py-1.5 text-xs text-brand-muted transition-all duration-150 hover:bg-brand-surface hover:text-brand-primary"
-                                    onClick={() => setOpen(false)}
-                                  >
-                                    <span className="h-1 w-1 rounded-full bg-brand-primary/20" />
-                                    {child.name}
-                                  </Link>
-                                ))}
-                              </div>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  <Link
-                    key={category.id}
-                    href={`/categorie/${category.slug}`}
-                    className="flex min-h-11 w-full items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-brand-primary/76 transition-all duration-150 hover:bg-brand-surface hover:text-brand-primary"
-                    onClick={() => setOpen(false)}
-                  >
-                    <Tag size={17} className="shrink-0 text-brand-muted" />
-                    <span className="flex-1">{category.name}</span>
-                    <ChevronRight size={14} className={`shrink-0 text-brand-muted ${chevronRtlClass}`} />
-                  </Link>
-                )
-              })}
-            </div>
-          ) : (
+          <div className="mt-4 mb-2 flex items-center justify-between px-4">
+            <p className="text-[11px] font-bold tracking-wider text-brand-muted uppercase">{tNav('catalog')}</p>
             <Link
               href="/catalogue"
-              className="flex min-h-11 items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-brand-primary/76 transition-all duration-150 hover:bg-brand-surface hover:text-brand-primary"
+              className="text-xs font-semibold text-brand-accent transition-colors hover:underline"
               onClick={() => setOpen(false)}
             >
-              <BookOpen size={17} className="text-brand-muted" />
-              {tNav('viewAllCatalog')}
+              {tNav('fullCatalog')}
             </Link>
-          )}
+          </div>
+
+          <div className="flex flex-col gap-1">
+            {NAVIGATION_TAXONOMY.map((item) => {
+              const Icon = NAVIGATION_ICONS[item.slug] ?? Package
+              const isExpanded = expandedCategories.has(item.slug)
+              const rootLabel = item.labelKey ? tTax(item.labelKey) : item.label || item.slug
+              const hasChildren = item.children && item.children.length > 0
+
+              return (
+                <div key={item.slug} className="flex flex-col rounded-xl border border-brand-border/60 bg-brand-surface/30">
+                  <div className="flex min-h-11 items-center justify-between px-3 py-2">
+                    <Link
+                      href={`/categorie/${item.slug}`}
+                      className="flex flex-1 items-center gap-3 text-sm font-bold text-brand-primary transition-colors hover:text-brand-accent"
+                      onClick={() => setOpen(false)}
+                    >
+                      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-brand-primary/8 text-brand-primary">
+                        <Icon size={16} />
+                      </div>
+                      <span className="leading-tight">{rootLabel}</span>
+                    </Link>
+
+                    {hasChildren && (
+                      <button
+                        type="button"
+                        onClick={() => toggleCategory(item.slug)}
+                        aria-label={isExpanded ? 'Fermer' : 'Ouvrir'}
+                        className="flex h-8 w-8 items-center justify-center rounded-md text-brand-muted transition-colors hover:bg-brand-surface hover:text-brand-primary"
+                      >
+                        {isExpanded ? (
+                          <ChevronUp size={16} />
+                        ) : (
+                          <ChevronDown size={16} />
+                        )}
+                      </button>
+                    )}
+                  </div>
+
+                  {/* Accordion children */}
+                  {hasChildren && isExpanded && (
+                    <div className="border-t border-brand-border/40 bg-brand-card/70 px-3 py-2">
+                      <Link
+                        href={`/categorie/${item.slug}`}
+                        className="flex min-h-8 items-center gap-2 rounded-md px-2 py-1.5 text-xs font-semibold text-brand-accent transition-colors hover:bg-brand-surface"
+                        onClick={() => setOpen(false)}
+                      >
+                        <ChevronRight size={12} className={chevronRtlClass} />
+                        {tNav('allProducts')} {rootLabel}
+                      </Link>
+
+                      <div className="mt-1 flex flex-col gap-1">
+                        {item.children.map((child) => {
+                          const childLabel = child.labelKey ? tTax(child.labelKey) : child.label || child.slug
+                          const hint = child.hintKey ? tTax(child.hintKey) : child.hint
+                          const hasSubChildren = child.children && child.children.length > 0
+                          const isSubExpanded = expandedCategories.has(child.slug)
+
+                          return (
+                            <div key={child.slug} className="flex flex-col rounded-lg bg-brand-surface/40 px-2 py-1.5">
+                              <div className="flex items-center justify-between">
+                                <Link
+                                  href={(child.href || `/categorie/${child.slug}`) as any}
+                                  className="flex flex-1 flex-col py-0.5"
+                                  onClick={() => setOpen(false)}
+                                >
+                                  <span className="text-xs font-semibold text-brand-primary transition-colors hover:text-brand-accent">
+                                    {childLabel}
+                                  </span>
+                                  {hint && (
+                                    <span className="text-[10px] text-brand-muted line-clamp-1">
+                                      {hint}
+                                    </span>
+                                  )}
+                                </Link>
+
+                                {hasSubChildren && (
+                                  <button
+                                    type="button"
+                                    onClick={() => toggleCategory(child.slug)}
+                                    className="p-1 text-brand-muted hover:text-brand-primary"
+                                    aria-label="Toggle subcategory"
+                                  >
+                                    <ChevronDown
+                                      size={13}
+                                      className={`transition-transform duration-150 ${isSubExpanded ? 'rotate-180' : ''}`}
+                                    />
+                                  </button>
+                                )}
+                              </div>
+
+                              {/* Level 3 items */}
+                              {hasSubChildren && isSubExpanded && (
+                                <div className="mt-1.5 flex flex-wrap gap-1 border-t border-brand-border/30 pt-1.5">
+                                  {child.children!.map((subChild) => {
+                                    const subChildLabel = subChild.labelKey ? tTax(subChild.labelKey) : subChild.label || subChild.slug
+                                    const targetHref = subChild.href || `/categorie/${subChild.slug}`
+                                    return (
+                                      <Link
+                                        key={subChild.slug}
+                                        href={targetHref as any}
+                                        className="rounded-md border border-brand-border/60 bg-brand-card px-2 py-1 text-[10px] font-medium text-brand-primary/80 transition-all hover:border-brand-accent hover:text-brand-accent"
+                                        onClick={() => setOpen(false)}
+                                      >
+                                        {subChildLabel}
+                                      </Link>
+                                    )
+                                  })}
+                                </div>
+                              )}
+                            </div>
+                          )
+                        })}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )
+            })}
+          </div>
+
+          <Link
+            href="/catalogue"
+            className="mt-2 flex min-h-11 items-center justify-center gap-2 rounded-xl bg-brand-primary px-4 py-3 text-sm font-bold text-white shadow-sm transition-all duration-150 hover:bg-brand-primary-light"
+            onClick={() => setOpen(false)}
+          >
+            <BookOpen size={16} />
+            {tNav('fullCatalog')}
+          </Link>
 
           {/* Bottom links */}
           <div className="mt-4 space-y-0.5 border-t border-brand-border pt-4">
