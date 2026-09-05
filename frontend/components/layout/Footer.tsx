@@ -226,17 +226,27 @@ export default function Footer() {
             &copy; {new Date().getFullYear()} specpart. {tLayout('allRightsReserved')}
           </p>
 
-          {/* Payment logos text badges */}
-          <div className="flex items-center gap-2">
-            {['VISA', 'MC', 'D17', 'FLOUSS'].map((label) => (
-              <span
-                key={label}
-                className="flex h-7 min-w-[42px] items-center justify-center rounded border border-white/10 bg-white/5 px-2 text-[10px] font-black tracking-wider text-white/40"
-              >
-                {label}
-              </span>
-            ))}
-          </div>
+          {/* Discreet Developer Credits */}
+          <p className="text-[11px] text-white/20">
+            Made by{' '}
+            <a
+              href="https://www.linkedin.com/in/aziz-jlassi111/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-white/30 transition-colors hover:text-white/60"
+            >
+              Med Aziz Jlassi
+            </a>
+            {' & '}
+            <a
+              href="https://www.linkedin.com/in/mohamed-harbi-4385471ab/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-white/30 transition-colors hover:text-white/60"
+            >
+              Mohamed Harbi
+            </a>
+          </p>
         </div>
       </div>
     </footer>
