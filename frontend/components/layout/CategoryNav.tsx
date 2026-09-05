@@ -43,6 +43,7 @@ export function CategoryNav() {
   })
 
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null)
+  const navRef = useRef<HTMLElement | null>(null)
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const openTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const t = useTranslations('Navigation')
@@ -110,9 +111,18 @@ export function CategoryNav() {
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') closeNow()
     }
+    const onOutsideClick = (event: MouseEvent | TouchEvent) => {
+      if (navRef.current && !navRef.current.contains(event.target as Node)) {
+        closeNow()
+      }
+    }
     window.addEventListener('keydown', onKeyDown)
+    document.addEventListener('mousedown', onOutsideClick)
+    document.addEventListener('touchstart', onOutsideClick)
     return () => {
       window.removeEventListener('keydown', onKeyDown)
+      document.removeEventListener('mousedown', onOutsideClick)
+      document.removeEventListener('touchstart', onOutsideClick)
       if (closeTimer.current) clearTimeout(closeTimer.current)
       if (openTimer.current) clearTimeout(openTimer.current)
     }
@@ -120,25 +130,29 @@ export function CategoryNav() {
 
   return (
     <>
-      {/* ── Desktop Nav Bar ── */}
+      {/* ── Desktop & Tablet Nav Bar (>= md) ── */}
       <nav
+        ref={navRef}
         aria-label={t('catalog')}
         className="hidden border-b border-slate-200 bg-white md:block"
         style={{ boxShadow: '0 2px 12px rgba(22,37,76,0.06)' }}
       >
-        <div className="section-padding flex h-[52px] items-center gap-1.5">
-          <div className="flex min-w-0 items-center gap-1.5">
-            {NAVIGATION_TAXONOMY.map((item) => {
+        <div className="section-padding flex h-[52px] items-center justify-between gap-1 sm:gap-2">
+          {/* Scrollable tabs container for tablets and tight screens */}
+          <div className="flex min-w-0 flex-1 items-center gap-1 sm:gap-1.5 md:gap-2 overflow-x-auto hide-scrollbar py-1">
+            {NAVIGATION_TAXONOMY.map((item, index) => {
               const Icon = NAVIGATION_ICONS[item.slug] ?? Package
               const root = findNode(categories, item.slug)
               const rootLabel = item.labelKey ? tTax(item.labelKey) : (root?.name ?? item.label ?? item.slug)
               const isOpen = activeDropdown === item.slug
               const isActive = isItemActive(item, pathname)
+              // Right-align flyout for categories on the right half to prevent off-screen overflow
+              const alignEnd = index >= Math.max(1, NAVIGATION_TAXONOMY.length - 2)
 
               return (
                 <div
                   key={item.slug}
-                  className="relative flex items-center h-full"
+                  className="relative flex shrink-0 items-center h-full"
                   onMouseEnter={() => handleMouseEnter(item.slug)}
                   onMouseLeave={handleMouseLeave}
                 >
@@ -146,11 +160,20 @@ export function CategoryNav() {
                   {item.children.length > 0 ? (
                     <Link
                       href={`/categorie/${item.slug}`}
-                      onClick={closeNow}
+                      onClick={(e) => {
+                        // On touch/tablet: first tap opens the dropdown to browse subcategories
+                        if (!isOpen) {
+                          e.preventDefault()
+                          if (closeTimer.current) clearTimeout(closeTimer.current)
+                          setActiveDropdown(item.slug)
+                        } else {
+                          closeNow()
+                        }
+                      }}
                       aria-expanded={isOpen}
                       aria-haspopup="menu"
                       className={cn(
-                        'nav-tab-btn group relative flex items-center gap-2 rounded-full px-4 py-1.5 text-xs md:text-sm font-semibold transition-all duration-200 border',
+                        'nav-tab-btn group relative flex items-center gap-1.5 sm:gap-2 rounded-full px-3 py-1.5 md:px-3 lg:px-4 text-xs md:text-xs lg:text-sm font-semibold transition-all duration-200 border whitespace-nowrap shrink-0',
                         isActive
                           ? 'border-[#16254c] bg-[#16254c] text-white shadow-sm'
                           : isOpen
@@ -161,7 +184,7 @@ export function CategoryNav() {
                       <Icon
                         size={15}
                         className={cn(
-                          'transition-colors duration-200',
+                          'transition-colors duration-200 shrink-0',
                           isActive ? 'text-[#D4A76A]' : isOpen ? 'text-[#D4A76A]' : 'text-slate-500 group-hover:text-slate-700'
                         )}
                       />
@@ -169,7 +192,7 @@ export function CategoryNav() {
                       <ChevronDown
                         size={13}
                         className={cn(
-                          'transition-transform duration-200',
+                          'transition-transform duration-200 shrink-0',
                           isOpen ? 'rotate-180' : '',
                           isActive ? 'text-white/80' : 'text-slate-400 group-hover:text-slate-600'
                         )}
@@ -178,8 +201,9 @@ export function CategoryNav() {
                   ) : (
                     <Link
                       href={`/categorie/${item.slug}`}
+                      onClick={closeNow}
                       className={cn(
-                        'group relative flex items-center gap-2 rounded-full px-4 py-1.5 text-xs md:text-sm font-semibold transition-all duration-200 border',
+                        'group relative flex items-center gap-1.5 sm:gap-2 rounded-full px-3 py-1.5 md:px-3 lg:px-4 text-xs md:text-xs lg:text-sm font-semibold transition-all duration-200 border whitespace-nowrap shrink-0',
                         isActive
                           ? 'border-[#16254c] bg-[#16254c] text-white shadow-sm'
                           : 'border-transparent text-slate-700 hover:border-slate-200 hover:bg-slate-100'
@@ -188,7 +212,7 @@ export function CategoryNav() {
                       <Icon
                         size={15}
                         className={cn(
-                          'transition-colors duration-200',
+                          'transition-colors duration-200 shrink-0',
                           isActive ? 'text-[#D4A76A]' : 'text-slate-500 group-hover:text-slate-700'
                         )}
                       />
@@ -206,6 +230,7 @@ export function CategoryNav() {
                       onMouseEnter={cancelClose}
                       onMouseLeave={handleMouseLeave}
                       isRtl={isRtl}
+                      alignEnd={alignEnd}
                       allProductsLabel={t('allProducts')}
                     />
                   )}
@@ -214,24 +239,25 @@ export function CategoryNav() {
             })}
           </div>
 
-          <div className="ms-auto flex items-center">
+          <div className="ms-auto flex shrink-0 items-center pl-1 sm:pl-2">
             <Link
               href="/catalogue"
-              className="inline-flex h-9 items-center gap-2 rounded-lg px-4 text-xs font-bold tracking-wider uppercase transition-all duration-200 hover:opacity-90"
+              className="inline-flex h-8 sm:h-8.5 lg:h-9 items-center gap-1.5 sm:gap-2 rounded-lg px-2.5 sm:px-3.5 lg:px-4 text-[11px] lg:text-xs font-bold tracking-wider uppercase transition-all duration-200 hover:opacity-90 whitespace-nowrap"
               style={{
                 background: 'linear-gradient(135deg, #16254c 0%, #1f356b 100%)',
                 color: '#fff',
                 boxShadow: '0 2px 8px rgba(22,37,76,0.25)',
               }}
             >
-              {t('fullCatalog')}
-              <ChevronRight size={14} className={isRtl ? 'rotate-180' : ''} />
+              <span className="hidden sm:inline">{t('fullCatalog')}</span>
+              <span className="sm:hidden">{t('catalog')}</span>
+              <ChevronRight size={13} className={isRtl ? 'rotate-180' : ''} />
             </Link>
           </div>
         </div>
       </nav>
 
-      {/* ── Mobile Horizontal Category Pills Strip ── */}
+      {/* ── Mobile Horizontal Category Pills Strip (< md) ── */}
       <nav
         aria-label={t('catalog')}
         className="flex md:hidden border-b border-slate-200/80 bg-white/95 backdrop-blur-md overflow-x-auto hide-scrollbar py-2 px-3 gap-2"
@@ -247,7 +273,7 @@ export function CategoryNav() {
               key={item.slug}
               href={`/categorie/${item.slug}`}
               className={cn(
-                'flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold transition-all duration-150 active:scale-95 border',
+                'flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold transition-all duration-150 active:scale-95 border whitespace-nowrap',
                 isActive
                   ? 'border-[#16254c] bg-[#16254c] text-white shadow-sm'
                   : 'border-slate-200 bg-slate-50 text-slate-700 hover:border-slate-300 hover:bg-slate-100'
@@ -261,7 +287,7 @@ export function CategoryNav() {
 
         <Link
           href="/catalogue"
-          className="flex shrink-0 items-center gap-1 rounded-full border border-brand-primary/20 bg-brand-surface px-3 py-1.5 text-xs font-bold text-brand-primary transition-all hover:bg-brand-primary hover:text-white"
+          className="flex shrink-0 items-center gap-1 rounded-full border border-brand-primary/20 bg-brand-surface px-3 py-1.5 text-xs font-bold text-brand-primary transition-all hover:bg-brand-primary hover:text-white whitespace-nowrap"
         >
           <span>{t('catalog')}</span>
           <ChevronRight size={12} className={isRtl ? 'rotate-180' : ''} />
@@ -284,6 +310,7 @@ function FlyoutPanel({
   onMouseEnter,
   onMouseLeave,
   isRtl,
+  alignEnd,
   allProductsLabel,
 }: {
   item: (typeof NAVIGATION_TAXONOMY)[number]
@@ -293,6 +320,7 @@ function FlyoutPanel({
   onMouseEnter: () => void
   onMouseLeave: () => void
   isRtl: boolean
+  alignEnd?: boolean
   allProductsLabel: string
 }) {
   const [activeChild, setActiveChild] = useState<string | null>(null)
@@ -308,12 +336,16 @@ function FlyoutPanel({
       role="menu"
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
-      className="flyout-panel absolute start-0 top-full z-50 flex overflow-hidden before:absolute before:-top-3 before:left-0 before:right-0 before:h-4 before:content-['']"
+      className={cn(
+        "flyout-panel absolute top-full z-50 flex overflow-hidden before:absolute before:-top-3 before:left-0 before:right-0 before:h-4 before:content-['']",
+        alignEnd ? (isRtl ? 'start-0' : 'end-0') : (isRtl ? 'end-0' : 'start-0')
+      )}
       style={{
         borderRadius: '0 0 14px 14px',
         border: '1px solid rgba(22,37,76,0.1)',
         boxShadow: '0 16px 48px rgba(22,37,76,0.16)',
-        minWidth: 280,
+        minWidth: 260,
+        maxWidth: 'min(500px, calc(100vw - 24px))',
         maxHeight: 'min(560px, calc(100vh - 125px))',
         background: '#fff',
         animation: 'flyoutIn 0.14s ease-out both',
@@ -323,7 +355,8 @@ function FlyoutPanel({
       <div
         className="flex flex-col max-h-[inherit]"
         style={{
-          minWidth: 280,
+          minWidth: 230,
+          maxWidth: 260,
           borderRight: hasSubPanel ? '1px solid rgba(22,37,76,0.07)' : 'none',
         }}
       >
@@ -361,11 +394,18 @@ function FlyoutPanel({
             return (
               <li key={child.slug} role="none">
                 {hasSubs ? (
-                  // Item with sub-children: hover reveals right panel, clicking navigates to category
+                  // Item with sub-children: hover or tap reveals right panel, clicking again navigates
                   <Link
                     href={`/categorie/${child.slug}`}
                     role="menuitem"
-                    onClick={onClose}
+                    onClick={(e) => {
+                      if (activeChild !== child.slug) {
+                        e.preventDefault()
+                        setActiveChild(child.slug)
+                      } else {
+                        onClose()
+                      }
+                    }}
                     onMouseEnter={() => setActiveChild(child.slug)}
                     className={cn(
                       'flyout-item group flex w-full items-center justify-between gap-2.5 rounded-xl px-3 py-2 text-xs transition-all duration-150',
@@ -491,7 +531,8 @@ function SubPanel({
     <div
       className="flex flex-col max-h-[inherit]"
       style={{
-        minWidth: 200,
+        minWidth: 190,
+        maxWidth: 230,
         background: 'linear-gradient(180deg, #fafbff 0%, #fff 100%)',
         animation: 'subPanelIn 0.15s ease both',
       }}

@@ -62,7 +62,7 @@ export default function MobileMenu() {
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger
         render={
-          <button className="flex h-11 w-11 items-center justify-center rounded-lg bg-brand-primary text-white transition-all duration-200 hover:bg-brand-primary-light md:hidden" />
+          <button className="flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-lg bg-brand-primary text-white transition-all duration-200 hover:bg-brand-primary-light lg:hidden" />
         }
       >
         <Menu size={20} />

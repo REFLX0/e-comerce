@@ -33,12 +33,12 @@ export default function Header() {
             <img
               src="/logo.jpg"
               alt="specpart"
-              className="h-12 w-auto object-contain sm:h-16 md:h-20 lg:h-20"
+              className="h-10 w-auto object-contain sm:h-12 md:h-14 lg:h-16"
             />
           </Link>
 
-          {/* Search — Desktop (more prominent) */}
-          <div className="hidden flex-1 md:flex md:justify-center">
+          {/* Search — Desktop (prominent in top bar on >= lg) */}
+          <div className="hidden flex-1 lg:flex lg:justify-center">
             <div className="w-full max-w-xl">
               <GlobalSearch />
             </div>
@@ -70,9 +70,9 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Mobile Search Bar — always visible below main row */}
+      {/* Mobile & Tablet Search Bar — always visible below main row on < lg */}
       <div className="border-b border-gray-100 bg-white lg:hidden">
-        <div className="section-padding pb-3">
+        <div className="section-padding py-2 sm:py-2.5">
           <GlobalSearch className="max-w-none" />
         </div>
       </div>
