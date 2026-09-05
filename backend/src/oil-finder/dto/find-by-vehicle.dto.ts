@@ -14,9 +14,17 @@ export class FindByVehicleDto {
   @MaxLength(100, { message: 'model must not exceed 100 characters' })
   model: string;
 
-  @Transform(({ value }) => (typeof value === 'string' ? value.trim() || undefined : value))
+  @Transform(({ obj, value }) => {
+    const raw = value ?? obj?.engine;
+    return typeof raw === 'string' ? raw.trim() || undefined : undefined;
+  })
   @IsOptional()
   @IsString({ message: 'engineCode must be a string' })
   @MaxLength(100, { message: 'engineCode must not exceed 100 characters' })
   engineCode?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(100)
+  engine?: string;
 }

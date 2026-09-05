@@ -30,6 +30,7 @@ export interface ProductFilters {
   acea?: string;
   volume?: string;
   oem?: string;
+  oemTokens?: string[];
   make?: string;
   model?: string;
   engineCode?: string;
@@ -260,6 +261,7 @@ export class ProductsService {
       acea: filters.acea,
       volume: filters.volume,
       oem: filters.oem,
+      oemTokens: filters.oemTokens?.join(','),
       batteryType: filters.batteryType,
     };
     return `products:list:${JSON.stringify(relevant)}`;
@@ -359,7 +361,15 @@ export class ProductsService {
           mode: 'insensitive',
         };
       }
-      if (filters.oem) {
+      if (filters.oemTokens && filters.oemTokens.length > 0) {
+        andConditions.push({
+          OR: filters.oemTokens.flatMap((t) => [
+            { specs: { OEMApprovals: { contains: t, mode: 'insensitive' as const } } },
+            { nameFr: { contains: t, mode: 'insensitive' as const } },
+            { description: { contains: t, mode: 'insensitive' as const } },
+          ]),
+        });
+      } else if (filters.oem) {
         specsInput.OEMApprovals = {
           contains: filters.oem,
           mode: 'insensitive',

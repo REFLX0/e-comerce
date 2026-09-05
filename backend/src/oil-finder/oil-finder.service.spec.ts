@@ -177,35 +177,53 @@ describe('OilFinderService', () => {
       }
     });
 
-    it('returns status not_found enriched with automobile classification for Volkswagen', async () => {
+    it('returns official manufacturer spec for Volkswagen when not found in DB', async () => {
       prisma.oilFinderVehicle.findMany.mockResolvedValue([]);
       prisma.$queryRawUnsafe.mockResolvedValueOnce([{ is_car: true }]);
 
       const result = await service.findByVehicle('Volkswagen', 'Golf');
 
-      expect(result.status).toBe('not_found');
-      if (result.status === 'not_found') {
-        expect(result.message).toContain('automobile');
+      expect(result.status).toBe('found');
+      if (result.status === 'found') {
+        expect(result.oilSpec.viscosity).toBe('5W-30');
+        expect(result.oilSpec.oemApproval).toContain('VW 504 00 / 507 00');
+        expect(result.confidence).toBe('medium');
       }
     });
 
-    it('returns status not_found enriched with automobile classification for BMW', async () => {
+    it('returns official manufacturer spec for BMW when not found in DB', async () => {
       prisma.oilFinderVehicle.findMany.mockResolvedValue([]);
       prisma.$queryRawUnsafe.mockResolvedValueOnce([{ is_car: true }]);
 
       const result = await service.findByVehicle('BMW', '3 Series');
 
-      expect(result.status).toBe('not_found');
-      if (result.status === 'not_found') {
-        expect(result.message).toContain('automobile');
+      expect(result.status).toBe('found');
+      if (result.status === 'found') {
+        expect(result.oilSpec.viscosity).toBe('5W-30');
+        expect(result.oilSpec.oemApproval).toContain('BMW Longlife-04');
+        expect(result.confidence).toBe('medium');
       }
     });
 
-    it('returns status not_found enriched with automobile classification for Renault', async () => {
+    it('returns official manufacturer spec for Renault when not found in DB', async () => {
       prisma.oilFinderVehicle.findMany.mockResolvedValue([]);
       prisma.$queryRawUnsafe.mockResolvedValueOnce([{ is_car: true }]);
 
       const result = await service.findByVehicle('Renault', 'Megane');
+
+      expect(result.status).toBe('found');
+      if (result.status === 'found') {
+        expect(result.oilSpec.viscosity).toBe('5W-30');
+        expect(result.oilSpec.oemApproval).toContain('Renault RN17');
+        expect(result.confidence).toBe('medium');
+      }
+    });
+
+    it('returns status not_found enriched with automobile classification for unconfigured car make', async () => {
+      prisma.oilFinderVehicle.findMany.mockResolvedValue([]);
+      prisma.$queryRawUnsafe.mockResolvedValueOnce([{ is_car: true }]);
+
+      const result = await service.findByVehicle('UnknownCarMake', 'ModelZ');
 
       expect(result.status).toBe('not_found');
       if (result.status === 'not_found') {
@@ -402,6 +420,64 @@ describe('OilFinderService', () => {
       const kws = extractModelKeywords('CLIO II (BB_, CB_)');
       expect(kws).toContain('CLIO II');
       expect(kws).toContain('CLIO');
+    });
+
+    it('extracts Golf VII from slug: golf-vii-5g1-bq1-be1-be2', () => {
+      const kws = extractModelKeywords('golf-vii-5g1-bq1-be1-be2');
+      expect(kws).toContain('golf');
+      expect(kws).toContain('vii');
+      expect(kws).toContain('golf vii');
+    });
+
+    it('extracts 3 and series from BMW slug: 3-f30-f80', () => {
+      const kws = extractModelKeywords('3-f30-f80');
+      expect(kws).toContain('3');
+      expect(kws).toContain('f30');
+      expect(kws).toContain('3 Series');
+    });
+  });
+
+  describe('BMW & VW engine variants & manufacturer defaults', () => {
+    it('compacts BMW engine space: 320 d (N47 D20 C)', () => {
+      const variants = extractEngineVariants('320 d (N47 D20 C)');
+      expect(variants).toContain('320d');
+      expect(variants).toContain('N47D20C');
+      expect(variants).toContain('320 d');
+      expect(variants).toContain('');
+    });
+
+    it('splits comma-separated engine codes in parens: 2.0 TDI (CRBC, CRLB)', () => {
+      const variants = extractEngineVariants('2.0 TDI (CRBC, CRLB)');
+      expect(variants).toContain('CRBC');
+      expect(variants).toContain('CRLB');
+      expect(variants).toContain('2.0 TDI');
+      expect(variants).toContain('');
+    });
+
+    it('falls back to official BMW Longlife-04 spec for BMW vehicle when no exact DB row exists', async () => {
+      prisma.oilFinderVehicle.findMany.mockResolvedValue([]);
+      prisma.$queryRawUnsafe.mockResolvedValue([]);
+
+      const res = await service.findByVehicle('bmw', '3-f30-f80', '320 d');
+      expect(res.status).toBe('found');
+      if (res.status === 'found') {
+        expect(res.oilSpec.viscosity).toBe('5W-30');
+        expect(res.oilSpec.oemApproval).toContain('BMW Longlife-04');
+        expect(res.confidence).toBe('medium');
+      }
+    });
+
+    it('falls back to official VW 504.00/507.00 spec for Volkswagen vehicle when no exact DB row exists', async () => {
+      prisma.oilFinderVehicle.findMany.mockResolvedValue([]);
+      prisma.$queryRawUnsafe.mockResolvedValue([]);
+
+      const res = await service.findByVehicle('vw', 'golf-vii-5g1-bq1-be1-be2', '2.0 TDI');
+      expect(res.status).toBe('found');
+      if (res.status === 'found') {
+        expect(res.oilSpec.viscosity).toBe('5W-30');
+        expect(res.oilSpec.oemApproval).toContain('VW 504 00 / 507 00');
+        expect(res.confidence).toBe('medium');
+      }
     });
   });
 });

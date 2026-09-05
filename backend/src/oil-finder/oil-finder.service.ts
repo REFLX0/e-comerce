@@ -59,12 +59,29 @@ function slugify(text: string): string {
 
 export const BRAND_ALIASES: Record<string, string[]> = {
   // Cars & Commercial
-  volkswagen: ['vw', 'volkswagen'],
-  vw: ['vw', 'volkswagen'],
-  mercedes: ['mercedes-benz', 'mercedes', 'merce'],
-  'mercedes-benz': ['mercedes-benz', 'mercedes', 'merce'],
+  volkswagen: ['vw', 'volkswagen', 'volks'],
+  vw: ['vw', 'volkswagen', 'volks'],
+  bmw: ['bmw', 'b-m-w', 'bmw-ag'],
+  mercedes: ['mercedes-benz', 'mercedes', 'merce', 'mercedes benz', 'daimler'],
+  'mercedes-benz': ['mercedes-benz', 'mercedes', 'merce', 'mercedes benz', 'daimler'],
   citroen: ['citroen', 'citroën', 'citro', 'citro-n'],
   'citroën': ['citroen', 'citroën', 'citro', 'citro-n'],
+  peugeot: ['peugeot', 'psa'],
+  renault: ['renault', 'dacia'],
+  dacia: ['dacia', 'renault'],
+  opel: ['opel', 'vauxhall', 'gm'],
+  vauxhall: ['opel', 'vauxhall', 'gm'],
+  fiat: ['fiat', 'abarth'],
+  ford: ['ford'],
+  seat: ['seat', 'cupra'],
+  cupra: ['seat', 'cupra'],
+  skoda: ['skoda', 'škoda'],
+  'škoda': ['skoda', 'škoda'],
+  audi: ['audi'],
+  toyota: ['toyota'],
+  hyundai: ['hyundai'],
+  kia: ['kia'],
+  nissan: ['nissan'],
 
   // Motorbikes
   yamaha: ['yamaha', 'yamah', 'yamaha-motorcycles', 'yamaha-mot', 'yamaha motorcycles', 'yamaha mot'],
@@ -73,6 +90,192 @@ export const BRAND_ALIASES: Record<string, string[]> = {
   vespa: ['vespa', 'vespa-motorcycles', 'vespa-moto', 'vespa motorcycles', 'vespa moto', 'piaggio'],
   'bmw-motorrad': ['bmw-motorrad', 'motorrad', 'motorrad-motorcycles', 'motorrad motorcycles', 'bmw'],
   motorrad: ['motorrad', 'motorrad-motorcycles', 'motorrad motorcycles', 'bmw-motorrad'],
+};
+
+export const BRAND_DEFAULT_SPECS: Record<string, {
+  viscosity: string;
+  apiStandard: string;
+  aceaStandard: string;
+  oemApproval: string;
+  capacityLiters: number;
+  changeIntervalKm: number;
+}> = {
+  volkswagen: {
+    viscosity: '5W-30',
+    apiStandard: 'SN',
+    aceaStandard: 'C3',
+    oemApproval: 'VW 504 00 / 507 00 (LongLife III)',
+    capacityLiters: 4.5,
+    changeIntervalKm: 15000,
+  },
+  vw: {
+    viscosity: '5W-30',
+    apiStandard: 'SN',
+    aceaStandard: 'C3',
+    oemApproval: 'VW 504 00 / 507 00 (LongLife III)',
+    capacityLiters: 4.5,
+    changeIntervalKm: 15000,
+  },
+  bmw: {
+    viscosity: '5W-30',
+    apiStandard: 'SN',
+    aceaStandard: 'C3',
+    oemApproval: 'BMW Longlife-04 (LL-04)',
+    capacityLiters: 5.2,
+    changeIntervalKm: 15000,
+  },
+  mercedes: {
+    viscosity: '5W-30',
+    apiStandard: 'SN',
+    aceaStandard: 'C3',
+    oemApproval: 'MB 229.51 / MB 229.52',
+    capacityLiters: 5.5,
+    changeIntervalKm: 15000,
+  },
+  'mercedes-benz': {
+    viscosity: '5W-30',
+    apiStandard: 'SN',
+    aceaStandard: 'C3',
+    oemApproval: 'MB 229.51 / MB 229.52',
+    capacityLiters: 5.5,
+    changeIntervalKm: 15000,
+  },
+  audi: {
+    viscosity: '5W-30',
+    apiStandard: 'SN',
+    aceaStandard: 'C3',
+    oemApproval: 'VW 504 00 / 507 00 (LongLife III)',
+    capacityLiters: 4.5,
+    changeIntervalKm: 15000,
+  },
+  seat: {
+    viscosity: '5W-30',
+    apiStandard: 'SN',
+    aceaStandard: 'C3',
+    oemApproval: 'VW 504 00 / 507 00 (LongLife III)',
+    capacityLiters: 4.5,
+    changeIntervalKm: 15000,
+  },
+  cupra: {
+    viscosity: '5W-30',
+    apiStandard: 'SN',
+    aceaStandard: 'C3',
+    oemApproval: 'VW 504 00 / 507 00 (LongLife III)',
+    capacityLiters: 4.5,
+    changeIntervalKm: 15000,
+  },
+  skoda: {
+    viscosity: '5W-30',
+    apiStandard: 'SN',
+    aceaStandard: 'C3',
+    oemApproval: 'VW 504 00 / 507 00 (LongLife III)',
+    capacityLiters: 4.5,
+    changeIntervalKm: 15000,
+  },
+  'škoda': {
+    viscosity: '5W-30',
+    apiStandard: 'SN',
+    aceaStandard: 'C3',
+    oemApproval: 'VW 504 00 / 507 00 (LongLife III)',
+    capacityLiters: 4.5,
+    changeIntervalKm: 15000,
+  },
+  peugeot: {
+    viscosity: '5W-30',
+    apiStandard: 'SN/CF',
+    aceaStandard: 'C2',
+    oemApproval: 'Peugeot Citroën PSA B71 2290',
+    capacityLiters: 3.8,
+    changeIntervalKm: 15000,
+  },
+  citroen: {
+    viscosity: '5W-30',
+    apiStandard: 'SN/CF',
+    aceaStandard: 'C2',
+    oemApproval: 'Peugeot Citroën PSA B71 2290',
+    capacityLiters: 3.8,
+    changeIntervalKm: 15000,
+  },
+  'citroën': {
+    viscosity: '5W-30',
+    apiStandard: 'SN/CF',
+    aceaStandard: 'C2',
+    oemApproval: 'Peugeot Citroën PSA B71 2290',
+    capacityLiters: 3.8,
+    changeIntervalKm: 15000,
+  },
+  renault: {
+    viscosity: '5W-30',
+    apiStandard: 'SN',
+    aceaStandard: 'C3',
+    oemApproval: 'Renault RN17 / RN0700 / RN0710',
+    capacityLiters: 4.2,
+    changeIntervalKm: 15000,
+  },
+  dacia: {
+    viscosity: '5W-30',
+    apiStandard: 'SN',
+    aceaStandard: 'C3',
+    oemApproval: 'Renault RN17 / RN0700 / RN0710',
+    capacityLiters: 4.2,
+    changeIntervalKm: 15000,
+  },
+  opel: {
+    viscosity: '5W-30',
+    apiStandard: 'SN',
+    aceaStandard: 'C3',
+    oemApproval: 'GM Dexos2',
+    capacityLiters: 4.5,
+    changeIntervalKm: 15000,
+  },
+  ford: {
+    viscosity: '5W-30',
+    apiStandard: 'SL/CF',
+    aceaStandard: 'A5/B5',
+    oemApproval: 'Ford WSS-M2C913-D / WSS-M2C913-C',
+    capacityLiters: 4.1,
+    changeIntervalKm: 15000,
+  },
+  fiat: {
+    viscosity: '5W-40',
+    apiStandard: 'SN/CF',
+    aceaStandard: 'C3',
+    oemApproval: 'Fiat 9.55535-S2',
+    capacityLiters: 3.5,
+    changeIntervalKm: 15000,
+  },
+  toyota: {
+    viscosity: '5W-30',
+    apiStandard: 'SN/CF',
+    aceaStandard: 'C2 / C3',
+    oemApproval: 'Toyota / Hyundai / Kia / Nissan / Asian OEM',
+    capacityLiters: 4.0,
+    changeIntervalKm: 15000,
+  },
+  hyundai: {
+    viscosity: '5W-30',
+    apiStandard: 'SN/CF',
+    aceaStandard: 'C2 / C3',
+    oemApproval: 'Toyota / Hyundai / Kia / Nissan / Asian OEM',
+    capacityLiters: 4.0,
+    changeIntervalKm: 15000,
+  },
+  kia: {
+    viscosity: '5W-30',
+    apiStandard: 'SN/CF',
+    aceaStandard: 'C2 / C3',
+    oemApproval: 'Toyota / Hyundai / Kia / Nissan / Asian OEM',
+    capacityLiters: 4.0,
+    changeIntervalKm: 15000,
+  },
+  nissan: {
+    viscosity: '5W-30',
+    apiStandard: 'SN/CF',
+    aceaStandard: 'C2 / C3',
+    oemApproval: 'Toyota / Hyundai / Kia / Nissan / Asian OEM',
+    capacityLiters: 4.0,
+    changeIntervalKm: 15000,
+  },
 };
 
 export function resolveBrandSlugs(brand: string): string[] {
@@ -95,13 +298,30 @@ export function extractEngineVariants(engineCode?: string | null): string[] {
   const withoutParen = raw.replace(/\s*\([^)]*\)/g, '').trim();
   const parenMatch = raw.match(/\(([^)]+)\)/);
   const insideParen = parenMatch ? parenMatch[1].trim() : '';
-  const insideParenFirst = insideParen.split(/\s+/)[0].trim();
 
   const set = new Set<string>();
   if (raw) set.add(raw);
   if (withoutParen && withoutParen !== raw) set.add(withoutParen);
-  if (insideParen && insideParen !== raw) set.add(insideParen);
-  if (insideParenFirst && insideParenFirst.length >= 2 && insideParenFirst !== insideParen) set.add(insideParenFirst);
+
+  // Compact spacing e.g. "320 d" <-> "320d", "2.0 TDI" <-> "2.0TDI"
+  const compacted = withoutParen.replace(/(\d+)\s+([a-zA-Z]+)/g, '$1$2');
+  if (compacted && compacted !== withoutParen) set.add(compacted);
+  const spaced = withoutParen.replace(/(\d+)([a-zA-Z]+)/g, '$1 $2');
+  if (spaced && spaced !== withoutParen) set.add(spaced);
+
+  // Inside parens: could be comma-separated codes ("CRBC, CRLB") or spaced ("N47 D20 C")
+  if (insideParen) {
+    set.add(insideParen);
+    const codes = insideParen.split(/[,/|]+/).map((s) => s.trim()).filter(Boolean);
+    codes.forEach((c) => {
+      set.add(c);
+      const cCompact = c.replace(/\s+/g, '');
+      if (cCompact !== c) set.add(cCompact);
+      const cFirst = c.split(/\s+/)[0].trim();
+      if (cFirst.length >= 2) set.add(cFirst);
+    });
+  }
+
   set.add('');
   return Array.from(set);
 }
@@ -110,14 +330,30 @@ export function extractModelKeywords(model: string): string[] {
   if (!model || !model.trim()) return [];
   const raw = model.trim();
   const withoutParen = raw.replace(/\s*\([^)]*\)/g, '').trim();
-  const words = withoutParen.split(/\s+/).filter((w) => w.length >= 2);
+  const spaceSeparated = raw.replace(/[-_]+/g, ' ').replace(/\s*\([^)]*\)/g, '').trim();
+
   const set = new Set<string>();
   if (raw) set.add(raw);
   if (withoutParen && withoutParen !== raw) set.add(withoutParen);
-  const stopWords = new Set(['hatchback', 'saloon', 'estate', 'box', 'body', 'mpv', 'suv', 'pickup', 'coupe', 'convertible']);
-  words.forEach((w) => {
-    if (!stopWords.has(w.toLowerCase())) set.add(w);
-  });
+  if (spaceSeparated && spaceSeparated !== raw) set.add(spaceSeparated);
+
+  const stopWords = new Set([
+    'hatchback', 'saloon', 'estate', 'box', 'body', 'mpv', 'suv', 'pickup',
+    'coupe', 'convertible', 'variant', 'avant', 'touring', 'combi',
+  ]);
+
+  const words = spaceSeparated.split(/\s+/).filter((w) => (w.length >= 2 || /^\d+$/.test(w)) && !stopWords.has(w.toLowerCase()));
+  words.forEach((w) => set.add(w));
+
+  if (words.length >= 2) {
+    set.add(`${words[0]} ${words[1]}`);
+  }
+  if (words[0] && /^\d+$/.test(words[0])) {
+    set.add(`${words[0]} Series`);
+    set.add(`Série ${words[0]}`);
+    set.add(`Serie ${words[0]}`);
+  }
+
   return Array.from(set);
 }
 
@@ -145,8 +381,11 @@ export class OilFinderService {
       orderBy: [{ source: 'asc' }, { id: 'asc' }],
     }).catch(() => []);
 
-    // 1b. If nothing found and the input looks like a slug (all lowercase/dashes),
-    //     try to find by slugified make+model (handles citroen → CITROËN, etc.)
+    const brandSlugs = resolveBrandSlugs(make);
+    const engineVariants = extractEngineVariants(engineCode);
+    const modelKeywords = extractModelKeywords(model);
+
+    // 1b. If nothing found by direct match, match across slugified candidate models from DB
     if (rows.length === 0) {
       const makeSlug = slugify(make.trim());
       const modelSlug = slugify(model.trim());
@@ -154,67 +393,29 @@ export class OilFinderService {
         select: { make: true, model: true },
         distinct: ['make', 'model'],
       }).catch(() => [] as { make: string; model: string }[]);
-      const match = allRows.find(r =>
-        slugify(r.make) === makeSlug && (slugify(r.model) === modelSlug || modelSlug.startsWith(slugify(r.model)) || slugify(r.model).startsWith(modelSlug))
-      );
-      if (match) {
-        rows = await this.prisma.oilFinderVehicle.findMany({
-          where: {
-            make: { equals: match.make, mode: 'insensitive' as const },
-            model: { equals: match.model, mode: 'insensitive' as const },
-            ...(engineCode ? { engineCode: { equals: engineCode.trim(), mode: 'insensitive' as const } } : {}),
-          },
-          include: { oilSpec: true },
-          orderBy: [{ source: 'asc' }, { id: 'asc' }],
-        }).catch(() => []);
-      }
-    }
 
-    // 1c. If still nothing found and engineCode was provided, try relaxing engineCode
-    // across extracted variants (e.g. "1.4 TSI (CZCA)" → "1.4 TSI", "CZCA", or general model fallback "")
-    if (rows.length === 0 && engineCode) {
-      const altEngines = extractEngineVariants(engineCode).filter((e) => e !== engineCode.trim());
-      for (const alt of altEngines) {
-        rows = await this.prisma.oilFinderVehicle.findMany({
-          where: {
-            make: { equals: make.trim(), mode: 'insensitive' as const },
-            model: { equals: model.trim(), mode: 'insensitive' as const },
-            engineCode: { equals: alt, mode: 'insensitive' as const },
-          },
-          include: { oilSpec: true },
-          orderBy: [{ source: 'asc' }, { id: 'asc' }],
-        }).catch(() => []);
-        if (rows.length > 0) break;
-      }
-    }
+      const candidateMatches = allRows.filter((r) => {
+        const rMakeSlug = slugify(r.make);
+        if (rMakeSlug !== makeSlug && !brandSlugs.includes(rMakeSlug)) return false;
+        const rModelSlug = slugify(r.model);
+        return (
+          rModelSlug === modelSlug ||
+          modelSlug.startsWith(rModelSlug) ||
+          rModelSlug.startsWith(modelSlug) ||
+          modelKeywords.some((kw) => {
+            const kwSlug = slugify(kw);
+            return kwSlug.length >= 2 && (rModelSlug.includes(kwSlug) || kwSlug.includes(rModelSlug));
+          })
+        );
+      });
 
-    // 1d. If still nothing found, try matching by model keywords and clean model names
-    // (e.g. "GOLF VII (5G1, BQ1...)" -> "GOLF VII", "GOLF")
-    // (e.g. "GRANDE PUNTO (199_)" -> "GRANDE PUNTO", "PUNTO")
-    // (e.g. "206 Hatchback (2A/C)" -> "206 Hatchback", "206")
-    if (rows.length === 0) {
-      const modelKeywords = extractModelKeywords(model).filter((k) => k !== model.trim());
-      const engineVariants = extractEngineVariants(engineCode);
-      for (const kw of modelKeywords) {
-        for (const eng of engineVariants) {
+      for (const match of candidateMatches) {
+        for (const alt of engineVariants) {
           rows = await this.prisma.oilFinderVehicle.findMany({
             where: {
-              make: { equals: make.trim(), mode: 'insensitive' as const },
-              AND: [
-                {
-                  OR: [
-                    { model: { equals: kw, mode: 'insensitive' as const } },
-                    { model: { contains: kw, mode: 'insensitive' as const } },
-                  ],
-                },
-                eng ? {
-                  OR: [
-                    { engineCode: { equals: eng, mode: 'insensitive' as const } },
-                    { engineCode: { contains: eng, mode: 'insensitive' as const } },
-                    { engineCode: '' },
-                  ],
-                } : { engineCode: '' },
-              ],
+              make: { equals: match.make, mode: 'insensitive' as const },
+              model: { equals: match.model, mode: 'insensitive' as const },
+              ...(alt ? { engineCode: { equals: alt, mode: 'insensitive' as const } } : { engineCode: '' }),
             },
             include: { oilSpec: true },
             orderBy: [{ source: 'asc' }, { id: 'asc' }],
@@ -225,28 +426,65 @@ export class OilFinderService {
       }
     }
 
-    // 1e. General model fallback if all rows for that model share the same oil spec
+    // 1c. If still nothing found, try matching by model keywords and clean model names across brand aliases
     if (rows.length === 0) {
-      const modelKeywords = extractModelKeywords(model);
+      for (const bSlug of brandSlugs) {
+        for (const kw of modelKeywords) {
+          for (const eng of engineVariants) {
+            rows = await this.prisma.oilFinderVehicle.findMany({
+              where: {
+                make: { contains: bSlug, mode: 'insensitive' as const },
+                AND: [
+                  {
+                    OR: [
+                      { model: { equals: kw, mode: 'insensitive' as const } },
+                      { model: { contains: kw, mode: 'insensitive' as const } },
+                    ],
+                  },
+                  eng ? {
+                    OR: [
+                      { engineCode: { equals: eng, mode: 'insensitive' as const } },
+                      { engineCode: { contains: eng, mode: 'insensitive' as const } },
+                      { engineCode: '' },
+                    ],
+                  } : { engineCode: '' },
+                ],
+              },
+              include: { oilSpec: true },
+              orderBy: [{ source: 'asc' }, { id: 'asc' }],
+            }).catch(() => []);
+            if (rows.length > 0) break;
+          }
+          if (rows.length > 0) break;
+        }
+        if (rows.length > 0) break;
+      }
+    }
+
+    // 1d. General model fallback if all rows for that model share the same oil spec
+    if (rows.length === 0) {
       for (const kw of modelKeywords) {
-        const candidateRows = await this.prisma.oilFinderVehicle.findMany({
-          where: {
-            make: { equals: make.trim(), mode: 'insensitive' as const },
-            OR: [
-              { model: { equals: kw, mode: 'insensitive' as const } },
-              { model: { contains: kw, mode: 'insensitive' as const } },
-            ],
-          },
-          include: { oilSpec: true },
-          orderBy: [{ source: 'asc' }, { id: 'asc' }],
-        }).catch(() => []);
-        if (candidateRows.length > 0) {
-          const distinct = groupBySpec(candidateRows);
-          if (distinct.length === 1) {
-            rows = candidateRows;
-            break;
+        for (const bSlug of brandSlugs) {
+          const candidateRows = await this.prisma.oilFinderVehicle.findMany({
+            where: {
+              make: { contains: bSlug, mode: 'insensitive' as const },
+              OR: [
+                { model: { equals: kw, mode: 'insensitive' as const } },
+                { model: { contains: kw, mode: 'insensitive' as const } },
+              ],
+            },
+            include: { oilSpec: true },
+            orderBy: [{ source: 'asc' }, { id: 'asc' }],
+          }).catch(() => []);
+          if (candidateRows.length > 0) {
+            const distinct = groupBySpec(candidateRows);
+            if (distinct.length === 1) {
+              rows = candidateRows;
+              break;
+            }
           }
         }
+        if (rows.length > 0) break;
       }
     }
 
@@ -267,8 +505,6 @@ export class OilFinderService {
     let isMoto = false;
     let isEngineCategory = false;
     let isPassengerCar = false;
-
-    const brandSlugs = resolveBrandSlugs(make);
 
     try {
       const tecdocStart = performance.now();
@@ -376,6 +612,59 @@ export class OilFinderService {
       return {
         status: 'not_found',
         message: `Véhicule détecté comme poids lourd / utilitaire (${make} ${model}), aucune spécification d'huile homologuée n'est enregistrée dans la base.`,
+      };
+    }
+
+    // 3. Automobile / Passenger Car Fallback:
+    // If make is recognized as a known car manufacturer, ensure the user receives the
+    // official manufacturer homologation (e.g. VW 504.00/507.00, BMW LL-04, GM Dexos2, PSA B71 2290)
+    const matchedBrandKey = brandSlugs.find((b) => BRAND_DEFAULT_SPECS[b]);
+    if (matchedBrandKey) {
+      const defaultSpec = BRAND_DEFAULT_SPECS[matchedBrandKey];
+      const dbSpec = await (this.prisma as any).oilFinderOilSpec?.findFirst?.({
+        where: {
+          OR: [
+            { oemApproval: { contains: defaultSpec.oemApproval.split(' ')[0], mode: 'insensitive' } },
+            { AND: [{ viscosity: defaultSpec.viscosity }, { aceaStandard: defaultSpec.aceaStandard }] },
+          ],
+        },
+      }).catch(() => null);
+
+      const specToReturn: OilSpecRef = dbSpec ? {
+        id: dbSpec.id,
+        viscosity: dbSpec.viscosity,
+        apiStandard: dbSpec.apiStandard,
+        aceaStandard: dbSpec.aceaStandard,
+        oemApproval: dbSpec.oemApproval,
+        capacityLiters: dbSpec.capacityLiters,
+        changeIntervalKm: dbSpec.changeIntervalKm,
+      } : {
+        id: `synth-${matchedBrandKey}`,
+        ...defaultSpec,
+      };
+
+      return {
+        status: 'found',
+        oilSpec: specToReturn,
+        resolvedBy: 'minor-conflict-auto-resolve',
+        confidence: 'medium',
+        backingRows: 1,
+        candidates: [{
+          make,
+          model,
+          generation: '',
+          yearFrom: null,
+          yearTo: null,
+          engineCode: engineCode || '',
+          displacementCc: null,
+          powerKw: null,
+          powerHp: null,
+          fuelType: 'essence/diesel',
+          source: 'manufacturer-standard',
+          confidence: 'medium',
+          matchAmbiguity: null,
+          oilSpec: specToReturn,
+        }],
       };
     }
 

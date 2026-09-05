@@ -51,6 +51,78 @@ describe('OilFinderController', () => {
       );
     });
 
+    it('accepts engine query param as alias for engineCode', async () => {
+      await controller.findByVehicle({
+        make: 'BMW',
+        model: '3 Series',
+        engine: '320d',
+      });
+
+      expect(mockOilFinderService.findByVehicle).toHaveBeenCalledWith(
+        'BMW',
+        '3 Series',
+        '320d',
+      );
+    });
+
+    it('queries productsService with OEM tokens for VW homologation', async () => {
+      (mockOilFinderService.findByVehicle as jest.Mock).mockResolvedValueOnce({
+        status: 'found',
+        oilSpec: {
+          id: 'spec-vw',
+          viscosity: '5W-30',
+          aceaStandard: 'C3',
+          apiStandard: 'SN',
+          oemApproval: 'VW 504 00 / 507 00 (LongLife III)',
+        },
+        resolvedBy: 'exact',
+        confidence: 'high',
+        backingRows: 1,
+      });
+
+      await controller.findByVehicle({
+        make: 'Volkswagen',
+        model: 'Golf',
+      });
+
+      expect(mockProductsService.findAll).toHaveBeenCalledWith(
+        expect.objectContaining({
+          viscosity: '5W-30',
+          categorySlug: 'huiles-moteur',
+          oemTokens: expect.arrayContaining(['504.00', '507.00']),
+        }),
+      );
+    });
+
+    it('queries productsService with OEM tokens for BMW homologation', async () => {
+      (mockOilFinderService.findByVehicle as jest.Mock).mockResolvedValueOnce({
+        status: 'found',
+        oilSpec: {
+          id: 'spec-bmw',
+          viscosity: '5W-30',
+          aceaStandard: 'C3',
+          apiStandard: 'SN',
+          oemApproval: 'BMW Longlife-04 (LL-04)',
+        },
+        resolvedBy: 'exact',
+        confidence: 'high',
+        backingRows: 1,
+      });
+
+      await controller.findByVehicle({
+        make: 'BMW',
+        model: '3 Series',
+      });
+
+      expect(mockProductsService.findAll).toHaveBeenCalledWith(
+        expect.objectContaining({
+          viscosity: '5W-30',
+          categorySlug: 'huiles-moteur',
+          oemTokens: expect.arrayContaining(['LL-04', 'Longlife-04']),
+        }),
+      );
+    });
+
     it('rejects missing make with BadRequestException (HTTP 400)', async () => {
       await expect(
         controller.findByVehicle({
