@@ -286,40 +286,47 @@ function FlyoutPanel({
       onMouseLeave={onMouseLeave}
       className="flyout-panel absolute start-0 top-full z-50 flex overflow-hidden before:absolute before:-top-3 before:left-0 before:right-0 before:h-4 before:content-['']"
       style={{
-        borderRadius: '0 0 16px 16px',
+        borderRadius: '0 0 14px 14px',
         border: '1px solid rgba(22,37,76,0.1)',
-        boxShadow: '0 20px 60px rgba(22,37,76,0.18)',
-        minWidth: 320,
+        boxShadow: '0 16px 48px rgba(22,37,76,0.16)',
+        minWidth: 290,
+        maxHeight: 'min(560px, calc(100vh - 125px))',
         background: '#fff',
         animation: 'flyoutIn 0.14s ease-out both',
       }}
     >
       {/* LEFT — category list */}
-      <div className="flex flex-col" style={{ minWidth: 320, borderRight: hasSubPanel ? '1px solid rgba(22,37,76,0.07)' : 'none' }}>
+      <div
+        className="flex flex-col max-h-[inherit]"
+        style={{
+          minWidth: 290,
+          borderRight: hasSubPanel ? '1px solid rgba(22,37,76,0.07)' : 'none',
+        }}
+      >
         {/* Panel header */}
         <div
-          className="flex items-center justify-between px-5 py-3"
+          className="flex items-center justify-between px-4 py-2 shrink-0"
           style={{
             background: 'linear-gradient(135deg, #16254c 0%, #1f356b 100%)',
             borderBottom: '1px solid rgba(255,255,255,0.08)',
           }}
         >
-          <span className="text-xs font-bold tracking-[0.16em] uppercase" style={{ color: '#D4A76A' }}>
+          <span className="text-[11px] font-bold tracking-[0.14em] uppercase" style={{ color: '#D4A76A' }}>
             {rootLabel}
           </span>
           <Link
             href={`/categorie/${item.slug}`}
             onClick={onClose}
-            className="flex items-center gap-1 text-xs font-medium transition-opacity hover:opacity-70"
+            className="flex items-center gap-1 text-[11px] font-medium transition-opacity hover:opacity-70"
             style={{ color: 'rgba(255,255,255,0.7)' }}
           >
             {allProductsLabel}
-            <ChevronRight size={12} className={isRtl ? 'rotate-180' : ''} />
+            <ChevronRight size={11} className={isRtl ? 'rotate-180' : ''} />
           </Link>
         </div>
 
         {/* Items */}
-        <ul className="flex flex-col py-2">
+        <ul className="flex flex-col py-1 overflow-y-auto overscroll-contain">
           {item.children.map((child) => {
             const dbNode = findNode(categories, child.slug)
             const label = child.labelKey ? tTax(child.labelKey) : (dbNode?.name ?? child.label ?? child.slug)
@@ -336,30 +343,30 @@ function FlyoutPanel({
                     role="menuitem"
                     onClick={onClose}
                     onMouseEnter={() => setActiveChild(child.slug)}
-                    className="flyout-item group flex w-full items-center justify-between gap-3 px-5 py-2.5 text-sm transition-all duration-150 hover:bg-slate-50"
+                    className="flyout-item group flex w-full items-center justify-between gap-2.5 px-4 py-1.5 text-xs transition-all duration-150 hover:bg-slate-50"
                     style={{
                       background: isActive ? 'rgba(212,167,106,0.08)' : 'transparent',
                       color: isActive ? '#D4A76A' : '#16254c',
-                      fontWeight: isActive ? 700 : 500,
+                      fontWeight: isActive ? 600 : 500,
                       borderLeft: isActive ? '3px solid #D4A76A' : '3px solid transparent',
                     }}
                   >
-                    <span className="flex items-start gap-2.5 min-w-0">
+                    <span className="flex items-center gap-2 min-w-0">
                       <span
-                        className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full transition-colors"
+                        className="h-1.5 w-1.5 shrink-0 rounded-full transition-colors"
                         style={{ background: isActive ? '#D4A76A' : 'rgba(22,37,76,0.25)' }}
                       />
                       <span className="flex flex-col text-start min-w-0">
-                        <span className="font-semibold text-[13px] leading-snug">{label}</span>
+                        <span className="font-semibold text-xs leading-snug">{label}</span>
                         {hint && (
-                          <span className="text-[11px] leading-tight opacity-60 font-normal mt-0.5">
+                          <span className="text-[10px] leading-tight text-slate-400 font-normal truncate max-w-[210px]">
                             {hint}
                           </span>
                         )}
                       </span>
                     </span>
                     <ChevronRight
-                      size={13}
+                      size={12}
                       className={`shrink-0 transition-colors ${isRtl ? 'rotate-180' : ''}`}
                       style={{ color: isActive ? '#D4A76A' : 'rgba(22,37,76,0.3)' }}
                     />
@@ -371,26 +378,28 @@ function FlyoutPanel({
                     role="menuitem"
                     onClick={onClose}
                     onMouseEnter={() => setActiveChild(null)}
-                    className="flyout-item group flex items-start gap-2.5 px-5 py-2.5 text-sm transition-all duration-150 hover:bg-slate-50"
+                    className="flyout-item group flex items-center justify-between gap-2.5 px-4 py-1.5 text-xs transition-all duration-150 hover:bg-slate-50"
                     style={{
                       color: '#16254c',
                       borderLeft: '3px solid transparent',
                     }}
                   >
-                    <span
-                      className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full transition-colors group-hover:bg-[#D4A76A]"
-                      style={{ background: 'rgba(22,37,76,0.25)' }}
-                    />
-                    <div className="flex flex-col min-w-0 flex-1">
-                      <span className="font-semibold text-slate-800 text-[13px] leading-snug group-hover:text-[#16254c]">
-                        {label}
-                      </span>
-                      {hint && (
-                        <span className="text-[11px] leading-tight text-slate-400 font-normal mt-0.5">
-                          {hint}
+                    <span className="flex items-center gap-2 min-w-0">
+                      <span
+                        className="h-1.5 w-1.5 shrink-0 rounded-full transition-colors group-hover:bg-[#D4A76A]"
+                        style={{ background: 'rgba(22,37,76,0.25)' }}
+                      />
+                      <div className="flex flex-col min-w-0">
+                        <span className="font-semibold text-slate-800 text-xs leading-snug group-hover:text-[#16254c]">
+                          {label}
                         </span>
-                      )}
-                    </div>
+                        {hint && (
+                          <span className="text-[10px] leading-tight text-slate-400 font-normal truncate max-w-[210px]">
+                            {hint}
+                          </span>
+                        )}
+                      </div>
+                    </span>
                   </Link>
                 )}
               </li>
@@ -399,15 +408,15 @@ function FlyoutPanel({
         </ul>
 
         {/* Footer hint */}
-        <div className="border-t px-5 py-2.5" style={{ borderColor: 'rgba(22,37,76,0.07)' }}>
+        <div className="border-t px-4 py-2 shrink-0" style={{ borderColor: 'rgba(22,37,76,0.07)' }}>
           <Link
             href={`/categorie/${item.slug}`}
             onClick={onClose}
-            className="flex items-center gap-1.5 text-xs font-semibold transition-opacity hover:opacity-70"
+            className="flex items-center gap-1.5 text-[11px] font-semibold transition-opacity hover:opacity-70"
             style={{ color: '#D4A76A' }}
           >
             <span>{tTax('seeAll', { category: rootLabel })}</span>
-            <ChevronRight size={12} className={isRtl ? 'rotate-180' : ''} />
+            <ChevronRight size={11} className={isRtl ? 'rotate-180' : ''} />
           </Link>
         </div>
       </div>
@@ -450,28 +459,28 @@ function SubPanel({
 
   return (
     <div
-      className="flex flex-col"
+      className="flex flex-col max-h-[inherit]"
       style={{
-        minWidth: 220,
+        minWidth: 200,
         background: 'linear-gradient(180deg, #fafbff 0%, #fff 100%)',
         animation: 'subPanelIn 0.15s ease both',
       }}
     >
       {/* Sub-panel header */}
       <div
-        className="px-5 py-3"
+        className="px-4 py-2 shrink-0"
         style={{
           background: 'rgba(212,167,106,0.08)',
           borderBottom: '1px solid rgba(212,167,106,0.2)',
         }}
       >
-        <span className="text-xs font-bold tracking-[0.14em] uppercase" style={{ color: '#16254c' }}>
+        <span className="text-[11px] font-bold tracking-[0.14em] uppercase" style={{ color: '#16254c' }}>
           {label}
         </span>
       </div>
 
       {/* Sub-items */}
-      <ul className="flex flex-col py-2">
+      <ul className="flex flex-col py-1 overflow-y-auto overscroll-contain">
         {(node.children ?? []).map((subChild) => {
           const subDbNode = dbNode?.children?.find((c) => c.slug === subChild.slug)
           const subLabel = subChild.labelKey ? tTax(subChild.labelKey) : (subDbNode?.name ?? subChild.label ?? subChild.slug)
@@ -483,21 +492,21 @@ function SubPanel({
                 href={targetHref}
                 role="menuitem"
                 onClick={onClose}
-                className="sub-item group flex items-center gap-3 px-5 py-[10px] text-sm font-medium transition-all duration-150"
+                className="sub-item group flex items-center gap-2 px-4 py-1.5 text-xs font-medium transition-all duration-150"
                 style={{ color: '#16254c' }}
               >
                 <span
-                  className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full transition-all duration-150 group-hover:scale-110"
+                  className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full transition-all duration-150 group-hover:scale-110"
                   style={{ background: 'rgba(212,167,106,0.15)' }}
                 >
                   <span
-                    className="h-1.5 w-1.5 rounded-full"
+                    className="h-1 w-1 rounded-full"
                     style={{ background: '#D4A76A' }}
                   />
                 </span>
                 <span className="transition-colors group-hover:text-brand-accent">{subLabel}</span>
                 <ChevronRight
-                  size={12}
+                  size={11}
                   className={`ms-auto opacity-0 transition-all duration-150 group-hover:opacity-100 ${isRtl ? 'rotate-180' : ''}`}
                   style={{ color: '#D4A76A' }}
                 />
@@ -508,11 +517,11 @@ function SubPanel({
       </ul>
 
       {/* Link to parent category */}
-      <div className="mt-auto border-t px-5 py-2.5" style={{ borderColor: 'rgba(22,37,76,0.07)' }}>
+      <div className="mt-auto border-t px-4 py-2 shrink-0" style={{ borderColor: 'rgba(22,37,76,0.07)' }}>
         <Link
           href={`/categorie/${node.slug}`}
           onClick={onClose}
-          className="flex items-center gap-1.5 text-xs font-semibold transition-opacity hover:opacity-70"
+          className="flex items-center gap-1.5 text-[11px] font-semibold transition-opacity hover:opacity-70"
           style={{ color: 'rgba(22,37,76,0.5)' }}
         >
           {allProductsLabel}
