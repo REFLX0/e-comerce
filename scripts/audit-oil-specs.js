@@ -72,15 +72,20 @@ function canonicalizeSpec(specStr) {
   if (!specStr) return '';
   return specStr
     .replace(/504\.00\/507\.00/g, '504 00 / 507 00')
+    .replace(/VW 508\.00(?:\/509\.00)?\s*C5\s*(?:SN|SP)?/gi, 'VW 508.00 C5')
     .replace(/\(LongLife III\)/gi, '')
     .replace(/B71 2300 \/ B71 2294/g, 'B71 2300')
     .replace(/B71 2294/g, 'B71 2300')
     .replace(/(?:Peugeot\s*Citro[eë]n\s*)?PSA\s*B71\s*2290(?:\s*C[23])?(?:\s*S[NP])?/gi, 'PSA B71 2290 C2')
+    .replace(/PSA B71 2010\s*C5\s*(?:SN|SP)?/gi, 'PSA B71 2010 C5')
     .replace(/9\.55535-G2 \/ 9\.55535-D2/g, '9.55535-G2')
     .replace(/Toyota \/ Hyundai \/ Kia \/ Nissan \/ Asian OEM(?:\s*C[23]\s*\/\s*C[23])?/gi, 'Asian OEM C2/C3')
     .replace(/Toyota DL-1 \/ ACEA C2(?:\s*C2)?/gi, 'Toyota DL-1 / ACEA C2')
-    .replace(/Suzuki RO-1 C5\s*(?:SN|SP)/gi, 'Suzuki RO-1 C5')
+    .replace(/Suzuki RO-1\s*(?:A5\/B5|C5)?\s*(?:SN|SP)?/gi, 'Suzuki RO-1')
     .replace(/ILSAC GF-6A\s*SP/gi, 'SP')
+    .replace(/RN17\s*C3/gi, 'RN17')
+    .replace(/RN0710\s*A3\/B4/gi, 'RN0710')
+    .replace(/VCC-RBSO-2AE/gi, 'VCC-RBS0-2AE')
     .replace(/SN\/CF/gi, 'SN')
     .replace(/SL\/CF/gi, 'SL')
     .replace(/SM\/CF/gi, 'SM')
@@ -233,13 +238,17 @@ function processRows({
     const isHeavyDutyOrMarine =
       category === 'agricole' ||
       category === 'marine' ||
-      /tractor|agri|marine|bateau|outboard|tracteur|hors-bord/i.test(`${label} ${row.source || ''}`);
+      category === 'poids-lourd' ||
+      category === 'truck' ||
+      category === 'cv' ||
+      category === 'commercial' ||
+      /tractor|agri|marine|bateau|outboard|tracteur|hors-bord|poids[- ]lourd|truck|camion|bus|semi|benne/i.test(`${label} ${row.source || ''}`);
 
     const isExplicitDpf = /\b(dpf|fap|bluehdi|euro\s*5|euro\s*6|adblue|scr)\b/i.test(`${label} ${row.fuelType || ''} ${row.engineCode || ''}`);
     const isClassicPreDpf = /\b(golf\s*(iv|4|iii|3|ii|2)|206|106|306|406|saxo|xsara|clio\s*(ii|2|i|1)|punto\s*(ii|188)|astra\s*(g|f)|corsa\s*(b|c)|passat\s*b5)\b/i.test(labelLower);
 
     // DPF check: strictly applies to confirmed modern post-2010 passenger car diesels or explicit DPF models.
-    // Non-automotive machinery (tractors, boat engines) and pre-2010 classics legitimately take non-DPF specs.
+    // Heavy commercial machinery (trucks, tractors, boats) and pre-2010 classics follow non-road/heavy-duty specs (CI-4, E7, E5).
     if (!isHeavyDutyOrMarine && isDiesel(row) && !hasLowSapsMarker(approvals)) {
       if (isExplicitDpf || (year && year >= 2011 && !isClassicPreDpf)) {
         possibleDpfMismatch.push(`${label} -> approvals="${approvals}" (modern passenger car diesel without low-SAPS marker)`);
@@ -257,11 +266,12 @@ function processRows({
     // legitimately require different oils across different decades!
     const isGeneric =
       /^(\d\.\d|\d\.\d\s+[a-zA-Z0-9]+)$/.test(rawEngine) ||
-      /^(320d|318d|316d|118d|120d|c220|c200|a180)$/i.test(rawEngine);
+      /^(320d|318d|316d|118d|120d|c220|c200|a180|d4|d5|i-dtec|i-vtec)$/i.test(rawEngine);
 
     const modelRaw = (row.model || row.vehicleModel?.name || '').trim();
-    const modelFamily = modelRaw.split('(')[0].trim().replace(/\s+Variant|\s+Hatchback|\s+Estate|\s+Saloon|\s+Break|\s+Coupe/gi, '');
-    const modelPrefix = isGeneric && modelFamily ? `${modelFamily} ` : '';
+    const chassis = modelRaw.match(/\b(E\d{2}|F\d{2}|G\d{2}|N\d{2}|P\d{2}|J\d{2,3}|W\d{3}|2A\/C|2D|3A\/C|3E|3H|1J1|1J5|5G1|188_|199_|LB_|LU_|BH_|KH_|BR0|CR0)\b/i)?.[1] || '';
+    const cleanModel = modelRaw.split('(')[0].trim().replace(/\s+Variant|\s+Hatchback|\s+Estate|\s+Saloon|\s+Break|\s+Coupe/gi, '');
+    const modelPrefix = isGeneric ? `${cleanModel}${chassis ? ' ' + chassis : ''} ` : (chassis ? `${chassis} ` : '');
     const eraSuffix = isGeneric && year ? (year >= 2010 ? ' [2010+]' : ' [pre-2010]') : '';
 
     const engineKey = `${getMake(row)}|${modelPrefix}${rawEngine}${eraSuffix}`;
