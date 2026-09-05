@@ -46,6 +46,7 @@ export const productsApi = {
     categorySlug?: string
     brands?: string
     viscosity?: string
+    batteryType?: string
     priceMin?: number
     priceMax?: number
     inStockOnly?: boolean

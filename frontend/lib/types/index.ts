@@ -51,6 +51,7 @@ export interface ProductVariant {
 
 export interface ProductSpec {
   viscosity?: string
+  batteryType?: string
   apiSpec?: string
   aceaSpec?: string
   jasoSpec?: string

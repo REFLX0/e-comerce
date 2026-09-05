@@ -69,6 +69,7 @@ function splitProductDetails(description?: string) {
 function humanizeSpec(key: string, t?: (k: string) => string) {
   const labels: Record<string, string> = {
     viscosity: t?.(`viscosityLabel`) ?? 'Viscosité',
+    batteryType: 'Type de batterie',
     apiSpec: 'Norme API',
     aceaSpec: 'Norme ACEA',
     jasoSpec: 'Norme JASO',

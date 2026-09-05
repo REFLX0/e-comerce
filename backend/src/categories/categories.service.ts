@@ -62,7 +62,21 @@ export class CategoriesService {
       rollupProductCount(root);
     }
 
-    return roots;
+    const CANONICAL_ROOTS = new Set(['automobile', 'auto-pieces-rechange', 'moto-karting', 'marine']);
+    const filteredRoots = roots.filter((r) => CANONICAL_ROOTS.has(r.slug) || r.productCount > 0);
+    const rootOrder: Record<string, number> = {
+      'automobile': 1,
+      'auto-pieces-rechange': 2,
+      'moto-karting': 3,
+      'marine': 4,
+    };
+    filteredRoots.sort((a, b) => {
+      const orderA = rootOrder[a.slug] ?? 999;
+      const orderB = rootOrder[b.slug] ?? 999;
+      return orderA - orderB || a.sortOrder - b.sortOrder || a.name.localeCompare(b.name);
+    });
+
+    return filteredRoots;
   }
 
   async getTree() {

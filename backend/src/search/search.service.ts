@@ -426,7 +426,7 @@ export class SearchService implements OnModuleInit {
       variants: product.variants?.map((v: any) => ({
         id: v.id, priceHT: +(v.price / 1.19).toFixed(3), priceTTC: v.price, stock: v.stockQty,
       })) ?? [],
-      specs: product.specs ? { viscosity: product.specs.viscosity } : null,
+      specs: product.specs ? { viscosity: product.specs.viscosity, batteryType: product.specs.batteryType } : null,
       isBestSeller: product.isFeatured,
       isNew: Date.now() - new Date(product.createdAt).getTime() < 30 * 24 * 60 * 60 * 1000,
     };

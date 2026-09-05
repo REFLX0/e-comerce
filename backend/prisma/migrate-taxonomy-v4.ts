@@ -305,6 +305,192 @@ async function main() {
         })
       }
     }
+
+    // D. Reclassification automatique des produits vers les catégories cibles & Extraction specs.batteryType
+    console.log('  Reclassification automatique des produits...')
+
+    // 1. Batteries
+    const batteryCatId = idBySlug.get('batteries')
+    if (batteryCatId) {
+      const batteryProducts = await tx.product.findMany({
+        where: {
+          OR: [
+            { categoryId: batteryCatId },
+            { nameFr: { contains: 'batterie', mode: 'insensitive' } },
+            { description: { contains: 'batterie', mode: 'insensitive' } },
+            { sku: { startsWith: 'BAT', mode: 'insensitive' } },
+          ],
+        },
+        include: { specs: true },
+      })
+
+      console.log(`  -> Traitement de ${batteryProducts.length} produits batteries...`)
+      for (const prod of batteryProducts) {
+        if (prod.categoryId !== batteryCatId) {
+          await tx.product.update({
+            where: { id: prod.id },
+            data: { categoryId: batteryCatId },
+          })
+        }
+
+        if (!prod.specs?.batteryType) {
+          const combined = `${prod.nameFr} ${prod.description || ''} ${prod.sku}`.toUpperCase()
+          let detectedType: string | null = null
+          const dinMatch = combined.match(/\b(L[0-6]|HF|AGM|EFB|JIS|TYPE\s+[DM]|XEV)\b/i)
+          if (dinMatch) {
+            detectedType = dinMatch[1].replace(/\s+/g, ' ').toUpperCase()
+          } else if (combined.includes('START-STOP') || combined.includes('START & STOP')) {
+            detectedType = combined.includes('EFB') ? 'EFB' : 'AGM'
+          }
+
+          if (detectedType) {
+            await tx.productSpecs.upsert({
+              where: { productId: prod.id },
+              create: {
+                productId: prod.id,
+                batteryType: detectedType,
+              },
+              update: {
+                batteryType: detectedType,
+              },
+            })
+          }
+        }
+      }
+    }
+
+    // 2. Filtres (sous-catégories)
+    const autoFiltresId = idBySlug.get('auto-filtres')
+    const airId = idBySlug.get('filtre-a-air')
+    const huileId = idBySlug.get('filtre-a-huile')
+    const carburantId = idBySlug.get('filtre-a-carburant')
+    const habitacleId = idBySlug.get('filtre-habitacle')
+    const hydrId = idBySlug.get('filtre-hydraulique')
+
+    if (autoFiltresId) {
+      if (airId) {
+        await tx.product.updateMany({
+          where: {
+            categoryId: autoFiltresId,
+            OR: [
+              { nameFr: { contains: 'filtre à air', mode: 'insensitive' } },
+              { nameFr: { contains: 'filtre a air', mode: 'insensitive' } },
+              { nameFr: { contains: 'air filter', mode: 'insensitive' } },
+            ],
+          },
+          data: { categoryId: airId },
+        })
+      }
+      if (huileId) {
+        await tx.product.updateMany({
+          where: {
+            categoryId: autoFiltresId,
+            OR: [
+              { nameFr: { contains: 'filtre à huile', mode: 'insensitive' } },
+              { nameFr: { contains: 'filtre a huile', mode: 'insensitive' } },
+              { nameFr: { contains: 'oil filter', mode: 'insensitive' } },
+            ],
+          },
+          data: { categoryId: huileId },
+        })
+      }
+      if (carburantId) {
+        await tx.product.updateMany({
+          where: {
+            categoryId: autoFiltresId,
+            OR: [
+              { nameFr: { contains: 'filtre à carburant', mode: 'insensitive' } },
+              { nameFr: { contains: 'filtre a carburant', mode: 'insensitive' } },
+              { nameFr: { contains: 'filtre carburant', mode: 'insensitive' } },
+              { nameFr: { contains: 'filtre à gasoil', mode: 'insensitive' } },
+              { nameFr: { contains: 'filtre a gasoil', mode: 'insensitive' } },
+              { nameFr: { contains: 'filtre gasoil', mode: 'insensitive' } },
+              { nameFr: { contains: 'filtre essence', mode: 'insensitive' } },
+              { nameFr: { contains: 'fuel filter', mode: 'insensitive' } },
+            ],
+          },
+          data: { categoryId: carburantId },
+        })
+      }
+      if (habitacleId) {
+        await tx.product.updateMany({
+          where: {
+            categoryId: autoFiltresId,
+            OR: [
+              { nameFr: { contains: 'habitacle', mode: 'insensitive' } },
+              { nameFr: { contains: 'pollen', mode: 'insensitive' } },
+              { nameFr: { contains: 'cabin filter', mode: 'insensitive' } },
+            ],
+          },
+          data: { categoryId: habitacleId },
+        })
+      }
+      if (hydrId) {
+        await tx.product.updateMany({
+          where: {
+            categoryId: autoFiltresId,
+            nameFr: { contains: 'hydraulique', mode: 'insensitive' },
+          },
+          data: { categoryId: hydrId },
+        })
+      }
+    }
+
+    // 3. Liquides de Frein (DOT 3, DOT 4, DOT 5.1)
+    const liqFreinId = idBySlug.get('liquide-de-frein')
+    const dot3Id = idBySlug.get('liquide-frein-dot3')
+    const dot4Id = idBySlug.get('liquide-frein-dot4')
+    const dot51Id = idBySlug.get('liquide-frein-dot5-1')
+
+    if (liqFreinId) {
+      if (dot3Id) {
+        await tx.product.updateMany({
+          where: {
+            categoryId: liqFreinId,
+            nameFr: { contains: 'dot 3', mode: 'insensitive' },
+          },
+          data: { categoryId: dot3Id },
+        })
+      }
+      if (dot4Id) {
+        await tx.product.updateMany({
+          where: {
+            categoryId: liqFreinId,
+            nameFr: { contains: 'dot 4', mode: 'insensitive' },
+          },
+          data: { categoryId: dot4Id },
+        })
+      }
+      if (dot51Id) {
+        await tx.product.updateMany({
+          where: {
+            categoryId: liqFreinId,
+            OR: [
+              { nameFr: { contains: 'dot 5.1', mode: 'insensitive' } },
+              { nameFr: { contains: 'dot 5', mode: 'insensitive' } },
+            ],
+          },
+          data: { categoryId: dot51Id },
+        })
+      }
+    }
+
+    // 4. Additifs (Boîte et Pont)
+    const additifsId = idBySlug.get('additifs')
+    const additifBoiteId = idBySlug.get('additif-boite-pont')
+    if (additifsId && additifBoiteId) {
+      await tx.product.updateMany({
+        where: {
+          categoryId: additifsId,
+          OR: [
+            { nameFr: { contains: 'boîte', mode: 'insensitive' } },
+            { nameFr: { contains: 'boite', mode: 'insensitive' } },
+            { nameFr: { contains: 'pont', mode: 'insensitive' } },
+          ],
+        },
+        data: { categoryId: additifBoiteId },
+      })
+    }
   }, { timeout: 180_000 })
 
   // 4. Assertions post-migration

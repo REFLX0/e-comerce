@@ -120,6 +120,7 @@ export default function CataloguePage() {
           search: filters.search as string | undefined,
           brands: filters.brands as string | undefined,
           viscosity: filters.viscosity as string | undefined,
+          batteryType: filters.batteryType as string | undefined,
           priceMin: filters.priceMin as number | undefined,
           priceMax: filters.priceMax as number | undefined,
           inStockOnly: filters.inStockOnly as boolean | undefined,

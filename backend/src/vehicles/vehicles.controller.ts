@@ -43,6 +43,7 @@ export class VehiclesController {
       categorySlug: filters.categorySlug || undefined,
       brands: filters.brands || undefined,
       viscosity: filters.viscosity || undefined,
+      batteryType: filters.batteryType || undefined,
       priceMin: filters.priceMin !== undefined ? Number(filters.priceMin) : undefined,
       priceMax: filters.priceMax !== undefined ? Number(filters.priceMax) : undefined,
       inStockOnly: filters.inStockOnly === 'true' ? true : undefined,

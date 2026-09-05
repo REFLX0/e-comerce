@@ -45,24 +45,108 @@ const CATEGORY_SYNONYMS: Record<string, string[]> = {
   'filtre-a-air': ['filtre à air', 'filtre a air', 'air filter'],
   'filtre-a-carburant': ['filtre à carburant', 'filtre carburant', 'fuel filter'],
   'filtre-habitacle': ['filtre d\'habitacle', 'filtre habitacle', 'cabin filter'],
+  'filtre-hydraulique': ['filtre hydraulique', 'hydraulic filter'],
   'freinage': ['frein', 'brake', 'plaquette', 'disque', 'mâchoire', 'étrier'],
+  'auto-freinage': ['frein', 'brake', 'plaquette', 'disque', 'mâchoire', 'étrier'],
   'plaquettes-de-frein': ['plaquette', 'brake pad'],
   'disques-de-frein': ['disque', 'brake disc'],
+  'batteries': ['batterie', 'battery', 'accumulateur'],
   'amortisseurs': ['amortisseur', 'shock absorber'],
   'suspension-direction': ['suspension', 'direction', 'rotule', 'bras', 'biellette', 'amortisseur'],
+  'auto-suspension-direction': ['suspension', 'direction', 'rotule', 'bras', 'biellette', 'amortisseur'],
+  'transmission': ['transmission', 'boite', 'boîte', 'embrayage', 'cardan', 'volant moteur'],
   'allumage-prechauffage': ['allumage', 'bougie', 'bobine', 'préchauffage', 'spark plug', 'glow plug'],
   'bougies-allumage': ['bougie d\'allumage', 'spark plug'],
   'bougies-prechauffage': ['bougie de préchauffage', 'glow plug'],
   'embrayage': ['embrayage', 'clutch', 'volant moteur', 'butée'],
   'courroies-distribution': ['courroie', 'distribution', 'galet', 'poulie', 'timing belt', 'v-belt'],
+  'auto-moteur-distribution': ['moteur', 'courroie', 'distribution', 'soupape', 'joint', 'culasse'],
   'echappement': ['échappement', 'silencieux', 'catalyseur', 'fap', 'exhaust'],
+  'auto-autres-pieces': ['échappement', 'silencieux', 'catalyseur', 'autre'],
   'refroidissement': ['refroidissement', 'radiateur', 'pompe à eau', 'thermostat', 'ventilateur', 'cooling'],
+  'auto-refroidissement-climatisation': ['refroidissement', 'radiateur', 'pompe à eau', 'thermostat', 'climatisation', 'compresseur'],
   'eclairage': ['phare', 'feu', 'ampoule', 'projecteur', 'clignotant', 'lamp'],
+  'auto-electricite-eclairage': ['alternateur', 'démarreur', 'phare', 'feu', 'ampoule', 'projecteur', 'essuie-glace'],
   'demarreur-alternateur': ['démarreur', 'alternateur', 'starter', 'alternator'],
   'moteur': ['moteur', 'joint', 'culasse', 'soupape', 'piston', 'engine'],
   'huiles-moteur': ['huile', 'oil', 'lubrifiant', 'engine oil'],
   'liquides-auto': ['liquide', 'fluide', 'antigel', 'lave glace', 'frein'],
+  'autres-liquides-entretien': ['antigel', 'liquide', 'fluide', 'adblue', 'lave-glace', 'refroidissement', 'nettoyant'],
+  'antigel-ldr': ['antigel', 'liquide de refroidissement', 'ldr', 'cooling'],
+  'adblue': ['adblue', 'ad blue'],
+  'produits-entretien': ['nettoyant', 'degraissant', 'degivrant', 'entretien', 'shampoing', 'polish', 'renovateur'],
+  'accessoires-auto': ['accessoire', 'outillage', 'securite', 'tapis', 'housse'],
+  'accessoires-moto': ['accessoire', 'casque', 'gant', 'antivol', 'bache'],
+  'liquide-de-frein': ['liquide de frein', 'liquide frein', 'brake fluid', 'dot 3', 'dot 4', 'dot 5.1'],
+  'liquide-frein-dot3': ['dot 3', 'dot3', 'frein'],
+  'liquide-frein-dot4': ['dot 4', 'dot4', 'frein'],
+  'liquide-frein-dot5-1': ['dot 5.1', 'dot 5', 'dot5', 'frein'],
+  'direction-assistee': ['direction assistee', 'direction assistée', 'chf 11s', 'lhm', 'power steering'],
+  'huile-de-boite': ['huile de boite', 'huile de boîte', 'transmission', 'atf', 'gear oil'],
   'additifs': ['additif', 'nettoyant', 'traitement'],
+  'additif-essence': ['additif essence', 'traitement essence'],
+  'additif-diesel': ['additif diesel', 'traitement diesel'],
+  'additif-huile': ['additif huile', 'traitement huile'],
+  'additif-boite-pont': ['additif boite', 'additif boîte', 'additif pont'],
+};
+
+export const TAXONOMY_ALIAS_GROUPS: Record<string, string[]> = {
+  // ── I. Automobile ────────────────────────────────────────────────────────
+  'automobile': ['automobile', 'auto'],
+  'huiles-moteur': ['huiles-moteur', 'huiles-moteur-auto', 'huiles-moteur-specifiques', 'auto-synthese', 'auto-semi', 'auto-minerale'],
+  'auto-synthese': ['auto-synthese', 'huiles-moteur', 'huiles-moteur-auto'],
+  'auto-semi': ['auto-semi', 'huiles-moteur', 'huiles-moteur-auto'],
+  'auto-minerale': ['auto-minerale', 'huiles-moteur', 'huiles-moteur-auto'],
+  'liquide-de-frein': ['liquide-de-frein', 'liquide-frein', 'liquide-frein-dot3', 'liquide-frein-dot4', 'liquide-frein-dot5-1'],
+  'liquide-frein-dot3': ['liquide-frein-dot3', 'liquide-de-frein', 'liquide-frein'],
+  'liquide-frein-dot4': ['liquide-frein-dot4', 'liquide-de-frein', 'liquide-frein'],
+  'liquide-frein-dot5-1': ['liquide-frein-dot5-1', 'liquide-de-frein', 'liquide-frein'],
+  'direction-assistee': ['direction-assistee', 'liquide-direction'],
+  'additifs': ['additifs', 'additifs-huile', 'additifs-carburant', 'additif-diesel', 'additif-essence', 'additif-huile', 'additif-boite-pont'],
+  'additif-essence': ['additif-essence', 'additifs', 'additifs-carburant'],
+  'additif-diesel': ['additif-diesel', 'additifs', 'additifs-carburant'],
+  'additif-huile': ['additif-huile', 'additifs', 'additifs-huile'],
+  'additif-boite-pont': ['additif-boite-pont', 'additifs'],
+  'huile-de-boite': ['huile-de-boite', 'huiles-boite-transmission'],
+  'autres-liquides-entretien': ['autres-liquides-entretien', 'liquides-auto', 'antigel-ldr', 'refroidissement', 'antigel-refroidissement', 'adblue', 'produits-entretien', 'entretien-auto'],
+  'antigel-ldr': ['antigel-ldr', 'refroidissement', 'antigel-refroidissement', 'liquides-auto', 'autres-liquides-entretien'],
+  'adblue': ['adblue', 'autres-liquides-entretien', 'liquides-auto'],
+  'produits-entretien': ['produits-entretien', 'entretien-auto', 'autres-liquides-entretien', 'liquides-auto'],
+  'accessoires-auto': ['accessoires-auto', 'accessoires', 'equipements-auto'],
+
+  // ── II. Pièces de Rechange ───────────────────────────────────────────────
+  'auto-pieces-rechange': ['auto-pieces-rechange', 'pieces-auto', 'pieces-de-rechange'],
+  'auto-filtres': ['auto-filtres', 'filtres', 'filtres-air', 'filtres-huile', 'filtres-carburant', 'filtres-habitacle', 'filtre-a-air', 'filtre-a-huile', 'filtre-a-carburant', 'filtre-habitacle', 'filtre-hydraulique'],
+  'filtre-a-air': ['filtre-a-air', 'filtres-air', 'auto-filtres', 'filtres'],
+  'filtre-a-huile': ['filtre-a-huile', 'filtres-huile', 'auto-filtres', 'filtres'],
+  'filtre-a-carburant': ['filtre-a-carburant', 'filtres-carburant', 'auto-filtres', 'filtres'],
+  'filtre-habitacle': ['filtre-habitacle', 'filtres-habitacle', 'auto-filtres', 'filtres'],
+  'filtre-hydraulique': ['filtre-hydraulique', 'auto-filtres', 'filtres'],
+  'auto-freinage': ['auto-freinage', 'freinage', 'freins', 'disques-de-frein', 'plaquettes-de-frein'],
+  'batteries': ['batteries', 'ap-cat-batterie', 'ap-cat-batteries', 'auto-electricite-eclairage'],
+  'auto-suspension-direction': ['auto-suspension-direction', 'suspension-direction', 'amortisseurs'],
+  'transmission': ['transmission', 'auto-transmission', 'boite-vitesse', 'embrayage'],
+  'auto-moteur-distribution': ['auto-moteur-distribution', 'moteur', 'courroies-distribution'],
+  'auto-refroidissement-climatisation': ['auto-refroidissement-climatisation', 'refroidissement', 'climatisation'],
+  'auto-electricite-eclairage': ['auto-electricite-eclairage', 'batteries', 'essuie-glaces'],
+  'auto-carrosserie-habitacle': ['auto-carrosserie-habitacle', 'carrosserie', 'habitacle'],
+  'auto-autres-pieces': ['auto-autres-pieces', 'auto-echappement', 'echappement', 'autres-pieces'],
+
+  // ── III. Moto et Karting ─────────────────────────────────────────────────
+  'moto-karting': ['moto-karting', 'moto', 'karting', 'huiles-moto-2t-4t', 'entretien-chaine', 'additifs-moto', 'huiles-fourche', 'moto-huiles', 'moto-huile-boite', 'moto-huile-fourche', 'moto-lubrifiants-chaine'],
+  'moto-huiles': ['moto-huiles', 'huiles-moto-2t-4t', 'moto-huile-moteur', 'karting-huiles'],
+  'moto-huile-boite': ['moto-huile-boite'],
+  'moto-huile-fourche': ['moto-huile-fourche', 'huiles-fourche'],
+  'moto-lubrifiants-chaine': ['moto-lubrifiants-chaine', 'entretien-chaine', 'additifs-moto'],
+  'accessoires-moto': ['accessoires-moto', 'moto-equipements-entretien'],
+  'karting': ['karting', 'moto-karting'],
+  'karting-huiles': ['karting-huiles', 'moto-huiles'],
+
+  // ── IV. Marine ───────────────────────────────────────────────────────────
+  'marine': ['marine', 'marine-moteurs', 'marine-hydraulique', 'marine-graisses', 'marine-huiles-lubrifiants'],
+  'marine-moteurs': ['marine-moteurs', 'marine'],
+  'marine-hydraulique': ['marine-hydraulique', 'marine'],
+  'marine-graisses': ['marine-graisses', 'marine'],
 };
 
 @Injectable()
@@ -78,39 +162,7 @@ export class ProductsService {
   async resolveCategoryIds(slug: string): Promise<string[]> {
     if (!slug) return [];
 
-    const aliasGroups: Record<string, string[]> = {
-      'moto-huiles': ['moto-huiles', 'huiles-moto-2t-4t', 'moto-huile-moteur', 'karting-huiles'],
-      'huiles-moto-2t-4t': ['moto-huiles', 'huiles-moto-2t-4t', 'moto-huile-moteur', 'karting-huiles'],
-      'moto-huile-moteur': ['moto-huiles', 'huiles-moto-2t-4t', 'moto-huile-moteur'],
-      'moto-huile-boite': ['moto-huile-boite'],
-      'moto-huile-fourche': ['moto-huile-fourche', 'huiles-fourche'],
-      'huiles-fourche': ['moto-huile-fourche', 'huiles-fourche'],
-      'moto-lubrifiants-chaine': ['moto-lubrifiants-chaine', 'entretien-chaine', 'additifs-moto'],
-      'entretien-chaine': ['moto-lubrifiants-chaine', 'entretien-chaine'],
-      'additifs-moto': ['moto-lubrifiants-chaine', 'additifs-moto'],
-      'karting': ['moto-karting', 'karting'],
-      'karting-huiles': ['moto-huiles', 'huiles-moto-2t-4t', 'karting-huiles'],
-      'karting-pieces-consommables': ['moto-karting'],
-      'moto': ['moto-karting', 'moto'],
-      'moto-karting': ['moto-karting', 'moto', 'karting', 'huiles-moto-2t-4t', 'entretien-chaine', 'additifs-moto', 'huiles-fourche', 'moto-huiles', 'moto-huile-boite', 'moto-huile-fourche', 'moto-lubrifiants-chaine'],
-      'auto-filtres': ['auto-filtres', 'filtres', 'filtres-air', 'filtres-huile', 'filtres-carburant', 'filtres-habitacle'],
-      'auto-electricite-eclairage': ['auto-electricite-eclairage', 'batteries', 'essuie-glaces'],
-      'additifs': ['additifs', 'additifs-huile', 'additifs-carburant', 'additif-diesel', 'additif-essence', 'additif-huile'],
-      'direction-assistee': ['direction-assistee'],
-      'liquide-de-frein': ['liquide-de-frein', 'liquide-frein'],
-      'antigel-refroidissement': ['antigel-refroidissement', 'refroidissement'],
-      'huiles-moteur': ['huiles-moteur', 'huiles-moteur-auto', 'huiles-moteur-specifiques', 'auto-synthese', 'auto-semi', 'auto-minerale'],
-      'auto-synthese': ['huiles-moteur', 'huiles-moteur-auto', 'auto-synthese'],
-      'auto-semi': ['huiles-moteur', 'huiles-moteur-auto', 'auto-semi'],
-      'auto-minerale': ['huiles-moteur', 'huiles-moteur-auto', 'auto-minerale'],
-      'additif-essence': ['additifs', 'additifs-carburant'],
-      'additif-diesel': ['additifs', 'additifs-carburant'],
-      'additif-huile': ['additifs', 'additifs-huile'],
-      'huile-de-boite': ['huile-de-boite', 'huiles-boite-transmission'],
-      'marine': ['marine', 'marine-moteurs', 'marine-hydraulique', 'marine-graisses', 'marine-huiles-lubrifiants'],
-    };
-
-    const targetSlugs = Array.from(new Set([slug, ...(aliasGroups[slug] || [])]));
+    const targetSlugs = Array.from(new Set([slug, ...(TAXONOMY_ALIAS_GROUPS[slug] || [])]));
 
     const matchingCategories = await this.prismaRead.db.category.findMany({
       where: { slug: { in: targetSlugs } },
@@ -289,6 +341,14 @@ export class ProductsService {
         const categoryIds = await this.resolveCategoryIds(filters.categorySlug);
         if (categoryIds.length > 0) {
           where.categoryId = { in: categoryIds };
+        } else if (filters.categorySlug === 'batteries') {
+          andConditions.push({
+            OR: [
+              { nameFr: { contains: 'batterie', mode: 'insensitive' } },
+              { description: { contains: 'batterie', mode: 'insensitive' } },
+              { sku: { contains: 'bat', mode: 'insensitive' } },
+            ],
+          });
         }
       }
       if (filters.brands?.length) {
@@ -376,10 +436,15 @@ export class ProductsService {
         };
       }
       if (filters.batteryType) {
-        specsInput.batteryType = {
-          equals: filters.batteryType,
-          mode: 'insensitive',
-        };
+        const bt = filters.batteryType.trim();
+        andConditions.push({
+          OR: [
+            { specs: { batteryType: { equals: bt, mode: 'insensitive' } } },
+            { nameFr: { contains: bt, mode: 'insensitive' } },
+            { description: { contains: bt, mode: 'insensitive' } },
+            { sku: { contains: bt, mode: 'insensitive' } },
+          ],
+        });
       }
       if (Object.keys(variantSome).length > 0)
         where.variants = { some: variantSome };
@@ -994,6 +1059,30 @@ export class ProductsService {
       }))
       .sort((a, b) => b.count - a.count || a.value.localeCompare(b.value));
 
+    // Dynamic discovery fallback: if specs.batteryType is not yet populated in DB, derive counts from products
+    if (batteryTypes.length === 0 && (filters.categorySlug === 'batteries' || filters.batteryType)) {
+      const knownTypes = ['L0', 'L1', 'L2', 'L3', 'L4', 'L5', 'L6', 'AGM', 'EFB', 'JIS'];
+      const derived = await Promise.all(
+        knownTypes.map(async (bt) => {
+          const count = await this.prismaRead.db.product.count({
+            where: {
+              ...where,
+              OR: [
+                { nameFr: { contains: bt, mode: 'insensitive' } },
+                { description: { contains: bt, mode: 'insensitive' } },
+                { sku: { contains: bt, mode: 'insensitive' } },
+              ],
+            },
+          });
+          return { value: bt, count };
+        }),
+      );
+      for (const d of derived) {
+        if (d.count > 0) batteryTypes.push(d);
+      }
+      batteryTypes.sort((a, b) => b.count - a.count || a.value.localeCompare(b.value));
+    }
+
     const brandCounts = new Map(
       brandGroups.map((group) => [group.brandId, group._count.brandId]),
     );
@@ -1046,30 +1135,13 @@ export class ProductsService {
       return total;
     }
 
-    const facetAliasGroups: Record<string, string[]> = {
-      'moto-huiles': ['moto-huiles', 'huiles-moto-2t-4t', 'moto-huile-moteur', 'karting-huiles'],
-      'moto-huile-boite': ['moto-huile-boite'],
-      'moto-huile-fourche': ['moto-huile-fourche', 'huiles-fourche'],
-      'moto-lubrifiants-chaine': ['moto-lubrifiants-chaine', 'entretien-chaine', 'additifs-moto'],
-      'moto-karting': ['moto-karting', 'moto', 'karting', 'huiles-moto-2t-4t', 'entretien-chaine', 'additifs-moto', 'huiles-fourche'],
-      'auto-filtres': ['auto-filtres', 'filtres', 'filtres-air', 'filtres-huile', 'filtres-carburant', 'filtres-habitacle'],
-      'auto-electricite-eclairage': ['auto-electricite-eclairage', 'batteries', 'essuie-glaces'],
-      'additifs': ['additifs', 'additifs-huile', 'additifs-carburant', 'additif-diesel', 'additif-essence', 'additif-huile'],
-      'direction-assistee': ['direction-assistee'],
-      'liquide-de-frein': ['liquide-de-frein', 'liquide-frein'],
-      'liquides-auto': ['liquides-auto', 'antigel-refroidissement', 'adblue', 'refroidissement'],
-      'huiles-moteur': ['huiles-moteur', 'huiles-moteur-auto', 'huiles-moteur-specifiques', 'auto-synthese', 'auto-semi', 'auto-minerale'],
-      'huile-de-boite': ['huile-de-boite', 'huiles-boite-transmission'],
-      'marine': ['marine', 'marine-moteurs', 'marine-hydraulique', 'marine-graisses', 'marine-huiles-lubrifiants'],
-    };
-
     const categoryBySlug = new Map<string, typeof allCategories[0]>();
     for (const c of allCategories) {
       categoryBySlug.set(c.slug, c);
     }
 
     const categoryCounts = allCategories.map((c) => {
-      const aliases = facetAliasGroups[c.slug] || [c.slug];
+      const aliases = TAXONOMY_ALIAS_GROUPS[c.slug] || [c.slug];
       let total = 0;
       const seen = new Set<string>();
       for (const a of aliases) {
@@ -1232,6 +1304,7 @@ export class ProductsService {
     const specs = product.specs
       ? {
           viscosity: product.specs.viscosity || undefined,
+          batteryType: product.specs.batteryType || undefined,
           apiSpec: product.specs.apiStandard || undefined,
           aceaSpec: product.specs.aeceaStandard || undefined,
           jasoSpec: product.specs.jasoStandard || undefined,

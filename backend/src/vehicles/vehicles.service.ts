@@ -7,6 +7,7 @@ export interface CompatibleFilters {
   categorySlug?: string;
   brands?: string;
   viscosity?: string;
+  batteryType?: string;
   priceMin?: number;
   priceMax?: number;
   inStockOnly?: boolean;
@@ -309,6 +310,24 @@ export class VehiclesService {
         contains: filters.acea.replace(/^ACEA\s+/i, ''),
         mode: 'insensitive',
       };
+    }
+    if (filters.batteryType) {
+      specsInput.batteryType = {
+        equals: filters.batteryType,
+        mode: 'insensitive',
+      };
+      const bt = filters.batteryType.trim();
+      where.AND = [
+        ...((where.AND as any[]) || []),
+        {
+          OR: [
+            { specs: { batteryType: { equals: bt, mode: 'insensitive' } } },
+            { nameFr: { contains: bt, mode: 'insensitive' } },
+            { description: { contains: bt, mode: 'insensitive' } },
+            { sku: { contains: bt, mode: 'insensitive' } },
+          ],
+        },
+      ];
     }
     if (Object.keys(specsInput).length > 0) {
       where.specs = { ...((where.specs as any) || {}), ...specsInput };
