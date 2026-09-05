@@ -8,6 +8,7 @@ import { Search, Sparkles, X, LayoutGrid, List, Phone, Mail, Droplets, ShieldChe
 import Link from 'next/link'
 import { productsApi } from '@/lib/api/products'
 import { useRouter } from '@/i18n/routing'
+import { formatVehicleDisplayLabel } from '@/lib/utils/compatibility'
 import { useVehicleStore } from '@/lib/store/vehicle.store'
 import { useVehicleUrlSync } from '@/lib/hooks/useVehicleUrlSync'
 import { FilterSidebar } from '@/components/catalogue/FilterSidebar'
@@ -87,11 +88,11 @@ export default function CataloguePage() {
   // (e.g. after refreshing, or arriving from a plain /catalogue link).
   const activeVehicle = isVehicleSearch
     ? {
-        makeSlug: vehicleMake!,
-        modelSlug: vehicleModel!,
-        engineCode: vehicleEngine ?? undefined,
-        makeName: vehicleMake!,
-        modelName: vehicleModel!,
+        makeSlug: effectiveMake!,
+        modelSlug: effectiveModel!,
+        engineCode: effectiveEngine ?? undefined,
+        makeName: storedVehicle && storedVehicle.makeSlug === effectiveMake ? storedVehicle.makeName : undefined,
+        modelName: storedVehicle && storedVehicle.modelSlug === effectiveModel ? storedVehicle.modelName : undefined,
       }
     : storedVehicle
 
@@ -157,11 +158,7 @@ export default function CataloguePage() {
     return data.total ?? 0
   }, [data, isVehicleSearch])
 
-  const vehicleLabel = activeVehicle
-    ? [activeVehicle.makeName, activeVehicle.modelName, activeVehicle.engineCode]
-        .filter(Boolean)
-        .join(' ')
-    : ''
+  const vehicleLabel = formatVehicleDisplayLabel(activeVehicle)
 
   const categorySlug = searchParams.get('categorySlug')
   const categoryName = categorySlug ? (data?.categoryName || categorySlug) : null

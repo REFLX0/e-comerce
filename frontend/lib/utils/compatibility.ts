@@ -285,6 +285,39 @@ function getStructuredCompatibilityText(product: Product) {
   )
 }
 
+export interface VehicleLabelSource {
+  makeName?: string | null
+  modelName?: string | null
+  makeSlug?: string | null
+  modelSlug?: string | null
+  engineCode?: string | null
+}
+
+export function formatVehicleDisplayLabel(vehicle: VehicleLabelSource | null | undefined): string {
+  if (!vehicle) return ''
+
+  const formatSlug = (slug?: string | null) => {
+    if (!slug) return ''
+    const trimmed = slug.replace(/^[-_]+|[-_]+$/g, '')
+    return trimmed
+      .split(/[-_]+/)
+      .map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+      .join(' ')
+  }
+
+  const make = (vehicle.makeName || formatSlug(vehicle.makeSlug)).trim()
+  const model = (vehicle.modelName || formatSlug(vehicle.modelSlug)).trim()
+  const engine = (vehicle.engineCode || '').trim()
+
+  // If engine already begins with or includes make (e.g. legacy TecDoc full_description
+  // like 'CITROËN SAXO (S0, S1) 1.1 X,SX'), avoid stuttering duplication.
+  if (engine && make && engine.toLowerCase().includes(make.toLowerCase())) {
+    return engine
+  }
+
+  return [make, model, engine].filter(Boolean).join(' ')
+}
+
 export function getVehicleCompatibilityLabel(vehicle: CompatibilityVehicle) {
   const make = getMake(vehicle)
   const model = getModel(vehicle)

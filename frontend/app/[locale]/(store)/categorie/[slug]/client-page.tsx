@@ -21,6 +21,8 @@ import { useTranslations } from 'next-intl'
 import { useRouter } from '@/i18n/routing'
 import { use } from 'react'
 import { useVehicleUrlSync } from '@/lib/hooks/useVehicleUrlSync'
+import { useVehicleStore } from '@/lib/store/vehicle.store'
+import { formatVehicleDisplayLabel } from '@/lib/utils/compatibility'
 
 const VEHICLE_QUERY_KEYS = ['make', 'model', 'engine']
 
@@ -30,6 +32,7 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
   const router = useRouter()
   const t = useTranslations('Catalogue')
 
+  const storedVehicle = useVehicleStore((state) => state.vehicle)
   useVehicleUrlSync(true)
 
   const vehicleMake = searchParams.get('make')
@@ -91,7 +94,13 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
   })
 
   const vehicleLabel = isVehicleSearch
-    ? [vehicleMake, vehicleModel, vehicleEngine].filter(Boolean).join(' ')
+    ? formatVehicleDisplayLabel({
+        makeSlug: vehicleMake,
+        modelSlug: vehicleModel,
+        engineCode: vehicleEngine,
+        makeName: storedVehicle && storedVehicle.makeSlug === vehicleMake ? storedVehicle.makeName : undefined,
+        modelName: storedVehicle && storedVehicle.modelSlug === vehicleModel ? storedVehicle.modelName : undefined,
+      })
     : ''
 
   return (

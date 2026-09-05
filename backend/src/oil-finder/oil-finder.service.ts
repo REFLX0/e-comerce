@@ -406,7 +406,7 @@ export class OilFinderService {
     try {
       const tecdocPassCars: any[] = await this.prisma.$queryRawUnsafe(`
         SELECT DISTINCT 
-          COALESCE(NULLIF(pc.full_description, ''), pc.description) AS "engineCode",
+          COALESCE(NULLIF(pc.description, ''), pc.full_description) AS "engineCode",
           CASE 
             WHEN pc.date_from::text ~ '^[12]\\d{3}' THEN SUBSTRING(pc.date_from::text, 1, 4)::int
             WHEN pc.date_from::text ~ '\\d{4}$' THEN SUBSTRING(pc.date_from::text, LENGTH(pc.date_from::text)-3, 4)::int
