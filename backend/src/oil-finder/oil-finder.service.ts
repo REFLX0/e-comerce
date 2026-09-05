@@ -172,6 +172,31 @@ export class OilFinderService {
       }).catch(() => []);
     }
 
+    // 1e. If still nothing found, try matching by base model name
+    // e.g. "GOLF VII (5G1, BQ1, BE1, BE2)" -> base model "Golf"
+    // e.g. "206 Hatchback (2A/C)" -> base model "206"
+    // e.g. "ASTRA H (A04)" -> base model "Astra"
+    if (rows.length === 0) {
+      const baseModel = model.replace(/\s*\([^)]*\)/g, '').split(/\s+/)[0].trim();
+      if (baseModel && baseModel.length >= 2) {
+        const cleanEngine = engineCode ? engineCode.replace(/\s*\([^)]*\)/g, '').trim() : '';
+        rows = await this.prisma.oilFinderVehicle.findMany({
+          where: {
+            make: { equals: make.trim(), mode: 'insensitive' as const },
+            model: { contains: baseModel, mode: 'insensitive' as const },
+            ...(cleanEngine ? {
+              OR: [
+                { engineCode: { equals: cleanEngine, mode: 'insensitive' as const } },
+                { engineCode: { contains: cleanEngine, mode: 'insensitive' as const } },
+                { engineCode: '' },
+              ],
+            } : {}),
+          },
+          include: { oilSpec: true },
+          orderBy: [{ source: 'asc' }, { id: 'asc' }],
+        }).catch(() => []);
+      }
+    }
 
     if (rows.length > 0) {
       const distinct = groupBySpec(rows);
