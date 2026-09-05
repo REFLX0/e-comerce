@@ -172,6 +172,42 @@ describe('OilFinderService', () => {
       }
     });
 
+    it('returns status not_found enriched with automobile classification for Volkswagen', async () => {
+      prisma.oilFinderVehicle.findMany.mockResolvedValue([]);
+      prisma.$queryRawUnsafe.mockResolvedValueOnce([{ is_car: true }]);
+
+      const result = await service.findByVehicle('Volkswagen', 'Golf');
+
+      expect(result.status).toBe('not_found');
+      if (result.status === 'not_found') {
+        expect(result.message).toContain('automobile');
+      }
+    });
+
+    it('returns status not_found enriched with automobile classification for BMW', async () => {
+      prisma.oilFinderVehicle.findMany.mockResolvedValue([]);
+      prisma.$queryRawUnsafe.mockResolvedValueOnce([{ is_car: true }]);
+
+      const result = await service.findByVehicle('BMW', '3 Series');
+
+      expect(result.status).toBe('not_found');
+      if (result.status === 'not_found') {
+        expect(result.message).toContain('automobile');
+      }
+    });
+
+    it('returns status not_found enriched with automobile classification for Renault', async () => {
+      prisma.oilFinderVehicle.findMany.mockResolvedValue([]);
+      prisma.$queryRawUnsafe.mockResolvedValueOnce([{ is_car: true }]);
+
+      const result = await service.findByVehicle('Renault', 'Megane');
+
+      expect(result.status).toBe('not_found');
+      if (result.status === 'not_found') {
+        expect(result.message).toContain('automobile');
+      }
+    });
+
     it('returns status not_found for unknown makes with no rows in DB', async () => {
       prisma.oilFinderVehicle.findMany.mockResolvedValue([]);
       prisma.$queryRawUnsafe.mockResolvedValue([]);

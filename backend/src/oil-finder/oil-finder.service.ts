@@ -125,6 +125,7 @@ export class OilFinderService {
     let isPassengerCar = false;
 
     try {
+      const tecdocStart = performance.now();
       const tecdocInfo: any[] = await this.prisma.$queryRawUnsafe(`
         SELECT 
           COALESCE(m.is_commercial_vehicle, mfr.is_commercial_vehicle, false) AS is_truck,
@@ -139,6 +140,9 @@ export class OilFinderService {
           OR LOWER(mfr.matchcode) = $1
           OR LOWER(COALESCE(NULLIF(mfr.description, ''), mfr.matchcode)) = $1
           OR LOWER(REGEXP_REPLACE(COALESCE(NULLIF(mfr.description, ''), mfr.matchcode), '[^a-zA-Z0-9]+', '-', 'g')) = $1
+          OR ($1 = 'volkswagen' AND (LOWER(mfr.matchcode) = 'vw' OR LOWER(COALESCE(mfr.description, '')) LIKE '%volkswagen%'))
+          OR ($1 = 'vw' AND (LOWER(mfr.matchcode) = 'volkswagen' OR LOWER(mfr.matchcode) = 'vw'))
+          OR ($1 IN ('mercedes', 'mercedes-benz') AND LOWER(mfr.matchcode) IN ('mercedes', 'mercedes-benz'))
         )
         AND (
           LOWER(REGEXP_REPLACE(m.description, '[^a-zA-Z0-9]+', '-', 'g')) = $2
@@ -148,6 +152,13 @@ export class OilFinderService {
         )
         LIMIT 1
       `, slugify(make), slugify(model));
+      const tecdocDuration = Math.round(performance.now() - tecdocStart);
+
+      if (tecdocDuration > 50) {
+        this.logger.warn(`[SLOW QUERY] TecDoc classification query for "${make} ${model}" took ${tecdocDuration}ms (threshold: 50ms)`);
+      } else {
+        this.logger.log(`TecDoc classification query for "${make} ${model}" completed in ${tecdocDuration}ms`);
+      }
 
       if (tecdocInfo.length > 0) {
         const r = tecdocInfo[0];
@@ -156,6 +167,7 @@ export class OilFinderService {
         isEngineCategory = Boolean(r.is_engine);
         isPassengerCar = Boolean(r.is_car);
       } else {
+        const mfrStart = performance.now();
         const mfrRows: any[] = await this.prisma.$queryRawUnsafe(`
           SELECT is_commercial_vehicle, is_motorbike, is_engine, is_passenger_car, is_transporter
           FROM tecdoc.manufacturers
@@ -163,8 +175,19 @@ export class OilFinderService {
              OR LOWER(matchcode) = $1
              OR LOWER(COALESCE(NULLIF(description, ''), matchcode)) = $1
              OR LOWER(REGEXP_REPLACE(COALESCE(NULLIF(description, ''), matchcode), '[^a-zA-Z0-9]+', '-', 'g')) = $1
+             OR ($1 = 'volkswagen' AND (LOWER(matchcode) = 'vw' OR LOWER(COALESCE(description, '')) LIKE '%volkswagen%'))
+             OR ($1 = 'vw' AND (LOWER(matchcode) = 'volkswagen' OR LOWER(matchcode) = 'vw'))
+             OR ($1 IN ('mercedes', 'mercedes-benz') AND LOWER(matchcode) IN ('mercedes', 'mercedes-benz'))
           LIMIT 1
         `, slugify(make));
+        const mfrDuration = Math.round(performance.now() - mfrStart);
+
+        if (mfrDuration > 50) {
+          this.logger.warn(`[SLOW QUERY] TecDoc manufacturer lookup for "${make}" took ${mfrDuration}ms (threshold: 50ms)`);
+        } else {
+          this.logger.log(`TecDoc manufacturer lookup for "${make}" completed in ${mfrDuration}ms`);
+        }
+
         if (mfrRows.length > 0) {
           const m = mfrRows[0];
           isTruck = Boolean(m.is_commercial_vehicle || m.is_transporter);
@@ -319,6 +342,9 @@ export class OilFinderService {
             OR LOWER(COALESCE(NULLIF(mfr.description, ''), mfr.matchcode)) = $1
             OR LOWER(REGEXP_REPLACE(mfr.matchcode, '[^a-zA-Z0-9]+', '-', 'g')) = $1
             OR LOWER(mfr.matchcode) = $1
+            OR ($1 = 'volkswagen' AND (LOWER(mfr.matchcode) = 'vw' OR LOWER(COALESCE(mfr.description, '')) LIKE '%volkswagen%'))
+            OR ($1 = 'vw' AND (LOWER(mfr.matchcode) = 'volkswagen' OR LOWER(mfr.matchcode) = 'vw'))
+            OR ($1 IN ('mercedes', 'mercedes-benz') AND LOWER(mfr.matchcode) IN ('mercedes', 'mercedes-benz'))
           )
         ORDER BY m.description ASC
       `, makeName.toLowerCase().trim());
@@ -380,6 +406,9 @@ export class OilFinderService {
             OR LOWER(COALESCE(NULLIF(mfr.description, ''), mfr.matchcode)) = $2
             OR LOWER(REGEXP_REPLACE(mfr.matchcode, '[^a-zA-Z0-9]+', '-', 'g')) = $2
             OR LOWER(mfr.matchcode) = $2
+            OR ($2 = 'volkswagen' AND (LOWER(mfr.matchcode) = 'vw' OR LOWER(COALESCE(mfr.description, '')) LIKE '%volkswagen%'))
+            OR ($2 = 'vw' AND (LOWER(mfr.matchcode) = 'volkswagen' OR LOWER(mfr.matchcode) = 'vw'))
+            OR ($2 IN ('mercedes', 'mercedes-benz') AND LOWER(mfr.matchcode) IN ('mercedes', 'mercedes-benz'))
           )
         ORDER BY "engineCode" ASC
       `, modelNorm, makeNorm);
@@ -412,6 +441,9 @@ export class OilFinderService {
             OR LOWER(COALESCE(NULLIF(mfr.description, ''), mfr.matchcode)) = $1
             OR LOWER(REGEXP_REPLACE(mfr.matchcode, '[^a-zA-Z0-9]+', '-', 'g')) = $1
             OR LOWER(mfr.matchcode) = $1
+            OR ($1 = 'volkswagen' AND (LOWER(mfr.matchcode) = 'vw' OR LOWER(COALESCE(mfr.description, '')) LIKE '%volkswagen%'))
+            OR ($1 = 'vw' AND (LOWER(mfr.matchcode) = 'volkswagen' OR LOWER(mfr.matchcode) = 'vw'))
+            OR ($1 IN ('mercedes', 'mercedes-benz') AND LOWER(mfr.matchcode) IN ('mercedes', 'mercedes-benz'))
           )
         ORDER BY "engineCode" ASC
         LIMIT 50
