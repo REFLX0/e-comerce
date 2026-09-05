@@ -48,6 +48,8 @@ const LOW_SAPS_MARKERS = [
   'dexos2', 'DEXOS2',
   '229.31', '229.51', '229.52',
   'DL-1', 'JASO DL-1',
+  '9.55535-S1', '9.55535-S2',
+  'ILSAC GF-6', 'VCC-RBS0-2AE', 'STJLR.03.5006',
 ];
 
 function hasLowSapsMarker(approvals) {
@@ -63,6 +65,20 @@ function viscosityLooksSane(viscosity) {
   const cold = parseInt(m[1], 10);
   const hot = parseInt(m[2], 10);
   return cold >= 0 && cold <= 25 && hot >= 12 && hot <= 60;
+}
+
+function canonicalizeSpec(specStr) {
+  if (!specStr) return '';
+  return specStr
+    .replace(/504\.00\/507\.00/g, '504 00 / 507 00')
+    .replace(/\(LongLife III\)/gi, '')
+    .replace(/B71 2300 \/ B71 2294/g, 'B71 2300')
+    .replace(/B71 2294/g, 'B71 2300')
+    .replace(/SN\/CF/gi, 'SN')
+    .replace(/SL\/CF/gi, 'SL')
+    .replace(/SM\/CF/gi, 'SM')
+    .replace(/\s+/g, ' ')
+    .trim();
 }
 
 async function auditCompatibilityRows() {
@@ -205,12 +221,29 @@ function processRows({
     }
 
     const year = getYear(row);
-    if (isDiesel(row) && (!year || year >= 2011) && !hasLowSapsMarker(approvals)) {
-      possibleDpfMismatch.push(`${label} -> approvals="${approvals}" (no low-SAPS marker found)`);
+    const labelLower = label.toLowerCase();
+    const isExplicitDpf = /\b(dpf|fap|bluehdi|euro\s*5|euro\s*6|adblue|scr)\b/i.test(`${label} ${row.fuelType || ''} ${row.engineCode || ''}`);
+    const isClassicPreDpf = /\b(golf\s*(iv|4|iii|3|ii|2)|206|106|306|406|saxo|xsara|clio\s*(ii|2|i|1)|punto\s*(ii|188)|astra\s*(g|f)|corsa\s*(b|c)|passat\s*b5)\b/i.test(labelLower);
+
+    // DPF check: strictly applies to confirmed modern post-2010 diesels or explicit DPF models.
+    // Pre-2010 classics (Golf IV, 206, Saxo, Clio II...) legitimately take full-SAPS A3/B4 (VW 505.00, PSA B71 2300).
+    if (isDiesel(row) && !hasLowSapsMarker(approvals)) {
+      if (isExplicitDpf || (year && year >= 2011 && !isClassicPreDpf)) {
+        possibleDpfMismatch.push(`${label} -> approvals="${approvals}" (modern diesel without low-SAPS marker)`);
+      }
     }
 
-    const engineKey = `${getMake(row)}|${getEngine(row)}`;
-    const specCombo = `${viscosity} [${approvals}]`;
+    const rawEngine = (getEngine(row) || '').trim();
+    if (!rawEngine || rawEngine.toLowerCase() === 'unknown' || rawEngine === '-') {
+      continue; // Skip generic unknown engine placeholders
+    }
+
+    const canonApprovals = canonicalizeSpec(approvals);
+    const isGenericDisplacement = /^(\d\.\d|\d\.\d\s+[a-zA-Z0-9]+)$/.test(rawEngine);
+    const eraSuffix = isGenericDisplacement && year ? (year >= 2010 ? ' [2010+]' : ' [pre-2010]') : '';
+    const engineKey = `${getMake(row)}|${rawEngine}${eraSuffix}`;
+    const specCombo = `${viscosity} [${canonApprovals}]`;
+
     if (!engineGroups.has(engineKey)) engineGroups.set(engineKey, new Map());
     const combos = engineGroups.get(engineKey);
     combos.set(specCombo, (combos.get(specCombo) ?? 0) + 1);

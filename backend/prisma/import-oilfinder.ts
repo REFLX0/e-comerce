@@ -130,6 +130,8 @@ async function loadVehicles(skipped: string[]) {
         if (!('oilCapacityLiters' in _e) && 'engineOilCapacityLiters' in _e) _e.oilCapacityLiters = _e.engineOilCapacityLiters
         if (!('oilSpecAPI' in _e) && 'engineOilSpecAPI' in _e) _e.oilSpecAPI = _e.engineOilSpecAPI
         if (!('oilSpecACEA' in _e) && 'engineOilSpecACEA' in _e) _e.oilSpecACEA = _e.engineOilSpecACEA
+        if (_e.oilSpecMarine && !_e.oilSpecOEM) _e.oilSpecOEM = `NMMA ${_e.oilSpecMarine}`
+        if (_e.oilSpecMarine && !_e.oilSpecAPI) _e.oilSpecAPI = 'SJ/SL'
       }
       const e = entry as Partial<VehicleEntry>
       if (!e.make || !e.model || !e.fuelType || !e.oilViscosity || !e.source || !e.confidence) {
