@@ -20,7 +20,8 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "import:vehicle-compatibility": "npx tsx prisma/import-vehicle-compat.ts",
     "reindex:opensearch": "npx tsx scripts/reindex-products.ts",
-    "test:chatbot": "npx ts-node -r tsconfig-paths/register scripts/test_chatbot.ts"
+    "test:chatbot": "npx ts-node -r tsconfig-paths/register scripts/test_chatbot.ts",
+    "test:oil-finder-full": "node scripts/test-oil-finder-full.js"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1112.0",
