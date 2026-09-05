@@ -90,43 +90,46 @@ export default function Footer() {
   return (
     <footer className="bg-brand-primary-dark">
       <div className="section-padding pt-16 pb-10">
-        {/* 5-column grid */}
-        <div className="mb-14 grid grid-cols-1 gap-10 border-b border-white/8 pb-14 sm:grid-cols-2 lg:grid-cols-5">
-          {/* Col 1: Brand */}
-          <div className="sm:col-span-2 lg:col-span-1">
+        {/* 12-column grid: 4 cols for Brand/Newsletter, 2 cols each for the 4 link categories */}
+        <div className="mb-14 grid grid-cols-1 gap-10 border-b border-white/8 pb-14 sm:grid-cols-2 lg:grid-cols-12">
+          {/* Col 1: Brand & Newsletter */}
+          <div className="sm:col-span-2 lg:col-span-4">
             <Link href="/" className="mb-5 inline-flex items-center gap-1.5 group">
               <span className="text-2xl font-black tracking-wider uppercase text-white group-hover:text-brand-accent transition-colors">
                 SPEC<span className="text-brand-accent">PART</span>
               </span>
             </Link>
-            <p className="mb-6 max-w-xs text-sm leading-relaxed text-white/40">
+            <p className="mb-6 max-w-sm text-sm leading-relaxed text-white/45">
               {tFooter('description')}
             </p>
             {/* Newsletter */}
-            <form onSubmit={handleNewsletter} className="flex gap-0">
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder={tFooter('newsletterPlaceholder')}
-                className="focus:border-brand-accent h-10 flex-1 border border-white/10 bg-white/5 px-3 text-sm text-white placeholder:text-white/25 focus:outline-none"
-              />
-              <button
-                type="submit"
-                className="bg-brand-accent text-brand-primary-dark hover:bg-brand-accent-hover flex h-10 w-10 shrink-0 items-center justify-center transition-colors"
-                aria-label={tFooter('subscribe')}
-              >
-                <Send size={14} />
-              </button>
+            <form onSubmit={handleNewsletter} className="relative max-w-sm">
+              <div className="relative flex items-center rounded-xl border border-white/12 bg-white/[0.04] p-1 shadow-inner backdrop-blur-sm transition-all focus-within:border-brand-accent focus-within:bg-white/[0.06] focus-within:ring-2 focus-within:ring-brand-accent/20">
+                <Mail size={16} className="ml-3 shrink-0 text-white/30" />
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder={tFooter('newsletterPlaceholder')}
+                  className="w-full min-w-0 bg-transparent px-3 py-2 text-sm text-white placeholder:text-white/30 focus:outline-none"
+                />
+                <button
+                  type="submit"
+                  className="group flex h-9 shrink-0 items-center justify-center gap-1.5 rounded-lg bg-brand-accent px-3.5 text-xs font-bold text-brand-primary-dark shadow-sm transition-all hover:bg-brand-accent-hover hover:shadow-brand-accent/25 active:scale-95"
+                  aria-label={tFooter('subscribe')}
+                >
+                  <Send size={13} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                </button>
+              </div>
             </form>
             {/* Social */}
-            <div className="mt-5 flex gap-3">
+            <div className="mt-5 flex items-center gap-2.5">
               <a
                 href="https://www.facebook.com/specpart/"
                 target="_blank"
                 rel="noreferrer"
                 aria-label="Facebook"
-                className="hover:border-brand-accent hover:text-brand-accent flex h-9 w-9 items-center justify-center rounded border border-white/10 text-white/40 transition-all"
+                className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 bg-white/[0.03] text-white/40 transition-all hover:border-brand-accent/50 hover:bg-brand-accent/10 hover:text-brand-accent"
               >
                 <Facebook size={16} />
               </a>
@@ -135,7 +138,7 @@ export default function Footer() {
                 target="_blank"
                 rel="noreferrer"
                 aria-label="Instagram"
-                className="hover:border-brand-accent hover:text-brand-accent flex h-9 w-9 items-center justify-center rounded border border-white/10 text-white/40 transition-all"
+                className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 bg-white/[0.03] text-white/40 transition-all hover:border-brand-accent/50 hover:bg-brand-accent/10 hover:text-brand-accent"
               >
                 <Instagram size={16} />
               </a>
@@ -143,14 +146,14 @@ export default function Footer() {
           </div>
 
           {/* Col 2: Boutique */}
-          <div>
-            <h3 className="mb-5 text-xs font-bold tracking-[0.15em] text-white/30 uppercase">
+          <div className="lg:col-span-2">
+            <h3 className="mb-5 text-xs font-bold tracking-[0.15em] text-white/40 uppercase">
               {tFooter('shopTitle')}
             </h3>
             <ul className="space-y-2.5 text-sm">
               {SHOP_LINKS.map(({ href, ns, key }) => (
                 <li key={href}>
-                  <Link href={href} className="text-white/40 transition-colors hover:text-white">
+                  <Link href={href} className="text-white/45 transition-colors hover:text-white">
                     {linkLabel(ns, key)}
                   </Link>
                 </li>
@@ -159,14 +162,14 @@ export default function Footer() {
           </div>
 
           {/* Col 3: Service Client */}
-          <div>
-            <h3 className="mb-5 text-xs font-bold tracking-[0.15em] text-white/30 uppercase">
+          <div className="lg:col-span-2">
+            <h3 className="mb-5 text-xs font-bold tracking-[0.15em] text-white/40 uppercase">
               {tFooter('serviceTitle')}
             </h3>
             <ul className="space-y-2.5 text-sm">
               {SERVICE_LINKS.map(({ href, ns, key }) => (
                 <li key={href}>
-                  <Link href={href} className="text-white/40 transition-colors hover:text-white">
+                  <Link href={href} className="text-white/45 transition-colors hover:text-white">
                     {linkLabel(ns, key)}
                   </Link>
                 </li>
@@ -175,14 +178,14 @@ export default function Footer() {
           </div>
 
           {/* Col 4: Mon Compte */}
-          <div>
-            <h3 className="mb-5 text-xs font-bold tracking-[0.15em] text-white/30 uppercase">
+          <div className="lg:col-span-2">
+            <h3 className="mb-5 text-xs font-bold tracking-[0.15em] text-white/40 uppercase">
               {tFooter('myAccount')}
             </h3>
             <ul className="space-y-2.5 text-sm">
               {ACCOUNT_LINKS.map(({ href, ns, key }) => (
                 <li key={href}>
-                  <Link href={href} className="text-white/40 transition-colors hover:text-white">
+                  <Link href={href} className="text-white/45 transition-colors hover:text-white">
                     {linkLabel(ns, key)}
                   </Link>
                 </li>
@@ -191,30 +194,30 @@ export default function Footer() {
           </div>
 
           {/* Col 5: Contact */}
-          <div>
-            <h3 className="mb-5 text-xs font-bold tracking-[0.15em] text-white/30 uppercase">
+          <div className="lg:col-span-2">
+            <h3 className="mb-5 text-xs font-bold tracking-[0.15em] text-white/40 uppercase">
               {tFooter('contact')}
             </h3>
             <ul className="space-y-4 text-sm">
               <li className="flex items-start gap-3">
                 <Clock size={15} className="text-brand-accent mt-0.5 shrink-0" />
-                <span className="text-white/40">{tFooter('hours')}</span>
+                <span className="text-white/45">{tFooter('hours')}</span>
               </li>
               <li className="flex items-center gap-3">
                 <Phone size={15} className="text-brand-accent shrink-0" />
-                <a href="tel:+21629294195" className="text-white/40 hover:text-white">
+                <a href="tel:+21629294195" className="text-white/45 hover:text-white transition-colors">
                   +216 29 294 195
                 </a>
               </li>
               <li className="flex items-center gap-3">
                 <Mail size={15} className="text-brand-accent shrink-0" />
-                <a href="mailto:contact@specpart.tn" className="text-white/40 hover:text-white">
+                <a href="mailto:contact@specpart.tn" className="text-white/45 hover:text-white transition-colors">
                   contact@specpart.tn
                 </a>
               </li>
               <li className="flex items-start gap-3">
                 <MapPin size={15} className="text-brand-accent mt-0.5 shrink-0" />
-                <span className="text-white/40">{tFooter('location')}</span>
+                <span className="text-white/45">{tFooter('location')}</span>
               </li>
             </ul>
           </div>
