@@ -38,6 +38,7 @@ COPY --from=builder /app/package*.json ./
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/uploads ./uploads
+COPY --from=builder /app/scripts ./scripts
 
 ENV NODE_ENV=production
 ENV PORT=4000
