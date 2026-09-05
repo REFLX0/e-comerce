@@ -11,6 +11,7 @@ export interface ProductFilters {
   brandSlug?: string;
   brands?: string[];
   viscosity?: string;
+  batteryType?: string;
   priceMin?: number;
   priceMax?: number;
   inStockOnly?: boolean;
@@ -259,6 +260,7 @@ export class ProductsService {
       acea: filters.acea,
       volume: filters.volume,
       oem: filters.oem,
+      batteryType: filters.batteryType,
     };
     return `products:list:${JSON.stringify(relevant)}`;
   }
@@ -360,6 +362,12 @@ export class ProductsService {
       if (filters.oem) {
         specsInput.OEMApprovals = {
           contains: filters.oem,
+          mode: 'insensitive',
+        };
+      }
+      if (filters.batteryType) {
+        specsInput.batteryType = {
+          equals: filters.batteryType,
           mode: 'insensitive',
         };
       }
@@ -909,7 +917,7 @@ export class ProductsService {
       where.variants = { some: variantSome };
     }
 
-    const [variantGroups, viscosityGroups, brandGroups, categoryGroups, priceAgg, availableBrands] = await Promise.all([
+    const [variantGroups, viscosityGroups, batteryTypeGroups, brandGroups, categoryGroups, priceAgg, availableBrands] = await Promise.all([
       this.prismaRead.db.productVariant.groupBy({
         by: ['volume'],
         where: { product: where },
@@ -919,6 +927,11 @@ export class ProductsService {
         by: ['viscosity'],
         where: { product: where },
         _count: { viscosity: true },
+      }),
+      this.prismaRead.db.productSpecs.groupBy({
+        by: ['batteryType'],
+        where: { product: where },
+        _count: { batteryType: true },
       }),
       this.prismaRead.db.product.groupBy({
         by: ['brandId'],
@@ -962,6 +975,14 @@ export class ProductsService {
         const numB = parseFloat(b.value) || 0;
         return numA - numB || a.value.localeCompare(b.value);
       });
+
+    const batteryTypes = (batteryTypeGroups || [])
+      .filter((v) => v.batteryType)
+      .map((v) => ({
+        value: v.batteryType as string,
+        count: v._count.batteryType,
+      }))
+      .sort((a, b) => b.count - a.count || a.value.localeCompare(b.value));
 
     const brandCounts = new Map(
       brandGroups.map((group) => [group.brandId, group._count.brandId]),
@@ -1059,6 +1080,7 @@ export class ProductsService {
       volumes,
       brands,
       viscosities,
+      batteryTypes,
       categoryCounts,
       priceRange: {
         min: Math.floor(priceAgg._min?.price ?? 0),

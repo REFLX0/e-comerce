@@ -37,6 +37,7 @@ export class ProductsController {
       api: query.api,
       acea: query.acea,
       volume: query.volume,
+      batteryType: query.batteryType,
     });
   }
 
@@ -61,6 +62,7 @@ export class ProductsController {
       categorySlug: query.categorySlug,
       brands: query.brands ? query.brands.split(',') : undefined,
       viscosity: query.viscosity,
+      batteryType: query.batteryType,
       inStockOnly: query.inStockOnly === 'true',
       search: query.search || query.q,
       priceMin: query.priceMin ? +query.priceMin : undefined,
@@ -78,6 +80,7 @@ export class ProductsController {
       brandSlug: query.brandSlug,
       brands: query.brands ? query.brands.split(',') : undefined,
       viscosity: query.viscosity,
+      batteryType: query.batteryType,
       priceMin: query.priceMin ? +query.priceMin : undefined,
       priceMax: query.priceMax ? +query.priceMax : undefined,
       inStockOnly: query.inStockOnly === 'true',

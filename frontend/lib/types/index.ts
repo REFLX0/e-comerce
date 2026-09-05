@@ -305,6 +305,7 @@ export interface FacetsResponse {
   volumes: { volume: string; count: number }[]
   brands: FacetBrand[]
   viscosities: FacetValue[]
+  batteryTypes?: FacetValue[]
   categoryCounts: { id: string; count: number }[]
   priceRange: { min: number; max: number }
 }
@@ -316,6 +317,7 @@ export interface ProductFilters {
   brandSlug?: string
   brands?: string
   viscosity?: string
+  batteryType?: string
   priceMin?: number
   priceMax?: number
   inStockOnly?: boolean

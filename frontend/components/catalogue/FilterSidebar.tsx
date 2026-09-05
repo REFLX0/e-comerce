@@ -43,9 +43,10 @@ const NAVIGATION_ICONS: Record<string, React.ElementType> = {
 const OIL_TYPES = ['100% Synthèse', 'Semi-Synthèse', 'Minérale']
 const API_STANDARDS = ['API SL', 'API SM', 'API SN', 'API SP', 'API CF', 'API CI-4', 'API CJ-4', 'API CK-4']
 const ACEA_STANDARDS = ['ACEA A3/B4', 'ACEA C2', 'ACEA C3', 'ACEA C4', 'ACEA C5', 'ACEA E4', 'ACEA E6', 'ACEA E7', 'ACEA E9']
+const DEFAULT_BATTERY_TYPES = ['L0', 'L1', 'L2', 'L3', 'L4', 'L5', 'L6', 'AGM', 'EFB', 'JIS']
 
 /** Every accordion section — all open by default; state persists while mounted. */
-const DEFAULT_OPEN_SECTIONS = ['brands', 'budget', 'viscosity', 'packaging', 'oil-type', 'api', 'acea', 'availability']
+const DEFAULT_OPEN_SECTIONS = ['brands', 'budget', 'battery-type', 'viscosity', 'packaging', 'oil-type', 'api', 'acea', 'availability']
 
 function isPackagingVolume(value: string) {
   return /^\d+(?:[.,]\d+)?\s*(?:l|ml)$/i.test(value.trim())
@@ -271,6 +272,17 @@ export function FilterSidebar({
     patch({ [key]: read(key) === value ? null : value })
 
   const currentCategorySlug = read('categorySlug')
+  const isBattery =
+    currentCategorySlug === 'batteries' ||
+    baseFilters?.categorySlug === 'batteries' ||
+    searchParams.get('categorySlug') === 'batteries'
+
+  const batteryTypes = useMemo(() => {
+    if (facets?.batteryTypes && facets.batteryTypes.length > 0) {
+      return facets.batteryTypes.map((b) => ({ value: b.value, count: b.count }))
+    }
+    return DEFAULT_BATTERY_TYPES.map((b) => ({ value: b, count: undefined }))
+  }, [facets?.batteryTypes])
 
   return (
     <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-[#16254c] to-[#0a1128] shadow-2xl backdrop-blur-xl">
@@ -387,22 +399,61 @@ export function FilterSidebar({
             />
           </FilterSection>
 
+          {/* Battery Type */}
+          {(isBattery || (facets?.batteryTypes && facets.batteryTypes.length > 0) || Boolean(read('batteryType'))) && (
+            <FilterSection
+              value="battery-type"
+              title={t('batteryType') || 'Type de Batterie'}
+              activeCount={read('batteryType') ? 1 : 0}
+              onClear={() => patch({ batteryType: null })}
+            >
+              <div className="flex flex-wrap gap-2">
+                {batteryTypes.map(({ value: bType, count }) => {
+                  const active = read('batteryType') === bType
+                  return (
+                    <button
+                      key={bType}
+                      type="button"
+                      onClick={() => toggleSingle('batteryType', bType)}
+                      aria-pressed={active}
+                      className={cn(
+                        'rounded-xl border px-3 py-1.5 text-xs font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4A76A]/40',
+                        active
+                          ? 'border-[#D4A76A] bg-[#D4A76A] font-bold text-[#16254c] shadow-[0_0_15px_rgba(212,167,106,0.3)]'
+                          : 'border-white/10 bg-white/5 text-white/80 hover:border-white/20 hover:bg-white/10 hover:text-white'
+                      )}
+                    >
+                      <span>{bType}</span>
+                      {count !== undefined && count > 0 && (
+                        <span className={cn('ms-1.5 text-[10px]', active ? 'text-[#16254c]/70' : 'text-white/40')}>
+                          ({count})
+                        </span>
+                      )}
+                    </button>
+                  )
+                })}
+              </div>
+            </FilterSection>
+          )}
+
           {/* Viscosity */}
-          <FilterSection
-            value="viscosity"
-            title={t('viscosity')}
-            activeCount={read('viscosity') ? 1 : 0}
-            onClear={() => patch({ viscosity: null })}
-          >
-            <ViscosityFilter
-              viscosities={facets?.viscosities ?? []}
-              selected={read('viscosity') || undefined}
-              onChange={(value) => patch({ viscosity: value })}
-            />
-          </FilterSection>
+          {!isBattery && (
+            <FilterSection
+              value="viscosity"
+              title={t('viscosity')}
+              activeCount={read('viscosity') ? 1 : 0}
+              onClear={() => patch({ viscosity: null })}
+            >
+              <ViscosityFilter
+                viscosities={facets?.viscosities ?? []}
+                selected={read('viscosity') || undefined}
+                onChange={(value) => patch({ viscosity: value })}
+              />
+            </FilterSection>
+          )}
 
           {/* Packaging */}
-          {(facets?.volumes?.length ?? 0) > 0 && (
+          {!isBattery && (facets?.volumes?.length ?? 0) > 0 && (
             <FilterSection
               value="packaging"
               title={t('packaging')}
@@ -442,83 +493,89 @@ export function FilterSidebar({
           )}
 
           {/* Oil Type */}
-          <FilterSection
-            value="oil-type"
-            title={t('oilType')}
-            activeCount={read('type') ? 1 : 0}
-            onClear={() => patch({ type: null })}
-          >
-            <div className="space-y-1">
-              {OIL_TYPES.map((type) => (
-                <ToggleRow
-                  key={type}
-                  label={type}
-                  checked={read('type') === type}
-                  onChange={(checked) => patch({ type: checked ? type : null })}
-                />
-              ))}
-            </div>
-          </FilterSection>
+          {!isBattery && (
+            <FilterSection
+              value="oil-type"
+              title={t('oilType')}
+              activeCount={read('type') ? 1 : 0}
+              onClear={() => patch({ type: null })}
+            >
+              <div className="space-y-1">
+                {OIL_TYPES.map((type) => (
+                  <ToggleRow
+                    key={type}
+                    label={type}
+                    checked={read('type') === type}
+                    onChange={(checked) => patch({ type: checked ? type : null })}
+                  />
+                ))}
+              </div>
+            </FilterSection>
+          )}
 
           {/* API Standards */}
-          <FilterSection
-            value="api"
-            title={t('standardsApi')}
-            activeCount={read('api') ? 1 : 0}
-            onClear={() => patch({ api: null })}
-          >
-            <div className="flex flex-wrap gap-2">
-              {API_STANDARDS.map((api) => {
-                const active = read('api') === api
-                return (
-                  <button
-                    key={api}
-                    type="button"
-                    onClick={() => toggleSingle('api', api)}
-                    aria-pressed={active}
-                    className={cn(
-                      'rounded-xl border px-3 py-1.5 text-xs font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4A76A]/40',
-                      active
-                        ? 'border-[#D4A76A] bg-[#D4A76A] font-bold text-[#16254c] shadow-[0_0_15px_rgba(212,167,106,0.3)]'
-                        : 'border-white/10 bg-white/5 text-white/80 hover:border-white/20 hover:bg-white/10 hover:text-white'
-                    )}
-                  >
-                    {api}
-                  </button>
-                )
-              })}
-            </div>
-          </FilterSection>
+          {!isBattery && (
+            <FilterSection
+              value="api"
+              title={t('standardsApi')}
+              activeCount={read('api') ? 1 : 0}
+              onClear={() => patch({ api: null })}
+            >
+              <div className="flex flex-wrap gap-2">
+                {API_STANDARDS.map((api) => {
+                  const active = read('api') === api
+                  return (
+                    <button
+                      key={api}
+                      type="button"
+                      onClick={() => toggleSingle('api', api)}
+                      aria-pressed={active}
+                      className={cn(
+                        'rounded-xl border px-3 py-1.5 text-xs font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4A76A]/40',
+                        active
+                          ? 'border-[#D4A76A] bg-[#D4A76A] font-bold text-[#16254c] shadow-[0_0_15px_rgba(212,167,106,0.3)]'
+                          : 'border-white/10 bg-white/5 text-white/80 hover:border-white/20 hover:bg-white/10 hover:text-white'
+                      )}
+                    >
+                      {api}
+                    </button>
+                  )
+                })}
+              </div>
+            </FilterSection>
+          )}
 
           {/* ACEA Standards */}
-          <FilterSection
-            value="acea"
-            title={t('standardsAcea')}
-            activeCount={read('acea') ? 1 : 0}
-            onClear={() => patch({ acea: null })}
-          >
-            <div className="flex flex-wrap gap-2">
-              {ACEA_STANDARDS.map((acea) => {
-                const active = read('acea') === acea
-                return (
-                  <button
-                    key={acea}
-                    type="button"
-                    onClick={() => toggleSingle('acea', acea)}
-                    aria-pressed={active}
-                    className={cn(
-                      'rounded-xl border px-3 py-1.5 text-xs font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4A76A]/40',
-                      active
-                        ? 'border-[#D4A76A] bg-[#D4A76A] font-bold text-[#16254c] shadow-[0_0_15px_rgba(212,167,106,0.3)]'
-                        : 'border-white/10 bg-white/5 text-white/80 hover:border-white/20 hover:bg-white/10 hover:text-white'
-                    )}
-                  >
-                    {acea}
-                  </button>
-                )
-              })}
-            </div>
-          </FilterSection>
+          {!isBattery && (
+            <FilterSection
+              value="acea"
+              title={t('standardsAcea')}
+              activeCount={read('acea') ? 1 : 0}
+              onClear={() => patch({ acea: null })}
+            >
+              <div className="flex flex-wrap gap-2">
+                {ACEA_STANDARDS.map((acea) => {
+                  const active = read('acea') === acea
+                  return (
+                    <button
+                      key={acea}
+                      type="button"
+                      onClick={() => toggleSingle('acea', acea)}
+                      aria-pressed={active}
+                      className={cn(
+                        'rounded-xl border px-3 py-1.5 text-xs font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4A76A]/40',
+                        active
+                          ? 'border-[#D4A76A] bg-[#D4A76A] font-bold text-[#16254c] shadow-[0_0_15px_rgba(212,167,106,0.3)]'
+                          : 'border-white/10 bg-white/5 text-white/80 hover:border-white/20 hover:bg-white/10 hover:text-white'
+                      )}
+                    >
+                      {acea}
+                    </button>
+                  )
+                })}
+              </div>
+            </FilterSection>
+          )}
 
           {/* Availability */}
           <FilterSection

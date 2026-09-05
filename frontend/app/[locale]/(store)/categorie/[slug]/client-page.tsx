@@ -85,6 +85,7 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
           api: filters.api as string | undefined,
           acea: filters.acea as string | undefined,
           volume: filters.volume as string | undefined,
+          batteryType: filters.batteryType as string | undefined,
           sortBy: filters.sortBy as string | undefined,
           page: filters.page as number | undefined,
         })
@@ -115,7 +116,7 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
       <div className="mt-6 flex flex-col gap-8 md:flex-row">
         {/* Desktop Sidebar */}
         <aside className="hidden w-64 shrink-0 lg:block">
-          <FilterSidebar hideCategories />
+          <FilterSidebar hideCategories baseFilters={{ categorySlug: slug }} />
         </aside>
 
         {/* Main Content */}
@@ -153,7 +154,7 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
             </p>
 
             <div className="flex w-full items-center gap-3 sm:w-auto">
-              <MobileFiltersSheet />
+              <MobileFiltersSheet hideCategories baseFilters={{ categorySlug: slug }} />
               <SortDropdown />
             </div>
           </div>

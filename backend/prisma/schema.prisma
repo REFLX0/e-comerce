@@ -339,6 +339,7 @@ model ProductSpecs {
   maxCylinders     Int?
   minPower         Float?
   maxPower         Float?
+  batteryType      String?
 
   @@schema("public")
 }
