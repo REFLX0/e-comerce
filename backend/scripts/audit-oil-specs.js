@@ -77,14 +77,20 @@ function canonicalizeSpec(specStr) {
     .replace(/B71 2300 \/ B71 2294/g, 'B71 2300')
     .replace(/B71 2294/g, 'B71 2300')
     .replace(/(?:Peugeot\s*Citro[eë]n\s*)?PSA\s*B71\s*2290(?:\s*C[23])?(?:\s*S[NP])?/gi, 'PSA B71 2290 C2')
+    .replace(/(?:Peugeot\s*Citro[eë]n\s*)?PSA\s*B71\s*2312(?:\s*C2)?(?:\s*S[NP])?/gi, 'PSA B71 2312 C2')
     .replace(/PSA B71 2010\s*C5\s*(?:SN|SP)?/gi, 'PSA B71 2010 C5')
     .replace(/9\.55535-G2 \/ 9\.55535-D2/g, '9.55535-G2')
+    .replace(/Fiat\s*9\.55535-S1(?:\s*C2)?/gi, 'Fiat 9.55535-S1 C2')
+    .replace(/Fiat\s*9\.55535-DSX(?:\s*C5)?/gi, 'Fiat 9.55535-DSX C5')
+    .replace(/GM\s*Dexos1\s*Gen\s*3(?:\s*C2)?/gi, 'GM Dexos1 Gen3')
+    .replace(/Honda\s*08221-99974(?:\s*\/\s*Honda Genuine Motor Oil)?(?:\s*C5)?(?:\s*SP)?(?:\s*\/\s*ILSAC GF-6)?/gi, 'Honda Genuine Motor Oil C5 SP / ILSAC GF-6')
+    .replace(/Honda\s*08W30-P99-810HE(?:\s*\/\s*Asian API SN)?(?:\s*A3\/B4)?(?:\s*SN)?/gi, 'Honda Asian OEM A3/B4 SN')
     .replace(/Toyota \/ Hyundai \/ Kia \/ Nissan \/ Asian OEM(?:\s*C[23]\s*\/\s*C[23])?/gi, 'Asian OEM C2/C3')
     .replace(/Toyota DL-1 \/ ACEA C2(?:\s*C2)?/gi, 'Toyota DL-1 / ACEA C2')
     .replace(/Suzuki RO-1\s*(?:A5\/B5|C5)?\s*(?:SN|SP)?/gi, 'Suzuki RO-1')
     .replace(/ILSAC GF-6A\s*SP/gi, 'SP')
     .replace(/RN17\s*C3/gi, 'RN17')
-    .replace(/RN0710\s*A3\/B4/gi, 'RN0710')
+    .replace(/RN0710\s*(?:A3\/B4)?/gi, 'RN0710')
     .replace(/VCC-RBSO-2AE/gi, 'VCC-RBS0-2AE')
     .replace(/SN\/CF/gi, 'SN')
     .replace(/SL\/CF/gi, 'SL')
@@ -172,9 +178,11 @@ async function auditDatasetRows() {
       row.oilSpec?.oemApproval,
       row.oilSpec?.aceaStandard,
       row.oilSpec?.apiStandard,
+      row.oilSpec?.jasoStandard,
       row.oilSpecOEM,
       row.oilSpecACEA,
       row.oilSpecAPI,
+      row.oilSpecJASO,
       row.oilSpecMarine,
       row.oilSpec?.oilSpecMarine,
     ]
@@ -236,13 +244,15 @@ function processRows({
     const labelLower = label.toLowerCase();
     const category = (row.category || '').toLowerCase();
     const isHeavyDutyOrMarine =
-      category === 'agricole' ||
-      category === 'marine' ||
-      category === 'poids-lourd' ||
-      category === 'truck' ||
-      category === 'cv' ||
-      category === 'commercial' ||
-      /tractor|agri|marine|bateau|outboard|tracteur|hors-bord|poids[- ]lourd|truck|camion|bus|semi|benne/i.test(`${label} ${row.source || ''}`);
+      category.includes('agri') ||
+      category.includes('marine') ||
+      category.includes('poids') ||
+      category.includes('truck') ||
+      category.includes('cv') ||
+      category.includes('moto') ||
+      category.includes('commercial') ||
+      /tractor|agri|marine|bateau|outboard|tracteur|hors-bord|poids[- ]lourd|truck|camion|bus|semi|benne|kinland|tianlong|kaicene|hunter|x3000|nlr|npr|nqr/i.test(`${label} ${row.source || ''}`) ||
+      /dongfeng|sinotruk|shacman|faw|tata|jac|king long|astra|beiben|foton|camc|changan|isuzu/i.test(`${row.make || ''} ${label}`);
 
     const isExplicitDpf = /\b(dpf|fap|bluehdi|euro\s*5|euro\s*6|adblue|scr)\b/i.test(`${label} ${row.fuelType || ''} ${row.engineCode || ''}`);
     const isClassicPreDpf = /\b(golf\s*(iv|4|iii|3|ii|2)|206|106|306|406|saxo|xsara|clio\s*(ii|2|i|1)|punto\s*(ii|188)|astra\s*(g|f)|corsa\s*(b|c)|passat\s*b5)\b/i.test(labelLower);
@@ -261,20 +271,15 @@ function processRows({
     }
 
     const canonApprovals = canonicalizeSpec(approvals);
-    // If the engine code is a generic displacement or commercial designation (e.g. "1.2", "1.4", "1.5 dCi", "1.6 16V", "1.9 TDI", "320d"),
-    // include the model name (e.g. "Golf IV", "Golf V", "206", "207", "E46", "F30") because different vehicle models/chassis
-    // legitimately require different oils across different decades!
-    const isGeneric =
-      /^(\d\.\d|\d\.\d\s+[a-zA-Z0-9]+)$/.test(rawEngine) ||
-      /^(320d|318d|316d|118d|120d|c220|c200|a180|d4|d5|i-dtec|i-vtec)$/i.test(rawEngine);
-
     const modelRaw = (row.model || row.vehicleModel?.name || '').trim();
+    const gen = (row.generation || '').replace(/[()]/g, '').trim().split(/\s+/)[0];
     const chassis = modelRaw.match(/\b(E\d{2}|F\d{2}|G\d{2}|N\d{2}|P\d{2}|J\d{2,3}|W\d{3}|2A\/C|2D|3A\/C|3E|3H|1J1|1J5|5G1|188_|199_|LB_|LU_|BH_|KH_|BR0|CR0)\b/i)?.[1] || '';
-    const cleanModel = modelRaw.split('(')[0].trim().replace(/\s+Variant|\s+Hatchback|\s+Estate|\s+Saloon|\s+Break|\s+Coupe/gi, '');
-    const modelPrefix = isGeneric ? `${cleanModel}${chassis ? ' ' + chassis : ''} ` : (chassis ? `${chassis} ` : '');
-    const eraSuffix = isGeneric && year ? (year >= 2010 ? ' [2010+]' : ' [pre-2010]') : '';
-
-    const engineKey = `${getMake(row)}|${modelPrefix}${rawEngine}${eraSuffix}`;
+    const cleanModel = `${modelRaw.split('(')[0].trim()}${gen ? ' ' + gen : ''}${chassis && !modelRaw.includes(chassis) ? ' ' + chassis : ''}`
+      .replace(/\s+Variant|\s+Hatchback|\s+Estate|\s+Saloon|\s+Break|\s+Coupe/gi, '')
+      .trim();
+    const eraSuffix = year ? (year >= 2018 ? ' [2018+]' : year >= 2010 ? ' [2010-2017]' : ' [pre-2010]') : '';
+    const categoryPrefix = (category && category !== 'auto' && category !== 'automobile') ? `${category}|` : '';
+    const engineKey = `${categoryPrefix}${getMake(row)}|${cleanModel ? cleanModel + ' ' : ''}${rawEngine}${eraSuffix}`;
     const specCombo = `${viscosity} [${canonApprovals}]`;
 
     if (!engineGroups.has(engineKey)) engineGroups.set(engineKey, new Map());

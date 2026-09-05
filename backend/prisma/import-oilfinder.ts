@@ -160,8 +160,7 @@ async function loadVehicles(skipped: string[]) {
         skipped.push(`${label}: hydraulicOilCapacityLiters must be numeric, got ${JSON.stringify(e.hydraulicOilCapacityLiters)}`)
         continue
       }
-      const categoryMatch = file.match(/^(.*?)-/);
-      const category = categoryMatch?.[1]?.toLowerCase() || 'automobile';
+      const category = file.startsWith('poids-lourd') ? 'poids-lourd' : (file.match(/^(.*?)-/)?.[1]?.toLowerCase() || 'automobile');
       vehicles.push({
         category,
         make: String(e.make).trim(),
