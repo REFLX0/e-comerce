@@ -79,7 +79,8 @@ async function dumpPreState(toPath: string) {
   const products = await prisma.product.findMany({ select: { id: true, categoryId: true } })
   const byCategory: Record<string, string[]> = {}
   for (const p of products) {
-    ;(byCategory[p.categoryId] ??= []).push(p.id)
+    const catId = p.categoryId ?? 'uncategorized'
+    ;(byCategory[catId] ??= []).push(p.id)
   }
   fs.mkdirSync(DUMPS_DIR, { recursive: true })
   fs.writeFileSync(
