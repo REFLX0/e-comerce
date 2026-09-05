@@ -123,7 +123,7 @@ export class OilFinderService {
         distinct: ['make', 'model'],
       }).catch(() => [] as { make: string; model: string }[]);
       const match = allRows.find(r =>
-        slugify(r.make) === makeSlug && slugify(r.model) === modelSlug
+        slugify(r.make) === makeSlug && (slugify(r.model) === modelSlug || modelSlug.startsWith(slugify(r.model)) || slugify(r.model).startsWith(modelSlug))
       );
       if (match) {
         rows = await this.prisma.oilFinderVehicle.findMany({
@@ -137,6 +137,41 @@ export class OilFinderService {
         }).catch(() => []);
       }
     }
+
+    // 1c. If still nothing found and engineCode was provided, try relaxing engineCode
+    // (e.g. "1.4 (L48)" → "1.4", or general model fallback engineCode = '')
+    if (rows.length === 0 && engineCode) {
+      const cleanEngine = engineCode.replace(/\s*\([^)]*\)/g, '').trim();
+      const altEngines = [cleanEngine, ''].filter((e) => e !== engineCode.trim());
+      for (const alt of altEngines) {
+        rows = await this.prisma.oilFinderVehicle.findMany({
+          where: {
+            make: { equals: make.trim(), mode: 'insensitive' as const },
+            model: { equals: model.trim(), mode: 'insensitive' as const },
+            engineCode: { equals: alt, mode: 'insensitive' as const },
+          },
+          include: { oilSpec: true },
+          orderBy: [{ source: 'asc' }, { id: 'asc' }],
+        }).catch(() => []);
+        if (rows.length > 0) break;
+      }
+    }
+
+    // 1d. If still nothing found and model has parentheses (e.g. "ASTRA H (A04)"),
+    // try clean model "ASTRA H"
+    if (rows.length === 0 && model.includes('(')) {
+      const cleanModel = model.replace(/\s*\([^)]*\)/g, '').trim();
+      rows = await this.prisma.oilFinderVehicle.findMany({
+        where: {
+          make: { equals: make.trim(), mode: 'insensitive' as const },
+          model: { equals: cleanModel, mode: 'insensitive' as const },
+          ...(engineCode ? { engineCode: { equals: engineCode.trim(), mode: 'insensitive' as const } } : {}),
+        },
+        include: { oilSpec: true },
+        orderBy: [{ source: 'asc' }, { id: 'asc' }],
+      }).catch(() => []);
+    }
+
 
     if (rows.length > 0) {
       const distinct = groupBySpec(rows);
