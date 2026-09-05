@@ -147,6 +147,8 @@ async function auditDatasetRows() {
       row.oilSpecOEM,
       row.oilSpecACEA,
       row.oilSpecAPI,
+      row.oilSpecMarine,
+      row.oilSpec?.oilSpecMarine,
     ]
       .filter(Boolean)
       .join(' ') || null;
