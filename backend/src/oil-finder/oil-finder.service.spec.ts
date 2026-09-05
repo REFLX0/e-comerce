@@ -1,5 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { OilFinderService, resolveBrandSlugs } from './oil-finder.service';
+import {
+  OilFinderService,
+  resolveBrandSlugs,
+  extractEngineVariants,
+  extractModelKeywords,
+} from './oil-finder.service';
 import { PrismaService } from '../prisma/prisma.service';
 
 // ── Fixtures (mirroring staging vehicle & spec rows) ──────────────────────────
@@ -337,6 +342,66 @@ describe('OilFinderService', () => {
       expect(slugs).toContain('vespa');
       expect(slugs).toContain('vespa-motorcycles');
       expect(slugs).toContain('piaggio');
+    });
+  });
+
+  describe('extractEngineVariants — resilient engine code decomposition', () => {
+    it('decomposes Opel engine trim with chassis in parens: 1.4 (L48)', () => {
+      const variants = extractEngineVariants('1.4 (L48)');
+      expect(variants).toContain('1.4 (L48)');
+      expect(variants).toContain('1.4');
+      expect(variants).toContain('L48');
+      expect(variants).toContain('');
+    });
+
+    it('decomposes VAG engine trim with code in parens: 1.4 TSI (CZCA)', () => {
+      const variants = extractEngineVariants('1.4 TSI (CZCA)');
+      expect(variants).toContain('1.4 TSI (CZCA)');
+      expect(variants).toContain('1.4 TSI');
+      expect(variants).toContain('CZCA');
+      expect(variants).toContain('');
+    });
+
+    it('decomposes Renault dCi trim with variant in parens: 1.5 dCi (K9K 628)', () => {
+      const variants = extractEngineVariants('1.5 dCi (K9K 628)');
+      expect(variants).toContain('1.5 dCi (K9K 628)');
+      expect(variants).toContain('1.5 dCi');
+      expect(variants).toContain('K9K 628');
+      expect(variants).toContain('K9K');
+      expect(variants).toContain('');
+    });
+
+    it('handles empty or null engineCode', () => {
+      expect(extractEngineVariants('')).toEqual(['']);
+      expect(extractEngineVariants(null)).toEqual(['']);
+      expect(extractEngineVariants(undefined)).toEqual(['']);
+    });
+  });
+
+  describe('extractModelKeywords — TecDoc compound model decomposition', () => {
+    it('extracts base model from Golf VII chassis: GOLF VII (5G1, BQ1, BE1, BE2)', () => {
+      const kws = extractModelKeywords('GOLF VII (5G1, BQ1, BE1, BE2)');
+      expect(kws).toContain('GOLF VII');
+      expect(kws).toContain('GOLF');
+    });
+
+    it('extracts Punto from Grande Punto chassis: GRANDE PUNTO (199_)', () => {
+      const kws = extractModelKeywords('GRANDE PUNTO (199_)');
+      expect(kws).toContain('GRANDE PUNTO');
+      expect(kws).toContain('PUNTO');
+    });
+
+    it('extracts 206 from Peugeot body type: 206 Hatchback (2A/C)', () => {
+      const kws = extractModelKeywords('206 Hatchback (2A/C)');
+      expect(kws).toContain('206 Hatchback');
+      expect(kws).toContain('206');
+      expect(kws).not.toContain('Hatchback'); // stop word filtered
+    });
+
+    it('extracts Clio from Clio II chassis: CLIO II (BB_, CB_)', () => {
+      const kws = extractModelKeywords('CLIO II (BB_, CB_)');
+      expect(kws).toContain('CLIO II');
+      expect(kws).toContain('CLIO');
     });
   });
 });

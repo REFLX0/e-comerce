@@ -89,6 +89,38 @@ export function resolveBrandSlugs(brand: string): string[] {
   return Array.from(set);
 }
 
+export function extractEngineVariants(engineCode?: string | null): string[] {
+  if (!engineCode || !engineCode.trim()) return [''];
+  const raw = engineCode.trim();
+  const withoutParen = raw.replace(/\s*\([^)]*\)/g, '').trim();
+  const parenMatch = raw.match(/\(([^)]+)\)/);
+  const insideParen = parenMatch ? parenMatch[1].trim() : '';
+  const insideParenFirst = insideParen.split(/\s+/)[0].trim();
+
+  const set = new Set<string>();
+  if (raw) set.add(raw);
+  if (withoutParen && withoutParen !== raw) set.add(withoutParen);
+  if (insideParen && insideParen !== raw) set.add(insideParen);
+  if (insideParenFirst && insideParenFirst.length >= 2 && insideParenFirst !== insideParen) set.add(insideParenFirst);
+  set.add('');
+  return Array.from(set);
+}
+
+export function extractModelKeywords(model: string): string[] {
+  if (!model || !model.trim()) return [];
+  const raw = model.trim();
+  const withoutParen = raw.replace(/\s*\([^)]*\)/g, '').trim();
+  const words = withoutParen.split(/\s+/).filter((w) => w.length >= 2);
+  const set = new Set<string>();
+  if (raw) set.add(raw);
+  if (withoutParen && withoutParen !== raw) set.add(withoutParen);
+  const stopWords = new Set(['hatchback', 'saloon', 'estate', 'box', 'body', 'mpv', 'suv', 'pickup', 'coupe', 'convertible']);
+  words.forEach((w) => {
+    if (!stopWords.has(w.toLowerCase())) set.add(w);
+  });
+  return Array.from(set);
+}
+
 @Injectable()
 export class OilFinderService {
   private readonly logger = new Logger(OilFinderService.name)
@@ -139,10 +171,9 @@ export class OilFinderService {
     }
 
     // 1c. If still nothing found and engineCode was provided, try relaxing engineCode
-    // (e.g. "1.4 (L48)" → "1.4", or general model fallback engineCode = '')
+    // across extracted variants (e.g. "1.4 TSI (CZCA)" → "1.4 TSI", "CZCA", or general model fallback "")
     if (rows.length === 0 && engineCode) {
-      const cleanEngine = engineCode.replace(/\s*\([^)]*\)/g, '').trim();
-      const altEngines = [cleanEngine, ''].filter((e) => e !== engineCode.trim());
+      const altEngines = extractEngineVariants(engineCode).filter((e) => e !== engineCode.trim());
       for (const alt of altEngines) {
         rows = await this.prisma.oilFinderVehicle.findMany({
           where: {
@@ -157,44 +188,65 @@ export class OilFinderService {
       }
     }
 
-    // 1d. If still nothing found and model has parentheses (e.g. "ASTRA H (A04)"),
-    // try clean model "ASTRA H"
-    if (rows.length === 0 && model.includes('(')) {
-      const cleanModel = model.replace(/\s*\([^)]*\)/g, '').trim();
-      rows = await this.prisma.oilFinderVehicle.findMany({
-        where: {
-          make: { equals: make.trim(), mode: 'insensitive' as const },
-          model: { equals: cleanModel, mode: 'insensitive' as const },
-          ...(engineCode ? { engineCode: { equals: engineCode.trim(), mode: 'insensitive' as const } } : {}),
-        },
-        include: { oilSpec: true },
-        orderBy: [{ source: 'asc' }, { id: 'asc' }],
-      }).catch(() => []);
+    // 1d. If still nothing found, try matching by model keywords and clean model names
+    // (e.g. "GOLF VII (5G1, BQ1...)" -> "GOLF VII", "GOLF")
+    // (e.g. "GRANDE PUNTO (199_)" -> "GRANDE PUNTO", "PUNTO")
+    // (e.g. "206 Hatchback (2A/C)" -> "206 Hatchback", "206")
+    if (rows.length === 0) {
+      const modelKeywords = extractModelKeywords(model).filter((k) => k !== model.trim());
+      const engineVariants = extractEngineVariants(engineCode);
+      for (const kw of modelKeywords) {
+        for (const eng of engineVariants) {
+          rows = await this.prisma.oilFinderVehicle.findMany({
+            where: {
+              make: { equals: make.trim(), mode: 'insensitive' as const },
+              AND: [
+                {
+                  OR: [
+                    { model: { equals: kw, mode: 'insensitive' as const } },
+                    { model: { contains: kw, mode: 'insensitive' as const } },
+                  ],
+                },
+                eng ? {
+                  OR: [
+                    { engineCode: { equals: eng, mode: 'insensitive' as const } },
+                    { engineCode: { contains: eng, mode: 'insensitive' as const } },
+                    { engineCode: '' },
+                  ],
+                } : { engineCode: '' },
+              ],
+            },
+            include: { oilSpec: true },
+            orderBy: [{ source: 'asc' }, { id: 'asc' }],
+          }).catch(() => []);
+          if (rows.length > 0) break;
+        }
+        if (rows.length > 0) break;
+      }
     }
 
-    // 1e. If still nothing found, try matching by base model name
-    // e.g. "GOLF VII (5G1, BQ1, BE1, BE2)" -> base model "Golf"
-    // e.g. "206 Hatchback (2A/C)" -> base model "206"
-    // e.g. "ASTRA H (A04)" -> base model "Astra"
+    // 1e. General model fallback if all rows for that model share the same oil spec
     if (rows.length === 0) {
-      const baseModel = model.replace(/\s*\([^)]*\)/g, '').split(/\s+/)[0].trim();
-      if (baseModel && baseModel.length >= 2) {
-        const cleanEngine = engineCode ? engineCode.replace(/\s*\([^)]*\)/g, '').trim() : '';
-        rows = await this.prisma.oilFinderVehicle.findMany({
+      const modelKeywords = extractModelKeywords(model);
+      for (const kw of modelKeywords) {
+        const candidateRows = await this.prisma.oilFinderVehicle.findMany({
           where: {
             make: { equals: make.trim(), mode: 'insensitive' as const },
-            model: { contains: baseModel, mode: 'insensitive' as const },
-            ...(cleanEngine ? {
-              OR: [
-                { engineCode: { equals: cleanEngine, mode: 'insensitive' as const } },
-                { engineCode: { contains: cleanEngine, mode: 'insensitive' as const } },
-                { engineCode: '' },
-              ],
-            } : {}),
+            OR: [
+              { model: { equals: kw, mode: 'insensitive' as const } },
+              { model: { contains: kw, mode: 'insensitive' as const } },
+            ],
           },
           include: { oilSpec: true },
           orderBy: [{ source: 'asc' }, { id: 'asc' }],
         }).catch(() => []);
+        if (candidateRows.length > 0) {
+          const distinct = groupBySpec(candidateRows);
+          if (distinct.length === 1) {
+            rows = candidateRows;
+            break;
+          }
+        }
       }
     }
 
