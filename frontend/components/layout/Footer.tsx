@@ -4,7 +4,6 @@ import { Link } from '@/i18n/routing'
 import { Phone, Mail, MapPin, Clock, Send } from 'lucide-react'
 import { useState } from 'react'
 import { gooeyToast as toast } from 'goey-toast'
-import Image from 'next/image'
 import { useTranslations } from 'next-intl'
 // Logo is served directly from public/logo.jpg
 
@@ -80,7 +79,6 @@ export default function Footer() {
     if (ns === 'Returns') return tReturns(key)
     return tFooter(key)
   }
-  const siteLogo = '/logo.jpg'
 
   const handleNewsletter = (e: React.FormEvent) => {
     e.preventDefault()
@@ -96,8 +94,10 @@ export default function Footer() {
         <div className="mb-14 grid grid-cols-1 gap-10 border-b border-white/8 pb-14 sm:grid-cols-2 lg:grid-cols-5">
           {/* Col 1: Brand */}
           <div className="sm:col-span-2 lg:col-span-1">
-            <Link href="/" className="mb-5 inline-flex items-center">
-              <Image src="/logo.jpg" alt="specpart" width={147} height={80} className="h-20 w-auto object-contain sm:h-24" />
+            <Link href="/" className="mb-5 inline-flex items-center gap-1.5 group">
+              <span className="text-2xl font-black tracking-wider uppercase text-white group-hover:text-brand-accent transition-colors">
+                SPEC<span className="text-brand-accent">PART</span>
+              </span>
             </Link>
             <p className="mb-6 max-w-xs text-sm leading-relaxed text-white/40">
               {tFooter('description')}

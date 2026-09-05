@@ -521,5 +521,44 @@ describe('OilFinderService', () => {
         expect(res.confidence).toBe('medium');
       }
     });
+
+    it('resolves authentic Renault RN0720 C4 specification for Clio IV 1.5 dCi', async () => {
+      prisma.oilFinderVehicle.findMany.mockResolvedValue([]);
+      prisma.$queryRawUnsafe.mockResolvedValue([]);
+
+      const res = await service.findByVehicle('renault', 'clio-iv-bh-', '1.5 dCi 90 (BHN1)');
+      expect(res.status).toBe('found');
+      if (res.status === 'found') {
+        expect(res.oilSpec.viscosity).toBe('5W-30');
+        expect(res.oilSpec.oemApproval).toContain('RN0720');
+        expect(res.oilSpec.aceaStandard).toBe('C4');
+      }
+    });
+
+    it('resolves authentic 10W-40 PSA B71 2294/2300 specification for Citroën Saxo 1.1', async () => {
+      prisma.oilFinderVehicle.findMany.mockResolvedValue([]);
+      prisma.$queryRawUnsafe.mockResolvedValue([]);
+
+      const res = await service.findByVehicle('citroen', 'saxo-s0-s1-', '1.1 X,SX (1996-2003)');
+      expect(res.status).toBe('found');
+      if (res.status === 'found') {
+        expect(res.oilSpec.viscosity).toBe('10W-40');
+        expect(res.oilSpec.oemApproval).toContain('PSA B71');
+        expect(res.oilSpec.aceaStandard).toBe('A3/B4');
+      }
+    });
+
+    it('resolves authentic PSA B71 2312 0W-30 specification for Peugeot 208 PureTech', async () => {
+      prisma.oilFinderVehicle.findMany.mockResolvedValue([]);
+      prisma.$queryRawUnsafe.mockResolvedValue([]);
+
+      const res = await service.findByVehicle('peugeot', '208-i-ca-cc-', '1.2 PureTech 82 (2015)');
+      expect(res.status).toBe('found');
+      if (res.status === 'found') {
+        expect(res.oilSpec.viscosity).toBe('0W-30');
+        expect(res.oilSpec.oemApproval).toContain('PSA B71 2312');
+        expect(res.oilSpec.aceaStandard).toBe('C2');
+      }
+    });
   });
 });

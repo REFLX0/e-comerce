@@ -263,6 +263,13 @@ export function FilterSidebar({
     })
   }, [categoriesTree, tTax, facets?.categoryCounts, CATEGORY_ALIASES])
 
+  const batteryTypes = useMemo(() => {
+    if (facets?.batteryTypes && facets.batteryTypes.length > 0) {
+      return facets.batteryTypes.map((b) => ({ value: b.value, count: b.count }))
+    }
+    return DEFAULT_BATTERY_TYPES.map((b) => ({ value: b, count: undefined }))
+  }, [facets?.batteryTypes])
+
   if (catLoading || facetsLoading) return <FilterSidebarSkeleton />
 
   const priceBounds = facets?.priceRange ?? { min: 0, max: 5000 }
@@ -287,13 +294,6 @@ export function FilterSidebar({
     currentCategorySlug === 'batteries' ||
     baseFilters?.categorySlug === 'batteries' ||
     searchParams.get('categorySlug') === 'batteries'
-
-  const batteryTypes = useMemo(() => {
-    if (facets?.batteryTypes && facets.batteryTypes.length > 0) {
-      return facets.batteryTypes.map((b) => ({ value: b.value, count: b.count }))
-    }
-    return DEFAULT_BATTERY_TYPES.map((b) => ({ value: b, count: undefined }))
-  }, [facets?.batteryTypes])
 
   return (
     <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-[#16254c] to-[#0a1128] shadow-2xl backdrop-blur-xl">

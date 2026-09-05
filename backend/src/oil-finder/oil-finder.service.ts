@@ -670,6 +670,585 @@ export function extractModelKeywords(model: string): string[] {
   return Array.from(set);
 }
 
+export function resolveAutomotiveOemSpec(
+  make: string,
+  model: string,
+  engineCode?: string | null,
+  yearFrom?: number | null,
+  yearTo?: number | null,
+): {
+  viscosity: string;
+  apiStandard: string;
+  aceaStandard: string;
+  oemApproval: string;
+  capacityLiters: number;
+  changeIntervalKm: number;
+  fuelType: string;
+  displacementCc: number | null;
+  powerHp: number | null;
+} {
+  const mfrSlug = slugify(make.trim());
+  const combined = `${make} ${model} ${engineCode || ''}`.toLowerCase();
+
+  // 1. Determine vehicle production year
+  let detectedYear = yearFrom ?? null;
+  if (!detectedYear) {
+    const yearMatch = combined.match(/\b(19\d{2}|20\d{2})\b/);
+    if (yearMatch) {
+      detectedYear = parseInt(yearMatch[1], 10);
+    } else {
+      // Deduce era from model generation / chassis indicators
+      if (/saxo|106|205|306|406|xantia|xsara|golf\s*(?:iv|4|iii|3)|polo\s*6n|clio\s*(?:ii|2|i|1)|megane\s*(?:i|1)|punto\s*(?:1|i)|e36|e39|w124|w202/.test(combined)) {
+        detectedYear = 1999;
+      } else if (/golf\s*(?:v|5|vi|6)|clio\s*(?:iii|3)|megane\s*(?:ii|2)|206|207|307|c3\s*i|c4\s*i|astra\s*(?:g|h)|e90|w203|w204/.test(combined)) {
+        detectedYear = 2008;
+      } else if (/golf\s*(?:vii|7|viii|8)|clio\s*(?:iv|4|v|5)|208|308|c3\s*(?:ii|iii)|c4\s*ii|astra\s*(?:j|k)|f30|g20|w205|captur|kadjar|duster|sandero/.test(combined)) {
+        detectedYear = 2016;
+      } else {
+        detectedYear = 2012; // modern default
+      }
+    }
+  }
+
+  // 2. Parse displacement (Cc) if present
+  let displacementCc: number | null = null;
+  const dispMatch = combined.match(/(\d+[.,]\d+)\s*(?:l|dci|tdi|hdi|tce|tsi|puretech|vti|16v)?/i);
+  if (dispMatch) {
+    const val = parseFloat(dispMatch[1].replace(',', '.'));
+    if (val >= 0.6 && val <= 7.0) {
+      displacementCc = Math.round(val * 1000);
+    }
+  }
+
+  // 3. Parse power (Hp) if present
+  let powerHp: number | null = null;
+  const hpMatch = combined.match(/(?:dci|tdi|hdi|puretech|tce|tsi|\s)(\d{2,3})\s*(?:ch|hp|ps|cv)?\b/i);
+  if (hpMatch) {
+    const val = parseInt(hpMatch[1], 10);
+    if (val >= 40 && val <= 600) {
+      powerHp = val;
+    }
+  }
+
+  // 4. Determine fuel type & injection technology
+  const isDiesel = /(?:dci|tdi|hdi|bluehdi|cdti|crdi|multijet|jtd|d-4d|d4d|did|di-d|tdci|cdi|bluetec|ddis|crd|\bd\b|diesel|sdi)/i.test(combined);
+  const isHybrid = /(?:hybrid|e-tech|phev|mhev|prius)/i.test(combined);
+  const isPureTech = /puretech/i.test(combined);
+  const isEcoBoost = /ecoboost/i.test(combined);
+  const isTurboPetrol = /(?:tce|tsi|tfsi|puretech|ecoboost|thp|turbo|t-gdi|tgdi)/i.test(combined);
+
+  const fuelType = isDiesel ? 'diesel' : isHybrid ? 'hybrid' : 'essence';
+
+  const calcCapacity = (base: number) => {
+    if (!displacementCc) return base;
+    if (displacementCc <= 1200) return Math.max(3.0, base - 0.5);
+    if (displacementCc >= 2500) return base + 1.5;
+    if (displacementCc >= 2000) return base + 0.5;
+    return base;
+  };
+
+  // 5. High-Precision OEM Homologation Engine by Brand Family
+  const isRenaultFamily = ['renault', 'dacia'].includes(mfrSlug);
+  const isPsaFamily = ['peugeot', 'citroen', 'citroën', 'ds', 'ds-automobiles'].includes(mfrSlug);
+  const isVagFamily = ['volkswagen', 'vw', 'audi', 'seat', 'skoda', 'škoda', 'cupra'].includes(mfrSlug);
+  const isBmwFamily = ['bmw', 'mini'].includes(mfrSlug);
+  const isMercedesFamily = ['mercedes', 'mercedes-benz', 'smart'].includes(mfrSlug);
+  const isFordFamily = ['ford'].includes(mfrSlug);
+  const isFiatFamily = ['fiat', 'alfa-romeo', 'alfa', 'lancia', 'jeep', 'abarth'].includes(mfrSlug);
+  const isOpelFamily = ['opel', 'vauxhall'].includes(mfrSlug);
+  const isAsianFamily = ['toyota', 'lexus', 'hyundai', 'kia', 'nissan', 'infiniti', 'honda', 'mazda', 'mitsubishi', 'subaru', 'suzuki', 'ssangyong', 'mahindra', 'isuzu'].includes(mfrSlug);
+  const isVolvo = ['volvo'].includes(mfrSlug);
+  const isPorsche = ['porsche'].includes(mfrSlug);
+
+  // ── RENAULT / DACIA ──
+  if (isRenaultFamily) {
+    if (isDiesel) {
+      if (detectedYear >= 2018 || /blue\s*dci/i.test(combined)) {
+        return {
+          viscosity: '5W-30',
+          apiStandard: 'SN',
+          aceaStandard: 'C3',
+          oemApproval: 'Renault RN17 / RN0700 / RN0710',
+          capacityLiters: calcCapacity(4.5),
+          changeIntervalKm: 15000,
+          fuelType,
+          displacementCc,
+          powerHp,
+        };
+      }
+      if (detectedYear >= 2007 || /dci/i.test(combined)) {
+        return {
+          viscosity: '5W-30',
+          apiStandard: 'SM/CF',
+          aceaStandard: 'C4',
+          oemApproval: 'Renault RN0720 (dCi DPF / FAP)',
+          capacityLiters: calcCapacity(4.5),
+          changeIntervalKm: 15000,
+          fuelType,
+          displacementCc,
+          powerHp,
+        };
+      }
+      return {
+        viscosity: '10W-40',
+        apiStandard: 'SL/CF',
+        aceaStandard: 'A3/B4',
+        oemApproval: 'Renault RN0700 / RN0710',
+        capacityLiters: calcCapacity(4.5),
+        changeIntervalKm: 10000,
+        fuelType,
+        displacementCc,
+        powerHp,
+      };
+    }
+    if (detectedYear >= 2018 || /1\.3|1\.0\s*tce/i.test(combined) || combined.includes('megane')) {
+      return {
+        viscosity: '5W-30',
+        apiStandard: 'SN',
+        aceaStandard: 'C3',
+        oemApproval: 'Renault RN17 / RN0700 / RN0710',
+        capacityLiters: calcCapacity(4.2),
+        changeIntervalKm: 15000,
+        fuelType,
+        displacementCc,
+        powerHp,
+      };
+    }
+    if (isTurboPetrol || detectedYear >= 2007) {
+      return {
+        viscosity: '5W-40',
+        apiStandard: 'SN/CF',
+        aceaStandard: 'A3/B4',
+        oemApproval: 'Renault RN0710 / RN0700',
+        capacityLiters: calcCapacity(4.2),
+        changeIntervalKm: 15000,
+        fuelType,
+        displacementCc,
+        powerHp,
+      };
+    }
+    return {
+      viscosity: detectedYear < 2002 ? '10W-40' : '5W-40',
+      apiStandard: 'SL/CF',
+      aceaStandard: 'A3/B4',
+      oemApproval: 'Renault RN0700',
+      capacityLiters: calcCapacity(4.0),
+      changeIntervalKm: 10000,
+      fuelType,
+      displacementCc,
+      powerHp,
+    };
+  }
+
+  // ── PSA (PEUGEOT / CITROËN / DS) ──
+  if (isPsaFamily) {
+    if (detectedYear < 2001 || /saxo|106|205|306|xantia|xsara/i.test(combined)) {
+      return {
+        viscosity: '10W-40',
+        apiStandard: 'SL/CF',
+        aceaStandard: 'A3/B4',
+        oemApproval: 'Peugeot Citroën PSA B71 2300 / B71 2294',
+        capacityLiters: calcCapacity(3.5),
+        changeIntervalKm: 10000,
+        fuelType,
+        displacementCc,
+        powerHp,
+      };
+    }
+    if (isDiesel) {
+      if (detectedYear >= 2014 || /bluehdi|1\.5\s*hdi/i.test(combined)) {
+        return {
+          viscosity: '0W-30',
+          apiStandard: 'SN',
+          aceaStandard: 'C2',
+          oemApproval: 'Peugeot Citroën PSA B71 2312',
+          capacityLiters: calcCapacity(3.8),
+          changeIntervalKm: 15000,
+          fuelType,
+          displacementCc,
+          powerHp,
+        };
+      }
+      return {
+        viscosity: '5W-30',
+        apiStandard: 'SN/CF',
+        aceaStandard: 'C2',
+        oemApproval: 'Peugeot Citroën PSA B71 2290',
+        capacityLiters: calcCapacity(3.8),
+        changeIntervalKm: 15000,
+        fuelType,
+        displacementCc,
+        powerHp,
+      };
+    }
+    if (isPureTech || (detectedYear >= 2014 && (displacementCc || 0) <= 1200)) {
+      return {
+        viscosity: '0W-30',
+        apiStandard: 'SN',
+        aceaStandard: 'C2',
+        oemApproval: 'Peugeot Citroën PSA B71 2312 / PSA B71 2290',
+        capacityLiters: calcCapacity(3.5),
+        changeIntervalKm: 15000,
+        fuelType,
+        displacementCc,
+        powerHp,
+      };
+    }
+    if (/vti|thp/i.test(combined) || detectedYear >= 2010) {
+      return {
+        viscosity: '5W-30',
+        apiStandard: 'SN/CF',
+        aceaStandard: 'C2',
+        oemApproval: 'Peugeot Citroën PSA B71 2290',
+        capacityLiters: calcCapacity(4.0),
+        changeIntervalKm: 15000,
+        fuelType,
+        displacementCc,
+        powerHp,
+      };
+    }
+    return {
+      viscosity: '5W-40',
+      apiStandard: 'SN/CF',
+      aceaStandard: 'A3/B4',
+      oemApproval: 'Peugeot Citroën PSA B71 2296',
+      capacityLiters: calcCapacity(3.8),
+      changeIntervalKm: 15000,
+      fuelType,
+      displacementCc,
+      powerHp,
+    };
+  }
+
+  // ── VOLKSWAGEN GROUP (VW, AUDI, SEAT, SKODA, CUPRA) ──
+  if (isVagFamily) {
+    if (detectedYear < 2000 || /golf\s*(?:iii|3)|polo\s*6n|passat\s*b4/i.test(combined)) {
+      return {
+        viscosity: '10W-40',
+        apiStandard: 'SL/CF',
+        aceaStandard: 'A3/B4',
+        oemApproval: 'VW 501 01 / 505 00',
+        capacityLiters: calcCapacity(4.0),
+        changeIntervalKm: 10000,
+        fuelType,
+        displacementCc,
+        powerHp,
+      };
+    }
+    if (isDiesel) {
+      if (detectedYear >= 2005 || /cr|common\s*rail|golf\s*(?:vi|6|vii|7|viii|8)/i.test(combined)) {
+        return {
+          viscosity: '5W-30',
+          apiStandard: 'SN',
+          aceaStandard: 'C3',
+          oemApproval: 'VW 504 00 / 507 00 (LongLife III)',
+          capacityLiters: calcCapacity(4.5),
+          changeIntervalKm: 15000,
+          fuelType,
+          displacementCc,
+          powerHp,
+        };
+      }
+      return {
+        viscosity: '5W-40',
+        apiStandard: 'SN/CF',
+        aceaStandard: 'C3 / A3/B4',
+        oemApproval: 'VW 505 01 / 502 00 / 505 00',
+        capacityLiters: calcCapacity(4.5),
+        changeIntervalKm: 15000,
+        fuelType,
+        displacementCc,
+        powerHp,
+      };
+    }
+    if (isTurboPetrol || detectedYear >= 2005) {
+      return {
+        viscosity: '5W-30',
+        apiStandard: 'SN',
+        aceaStandard: 'C3',
+        oemApproval: 'VW 504 00 / 507 00 (LongLife III)',
+        capacityLiters: calcCapacity(4.5),
+        changeIntervalKm: 15000,
+        fuelType,
+        displacementCc,
+        powerHp,
+      };
+    }
+    return {
+      viscosity: '5W-40',
+      apiStandard: 'SN/CF',
+      aceaStandard: 'A3/B4',
+      oemApproval: 'VW 502 00 / 505 00',
+      capacityLiters: calcCapacity(4.0),
+      changeIntervalKm: 15000,
+      fuelType,
+      displacementCc,
+      powerHp,
+    };
+  }
+
+  // ── BMW / MINI ──
+  if (isBmwFamily) {
+    if (detectedYear >= 2004) {
+      return {
+        viscosity: '5W-30',
+        apiStandard: 'SN',
+        aceaStandard: 'C3',
+        oemApproval: 'BMW Longlife-04 (LL-04)',
+        capacityLiters: calcCapacity(5.2),
+        changeIntervalKm: 15000,
+        fuelType,
+        displacementCc,
+        powerHp,
+      };
+    }
+    if (detectedYear >= 1998) {
+      return {
+        viscosity: '5W-40',
+        apiStandard: 'SN',
+        aceaStandard: 'A3/B4',
+        oemApproval: 'BMW Longlife-01 (LL-01)',
+        capacityLiters: calcCapacity(5.5),
+        changeIntervalKm: 15000,
+        fuelType,
+        displacementCc,
+        powerHp,
+      };
+    }
+    return {
+      viscosity: '10W-40',
+      apiStandard: 'SL/CF',
+      aceaStandard: 'A3/B4',
+      oemApproval: 'BMW Special Oil / ACEA A3/B3',
+      capacityLiters: calcCapacity(5.0),
+      changeIntervalKm: 10000,
+      fuelType,
+      displacementCc,
+      powerHp,
+    };
+  }
+
+  // ── MERCEDES-BENZ / SMART ──
+  if (isMercedesFamily) {
+    if (detectedYear >= 2005 || isDiesel) {
+      return {
+        viscosity: '5W-30',
+        apiStandard: 'SN',
+        aceaStandard: 'C3',
+        oemApproval: 'MB 229.51 / MB 229.52',
+        capacityLiters: calcCapacity(5.5),
+        changeIntervalKm: 15000,
+        fuelType,
+        displacementCc,
+        powerHp,
+      };
+    }
+    return {
+      viscosity: '5W-40',
+      apiStandard: 'SN/CF',
+      aceaStandard: 'A3/B4',
+      oemApproval: 'MB 229.3 / MB 229.5',
+      capacityLiters: calcCapacity(5.5),
+      changeIntervalKm: 15000,
+      fuelType,
+      displacementCc,
+      powerHp,
+    };
+  }
+
+  // ── FORD ──
+  if (isFordFamily) {
+    if (isEcoBoost && (displacementCc || 0) <= 1000) {
+      return {
+        viscosity: '5W-20',
+        apiStandard: 'SN',
+        aceaStandard: 'C5',
+        oemApproval: 'Ford WSS-M2C948-B',
+        capacityLiters: calcCapacity(4.1),
+        changeIntervalKm: 15000,
+        fuelType,
+        displacementCc,
+        powerHp,
+      };
+    }
+    return {
+      viscosity: '5W-30',
+      apiStandard: 'SL/CF',
+      aceaStandard: 'A5/B5',
+      oemApproval: 'Ford WSS-M2C913-D / WSS-M2C913-C',
+      capacityLiters: calcCapacity(4.1),
+      changeIntervalKm: 15000,
+      fuelType,
+      displacementCc,
+      powerHp,
+    };
+  }
+
+  // ── FIAT / ALFA ROMEO / JEEP / LANCIA ──
+  if (isFiatFamily) {
+    if (isDiesel) {
+      return {
+        viscosity: '5W-30',
+        apiStandard: 'SN',
+        aceaStandard: 'C2',
+        oemApproval: 'Fiat 9.55535-S1',
+        capacityLiters: calcCapacity(3.5),
+        changeIntervalKm: 15000,
+        fuelType,
+        displacementCc,
+        powerHp,
+      };
+    }
+    if (detectedYear >= 2005) {
+      return {
+        viscosity: '5W-40',
+        apiStandard: 'SN/CF',
+        aceaStandard: 'C3',
+        oemApproval: 'Fiat 9.55535-S2',
+        capacityLiters: calcCapacity(3.2),
+        changeIntervalKm: 15000,
+        fuelType,
+        displacementCc,
+        powerHp,
+      };
+    }
+    return {
+      viscosity: '10W-40',
+      apiStandard: 'SL/CF',
+      aceaStandard: 'A3/B4',
+      oemApproval: 'Fiat 9.55535-G2 / 9.55535-D2',
+      capacityLiters: calcCapacity(3.0),
+      changeIntervalKm: 10000,
+      fuelType,
+      displacementCc,
+      powerHp,
+    };
+  }
+
+  // ── OPEL / VAUXHALL ──
+  if (isOpelFamily) {
+    if (detectedYear >= 2005) {
+      return {
+        viscosity: '5W-30',
+        apiStandard: 'SN',
+        aceaStandard: 'C3',
+        oemApproval: 'GM Dexos2',
+        capacityLiters: calcCapacity(4.5),
+        changeIntervalKm: 15000,
+        fuelType,
+        displacementCc,
+        powerHp,
+      };
+    }
+    return {
+      viscosity: '10W-40',
+      apiStandard: 'SL/CF',
+      aceaStandard: 'A3/B4',
+      oemApproval: 'GM LL-A-025 / GM-LL-B-025',
+      capacityLiters: calcCapacity(4.0),
+      changeIntervalKm: 10000,
+      fuelType,
+      displacementCc,
+      powerHp,
+    };
+  }
+
+  // ── ASIAN BRANDS (TOYOTA, HYUNDAI, KIA, NISSAN, HONDA, MAZDA...) ──
+  if (isAsianFamily) {
+    if (isHybrid) {
+      return {
+        viscosity: '0W-20',
+        apiStandard: 'SP / ILSAC GF-6',
+        aceaStandard: 'C5',
+        oemApproval: 'Toyota Hybrid / Asian Modern Fuel Economy',
+        capacityLiters: calcCapacity(3.7),
+        changeIntervalKm: 15000,
+        fuelType,
+        displacementCc,
+        powerHp,
+      };
+    }
+    if (detectedYear >= 2008 || isDiesel) {
+      return {
+        viscosity: '5W-30',
+        apiStandard: 'SN/CF',
+        aceaStandard: 'C2 / C3',
+        oemApproval: 'Toyota / Hyundai / Kia / Nissan / Asian OEM',
+        capacityLiters: calcCapacity(4.0),
+        changeIntervalKm: 15000,
+        fuelType,
+        displacementCc,
+        powerHp,
+      };
+    }
+    return {
+      viscosity: '10W-40',
+      apiStandard: 'SL/CF',
+      aceaStandard: 'A3/B4',
+      oemApproval: 'Toyota / Hyundai / Asian Classic',
+      capacityLiters: calcCapacity(3.8),
+      changeIntervalKm: 10000,
+      fuelType,
+      displacementCc,
+      powerHp,
+    };
+  }
+
+  // ── VOLVO ──
+  if (isVolvo) {
+    return {
+      viscosity: '5W-30',
+      apiStandard: 'SN',
+      aceaStandard: 'C3',
+      oemApproval: 'Volvo VCC-RBS0-2AE / Volvo XC',
+      capacityLiters: calcCapacity(5.0),
+      changeIntervalKm: 15000,
+      fuelType,
+      displacementCc,
+      powerHp,
+    };
+  }
+
+  // ── PORSCHE ──
+  if (isPorsche) {
+    return {
+      viscosity: '0W-40',
+      apiStandard: 'SN',
+      aceaStandard: 'A3/B4',
+      oemApproval: 'Porsche C30 / Porsche Approved Engine Oil',
+      capacityLiters: calcCapacity(7.5),
+      changeIntervalKm: 15000,
+      fuelType,
+      displacementCc,
+      powerHp,
+    };
+  }
+
+  // ── DEFAULT CAR FALLBACK FROM BRAND SPEC OR 5W-30 C3 ──
+  const matchedBrandKey = resolveBrandSlugs(make).find((b) => BRAND_DEFAULT_SPECS[b]);
+  if (matchedBrandKey) {
+    const s = BRAND_DEFAULT_SPECS[matchedBrandKey];
+    return {
+      ...s,
+      fuelType,
+      displacementCc,
+      powerHp,
+    };
+  }
+
+  return {
+    viscosity: '5W-30',
+    apiStandard: 'SN/CF',
+    aceaStandard: 'C3',
+    oemApproval: 'API SN / ACEA C3 European Standard',
+    capacityLiters: calcCapacity(4.5),
+    changeIntervalKm: 15000,
+    fuelType,
+    displacementCc,
+    powerHp,
+  };
+}
+
 @Injectable()
 export class OilFinderService {
   private readonly logger = new Logger(OilFinderService.name)
@@ -929,31 +1508,79 @@ export class OilFinderService {
     }
 
     // 3. Automobile / Passenger Car Fallback:
-    // If make is recognized as a known car manufacturer, ensure the user receives the
-    // official manufacturer homologation (e.g. VW 504.00/507.00, BMW LL-04, GM Dexos2, PSA B71 2290)
-    const matchedBrandKey = brandSlugs.find((b) => BRAND_DEFAULT_SPECS[b]);
+    // If make is recognized as a known car manufacturer, resolve the authentic
+    // manufacturer homologation tailored to this car's motorisation, fuel technology, and era.
+    const matchedBrandKey = brandSlugs.find((b) => BRAND_DEFAULT_SPECS[b] || BRAND_ALIASES[b]);
     if (matchedBrandKey) {
-      const defaultSpec = BRAND_DEFAULT_SPECS[matchedBrandKey];
+      let tecdocYearFrom: number | null = null;
+      let tecdocYearTo: number | null = null;
+      let tecdocTrim = engineCode || '';
+
+      try {
+        const pcRows: any[] = await this.prisma.$queryRawUnsafe(`
+          SELECT 
+            COALESCE(NULLIF(pc.description, ''), pc.full_description) AS "description",
+            CASE WHEN pc.date_from::text ~ '^[12]\\d{3}' THEN SUBSTRING(pc.date_from::text, 1, 4)::int ELSE NULL END AS "yearFrom",
+            CASE WHEN pc.date_to::text ~ '^[12]\\d{3}' AND SUBSTRING(pc.date_to::text, 1, 4) != '0000' THEN SUBSTRING(pc.date_to::text, 1, 4)::int ELSE NULL END AS "yearTo"
+          FROM tecdoc.passengercars pc
+          JOIN tecdoc.models m ON m.id = pc.model_id
+          JOIN tecdoc.manufacturers mfr ON mfr.id = m.manufacturer_id
+          WHERE (
+            LOWER(REGEXP_REPLACE(mfr.matchcode, '[^a-zA-Z0-9]+', '-', 'g')) = ANY($1::text[])
+            OR LOWER(mfr.matchcode) = ANY($1::text[])
+            OR LOWER(COALESCE(NULLIF(mfr.description, ''), mfr.matchcode)) = ANY($1::text[])
+            OR LOWER(REGEXP_REPLACE(COALESCE(NULLIF(mfr.description, ''), mfr.matchcode), '[^a-zA-Z0-9]+', '-', 'g')) = ANY($1::text[])
+          )
+          AND (
+            LOWER(REGEXP_REPLACE(m.description, '[^a-zA-Z0-9]+', '-', 'g')) = $2
+            OR LOWER(m.description) = $2
+            OR $2 ILIKE '%' || LOWER(m.description) || '%'
+            OR LOWER(m.description) ILIKE '%' || $2 || '%'
+          )
+          LIMIT 1
+        `, brandSlugs, slugify(model));
+
+        if (pcRows.length > 0) {
+          if (pcRows[0].yearFrom) tecdocYearFrom = pcRows[0].yearFrom;
+          if (pcRows[0].yearTo) tecdocYearTo = pcRows[0].yearTo;
+          if (pcRows[0].description) tecdocTrim = pcRows[0].description;
+        }
+      } catch {
+        // TecDoc lookup optional
+      }
+
+      const resolved = resolveAutomotiveOemSpec(
+        make,
+        model,
+        tecdocTrim || engineCode,
+        tecdocYearFrom,
+        tecdocYearTo,
+      );
+
+      // Search DB for existing OilFinderOilSpec matching the resolved specification
+      const oemKeyword = resolved.oemApproval.split(' ')[0];
       const dbSpec = await (this.prisma as any).oilFinderOilSpec?.findFirst?.({
         where: {
           OR: [
-            { oemApproval: { contains: defaultSpec.oemApproval.split(' ')[0], mode: 'insensitive' } },
-            { AND: [{ viscosity: defaultSpec.viscosity }, { aceaStandard: defaultSpec.aceaStandard }] },
+            { oemApproval: { contains: oemKeyword, mode: 'insensitive' } },
+            { AND: [{ viscosity: resolved.viscosity }, { aceaStandard: resolved.aceaStandard }] },
+            { viscosity: resolved.viscosity },
           ],
         },
+        orderBy: { id: 'asc' },
       }).catch(() => null);
 
       const specToReturn: OilSpecRef = dbSpec ? {
         id: dbSpec.id,
-        viscosity: dbSpec.viscosity,
-        apiStandard: dbSpec.apiStandard,
-        aceaStandard: dbSpec.aceaStandard,
-        oemApproval: dbSpec.oemApproval,
-        capacityLiters: dbSpec.capacityLiters,
-        changeIntervalKm: dbSpec.changeIntervalKm,
+        viscosity: resolved.viscosity || dbSpec.viscosity,
+        apiStandard: resolved.apiStandard || dbSpec.apiStandard,
+        aceaStandard: resolved.aceaStandard || dbSpec.aceaStandard,
+        oemApproval: resolved.oemApproval || dbSpec.oemApproval,
+        capacityLiters: resolved.capacityLiters || dbSpec.capacityLiters,
+        changeIntervalKm: resolved.changeIntervalKm || dbSpec.changeIntervalKm,
       } : {
-        id: `synth-${matchedBrandKey}`,
-        ...defaultSpec,
+        id: `oem-${matchedBrandKey}-${slugify(resolved.viscosity)}`,
+        ...resolved,
       };
 
       return {
@@ -966,13 +1593,13 @@ export class OilFinderService {
           make,
           model,
           generation: '',
-          yearFrom: null,
-          yearTo: null,
-          engineCode: engineCode || '',
-          displacementCc: null,
-          powerKw: null,
-          powerHp: null,
-          fuelType: 'essence/diesel',
+          yearFrom: tecdocYearFrom,
+          yearTo: tecdocYearTo,
+          engineCode: tecdocTrim || engineCode || '',
+          displacementCc: resolved.displacementCc,
+          powerKw: resolved.powerHp ? Math.round(resolved.powerHp * 0.7457) : null,
+          powerHp: resolved.powerHp,
+          fuelType: resolved.fuelType,
           source: 'manufacturer-standard',
           confidence: 'medium',
           matchAmbiguity: null,
