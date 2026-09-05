@@ -176,6 +176,17 @@ UPDATE public."OilFinderOilSpec"
 SET "oemApproval" = 'Peugeot Citroën PSA B71 2300 / B71 2294'
 WHERE "oemApproval" = 'PSA B71 2294';
 
+-- 4.4 Standardize Toyota 1VD-FTV across Land Cruiser 200 and Land Cruiser 76/79
+UPDATE public."OilFinderVehicle"
+SET "oilSpecId" = (SELECT id FROM public."OilFinderOilSpec" WHERE fingerprint = '["5w-30",null,"c2","toyota dl-1 / acea c2"]' LIMIT 1)
+WHERE "engineCode" = '1VD-FTV';
+
+-- 4.5 Standardize Citroen EB2F PureTech to canonical PSA B71 2290 C2
+UPDATE public."OilFinderVehicle"
+SET "oilSpecId" = (SELECT id FROM public."OilFinderOilSpec" WHERE fingerprint = '5w-30_psa-b71-2290_c2' LIMIT 1)
+WHERE UPPER(make) = 'CITROEN' AND UPPER("engineCode") = 'EB2F';
+
+
 
 -- ── 5. POPULATE PRODUCTION YEARS FOR POPULAR VEHICLES ────────────────────────
 

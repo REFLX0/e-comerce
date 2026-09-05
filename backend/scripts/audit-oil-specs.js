@@ -47,9 +47,10 @@ const LOW_SAPS_MARKERS = [
   '504 00', '507 00', '504.00', '507.00',
   'dexos2', 'DEXOS2',
   '229.31', '229.51', '229.52',
-  'DL-1', 'JASO DL-1',
-  '9.55535-S1', '9.55535-S2',
-  'ILSAC GF-6', 'VCC-RBS0-2AE', 'STJLR.03.5006',
+  'DL-1', 'JASO DL-1', 'DH-2', 'JASO DH-2',
+  '9.55535-S1', '9.55535-S2', '9.55535-DSX',
+  'ILSAC GF-6', 'ILSAC GF-6A', 'VCC-RBS0-2AE', 'STJLR.03.5006',
+  'CJ-4', 'CK-4', 'FA-4', 'E6', 'E8', 'E9', 'E11',
 ];
 
 function hasLowSapsMarker(approvals) {
@@ -74,6 +75,12 @@ function canonicalizeSpec(specStr) {
     .replace(/\(LongLife III\)/gi, '')
     .replace(/B71 2300 \/ B71 2294/g, 'B71 2300')
     .replace(/B71 2294/g, 'B71 2300')
+    .replace(/(?:Peugeot\s*Citro[eë]n\s*)?PSA\s*B71\s*2290(?:\s*C[23])?(?:\s*S[NP])?/gi, 'PSA B71 2290 C2')
+    .replace(/9\.55535-G2 \/ 9\.55535-D2/g, '9.55535-G2')
+    .replace(/Toyota \/ Hyundai \/ Kia \/ Nissan \/ Asian OEM(?:\s*C[23]\s*\/\s*C[23])?/gi, 'Asian OEM C2/C3')
+    .replace(/Toyota DL-1 \/ ACEA C2(?:\s*C2)?/gi, 'Toyota DL-1 / ACEA C2')
+    .replace(/Suzuki RO-1 C5\s*(?:SN|SP)/gi, 'Suzuki RO-1 C5')
+    .replace(/ILSAC GF-6A\s*SP/gi, 'SP')
     .replace(/SN\/CF/gi, 'SN')
     .replace(/SL\/CF/gi, 'SL')
     .replace(/SM\/CF/gi, 'SM')
@@ -222,14 +229,20 @@ function processRows({
 
     const year = getYear(row);
     const labelLower = label.toLowerCase();
+    const category = (row.category || '').toLowerCase();
+    const isHeavyDutyOrMarine =
+      category === 'agricole' ||
+      category === 'marine' ||
+      /tractor|agri|marine|bateau|outboard|tracteur|hors-bord/i.test(`${label} ${row.source || ''}`);
+
     const isExplicitDpf = /\b(dpf|fap|bluehdi|euro\s*5|euro\s*6|adblue|scr)\b/i.test(`${label} ${row.fuelType || ''} ${row.engineCode || ''}`);
     const isClassicPreDpf = /\b(golf\s*(iv|4|iii|3|ii|2)|206|106|306|406|saxo|xsara|clio\s*(ii|2|i|1)|punto\s*(ii|188)|astra\s*(g|f)|corsa\s*(b|c)|passat\s*b5)\b/i.test(labelLower);
 
-    // DPF check: strictly applies to confirmed modern post-2010 diesels or explicit DPF models.
-    // Pre-2010 classics (Golf IV, 206, Saxo, Clio II...) legitimately take full-SAPS A3/B4 (VW 505.00, PSA B71 2300).
-    if (isDiesel(row) && !hasLowSapsMarker(approvals)) {
+    // DPF check: strictly applies to confirmed modern post-2010 passenger car diesels or explicit DPF models.
+    // Non-automotive machinery (tractors, boat engines) and pre-2010 classics legitimately take non-DPF specs.
+    if (!isHeavyDutyOrMarine && isDiesel(row) && !hasLowSapsMarker(approvals)) {
       if (isExplicitDpf || (year && year >= 2011 && !isClassicPreDpf)) {
-        possibleDpfMismatch.push(`${label} -> approvals="${approvals}" (modern diesel without low-SAPS marker)`);
+        possibleDpfMismatch.push(`${label} -> approvals="${approvals}" (modern passenger car diesel without low-SAPS marker)`);
       }
     }
 
@@ -239,9 +252,19 @@ function processRows({
     }
 
     const canonApprovals = canonicalizeSpec(approvals);
-    const isGenericDisplacement = /^(\d\.\d|\d\.\d\s+[a-zA-Z0-9]+)$/.test(rawEngine);
-    const eraSuffix = isGenericDisplacement && year ? (year >= 2010 ? ' [2010+]' : ' [pre-2010]') : '';
-    const engineKey = `${getMake(row)}|${rawEngine}${eraSuffix}`;
+    // If the engine code is a generic displacement or commercial designation (e.g. "1.2", "1.4", "1.5 dCi", "1.6 16V", "1.9 TDI", "320d"),
+    // include the model name (e.g. "Golf IV", "Golf V", "206", "207", "E46", "F30") because different vehicle models/chassis
+    // legitimately require different oils across different decades!
+    const isGeneric =
+      /^(\d\.\d|\d\.\d\s+[a-zA-Z0-9]+)$/.test(rawEngine) ||
+      /^(320d|318d|316d|118d|120d|c220|c200|a180)$/i.test(rawEngine);
+
+    const modelRaw = (row.model || row.vehicleModel?.name || '').trim();
+    const modelFamily = modelRaw.split('(')[0].trim().replace(/\s+Variant|\s+Hatchback|\s+Estate|\s+Saloon|\s+Break|\s+Coupe/gi, '');
+    const modelPrefix = isGeneric && modelFamily ? `${modelFamily} ` : '';
+    const eraSuffix = isGeneric && year ? (year >= 2010 ? ' [2010+]' : ' [pre-2010]') : '';
+
+    const engineKey = `${getMake(row)}|${modelPrefix}${rawEngine}${eraSuffix}`;
     const specCombo = `${viscosity} [${canonApprovals}]`;
 
     if (!engineGroups.has(engineKey)) engineGroups.set(engineKey, new Map());
