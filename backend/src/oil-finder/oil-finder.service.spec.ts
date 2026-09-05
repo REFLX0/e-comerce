@@ -219,6 +219,48 @@ describe('OilFinderService', () => {
       }
     });
 
+    it('returns official manufacturer spec for Alfa Romeo when not found in DB', async () => {
+      prisma.oilFinderVehicle.findMany.mockResolvedValue([]);
+      prisma.$queryRawUnsafe.mockResolvedValueOnce([{ is_car: true }]);
+
+      const result = await service.findByVehicle('Alfa Romeo', 'Giulietta');
+
+      expect(result.status).toBe('found');
+      if (result.status === 'found') {
+        expect(result.oilSpec.viscosity).toBe('5W-40');
+        expect(result.oilSpec.oemApproval).toContain('Fiat 9.55535-S2');
+        expect(result.confidence).toBe('medium');
+      }
+    });
+
+    it('returns official manufacturer spec for Mini when not found in DB', async () => {
+      prisma.oilFinderVehicle.findMany.mockResolvedValue([]);
+      prisma.$queryRawUnsafe.mockResolvedValueOnce([{ is_car: true }]);
+
+      const result = await service.findByVehicle('Mini', 'Cooper');
+
+      expect(result.status).toBe('found');
+      if (result.status === 'found') {
+        expect(result.oilSpec.viscosity).toBe('5W-30');
+        expect(result.oilSpec.oemApproval).toContain('BMW Longlife-04');
+        expect(result.confidence).toBe('medium');
+      }
+    });
+
+    it('returns official manufacturer spec for Chery when not found in DB', async () => {
+      prisma.oilFinderVehicle.findMany.mockResolvedValue([]);
+      prisma.$queryRawUnsafe.mockResolvedValueOnce([{ is_car: true }]);
+
+      const result = await service.findByVehicle('Chery', 'Tiggo');
+
+      expect(result.status).toBe('found');
+      if (result.status === 'found') {
+        expect(result.oilSpec.viscosity).toBe('5W-30');
+        expect(result.oilSpec.oemApproval).toContain('API SN');
+        expect(result.confidence).toBe('medium');
+      }
+    });
+
     it('returns status not_found enriched with automobile classification for unconfigured car make', async () => {
       prisma.oilFinderVehicle.findMany.mockResolvedValue([]);
       prisma.$queryRawUnsafe.mockResolvedValueOnce([{ is_car: true }]);

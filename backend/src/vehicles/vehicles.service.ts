@@ -195,9 +195,7 @@ export class VehiclesService {
       }
     }
 
-    this.applyFilters(where, filters);
-
-    const [data, total] = await Promise.all([
+    let [data, total] = await Promise.all([
       this.prisma.product.findMany({
         where,
         include: this.productsService.buildInclude(),
@@ -206,6 +204,25 @@ export class VehiclesService {
       }),
       this.prisma.product.count({ where }),
     ]);
+
+    // Safety fallback: if 0 products found with strict vehicle name filtering, fallback to general/category products
+    if (total === 0 && where.AND) {
+      const fallbackWhere: Prisma.ProductWhereInput = { isPublished: true };
+      this.applyFilters(fallbackWhere, filters);
+      const [fbData, fbTotal] = await Promise.all([
+        this.prisma.product.findMany({
+          where: fallbackWhere,
+          include: this.productsService.buildInclude(),
+          skip,
+          take: limit,
+        }),
+        this.prisma.product.count({ where: fallbackWhere }),
+      ]);
+      if (fbTotal > 0) {
+        data = fbData;
+        total = fbTotal;
+      }
+    }
 
     return {
       data: data.map((product) => ({

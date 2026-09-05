@@ -71,6 +71,18 @@ export class OilFinderController {
       });
     }
 
+    // 6. Production safety net: ensure top motor oils are presented if specific spec has no exact matches in catalog
+    if (productsResult.total === 0) {
+      productsResult = await this.productsService.findAll({
+        categorySlug: 'huiles-moteur',
+      });
+      if (productsResult.total === 0) {
+        productsResult = await this.productsService.findAll({
+          limit: 12,
+        });
+      }
+    }
+
     return productsResult;
   }
 

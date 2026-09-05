@@ -62,16 +62,23 @@ export const BRAND_ALIASES: Record<string, string[]> = {
   volkswagen: ['vw', 'volkswagen', 'volks'],
   vw: ['vw', 'volkswagen', 'volks'],
   bmw: ['bmw', 'b-m-w', 'bmw-ag'],
+  mini: ['mini', 'mini-bmw', 'cooper'],
   mercedes: ['mercedes-benz', 'mercedes', 'merce', 'mercedes benz', 'daimler'],
   'mercedes-benz': ['mercedes-benz', 'mercedes', 'merce', 'mercedes benz', 'daimler'],
+  smart: ['smart'],
   citroen: ['citroen', 'citroën', 'citro', 'citro-n'],
   'citroën': ['citroen', 'citroën', 'citro', 'citro-n'],
   peugeot: ['peugeot', 'psa'],
+  ds: ['ds', 'ds-automobiles', 'citroen-ds', 'ds automobiles'],
   renault: ['renault', 'dacia'],
   dacia: ['dacia', 'renault'],
   opel: ['opel', 'vauxhall', 'gm'],
   vauxhall: ['opel', 'vauxhall', 'gm'],
   fiat: ['fiat', 'abarth'],
+  'alfa-romeo': ['alfa-romeo', 'alfa romeo', 'alfa', 'alfaromeo'],
+  alfa: ['alfa-romeo', 'alfa romeo', 'alfa', 'alfaromeo'],
+  lancia: ['lancia'],
+  jeep: ['jeep'],
   ford: ['ford'],
   seat: ['seat', 'cupra'],
   cupra: ['seat', 'cupra'],
@@ -79,9 +86,35 @@ export const BRAND_ALIASES: Record<string, string[]> = {
   'škoda': ['skoda', 'škoda'],
   audi: ['audi'],
   toyota: ['toyota'],
+  lexus: ['lexus'],
   hyundai: ['hyundai'],
   kia: ['kia'],
   nissan: ['nissan'],
+  infiniti: ['infiniti'],
+  honda: ['honda'],
+  volvo: ['volvo'],
+  mazda: ['mazda'],
+  mitsubishi: ['mitsubishi', 'mitsu'],
+  subaru: ['subaru'],
+  suzuki: ['suzuki'],
+  'land-rover': ['land-rover', 'land rover', 'landrover', 'range-rover', 'range rover', 'rangerover', 'rover'],
+  'land rover': ['land-rover', 'land rover', 'landrover', 'range-rover', 'range rover', 'rangerover', 'rover'],
+  jaguar: ['jaguar', 'jag'],
+  porsche: ['porsche'],
+  chevrolet: ['chevrolet', 'chevy'],
+  ssangyong: ['ssangyong', 'ssang yong', 'kg-mobility'],
+  mg: ['mg', 'mg-motor', 'morris-garages'],
+  haval: ['haval', 'great-wall-haval'],
+  geely: ['geely'],
+  chery: ['chery'],
+  dfsk: ['dfsk', 'dongfeng', 'sokon'],
+  'great-wall': ['great-wall', 'great wall', 'greatwall', 'gwm'],
+  'great wall': ['great-wall', 'great wall', 'greatwall', 'gwm'],
+  byd: ['byd', 'byd-auto'],
+  mahindra: ['mahindra'],
+  isuzu: ['isuzu'],
+  iveco: ['iveco'],
+  lada: ['lada', 'vaz', 'avtovaz'],
 
   // Motorbikes
   yamaha: ['yamaha', 'yamah', 'yamaha-motorcycles', 'yamaha-mot', 'yamaha motorcycles', 'yamaha mot'],
@@ -124,6 +157,14 @@ export const BRAND_DEFAULT_SPECS: Record<string, {
     capacityLiters: 5.2,
     changeIntervalKm: 15000,
   },
+  mini: {
+    viscosity: '5W-30',
+    apiStandard: 'SN',
+    aceaStandard: 'C3',
+    oemApproval: 'BMW Longlife-04 (LL-04)',
+    capacityLiters: 4.5,
+    changeIntervalKm: 15000,
+  },
   mercedes: {
     viscosity: '5W-30',
     apiStandard: 'SN',
@@ -138,6 +179,14 @@ export const BRAND_DEFAULT_SPECS: Record<string, {
     aceaStandard: 'C3',
     oemApproval: 'MB 229.51 / MB 229.52',
     capacityLiters: 5.5,
+    changeIntervalKm: 15000,
+  },
+  smart: {
+    viscosity: '5W-30',
+    apiStandard: 'SN',
+    aceaStandard: 'C3',
+    oemApproval: 'MB 229.51 / MB 229.52',
+    capacityLiters: 3.5,
     changeIntervalKm: 15000,
   },
   audi: {
@@ -204,6 +253,14 @@ export const BRAND_DEFAULT_SPECS: Record<string, {
     capacityLiters: 3.8,
     changeIntervalKm: 15000,
   },
+  ds: {
+    viscosity: '5W-30',
+    apiStandard: 'SN/CF',
+    aceaStandard: 'C2',
+    oemApproval: 'Peugeot Citroën PSA B71 2290',
+    capacityLiters: 3.8,
+    changeIntervalKm: 15000,
+  },
   renault: {
     viscosity: '5W-30',
     apiStandard: 'SN',
@@ -228,6 +285,14 @@ export const BRAND_DEFAULT_SPECS: Record<string, {
     capacityLiters: 4.5,
     changeIntervalKm: 15000,
   },
+  vauxhall: {
+    viscosity: '5W-30',
+    apiStandard: 'SN',
+    aceaStandard: 'C3',
+    oemApproval: 'GM Dexos2',
+    capacityLiters: 4.5,
+    changeIntervalKm: 15000,
+  },
   ford: {
     viscosity: '5W-30',
     apiStandard: 'SL/CF',
@@ -244,7 +309,47 @@ export const BRAND_DEFAULT_SPECS: Record<string, {
     capacityLiters: 3.5,
     changeIntervalKm: 15000,
   },
+  'alfa-romeo': {
+    viscosity: '5W-40',
+    apiStandard: 'SN/CF',
+    aceaStandard: 'C3',
+    oemApproval: 'Fiat 9.55535-S2 / Selenia WR',
+    capacityLiters: 4.0,
+    changeIntervalKm: 15000,
+  },
+  alfa: {
+    viscosity: '5W-40',
+    apiStandard: 'SN/CF',
+    aceaStandard: 'C3',
+    oemApproval: 'Fiat 9.55535-S2 / Selenia WR',
+    capacityLiters: 4.0,
+    changeIntervalKm: 15000,
+  },
+  lancia: {
+    viscosity: '5W-40',
+    apiStandard: 'SN/CF',
+    aceaStandard: 'C3',
+    oemApproval: 'Fiat 9.55535-S2',
+    capacityLiters: 3.5,
+    changeIntervalKm: 15000,
+  },
+  jeep: {
+    viscosity: '5W-40',
+    apiStandard: 'SN/CF',
+    aceaStandard: 'C3',
+    oemApproval: 'Fiat 9.55535-S2 / Chrysler MS-12991',
+    capacityLiters: 4.0,
+    changeIntervalKm: 15000,
+  },
   toyota: {
+    viscosity: '5W-30',
+    apiStandard: 'SN/CF',
+    aceaStandard: 'C2 / C3',
+    oemApproval: 'Toyota / Hyundai / Kia / Nissan / Asian OEM',
+    capacityLiters: 4.0,
+    changeIntervalKm: 15000,
+  },
+  lexus: {
     viscosity: '5W-30',
     apiStandard: 'SN/CF',
     aceaStandard: 'C2 / C3',
@@ -275,6 +380,214 @@ export const BRAND_DEFAULT_SPECS: Record<string, {
     oemApproval: 'Toyota / Hyundai / Kia / Nissan / Asian OEM',
     capacityLiters: 4.0,
     changeIntervalKm: 15000,
+  },
+  infiniti: {
+    viscosity: '5W-30',
+    apiStandard: 'SN/CF',
+    aceaStandard: 'C2 / C3',
+    oemApproval: 'Toyota / Hyundai / Kia / Nissan / Asian OEM',
+    capacityLiters: 4.0,
+    changeIntervalKm: 15000,
+  },
+  honda: {
+    viscosity: '5W-30',
+    apiStandard: 'SN/CF',
+    aceaStandard: 'A3/B4',
+    oemApproval: 'Honda 08W30-P99-810HE / Asian API SN',
+    capacityLiters: 4.0,
+    changeIntervalKm: 15000,
+  },
+  volvo: {
+    viscosity: '5W-30',
+    apiStandard: 'SN',
+    aceaStandard: 'C3',
+    oemApproval: 'Volvo VCC-RBS0-2AE / Volvo XC',
+    capacityLiters: 5.0,
+    changeIntervalKm: 15000,
+  },
+  mazda: {
+    viscosity: '5W-30',
+    apiStandard: 'SN/CF',
+    aceaStandard: 'C2',
+    oemApproval: 'Mazda Original / Skyactiv Engine Oil',
+    capacityLiters: 4.0,
+    changeIntervalKm: 15000,
+  },
+  mitsubishi: {
+    viscosity: '5W-30',
+    apiStandard: 'SN/CF',
+    aceaStandard: 'C3',
+    oemApproval: 'Mitsubishi MZ320757 / DiaQueen',
+    capacityLiters: 4.0,
+    changeIntervalKm: 15000,
+  },
+  subaru: {
+    viscosity: '5W-30',
+    apiStandard: 'SN',
+    aceaStandard: 'A3/B4',
+    oemApproval: 'Subaru SOA 427V1700 / K0228-Y0001',
+    capacityLiters: 4.5,
+    changeIntervalKm: 15000,
+  },
+  suzuki: {
+    viscosity: '5W-30',
+    apiStandard: 'SN/CF',
+    aceaStandard: 'C2 / C3',
+    oemApproval: 'Suzuki SLS-SN / Asian OEM',
+    capacityLiters: 3.5,
+    changeIntervalKm: 10000,
+  },
+  'land-rover': {
+    viscosity: '5W-30',
+    apiStandard: 'SN',
+    aceaStandard: 'C3',
+    oemApproval: 'JLR STJLR.03.5006 / Land Rover STC 4184',
+    capacityLiters: 6.0,
+    changeIntervalKm: 15000,
+  },
+  'land rover': {
+    viscosity: '5W-30',
+    apiStandard: 'SN',
+    aceaStandard: 'C3',
+    oemApproval: 'JLR STJLR.03.5006 / Land Rover STC 4184',
+    capacityLiters: 6.0,
+    changeIntervalKm: 15000,
+  },
+  jaguar: {
+    viscosity: '5W-30',
+    apiStandard: 'SN',
+    aceaStandard: 'C3',
+    oemApproval: 'JLR STJLR.03.5006 / Land Rover STC 4184',
+    capacityLiters: 6.0,
+    changeIntervalKm: 15000,
+  },
+  porsche: {
+    viscosity: '0W-40',
+    apiStandard: 'SN',
+    aceaStandard: 'A3/B4',
+    oemApproval: 'Porsche C30 / Porsche Approved Engine Oil',
+    capacityLiters: 7.5,
+    changeIntervalKm: 15000,
+  },
+  chevrolet: {
+    viscosity: '5W-30',
+    apiStandard: 'SN',
+    aceaStandard: 'A3/B4',
+    oemApproval: 'GM Dexos1 Gen 2 / ACDelco Full Synthetic',
+    capacityLiters: 4.7,
+    changeIntervalKm: 12000,
+  },
+  chevy: {
+    viscosity: '5W-30',
+    apiStandard: 'SN',
+    aceaStandard: 'A3/B4',
+    oemApproval: 'GM Dexos1 Gen 2 / ACDelco Full Synthetic',
+    capacityLiters: 4.7,
+    changeIntervalKm: 12000,
+  },
+  ssangyong: {
+    viscosity: '5W-30',
+    apiStandard: 'SN/CF',
+    aceaStandard: 'C2 / C3',
+    oemApproval: 'Toyota / Hyundai / Kia / Nissan / Asian OEM',
+    capacityLiters: 4.5,
+    changeIntervalKm: 15000,
+  },
+  mg: {
+    viscosity: '5W-30',
+    apiStandard: 'SN/CF',
+    aceaStandard: 'A3/B4',
+    oemApproval: 'MG / Haval / Geely / BYD API SN',
+    capacityLiters: 4.0,
+    changeIntervalKm: 10000,
+  },
+  haval: {
+    viscosity: '5W-30',
+    apiStandard: 'SN/CF',
+    aceaStandard: 'A3/B4',
+    oemApproval: 'MG / Haval / Geely / BYD API SN',
+    capacityLiters: 4.0,
+    changeIntervalKm: 10000,
+  },
+  geely: {
+    viscosity: '5W-30',
+    apiStandard: 'SN/CF',
+    aceaStandard: 'A3/B4',
+    oemApproval: 'MG / Haval / Geely / BYD API SN',
+    capacityLiters: 4.0,
+    changeIntervalKm: 10000,
+  },
+  chery: {
+    viscosity: '5W-30',
+    apiStandard: 'SN/CF',
+    aceaStandard: 'A3/B4',
+    oemApproval: 'MG / Haval / Geely / BYD API SN',
+    capacityLiters: 4.0,
+    changeIntervalKm: 10000,
+  },
+  dfsk: {
+    viscosity: '5W-30',
+    apiStandard: 'SN/CF',
+    aceaStandard: 'A3/B4',
+    oemApproval: 'MG / Haval / Geely / BYD API SN',
+    capacityLiters: 4.0,
+    changeIntervalKm: 10000,
+  },
+  'great-wall': {
+    viscosity: '5W-30',
+    apiStandard: 'SN/CF',
+    aceaStandard: 'A3/B4',
+    oemApproval: 'MG / Haval / Geely / BYD API SN',
+    capacityLiters: 4.2,
+    changeIntervalKm: 10000,
+  },
+  'great wall': {
+    viscosity: '5W-30',
+    apiStandard: 'SN/CF',
+    aceaStandard: 'A3/B4',
+    oemApproval: 'MG / Haval / Geely / BYD API SN',
+    capacityLiters: 4.2,
+    changeIntervalKm: 10000,
+  },
+  byd: {
+    viscosity: '5W-30',
+    apiStandard: 'SN/CF',
+    aceaStandard: 'A3/B4',
+    oemApproval: 'MG / Haval / Geely / BYD API SN',
+    capacityLiters: 4.0,
+    changeIntervalKm: 10000,
+  },
+  mahindra: {
+    viscosity: '5W-30',
+    apiStandard: 'SN/CF',
+    aceaStandard: 'C2 / C3',
+    oemApproval: 'Toyota / Hyundai / Kia / Nissan / Asian OEM',
+    capacityLiters: 4.0,
+    changeIntervalKm: 10000,
+  },
+  isuzu: {
+    viscosity: '5W-30',
+    apiStandard: 'SN/CF',
+    aceaStandard: 'C2 / C3',
+    oemApproval: 'Toyota / Hyundai / Kia / Nissan / Asian OEM',
+    capacityLiters: 5.0,
+    changeIntervalKm: 10000,
+  },
+  iveco: {
+    viscosity: '5W-30',
+    apiStandard: 'SN',
+    aceaStandard: 'C2',
+    oemApproval: 'Fiat 9.55535-S1 / Iveco 18-1811',
+    capacityLiters: 5.0,
+    changeIntervalKm: 15000,
+  },
+  lada: {
+    viscosity: '10W-40',
+    apiStandard: 'SL/CF',
+    aceaStandard: 'A3/B4',
+    oemApproval: 'AvtoVAZ / Lada API SL standard',
+    capacityLiters: 3.5,
+    changeIntervalKm: 10000,
   },
 };
 
@@ -729,6 +1042,8 @@ export class OilFinderService {
       whereClause += ' AND mfr.is_passenger_car = true';
     }
 
+    const makeMap = new Map<string, string>();
+
     try {
       const tecdocRows: any[] = await this.prisma.$queryRawUnsafe(`
         SELECT DISTINCT COALESCE(NULLIF(mfr.description, ''), mfr.matchcode) AS name
@@ -736,8 +1051,8 @@ export class OilFinderService {
         WHERE ${whereClause}
         ORDER BY name ASC
       `);
-      if (tecdocRows.length > 0) {
-        return tecdocRows.map((r) => ({ slug: slugify(r.name), name: r.name }));
+      for (const r of tecdocRows) {
+        if (r.name) makeMap.set(slugify(r.name), r.name);
       }
     } catch (e) {
       this.logger.error('Error fetching makes from TecDoc', e);
@@ -750,10 +1065,20 @@ export class OilFinderService {
         orderBy: { make: 'asc' },
       });
       if (rows && rows.length > 0) {
-        return rows.map((r) => ({ slug: slugify(r.make), name: r.make }));
+        for (const r of rows) {
+          if (r.make && !makeMap.has(slugify(r.make))) {
+            makeMap.set(slugify(r.make), r.make);
+          }
+        }
       }
     } catch (e) {
       this.logger.warn('Failed to query oilFinderVehicle makes fallback', e);
+    }
+
+    if (makeMap.size > 0) {
+      return Array.from(makeMap.entries())
+        .map(([slug, name]) => ({ slug, name }))
+        .sort((a, b) => a.name.localeCompare(b.name));
     }
 
     return [];
@@ -761,6 +1086,8 @@ export class OilFinderService {
 
   async getModels(makeName: string) {
     const brandSlugs = resolveBrandSlugs(makeName);
+    const modelMap = new Map<string, string>();
+
     try {
       const tecdocRows: any[] = await this.prisma.$queryRawUnsafe(`
         SELECT DISTINCT m.description AS name, LOWER(REGEXP_REPLACE(m.description, '[^a-zA-Z0-9]+', '-', 'g')) AS slug
@@ -775,8 +1102,8 @@ export class OilFinderService {
           )
         ORDER BY m.description ASC
       `, brandSlugs);
-      if (tecdocRows.length > 0) {
-        return tecdocRows.map((r) => ({ slug: r.slug, name: r.name }));
+      for (const r of tecdocRows) {
+        if (r.name) modelMap.set(r.slug || slugify(r.name), r.name);
       }
     } catch (e) {
       this.logger.error(`Error fetching models from TecDoc for make: ${makeName}`, e);
@@ -790,10 +1117,21 @@ export class OilFinderService {
         orderBy: { model: 'asc' },
       });
       if (rows && rows.length > 0) {
-        return rows.map((r) => ({ slug: slugify(r.model), name: r.model }));
+        for (const r of rows) {
+          const s = slugify(r.model);
+          if (r.model && !modelMap.has(s)) {
+            modelMap.set(s, r.model);
+          }
+        }
       }
     } catch (e) {
       this.logger.warn(`Failed to query oilFinderVehicle models fallback for make ${makeName}`, e);
+    }
+
+    if (modelMap.size > 0) {
+      return Array.from(modelMap.entries())
+        .map(([slug, name]) => ({ slug, name }))
+        .sort((a, b) => a.name.localeCompare(b.name));
     }
 
     return [];
@@ -914,7 +1252,7 @@ export class OilFinderService {
       // ignore
     }
 
-    return [];
+    return [{ engineCode: 'Moteur standard / D’origine', yearFrom: null, yearTo: null }];
   }
 }
 
