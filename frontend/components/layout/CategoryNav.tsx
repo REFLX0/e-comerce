@@ -26,6 +26,15 @@ function findNode(categories: Category[] | undefined, slug: string): Category | 
   return categories?.find((category) => category.slug === slug)
 }
 
+function isItemActive(item: (typeof NAVIGATION_TAXONOMY)[number], pathname: string | null): boolean {
+  if (!pathname) return false
+  if (pathname.includes(`/categorie/${item.slug}`)) return true
+  return item.children.some((c) => {
+    if (pathname.includes(`/categorie/${c.slug}`)) return true
+    return (c.children ?? []).some((sc) => pathname.includes(`/categorie/${sc.slug}`))
+  })
+}
+
 export function CategoryNav() {
   const { data: categories } = useQuery({
     queryKey: ['categories-tree'],
@@ -117,18 +126,19 @@ export function CategoryNav() {
         className="hidden border-b border-slate-200 bg-white md:block"
         style={{ boxShadow: '0 2px 12px rgba(22,37,76,0.06)' }}
       >
-        <div className="section-padding flex h-[52px] items-stretch gap-0">
-          <div className="flex min-w-0 items-stretch">
+        <div className="section-padding flex h-[52px] items-center gap-1.5">
+          <div className="flex min-w-0 items-center gap-1.5">
             {NAVIGATION_TAXONOMY.map((item) => {
               const Icon = NAVIGATION_ICONS[item.slug] ?? Package
               const root = findNode(categories, item.slug)
               const rootLabel = item.labelKey ? tTax(item.labelKey) : (root?.name ?? item.label ?? item.slug)
               const isOpen = activeDropdown === item.slug
+              const isActive = isItemActive(item, pathname)
 
               return (
                 <div
                   key={item.slug}
-                  className="relative flex items-stretch h-full"
+                  className="relative flex items-center h-full"
                   onMouseEnter={() => handleMouseEnter(item.slug)}
                   onMouseLeave={handleMouseLeave}
                 >
@@ -139,37 +149,50 @@ export function CategoryNav() {
                       onClick={closeNow}
                       aria-expanded={isOpen}
                       aria-haspopup="menu"
-                      className="nav-tab-btn group relative flex h-full items-center gap-2 px-5 text-sm font-semibold transition-all duration-200"
-                      style={{
-                        color: isOpen ? '#D4A76A' : '#16254c',
-                        borderBottom: isOpen ? '2px solid #D4A76A' : '2px solid transparent',
-                      }}
+                      className={cn(
+                        'nav-tab-btn group relative flex items-center gap-2 rounded-full px-4 py-1.5 text-xs md:text-sm font-semibold transition-all duration-200 border',
+                        isActive
+                          ? 'border-[#16254c] bg-[#16254c] text-white shadow-sm'
+                          : isOpen
+                          ? 'border-[#D4A76A]/40 bg-[#D4A76A]/10 text-[#16254c]'
+                          : 'border-transparent text-slate-700 hover:border-slate-200 hover:bg-slate-100'
+                      )}
                     >
                       <Icon
                         size={15}
-                        style={{ color: isOpen ? '#D4A76A' : 'rgba(22,37,76,0.5)' }}
-                        className="transition-colors duration-200"
+                        className={cn(
+                          'transition-colors duration-200',
+                          isActive ? 'text-[#D4A76A]' : isOpen ? 'text-[#D4A76A]' : 'text-slate-500 group-hover:text-slate-700'
+                        )}
                       />
                       <span>{rootLabel}</span>
                       <ChevronDown
                         size={13}
-                        className={`transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
-                        style={{ color: isOpen ? '#D4A76A' : 'rgba(22,37,76,0.4)' }}
+                        className={cn(
+                          'transition-transform duration-200',
+                          isOpen ? 'rotate-180' : '',
+                          isActive ? 'text-white/80' : 'text-slate-400 group-hover:text-slate-600'
+                        )}
                       />
-                      {/* hover underline animation */}
-                      {!isOpen && (
-                        <span className="nav-underline absolute bottom-0 left-0 h-[2px] w-0 bg-brand-accent transition-all duration-200 group-hover:w-full" />
-                      )}
                     </Link>
                   ) : (
                     <Link
                       href={`/categorie/${item.slug}`}
-                      className="group relative flex h-full items-center gap-2 px-5 text-sm font-semibold transition-all duration-200"
-                      style={{ color: '#16254c', borderBottom: '2px solid transparent' }}
+                      className={cn(
+                        'group relative flex items-center gap-2 rounded-full px-4 py-1.5 text-xs md:text-sm font-semibold transition-all duration-200 border',
+                        isActive
+                          ? 'border-[#16254c] bg-[#16254c] text-white shadow-sm'
+                          : 'border-transparent text-slate-700 hover:border-slate-200 hover:bg-slate-100'
+                      )}
                     >
-                      <Icon size={15} style={{ color: 'rgba(22,37,76,0.5)' }} />
+                      <Icon
+                        size={15}
+                        className={cn(
+                          'transition-colors duration-200',
+                          isActive ? 'text-[#D4A76A]' : 'text-slate-500 group-hover:text-slate-700'
+                        )}
+                      />
                       <span>{rootLabel}</span>
-                      <span className="absolute bottom-0 left-0 h-[2px] w-0 bg-brand-accent transition-all duration-200 group-hover:w-full" />
                     </Link>
                   )}
 
@@ -217,7 +240,7 @@ export function CategoryNav() {
           const Icon = NAVIGATION_ICONS[item.slug] ?? Package
           const root = findNode(categories, item.slug)
           const rootLabel = item.labelKey ? tTax(item.labelKey) : (root?.name ?? item.label ?? item.slug)
-          const isActive = pathname?.includes(`/categorie/${item.slug}`)
+          const isActive = isItemActive(item, pathname)
 
           return (
             <Link
@@ -274,6 +297,7 @@ function FlyoutPanel({
 }) {
   const [activeChild, setActiveChild] = useState<string | null>(null)
   const tTax = useTranslations('Taxonomy')
+  const pathname = usePathname()
 
   // Find which child is hovered (to show its sub-panel)
   const activeNode = item.children.find((c) => c.slug === activeChild)
@@ -289,7 +313,7 @@ function FlyoutPanel({
         borderRadius: '0 0 14px 14px',
         border: '1px solid rgba(22,37,76,0.1)',
         boxShadow: '0 16px 48px rgba(22,37,76,0.16)',
-        minWidth: 290,
+        minWidth: 280,
         maxHeight: 'min(560px, calc(100vh - 125px))',
         background: '#fff',
         animation: 'flyoutIn 0.14s ease-out both',
@@ -299,13 +323,13 @@ function FlyoutPanel({
       <div
         className="flex flex-col max-h-[inherit]"
         style={{
-          minWidth: 290,
+          minWidth: 280,
           borderRight: hasSubPanel ? '1px solid rgba(22,37,76,0.07)' : 'none',
         }}
       >
         {/* Panel header */}
         <div
-          className="flex items-center justify-between px-4 py-2 shrink-0"
+          className="flex items-center justify-between px-4 py-2.5 shrink-0"
           style={{
             background: 'linear-gradient(135deg, #16254c 0%, #1f356b 100%)',
             borderBottom: '1px solid rgba(255,255,255,0.08)',
@@ -326,13 +350,13 @@ function FlyoutPanel({
         </div>
 
         {/* Items */}
-        <ul className="flex flex-col py-1 overflow-y-auto overscroll-contain">
+        <ul className="flex flex-col py-1.5 px-1.5 overflow-y-auto overscroll-contain gap-0.5">
           {item.children.map((child) => {
             const dbNode = findNode(categories, child.slug)
             const label = child.labelKey ? tTax(child.labelKey) : (dbNode?.name ?? child.label ?? child.slug)
-            const hint = child.hintKey ? tTax(child.hintKey) : child.hint
             const hasSubs = (child.children?.length ?? 0) > 0
-            const isActive = activeChild === child.slug
+            const isHovered = activeChild === child.slug
+            const isChildActive = pathname?.includes(`/categorie/${child.slug}`) || (child.children ?? []).some(sc => pathname?.includes(`/categorie/${sc.slug}`))
 
             return (
               <li key={child.slug} role="none">
@@ -343,32 +367,39 @@ function FlyoutPanel({
                     role="menuitem"
                     onClick={onClose}
                     onMouseEnter={() => setActiveChild(child.slug)}
-                    className="flyout-item group flex w-full items-center justify-between gap-2.5 px-4 py-1.5 text-xs transition-all duration-150 hover:bg-slate-50"
-                    style={{
-                      background: isActive ? 'rgba(212,167,106,0.08)' : 'transparent',
-                      color: isActive ? '#D4A76A' : '#16254c',
-                      fontWeight: isActive ? 600 : 500,
-                      borderLeft: isActive ? '3px solid #D4A76A' : '3px solid transparent',
-                    }}
+                    className={cn(
+                      'flyout-item group flex w-full items-center justify-between gap-2.5 rounded-xl px-3 py-2 text-xs transition-all duration-150',
+                      isChildActive
+                        ? 'border border-[#16254c] bg-[#16254c] text-white font-bold shadow-xs'
+                        : isHovered
+                        ? 'bg-[#D4A76A]/10 text-[#D4A76A] font-semibold'
+                        : 'text-slate-700 hover:bg-slate-100/70'
+                    )}
                   >
                     <span className="flex items-center gap-2 min-w-0">
                       <span
-                        className="h-1.5 w-1.5 shrink-0 rounded-full transition-colors"
-                        style={{ background: isActive ? '#D4A76A' : 'rgba(22,37,76,0.25)' }}
-                      />
-                      <span className="flex flex-col text-start min-w-0">
-                        <span className="font-semibold text-xs leading-snug">{label}</span>
-                        {hint && (
-                          <span className="text-[10px] leading-tight text-slate-400 font-normal truncate max-w-[210px]">
-                            {hint}
-                          </span>
+                        className={cn(
+                          'h-1.5 w-1.5 shrink-0 rounded-full transition-colors',
+                          isChildActive
+                            ? 'bg-[#D4A76A]'
+                            : isHovered
+                            ? 'bg-[#D4A76A]'
+                            : 'bg-slate-300 group-hover:bg-[#16254c]'
                         )}
-                      </span>
+                      />
+                      <span className="font-semibold text-xs leading-none">{label}</span>
                     </span>
                     <ChevronRight
                       size={12}
-                      className={`shrink-0 transition-colors ${isRtl ? 'rotate-180' : ''}`}
-                      style={{ color: isActive ? '#D4A76A' : 'rgba(22,37,76,0.3)' }}
+                      className={cn(
+                        'shrink-0 transition-colors',
+                        isRtl ? 'rotate-180' : '',
+                        isChildActive
+                          ? 'text-white/80'
+                          : isHovered
+                          ? 'text-[#D4A76A]'
+                          : 'text-slate-300 group-hover:text-slate-500'
+                      )}
                     />
                   </Link>
                 ) : (
@@ -378,27 +409,25 @@ function FlyoutPanel({
                     role="menuitem"
                     onClick={onClose}
                     onMouseEnter={() => setActiveChild(null)}
-                    className="flyout-item group flex items-center justify-between gap-2.5 px-4 py-1.5 text-xs transition-all duration-150 hover:bg-slate-50"
-                    style={{
-                      color: '#16254c',
-                      borderLeft: '3px solid transparent',
-                    }}
+                    className={cn(
+                      'flyout-item group flex items-center justify-between gap-2.5 rounded-xl px-3 py-2 text-xs transition-all duration-150',
+                      isChildActive
+                        ? 'border border-[#16254c] bg-[#16254c] text-white font-bold shadow-xs'
+                        : 'text-slate-700 hover:bg-slate-100/70'
+                    )}
                   >
                     <span className="flex items-center gap-2 min-w-0">
                       <span
-                        className="h-1.5 w-1.5 shrink-0 rounded-full transition-colors group-hover:bg-[#D4A76A]"
-                        style={{ background: 'rgba(22,37,76,0.25)' }}
-                      />
-                      <div className="flex flex-col min-w-0">
-                        <span className="font-semibold text-slate-800 text-xs leading-snug group-hover:text-[#16254c]">
-                          {label}
-                        </span>
-                        {hint && (
-                          <span className="text-[10px] leading-tight text-slate-400 font-normal truncate max-w-[210px]">
-                            {hint}
-                          </span>
+                        className={cn(
+                          'h-1.5 w-1.5 shrink-0 rounded-full transition-colors',
+                          isChildActive
+                            ? 'bg-[#D4A76A]'
+                            : 'bg-slate-300 group-hover:bg-[#16254c]'
                         )}
-                      </div>
+                      />
+                      <span className={cn('font-semibold text-xs leading-none', isChildActive ? 'text-white' : 'text-slate-700 group-hover:text-[#16254c]')}>
+                        {label}
+                      </span>
                     </span>
                   </Link>
                 )}
@@ -408,7 +437,7 @@ function FlyoutPanel({
         </ul>
 
         {/* Footer hint */}
-        <div className="border-t px-4 py-2 shrink-0" style={{ borderColor: 'rgba(22,37,76,0.07)' }}>
+        <div className="border-t px-4 py-2.5 shrink-0" style={{ borderColor: 'rgba(22,37,76,0.07)' }}>
           <Link
             href={`/categorie/${item.slug}`}
             onClick={onClose}
@@ -455,6 +484,7 @@ function SubPanel({
   allProductsLabel: string
 }) {
   const tTax = useTranslations('Taxonomy')
+  const pathname = usePathname()
   const label = node.labelKey ? tTax(node.labelKey) : (dbNode?.name ?? node.label ?? node.slug)
 
   return (
@@ -468,7 +498,7 @@ function SubPanel({
     >
       {/* Sub-panel header */}
       <div
-        className="px-4 py-2 shrink-0"
+        className="px-4 py-2.5 shrink-0"
         style={{
           background: 'rgba(212,167,106,0.08)',
           borderBottom: '1px solid rgba(212,167,106,0.2)',
@@ -480,11 +510,12 @@ function SubPanel({
       </div>
 
       {/* Sub-items */}
-      <ul className="flex flex-col py-1 overflow-y-auto overscroll-contain">
+      <ul className="flex flex-col py-1.5 px-1.5 overflow-y-auto overscroll-contain gap-0.5">
         {(node.children ?? []).map((subChild) => {
           const subDbNode = dbNode?.children?.find((c) => c.slug === subChild.slug)
           const subLabel = subChild.labelKey ? tTax(subChild.labelKey) : (subDbNode?.name ?? subChild.label ?? subChild.slug)
           const targetHref = subChild.href || `/categorie/${subChild.slug}`
+          const isSubActive = pathname?.includes(`/categorie/${subChild.slug}`)
 
           return (
             <li key={subChild.slug} role="none">
@@ -492,23 +523,31 @@ function SubPanel({
                 href={targetHref}
                 role="menuitem"
                 onClick={onClose}
-                className="sub-item group flex items-center gap-2 px-4 py-1.5 text-xs font-medium transition-all duration-150"
-                style={{ color: '#16254c' }}
+                className={cn(
+                  'sub-item group flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-medium transition-all duration-150',
+                  isSubActive
+                    ? 'border border-[#16254c] bg-[#16254c] text-white font-bold shadow-xs'
+                    : 'text-[#16254c] hover:bg-slate-100/80'
+                )}
               >
                 <span
-                  className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full transition-all duration-150 group-hover:scale-110"
-                  style={{ background: 'rgba(212,167,106,0.15)' }}
+                  className={cn(
+                    'flex h-5 w-5 shrink-0 items-center justify-center rounded-full transition-all duration-150 group-hover:scale-110',
+                    isSubActive ? 'bg-white/20' : 'bg-[#D4A76A]/15'
+                  )}
                 >
                   <span
-                    className="h-1 w-1 rounded-full"
-                    style={{ background: '#D4A76A' }}
+                    className={cn('h-1 w-1 rounded-full', isSubActive ? 'bg-[#D4A76A]' : 'bg-[#D4A76A]')}
                   />
                 </span>
-                <span className="transition-colors group-hover:text-brand-accent">{subLabel}</span>
+                <span className={cn('transition-colors', isSubActive ? 'text-white font-bold' : 'group-hover:text-brand-accent')}>{subLabel}</span>
                 <ChevronRight
                   size={11}
-                  className={`ms-auto opacity-0 transition-all duration-150 group-hover:opacity-100 ${isRtl ? 'rotate-180' : ''}`}
-                  style={{ color: '#D4A76A' }}
+                  className={cn(
+                    'ms-auto transition-all duration-150',
+                    isRtl ? 'rotate-180' : '',
+                    isSubActive ? 'text-white/80 opacity-100' : 'opacity-0 text-[#D4A76A] group-hover:opacity-100'
+                  )}
                 />
               </Link>
             </li>
@@ -517,7 +556,7 @@ function SubPanel({
       </ul>
 
       {/* Link to parent category */}
-      <div className="mt-auto border-t px-4 py-2 shrink-0" style={{ borderColor: 'rgba(22,37,76,0.07)' }}>
+      <div className="mt-auto border-t px-4 py-2.5 shrink-0" style={{ borderColor: 'rgba(22,37,76,0.07)' }}>
         <Link
           href={`/categorie/${node.slug}`}
           onClick={onClose}

@@ -22,8 +22,10 @@ import {
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { Link } from '@/i18n/routing'
 import { useState } from 'react'
+import { usePathname } from 'next/navigation'
 import { useTranslations, useLocale } from 'next-intl'
 import { NAVIGATION_TAXONOMY } from '@/lib/navigation/taxonomy'
+import { cn } from '@/lib/utils'
 
 const NAVIGATION_ICONS: Record<string, React.ElementType> = {
   automobile: Car,
@@ -40,6 +42,7 @@ export default function MobileMenu() {
   const tTax = useTranslations('Taxonomy')
   const locale = useLocale()
   const chevronRtlClass = locale === 'ar' ? 'rtl-flip' : ''
+  const pathname = usePathname()
 
   const { data: categories } = useQuery({
     queryKey: ['categories-tree'],
@@ -126,16 +129,33 @@ export default function MobileMenu() {
               const isExpanded = expandedCategories.has(item.slug)
               const rootLabel = item.labelKey ? tTax(item.labelKey) : item.label || item.slug
               const hasChildren = item.children && item.children.length > 0
+              const isItemActive = Boolean(pathname && (pathname.includes(`/categorie/${item.slug}`) || item.children?.some(c => pathname.includes(`/categorie/${c.slug}`))))
 
               return (
-                <div key={item.slug} className="flex flex-col rounded-xl border border-brand-border/60 bg-brand-surface/30">
+                <div
+                  key={item.slug}
+                  className={cn(
+                    'flex flex-col rounded-xl border transition-colors',
+                    isItemActive
+                      ? 'border-[#16254c] bg-[#16254c] text-white shadow-sm'
+                      : 'border-brand-border/60 bg-brand-surface/30'
+                  )}
+                >
                   <div className="flex min-h-11 items-center justify-between px-3 py-2">
                     <Link
                       href={`/categorie/${item.slug}`}
-                      className="flex flex-1 items-center gap-3 text-sm font-bold text-brand-primary transition-colors hover:text-brand-accent"
+                      className={cn(
+                        'flex flex-1 items-center gap-3 text-sm font-bold transition-colors',
+                        isItemActive ? 'text-white' : 'text-brand-primary hover:text-brand-accent'
+                      )}
                       onClick={() => setOpen(false)}
                     >
-                      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-brand-primary/8 text-brand-primary">
+                      <div
+                        className={cn(
+                          'flex h-8 w-8 shrink-0 items-center justify-center rounded-lg',
+                          isItemActive ? 'bg-white/15 text-[#D4A76A]' : 'bg-brand-primary/8 text-brand-primary'
+                        )}
+                      >
                         <Icon size={16} />
                       </div>
                       <span className="leading-tight">{rootLabel}</span>
@@ -146,7 +166,10 @@ export default function MobileMenu() {
                         type="button"
                         onClick={() => toggleCategory(item.slug)}
                         aria-label={isExpanded ? 'Fermer' : 'Ouvrir'}
-                        className="flex h-8 w-8 items-center justify-center rounded-md text-brand-muted transition-colors hover:bg-brand-surface hover:text-brand-primary"
+                        className={cn(
+                          'flex h-8 w-8 items-center justify-center rounded-md transition-colors',
+                          isItemActive ? 'text-white/80 hover:bg-white/10' : 'text-brand-muted hover:bg-brand-surface hover:text-brand-primary'
+                        )}
                       >
                         {isExpanded ? (
                           <ChevronUp size={16} />
@@ -159,10 +182,13 @@ export default function MobileMenu() {
 
                   {/* Accordion children */}
                   {hasChildren && isExpanded && (
-                    <div className="border-t border-brand-border/40 bg-brand-card/70 px-3 py-2">
+                    <div className={cn('border-t px-3 py-2', isItemActive ? 'border-white/15 bg-black/10' : 'border-brand-border/40 bg-brand-card/70')}>
                       <Link
                         href={`/categorie/${item.slug}`}
-                        className="flex min-h-8 items-center gap-2 rounded-md px-2 py-1.5 text-xs font-semibold text-brand-accent transition-colors hover:bg-brand-surface"
+                        className={cn(
+                          'flex min-h-8 items-center gap-2 rounded-md px-2 py-1.5 text-xs font-semibold transition-colors',
+                          isItemActive ? 'text-[#D4A76A] hover:bg-white/10' : 'text-brand-accent hover:bg-brand-surface'
+                        )}
                         onClick={() => setOpen(false)}
                       >
                         <ChevronRight size={12} className={chevronRtlClass} />
@@ -172,38 +198,59 @@ export default function MobileMenu() {
                       <div className="mt-1 flex flex-col gap-1">
                         {item.children.map((child) => {
                           const childLabel = child.labelKey ? tTax(child.labelKey) : child.label || child.slug
-                          const hint = child.hintKey ? tTax(child.hintKey) : child.hint
                           const hasSubChildren = child.children && child.children.length > 0
                           const isSubExpanded = expandedCategories.has(child.slug)
+                          const isChildActive = Boolean(pathname?.includes(`/categorie/${child.slug}`))
 
                           return (
-                            <div key={child.slug} className="flex flex-col rounded-lg bg-brand-surface/40 px-2 py-1.5">
+                            <div
+                              key={child.slug}
+                              className={cn(
+                                'flex flex-col rounded-lg px-2 py-1.5 transition-colors',
+                                isChildActive
+                                  ? 'border border-[#16254c] bg-[#16254c] text-white shadow-xs'
+                                  : isItemActive
+                                  ? 'bg-white/10'
+                                  : 'bg-brand-surface/40'
+                              )}
+                            >
                               <div className="flex items-center justify-between">
                                 <Link
                                   href={(child.href || `/categorie/${child.slug}`) as any}
                                   className="flex flex-1 flex-col py-0.5"
                                   onClick={() => setOpen(false)}
                                 >
-                                  <span className="text-xs font-semibold text-brand-primary transition-colors hover:text-brand-accent">
+                                  <span
+                                    className={cn(
+                                      'text-xs font-semibold transition-colors',
+                                      isChildActive
+                                        ? 'text-white font-bold'
+                                        : isItemActive
+                                        ? 'text-white/90 hover:text-[#D4A76A]'
+                                        : 'text-brand-primary hover:text-brand-accent'
+                                    )}
+                                  >
                                     {childLabel}
                                   </span>
-                                  {hint && (
-                                    <span className="text-[10px] text-brand-muted line-clamp-1">
-                                      {hint}
-                                    </span>
-                                  )}
                                 </Link>
 
                                 {hasSubChildren && (
                                   <button
                                     type="button"
                                     onClick={() => toggleCategory(child.slug)}
-                                    className="p-1 text-brand-muted hover:text-brand-primary"
+                                    className={cn(
+                                      'p-1 transition-colors',
+                                      isChildActive
+                                        ? 'text-white/80 hover:bg-white/10'
+                                        : isItemActive
+                                        ? 'text-white/70 hover:bg-white/10'
+                                        : 'text-brand-muted hover:text-brand-primary'
+                                    )}
                                     aria-label="Toggle subcategory"
                                   >
                                     <ChevronDown
                                       size={13}
-                                      className={`transition-transform duration-150 ${isSubExpanded ? 'rotate-180' : ''}`}
+                                      className={cn('transition-transform duration-150', isSubExpanded ? 'rotate-180' : '')}
                                     />
                                   </button>
                                 )}
