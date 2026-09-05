@@ -311,7 +311,9 @@ export function formatVehicleDisplayLabel(vehicle: VehicleLabelSource | null | u
 
   // If engine already begins with or includes make (e.g. legacy TecDoc full_description
   // like 'CITROËN SAXO (S0, S1) 1.1 X,SX'), avoid stuttering duplication.
-  if (engine && make && engine.toLowerCase().includes(make.toLowerCase())) {
+  const normEngine = engine.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
+  const normMake = make.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
+  if (normEngine && normMake && normEngine.includes(normMake)) {
     return engine
   }
 
