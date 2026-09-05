@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { usePathname } from 'next/navigation'
 import { Link } from '@/i18n/routing'
-import { Bike, Car, ChevronDown, ChevronRight, Package, ShipWheel, Wrench } from 'lucide-react'
+import { Bike, Car, ChevronDown, ChevronRight, Package, ShipWheel, Wrench, X } from 'lucide-react'
 import { useLocale } from 'next-intl'
 import { useQuery } from '@tanstack/react-query'
 import { categoriesApi } from '@/lib/api/categories'
@@ -43,7 +43,9 @@ export function CategoryNav() {
   })
 
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null)
+  const [mobileActiveCategory, setMobileActiveCategory] = useState<string | null>(null)
   const navRef = useRef<HTMLElement | null>(null)
+  const mobileNavRef = useRef<HTMLDivElement | null>(null)
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const openTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const t = useTranslations('Navigation')
@@ -51,6 +53,12 @@ export function CategoryNav() {
   const locale = useLocale()
   const isRtl = locale === 'ar'
   const pathname = usePathname()
+
+  // Close mobile category menu when route changes
+  useEffect(() => {
+    setMobileActiveCategory(null)
+    setActiveDropdown(null)
+  }, [pathname])
 
   const handleMouseEnter = useCallback((slug: string) => {
     // Clear any pending close timer immediately
@@ -109,11 +117,17 @@ export function CategoryNav() {
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') closeNow()
+      if (event.key === 'Escape') {
+        closeNow()
+        setMobileActiveCategory(null)
+      }
     }
     const onOutsideClick = (event: MouseEvent | TouchEvent) => {
       if (navRef.current && !navRef.current.contains(event.target as Node)) {
         closeNow()
+      }
+      if (mobileNavRef.current && !mobileNavRef.current.contains(event.target as Node)) {
+        setMobileActiveCategory(null)
       }
     }
     window.addEventListener('keydown', onKeyDown)
@@ -127,6 +141,15 @@ export function CategoryNav() {
       if (openTimer.current) clearTimeout(openTimer.current)
     }
   }, [closeNow])
+
+  const activeMobileItem = NAVIGATION_TAXONOMY.find((item) => item.slug === mobileActiveCategory)
+  const activeMobileNode = activeMobileItem ? findNode(categories, activeMobileItem.slug) : undefined
+  const activeMobileRootLabel = activeMobileItem
+    ? activeMobileItem.labelKey
+      ? tTax(activeMobileItem.labelKey)
+      : (activeMobileNode?.name ?? activeMobileItem.label ?? activeMobileItem.slug)
+    : ''
+  const ActiveMobileIcon = activeMobileItem ? (NAVIGATION_ICONS[activeMobileItem.slug] ?? Package) : Package
 
   return (
     <>
@@ -257,42 +280,176 @@ export function CategoryNav() {
         </div>
       </nav>
 
-      {/* ── Mobile Horizontal Category Pills Strip (< md) ── */}
-      <nav
-        aria-label={t('catalog')}
-        className="flex md:hidden border-b border-slate-200/80 bg-white/95 backdrop-blur-md overflow-x-auto hide-scrollbar py-2 px-3 gap-2"
-      >
-        {NAVIGATION_TAXONOMY.map((item) => {
-          const Icon = NAVIGATION_ICONS[item.slug] ?? Package
-          const root = findNode(categories, item.slug)
-          const rootLabel = item.labelKey ? tTax(item.labelKey) : (root?.name ?? item.label ?? item.slug)
-          const isActive = isItemActive(item, pathname)
-
-          return (
-            <Link
-              key={item.slug}
-              href={`/categorie/${item.slug}`}
-              className={cn(
-                'flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold transition-all duration-150 active:scale-95 border whitespace-nowrap',
-                isActive
-                  ? 'border-[#16254c] bg-[#16254c] text-white shadow-sm'
-                  : 'border-slate-200 bg-slate-50 text-slate-700 hover:border-slate-300 hover:bg-slate-100'
-              )}
-            >
-              <Icon size={14} className={isActive ? 'text-[#D4A76A]' : 'text-slate-500'} />
-              <span>{rootLabel}</span>
-            </Link>
-          )
-        })}
-
-        <Link
-          href="/catalogue"
-          className="flex shrink-0 items-center gap-1 rounded-full border border-brand-primary/20 bg-brand-surface px-3 py-1.5 text-xs font-bold text-brand-primary transition-all hover:bg-brand-primary hover:text-white whitespace-nowrap"
+      {/* ── Mobile Category Navigation (< md) ── */}
+      <div ref={mobileNavRef} className="relative md:hidden border-b border-slate-200/80 bg-white/95 backdrop-blur-md">
+        {/* Horizontal Category Pills Strip */}
+        <nav
+          aria-label={t('catalog')}
+          className="flex overflow-x-auto hide-scrollbar py-2 px-3 gap-2"
         >
-          <span>{t('catalog')}</span>
-          <ChevronRight size={12} className={isRtl ? 'rotate-180' : ''} />
-        </Link>
-      </nav>
+          {NAVIGATION_TAXONOMY.map((item) => {
+            const Icon = NAVIGATION_ICONS[item.slug] ?? Package
+            const root = findNode(categories, item.slug)
+            const rootLabel = item.labelKey ? tTax(item.labelKey) : (root?.name ?? item.label ?? item.slug)
+            const isActive = isItemActive(item, pathname)
+            const isExpanded = mobileActiveCategory === item.slug
+            const hasChildren = item.children && item.children.length > 0
+
+            return (
+              <button
+                key={item.slug}
+                type="button"
+                onClick={() => {
+                  if (hasChildren) {
+                    setMobileActiveCategory((prev) => (prev === item.slug ? null : item.slug))
+                  }
+                }}
+                className={cn(
+                  'flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold transition-all duration-150 active:scale-95 border whitespace-nowrap',
+                  isExpanded
+                    ? 'border-[#D4A76A] bg-[#16254c] text-white shadow-sm ring-1 ring-[#D4A76A]/50'
+                    : isActive
+                    ? 'border-[#16254c] bg-[#16254c] text-white shadow-sm'
+                    : 'border-slate-200 bg-slate-50 text-slate-700 hover:border-slate-300 hover:bg-slate-100'
+                )}
+                aria-expanded={isExpanded}
+              >
+                <Icon size={14} className={isExpanded || isActive ? 'text-[#D4A76A]' : 'text-slate-500'} />
+                <span>{rootLabel}</span>
+                {hasChildren && (
+                  <ChevronDown
+                    size={12}
+                    className={cn(
+                      'transition-transform duration-200 shrink-0',
+                      isExpanded ? 'rotate-180 text-[#D4A76A]' : isActive ? 'text-white/80' : 'text-slate-400'
+                    )}
+                  />
+                )}
+              </button>
+            )
+          })}
+
+          <Link
+            href="/catalogue"
+            className="flex shrink-0 items-center gap-1 rounded-full border border-brand-primary/20 bg-brand-surface px-3 py-1.5 text-xs font-bold text-brand-primary transition-all hover:bg-brand-primary hover:text-white whitespace-nowrap"
+          >
+            <span>{t('catalog')}</span>
+            <ChevronRight size={12} className={isRtl ? 'rotate-180' : ''} />
+          </Link>
+        </nav>
+
+        {/* Expandable Subcategories Panel (shown when a pill is tapped) */}
+        {activeMobileItem && (
+          <div className="border-t border-slate-200 bg-white shadow-xl animate-in slide-in-from-top-2 duration-200">
+            {/* Header: Category Name + Direct link to full category + Close button */}
+            <div className="flex items-center justify-between px-3.5 py-2.5 bg-gradient-to-r from-[#16254c] to-[#1f356b] text-white">
+              <div className="flex items-center gap-2">
+                <ActiveMobileIcon size={15} className="text-[#D4A76A]" />
+                <span className="font-bold text-xs tracking-wider uppercase text-[#D4A76A]">
+                  {activeMobileRootLabel}
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Link
+                  href={`/categorie/${activeMobileItem.slug}`}
+                  onClick={() => setMobileActiveCategory(null)}
+                  className="flex items-center gap-1 rounded-md bg-white/10 px-2 py-1 text-[11px] font-semibold text-white transition-colors hover:bg-white/20"
+                >
+                  <span>{t('allProducts')}</span>
+                  <ChevronRight size={11} className={isRtl ? 'rotate-180' : ''} />
+                </Link>
+                <button
+                  type="button"
+                  onClick={() => setMobileActiveCategory(null)}
+                  className="flex h-7 w-7 items-center justify-center rounded-md text-white/70 hover:bg-white/10 hover:text-white transition-colors"
+                  aria-label="Fermer"
+                >
+                  <X size={15} />
+                </button>
+              </div>
+            </div>
+
+            {/* Subcategories list */}
+            <div className="max-h-[60vh] overflow-y-auto overscroll-contain p-3 space-y-2 divide-y divide-slate-100">
+              {activeMobileItem.children.map((child) => {
+                const dbChild = findNode(categories, child.slug)
+                const childLabel = child.labelKey ? tTax(child.labelKey) : (dbChild?.name ?? child.label ?? child.slug)
+                const hasLevel3 = child.children && child.children.length > 0
+                const isChildActive = Boolean(pathname?.includes(`/categorie/${child.slug}`))
+
+                return (
+                  <div key={child.slug} className="pt-2 first:pt-0">
+                    {/* Subcategory main row */}
+                    <div className="flex items-center justify-between py-1">
+                      <Link
+                        href={(child.href || `/categorie/${child.slug}`) as any}
+                        onClick={() => setMobileActiveCategory(null)}
+                        className={cn(
+                          'flex items-center gap-2 text-xs font-bold transition-colors py-0.5',
+                          isChildActive ? 'text-[#16254c]' : 'text-slate-800 hover:text-brand-accent'
+                        )}
+                      >
+                        <span className="h-1.5 w-1.5 rounded-full bg-[#D4A76A]" />
+                        <span>{childLabel}</span>
+                      </Link>
+                      <Link
+                        href={(child.href || `/categorie/${child.slug}`) as any}
+                        onClick={() => setMobileActiveCategory(null)}
+                        className="text-[11px] font-medium text-slate-400 hover:text-[#16254c] flex items-center gap-0.5"
+                      >
+                        <ChevronRight size={12} className={isRtl ? 'rotate-180' : ''} />
+                      </Link>
+                    </div>
+
+                    {/* Level 3 items (pills) */}
+                    {hasLevel3 && (
+                      <div className="flex flex-wrap gap-1.5 pl-3.5 pr-1 pb-1 pt-1">
+                        {child.children!.map((subChild) => {
+                          const subDb = dbChild?.children?.find((c) => c.slug === subChild.slug)
+                          const subLabel = subChild.labelKey ? tTax(subChild.labelKey) : (subDb?.name ?? subChild.label ?? subChild.slug)
+                          const targetHref = subChild.href || `/categorie/${subChild.slug}`
+                          const isSubActive = Boolean(pathname?.includes(`/categorie/${subChild.slug}`))
+
+                          return (
+                            <Link
+                              key={subChild.slug}
+                              href={targetHref as any}
+                              onClick={() => setMobileActiveCategory(null)}
+                              className={cn(
+                                'rounded-lg border px-2.5 py-1 text-[11px] font-medium transition-all',
+                                isSubActive
+                                  ? 'border-[#16254c] bg-[#16254c] text-white font-semibold shadow-xs'
+                                  : 'border-slate-200 bg-slate-50 text-slate-600 hover:border-slate-300 hover:bg-slate-100 hover:text-[#16254c]'
+                              )}
+                            >
+                              {subLabel}
+                            </Link>
+                          )
+                        })}
+                      </div>
+                    )}
+                  </div>
+                )
+              })}
+            </div>
+
+            {/* Bottom Quick Action: Browse all products in category */}
+            <div className="p-3 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
+              <span className="text-[11px] text-slate-500 font-medium">
+                {tTax('seeAll', { category: activeMobileRootLabel })}
+              </span>
+              <Link
+                href={`/categorie/${activeMobileItem.slug}`}
+                onClick={() => setMobileActiveCategory(null)}
+                className="inline-flex items-center gap-1.5 rounded-lg bg-[#16254c] px-3 py-1.5 text-xs font-bold text-white shadow-xs hover:bg-[#1f356b] transition-colors"
+              >
+                <span>{t('allProducts')}</span>
+                <ChevronRight size={12} className={isRtl ? 'rotate-180' : ''} />
+              </Link>
+            </div>
+          </div>
+        )}
+      </div>
     </>
   )
 }

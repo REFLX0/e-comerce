@@ -16,13 +16,14 @@ import { ProductGridSkeleton } from '@/components/common/Skeleton'
 import { ErrorState } from '@/components/common/ErrorState'
 import { EmptyState } from '@/components/common/EmptyState'
 import { useSearchParams } from 'next/navigation'
-import { Loader2 } from 'lucide-react'
 import { useTranslations } from 'next-intl'
-import { useRouter } from '@/i18n/routing'
+import { useRouter, Link } from '@/i18n/routing'
+import { ChevronRight, Loader2 } from 'lucide-react'
 import { use } from 'react'
 import { useVehicleUrlSync } from '@/lib/hooks/useVehicleUrlSync'
 import { useVehicleStore } from '@/lib/store/vehicle.store'
 import { formatVehicleDisplayLabel } from '@/lib/utils/compatibility'
+import { NAVIGATION_TAXONOMY } from '@/lib/navigation/taxonomy'
 
 const VEHICLE_QUERY_KEYS = ['make', 'model', 'engine']
 
@@ -31,6 +32,7 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
   const searchParams = useSearchParams()
   const router = useRouter()
   const t = useTranslations('Catalogue')
+  const tTax = useTranslations('Taxonomy')
 
   const storedVehicle = useVehicleStore((state) => state.vehicle)
   useVehicleUrlSync(true)
@@ -104,6 +106,32 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
       })
     : ''
 
+  // Subcategories to display for quick exploration
+  const taxonomyNode = NAVIGATION_TAXONOMY.find((item) => item.slug === slug)
+  const taxonomyChild = !taxonomyNode
+    ? NAVIGATION_TAXONOMY.flatMap((item) => item.children).find((c) => c.slug === slug)
+    : undefined
+
+  const subcategories = (taxonomyNode?.children && taxonomyNode.children.length > 0)
+    ? taxonomyNode.children.map((c) => ({
+        slug: c.slug,
+        name: c.labelKey ? tTax(c.labelKey) : c.label || c.slug,
+        href: c.href || `/categorie/${c.slug}`,
+      }))
+    : (taxonomyChild?.children && taxonomyChild.children.length > 0)
+    ? taxonomyChild.children.map((c) => ({
+        slug: c.slug,
+        name: c.labelKey ? tTax(c.labelKey) : c.label || c.slug,
+        href: c.href || `/categorie/${c.slug}`,
+      }))
+    : (category?.children && category.children.length > 0)
+    ? category.children.map((c: any) => ({
+        slug: c.slug,
+        name: c.nameFr || c.name || c.slug,
+        href: `/categorie/${c.slug}`,
+      }))
+    : []
+
   return (
     <div className="section-padding py-8">
       <Breadcrumb
@@ -140,6 +168,27 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
                 )}
                 {category?.description && (
                   <p className="mt-2 max-w-3xl text-gray-500">{category.description}</p>
+                )}
+
+                {/* Subcategories Quick Explorer Pills */}
+                {subcategories.length > 0 && (
+                  <div className="mt-4 pt-3 border-t border-slate-100">
+                    <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2">
+                      {t('subcategories', { defaultValue: 'Sous-catégories' })}
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {subcategories.map((sub) => (
+                        <Link
+                          key={sub.slug}
+                          href={sub.href as any}
+                          className="flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 shadow-xs transition-all hover:border-[#16254c] hover:bg-[#16254c] hover:text-white"
+                        >
+                          <span>{sub.name}</span>
+                          <ChevronRight size={11} className="opacity-50" />
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
                 )}
               </div>
             )
