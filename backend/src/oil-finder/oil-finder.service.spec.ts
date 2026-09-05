@@ -560,5 +560,47 @@ describe('OilFinderService', () => {
         expect(res.oilSpec.aceaStandard).toBe('C2');
       }
     });
+
+    it('resolves official Liqui Moly 5W-40 spec (7.1L) for Toyota Land Cruiser 200 4.7 V8 (2UZ-FE)', async () => {
+      prisma.oilFinderVehicle.findMany.mockResolvedValue([]);
+      prisma.$queryRawUnsafe.mockResolvedValue([]);
+
+      const res = await service.findByVehicle('TOYOTA', 'Land Cruiser 200', '4.7 VVT-i V8, UZJ200 (2008-2010)');
+      expect(res.status).toBe('found');
+      if (res.status === 'found') {
+        expect(res.oilSpec.viscosity).toBe('5W-40');
+        expect(res.oilSpec.capacityLiters).toBe(7.1);
+        expect(res.oilSpec.aceaStandard).toBe('A3/B4');
+      }
+    });
+
+    it('resolves official Liqui Moly 0W-20 spec (7.5L) for Toyota Land Cruiser 200 5.7 V8 (3UR-FE)', async () => {
+      prisma.oilFinderVehicle.findMany.mockResolvedValue([]);
+      prisma.$queryRawUnsafe.mockResolvedValue([]);
+
+      const res = await service.findByVehicle('TOYOTA', 'Land Cruiser', '5.7 V8 (3UR-FE)');
+      expect(res.status).toBe('found');
+      if (res.status === 'found') {
+        expect(res.oilSpec.viscosity).toBe('0W-20');
+        expect(res.oilSpec.capacityLiters).toBe(7.5);
+      }
+    });
+
+    it('merges engines from both TecDoc and OilFinderVehicle in getEngines', async () => {
+      prisma.$queryRawUnsafe.mockResolvedValue([
+        { engineCode: '4.5 D-4D (VDJ200)', yearFrom: 2008, yearTo: 2021 },
+      ]);
+      prisma.oilFinderVehicle.findMany.mockResolvedValue([
+        { engineCode: '3UR-FE', yearFrom: 2008, yearTo: 2021, displacementCc: 5663, powerHp: 381, fuelType: 'essence', model: 'Land Cruiser 200' },
+        { engineCode: '4.7 VVT-i V8', yearFrom: 2008, yearTo: 2012, displacementCc: 4664, powerHp: 288, fuelType: 'essence', model: 'Land Cruiser 200' },
+      ]);
+
+      const engines = await service.getEngines('TOYOTA', 'Land Cruiser');
+      expect(engines.length).toBeGreaterThanOrEqual(3);
+      const codes = engines.map((e) => e.engineCode);
+      expect(codes.some((c) => c.includes('4.5 D-4D'))).toBe(true);
+      expect(codes.some((c) => c.includes('3UR-FE') || c.includes('5.7L'))).toBe(true);
+      expect(codes.some((c) => c.includes('4.7 VVT-i') || c.includes('4.7'))).toBe(true);
+    });
   });
 });

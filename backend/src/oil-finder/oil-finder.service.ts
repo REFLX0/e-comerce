@@ -635,6 +635,41 @@ export function extractEngineVariants(engineCode?: string | null): string[] {
     });
   }
 
+  // Toyota Land Cruiser / Lexus engine & chassis recognition
+  const lower = raw.toLowerCase();
+  if (lower.includes('4.7') || lower.includes('2uz') || lower.includes('uzj200') || lower.includes('uzj100')) {
+    set.add('2UZ-FE');
+    set.add('4.7 VVT-i V8');
+    set.add('4.7 V8');
+    set.add('4.7');
+  }
+  if (lower.includes('5.7') || lower.includes('3ur') || lower.includes('urj202') || lower.includes('urj200')) {
+    set.add('3UR-FE');
+    set.add('5.7 V8');
+    set.add('5.7');
+  }
+  if (lower.includes('4.6') || lower.includes('1ur')) {
+    set.add('1UR-FE');
+    set.add('4.6 V8');
+    set.add('4.6');
+  }
+  if (lower.includes('4.5') && (lower.includes('vd') || lower.includes('d-4d') || lower.includes('diesel') || lower.includes('d4d'))) {
+    set.add('1VD-FTV');
+    set.add('4.5 D-4D V8');
+    set.add('4.5 D-4D');
+  }
+  if (lower.includes('4.0') || lower.includes('1gr') || lower.includes('grj200')) {
+    set.add('1GR-FE');
+    set.add('4.0 V6');
+    set.add('4.0');
+  }
+  if (lower.includes('3.5') && (lower.includes('v35a') || lower.includes('j300'))) {
+    set.add('V35A-FTS');
+  }
+  if (lower.includes('2.8') && (lower.includes('1gd') || lower.includes('prado'))) {
+    set.add('1GD-FTV');
+  }
+
   set.add('');
   return Array.from(set);
 }
@@ -1155,6 +1190,81 @@ export function resolveAutomotiveOemSpec(
 
   // ── ASIAN BRANDS (TOYOTA, HYUNDAI, KIA, NISSAN, HONDA, MAZDA...) ──
   if (isAsianFamily) {
+    // Toyota Land Cruiser / Lexus LX V8 & V6 specific engine calibrations (matching Liqui Moly Guide)
+    const isLandCruiser = combined.includes('land cruiser') || combined.includes('landcruiser') || combined.includes('prado');
+    if (isLandCruiser || mfrSlug === 'toyota' || mfrSlug === 'lexus') {
+      // 4.7L V8 (2UZ-FE / UZJ200 / UZJ100): Liqui Moly specifies Leichtlauf High Tech 5W-40, 7.1L (dry) / 6.2L (service)
+      if (combined.includes('4.7') || combined.includes('2uz') || combined.includes('uzj200') || combined.includes('uzj100')) {
+        return {
+          viscosity: '5W-40',
+          apiStandard: 'SN/CF',
+          aceaStandard: 'A3/B4',
+          oemApproval: 'Toyota / Lexus / MB 229.5 / Porsche A40',
+          capacityLiters: 7.1,
+          changeIntervalKm: 15000,
+          fuelType: 'essence',
+          displacementCc: displacementCc || 4664,
+          powerHp: powerHp || 288,
+        };
+      }
+      // 5.7L V8 (3UR-FE / URJ202): Liqui Moly specifies Special Tec AA 0W-20 / 5W-30, 7.5L
+      if (combined.includes('5.7') || combined.includes('3ur') || combined.includes('urj202')) {
+        return {
+          viscosity: '0W-20',
+          apiStandard: 'SP',
+          aceaStandard: 'ILSAC GF-6A',
+          oemApproval: 'Toyota / Lexus API SP / ILSAC GF-6A',
+          capacityLiters: 7.5,
+          changeIntervalKm: 10000,
+          fuelType: 'essence',
+          displacementCc: displacementCc || 5663,
+          powerHp: powerHp || 381,
+        };
+      }
+      // 4.6L V8 (1UR-FE / URJ200): Liqui Moly specifies 0W-20 / 5W-30, 7.5L
+      if (combined.includes('4.6') || combined.includes('1ur')) {
+        return {
+          viscosity: '0W-20',
+          apiStandard: 'SP',
+          aceaStandard: 'ILSAC GF-6A',
+          oemApproval: 'Toyota / Lexus API SP / ILSAC GF-6A',
+          capacityLiters: 7.5,
+          changeIntervalKm: 10000,
+          fuelType: 'essence',
+          displacementCc: displacementCc || 4608,
+          powerHp: powerHp || 309,
+        };
+      }
+      // 4.5L V8 D-4D (1VD-FTV / VDJ200): Liqui Moly specifies Top Tec 4200 / 4300 5W-30 ACEA C2, 9.2L
+      if ((combined.includes('4.5') || combined.includes('1vd')) && (isDiesel || combined.includes('d-4d') || combined.includes('diesel') || combined.includes('d4d'))) {
+        return {
+          viscosity: '5W-30',
+          apiStandard: 'SN/CF',
+          aceaStandard: 'C2',
+          oemApproval: 'Toyota DL-1 / ACEA C2',
+          capacityLiters: 9.2,
+          changeIntervalKm: 10000,
+          fuelType: 'diesel',
+          displacementCc: displacementCc || 4461,
+          powerHp: powerHp || 286,
+        };
+      }
+      // 4.0L V6 (1GR-FE / GRJ200): 5W-30, 5.2L
+      if (combined.includes('4.0') || combined.includes('1gr')) {
+        return {
+          viscosity: '5W-30',
+          apiStandard: 'SP',
+          aceaStandard: 'ILSAC GF-6A',
+          oemApproval: 'Toyota / Lexus API SP / ILSAC GF-6A',
+          capacityLiters: 5.2,
+          changeIntervalKm: 10000,
+          fuelType: 'essence',
+          displacementCc: displacementCc || 3956,
+          powerHp: powerHp || 275,
+        };
+      }
+    }
+
     if (isHybrid) {
       return {
         viscosity: '0W-20',
@@ -1768,6 +1878,8 @@ export class OilFinderService {
     const brandSlugs = resolveBrandSlugs(makeName);
     const modelNorm = modelName.trim().toLowerCase();
 
+    const engineMap = new Map<string, { engineCode: string; yearFrom: number | null; yearTo: number | null }>();
+
     // 1. Query tecdoc.passengercars joined with tecdoc.models and tecdoc.manufacturers
     try {
       const tecdocPassCars: any[] = await this.prisma.$queryRawUnsafe(`
@@ -1802,58 +1914,84 @@ export class OilFinderService {
         ORDER BY "engineCode" ASC
       `, modelNorm, brandSlugs);
 
-      if (tecdocPassCars.length > 0) {
-        return tecdocPassCars;
+      for (const pc of tecdocPassCars) {
+        if (pc.engineCode) {
+          const key = pc.engineCode.trim().toLowerCase();
+          if (!engineMap.has(key)) {
+            engineMap.set(key, {
+              engineCode: pc.engineCode.trim(),
+              yearFrom: pc.yearFrom != null ? Number(pc.yearFrom) : null,
+              yearTo: pc.yearTo != null ? Number(pc.yearTo) : null,
+            });
+          }
+        }
       }
     } catch (e) {
       this.logger.error(`Error fetching passenger car engines from TecDoc for ${makeName} ${modelName}`, e);
     }
 
-    // 2. Query tecdoc.engines for this manufacturer (covers commercial vehicles, marine, industrial, motorbikes)
+    // 2. Query oilFinderVehicle table in DB for matching make and model variants
     try {
-      const tecdocEngines: any[] = await this.prisma.$queryRawUnsafe(`
-        SELECT DISTINCT
-          COALESCE(NULLIF(e.sales_description, ''), e.description) AS "engineCode",
-          CASE 
-            WHEN e.date_from::text ~ '^[12]\\d{3}' THEN SUBSTRING(e.date_from::text, 1, 4)::int
-            ELSE NULL 
-          END AS "yearFrom",
-          CASE 
-            WHEN e.date_to::text ~ '^[12]\\d{3}' AND SUBSTRING(e.date_to::text, 1, 4) != '0000' THEN SUBSTRING(e.date_to::text, 1, 4)::int
-            ELSE NULL 
-          END AS "yearTo"
-        FROM tecdoc.engines e
-        JOIN tecdoc.manufacturers mfr ON mfr.id = e.manufacturer
-        WHERE e.can_be_displayed = true
-          AND (
-            LOWER(REGEXP_REPLACE(COALESCE(NULLIF(mfr.description, ''), mfr.matchcode), '[^a-zA-Z0-9]+', '-', 'g')) = ANY($1::text[])
-            OR LOWER(COALESCE(NULLIF(mfr.description, ''), mfr.matchcode)) = ANY($1::text[])
-            OR LOWER(REGEXP_REPLACE(mfr.matchcode, '[^a-zA-Z0-9]+', '-', 'g')) = ANY($1::text[])
-            OR LOWER(mfr.matchcode) = ANY($1::text[])
-          )
-        ORDER BY "engineCode" ASC
-        LIMIT 50
-      `, brandSlugs);
+      const modelKeywords = extractModelKeywords(modelName);
+      const orConditions: any[] = [
+        { model: { equals: modelName.trim(), mode: 'insensitive' as const } },
+        { model: { contains: modelName.trim(), mode: 'insensitive' as const } },
+      ];
+      for (const kw of modelKeywords) {
+        if (kw.length >= 3) {
+          orConditions.push({ model: { contains: kw, mode: 'insensitive' as const } });
+        }
+      }
 
-      if (tecdocEngines.length > 0) {
-        return tecdocEngines;
+      const rows = await this.prisma.oilFinderVehicle.findMany({
+        where: {
+          make: { equals: makeName.trim(), mode: 'insensitive' as const },
+          OR: orConditions,
+          engineCode: { not: '' },
+        },
+        select: {
+          engineCode: true,
+          yearFrom: true,
+          yearTo: true,
+          displacementCc: true,
+          powerHp: true,
+          fuelType: true,
+          model: true,
+        },
+        distinct: ['engineCode'],
+        orderBy: { engineCode: 'asc' },
+      }).catch(() => [] as any[]);
+
+      for (const r of rows) {
+        if (r.engineCode) {
+          const rawCode = r.engineCode.trim();
+          const key = rawCode.toLowerCase();
+          if (!engineMap.has(key)) {
+            let label = rawCode;
+            if (/^[A-Z0-9-]+$/.test(rawCode) && r.displacementCc && r.powerHp) {
+              const liters = (r.displacementCc / 1000).toFixed(1);
+              label = `${liters}L (${rawCode}) - ${Math.round(r.powerHp)}ch`;
+            }
+            const alreadyPresent = Array.from(engineMap.values()).some((e) =>
+              e.engineCode.toLowerCase().includes(rawCode.toLowerCase())
+            );
+            if (!alreadyPresent) {
+              engineMap.set(key, {
+                engineCode: label,
+                yearFrom: r.yearFrom || null,
+                yearTo: r.yearTo || null,
+              });
+            }
+          }
+        }
       }
     } catch (e) {
-      this.logger.error(`Error fetching engines from TecDoc for manufacturer ${makeName}`, e);
+      this.logger.warn(`Failed to query oilFinderVehicle engines for ${makeName} ${modelName}`, e);
     }
 
-    // 3. Fallback to oilFinderVehicle table in DB if populated
-    const rows = await this.prisma.oilFinderVehicle.findMany({
-      where: {
-        make: { equals: makeName.trim(), mode: 'insensitive' as const },
-        model: { equals: modelName.trim(), mode: 'insensitive' as const },
-        engineCode: { not: '' },
-      },
-      select: { engineCode: true, yearFrom: true, yearTo: true },
-      distinct: ['engineCode'],
-      orderBy: { engineCode: 'asc' },
-    }).catch(() => []);
-    if (rows.length > 0) return rows;
+    if (engineMap.size > 0) {
+      return Array.from(engineMap.values()).sort((a, b) => a.engineCode.localeCompare(b.engineCode));
+    }
 
     // 4. Return the model from tecdoc.models as the standard engine configuration
     try {
