@@ -151,7 +151,7 @@ DECLARE
 BEGIN
 
   -- Product: TSC-00001 - Liqui Moly Molygen New Gene­ra­tion 10W-40 (5L)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'TSC-00001', 'Liqui Moly Molygen New Gene­ra­tion 10W-40 (5L)', 'liqui-moly-molygen-new-generation-10w-40-5l', 'Description
@@ -182,7 +182,7 @@ permet de réaliser des économies de carburant et de réduire les émissions', 
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: TSC-00002 - Liqui Moly Molygen New Gene­ra­tion 5W-40
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'TSC-00002', 'Liqui Moly Molygen New Gene­ra­tion 5W-40', 'liqui-moly-molygen-new-generation-5w-40', 'Description
@@ -237,7 +237,7 @@ Caractéristiques principales :
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: 7501 - MANNOL Classic 10W-40
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'mannol';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '7501', 'MANNOL Classic 10W-40', 'mannol-classic-10w-40', 'Description
@@ -257,7 +257,7 @@ Propriétés du produit :
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: MANNOL Defender 10W-40 7507 - MANNOL Defender 10W-40
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'mannol';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'MANNOL Defender 10W-40 7507', 'MANNOL Defender 10W-40', 'mannol-defender-10w-40', 'Description
@@ -283,7 +283,7 @@ Cette huile n’est pas adaptée aux poids lourds et véhicules similaires.', FA
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: Filtre habitacle MISFAT HB205 FIAT 500 / FORD KA - Filtre habitacle MISFAT HB205 FIAT 500 / FORD KA
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-air';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-habitacle';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'generique';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'Filtre habitacle MISFAT HB205 FIAT 500 / FORD KA', 'Filtre habitacle MISFAT HB205 FIAT 500 / FORD KA', 'filtre-habitacle-misfat-hb205-fiat-500-ford-ka', 'Description
@@ -379,7 +379,7 @@ Hauteur [mm] : 86', FALSE, TRUE, brand_id, cat_id, NOW())
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: Filtre à air MISFAT P 301A FIAT / FORD - Filtre à air MISFAT P 301A FIAT / FORD
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-air';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtre-a-air';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'generique';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'Filtre à air MISFAT P 301A FIAT / FORD', 'Filtre à air MISFAT P 301A FIAT / FORD', 'filtre-a-air-misfat-p-301a-fiat-ford', 'Description
@@ -399,7 +399,7 @@ Article complémentaire / Info complémentaire 2 : avec préfiltre', FALSE, TRU
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: MANNOL Additif ester diesel 9930 (250ml) - MANNOL Additif ester diesel 9930 (100ml)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs-carburant';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'mannol';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'MANNOL Additif ester diesel 9930 (250ml)', 'MANNOL Additif ester diesel 9930 (100ml)', 'mannol-additif-ester-diesel-9930-250ml', 'Description
@@ -440,7 +440,7 @@ Structure flexible grâce à sa fine lame flexible d’acier inoxydable qui assu
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: FILTRE A AIR MISFAT P460A RENAULT - FILTRE A AIR MISFAT P460A RENAULT
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtre-a-air';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'generique';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'FILTRE A AIR MISFAT P460A RENAULT', 'FILTRE A AIR MISFAT P460A RENAULT', 'filtre-a-air-misfat-p460a-renault', 'Description
@@ -516,7 +516,7 @@ WIX FILTERS : WL7494', FALSE, TRUE, brand_id, cat_id, NOW())
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: Castrol Magnatec Professional E 5W-20 5L - Castrol Magnatec Professional E 5W-20 5L
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'castrol';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'Castrol Magnatec Professional E 5W-20 5L', 'Castrol Magnatec Professional E 5W-20 5L', 'castrol-magnatec-professional-e-5w-20-5l', 'Description
@@ -536,7 +536,7 @@ SAE 5W20, Ford WSS-M2C948-B.', FALSE, TRUE, brand_id, cat_id, NOW())
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: CASTROL EDGE C3 5W-40 5L - CASTROL EDGE C3 5W-40 5L
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'castrol';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'CASTROL EDGE C3 5W-40 5L', 'CASTROL EDGE C3 5W-40 5L', 'castrol-edge-c3-5w-40-5l', 'Description
@@ -846,7 +846,7 @@ FOCUS II A trois volumes (DB_, FCH, DH) (2.0) (04/2005 – 07/20', FALSE, TRUE, 
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: MANNOL Additif Ester de Benzine 9950 (250ml) - MANNOL Additif Ester de Benzine  9950 (250ml)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs-carburant';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'mannol';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'MANNOL Additif Ester de Benzine 9950 (250ml)', 'MANNOL Additif Ester de Benzine  9950 (250ml)', 'mannol-additif-ester-de-benzine-9950-250ml', 'Description
@@ -884,7 +884,7 @@ WIX FILTERS : WL7503', FALSE, TRUE, brand_id, cat_id, NOW())
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: 7903 - MANNOL Elite 5W-40
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'mannol';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '7903', 'MANNOL Elite 5W-40', 'mannol-elite-5w-40', 'Description
@@ -904,7 +904,7 @@ Caractéristiques du produit :
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: 7907 - MANNOL Energy Combi LL 5W-30
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'mannol';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '7907', 'MANNOL Energy Combi LL 5W-30', 'mannol-energy-combi-ll-5w-30-2', 'Description
@@ -953,7 +953,7 @@ pendentif que le moteur tourne', FALSE, TRUE, brand_id, cat_id, NOW())
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: TSC-00028 - MANNOL Nettoyant à jet diesel 9956
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs-carburant';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'mannol';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'TSC-00028', 'MANNOL Nettoyant à jet diesel 9956', 'mannol-nettoyant-a-jet-diesel-9956', 'Description
@@ -972,7 +972,7 @@ Propriétés du produit :
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: TSC-00029 - MANNOL Nettoyant pour injecteurs 9957
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs-carburant';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'mannol';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'TSC-00029', 'MANNOL Nettoyant pour injecteurs 9957', 'mannol-nettoyant-pour-injecteurs-9957', 'Description
@@ -1015,7 +1015,7 @@ App', FALSE, TRUE, brand_id, cat_id, NOW())
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: 23127 - WOLF GUARDTECH 10W40 B4
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'wolf';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '23127', 'WOLF GUARDTECH 10W40 B4', 'wolf-guardtech-10w40-b4', 'Description
@@ -1042,7 +1042,7 @@ Les additifs soigneusement sélectionnés contribuent à la propreté et la dura
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: WUNDER filtre à air OPEL CORSA D - WUNDER filtre à air OPEL CORSA D
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moto-2t-4t';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtre-a-air';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'generique';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'WUNDER filtre à air OPEL CORSA D', 'WUNDER filtre à air OPEL CORSA D', 'wunder-filtre-a-air-opel-corsa-d', 'Description
@@ -1072,7 +1072,7 @@ WIX FILTERS : WA9527', FALSE, TRUE, brand_id, cat_id, NOW())
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: MANN-FILTER - c 14 130 - MANN-FILTER – C14 130 Filtre à air
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtre-a-air';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'c14130';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'MANN-FILTER - c 14 130', 'MANN-FILTER – C14 130 Filtre à air', 'mann-filter-c14-130-filtre-a-air', 'Description
@@ -1112,7 +1112,7 @@ WIX FILTERS : WA9756, WA9445', FALSE, TRUE, brand_id, cat_id, NOW())
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: C 27 009 - MANN-FILTER – C 27 009 Filtre à air (golf 7 leon)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-air';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtre-a-air';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'generique';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'C 27 009', 'MANN-FILTER – C 27 009 Filtre à air (golf 7 leon)', 'mann-filter-c-27-009-filtre-a-air-golf-7-leon-mann-filter-c-27-009-filtre-a-air-golf-7-leon', 'Description
@@ -1488,7 +1488,7 @@ une batterie puissante avec des caractéristiques optimales pour des performance
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: 31008-AREXONS Nettoyant tissus (500ML) - AREXONS Nettoyant tissus (500ML)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'arexons';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '31008-AREXONS Nettoyant tissus (500ML)', 'AREXONS Nettoyant tissus (500ML)', 'arexons-nettoyant-tissus-500ml', 'Description
@@ -1527,7 +1527,7 @@ Spécialement conçu pour polir, nettoyer, rénover et protéger les pneus, ce p
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: 31022-AREXONS Nettoyant jantes (500ML) - AREXONS nettoyant jantes (500ML)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'arexons';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '31022-AREXONS Nettoyant jantes (500ML)', 'AREXONS nettoyant jantes (500ML)', 'arexons-nettoyant-jantes-500ml', 'Description
@@ -1540,7 +1540,7 @@ Ce gel innovant crée une mousse active qui confère au détergent une meilleure
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: 31001-AREXONS nettoyant cuir (500ML) - AREXONS nettoyant cuir (500ML)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'arexons';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '31001-AREXONS nettoyant cuir (500ML)', 'AREXONS nettoyant cuir (500ML)', 'arexons-nettoyant-cuir-500ml', 'Description
@@ -1592,7 +1592,7 @@ Nettoie, restaure et protège les tableaux de bord et toutes les surfaces en pla
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: TSC-00057 - MANNOL Diesel Extra 10W-40
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'mannol';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'TSC-00057', 'MANNOL Diesel Extra 10W-40', 'mannol-diesel-extra-10w-40', 'Description
@@ -1615,7 +1615,7 @@ Propriétés du produit :
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: Castrol GTX 10W-40 5L A3/B4 - Castrol GTX 10W-40 5L A3/B4
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'castrol';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'Castrol GTX 10W-40 5L A3/B4', 'Castrol GTX 10W-40 5L A3/B4', 'castrol-gtx-10w-40-5l-a3-b4', 'Description
@@ -1635,7 +1635,7 @@ Renault RN 0700 / RN 0', FALSE, TRUE, brand_id, cat_id, NOW())
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: CASTROL EDGE C3 5W-30 5L - CASTROL EDGE C3 5W-30 5L
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'castrol';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'CASTROL EDGE C3 5W-30 5L', 'CASTROL EDGE C3 5W-30 5L', 'castrol-edge-c3-5w-30-5l', 'Description
@@ -1685,7 +1685,7 @@ Nettoyer le système de refroidissement avec le nettoyant radiateur de LIQUI MOL
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: 31017 - AREXONS Nettoyant moteur (400ML) - AREXONS Nettoyant moteur (400ML)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'entretien-chaine';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'arexons';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '31017 - AREXONS Nettoyant moteur (400ML)', 'AREXONS Nettoyant moteur (400ML)', 'arexons-nettoyant-moteur-400ml', 'Description
@@ -1869,7 +1869,7 @@ Courant d’essai à froid, NE [A]: 800', FALSE, TRUE, brand_id, cat_id, NOW())
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: XTeer G500 SL10W40 (HYUNDAI) - 4L - Huile Moteur XTeer G500 SL10W40 (HYUNDAI) – 4L
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'hyundai-xteer';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'XTeer G500 SL10W40 (HYUNDAI) - 4L', 'Huile Moteur XTeer G500 SL10W40 (HYUNDAI) – 4L', 'huile-moteur-xteer-g500-sl10w40-hyundai-4l', 'Description
@@ -1885,7 +1885,7 @@ XTeer G500 SL 10W40 est une huile moteur haute performance conçue pour prolonge
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: XTeer G500 5W30 (HYUNDAI) - 4L - Huile Moteur XTeer G500 5W30 (HYUNDAI) – 4L
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'hyundai-xteer';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'XTeer G500 5W30 (HYUNDAI) - 4L', 'Huile Moteur XTeer G500 5W30 (HYUNDAI) – 4L', 'huile-moteur-xteer-g500-5w30-hyundai-4l', 'Description
@@ -2150,7 +2150,7 @@ Ten', FALSE, TRUE, brand_id, cat_id, NOW())
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: P2985DCC - PRO TEC Nettoyant DPF/Catalyseur (400ml)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'pro-tec';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'P2985DCC', 'PRO TEC Nettoyant DPF/Catalyseur (400ml)', 'pro-tec-nettoyant-dpf-catalyseur-400ml', 'Description
@@ -2165,7 +2165,7 @@ DPF/Catalyst Cleaner est utilisable pour tous les systèmes de filtre à particu
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: 2388 - Liqui Moly  Nettoyant pour système d’ad­mis­sion d
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '2388', 'Liqui Moly  Nettoyant pour système d’ad­mis­sion diesel Pro-Line (400ml)', 'liqui-moly-nettoyant-pour-systeme-dadmission-diesel-pro-line-400ml', 'Description
@@ -2182,7 +2182,7 @@ Si, lors de l’application, une augmentation du régime supérieure à 1 000 
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: 2510 - Additif lubri­fiant pour huile de boîte (MOS 2) ( 
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-boite-transmission';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huile-de-boite';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '2510', 'Additif lubri­fiant pour huile de boîte (MOS 2) ( 50g )', 'additif-lubrifiant-pour-huile-de-boite-mos-2-50g', 'Description
@@ -2206,7 +2206,7 @@ excellentes propriétés de fonctionnement en cas d’urgenc', FALSE, TRUE, bran
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: 9694 - MANNOL Nettoyant mousse DPF 9694
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-carburant';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'mannol';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '9694', 'MANNOL Nettoyant mousse DPF 9694', 'mannol-nettoyant-mousse-dpf-9694', 'Description
@@ -2387,7 +2387,7 @@ Type : L3', FALSE, TRUE, brand_id, cat_id, NOW())
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: BOSCH - F 026 407 006 - BOSCH – F 026 407 006 Filtre à huile
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moto-2t-4t';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'bosch';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'BOSCH - F 026 407 006', 'BOSCH – F 026 407 006 Filtre à huile', 'bosch-f-026-407-006-filtre-a-huile', 'Description
@@ -2851,7 +2851,7 @@ Sécurité renforcée, résistante aux fuites et aux déversements.', FALSE, TRU
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: 20750 - Motorbike 4T 5W-40 HC Street  (1L)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moto-2t-4t';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '20750', 'Motorbike 4T 5W-40 HC Street  (1L)', 'motorbike-4t-5w-40-hc-street-1l', 'Description
@@ -2919,7 +2919,7 @@ MANNOL Lubrifiant  M-40 9892 (400ml)', FALSE, TRUE, brand_id, cat_id, NOW())
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: 7904 - Mannol Nettoyant pour chaîne (400ml)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'entretien-chaine';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'mannol';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '7904', 'Mannol Nettoyant pour chaîne (400ml)', 'mannol-nettoyant-pour-chaine-400ml', 'Description
@@ -2983,7 +2983,7 @@ Propriétés :
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: 3072 - LIQUI MOLY Motorbike Gear Oil 75W-140 (GL5) (500ml
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs-moto';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huile-de-boite';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '3072', 'LIQUI MOLY Motorbike Gear Oil 75W-140 (GL5) (500ml)', 'liqui-moly-motorbike-gear-oil-75w-140-gl5-500ml', 'Description
@@ -3006,7 +3006,7 @@ Respecter les prescriptions des fabricants de boîtes de vitesses. Se mélange �
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: P2803 - PRO TEC Nettoyant pour corps de papillon (400ml)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'pro-tec';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'P2803', 'PRO TEC Nettoyant pour corps de papillon (400ml)', 'pro-tec-nettoyant-pour-corps-de-papillon-400ml', 'Description
@@ -3026,7 +3026,7 @@ Cela dépendait de la contamination', FALSE, TRUE, brand_id, cat_id, NOW())
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: P1911 - PRO TEC Diesel applicator spray (400ml)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-air';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'pro-tec';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'P1911', 'PRO TEC Diesel applicator spray (400ml)', 'pro-tec-diesel-applicator-spray-400ml', 'Description
@@ -3114,7 +3114,7 @@ Ce lubrifiant vous permet de prolonger la durée de vie d’une large gamme de d
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: 8364 - Additif pour huile ( MOS 2 )
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs-moto';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '8364', 'Additif pour huile ( MOS 2 )', 'additif-pour-huile-mos-2', 'Description
@@ -3242,7 +3242,7 @@ Position :Arrière', FALSE, TRUE, brand_id, cat_id, NOW())
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: TSC-00125 - MANNOL Toyota Lexus 5W-30 (4L)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'lavage-carrosserie';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'mannol';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'TSC-00125', 'MANNOL Toyota Lexus 5W-30 (4L)', 'mannol-toyota-lexus-5w-30-4l', 'Description
@@ -3260,11 +3260,11 @@ Caractéristiques du produit :
   VALUES (gen_random_uuid()::text, prod_id, '4L', 108.0, 10, 'TSC-00125-U')
   ON CONFLICT ("skuVariant") DO NOTHING;
   INSERT INTO public."ProductSpecs" (id, "productId", viscosity, "apiStandard", "aeceaStandard", "jasoStandard", "isFullySynth", "isSemiSynth", "isMinerale", "DPFCompatible", "TurboCompatible", "HybridCompatible", "OEMApprovals")
-  VALUES (gen_random_uuid()::text, prod_id, '5W30', 'API SN', 'ACEA A5/B5', NULL, TRUE, FALSE, FALSE, FALSE, TRUE, FALSE, 'RENAULT RN0700; FORD WSS-M2C913-D; FORD WSS-M2C913-C; FORD WSS-M2C913-A; FORD WSS-M2C913-B; FIAT 9.55535-G1')
+  VALUES (gen_random_uuid()::text, prod_id, '5W30', 'API SN Plus', 'ILSAC GF-5', NULL, TRUE, FALSE, FALSE, FALSE, TRUE, TRUE, 'Toyota; Lexus; Daihatsu')
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: 7915 - MANNOL Extreme 5W-40 (5L)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'mannol';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '7915', 'MANNOL Extreme 5W-40 (5L)', 'mannol-extreme-5w-40', 'Description
@@ -3706,7 +3706,7 @@ Produit purifiant de Mafra adapté au nettoyage de l’intérieur de votre voitu
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: 7504-10 - MANNOL Diesel Extra 10W-40 (10L)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs-carburant';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'mannol';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '7504-10', 'MANNOL Diesel Extra 10W-40 (10L)', 'mannol-diesel-extra-10w-40-10l', 'Description
@@ -3763,7 +3763,7 @@ Type : L2', FALSE, TRUE, brand_id, cat_id, NOW())
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: 20058-0050-99 - ROWE HIGHTEC SUPER LEICHTLAUF HC-O SAE 10W-40 (5L)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur-auto';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'rowe';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '20058-0050-99', 'ROWE HIGHTEC SUPER LEICHTLAUF HC-O SAE 10W-40 (5L)', 'rowe-hightec-super-leichtlauf-hc-o-sae-10w-40-5l', 'Description
@@ -4220,7 +4220,7 @@ TRUCKTEC AUTOMOTIVE : 0730138', FALSE, TRUE, brand_id, cat_id, NOW())
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: P6111BC - PRO TEC Nettoyant pour freins (400ml)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'pro-tec';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'P6111BC', 'PRO TEC Nettoyant pour freins (400ml)', 'pro-tec-nettoyant-pour-freins-400ml', 'Description
@@ -4290,7 +4290,7 @@ PURFLUX : LS969', FALSE, TRUE, brand_id, cat_id, NOW())
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: MANN-FILTER C35154 - MANN-FILTER C35154 Filtre à air (VW GROUPE)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-air';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtre-a-air';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'generique';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'MANN-FILTER C35154', 'MANN-FILTER C35154 Filtre à air (VW GROUPE)', 'mann-filter-c35154-filtre-a-air-vw-groupe', 'Description
@@ -4345,7 +4345,7 @@ WIX FILTERS : WL7318', FALSE, TRUE, brand_id, cat_id, NOW())
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: 24394 polo - FEBI BILSTEIN Filtre à air VW POLO
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-air';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtre-a-air';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'febi-bilstein';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '24394 polo', 'FEBI BILSTEIN Filtre à air VW POLO', 'febi-bilstein-filtre-a-air', 'Description
@@ -4375,7 +4375,7 @@ WIX FILTERS : WA6687', FALSE, TRUE, brand_id, cat_id, NOW())
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: 20138-5 - ROWE MULTI FORMULA SAE 5W-40 (5L)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'rowe';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '20138-5', 'ROWE MULTI FORMULA SAE 5W-40 (5L)', 'rowe-multi-formula-sae-5w-40-5l-2', 'Description
@@ -4417,7 +4417,7 @@ Simple d’utilisation : A ajouter dans votre réservoir lors de votre plein de 
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: TSC-00168 - ROWE MULTI FORMULA SAE 5W-40 (5L)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'rowe';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'TSC-00168', 'ROWE MULTI FORMULA SAE 5W-40 (5L)', 'rowe-multi-formula-sae-5w-40-5l', 'Description
@@ -4455,7 +4455,7 @@ Remplissez directement dans le réservoir de gasoil.
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: P1101FLC - PRO TEC Nettoyant pour conduites de carburant (375
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs-moto';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'pro-tec';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'P1101FLC', 'PRO TEC Nettoyant pour conduites de carburant (375ml)', 'pro-tec-nettoyant-pour-conduites-de-carburant-375ml', 'Description
@@ -4497,7 +4497,7 @@ Transférez le liquide de refroidissement PRO-TEC Heater Stop Leak vers le radia
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: P1501RF - PRO TEC Radiateur Flush (375ml)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'antigel-refroidissement';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'pro-tec';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'P1501RF', 'PRO TEC Radiateur Flush (375ml)', 'pro-tec-radiateur-flush-375ml', 'Description
@@ -4517,7 +4517,7 @@ Temps de traitement:
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: P2901 - PRO TEC ELECTRONIC SPRAY (400ml)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'batteries';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'pro-tec';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'P2901', 'PRO TEC ELECTRONIC SPRAY (400ml)', 'pro-tec-electronic-spray-400ml', 'Description
@@ -4536,7 +4536,7 @@ Poudrer le produit uniformément sur les parties à une distance de 30 cm de l�
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: P2131HLC - PRO TEC nettoyant poussoirs hydrauliques (375ml)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs-carburant';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'pro-tec';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'P2131HLC', 'PRO TEC nettoyant poussoirs hydrauliques (375ml)', 'pro-tec-nettoyant-poussoirs-hydrauliques-375ml', 'Description
@@ -4599,7 +4599,7 @@ Merci de respecter les instructions de dosage ! Ajoutez le produit au réservoir
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: P2233VIC - PRO TEC Nettoyant pour soupes et injections (375ml
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs-carburant';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'pro-tec';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'P2233VIC', 'PRO TEC Nettoyant pour soupes et injections (375ml)', 'pro-tec-nettoyant-pour-soupes-et-injections-375ml', 'Description
@@ -4691,7 +4691,7 @@ Remarque : En cas d’utilisation dans des véhicules avec emballage humidifié,
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: TSC-00181 - ROWE  RS LONGLIFE IV SAE 0W-20
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs-carburant';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'rowe';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'TSC-00181', 'ROWE  RS LONGLIFE IV SAE 0W-20', 'rowe-rs-longlife-iv-sae-0w-20-5l', 'Description
@@ -4714,7 +4714,7 @@ HIGHTEC SYNT RS LONGLIFE IV SAE 0W20 dépasse ainsi les rigoureuses exige', FALS
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: 20112-5 - ROWE HIGHTEC MULTI SYNT DPF SAE 0W-30 (5L)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'rowe';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '20112-5', 'ROWE HIGHTEC MULTI SYNT DPF SAE 0W-30 (5L)', 'rowe-hightec-multi-synt-dpf-sae-0w-30-5l', 'Huile moteur multigrade fluide synthétique haut de gamme. Convient parfaitement aux moteurs essence et diesel de voitures avec et sans turbo, y compris filtre à particules.
@@ -4736,7 +4736,7 @@ VW 503 00/506', FALSE, TRUE, brand_id, cat_id, NOW())
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: 20150-5 - ROWE HIGHTEC SYNT RSF 950 SAE 0W-30 (5L) FORD
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'rowe';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '20150-5', 'ROWE HIGHTEC SYNT RSF 950 SAE 0W-30 (5L) FORD', 'rowe-hightec-synt-rsf-950-sae-0w-30-5l-ford', 'Huile multigrade de synthèse HC de haut de gamme pour moteurs à essence et moteurs Diesel de voitures avec et sans turbocompresseur. Convient parfaitement pour l´utilisation dans les véhicules dotés de systèmes de filtres à particules Diesel conformément aux spécifications du fabricant.
@@ -4754,7 +4754,7 @@ Jaguar Land Rover STJLR.03.5007', FALSE, TRUE, brand_id, cat_id, NOW())
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: 20379-5 - ROWE HIGHTEC SYNT RS C5 SAE 0W-20 (5L)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'rowe';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '20379-5', 'ROWE HIGHTEC SYNT RS C5 SAE 0W-20 (5L)', 'rowe-hightec-synt-rs-c5-sae-0w-20-5l', 'Description
@@ -4785,7 +4785,7 @@ Ford WSS-M2C947-A', FALSE, TRUE, brand_id, cat_id, NOW())
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: 30509 - ROWE HIGHTEC HUILE HYDRAULIQUE ZH-M SYNT (1L)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-boite-transmission';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'rowe';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '30509', 'ROWE HIGHTEC HUILE HYDRAULIQUE ZH-M SYNT (1L)', 'rowe-hightec-huile-hydraulique-zh-m-synt-1l', 'Description
@@ -4815,7 +4815,7 @@ ZF TE-ML 02K', FALSE, TRUE, brand_id, cat_id, NOW())
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: 25066 - ROWE HIGHTEC 75W-80 S (1L)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-boite-transmission';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huile-de-boite';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'rowe';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '25066', 'ROWE HIGHTEC 75W-80 S (1L)', 'rowe-hightec-75w-80-s-1l', 'Description
@@ -4841,7 +4841,7 @@ VW G009 317/G052 171/G52 178/G052 512/G052 532/G052
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: 25029 - ROWE HIGHTEC HYPOID EP SAE 75W-140 S-LS (1L)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-boite-transmission';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huile-de-boite';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'rowe';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '25029', 'ROWE HIGHTEC HYPOID EP SAE 75W-140 S-LS (1L)', 'rowe-hightec-hypoid-ep-sae-75w-140-s-ls-1l', 'Description
@@ -4865,7 +4865,7 @@ MB 235.61', FALSE, TRUE, brand_id, cat_id, NOW())
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: 25063 - ROWE HIGHTEC ATF 9008 (1L)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-boite-transmission';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huile-de-boite';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'rowe';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '25063', 'ROWE HIGHTEC ATF 9008 (1L)', 'rowe-hightec-atf-9008-1l', 'Description
@@ -4907,7 +4907,7 @@ ZF S671 090 310/ZF S671 090 311/ZF S671 090 312/ZF S671
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: 25036 - ROWE HIGHTEC ATF 9600 (1L)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-boite-transmission';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huile-de-boite';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'rowe';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '25036', 'ROWE HIGHTEC ATF 9600 (1L)', 'rowe-hightec-atf-9600-1l', 'Description
@@ -4941,7 +4941,7 @@ ZF S671 090 255', FALSE, TRUE, brand_id, cat_id, NOW())
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: 25020 - ROWE HIGHTEC ATF 9000 (1L)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-boite-transmission';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huile-de-boite';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'rowe';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '25020', 'ROWE HIGHTEC ATF 9000 (1L)', 'rowe-hightec-atf-9000-1l', 'Description
@@ -4987,7 +4987,7 @@ ZF TE-ML 02F, 11B, 14C', FALSE, TRUE, brand_id, cat_id, NOW())
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: 25050 - ROWE HIGHTEC ATF 9004 (1L)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-boite-transmission';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huile-de-boite';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'rowe';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '25050', 'ROWE HIGHTEC ATF 9004 (1L)', 'rowe-hightec-atf-9004-1l', 'Description
@@ -5008,7 +5008,7 @@ SSANG YONG', FALSE, TRUE, brand_id, cat_id, NOW())
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: 25067 - ROWE HUILE DE BOITE ATF DCG II (1L)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-boite-transmission';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huile-de-boite';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'rowe';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '25067', 'ROWE HUILE DE BOITE ATF DCG II (1L)', 'rowe-huile-de-boite-atf-dcg-ii-1l', 'Description
@@ -5044,7 +5044,7 @@ VW G 052 182 (DQ250/DQ500)/G 052 512/G 052 529/G 055
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: 25055 - ROWE HUILE DE BOITE ATF CVT  (1L)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moto-2t-4t';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huile-de-boite';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'rowe';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '25055', 'ROWE HUILE DE BOITE ATF CVT  (1L)', 'rowe-huile-de-boite-atf-cvt-1l', 'Description
@@ -5080,7 +5080,7 @@ Suzuki CVTF 3320/TC/NS-2/CVTF Green-1/-2', FALSE, TRUE, brand_id, cat_id, NOW())
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: 25051 - ROWE HUILE DE BOITE ATF 9006 (1L)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-boite-transmission';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huile-de-boite';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'rowe';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '25051', 'ROWE HUILE DE BOITE ATF 9006 (1L)', 'rowe-huile-de-boite-atf-9006-1l', 'Description
@@ -5119,7 +5119,7 @@ ZF S671 090 255 / ZF S671 090 281', FALSE, TRUE, brand_id, cat_id, NOW())
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: 25060 - ROWE HUILE DE BOITE ATF 9005 (1L)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-boite-transmission';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huile-de-boite';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'rowe';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '25060', 'ROWE HUILE DE BOITE ATF 9005 (1L)', 'rowe-huile-de-boite-atf-9005-1l', 'Description
@@ -5146,7 +5146,7 @@ VW G 060 540', FALSE, TRUE, brand_id, cat_id, NOW())
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: 21062 - ROWE ANTIGEL HIGHTEC AN 13 (1.5L)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'antigel-refroidissement';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'rowe';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '21062', 'ROWE ANTIGEL HIGHTEC AN 13 (1.5L)', 'rowe-antigel-hightec-an-13-1-5l', 'Description
@@ -5171,7 +5171,7 @@ Propriété chimique: sans nitrite, sans amine, sans phosphates', FALSE, TRUE, b
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: 21014 - ROWE  ANTIGEL HIGHTEC AN-SF 12+ (1.5L)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'antigel-refroidissement';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'rowe';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '21014', 'ROWE  ANTIGEL HIGHTEC AN-SF 12+ (1.5L)', 'rowe-antigel-hightec-an-sf-12-1-5l', 'Description
@@ -5199,7 +5199,7 @@ Rapport de mélange: 50/50 (-37°C)', FALSE, TRUE, brand_id, cat_id, NOW())
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: S671.090.255 - ZF LifeGuardFluid 6 Huile pour boîte automatique 1
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-boite-transmission';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huile-de-boite';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'generique';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'S671.090.255', 'ZF LifeGuardFluid 6 Huile pour boîte automatique 1L', 'zf-lifeguardfluid-6-huile-pour-boite-automatique-1l', 'Description
@@ -5275,7 +5275,7 @@ Durée de conservation : 5 ans à compter de la date de', FALSE, TRUE, brand_id,
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: TSC-00200 - MANNOL Energy Premium 5W-30 (5L)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs-carburant';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'mannol';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'TSC-00200', 'MANNOL Energy Premium 5W-30 (5L)', 'mannol-energy-premium-5w-30-5l', 'Description
@@ -5296,7 +5296,7 @@ Caractéristiques du produit :
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: 7720 - MANNOL Céramique 5W-30 (5L)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur-auto';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'mannol';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '7720', 'MANNOL Céramique 5W-30 (5L)', 'mannol-ceramique-5w-30-5l', 'Description
@@ -5566,7 +5566,7 @@ Labels et agréments : Homologué E1', FALSE, TRUE, brand_id, cat_id, NOW())
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: 2101 - BARDAHL Nettoyant injecteurs Essence (300ml)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs-carburant';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'generique';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '2101', 'BARDAHL Nettoyant injecteurs Essence (300ml)', 'bardahl-nettoyant-injecteurs-essence-300ml', 'Description
@@ -5585,7 +5585,7 @@ Simple d’utilisation : A ajouter dans votre réservoir lors de votre plein de 
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: 1185 - BARDAHL Nettoyant injecteurs Diesel (300ml)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-carburant';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'bardahl-injecteur-diesel';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '1185', 'BARDAHL Nettoyant injecteurs Diesel (300ml)', 'bardahl-nettoyant-injecteurs-diesel-300ml', 'Description
@@ -5603,7 +5603,7 @@ Simple d’utilisation : A ajouter dans votre réservoir lors de votre plein de 
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: 1032 - BARDAHL Nettoyant prévidange (300ml)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs-moto';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'bardahl';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '1032', 'BARDAHL Nettoyant prévidange (300ml)', 'bardahl-nettoyant-previdange-300ml', 'Description
@@ -5621,7 +5621,7 @@ Simple d’utilisation : A ajouter dans votre huile avant votre vidange.', FALSE
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: c 1370 - MANN-FILTER C 1370 Filtre à air
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-air';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtre-a-air';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'bmw';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'c 1370', 'MANN-FILTER C 1370 Filtre à air', 'mann-filter-c-1370-filtre-a-air', 'Description
@@ -5691,7 +5691,7 @@ N43 B16A
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: c 1361 - MANN-FILTER C 1361 Filtre à air BMW
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-air';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtre-a-air';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'generique';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'c 1361', 'MANN-FILTER C 1361 Filtre à air BMW', 'mann-filter-c-1361-filtre-a-air-bmw', 'Description
@@ -5885,7 +5885,7 @@ Simple d’utilisation : A ajouter dans votre réservoir lors de votre plein de 
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: 8369 - Nettoyant Radiateur (300ml)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'antigel-refroidissement';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '8369', 'Nettoyant Radiateur (300ml)', 'nettoyant-radiateur-300ml', 'Description
@@ -6006,7 +6006,7 @@ Antigel     Eau     Protection jusqu’à
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: c 14 006 - MANN-FILTER C 14 006 Filtre à air
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-air';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtre-a-air';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'generique';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'c 14 006', 'MANN-FILTER C 14 006 Filtre à air', 'mann-filter-c-14-006-filtre-a-air', 'Description
@@ -6213,7 +6213,7 @@ Avant l’utilisation, nous recommandons de nettoyer la chaîne avec Motorbike N
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: TSC-00227 - Liqui Moly Motorbike Nettoyant pour chaînes et fre
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'entretien-chaine';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'TSC-00227', 'Liqui Moly Motorbike Nettoyant pour chaînes et freins (500ml)', 'liqui-moly-motorbike-nettoyant-pour-chaines-et-freins-500ml', 'Description
@@ -6295,7 +6295,7 @@ Avant l’utilisation, nous recommandons de nettoyer la chaîne avec le nettoyan
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: TSC-00230 - Liqui Moly Top Tec 4300 5W-30  ( PSA )
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'TSC-00230', 'Liqui Moly Top Tec 4300 5W-30  ( PSA )', 'liqui-moly-top-tec-4300-5w-30-psa', 'Description
@@ -6359,7 +6359,7 @@ Moteurs à 2 temps :
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: 5929 - Liqui Moly Motorbike Gear Oil (GL4) 80W-90 Scooter
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs-moto';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huile-de-boite';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '5929', 'Liqui Moly Motorbike Gear Oil (GL4) 80W-90 Scooter (150ml)', 'liqui-moly-motorbike-gear-oil-gl4-80w-90-scooter-150ml', 'Description
@@ -6429,7 +6429,7 @@ utilisable pour des exigences d’huile de fourche allant jusqu’à SAE 2,5W au
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: 5927 - Liqui Moly Motorbike Gear Oil 10W-30 (1L)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs-moto';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huile-de-boite';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '5927', 'Liqui Moly Motorbike Gear Oil 10W-30 (1L)', 'liqui-moly-motorbike-gear-oil-10w-30-1l', 'Description
@@ -6459,7 +6459,7 @@ Respecter les prescriptions des fabricants de boîtes de vitesses. Se mélange �
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: 1516 - Liqui Moly Motorbike Gear Oil 75W-90 (500ml)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs-moto';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huile-de-boite';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '1516', 'Liqui Moly Motorbike Gear Oil 75W-90 (500ml)', 'liqui-moly-motorbike-gear-oil-75w-90-500ml', 'Description
@@ -6486,7 +6486,7 @@ Respecter les prescriptions des fabricants de boîtes de vitesses. Se mélange �
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: TSC-00237 - Motorbike Engine Flush Shooter (80ml)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs-moto';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'TSC-00237', 'Motorbike Engine Flush Shooter (80ml)', 'motorbike-engine-flush-shooter-80ml', 'Description
@@ -6536,7 +6536,7 @@ Mélanger à chaque vidange d’huile pour les moteurs à 4 temps et lors de l�
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: 7902 - MANNOL Racing + Ester 10W-60 (4L)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'mannol';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '7902', 'MANNOL Racing + Ester 10W-60 (4L)', 'mannol-racing-ester-10w-60-4l', 'Description
@@ -6558,7 +6558,7 @@ Caractéristiques du produit :
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: TSC-00240 - MANNOL Extreme 5W-40 (5L)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'mannol';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'TSC-00240', 'MANNOL Extreme 5W-40 (5L)', 'mannol-extreme-5w-40-5l', 'Description
@@ -6578,7 +6578,7 @@ Caractéristiques du produit :
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: 7908 - MANNOL Energy Premium 5W-30 (5L)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'mannol';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '7908', 'MANNOL Energy Premium 5W-30 (5L)', 'huile-moteur-mannol-energy-premium-5w-30-5l', 'Description
@@ -6599,7 +6599,7 @@ Caractéristiques du produit :
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: 7707 - MANNOL Energy Formula FR 5W-30 (5L)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'mannol';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '7707', 'MANNOL Energy Formula FR 5W-30 (5L)', 'mannol-energy-formula-fr-5w-30-5l', 'Description
@@ -6620,7 +6620,7 @@ Caractéristiques du produit :
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: 7730 - MANNOL Légende 504/507 0W-30 (5L)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'mannol';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '7730', 'MANNOL Légende 504/507 0W-30 (5L)', 'mannol-legende-504-507-0w-30-5l', 'Description
@@ -6641,7 +6641,7 @@ Propriétés :
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: 7722 - MANNOL Longue life 508/509 0W-20 (5L)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'mannol';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '7722', 'MANNOL Longue life 508/509 0W-20 (5L)', 'mannol-longue-life-508-509-0w-20-5l', 'Description
@@ -6662,7 +6662,7 @@ Caractéristiques du produit :
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: 7921 - MANNOL Légende Formule C5 0W-20 (5L)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'mannol';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '7921', 'MANNOL Légende Formule C5 0W-20 (5L)', 'mannol-legende-formule-c5-0w-20-5l', 'Description
@@ -6710,7 +6710,7 @@ Respectez les instru', FALSE, TRUE, brand_id, cat_id, NOW())
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: TSC-00247 - MANNOL Légende Ultra 0W-20 (5L)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'mannol';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'TSC-00247', 'MANNOL Légende Ultra 0W-20 (5L)', 'mannol-legende-ultra-0w-20-5l', 'Description
@@ -6731,7 +6731,7 @@ Caractéristiques du produit :
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: 1134 - Huile de boîte de vitesses haute perfor­mance (GL3
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-boite-transmission';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huile-de-boite';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '1134', 'Huile de boîte de vitesses haute perfor­mance (GL3+) SAE 75W-80 (1L)', 'huile-de-boite-de-vitesses-haute-performance-gl3-sae-75w-80-1l', 'Description
@@ -6778,7 +6778,7 @@ bon comportement viscosité-température', FALSE, TRUE, brand_id, cat_id, NOW())
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: 4421 - Huile de boîte hypoïde entiè­re­ment synthé­tique 
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huile-de-boite';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'api-gl5';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '4421', 'Huile de boîte hypoïde entiè­re­ment synthé­tique (GL5) LS SAE 75W-140 (1L)', 'huile-de-boite-hypoide-entierement-synthetique-gl5-ls-sae-75w-140-1l', 'Description
@@ -6804,7 +6804,7 @@ bon comportement viscosité-température', FALSE, TRUE, brand_id, cat_id, NOW())
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: TSC-00251 - Top Tec MTF 5200 75W-80
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huile-de-boite';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'TSC-00251', 'Top Tec MTF 5200 75W-80', '2185', 'Description
@@ -6830,7 +6830,7 @@ comportement synchrone remarquable', FALSE, TRUE, brand_id, cat_id, NOW())
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: TSC-00252 - Top Tec MTF 5100 75W (1L)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-boite-transmission';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huile-de-boite';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'TSC-00252', 'Top Tec MTF 5100 75W (1L)', 'top-tec-mtf-5100-75w-1l', 'Description
@@ -6856,7 +6856,7 @@ comportement synchrone remarquable', FALSE, TRUE, brand_id, cat_id, NOW())
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: 21359 - Top Tec MTF 5300 70W-75W (1L)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-boite-transmission';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huile-de-boite';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '21359', 'Top Tec MTF 5300 70W-75W (1L)', 'top-tec-mtf-5300-70w-75w-1l', 'Description
@@ -6882,7 +6882,7 @@ comportement synchrone remarquable', FALSE, TRUE, brand_id, cat_id, NOW())
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: 3658 - Huile de boîte de vitesses (GL5) 75W-80 (1L)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huile-de-boite';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '3658', 'Huile de boîte de vitesses (GL5) 75W-80 (1L)', 'huile-de-boite-de-vitesses-gl5-75w-80-1l', 'Description
@@ -6908,7 +6908,7 @@ très bonnes propriétés à basse température', FALSE, TRUE, brand_id, cat_id,
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: 2362 - Liqui Moly Top Tec 4310 0W-30 (5L)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '2362', 'Liqui Moly Top Tec 4310 0W-30 (5L)', 'liqui-moly-top-tec-4310-0w-30-5l', 'Description
@@ -6935,7 +6935,7 @@ lubrification rapide', FALSE, TRUE, brand_id, cat_id, NOW())
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: TSC-00256 - Liqui Moly Top Tec 6200 0W-20
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'TSC-00256', 'Liqui Moly Top Tec 6200 0W-20', 'liqui-moly-top-tec-6200-0w-20', 'Description
@@ -6964,7 +6964,7 @@ Protection optimale en cas d’utilisation de carburant E10', FALSE, TRUE, brand
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: 4434 - Huile de boîte de vitesses haute perfor­mance (GL4
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-boite-transmission';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huile-de-boite';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '4434', 'Huile de boîte de vitesses haute perfor­mance (GL4+) SAE 75W-90 (1L)', 'huile-de-boite-de-vitesses-haute-performance-gl4-sae-75w-90-1l', 'Description
@@ -6991,7 +6991,7 @@ vaste plage de viscosité', FALSE, TRUE, brand_id, cat_id, NOW())
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: 1407 - Huile hypoïde (GL4/5) TDL SAE 75W-90 (1L)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-boite-transmission';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huile-de-boite';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '1407', 'Huile hypoïde (GL4/5) TDL SAE 75W-90 (1L)', 'huile-hypoide-gl4-5-tdl-sae-75w-90-1l', 'Description
@@ -7015,7 +7015,7 @@ utilisation universelle
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: 3092 - Liqui Moly Liquide de frein DOT 5.1 (250ml)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'liquide-de-frein';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '3092', 'Liqui Moly Liquide de frein DOT 5.1 (250ml)', 'liqui-moly-liquide-de-frein-dot-5-1-250ml', 'Description
@@ -7037,7 +7037,7 @@ bon comportement viscosité-température', FALSE, TRUE, brand_id, cat_id, NOW())
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: 3089 - Liqui Moly Liquide de frein DOT 3 (500ml)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'liquide-de-frein';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '3089', 'Liqui Moly Liquide de frein DOT 3 (500ml)', 'liqui-moly-liquide-de-frein-dot-3-500ml', 'Description
@@ -7059,7 +7059,7 @@ bon comportement viscosité-température', FALSE, TRUE, brand_id, cat_id, NOW())
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: 3093 - Liquide de frein DOT 4 (500ml)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'liquide-de-frein';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'generique';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '3093', 'Liquide de frein DOT 4 (500ml)', 'liquide-de-frein-dot-4-500ml', 'Description
@@ -7082,7 +7082,7 @@ bon comportement viscosité-température', FALSE, TRUE, brand_id, cat_id, NOW())
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: TSC-00262 - Mannol Liquide de frein DOT-5.1
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'liquide-de-frein';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'mannol';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'TSC-00262', 'Mannol Liquide de frein DOT-5.1', 'mannol-liquide-de-frein-dot-5-1', 'Description
@@ -7106,7 +7106,7 @@ Propriétés :
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: 3003 - Mannol Liquide de frein  DOT-3 (0.5L)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'liquide-de-frein';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'mannol';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '3003', 'Mannol Liquide de frein  DOT-3 (0.5L)', 'mannol-liquide-de-frein-dot-3-0-5l', 'Description
@@ -7128,7 +7128,7 @@ Respectez les instructions du fabricant dans le mode d’emploi !', FALSE, TRUE,
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: 3002 - Mannol Liquide de frein DOT-4 (450ml)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'liquide-de-frein';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'mannol';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '3002', 'Mannol Liquide de frein DOT-4 (450ml)', 'mannol-liquide-de-frein-dot-4-450ml', 'Description
@@ -7151,7 +7151,7 @@ Couleur : incolore / marron clair.', FALSE, TRUE, brand_id, cat_id, NOW())
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: TSC-00265 - Liqui Moly Molygen New Gene­ra­tion 5W-30
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'TSC-00265', 'Liqui Moly Molygen New Gene­ra­tion 5W-30', 'liqui-moly-molygen-new-generation-5w-30', 'Description
@@ -7184,7 +7184,7 @@ permet de réaliser des économies de carburant et de réduire les émissions', 
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: TSC-00266 - Liqui Moly Super Leicht­lauf 10W-40
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'TSC-00266', 'Liqui Moly Super Leicht­lauf 10W-40', 'liqui-moly-super-leichtlauf-10w-40', 'Description
@@ -7221,7 +7221,7 @@ permet de réaliser des économies de carburant et de réduire les émissions', 
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: TSC-00267 - Liqui Moly MoS2 Leicht­lauf 10W-40
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'TSC-00267', 'Liqui Moly MoS2 Leicht­lauf 10W-40', 'mos2-leichtlauf-10w-40', 'Description
@@ -7255,7 +7255,7 @@ résiste au vieillissement, non sensible à la viscosité', FALSE, TRUE, brand_i
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: 21332 - Liqui Moly Special Tec AA 5W-40 Diesel (5L)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '21332', 'Liqui Moly Special Tec AA 5W-40 Diesel (5L)', 'liqui-moly-special-tec-aa-5w-40-diesel-5l', 'Description
@@ -7282,7 +7282,7 @@ permet de réaliser des économies de carburant et de réduire les émissions', 
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: 7616 - Liqui Moly Special Tec AA 5W-30 (4L)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '7616', 'Liqui Moly Special Tec AA 5W-30 (4L)', 'liqui-moly-special-tec-aa-5w-30-4l', 'Description
@@ -7310,11 +7310,11 @@ compatible avec turbocompresseur et catalyseur', FALSE, TRUE, brand_id, cat_id, 
   VALUES (gen_random_uuid()::text, prod_id, '4L', 137.0, 10, '7616-U')
   ON CONFLICT ("skuVariant") DO NOTHING;
   INSERT INTO public."ProductSpecs" (id, "productId", viscosity, "apiStandard", "aeceaStandard", "jasoStandard", "isFullySynth", "isSemiSynth", "isMinerale", "DPFCompatible", "TurboCompatible", "HybridCompatible", "OEMApprovals")
-  VALUES (gen_random_uuid()::text, prod_id, '5W30', 'API SP', NULL, NULL, FALSE, TRUE, FALSE, FALSE, TRUE, FALSE, 'Ford WSS-M2C; Fiat 9.55535-CR1; GM dexos1')
+  VALUES (gen_random_uuid()::text, prod_id, '5W30', 'API SP', 'ILSAC GF-6A', NULL, TRUE, FALSE, FALSE, FALSE, TRUE, TRUE, 'Toyota; Lexus; Honda; Hyundai; Kia; Mazda; Nissan; Subaru; GM dexos1 Gen 3; Ford WSS-M2C; Fiat 9.55535-CR1; Chrysler MS-6395')
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: 6739 - Liqui Moly Special Tec AA 0W-20 (5L)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '6739', 'Liqui Moly Special Tec AA 0W-20 (5L)', 'liqui-moly-special-tec-aa-0w-20-5l', 'Description
@@ -7340,11 +7340,11 @@ permet de réaliser des économies de carburant et de réduire les émissions', 
   VALUES (gen_random_uuid()::text, prod_id, '5L', 190.0, 10, '6739-U')
   ON CONFLICT ("skuVariant") DO NOTHING;
   INSERT INTO public."ProductSpecs" (id, "productId", viscosity, "apiStandard", "aeceaStandard", "jasoStandard", "isFullySynth", "isSemiSynth", "isMinerale", "DPFCompatible", "TurboCompatible", "HybridCompatible", "OEMApprovals")
-  VALUES (gen_random_uuid()::text, prod_id, '0W20', 'API SP', NULL, NULL, FALSE, TRUE, FALSE, FALSE, TRUE, FALSE, 'Ford WSS-M2C; Fiat 9.55535-CR1; GM dexos1')
+  VALUES (gen_random_uuid()::text, prod_id, '0W20', 'API SP', 'ILSAC GF-6A', NULL, TRUE, FALSE, FALSE, FALSE, TRUE, TRUE, 'Toyota; Lexus; Honda; Hyundai; Kia; Mazda; Mitsubishi; Nissan; Subaru; Suzuki; GM dexos1 Gen 3; Ford WSS-M2C; Fiat 9.55535-CR1; Chrysler MS-6395')
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: TSC-00271 - Liqui Moly Special Tec AA 5W-20
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'TSC-00271', 'Liqui Moly Special Tec AA 5W-20', 'liqui-moly-special-tec-aa-5w-20', 'Description
@@ -7378,7 +7378,7 @@ compatible avec turbocompresseur et catalyseur', FALSE, TRUE, brand_id, cat_id, 
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: TSC-00272 - Liqui Moly Synthoil Race Tech GT1 10W-60
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'TSC-00272', 'Liqui Moly Synthoil Race Tech GT1 10W-60', 'liqui-moly-synthoil-race-tech-gt1-10w-60', 'Description
@@ -7408,7 +7408,7 @@ alimentation en huile rapide à basses températures', FALSE, TRUE, brand_id, ca
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: TSC-00273 - Liqui Moly Special Tec F ECO 5W-20
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'TSC-00273', 'Liqui Moly Special Tec F ECO 5W-20', 'liqui-moly-special-tec-f-eco-5w-20', 'Description
@@ -7436,7 +7436,7 @@ alimentation en huile rapide à basses températures', FALSE, TRUE, brand_id, ca
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: 8460 - Liqui Moly Special Tec LR 5W-20 (5L)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '8460', 'Liqui Moly Special Tec LR 5W-20 (5L)', 'liqui-moly-special-tec-lr-5w-20-5l', 'Description
@@ -7466,7 +7466,7 @@ permet de réaliser des économies de carburant et de réduire les émissions', 
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: 21411 - Liqui Moly Top Tec 6600 0W-20 (5L)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '21411', 'Liqui Moly Top Tec 6600 0W-20 (5L)', 'liqui-moly-top-tec-6600-0w-20-5l', 'Description
@@ -7495,7 +7495,7 @@ permet de réaliser des économies de carburant et de réduire les émissions', 
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: 20632 - Liqui Moly Special Tec V 0W-20 (5L)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '20632', 'Liqui Moly Special Tec V 0W-20 (5L)', 'liqui-moly-special-tec-v-0w-20-5l', 'Description
@@ -7519,7 +7519,7 @@ minimise le frottement', FALSE, TRUE, brand_id, cat_id, NOW())
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: TSC-00277 - Liqui Moly Top Tec 4210 0W-30 (5L)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'TSC-00277', 'Liqui Moly Top Tec 4210 0W-30 (5L)', 'liqui-moly-top-tec-4210-0w-30-5l', 'Description
@@ -7543,11 +7543,11 @@ minimise le frottement', FALSE, TRUE, brand_id, cat_id, NOW())
   VALUES (gen_random_uuid()::text, prod_id, '5L', 230.0, 10, 'TSC-00277-U')
   ON CONFLICT ("skuVariant") DO NOTHING;
   INSERT INTO public."ProductSpecs" (id, "productId", viscosity, "apiStandard", "aeceaStandard", "jasoStandard", "isFullySynth", "isSemiSynth", "isMinerale", "DPFCompatible", "TurboCompatible", "HybridCompatible", "OEMApprovals")
-  VALUES (gen_random_uuid()::text, prod_id, '0W30', NULL, 'ACEA C3,', NULL, FALSE, TRUE, FALSE, TRUE, TRUE, FALSE, 'VW 504 00; VW 507 00; Porsche et; Porsche C30')
+  VALUES (gen_random_uuid()::text, prod_id, '0W30', 'API SP', 'ACEA C2 / C3', NULL, TRUE, FALSE, FALSE, TRUE, TRUE, FALSE, 'VW 504 00; VW 507 00; Porsche C30')
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: 21217 - Liqui Moly Top Tec 6300 0W-20 (5L)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '21217', 'Liqui Moly Top Tec 6300 0W-20 (5L)', 'liqui-moly-top-tec-6300-0w-20-5l', 'Description
@@ -7576,7 +7576,7 @@ permet de réaliser des économies de carburant et de réduire les émissions', 
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: TSC-00279 - Liqui Moly Top Tec 6100 0W-30
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'TSC-00279', 'Liqui Moly Top Tec 6100 0W-30', 'liqui-moly-top-tec-6100-0w-30', 'Description
@@ -7608,7 +7608,7 @@ Assure une longue durée de vie du moteur', FALSE, TRUE, brand_id, cat_id, NOW()
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: TSC-00280 - Liqui Moly Special Tec F 0W-30
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'TSC-00280', 'Liqui Moly Special Tec F 0W-30', 'liqui-moly-special-tec-f-0w-30', 'Description
@@ -7634,11 +7634,11 @@ optimale pour les systèmes de démarrage-arrêt automatiques', FALSE, TRUE, bra
   VALUES (gen_random_uuid()::text, prod_id, '1L', 57.0, 5, 'TSC-00280-U-2')
   ON CONFLICT ("skuVariant") DO NOTHING;
   INSERT INTO public."ProductSpecs" (id, "productId", viscosity, "apiStandard", "aeceaStandard", "jasoStandard", "isFullySynth", "isSemiSynth", "isMinerale", "DPFCompatible", "TurboCompatible", "HybridCompatible", "OEMApprovals")
-  VALUES (gen_random_uuid()::text, prod_id, '0W30', 'API SN', 'ACEA C2,', NULL, FALSE, TRUE, FALSE, TRUE, TRUE, FALSE, 'Ford WSS-M2C')
+  VALUES (gen_random_uuid()::text, prod_id, '0W30', NULL, 'ACEA C2', NULL, TRUE, FALSE, FALSE, TRUE, TRUE, FALSE, 'Ford WSS-M2C 950-A; Jaguar Land Rover STJLR.03.5007')
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: 7530 - Liqui Moly Special Tec AA 5W-30 (5L)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '7530', 'Liqui Moly Special Tec AA 5W-30 (5L)', 'liqui-moly-special-tec-aa-5w-30-5l', 'Description
@@ -7666,11 +7666,11 @@ compatible avec turbocompresseur et catalyseur', FALSE, TRUE, brand_id, cat_id, 
   VALUES (gen_random_uuid()::text, prod_id, '5L', 145.0, 10, '7530-U')
   ON CONFLICT ("skuVariant") DO NOTHING;
   INSERT INTO public."ProductSpecs" (id, "productId", viscosity, "apiStandard", "aeceaStandard", "jasoStandard", "isFullySynth", "isSemiSynth", "isMinerale", "DPFCompatible", "TurboCompatible", "HybridCompatible", "OEMApprovals")
-  VALUES (gen_random_uuid()::text, prod_id, '5W30', 'API SP', NULL, NULL, FALSE, TRUE, FALSE, FALSE, TRUE, FALSE, 'Ford WSS-M2C; Fiat 9.55535-CR1; GM dexos1')
+  VALUES (gen_random_uuid()::text, prod_id, '5W30', 'API SP', 'ILSAC GF-6A', NULL, TRUE, FALSE, FALSE, FALSE, TRUE, TRUE, 'Toyota; Lexus; Honda; Hyundai; Kia; Mazda; Nissan; Subaru; GM dexos1 Gen 3; Ford WSS-M2C; Fiat 9.55535-CR1; Chrysler MS-6395')
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: TSC-00282 - Liqui Moly Special Tec F 5W-30  (FORD)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'TSC-00282', 'Liqui Moly Special Tec F 5W-30  (FORD)', 'liqui-moly-special-tec-f-5w-30-ford', 'Description
@@ -7698,7 +7698,7 @@ permet de réaliser des économies de carburant et de réduire les émissions', 
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: 2322 - Liqui Moly Top Tec 4400 5W-30 (5L) RENAULT
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '2322', 'Liqui Moly Top Tec 4400 5W-30 (5L) RENAULT', 'liqui-moly-top-tec-4400-5w-30-5l-renault', 'Description
@@ -7728,7 +7728,7 @@ l’efficacité maximale est obtenue si le produit est utilisé pur', FALSE, TRU
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: 21404 - Liqui Moly Top Tec 4410 5W-30  5L ( RENAULT )
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '21404', 'Liqui Moly Top Tec 4410 5W-30  5L ( RENAULT )', 'liqui-moly-top-tec-4410-5w-30-5l-renault', 'Description
@@ -7754,7 +7754,7 @@ empêche la formation de dépôts', FALSE, TRUE, brand_id, cat_id, NOW())
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: TSC-00285 - Top Tec 4200 5W-30 New Generation
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'TSC-00285', 'Top Tec 4200 5W-30 New Generation', 'top-tec-4200-5w-30-new-generation', 'Description
@@ -7778,7 +7778,7 @@ ACEA C3, API SP, BMW Longlife-04, MB-Approval 229.31, MB-Approval 229.51, MB-App
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: TSC-00286 - Liqui Moly Top Tec 4600 5W-30
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'TSC-00286', 'Liqui Moly Top Tec 4600 5W-30', 'liqui-moly-top-tec-4600-5w-30', 'Description
@@ -7813,7 +7813,7 @@ compatible avec turbocompresseur et catalyseur', FALSE, TRUE, brand_id, cat_id, 
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: TSC-00287 - Liqui Moly Top Tec 4110 5W-40
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'TSC-00287', 'Liqui Moly Top Tec 4110 5W-40', 'liqui-moly-top-tec-4110-5w-40', 'Description
@@ -7842,7 +7842,7 @@ empêche la formation de dépôts', FALSE, TRUE, brand_id, cat_id, NOW())
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: TSC-00288 - Liqui Moly Top Tec 4100 5W-40
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'TSC-00288', 'Liqui Moly Top Tec 4100 5W-40', 'liqui-moly-top-tec-4100-5w-40', 'Description
@@ -7872,7 +7872,7 @@ compatible avec turbocompresseur et catalyseur', FALSE, TRUE, brand_id, cat_id, 
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: TSC-00289 - Leicht­lauf High Tech 5W-40
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'TSC-00289', 'Leicht­lauf High Tech 5W-40', 'leichtlauf-high-tech-5w-40', 'Description
@@ -7940,7 +7940,7 @@ Destiné à être utilisé', FALSE, TRUE, brand_id, cat_id, NOW())
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: TSC-00292 - Motorbike 4T Synth 5W-40 Street Race
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'entretien-chaine';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'TSC-00292', 'Motorbike 4T Synth 5W-40 Street Race', 'motorbike-4t-synth-5w-40-street-race', 'Description
@@ -7969,7 +7969,7 @@ lubrification optimale dans toutes les conditions de service', FALSE, TRUE, bran
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: TSC-00293 - Motorbike HD Synth 20W-50 Street
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs-moto';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'TSC-00293', 'Motorbike HD Synth 20W-50 Street', 'motorbike-hd-synth-20w-50-street', 'Description
@@ -7993,7 +7993,7 @@ résistance extrême aux températures élevées', FALSE, TRUE, brand_id, cat_id
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: TSC-00294 - Motorbike 4T 20W-50 Basic Street
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moto-2t-4t';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'TSC-00294', 'Motorbike 4T 20W-50 Basic Street', 'motorbike-4t-20w-50-basic-street', 'Description
@@ -8021,7 +8021,7 @@ miscible avec les huiles de boîte de vitesses courantes', FALSE, TRUE, brand_id
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: 1502 - Motorbike 4T Synth 10W-50 Street Race (1L)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moto-2t-4t';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '1502', 'Motorbike 4T Synth 10W-50 Street Race (1L)', 'motorbike-4t-synth-10w-50-street-race-1l', 'Description
@@ -8046,7 +8046,7 @@ lubrification optimale dans toutes les conditions de service', FALSE, TRUE, bran
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: 20832 - Motorbike 4T 10W-40 Scooter MB (1L)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moto-2t-4t';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '20832', 'Motorbike 4T 10W-40 Scooter MB (1L)', 'motorbike-4t-10w-40-scooter-mb-1l', 'Description
@@ -8067,7 +8067,7 @@ assure une puissance maximale du moteur', FALSE, TRUE, brand_id, cat_id, NOW())
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: 21719 - Motorbike Molygen 4T 10W-40 Scooter (1L)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs-moto';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '21719', 'Motorbike Molygen 4T 10W-40 Scooter (1L)', 'motorbike-molygen-4t-10w-40-scooter-1l', 'Description
@@ -8092,7 +8092,7 @@ assure une puissance maximale du moteur', FALSE, TRUE, brand_id, cat_id, NOW())
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: 2526 - Motorbike 4T 10W-30 Street (1L)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moto-2t-4t';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '2526', 'Motorbike 4T 10W-30 Street (1L)', 'motorbike-4t-10w-30-street-1l', 'Description
@@ -8118,7 +8118,7 @@ lubrification optimale dans toutes les conditions de service', FALSE, TRUE, bran
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: TSC-00299 - Motorbike 4T Synth 10W-60 Street Race
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moto-2t-4t';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'TSC-00299', 'Motorbike 4T Synth 10W-60 Street Race', 'motorbike-4t-synth-10w-60-street-race', 'Description
@@ -8148,7 +8148,7 @@ stabilité au vieillissement optimale', FALSE, TRUE, brand_id, cat_id, NOW())
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: 20754 - Motorbike 4T Synth 10W-40 Street Race (4L)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moto-2t-4t';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '20754', 'Motorbike 4T Synth 10W-40 Street Race (4L)', 'motorbike-4t-synth-10w-40-street-race-4l', 'Description
@@ -8175,7 +8175,7 @@ stabilité au vieillissement optimale', FALSE, TRUE, brand_id, cat_id, NOW())
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: 20753 - Motorbike 4T Synth 10W-40 Street Race (1L)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moto-2t-4t';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '20753', 'Motorbike 4T Synth 10W-40 Street Race (1L)', 'motorbike-4t-synth-10w-40-street-race-1l', 'Description
@@ -8202,7 +8202,7 @@ stabilité au vieillissement optimale', FALSE, TRUE, brand_id, cat_id, NOW())
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: 3058 - Motorbike 4T 15W-50 Offroad (4L)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moto-2t-4t';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '3058', 'Motorbike 4T 15W-50 Offroad (4L)', 'motorbike-4t-15w-50-offroad-4l', 'Description
@@ -8249,7 +8249,7 @@ empêche la formation de dépôts', FALSE, TRUE, brand_id, cat_id, NOW())
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: 1243 - Liqui Moly Motorbike 4T 10W-40 Street (4L)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moto-2t-4t';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '1243', 'Liqui Moly Motorbike 4T 10W-40 Street (4L)', 'liqui-moly-motorbike-4t-10w-40-street-4l', 'Description
@@ -8275,7 +8275,7 @@ lubrification optimale dans toutes les conditions de service', FALSE, TRUE, bran
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: TSC-00305 - Liqui Moly Motorbike 4T 10W-40 Street (1L)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moto-2t-4t';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'TSC-00305', 'Liqui Moly Motorbike 4T 10W-40 Street (1L)', 'liqui-moly-motorbike-4t-10w-40-street-1l', 'Description
@@ -8340,7 +8340,7 @@ Caractéristiques du produit :
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: 7814-1 - MANNOL Moto 4 temps 10W-50 (1L)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs-moto';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'mannol';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '7814-1', 'MANNOL Moto 4 temps 10W-50 (1L)', 'mannol-moto-4-temps-10w-50-1l', 'Description
@@ -8361,7 +8361,7 @@ Caractéristiques du produit :
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: TSC-00309 - MANNOL Moto 4 temps 10W-50 (4L)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs-moto';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'mannol';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'TSC-00309', 'MANNOL Moto 4 temps 10W-50 (4L)', 'mannol-moto-4-temps-10w-50-4l', 'Description
@@ -8382,7 +8382,7 @@ Caractéristiques du produit :
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: 7832-4 - MANNOL Huile moteur 4 temps Powerbike 15W-50 (4L)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs-moto';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'mannol';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '7832-4', 'MANNOL Huile moteur 4 temps Powerbike 15W-50 (4L)', 'mannol-huile-moteur-4-temps-powerbike-15w-50-4l', 'Description
@@ -8401,7 +8401,7 @@ Caractéristiques du produit :
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: 7832-1 - MANNOL Huile moteur 4 temps Powerbike 15W-50 (1L)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs-moto';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'mannol';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '7832-1', 'MANNOL Huile moteur 4 temps Powerbike 15W-50 (1L)', 'mannol-huile-moteur-4-temps-powerbike-15w-50-1l', 'Description
@@ -8422,7 +8422,7 @@ Caractéristiques du produit :
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: 7812-4 - MANNOL 4 temps moto 10W-40  (4L)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs-moto';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'mannol';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '7812-4', 'MANNOL 4 temps moto 10W-40  (4L)', 'mannol-4-temps-moto-10w-40-4l', 'Description
@@ -8441,7 +8441,7 @@ Caractéristiques du produit :
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: 7812 - MANNOL 4 temps moto 10W-40  (1L)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs-moto';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'mannol';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '7812', 'MANNOL 4 temps moto 10W-40  (1L)', 'mannol-4-temps-moto-10w-40-1l', 'Description
@@ -8501,7 +8501,7 @@ Propriétés du produit :
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: 9903 - MANNOL Additif boite de vitesse manuel (100ml)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-boite-transmission';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huile-de-boite';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'mannol';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '9903', 'MANNOL Additif boite de vitesse manuel (100ml)', 'mannol-additif-boite-de-vitesse-manuel-100ml', 'Description
@@ -8540,7 +8540,7 @@ Elle peut être recommandée pour la lubrification des équipements auxiliaires 
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: TSC-00318 - MANNOL Hypoïde 80W-90 GL-4/GL-5 LS
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-boite-transmission';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huile-de-boite';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'mannol';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'TSC-00318', 'MANNOL Hypoïde 80W-90 GL-4/GL-5 LS', 'mannol-hypoide-80w-90-gl-4-gl-5-ls', 'Description
@@ -8565,7 +8565,7 @@ Caractéristiques du produit :
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: TSC-00319 - MANNOL CVT NS-3
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs-moto';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huile-de-boite';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'mannol';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'TSC-00319', 'MANNOL CVT NS-3', 'mannol-cvt-ns-3', 'Description
@@ -8587,7 +8587,7 @@ Caractéristiques du produit :
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: TSC-00320 - MANNOL multivéhicule ATF JWS
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-boite-transmission';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huile-de-boite';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'mannol';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'TSC-00320', 'MANNOL multivéhicule ATF JWS', 'mannol-multivehicule-atf-jws', 'Description
@@ -8652,7 +8652,7 @@ Caractéristiques du produit :
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: TSC-00324 - MANNOL ATF AG60
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-boite-transmission';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huile-de-boite';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'mannol';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'TSC-00324', 'MANNOL ATF AG60', 'mannol-atf-ag60', 'Description
@@ -8713,7 +8713,7 @@ Caractéristiques du produit :
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: 8208 - MANNOL ATF T-IV (1L)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-boite-transmission';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huile-de-boite';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'mannol';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '8208', 'MANNOL ATF T-IV (1L)', 'mannol-atf-t-iv', 'Description
@@ -8730,7 +8730,7 @@ Caractéristiques du produit :
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: TSC-00328 - MANNOL ATF SP-IV
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-boite-transmission';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huile-de-boite';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'mannol';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'TSC-00328', 'MANNOL ATF SP-IV', 'mannol-atf-sp-iv', 'Description
@@ -8750,7 +8750,7 @@ Caractéristiques du produit :
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: TSC-00329 - Transmission à variation continue ATF  (CVT) MANNO
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-boite-transmission';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huile-de-boite';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'mannol';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'TSC-00329', 'Transmission à variation continue ATF  (CVT) MANNOL', 'transmission-a-variation-continue-atf-cvt-mannol', 'Description
@@ -8770,7 +8770,7 @@ Caractéristiques du produit :
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: 8206 - MANNOL Automatique ATF Dexron III
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-boite-transmission';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huile-de-boite';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'mannol';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '8206', 'MANNOL Automatique ATF Dexron III', 'mannol-automatique-atf-dexron-iii', 'Description
@@ -8791,7 +8791,7 @@ Caractéristiques du produit :
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: TSC-00331 - MANNOL ATF SP-III
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-boite-transmission';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huile-de-boite';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'mannol';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'TSC-00331', 'MANNOL ATF SP-III', 'mannol-atf-sp-iii', 'Description
@@ -8827,7 +8827,7 @@ Caractéristiques du produit :
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: 8205 - Mannol Automatique ATF Dexron II
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-boite-transmission';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huile-de-boite';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'mannol';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '8205', 'Mannol Automatique ATF Dexron II', 'mannol-automatique-atf-dexron-ii', 'Description
@@ -8925,7 +8925,7 @@ Pénètre efficacement dans les plus petites crevasses, déplaçant l’eau des 
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: 9881 - MANNOL Lithium spray (400ml)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'entretien-chaine';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'mannol';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '9881', 'MANNOL Lithium spray (400ml)', 'mannol-lithium-spray-400ml', 'Description
@@ -8943,7 +8943,7 @@ Pénètre efficacement dans les plus petites crevasses, déplaçant l’eau des 
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: 9968 - Mannol anti-fuite boite de vitesse
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-boite-transmission';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huile-de-boite';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'mannol';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '9968', 'Mannol anti-fuite boite de vitesse', 'mannol-anti-fuite-boite-de-vitesse', 'Description
@@ -8982,7 +8982,7 @@ Propriétés :
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: 9863 - Mannol Silicone Spray  (400ml)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'nettoyage-interieur';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'mannol';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '9863', 'Mannol Silicone Spray  (400ml)', 'mannol-silicone-spray-400ml', 'Description
@@ -9022,7 +9022,7 @@ Propriétés :
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: 9964 - Mannol Huile pour filtre à air (200ml)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moto-2t-4t';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtre-a-air';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'mannol';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '9964', 'Mannol Huile pour filtre à air (200ml)', 'huile-pour-filtre-a-air-200ml', 'Description
@@ -9043,7 +9043,7 @@ Retirer le filtre. Nettoyer la surface du filtre des grosses particules de pouss
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: 9670 - Mannol Nettoyant pour montage (500ml)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'entretien-chaine';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'mannol';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '9670', 'Mannol Nettoyant pour montage (500ml)', 'mannol-nettoyant-pour-montage-500ml', 'Description
@@ -9064,7 +9064,7 @@ Vaporisez le nettoyant sur les pièces sales et dans leurs articulations et lais
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: 9672 - Mannol Nettoyant pour montage  (600ml)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'entretien-chaine';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'mannol';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '9672', 'Mannol Nettoyant pour montage  (600ml)', 'mannol-nettoyant-pour-montage-600ml', 'Description
@@ -9085,7 +9085,7 @@ Vaporisez le nettoyant sur les pièces sales et dans leurs articulations et lais
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: 9692 - Mannol Nettoyant pour freins (450ml)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'liquide-frein';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'mannol';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '9692', 'Mannol Nettoyant pour freins (450ml)', 'mannol-nettoyant-pour-freins-450ml', 'Description
@@ -9099,7 +9099,7 @@ Pulvériser le nettoyant sur les pièces sales et laisser s’écouler. Les piè
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: 9965 - MANNOL Nettoyant pour radiateur (250ml)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'antigel-refroidissement';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'mannol';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '9965', 'MANNOL Nettoyant pour radiateur (250ml)', 'mannol-nettoyant-pour-radiateur-250ml', 'Description
@@ -9196,7 +9196,7 @@ avant d’appliquer le lubrifiant pour chaîne MANNOL 7901, il est recommandé d
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: 9970 - Mannol Nettoyant pour carburateur (400ml)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moto-2t-4t';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'mannol';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '9970', 'Mannol Nettoyant pour carburateur (400ml)', 'mannol-nettoyant-pour-carburateur-400ml', 'Description
@@ -9219,7 +9219,7 @@ Application:
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: 9873 - Mannol Nettoyant pour soupape d’admission (400ml)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs-carburant';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'mannol';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '9873', 'Mannol Nettoyant pour soupape d’admission (400ml)', 'mannol-nettoyant-pour-soupape-dadmission-400ml', 'Description
@@ -9241,7 +9241,7 @@ Application :
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: 9893 - Mannol Nettoyant pour contacts (450ml)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'batteries';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'mannol';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '9893', 'Mannol Nettoyant pour contacts (450ml)', 'mannol-nettoyant-pour-contacts-450ml', 'Description
@@ -9317,7 +9317,7 @@ CUMMINS – CES', FALSE, TRUE, brand_id, cat_id, NOW())
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: TSC-00357 - WOLF OIL LEAK STOP (325ml)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'wolf';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'TSC-00357', 'WOLF OIL LEAK STOP (325ml)', 'wolf-oil-leak-stop', 'Description
@@ -9349,7 +9349,7 @@ Ce produit garantit des performances continues du système en offrant un nettoya
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: TSC-00359 - WOLF ENGINE FLUSH (325ml)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'wolf';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'TSC-00359', 'WOLF ENGINE FLUSH (325ml)', 'wolf-engine-flush-325ml', 'Description
@@ -9424,7 +9424,7 @@ Arrêt de la transmission par courroie. Pulvériser une petite quantité de prod
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: 9671 - Mannol nettoyant Moteur spray (450ml)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moto-2t-4t';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'mannol';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '9671', 'Mannol nettoyant Moteur spray (450ml)', 'mannol-nettoyant-moteur-spray-450ml', 'Description
@@ -9441,7 +9441,7 @@ Arrêt de la transmission par courroie. Pulvériser une petite quantité de prod
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: 9944 - Mannol Nettoyant pour cuir (450ml)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moto-2t-4t';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'mannol';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '9944', 'Mannol Nettoyant pour cuir (450ml)', 'mannol-nettoyant-pour-cuir-450ml', 'Description
@@ -9462,7 +9462,7 @@ Bien agiter le flacon avant utilisation. Vaporiser sur la surface à traiter, pu
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: 8986 - Liqui Moly Nettoyeur papillon des gaz Pro-Line (40
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs-carburant';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '8986', 'Liqui Moly Nettoyeur papillon des gaz Pro-Line (400ml)', 'liqui-moly-nettoyeur-papillon-des-gaz-pro-line-400ml', 'Description
@@ -9514,7 +9514,7 @@ Pulvériser une fine couche uniforme sur les composants à traiter. Si nécessai
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: 4066 - Liqui Moly Nettoyant pour débit­mètre d’air (200ml
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-air';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '4066', 'Liqui Moly Nettoyant pour débit­mètre d’air (200ml)', 'liqui-moly-nettoyant-pour-debitmetre-dair-200ml', 'Description
@@ -9547,7 +9547,7 @@ Remarque : contient des substances particulièrement inflammables. C’est pou
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: 1832 - Liqui Moly élec­tro­nique spray (200ml)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'batteries';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '1832', 'Liqui Moly élec­tro­nique spray (200ml)', 'liqui-moly-electronique-spray-200ml', 'Description
@@ -9567,7 +9567,7 @@ Remarque :
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: 3391 - Liqui Moly LM 40 Spray Multi Fonc­tionnel  (400ml)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '3391', 'Liqui Moly LM 40 Spray Multi Fonc­tionnel  (400ml)', 'liqui-moly-lm-40-spray-multi-fonctionnel-400ml', 'Lubrifie, nettoie, détache, protège et entretient. Préserve durablement la mobilité des pièces. Atteint les zones les plus reculées grâce à l’excellent pouvoir de pénétration. Détache très rapidement les vis rouillées et calcinées. S’infiltre et élimine la saleté, ainsi que les restes d’huile et de graisse coriaces. Protège contre la rouille et la corrosion, et entretient les pièces chromées.
@@ -9598,7 +9598,7 @@ haute résistance', FALSE, TRUE, brand_id, cat_id, NOW())
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: 3304 - Liqui Moly Multi-Spray Plus 7 (300ml)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'lavage-carrosserie';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '3304', 'Liqui Moly Multi-Spray Plus 7 (300ml)', 'liqui-moly-multi-spray-plus-7-300ml', 'Spray multifonction offrant 7 avantages clés : 1. Refoule l’humidité et démarre les moteurs humides. 2. Protège le système électrique, élimine les courants de fuite et les courts-circuits. 3. Desserre les vis grippées par la rouille. 4. Préserve la mobilité des pièces. 5. Protège contre la corrosion et l’oxydation. 6. Entretient les pièces en caoutchouc, empêche leur gel. 7. Élimine les grincements et n’attaque pas les plastiques, vernis, métaux et bois.
@@ -9625,7 +9625,7 @@ utilisation universelle', FALSE, TRUE, brand_id, cat_id, NOW())
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: 1816 - Liqui Moly Nettoyeur rapide (Spray) (500ml)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-boite-transmission';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '1816', 'Liqui Moly Nettoyeur rapide (Spray) (500ml)', 'liqui-moly-nettoyeur-rapide-spray-500ml', 'Description
@@ -9660,7 +9660,7 @@ Bien pulvériser le produit sur les vis ou écrous à desserrer et laisser agir 
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: 1844 - Liqui Moly Nettoyant d’ex­té­rieur de carbu­ra­teu
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-air';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '1844', 'Liqui Moly Nettoyant d’ex­té­rieur de carbu­ra­teur (400ml)', 'liqui-moly-nettoyant-dexterieur-de-carburateur-400ml', 'Description
@@ -9762,7 +9762,7 @@ Remarque : ne pas utiliser sur des peintures et surfaces à haute température 
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: 1597 - Liqui Moly Nettoyant jantes spécial (1L)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '1597', 'Liqui Moly Nettoyant jantes spécial (1L)', 'liqui-moly-nettoyant-jantes-special-1l', 'Description
@@ -9851,7 +9851,7 @@ Bien secouer la boîte avant l’utilisation et la tenir à la verticale lors de
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: 3326 - Liqui Moly Nettoyant compar­ti­ment moteur (400ML)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '3326', 'Liqui Moly Nettoyant compar­ti­ment moteur (400ML)', 'liqui-moly-nettoyant-compartiment-moteur-400ml', 'Description
@@ -9880,7 +9880,7 @@ Mode d’emploi : dilué avec de l’eau dans la proportion 1:100. 50 ml de liq
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: 4087 - Entretien des circuits de clima­ti­sa­tion (Spray)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '4087', 'Entretien des circuits de clima­ti­sa­tion (Spray) 250ml', 'entretien-des-circuits-de-climatisation-spray-250ml', 'Description
@@ -9961,7 +9961,7 @@ laver à l’eau tiède avant la première utilisation. Après utilisation, lave
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: 5189 - Pro-Line Nettoyant radiateur   (1L)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'antigel-refroidissement';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '5189', 'Pro-Line Nettoyant radiateur   (1L)', 'pro-line-nettoyant-radiateur-1l', 'Description
@@ -9980,7 +9980,7 @@ Entreposer à l’abri', FALSE, TRUE, brand_id, cat_id, NOW())
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: 21317 - Additif de Diesel anti-bactérien (1L)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-air';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '21317', 'Additif de Diesel anti-bactérien (1L)', 'additif-de-diesel-anti-bacterien-1l', 'Description
@@ -9996,7 +9996,7 @@ Dosage 1 : 1000. Un gobelet gradué, 25 ml, suffit pour 25 l de carburant diesel
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: 8380 - Rinçage Diesel  (500ml)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-air';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '8380', 'Rinçage Diesel  (500ml)', 'rincage-diesel-500ml', 'Description
@@ -10060,7 +10060,7 @@ L’augmentation de l’inflammabilité ainsi qu’une amélioration de l’effe
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: 2962 - Pro-Line JetClean Nettoyant pour système diesel (5
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-carburant';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '2962', 'Pro-Line JetClean Nettoyant pour système diesel (500ml)', 'pro-line-jetclean-nettoyant-pour-systeme-diesel-500ml', 'Description
@@ -10078,7 +10078,7 @@ Prêt à l’emploi pour le remplissage des appareils JetClean, à verser non di
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: 1797 - Pro-Line Nettoyant pour système diesel (500ml)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-carburant';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '1797', 'Pro-Line Nettoyant pour système diesel (500ml)', 'pro-line-nettoyant-pour-systeme-diesel-500ml', 'Description
@@ -10093,7 +10093,7 @@ Appli­ca­tion
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: 8366 - Super Additif Diesel (250ml)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-carburant';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '8366', 'Super Additif Diesel (250ml)', 'super-additif-diesel-250ml', 'Description
@@ -10109,7 +10109,7 @@ Propreté des injecteurs et protection anticorrosion par versement dans le rése
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: 8373 - nettoyant soupapes (150ml)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs-carburant';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '8373', 'nettoyant soupapes (150ml)', 'nettoyant-soupapes-150ml', 'Description
@@ -10166,7 +10166,7 @@ rentable
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: 2970 - Pro-Line Nettoyant pour système essence (500ml)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-boite-transmission';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '2970', 'Pro-Line Nettoyant pour système essence (500ml)', 'pro-line-nettoyant-pour-systeme-essence-500ml', 'Description
@@ -10181,7 +10181,7 @@ Pour un versement direct dans le réservoir de carburant. A appliquer de manièr
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: 8361 - Nettoyant pour systèmes d‘ injection (300ml)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs-carburant';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '8361', 'Nettoyant pour systèmes d‘ injection (300ml)', 'nettoyant-pour-systemes-d-injection-300ml', 'Description
@@ -10196,7 +10196,7 @@ Appli­ca­tion
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: 7918 - MANNOL Légende Ultra 0W-20
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'mannol';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '7918', 'MANNOL Légende Ultra 0W-20', 'mannol-legende-ultra-0w-20', 'Description
@@ -10213,11 +10213,11 @@ Caractéristiques du produit :
   VALUES (gen_random_uuid()::text, prod_id, '1 Pièce', 135.0, 10, '7918-U')
   ON CONFLICT ("skuVariant") DO NOTHING;
   INSERT INTO public."ProductSpecs" (id, "productId", viscosity, "apiStandard", "aeceaStandard", "jasoStandard", "isFullySynth", "isSemiSynth", "isMinerale", "DPFCompatible", "TurboCompatible", "HybridCompatible", "OEMApprovals")
-  VALUES (gen_random_uuid()::text, prod_id, '0W20', NULL, NULL, NULL, FALSE, FALSE, FALSE, FALSE, TRUE, FALSE, NULL)
+  VALUES (gen_random_uuid()::text, prod_id, '0W20', 'API SP', 'ILSAC GF-6A', NULL, TRUE, FALSE, FALSE, FALSE, TRUE, TRUE, 'Toyota; Honda; Nissan; Mazda; Suzuki; Subaru; GM dexos1 Gen 2; GM dexos1 Gen 3; Ford WSS-M2C947-A')
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: TSC-00406 - Nettoyant boîte de vitesses (150ml)
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'entretien-chaine';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huile-de-boite';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'TSC-00406', 'Nettoyant boîte de vitesses (150ml)', 'nettoyant-boite-de-vitesses-150ml', 'Description
@@ -10244,7 +10244,7 @@ Verser le contenu de la bouteille dans l’huile de boîte de vitesses chaude (t
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: 2512 - Nettoyeur de boîtes de vitesses auto­ma­tiques (30
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huile-de-boite';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '2512', 'Nettoyeur de boîtes de vitesses auto­ma­tiques (300ml)', 'nettoyeur-de-boites-de-vitesses-automatiques-300ml', 'Description
@@ -10345,7 +10345,7 @@ empêche le vieillissement rapide de l’huile', FALSE, TRUE, brand_id, cat_id, 
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: 8336 - ATF Additive ( 250ML )
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-boite-transmission';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huile-de-boite';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '8336', 'ATF Additive ( 250ML )', 'atf-additive-250ml', 'Description
@@ -10364,7 +10364,7 @@ Ajouter l’additif ATF à l’huile de boîte de vitesses par le trou de la jau
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: 8367 - Additif poussoirs hydrau­liques
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs-moto';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '8367', 'Additif poussoirs hydrau­liques', 'additif-poussoirs-hydrauliques', 'Description
@@ -10400,7 +10400,7 @@ Une bouteille de 300 ml traite jusqu’à 4-6 l d’huile moteur. Ne pas ajout
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: 2428 - Pro-Line Rinçage moteur 5L
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '2428', 'Pro-Line Rinçage moteur 5L', 'pro-line-rincage-moteur-5l', 'Description
@@ -10419,7 +10419,7 @@ Appli­ca­tion
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: 2427 - Pro-Line Rinçage moteur
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '2427', 'Pro-Line Rinçage moteur', 'pro-line-rincage-moteur', 'Description
@@ -10438,7 +10438,7 @@ Appli­ca­tion
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: 5200 - Rinçage boue d‘huile
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs-moto';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '5200', 'Rinçage boue d‘huile', 'rincage-boue-dhuile', 'Description
@@ -10484,7 +10484,7 @@ convie', FALSE, TRUE, brand_id, cat_id, NOW())
   ON CONFLICT ("skuVariant") DO NOTHING;
 
   -- Product: 1145 - Huile pour boîtier de direction 3100
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'direction-assistee';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '1145', 'Huile pour boîtier de direction 3100', 'huile-pour-boitier-de-direction-3100', 'Description
@@ -10516,7 +10516,7 @@ MB 343.0', FALSE, TRUE, brand_id, cat_id, NOW())
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: TSC-00419 - Huile de boîte de vitesses à double embrayage 8100
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huile-de-boite';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'TSC-00419', 'Huile de boîte de vitesses à double embrayage 8100', 'huile-de-boite-de-vitesses-a-double-embrayage-8100', 'Description
@@ -10542,7 +10542,7 @@ Fiat 9.55550-HE2, Fiat 9', FALSE, TRUE, brand_id, cat_id, NOW())
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: 21378 - Top Tec ATF 1950
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huile-de-boite';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '21378', 'Top Tec ATF 1950', 'top-tec-atf-1950', 'Description
@@ -10559,7 +10559,7 @@ MB 236.17', FALSE, TRUE, brand_id, cat_id, NOW())
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: 3648 - Top Tec ATF 1900
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huile-de-boite';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '3648', 'Top Tec ATF 1900', 'top-tec-atf-1900', 'Description
@@ -10579,7 +10579,7 @@ MB 236.15', FALSE, TRUE, brand_id, cat_id, NOW())
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: 20625 - Top Tec ATF 1800 R
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huile-de-boite';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '20625', 'Top Tec ATF 1800 R', 'top-tec-atf-1800-r', 'Description
@@ -10595,7 +10595,7 @@ Huile de boîte de vitesses automatique de haute performance et de faible viscos
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: TSC-00423 - Top Tec ATF 1800
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huile-de-boite';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'TSC-00423', 'Top Tec ATF 1800', 'top-tec-atf-1800', 'Description
@@ -10631,7 +10631,7 @@ très bonnes propriétés à basse température', FALSE, TRUE, brand_id, cat_id,
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: 3659 - Top Tec ATF 1600
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huile-de-boite';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '3659', 'Top Tec ATF 1600', 'top-tec-atf-1600', 'Description
@@ -10651,7 +10651,7 @@ MB 236.12', FALSE, TRUE, brand_id, cat_id, NOW())
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: 3662 - Top Tec ATF 1400
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huile-de-boite';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '3662', 'Top Tec ATF 1400', 'top-tec-atf-1400', 'Description
@@ -10683,7 +10683,7 @@ très bonnes propriétés à basse température', FALSE, TRUE, brand_id, cat_id,
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: TSC-00426 - Top Tec ATF 1200
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huile-de-boite';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'TSC-00426', 'Top Tec ATF 1200', 'top-tec-atf-1200', 'Description
@@ -10719,7 +10719,7 @@ très bonnes propriétés à basse température', FALSE, TRUE, brand_id, cat_id,
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: TSC-00427 - Top Tec ATF 1100
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huile-de-boite';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'TSC-00427', 'Top Tec ATF 1100', 'top-tec-atf-1100', 'Description
@@ -10740,7 +10740,7 @@ Pour boîtes de vitesses automatiques, boîtes de vitesses mécaniques, système
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: 20842 - Top Tec MTF 5100 75W
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huile-de-boite';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '20842', 'Top Tec MTF 5100 75W', 'top-tec-mtf-5100-75w', 'Description
@@ -10771,7 +10771,7 @@ comportement synchrone remarquable', FALSE, TRUE, brand_id, cat_id, NOW())
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: 8103 - Huile pour engrenages MANNOL Extra 75W-90 GL-4/GL-
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huile-de-boite';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'mannol';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '8103', 'Huile pour engrenages MANNOL Extra 75W-90 GL-4/GL-5 LS', 'huile-pour-engrenages-mannol-extra-75w-90-gl-4-gl-5-ls', 'Description
@@ -10790,7 +10790,7 @@ Caractéristiques du produit :
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: TSC-00430 - MANNOL Molibden 10W-40
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'mannol';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'TSC-00430', 'MANNOL Molibden 10W-40', 'mannol-molibden-10w-40', 'Description
@@ -10812,7 +10812,7 @@ Conçu pour les moteurs essence et diesel d’une large flotte de voitures (voit
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: 65648 - WOLF OFFICIALTECH 5W30 C3 SP EXTRA
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moto-2t-4t';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'wolf';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '65648', 'WOLF OFFICIALTECH 5W30 C3 SP EXTRA', 'wolf-officialtech-5w30-c3-sp-extra', 'Description
@@ -10843,7 +10843,7 @@ La norme Dexos 2 implique un liq', FALSE, TRUE, brand_id, cat_id, NOW())
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: TSC-00432 - MANNOL Diesel Extra 10W-40
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'mannol';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'TSC-00432', 'MANNOL Diesel Extra 10W-40', '2005', 'Description
@@ -10866,7 +10866,7 @@ Caractéristiques du produit :
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: TSC-00433 - MANNOL Classic 10W-40
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'mannol';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'TSC-00433', 'MANNOL Classic 10W-40', 'mannol-classic-10w-40-2', 'Description
@@ -10886,7 +10886,7 @@ Propriétés du produit :
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: TSC-00434 - MANNOL Diesel Extra 10W-40
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'mannol';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'TSC-00434', 'MANNOL Diesel Extra 10W-40', 'mannol-diesel-extra-10w-40-2', 'Description
@@ -10906,7 +10906,7 @@ Caractéristiques du produit :
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: TSC-00435 - MANNOL Classic 10W-40
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'mannol';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'TSC-00435', 'MANNOL Classic 10W-40', 'mannol-classic-10w-40-3', 'Description
@@ -10926,7 +10926,7 @@ Propriétés du produit :
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: TSC-00436 - WOLF OFFICIALTECH 5W30 MS-Ford
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'wolf';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'TSC-00436', 'WOLF OFFICIALTECH 5W30 MS-Ford', 'wolf-officialtech-5w30-ms-ford', 'Description
@@ -10950,7 +10950,7 @@ Huile nouvelle génération, à faible viscosité et à fluidité élevée. Elle
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: TSC-00437 - WOLF OFFICIALTECH 0W30 SP
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'wolf';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'TSC-00437', 'WOLF OFFICIALTECH 0W30 SP', 'wolf-officialtech-0w30-sp', 'Description
@@ -10967,11 +10967,11 @@ Grâce à sa faible viscosité et à sa remarquable fluidité, cette huile rédu
   VALUES (gen_random_uuid()::text, prod_id, '1 Pièce', 179.0, 10, 'TSC-00437-U')
   ON CONFLICT ("skuVariant") DO NOTHING;
   INSERT INTO public."ProductSpecs" (id, "productId", viscosity, "apiStandard", "aeceaStandard", "jasoStandard", "isFullySynth", "isSemiSynth", "isMinerale", "DPFCompatible", "TurboCompatible", "HybridCompatible", "OEMApprovals")
-  VALUES (gen_random_uuid()::text, prod_id, '0W30', NULL, 'ACEA C2.', NULL, TRUE, FALSE, FALSE, FALSE, TRUE, FALSE, NULL)
+  VALUES (gen_random_uuid()::text, prod_id, '0W30', 'API SP', 'ACEA C2', NULL, TRUE, FALSE, FALSE, TRUE, TRUE, FALSE, 'Hyundai; Kia; PSA B71 2312')
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: TSC-00438 - WOLF VITALTECH 5W40
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'wolf';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'TSC-00438', 'WOLF VITALTECH 5W40', 'wolf-vitaltech-5w40', 'Description
@@ -10998,7 +10998,7 @@ Grâce à sa faible viscosité et à sa fluidité remarquable, cette huile garan
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: TSC-00439 - WOLF GUARDTECH 15W40 SL/CF
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'wolf';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'TSC-00439', 'WOLF GUARDTECH 15W40 SL/CF', 'wolf-guardtech-15w40-sl-cf', 'Description
@@ -11019,7 +11019,7 @@ Formulation d’huile résistante, qui garde le moteur propre, limite l’oxydat
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: 23300 - WOLF OFFICIALTECH 75W-85 GL 5
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huile-de-boite';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'wolf';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '23300', 'WOLF OFFICIALTECH 75W-85 GL 5', 'wolf-officialtech-75w-85-gl-5', 'Description
@@ -11040,7 +11040,7 @@ Ce liquide de transmission manuelle assure une lubrification adéquate à des te
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: 2408 - WOLF EXTENDTECH 80W90 LS GL 5
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huile-de-boite';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'wolf';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '2408', 'WOLF EXTENDTECH 80W90 LS GL 5', 'wolf-extendtech-80w90-ls-gl-5', 'Description
@@ -11061,7 +11061,7 @@ Cette huile pour transmission de haute qualité est formulée avec d’excellent
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: TSC-00442 - WOLF EXTENDTECH 75W90 GL 5
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huile-de-boite';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'wolf';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'TSC-00442', 'WOLF EXTENDTECH 75W90 GL 5', 'wolf-extendtech-75w90-gl-5', 'Description
@@ -11082,7 +11082,7 @@ Huiles de base soigneusement sélectionnées et associées à un ensemble d’ad
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: TSC-00443 - WOLF ECOTECH CVT FLUID
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huile-de-boite';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'wolf';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'TSC-00443', 'WOLF ECOTECH CVT FLUID', 'wolf-ecotech-cvt-fluid', 'Description
@@ -11103,7 +11103,7 @@ Spécifiquement conçu pour les transmissions CVT, ce fluide haute qualité gara
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: TSC-00444 - WOLF ECOTECH DSG FLUID
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huile-de-boite';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'wolf';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'TSC-00444', 'WOLF ECOTECH DSG FLUID', 'wolf-ecotech-dsg-fluid', 'Description
@@ -11124,7 +11124,7 @@ Ce fluide haute qualité allie la fonctionnalité des transmissions manuelles et
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: 7703 - MANNOL Formule énergétique PSA 5W-30 4L
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'mannol';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '7703', 'MANNOL Formule énergétique PSA 5W-30 4L', 'mannol-formule-energetique-psa-5w-30-4l', 'Description
@@ -11146,7 +11146,7 @@ Caractéristiques du produit :
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: 7713 - MANNOL pour voitures coréennes 5W-30 4L
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-huile';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-moteur';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'mannol';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '7713', 'MANNOL pour voitures coréennes 5W-30 4L', 'mannol-pour-voitures-coreennes-5w-30-4l', 'Description
@@ -11168,7 +11168,7 @@ Caractéristiques du produit :
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: 8109 - MANNOL Unigear 75W-80 GL-4/GL-5
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-boite-transmission';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huile-de-boite';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'mannol';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '8109', 'MANNOL Unigear 75W-80 GL-4/GL-5', 'mannol-unigear-75w-80-gl-4-gl-5', 'Description
@@ -11188,7 +11188,7 @@ Caractéristiques du produit :
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: 9958 - MANNOL Nettoyant DPF 9958
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'filtres-carburant';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'mannol';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '9958', 'MANNOL Nettoyant DPF 9958', 'mannol-nettoyant-dpf-9958', 'Description
@@ -11365,7 +11365,7 @@ Français La couche limite qui se forme lors de l’application du produit a les
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: 9900 - MANNOL Nettoyeur moteur
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs-moto';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'mannol';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '9900', 'MANNOL Nettoyeur moteur', 'mannol-nettoyeur-moteur-9900', 'Description
@@ -11387,7 +11387,7 @@ Caractéristiques du produit :
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: 8102 - MANNOL Maxpower 75W-140 GL-5  4*4
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huiles-boite-transmission';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'huile-de-boite';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'mannol';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, '8102', 'MANNOL Maxpower 75W-140 GL-5  4*4', 'mannol-maxpower-75w-140-gl-5-44', 'Description
@@ -11407,7 +11407,7 @@ Caractéristiques du produit :
   ON CONFLICT ("productId") DO NOTHING;
 
   -- Product: TSC-00459 - Engine Flush
-  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs-moto';
+  SELECT id INTO cat_id FROM public."Category" WHERE slug = 'additifs';
   SELECT id INTO brand_id FROM public."Brand" WHERE slug = 'liqui-moly';
   INSERT INTO public."Product" (id, sku, "nameFr", slug, description, "isFeatured", "isPublished", "brandId", "categoryId", "createdAt")
   VALUES (gen_random_uuid()::text, 'TSC-00459', 'Engine Flush', '2116', 'Description

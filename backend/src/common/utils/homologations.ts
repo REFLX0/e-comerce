@@ -162,6 +162,22 @@ export function extractHomologationTokens(rawQuery: string): HomologationExtract
     remaining = remaining.replace(apiMatch[0], ' ');
   }
 
+  // 12. ILSAC Standards (e.g., ILSAC GF-6A, GF-6, GF-5)
+  const ilsacMatches = [...raw.matchAll(/(?:ilsac\s+)?(gf[\s-]?[56][ab]?)\b/gi)];
+  for (const ilsacMatch of ilsacMatches) {
+    const code = ilsacMatch[1].toUpperCase().replace(/\s+/, '-');
+    tokens.push(`ILSAC ${code}`, code);
+    remaining = remaining.replace(ilsacMatch[0], ' ');
+  }
+
+  // 13. Manufacturer Name Approval Tokens (e.g. Toyota, Lexus, Hyundai, Kia...)
+  const mfrMatches = [...raw.matchAll(/\b(toyota|lexus|honda|hyundai|kia|nissan|mazda|subaru|suzuki|daihatsu|isuzu)\b/gi)];
+  for (const mfrMatch of mfrMatches) {
+    const make = mfrMatch[1].charAt(0).toUpperCase() + mfrMatch[1].slice(1).toLowerCase();
+    tokens.push(make);
+    remaining = remaining.replace(mfrMatch[0], ' ');
+  }
+
   return {
     tokens: [...new Set(tokens)],
     remainingQuery: remaining.replace(/\s+/g, ' ').trim(),

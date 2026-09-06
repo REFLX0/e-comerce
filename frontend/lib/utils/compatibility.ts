@@ -244,6 +244,18 @@ function vehicleMatchesSpecs(product: Product, vehicle: CompatibilityVehicle) {
   const specs = product.specs
   if (!specs) return false
 
+  const makeAliases = getMakeAliases(getMake(vehicle))
+
+  // Check OEM approvals if available
+  const rawApprovals = specs.oemApprovals || []
+  if (rawApprovals.length > 0 && makeAliases.length > 0) {
+    const approvalsLower = rawApprovals.join(' ').toLowerCase()
+    const matchesMake = makeAliases.some((alias) => approvalsLower.includes(alias.toLowerCase()))
+    if (matchesMake) {
+      return true
+    }
+  }
+
   const hasFuelConstraint = specs.fuelTypes && specs.fuelTypes.length > 0
   const hasCylindersConstraint =
     specs.minCylinders != null || specs.maxCylinders != null

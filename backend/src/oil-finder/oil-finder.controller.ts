@@ -15,12 +15,16 @@ export class OilFinderController {
   ) {}
 
   private async resolveProductsForSpec(oilSpec: OilSpecRef, vehicleMake?: string) {
-    const oemTokens = oilSpec.oemApproval
+    const rawTokens = oilSpec.oemApproval
       ? extractHomologationTokens(oilSpec.oemApproval).tokens
       : [];
+    const oemTokens = [...rawTokens];
+    if (vehicleMake && vehicleMake.length >= 3 && !oemTokens.some((t) => t.toLowerCase() === vehicleMake.toLowerCase())) {
+      oemTokens.push(vehicleMake);
+    }
 
     let productsResult = { data: [] as any[], total: 0 };
-    let matchQuality: 'exact_oem' | 'compatible_grade' | 'viscosity_only' = 'exact_oem';
+    let matchQuality: 'exact_oem' | 'compatible_grade' | 'viscosity_only' | 'safety_net' = 'exact_oem';
 
     // 1. Primary pass: match strictly by viscosity + exact OEM homologation tokens under huiles-moteur
     // (e.g. Castrol EDGE, Total Ineo Long Life, Shell Helix Ultra, Liqui Moly Top Tec 4200, Mannol Energy Combi LL)
@@ -91,6 +95,7 @@ export class OilFinderController {
 
     // 6. Production safety net: ensure top motor oils are presented if specific spec has no exact matches in catalog
     if (productsResult.total === 0) {
+      matchQuality = 'safety_net';
       productsResult = await this.productsService.findAll({
         categorySlug: 'huiles-moteur',
       });
@@ -149,6 +154,17 @@ export class OilFinderController {
         return 0;
       });
 
+      // Determine genuine compatibility
+      const prodVisc = (prod.specs?.viscosity || '').replace(/[\s-]/g, '').toUpperCase();
+      const targetVisc = (oilSpec.viscosity || '').replace(/[\s-]/g, '').toUpperCase();
+      const viscMatches = Boolean(targetVisc && prodVisc && (prodVisc.includes(targetVisc) || targetVisc.includes(prodVisc)));
+
+      const isConfirmed = matchQuality !== 'safety_net' && (
+        matchingTokens.length > 0 ||
+        (viscMatches && score >= 100) ||
+        (viscMatches && matchQuality === 'viscosity_only')
+      );
+
       return {
         ...prod,
         specs: prod.specs
@@ -159,6 +175,7 @@ export class OilFinderController {
           : prod.specs,
         relevanceScore: score,
         isExactOemMatch: matchingTokens.length > 0,
+        compatLevel: isConfirmed ? 'confirmed' : 'check',
       };
     });
 

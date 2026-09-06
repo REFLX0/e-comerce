@@ -586,6 +586,34 @@ describe('OilFinderService', () => {
       }
     });
 
+    it('resolves official 0W-20 spec (4.4L) for TOYOTA RAV 4 2.5 Hybrid 4WD (AVA44_)', async () => {
+      prisma.oilFinderVehicle.findMany.mockResolvedValue([]);
+      prisma.$queryRawUnsafe.mockResolvedValue([]);
+
+      const res = await service.findByVehicle('TOYOTA', 'RAV 4', '2.5 Hybrid 4WD (AVA44_)');
+      expect(res.status).toBe('found');
+      if (res.status === 'found') {
+        expect(res.oilSpec.viscosity).toBe('0W-20');
+        expect(res.oilSpec.capacityLiters).toBe(4.4);
+        expect(res.oilSpec.fuelType).toBe('hybrid');
+        expect(res.oilSpec.oemApproval).toContain('Toyota / Lexus API SP / ILSAC GF-6A');
+      }
+    });
+
+    it('resolves official 0W-30 ACEA C2 spec (3.6L) for HYUNDAI i20 II 1.0L (G3LC) - 100ch', async () => {
+      prisma.oilFinderVehicle.findMany.mockResolvedValue([]);
+      prisma.$queryRawUnsafe.mockResolvedValue([]);
+
+      const res = await service.findByVehicle('HYUNDAI', 'i20 II', '1.0L (G3LC) - 100ch');
+      expect(res.status).toBe('found');
+      if (res.status === 'found') {
+        expect(res.oilSpec.viscosity).toBe('0W-30');
+        expect(res.oilSpec.capacityLiters).toBe(3.6);
+        expect(res.oilSpec.aceaStandard).toBe('C2');
+        expect(res.oilSpec.oemApproval).toContain('Hyundai / Kia ACEA C2');
+      }
+    });
+
     it('merges engines from both TecDoc and OilFinderVehicle in getEngines', async () => {
       prisma.$queryRawUnsafe.mockResolvedValue([
         { engineCode: '4.5 D-4D (VDJ200)', yearFrom: 2008, yearTo: 2021 },

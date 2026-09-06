@@ -1266,16 +1266,39 @@ export function resolveAutomotiveOemSpec(
     }
 
     if (isHybrid) {
+      const is25Hybrid = combined.includes('2.5') || (displacementCc !== null && displacementCc >= 2400 && displacementCc <= 2600);
+      const isRav4 = combined.includes('rav');
+      const capacity = (is25Hybrid || isRav4) ? 4.4 : calcCapacity(3.7);
       return {
         viscosity: '0W-20',
-        apiStandard: 'SP / ILSAC GF-6',
-        aceaStandard: 'C5',
-        oemApproval: 'Toyota Hybrid / Asian Modern Fuel Economy',
-        capacityLiters: calcCapacity(3.7),
+        apiStandard: 'API SP / ILSAC GF-6A',
+        aceaStandard: 'ILSAC GF-6A',
+        oemApproval: 'Toyota / Lexus API SP / ILSAC GF-6A',
+        capacityLiters: capacity,
         changeIntervalKm: 15000,
         fuelType,
-        displacementCc,
-        powerHp,
+        displacementCc: displacementCc || (is25Hybrid ? 2494 : null),
+        powerHp: powerHp || (is25Hybrid ? 155 : null),
+      };
+    }
+
+    // Hyundai / Kia Kappa 1.0 T-GDi (G3LC) - 100ch / 120ch (Official: 0W-30 ACEA C2, 3.6L)
+    if (
+      combined.includes('g3lc') ||
+      ((mfrSlug === 'hyundai' || mfrSlug === 'kia') &&
+        (combined.includes('1.0') || displacementCc === 998) &&
+        (combined.includes('t-gdi') || combined.includes('tgdi') || combined.includes('turbo') || powerHp === 100 || powerHp === 120))
+    ) {
+      return {
+        viscosity: '0W-30',
+        apiStandard: 'SN',
+        aceaStandard: 'C2',
+        oemApproval: 'Hyundai / Kia ACEA C2 (0W-30)',
+        capacityLiters: 3.6,
+        changeIntervalKm: 15000,
+        fuelType: 'essence',
+        displacementCc: 998,
+        powerHp: powerHp || 100,
       };
     }
     if (detectedYear >= 2008 || isDiesel) {
