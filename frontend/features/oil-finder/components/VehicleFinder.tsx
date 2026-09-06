@@ -281,7 +281,7 @@ export function VehicleFinder({ onClose, initialVehicleType }: VehicleFinderProp
   const activeSpec = selectedEngine?.previewOil
 
   return (
-    <div ref={containerRef} className="relative mx-auto w-full max-w-5xl rounded-2xl border border-slate-200/90 bg-white shadow-xl">
+    <div ref={containerRef} className="relative mx-auto w-full max-w-5xl rounded-2xl border border-slate-200/90 bg-white shadow-xl min-h-[420px] transition-all">
       {/* ═══════════════ HEADER BAR ═══════════════ */}
       <div className="border-b border-slate-100 bg-gradient-to-r from-slate-50/80 via-white to-slate-50/80 px-5 py-4 sm:px-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
@@ -308,7 +308,7 @@ export function VehicleFinder({ onClose, initialVehicleType }: VehicleFinderProp
       </div>
 
       {/* ═══════════════ 3 HORIZONTAL CONTROLS (MARQUE - MODÈLE - MOTORISATION) ═══════════════ */}
-      <div className="p-5 sm:p-6">
+      <div className="p-5 sm:p-6 pb-48 sm:pb-56">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5 relative">
           {/* ────────────────── 1. MARQUE ────────────────── */}
           <div className="relative flex flex-col gap-1.5">
@@ -353,17 +353,17 @@ export function VehicleFinder({ onClose, initialVehicleType }: VehicleFinderProp
 
             {/* FLOATING DROPDOWN: MARQUE */}
             {activeDropdown === 'make' && (
-              <div className="absolute top-[102%] left-0 right-0 z-50 rounded-2xl border border-slate-200 bg-white p-3 shadow-2xl animate-in fade-in zoom-in-95 duration-150 md:min-w-[340px]">
+              <div className="absolute top-[104%] left-0 right-0 z-[100] rounded-2xl border border-slate-200/90 bg-white p-3.5 shadow-[0_25px_60px_-15px_rgba(22,37,76,0.25)] animate-in fade-in zoom-in-95 duration-150 md:min-w-[340px]">
                 {/* Search box */}
-                <div className="relative mb-2.5">
-                  <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                <div className="relative mb-3">
+                  <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
                   <input
                     ref={makeInputRef}
                     type="text"
                     value={makeSearch}
                     onChange={(e) => setMakeSearch(e.target.value)}
                     placeholder="Rechercher une marque (ex: Ford, Renault)..."
-                    className="w-full rounded-xl border border-slate-200 bg-slate-50/50 pl-8 pr-3 py-2 text-xs font-semibold text-slate-900 outline-none focus:border-blue-500 focus:bg-white focus:ring-1 focus:ring-blue-500"
+                    className="w-full rounded-xl border border-slate-200 bg-slate-50/70 pl-9 pr-8 py-2.5 text-xs font-semibold text-slate-900 outline-none focus:border-[#001E3C] focus:bg-white focus:ring-2 focus:ring-[#001E3C]/15 transition"
                   />
                   {makeSearch && (
                     <button onClick={() => setMakeSearch('')} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
@@ -373,9 +373,9 @@ export function VehicleFinder({ onClose, initialVehicleType }: VehicleFinderProp
                 </div>
 
                 {/* All Makes List */}
-                <div className="max-h-64 overflow-y-auto space-y-0.5 pr-1">
+                <div className="max-h-60 overflow-y-auto space-y-0.5 pr-1">
                   {filteredMakes.length === 0 ? (
-                    <div className="py-4 text-center text-xs text-slate-400">
+                    <div className="py-6 text-center text-xs text-slate-400">
                       Aucune marque trouvée pour &quot;{makeSearch}&quot;
                     </div>
                   ) : (
@@ -386,14 +386,14 @@ export function VehicleFinder({ onClose, initialVehicleType }: VehicleFinderProp
                           key={m.id || m.slug || m.name}
                           type="button"
                           onClick={() => handleSelectMake(m)}
-                          className={`w-full flex items-center justify-between gap-2.5 px-3 py-2 rounded-xl text-xs font-bold transition text-left cursor-pointer ${
+                          className={`w-full flex items-center justify-between gap-2.5 px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition text-left cursor-pointer ${
                             isSelected
-                              ? 'bg-[#001E3C] text-white'
-                              : 'text-slate-800 hover:bg-slate-100/80'
+                              ? 'bg-[#001E3C] text-white font-bold'
+                              : 'text-slate-800 hover:bg-slate-100/90'
                           }`}
                         >
                           <span className="truncate">{m.name}</span>
-                          {isSelected && <Check size={14} className="text-[#D4A76A] shrink-0" />}
+                          {isSelected && <Check size={15} className="text-[#D4A76A] shrink-0" />}
                         </button>
                       )
                     })
@@ -462,17 +462,17 @@ export function VehicleFinder({ onClose, initialVehicleType }: VehicleFinderProp
 
             {/* FLOATING DROPDOWN: MODÈLE */}
             {activeDropdown === 'model' && selectedMake && (
-              <div className="absolute top-[102%] left-0 right-0 z-50 rounded-2xl border border-slate-200 bg-white p-3 shadow-2xl animate-in fade-in zoom-in-95 duration-150 md:min-w-[360px]">
+              <div className="absolute top-[104%] left-0 right-0 z-[100] rounded-2xl border border-slate-200/90 bg-white p-3.5 shadow-[0_25px_60px_-15px_rgba(22,37,76,0.25)] animate-in fade-in zoom-in-95 duration-150 md:min-w-[360px]">
                 {/* Search box */}
-                <div className="relative mb-2.5">
-                  <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                <div className="relative mb-3">
+                  <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
                   <input
                     ref={modelInputRef}
                     type="text"
                     value={modelSearch}
                     onChange={(e) => setModelSearch(e.target.value)}
                     placeholder="Filtrer par modèle ou année (ex: Focus, 2014)..."
-                    className="w-full rounded-xl border border-slate-200 bg-slate-50/50 pl-8 pr-3 py-2 text-xs font-semibold text-slate-900 outline-none focus:border-blue-500 focus:bg-white focus:ring-1 focus:ring-blue-500"
+                    className="w-full rounded-xl border border-slate-200 bg-slate-50/70 pl-9 pr-8 py-2.5 text-xs font-semibold text-slate-900 outline-none focus:border-[#001E3C] focus:bg-white focus:ring-2 focus:ring-[#001E3C]/15 transition"
                   />
                   {modelSearch && (
                     <button onClick={() => setModelSearch('')} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
@@ -582,13 +582,13 @@ export function VehicleFinder({ onClose, initialVehicleType }: VehicleFinderProp
 
             {/* FLOATING DROPDOWN: MOTORISATION */}
             {activeDropdown === 'engine' && selectedModel && (
-              <div className="absolute top-[102%] left-0 right-0 md:-left-24 md:right-0 z-50 rounded-2xl border border-slate-200 bg-white p-3 shadow-2xl animate-in fade-in zoom-in-95 duration-150 md:min-w-[420px]">
+              <div className="absolute top-[104%] left-0 right-0 md:-left-24 md:right-0 z-[100] rounded-2xl border border-slate-200/90 bg-white p-3.5 shadow-[0_25px_60px_-15px_rgba(22,37,76,0.25)] animate-in fade-in zoom-in-95 duration-150 md:min-w-[420px]">
                 {/* Fuel Filter Pills Tabs */}
                 <div className="mb-2.5 flex items-center gap-1 p-1 bg-slate-100/80 rounded-xl">
                   <button
                     type="button"
                     onClick={() => setEngineFuelFilter('all')}
-                    className={`flex-1 py-1 text-[11px] font-black rounded-lg transition cursor-pointer ${
+                    className={`flex-1 py-1.5 text-[11px] font-black rounded-lg transition cursor-pointer ${
                       engineFuelFilter === 'all'
                         ? 'bg-white text-slate-900 shadow-2xs'
                         : 'text-slate-500 hover:text-slate-900'
@@ -599,7 +599,7 @@ export function VehicleFinder({ onClose, initialVehicleType }: VehicleFinderProp
                   <button
                     type="button"
                     onClick={() => setEngineFuelFilter('essence')}
-                    className={`flex-1 py-1 text-[11px] font-black rounded-lg transition cursor-pointer ${
+                    className={`flex-1 py-1.5 text-[11px] font-black rounded-lg transition cursor-pointer ${
                       engineFuelFilter === 'essence'
                         ? 'bg-emerald-600 text-white shadow-2xs'
                         : 'text-slate-600 hover:text-emerald-700'
@@ -610,7 +610,7 @@ export function VehicleFinder({ onClose, initialVehicleType }: VehicleFinderProp
                   <button
                     type="button"
                     onClick={() => setEngineFuelFilter('diesel')}
-                    className={`flex-1 py-1 text-[11px] font-black rounded-lg transition cursor-pointer ${
+                    className={`flex-1 py-1.5 text-[11px] font-black rounded-lg transition cursor-pointer ${
                       engineFuelFilter === 'diesel'
                         ? 'bg-blue-600 text-white shadow-2xs'
                         : 'text-slate-600 hover:text-blue-700'
@@ -621,7 +621,7 @@ export function VehicleFinder({ onClose, initialVehicleType }: VehicleFinderProp
                   <button
                     type="button"
                     onClick={() => setEngineFuelFilter('hybrid')}
-                    className={`flex-1 py-1 text-[11px] font-black rounded-lg transition cursor-pointer ${
+                    className={`flex-1 py-1.5 text-[11px] font-black rounded-lg transition cursor-pointer ${
                       engineFuelFilter === 'hybrid'
                         ? 'bg-purple-600 text-white shadow-2xs'
                         : 'text-slate-600 hover:text-purple-700'
@@ -632,15 +632,15 @@ export function VehicleFinder({ onClose, initialVehicleType }: VehicleFinderProp
                 </div>
 
                 {/* Search box */}
-                <div className="relative mb-2.5">
-                  <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                <div className="relative mb-3">
+                  <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
                   <input
                     ref={engineInputRef}
                     type="text"
                     value={engineSearch}
                     onChange={(e) => setEngineSearch(e.target.value)}
                     placeholder="Filtrer moteur ou puissance (ex: 1.0, 125ch, EcoBoost)..."
-                    className="w-full rounded-xl border border-slate-200 bg-slate-50/50 pl-8 pr-3 py-2 text-xs font-semibold text-slate-900 outline-none focus:border-blue-500 focus:bg-white focus:ring-1 focus:ring-blue-500"
+                    className="w-full rounded-xl border border-slate-200 bg-slate-50/70 pl-9 pr-8 py-2.5 text-xs font-semibold text-slate-900 outline-none focus:border-[#001E3C] focus:bg-white focus:ring-2 focus:ring-[#001E3C]/15 transition"
                   />
                   {engineSearch && (
                     <button onClick={() => setEngineSearch('')} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">

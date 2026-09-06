@@ -44,8 +44,8 @@ export function OilFinderTabs() {
 
   return (
     <div id="oil-finder" className="mx-auto w-full max-w-6xl px-4">
-      <div className="overflow-hidden rounded-[2rem] border border-brand-primary/10 bg-white shadow-[0_24px_70px_rgba(22,37,76,0.12)]">
-        <div className="border-b border-brand-primary/10 bg-[linear-gradient(110deg,#16254c_0%,#1f356b_68%,#283e79_100%)] px-5 py-5 text-white sm:px-8 md:px-10">
+      <div className="rounded-[2rem] border border-brand-primary/10 bg-white shadow-[0_24px_70px_rgba(22,37,76,0.12)] relative">
+        <div className="rounded-t-[2rem] border-b border-brand-primary/10 bg-[linear-gradient(110deg,#16254c_0%,#1f356b_68%,#283e79_100%)] px-5 py-5 text-white sm:px-8 md:px-10">
           <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-start gap-3">
               <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-brand-accent text-brand-primary shadow-lg shadow-black/10">
@@ -91,7 +91,7 @@ export function OilFinderTabs() {
           </div>
         </div>
 
-        <div className="relative bg-[radial-gradient(circle_at_top_right,rgba(212,167,106,0.12),transparent_30%),#fff]">
+        <div className="rounded-b-[2rem] relative bg-[radial-gradient(circle_at_top_right,rgba(212,167,106,0.12),transparent_30%),#fff]">
         <AnimatePresence mode="wait">
           {step === 1 && (
             <motion.div
