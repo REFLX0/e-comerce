@@ -1,4 +1,4 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 
 // Default settings seeded if they don't exist in the DB
@@ -34,20 +34,22 @@ const DEFAULT_SETTINGS: Record<string, string> = {
 
 @Injectable()
 export class SettingsService implements OnModuleInit {
+  private readonly logger = new Logger(SettingsService.name);
+
   constructor(private readonly prisma: PrismaService) {}
 
   // Seed defaults on startup
   async onModuleInit() {
-    for (const [key, value] of Object.entries(DEFAULT_SETTINGS)) {
-      await this.prisma.setting.upsert({
-        where: { key },
-        create: { key, value },
-        update: {}, // Don't overwrite existing values
-      });
-    }
-
-    // Force update address and matricule if they still have old Carthage or Chaker values
     try {
+      for (const [key, value] of Object.entries(DEFAULT_SETTINGS)) {
+        await this.prisma.setting.upsert({
+          where: { key },
+          create: { key, value },
+          update: {}, // Don't overwrite existing values
+        });
+      }
+
+      // Force update address and matricule if they still have old Carthage or Chaker values
       const currentAddr = await this.prisma.setting.findUnique({ where: { key: 'FACTURE_ADDRESS' } });
       if (currentAddr && (currentAddr.value.includes('Carthage') || currentAddr.value.includes('Chaker'))) {
         await this.prisma.setting.update({
@@ -63,7 +65,9 @@ export class SettingsService implements OnModuleInit {
           data: { value: JSON.stringify('100000/A/P/000') },
         });
       }
-    } catch {}
+    } catch (err: any) {
+      this.logger.warn(`Could not seed default settings on module init: ${err.message}`);
+    }
   }
 
   async getAll(): Promise<Record<string, unknown>> {

@@ -37,6 +37,9 @@ export class AuthService {
         maxRetriesPerRequest: 1,
         connectTimeout: 2000,
       });
+      this.redis.on('error', () => {
+        // Silently ignore when running locally without Redis
+      });
       this.redis.connect().catch(() => {
         this.redis = null;
       });

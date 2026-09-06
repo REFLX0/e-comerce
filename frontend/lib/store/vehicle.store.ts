@@ -9,6 +9,9 @@ export interface SelectedVehicle {
   modelId: string
   modelName: string
   modelSlug: string
+  generationId?: string
+  generationName?: string
+  generationSlug?: string
   engineCode: string
 }
 

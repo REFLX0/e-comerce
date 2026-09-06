@@ -1,5 +1,5 @@
 import { apiGet } from './client'
-import type { Product, PaginatedResponse, ProductFilters, FuelType, VehicleMake, VehicleModel, VehicleEngine, FacetsResponse } from '@/lib/types'
+import type { Product, PaginatedResponse, ProductFilters, FuelType, VehicleMake, VehicleModel, VehicleGeneration, VehicleEngine, FacetsResponse } from '@/lib/types'
 
 export const productsApi = {
   getAll: (filters?: ProductFilters) =>
@@ -42,6 +42,7 @@ export const productsApi = {
   getCompatible: (params: {
     make: string
     model: string
+    generation?: string
     engine?: string
     categorySlug?: string
     brands?: string
@@ -66,7 +67,7 @@ export const productsApi = {
       params as Record<string, string | number | boolean | undefined>
     ),
 
-  getOilByVehicle: (params: { make: string; model: string; engineCode?: string }) =>
+  getOilByVehicle: (params: { make: string; model: string; engineCode?: string; generation?: string }) =>
     apiGet<{ data: Product[]; total: number; oilFinderStatus?: string; oilSpec?: any }>('/oil-finder/vehicle', params),
 
   getOilRecommendations: (params: { vehicleType: string; displacementCc: number; power: number; fuelType: FuelType; make?: string }) =>
@@ -80,7 +81,19 @@ export const productsApi = {
 
   getModels: (makeName: string) => apiGet<VehicleModel[]>(`/oil-finder/makes/${encodeURIComponent(makeName)}/models`),
 
-  getEngines: (makeName: string, modelName: string) => apiGet<VehicleEngine[]>(`/oil-finder/models/${encodeURIComponent(makeName)}/${encodeURIComponent(modelName)}/engines`),
+  getGenerations: (makeName: string, modelName: string) =>
+    apiGet<VehicleGeneration[]>(`/oil-finder/models/${encodeURIComponent(makeName)}/${encodeURIComponent(modelName)}/generations`),
+
+  getEngines: (makeName: string, modelName: string, generationName?: string) => {
+    if (generationName) {
+      return apiGet<VehicleEngine[]>(
+        `/oil-finder/models/${encodeURIComponent(makeName)}/${encodeURIComponent(modelName)}/generations/${encodeURIComponent(generationName)}/engines`
+      )
+    }
+    return apiGet<VehicleEngine[]>(
+      `/oil-finder/models/${encodeURIComponent(makeName)}/${encodeURIComponent(modelName)}/engines`
+    )
+  },
 
   getAIRecommendation: (params: { make: string; model: string; engineCode?: string }) =>
     apiGet<{ recommendation: string }>('/oil-finder/ai-recommendation', params),

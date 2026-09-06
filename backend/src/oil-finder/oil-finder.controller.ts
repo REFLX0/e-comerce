@@ -259,11 +259,29 @@ export class OilFinderController {
     return this.oilFinderService.getModels(make);
   }
 
+  @Get('models/:make/:model/generations')
+  async getGenerations(
+    @Param('make') make: string,
+    @Param('model') model: string,
+  ) {
+    return this.oilFinderService.getGenerations(make, model);
+  }
+
+  @Get('models/:make/:model/generations/:generation/engines')
+  async getGenerationEngines(
+    @Param('make') make: string,
+    @Param('model') model: string,
+    @Param('generation') generation: string,
+  ) {
+    return this.oilFinderService.getEngines(make, model, generation);
+  }
+
   @Get('models/:make/:model/engines')
   async getEngines(
     @Param('make') make: string,
     @Param('model') model: string,
+    @Query('generation') generation?: string,
   ) {
-    return this.oilFinderService.getEngines(make, model);
+    return this.oilFinderService.getEngines(make, model, generation);
   }
 }

@@ -12,6 +12,7 @@ export interface CompatibleFilters {
   priceMax?: number;
   inStockOnly?: boolean;
   isNew?: boolean;
+  generation?: string;
   isFeatured?: boolean;
   search?: string;
   type?: string;

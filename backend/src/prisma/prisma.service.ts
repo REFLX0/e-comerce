@@ -1,4 +1,4 @@
-import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
+import { Injectable, Logger, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 // @ts-ignore
 import { Pool } from 'pg';
@@ -21,13 +21,17 @@ export class PrismaService
     });
   }
 
+  private readonly logger = new Logger(PrismaService.name);
+
   async onModuleInit() {
-    await this.$connect();
     try {
+      await this.$connect();
       await this.$executeRawUnsafe(
         `ALTER TABLE public."Product" ADD COLUMN IF NOT EXISTS "shortDescription" TEXT;`,
       );
-    } catch {}
+    } catch (err: any) {
+      this.logger.warn(`Could not connect to database on startup: ${err.message}`);
+    }
   }
 
   async onModuleDestroy() {

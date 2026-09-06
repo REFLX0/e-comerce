@@ -360,17 +360,59 @@ model VehicleModel {
   vehicleType     VehicleType            @default(AUTOMOBILE)
   name            String
   slug            String                 @unique
+  generations     VehicleGeneration[]
   compatibilities VehicleCompatibility[]
 
   @@schema("public")
 }
 
+model VehicleGeneration {
+  id              String                 @id @default(cuid())
+  modelId         String
+  model           VehicleModel           @relation(fields: [modelId], references: [id], onDelete: Cascade)
+  name            String
+  slug            String
+  code            String?
+  yearFrom        Int?
+  yearTo          Int?
+  imageUrl        String?
+  engines         VehicleEngine[]
+  compatibilities VehicleCompatibility[]
+
+  @@unique([modelId, slug])
+  @@index([modelId])
+  @@schema("public")
+}
+
+model VehicleEngine {
+  id              String                 @id @default(cuid())
+  generationId    String
+  generation      VehicleGeneration      @relation(fields: [generationId], references: [id], onDelete: Cascade)
+  name            String
+  engineCode      String
+  displacementCc  Int?
+  powerKw         Float?
+  powerHp         Float?
+  fuelType        String
+  oilSpecId       String?
+  oilSpec         OilFinderOilSpec?      @relation(fields: [oilSpecId], references: [id], onDelete: SetNull)
+  compatibilities VehicleCompatibility[]
+
+  @@index([generationId])
+  @@index([engineCode])
+  @@schema("public")
+}
+
 model VehicleCompatibility {
-  id             String       @id @default(cuid())
+  id             String             @id @default(cuid())
   productId      String
-  product        Product      @relation(fields: [productId], references: [id], onDelete: Cascade)
+  product        Product            @relation(fields: [productId], references: [id], onDelete: Cascade)
   vehicleModelId String
-  vehicleModel   VehicleModel @relation(fields: [vehicleModelId], references: [id], onDelete: Cascade)
+  vehicleModel   VehicleModel       @relation(fields: [vehicleModelId], references: [id], onDelete: Cascade)
+  generationId   String?
+  generation     VehicleGeneration? @relation(fields: [generationId], references: [id], onDelete: SetNull)
+  engineId       String?
+  engine         VehicleEngine?     @relation(fields: [engineId], references: [id], onDelete: SetNull)
   engineCode     String?
   yearFrom       Int?
   yearTo         Int?
@@ -423,6 +465,7 @@ model OilFinderOilSpec {
   changeIntervalKm Int?
   fingerprint      String             @unique
   vehicles         OilFinderVehicle[]
+  vehicleEngines   VehicleEngine[]
 
   @@schema("public")
 }

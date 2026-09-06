@@ -8,7 +8,7 @@ import { useAuthStore } from '@/lib/store/auth.store'
 import { useQuery } from '@tanstack/react-query'
 import { carsApi } from '@/lib/api/cars'
 
-const VEHICLE_PARAM_KEYS = ['make', 'model', 'engine']
+const VEHICLE_PARAM_KEYS = ['make', 'model', 'generation', 'engine']
 
 /**
  * Keeps the URL in sync with the persisted vehicle selection.
@@ -72,6 +72,9 @@ export function useVehicleUrlSync(enabled = true) {
     const params = new URLSearchParams(searchParams.toString())
     if (!hasMake && vehicle.makeSlug) params.set('make', vehicle.makeSlug)
     if (!hasModel && vehicle.modelSlug) params.set('model', vehicle.modelSlug)
+    if (vehicle.generationSlug && !params.get('generation')) {
+      params.set('generation', vehicle.generationSlug)
+    }
     if (vehicle.engineCode && !params.get('engine')) {
       params.set('engine', vehicle.engineCode)
     }
@@ -79,7 +82,7 @@ export function useVehicleUrlSync(enabled = true) {
     const qs = params.toString()
     router.replace(qs ? `${pathname}?${qs}` : pathname)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [enabled, vehicle?.makeSlug, vehicle?.modelSlug, vehicle?.engineCode, searchParams])
+  }, [enabled, vehicle?.makeSlug, vehicle?.modelSlug, vehicle?.generationSlug, vehicle?.engineCode, searchParams])
 }
 
 export { VEHICLE_PARAM_KEYS }

@@ -87,6 +87,16 @@ export interface VehicleModel {
   yearTo?: number | null
 }
 
+export interface VehicleGeneration {
+  id?: string
+  modelId?: string
+  name: string
+  slug: string
+  code?: string | null
+  yearFrom?: number | null
+  yearTo?: number | null
+}
+
 export interface VehicleEngine {
   engineCode: string
   yearFrom: number | null

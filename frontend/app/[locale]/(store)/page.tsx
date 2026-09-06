@@ -15,7 +15,7 @@ export default function Home() {
       <HeroBanner />
 
       {/* 2. Oil Finder — full section */}
-      <section id="oil-finder" className="relative overflow-hidden border-b border-brand-primary/10 bg-[linear-gradient(180deg,#f7f9fc_0%,#ffffff_72%)] py-16 md:py-20">
+      <section id="oil-finder" className="relative overflow-visible border-b border-brand-primary/10 bg-[linear-gradient(180deg,#f7f9fc_0%,#ffffff_72%)] py-16 md:py-20">
         <div aria-hidden="true" className="absolute -left-32 top-12 h-80 w-80 rounded-full bg-brand-accent/10 blur-3xl" />
         <div aria-hidden="true" className="absolute -right-40 bottom-0 h-96 w-96 rounded-full bg-brand-primary/[0.06] blur-3xl" />
         <div className="section-padding">

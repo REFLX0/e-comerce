@@ -40,6 +40,7 @@ export class VehiclesController {
     @Query() filters: Record<string, string> = {},
   ) {
     return this.vehiclesService.getCompatiblePage(make, model, engine, {
+      generation: filters.generation || undefined,
       categorySlug: filters.categorySlug || undefined,
       brands: filters.brands || undefined,
       viscosity: filters.viscosity || undefined,

@@ -6,7 +6,8 @@
     "deleteOutDir": true,
     "assets": [
       { "include": "admin/logo.jpg", "outDir": "dist/admin" },
-      { "include": "mail/templates/**/*", "outDir": "dist" }
+      { "include": "mail/templates/**/*", "outDir": "dist" },
+      { "include": "oil-finder/*.json", "outDir": "dist/src/oil-finder" }
     ]
   }
 }
