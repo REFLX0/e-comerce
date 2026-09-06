@@ -170,10 +170,44 @@ export function extractHomologationTokens(rawQuery: string): HomologationExtract
     remaining = remaining.replace(ilsacMatch[0], ' ');
   }
 
-  // 13. Manufacturer Name Approval Tokens (e.g. Toyota, Lexus, Hyundai, Kia...)
-  const mfrMatches = [...raw.matchAll(/\b(toyota|lexus|honda|hyundai|kia|nissan|mazda|subaru|suzuki|daihatsu|isuzu)\b/gi)];
+  // 13. Volvo Approvals (e.g., VCC RBS0-2AE, VCC 95200377)
+  const volvoMatches = [...raw.matchAll(/(?:volvo\s*)?(?:vcc[\s-]?)?(rbs0[\s-]?2ae|95200377)\b/gi)];
+  for (const vMatch of volvoMatches) {
+    const rawCode = vMatch[1].toUpperCase().replace(/\s+/, '-');
+    if (rawCode.includes('RBS0')) {
+      tokens.push('VCC RBS0-2AE', 'VCC-RBS0-2AE', 'RBS0-2AE', 'Volvo VCC-RBS0-2AE', 'Volvo VCC RBS0-2AE');
+    } else if (rawCode.includes('95200377')) {
+      tokens.push('VCC 95200377', '95200377', 'Volvo VCC 95200377');
+    }
+    remaining = remaining.replace(vMatch[0], ' ');
+  }
+
+  // 14. Jaguar Land Rover Approvals (e.g., STJLR.03.5007, STJLR.51.5122, STJLR.03.5006, STJLR.03.5004, STJLR.03.5005)
+  const jlrMatches = [...raw.matchAll(/(?:stjlr|jlr)[\s.]?(\d{2})[\s.]?(\d{4})\b/gi)];
+  for (const jlrMatch of jlrMatches) {
+    const code1 = jlrMatch[1];
+    const code2 = jlrMatch[2];
+    tokens.push(
+      `STJLR.${code1}.${code2}`,
+      `STJLR ${code1}.${code2}`,
+      `STJLR.${code1}${code2}`,
+      `STJLR ${code1} ${code2}`,
+      `JLR STJLR.${code1}.${code2}`,
+    );
+    remaining = remaining.replace(jlrMatch[0], ' ');
+  }
+
+  // 15. Opel / Vauxhall Stellantis Approvals (e.g., OV0401547)
+  const opelOvMatches = [...raw.matchAll(/ov[\s-]?0?40[\s-]?1547\b/gi)];
+  for (const ovMatch of opelOvMatches) {
+    tokens.push('OV0401547', 'OV 040 1547', 'Opel OV0401547');
+    remaining = remaining.replace(ovMatch[0], ' ');
+  }
+
+  // 16. Manufacturer Name Approval Tokens (e.g. Toyota, Lexus, Honda, Hyundai, Kia, Volvo, Jaguar, Land Rover...)
+  const mfrMatches = [...raw.matchAll(/\b(toyota|lexus|honda|hyundai|kia|nissan|mazda|subaru|suzuki|daihatsu|isuzu|volvo|jaguar|land[\s-]rover)\b/gi)];
   for (const mfrMatch of mfrMatches) {
-    const make = mfrMatch[1].charAt(0).toUpperCase() + mfrMatch[1].slice(1).toLowerCase();
+    const make = mfrMatch[1].replace(/[\s-]+/, ' ').split(' ').map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ');
     tokens.push(make);
     remaining = remaining.replace(mfrMatch[0], ' ');
   }

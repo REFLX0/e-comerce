@@ -628,6 +628,167 @@ describe('OilFinderService', () => {
       }
     });
 
+    it('resolves official 0W-20 Volvo VCC-RBS0-2AE spec (5.6L) for Volvo XC60 II 2.0 D4 (D4204T14)', async () => {
+      prisma.oilFinderVehicle.findMany.mockResolvedValue([]);
+      prisma.$queryRawUnsafe.mockResolvedValue([]);
+
+      const res = await service.findByVehicle('VOLVO', 'XC60 II', '2.0 D4 (D4204T14) - 190ch');
+      expect(res.status).toBe('found');
+      if (res.status === 'found') {
+        expect(res.oilSpec.viscosity).toBe('0W-20');
+        expect(res.oilSpec.capacityLiters).toBe(5.6);
+        expect(res.oilSpec.aceaStandard).toBe('C5');
+        expect(res.oilSpec.oemApproval).toContain('Volvo VCC-RBS0-2AE');
+      }
+    });
+
+    it('resolves official 0W-30 Volvo VCC 95200377 spec (5.8L) for classic Volvo XC60 I 2.4 D5', async () => {
+      prisma.oilFinderVehicle.findMany.mockResolvedValue([]);
+      prisma.$queryRawUnsafe.mockResolvedValue([]);
+
+      const res = await service.findByVehicle('VOLVO', 'XC60 I', '2.4 D5 AWD (D5244T) - 205ch (2011)');
+      expect(res.status).toBe('found');
+      if (res.status === 'found') {
+        expect(res.oilSpec.viscosity).toBe('0W-30');
+        expect(res.oilSpec.capacityLiters).toBe(5.8);
+        expect(res.oilSpec.oemApproval).toContain('Volvo VCC 95200377');
+      }
+    });
+
+    it('resolves official 0W-30 STJLR.03.5007 spec (6.5L) for Range Rover Evoque 2.0 D180 Ingenium', async () => {
+      prisma.oilFinderVehicle.findMany.mockResolvedValue([]);
+      prisma.$queryRawUnsafe.mockResolvedValue([]);
+
+      const res = await service.findByVehicle('Land Rover', 'Range Rover Evoque', '2.0 D180 (AJ200D) - 180ch (2019)');
+      expect(res.status).toBe('found');
+      if (res.status === 'found') {
+        expect(res.oilSpec.viscosity).toBe('0W-30');
+        expect(res.oilSpec.capacityLiters).toBe(6.5);
+        expect(res.oilSpec.aceaStandard).toBe('C2');
+        expect(res.oilSpec.oemApproval).toContain('STJLR.03.5007');
+      }
+    });
+
+    it('resolves official 0W-20 STJLR.51.5122 spec (7.0L) for Land Rover Discovery Sport 2.0 Si4 Ingenium Petrol', async () => {
+      prisma.oilFinderVehicle.findMany.mockResolvedValue([]);
+      prisma.$queryRawUnsafe.mockResolvedValue([]);
+
+      const res = await service.findByVehicle('Land Rover', 'Discovery Sport', '2.0 Si4 (AJ200P) - 240ch (2018)');
+      expect(res.status).toBe('found');
+      if (res.status === 'found') {
+        expect(res.oilSpec.viscosity).toBe('0W-20');
+        expect(res.oilSpec.capacityLiters).toBe(7.0);
+        expect(res.oilSpec.oemApproval).toContain('STJLR.51.5122');
+      }
+    });
+
+    it('resolves official 5W-30 C1 STJLR.03.5005 spec (6.0L) for Range Rover Sport 3.0 SDV6', async () => {
+      prisma.oilFinderVehicle.findMany.mockResolvedValue([]);
+      prisma.$queryRawUnsafe.mockResolvedValue([]);
+
+      const res = await service.findByVehicle('Land Rover', 'Range Rover Sport', '3.0 SDV6 (306DT) - 306ch (2017)');
+      expect(res.status).toBe('found');
+      if (res.status === 'found') {
+        expect(res.oilSpec.viscosity).toBe('5W-30');
+        expect(res.oilSpec.capacityLiters).toBe(6.0);
+        expect(res.oilSpec.aceaStandard).toBe('C1');
+        expect(res.oilSpec.oemApproval).toContain('STJLR.03.5005');
+      }
+    });
+
+    it('resolves official 0W-30 Ford WSS-M2C950-A spec (4.2L) for Ford Focus IV 1.5 EcoBlue', async () => {
+      prisma.oilFinderVehicle.findMany.mockResolvedValue([]);
+      prisma.$queryRawUnsafe.mockResolvedValue([]);
+
+      const res = await service.findByVehicle('Ford', 'Focus IV', '1.5 EcoBlue - 120ch (2019)');
+      expect(res.status).toBe('found');
+      if (res.status === 'found') {
+        expect(res.oilSpec.viscosity).toBe('0W-30');
+        expect(res.oilSpec.capacityLiters).toBe(4.2);
+        expect(res.oilSpec.aceaStandard).toBe('C2');
+        expect(res.oilSpec.oemApproval).toContain('Ford WSS-M2C950-A');
+      }
+    });
+
+    it('resolves official 0W-40 Porsche A40 spec (7.5L) for Porsche 911 (991) 3.0 Carrera S', async () => {
+      prisma.oilFinderVehicle.findMany.mockResolvedValue([]);
+      prisma.$queryRawUnsafe.mockResolvedValue([]);
+
+      const res = await service.findByVehicle('Porsche', '911 (991)', '3.0 Carrera S - 420ch (2016)');
+      expect(res.status).toBe('found');
+      if (res.status === 'found') {
+        expect(res.oilSpec.viscosity).toBe('0W-40');
+        expect(res.oilSpec.capacityLiters).toBe(7.5);
+        expect(res.oilSpec.oemApproval).toContain('Porsche A40');
+      }
+    });
+
+    it('resolves official 5W-30 Porsche C30 spec (7.3L) for Porsche Macan 3.0 S Diesel', async () => {
+      prisma.oilFinderVehicle.findMany.mockResolvedValue([]);
+      prisma.$queryRawUnsafe.mockResolvedValue([]);
+
+      const res = await service.findByVehicle('Porsche', 'Macan', '3.0 S Diesel - 258ch (2015)');
+      expect(res.status).toBe('found');
+      if (res.status === 'found') {
+        expect(res.oilSpec.viscosity).toBe('5W-30');
+        expect(res.oilSpec.capacityLiters).toBe(7.3);
+        expect(res.oilSpec.aceaStandard).toBe('C3');
+        expect(res.oilSpec.oemApproval).toContain('Porsche C30');
+      }
+    });
+
+    it('resolves official 0W-20 VW 508 00 / 509 00 spec (4.3L) for Volkswagen Golf VIII 1.5 TSI', async () => {
+      prisma.oilFinderVehicle.findMany.mockResolvedValue([]);
+      prisma.$queryRawUnsafe.mockResolvedValue([]);
+
+      const res = await service.findByVehicle('Volkswagen', 'Golf VIII', '1.5 TSI - 130ch (2020)');
+      expect(res.status).toBe('found');
+      if (res.status === 'found') {
+        expect(res.oilSpec.viscosity).toBe('0W-20');
+        expect(res.oilSpec.capacityLiters).toBe(4.3);
+        expect(res.oilSpec.aceaStandard).toBe('C5');
+        expect(res.oilSpec.oemApproval).toContain('VW 508 00 / 509 00');
+      }
+    });
+
+    it('resolves official 0W-20 API SP / ILSAC GF-6A spec for Honda Civic X 1.0 VTEC Turbo', async () => {
+      prisma.oilFinderVehicle.findMany.mockResolvedValue([]);
+      prisma.$queryRawUnsafe.mockResolvedValue([]);
+
+      const res = await service.findByVehicle('Honda', 'Civic X', '1.0 VTEC Turbo - 126ch (2019)');
+      expect(res.status).toBe('found');
+      if (res.status === 'found') {
+        expect(res.oilSpec.viscosity).toBe('0W-20');
+        expect(res.oilSpec.oemApproval).toContain('Honda Type 2.0 / API SP / ILSAC GF-6A');
+      }
+    });
+
+    it('resolves official 0W-20 API SP / ILSAC GF-6A spec for Mazda CX-5 2.0 SkyActiv-G', async () => {
+      prisma.oilFinderVehicle.findMany.mockResolvedValue([]);
+      prisma.$queryRawUnsafe.mockResolvedValue([]);
+
+      const res = await service.findByVehicle('Mazda', 'CX-5', '2.0 SkyActiv-G - 165ch (2019)');
+      expect(res.status).toBe('found');
+      if (res.status === 'found') {
+        expect(res.oilSpec.viscosity).toBe('0W-20');
+        expect(res.oilSpec.capacityLiters).toBe(4.2);
+        expect(res.oilSpec.oemApproval).toContain('Mazda Supra 0W-20');
+      }
+    });
+
+    it('resolves official 0W-30 Opel OV0401547 / PSA B71 2312 spec for Opel Corsa F 1.2 Turbo', async () => {
+      prisma.oilFinderVehicle.findMany.mockResolvedValue([]);
+      prisma.$queryRawUnsafe.mockResolvedValue([]);
+
+      const res = await service.findByVehicle('Opel', 'Corsa F', '1.2 Turbo - 100ch (2020)');
+      expect(res.status).toBe('found');
+      if (res.status === 'found') {
+        expect(res.oilSpec.viscosity).toBe('0W-30');
+        expect(res.oilSpec.capacityLiters).toBe(3.5);
+        expect(res.oilSpec.oemApproval).toContain('Opel OV0401547');
+      }
+    });
+
     it('merges engines from both TecDoc and OilFinderVehicle in getEngines', async () => {
       prisma.$queryRawUnsafe.mockResolvedValue([
         { engineCode: '4.5 D-4D (VDJ200)', yearFrom: 2008, yearTo: 2021 },

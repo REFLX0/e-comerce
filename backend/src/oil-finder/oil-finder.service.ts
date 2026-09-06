@@ -398,12 +398,12 @@ export const BRAND_DEFAULT_SPECS: Record<string, {
     changeIntervalKm: 15000,
   },
   volvo: {
-    viscosity: '5W-30',
+    viscosity: '0W-20',
     apiStandard: 'SN',
-    aceaStandard: 'C3',
+    aceaStandard: 'C5',
     oemApproval: 'Volvo VCC-RBS0-2AE / Volvo XC',
-    capacityLiters: 5.0,
-    changeIntervalKm: 15000,
+    capacityLiters: 5.6,
+    changeIntervalKm: 20000,
   },
   mazda: {
     viscosity: '5W-30',
@@ -438,34 +438,34 @@ export const BRAND_DEFAULT_SPECS: Record<string, {
     changeIntervalKm: 10000,
   },
   'land-rover': {
-    viscosity: '5W-30',
+    viscosity: '0W-30',
     apiStandard: 'SN',
-    aceaStandard: 'C3',
-    oemApproval: 'JLR STJLR.03.5006 / Land Rover STC 4184',
-    capacityLiters: 6.0,
+    aceaStandard: 'C2',
+    oemApproval: 'JLR STJLR.03.5007 / Land Rover STC 4184',
+    capacityLiters: 6.5,
     changeIntervalKm: 15000,
   },
   'land rover': {
-    viscosity: '5W-30',
+    viscosity: '0W-30',
     apiStandard: 'SN',
-    aceaStandard: 'C3',
-    oemApproval: 'JLR STJLR.03.5006 / Land Rover STC 4184',
-    capacityLiters: 6.0,
+    aceaStandard: 'C2',
+    oemApproval: 'JLR STJLR.03.5007 / Land Rover STC 4184',
+    capacityLiters: 6.5,
     changeIntervalKm: 15000,
   },
   jaguar: {
-    viscosity: '5W-30',
+    viscosity: '0W-30',
     apiStandard: 'SN',
-    aceaStandard: 'C3',
-    oemApproval: 'JLR STJLR.03.5006 / Land Rover STC 4184',
-    capacityLiters: 6.0,
+    aceaStandard: 'C2',
+    oemApproval: 'JLR STJLR.03.5007',
+    capacityLiters: 6.5,
     changeIntervalKm: 15000,
   },
   porsche: {
     viscosity: '0W-40',
     apiStandard: 'SN',
     aceaStandard: 'A3/B4',
-    oemApproval: 'Porsche C30 / Porsche Approved Engine Oil',
+    oemApproval: 'Porsche A40 / Porsche Approved Engine Oil',
     capacityLiters: 7.5,
     changeIntervalKm: 15000,
   },
@@ -766,7 +766,7 @@ export function resolveAutomotiveOemSpec(
   }
 
   // 4. Determine fuel type & injection technology
-  const isDiesel = /(?:dci|tdi|hdi|bluehdi|cdti|crdi|multijet|jtd|d-4d|d4d|did|di-d|tdci|cdi|bluetec|ddis|crd|\bd\b|diesel|sdi)/i.test(combined);
+  const isDiesel = /(?:dci|tdi|hdi|bluehdi|cdti|crdi|multijet|jtd|jtdm|d-4d|d4d|d-cat|did|di-d|tdci|cdi|bluetec|ddis|crd|\bd\b|diesel|sdi|ecoblue|tdv6|sdv6|tdv8|sdv8|aj200d|\bd\d{2,3}\b|\bd[2-5]\b)/i.test(combined);
   const isHybrid = /(?:hybrid|e-tech|phev|mhev|prius)/i.test(combined);
   const isPureTech = /puretech/i.test(combined);
   const isEcoBoost = /ecoboost/i.test(combined);
@@ -776,10 +776,11 @@ export function resolveAutomotiveOemSpec(
 
   const calcCapacity = (base: number) => {
     if (!displacementCc) return base;
-    if (displacementCc <= 1200) return Math.max(3.0, base - 0.5);
-    if (displacementCc >= 2500) return base + 1.5;
-    if (displacementCc >= 2000) return base + 0.5;
-    return base;
+    let c = base;
+    if (displacementCc <= 1200) c = Math.max(3.0, base - 0.5);
+    else if (displacementCc >= 2500) c = base + 1.5;
+    else if (displacementCc >= 2000) c = base + 0.5;
+    return Math.round(c * 10) / 10;
   };
 
   // 5. High-Precision OEM Homologation Engine by Brand Family
@@ -792,6 +793,7 @@ export function resolveAutomotiveOemSpec(
   const isFiatFamily = ['fiat', 'alfa-romeo', 'alfa', 'lancia', 'jeep', 'abarth'].includes(mfrSlug);
   const isOpelFamily = ['opel', 'vauxhall'].includes(mfrSlug);
   const isAsianFamily = ['toyota', 'lexus', 'hyundai', 'kia', 'nissan', 'infiniti', 'honda', 'mazda', 'mitsubishi', 'subaru', 'suzuki', 'ssangyong', 'mahindra', 'isuzu'].includes(mfrSlug);
+  const isJlrFamily = ['land-rover', 'range-rover', 'jaguar'].includes(mfrSlug);
   const isVolvo = ['volvo'].includes(mfrSlug);
   const isPorsche = ['porsche'].includes(mfrSlug);
 
@@ -996,6 +998,25 @@ export function resolveAutomotiveOemSpec(
         powerHp,
       };
     }
+    // Modern downsized VAG EA211evo / EA888 Gen 3B petrols (2018+, 1.0 TSI, 1.5 TSI Evo, 2.0 TSI 190ch):
+    // Factory specification strictly requires 0W-20 VW 508 00 / 509 00 (LongLife IV)
+    const isVagTsiEvo = !isDiesel && (
+      /1\.5\s*t[fs]i|1\.0\s*t[fs]i|evo\b/i.test(combined) ||
+      (detectedYear >= 2018 && isTurboPetrol && (displacementCc || 0) <= 1500)
+    );
+    if (isVagTsiEvo) {
+      return {
+        viscosity: '0W-20',
+        apiStandard: 'SP',
+        aceaStandard: 'C5',
+        oemApproval: 'VW 508 00 / 509 00 (LongLife IV)',
+        capacityLiters: (displacementCc || 0) <= 1200 ? 4.0 : 4.3,
+        changeIntervalKm: 15000,
+        fuelType: 'essence',
+        displacementCc: displacementCc || 1498,
+        powerHp: powerHp || 150,
+      };
+    }
     if (isTurboPetrol || detectedYear >= 2005) {
       return {
         viscosity: '5W-30',
@@ -1093,17 +1114,33 @@ export function resolveAutomotiveOemSpec(
 
   // ── FORD ──
   if (isFordFamily) {
+    // Modern Ford EcoBlue Diesels (2016+, 1.5 EcoBlue & 2.0 EcoBlue on Focus IV, Kuga II/III, Mondeo V, Transit Custom, Ranger 2.0):
+    // Strictly requires low-SAPS 0W-30 Ford WSS-M2C950-A (ACEA C2)
+    const isEcoBlue = /ecoblue/i.test(combined) || (isDiesel && (detectedYear >= 2016 || /1\.5|2\.0/.test(combined)));
+    if (isEcoBlue && isDiesel) {
+      return {
+        viscosity: '0W-30',
+        apiStandard: 'SN',
+        aceaStandard: 'C2',
+        oemApproval: 'Ford WSS-M2C950-A',
+        capacityLiters: (displacementCc || 0) <= 1600 ? 4.2 : 5.6,
+        changeIntervalKm: 15000,
+        fuelType: 'diesel',
+        displacementCc: displacementCc || 1499,
+        powerHp: powerHp || 120,
+      };
+    }
     if (isEcoBoost && (displacementCc || 0) <= 1000) {
       return {
         viscosity: '5W-20',
         apiStandard: 'SN',
         aceaStandard: 'C5',
         oemApproval: 'Ford WSS-M2C948-B',
-        capacityLiters: calcCapacity(4.1),
+        capacityLiters: 4.1,
         changeIntervalKm: 15000,
-        fuelType,
-        displacementCc,
-        powerHp,
+        fuelType: 'essence',
+        displacementCc: displacementCc || 998,
+        powerHp: powerHp || 100,
       };
     }
     return {
@@ -1222,6 +1259,20 @@ export function resolveAutomotiveOemSpec(
 
   // ── OPEL / VAUXHALL ──
   if (isOpelFamily) {
+    // Post-2018 Stellantis merger models (Corsa F, Mokka B, Crossland, Grandland with 1.2 Turbo PureTech or 1.5 BlueHDi)
+    if (detectedYear >= 2019 || /corsa\s*(?:f|6)|mokka\s*b|grandland|crossland/i.test(combined)) {
+      return {
+        viscosity: '0W-30',
+        apiStandard: 'SN',
+        aceaStandard: 'C2',
+        oemApproval: 'Opel OV0401547 / PSA B71 2312',
+        capacityLiters: (displacementCc || 0) <= 1200 ? 3.5 : 3.8,
+        changeIntervalKm: 15000,
+        fuelType,
+        displacementCc,
+        powerHp,
+      };
+    }
     if (detectedYear >= 2005) {
       return {
         viscosity: '5W-30',
@@ -1361,6 +1412,87 @@ export function resolveAutomotiveOemSpec(
         powerHp: powerHp || 100,
       };
     }
+
+    // Modern non-hybrid Asian petrol engines (Honda VTEC Turbo, Mazda SkyActiv-G/X, Suzuki Boosterjet/Dualjet, Toyota modern petrol post-2014)
+    if (!isDiesel) {
+      // Honda 1.0 / 1.5 VTEC Turbo, CR-V, Civic X/XI, Jazz (2015+)
+      if (mfrSlug === 'honda' && (detectedYear >= 2015 || /vtec|turbo|civic|cr-v|jazz|hr-v/i.test(combined))) {
+        return {
+          viscosity: '0W-20',
+          apiStandard: 'SP',
+          aceaStandard: 'ILSAC GF-6A',
+          oemApproval: 'Honda Type 2.0 / API SP / ILSAC GF-6A',
+          capacityLiters: (displacementCc || 0) <= 1200 ? 3.5 : 3.7,
+          changeIntervalKm: 15000,
+          fuelType: 'essence',
+          displacementCc,
+          powerHp,
+        };
+      }
+
+      // Mazda SkyActiv-G / SkyActiv-X (Mazda 2, 3, 6, CX-3, CX-30, CX-5 2012+)
+      if (mfrSlug === 'mazda' && (/skyactiv/i.test(combined) || detectedYear >= 2013)) {
+        return {
+          viscosity: '0W-20',
+          apiStandard: 'SP',
+          aceaStandard: 'ILSAC GF-6A',
+          oemApproval: 'Mazda Supra 0W-20 / API SP / ILSAC GF-6A',
+          capacityLiters: 4.2,
+          changeIntervalKm: 15000,
+          fuelType: 'essence',
+          displacementCc,
+          powerHp,
+        };
+      }
+
+      // Suzuki Dualjet & Boosterjet (Swift, Vitara, S-Cross, Ignis 2015+)
+      if (mfrSlug === 'suzuki' && (/boosterjet|dualjet|k10c|k12c|k12d|k14c|k14d/i.test(combined) || (detectedYear >= 2015 && (displacementCc || 0) <= 1400))) {
+        return {
+          viscosity: '0W-20',
+          apiStandard: 'SP',
+          aceaStandard: 'ILSAC GF-6A',
+          oemApproval: 'Suzuki Ecstar / API SP / ILSAC GF-6A',
+          capacityLiters: 3.6,
+          changeIntervalKm: 15000,
+          fuelType: 'essence',
+          displacementCc,
+          powerHp,
+        };
+      }
+
+      // Toyota modern non-hybrid petrol (Yaris 1.0/1.5, Aygo, C-HR 1.2T 8NR-FTS, Corolla 1.2T, RAV4 2.0 Dynamic Force 2015+)
+      if ((mfrSlug === 'toyota' || mfrSlug === 'lexus') && (
+        /8nr|1kr|1nr|m15a|m20a/i.test(combined) ||
+        (detectedYear >= 2015 && (displacementCc || 0) <= 2000)
+      )) {
+        return {
+          viscosity: '0W-20',
+          apiStandard: 'SP',
+          aceaStandard: 'ILSAC GF-6A',
+          oemApproval: 'Toyota / Lexus API SP / ILSAC GF-6A',
+          capacityLiters: (displacementCc || 0) <= 1200 ? 3.6 : 4.2,
+          changeIntervalKm: 15000,
+          fuelType: 'essence',
+          displacementCc,
+          powerHp,
+        };
+      }
+
+      // Nissan / Renault-Daimler 1.3 DIG-T / TCe (HR13DDT / H5Ht on Qashqai, Juke, X-Trail 2018+)
+      if (mfrSlug === 'nissan' && (combined.includes('1.3') || /dig-t|hr13/i.test(combined) || detectedYear >= 2018)) {
+        return {
+          viscosity: '5W-30',
+          apiStandard: 'SN',
+          aceaStandard: 'C3',
+          oemApproval: 'Renault RN17 / Nissan / MB 229.71',
+          capacityLiters: 5.4,
+          changeIntervalKm: 15000,
+          fuelType: 'essence',
+          displacementCc: displacementCc || 1332,
+          powerHp: powerHp || 140,
+        };
+      }
+    }
     if (detectedYear >= 2008 || isDiesel) {
       return {
         viscosity: '5W-30',
@@ -1387,14 +1519,75 @@ export function resolveAutomotiveOemSpec(
     };
   }
 
-  // ── VOLVO ──
-  if (isVolvo) {
+  // ── JAGUAR / LAND ROVER / RANGE ROVER ──
+  if (isJlrFamily) {
+    // 3.0 TDV6 / SDV6 / 2.7 TDV6 (306DT / 276DT on Discovery 3/4/5, Range Rover Sport)
+    if (isDiesel && (combined.includes('3.0') || combined.includes('2.7') || (displacementCc && displacementCc >= 2500) || /tdv6|sdv6|306dt|276dt/i.test(combined))) {
+      return {
+        viscosity: '5W-30',
+        apiStandard: 'SN',
+        aceaStandard: 'C1',
+        oemApproval: 'Ford WSS-M2C934-B / JLR STJLR.03.5005',
+        capacityLiters: 6.0,
+        changeIntervalKm: 15000,
+        fuelType: 'diesel',
+        displacementCc: displacementCc || 2993,
+        powerHp: powerHp || 258,
+      };
+    }
+
+    // 2.0 Ingenium Diesel (2015+, AJ200D / D150 / D180 / D200 / D240 on Range Rover Evoque, Velar, Discovery Sport, Defender, Jaguar XE, XF, F-Pace)
+    if (isDiesel && (detectedYear >= 2015 || /ingenium|d150|d180|d200|d240|aj200d/i.test(combined) || (displacementCc && displacementCc <= 2200))) {
+      return {
+        viscosity: '0W-30',
+        apiStandard: 'SN',
+        aceaStandard: 'C2',
+        oemApproval: 'JLR STJLR.03.5007 / ACEA C2',
+        capacityLiters: 6.5,
+        changeIntervalKm: 15000,
+        fuelType: 'diesel',
+        displacementCc: displacementCc || 1999,
+        powerHp: powerHp || 180,
+      };
+    }
+
+    // 2.0 Ingenium Petrol (2017+, AJ200P / Si4 / P200 / P250 / P300)
+    if (!isDiesel && (detectedYear >= 2017 || /ingenium|p200|p250|p300|aj200p|si4/i.test(combined)) && (displacementCc || 0) <= 2000) {
+      return {
+        viscosity: '0W-20',
+        apiStandard: 'SN Plus / SP',
+        aceaStandard: 'C5',
+        oemApproval: 'JLR STJLR.51.5122 / STJLR.03.5006',
+        capacityLiters: 7.0,
+        changeIntervalKm: 15000,
+        fuelType: 'essence',
+        displacementCc: displacementCc || 1997,
+        powerHp: powerHp || 250,
+      };
+    }
+
+    // 5.0 V8 Supercharged / 3.0 V6 Supercharged (AJ133 / AJ126 on Range Rover, Range Rover Sport, Defender, F-Type, XF)
+    if (!isDiesel && ((displacementCc && displacementCc >= 3000) || /v8|supercharged|aj133|aj126/i.test(combined))) {
+      return {
+        viscosity: '0W-20',
+        apiStandard: 'SN',
+        aceaStandard: 'C5 / A1/B1',
+        oemApproval: 'JLR STJLR.03.5004 / STJLR.51.5122',
+        capacityLiters: 8.0,
+        changeIntervalKm: 15000,
+        fuelType: 'essence',
+        displacementCc: displacementCc || 5000,
+        powerHp: powerHp || 510,
+      };
+    }
+
+    // Classic JLR fallback
     return {
       viscosity: '5W-30',
-      apiStandard: 'SN',
-      aceaStandard: 'C3',
-      oemApproval: 'Volvo VCC-RBS0-2AE / Volvo XC',
-      capacityLiters: calcCapacity(5.0),
+      apiStandard: 'SL/CF',
+      aceaStandard: 'A5/B5',
+      oemApproval: 'Ford WSS-M2C913-B / JLR STJLR.03.5003',
+      capacityLiters: 6.0,
       changeIntervalKm: 15000,
       fuelType,
       displacementCc,
@@ -1402,18 +1595,85 @@ export function resolveAutomotiveOemSpec(
     };
   }
 
+  // ── VOLVO ──
+  if (isVolvo) {
+    // Modern Drive-E / VEA 4-cylinder engines (2014+, D2/D3/D4/D5, T3/T4/T5/T6, B4/B5/B6 on XC40, XC60, XC90, V40, V60, V90, S60, S90):
+    // Official standard strictly mandates 0W-20 Volvo VCC RBS0-2AE
+    const isDriveE = detectedYear >= 2014 || /drive-e|vea|d4204|b4204/i.test(combined) || ((displacementCc || 0) <= 2000 && detectedYear >= 2013);
+    if (isDriveE) {
+      return {
+        viscosity: '0W-20',
+        apiStandard: 'SN',
+        aceaStandard: 'C5',
+        oemApproval: 'Volvo VCC-RBS0-2AE / Volvo XC',
+        capacityLiters: 5.6,
+        changeIntervalKm: 20000,
+        fuelType,
+        displacementCc: displacementCc || 1969,
+        powerHp,
+      };
+    }
+
+    // Classic 5-cylinder Volvos (pre-2014, D5, 2.4D, 2.5T, D5244T):
+    return {
+      viscosity: '0W-30',
+      apiStandard: 'SL/CF',
+      aceaStandard: 'A5/B5',
+      oemApproval: 'Volvo VCC 95200377 / ACEA A5/B5',
+      capacityLiters: 5.8,
+      changeIntervalKm: 15000,
+      fuelType,
+      displacementCc: displacementCc || 2400,
+      powerHp,
+    };
+  }
+
   // ── PORSCHE ──
   if (isPorsche) {
+    // Diesel & E-Hybrid (Cayenne Diesel 3.0 TDI, Macan Diesel 3.0 TDI, Panamera Diesel):
+    // Strictly requires 5W-30 Porsche C30 (VW 504 00 / 507 00 base)
+    if (isDiesel || isHybrid || /diesel|tdi|hybrid/i.test(combined)) {
+      return {
+        viscosity: '5W-30',
+        apiStandard: 'SN',
+        aceaStandard: 'C3',
+        oemApproval: 'Porsche C30 / VW 504 00 / 507 00',
+        capacityLiters: 7.3,
+        changeIntervalKm: 15000,
+        fuelType: isDiesel ? 'diesel' : 'hybrid',
+        displacementCc: displacementCc || 2967,
+        powerHp: powerHp || 262,
+      };
+    }
+
+    // Macan 2.0 (4-cylinder turbo EA888) & 718 Boxster / Cayman 2.0 / 2.5:
+    // Requires 0W-20 Porsche C20 (VW 508 00 base)
+    if ((displacementCc && displacementCc <= 2500) || (/macan/i.test(combined) && (combined.includes('2.0') || (powerHp && powerHp <= 265)))) {
+      return {
+        viscosity: '0W-20',
+        apiStandard: 'SP',
+        aceaStandard: 'C5',
+        oemApproval: 'Porsche C20 / VW 508 00',
+        capacityLiters: 5.2,
+        changeIntervalKm: 15000,
+        fuelType: 'essence',
+        displacementCc: displacementCc || 1984,
+        powerHp: powerHp || 252,
+      };
+    }
+
+    // 911 (996, 997, 991, 992), Boxster/Cayman (986, 987, 981), Panamera V8/V6 petrol, Cayenne V8 petrol:
+    // Strictly requires 0W-40 Porsche A40
     return {
       viscosity: '0W-40',
       apiStandard: 'SN',
       aceaStandard: 'A3/B4',
-      oemApproval: 'Porsche C30 / Porsche Approved Engine Oil',
-      capacityLiters: calcCapacity(7.5),
+      oemApproval: 'Porsche A40 / Porsche Approved Engine Oil',
+      capacityLiters: 7.5,
       changeIntervalKm: 15000,
-      fuelType,
-      displacementCc,
-      powerHp,
+      fuelType: 'essence',
+      displacementCc: displacementCc || 3000,
+      powerHp: powerHp || 420,
     };
   }
 
