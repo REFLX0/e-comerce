@@ -1,4 +1,6 @@
-import * as Sentry from '@sentry/nestjs';
+// IMPORTANT: instrument.ts must be imported first so Sentry is initialized
+// before any other modules are loaded.
+import './instrument';
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe, Logger } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
@@ -10,12 +12,6 @@ import { join } from 'path';
 
 async function bootstrap() {
   const logger = new Logger('Bootstrap');
-
-  Sentry.init({
-    dsn: process.env.SENTRY_DSN || '',
-    environment: process.env.NODE_ENV || 'development',
-    tracesSampleRate: process.env.NODE_ENV === 'production' ? 0.1 : 0,
-  });
 
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
