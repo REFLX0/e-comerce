@@ -84,7 +84,52 @@ interface Props {
 export function ProductCard({ product, viewMode = 'grid' }: Props) {
   const t = useTranslations('ProductCard')
   const { addItem } = useCartStore()
-  const { isCompatible, hasCheckedVehicles, vehicleLabel } = useProductCompatibility(product)
+  const { isCompatible, hasCheckedVehicles, vehicleLabel, matchedVehicle } = useProductCompatibility(product)
+
+  // Prioritize OEM approvals matching the user's active vehicle make
+  const sortedOemApprovals = useMemo(() => {
+    const raw = product.specs?.oemApprovals || []
+    if (raw.length <= 1) return raw
+
+    const makeStr = (
+      matchedVehicle && ('makeName' in matchedVehicle ? matchedVehicle.makeName : (matchedVehicle as any).make)
+    )?.toLowerCase().trim() || ''
+
+    if (!makeStr) return raw
+
+    const keywords: string[] = []
+    if (makeStr.includes('volkswagen') || makeStr.includes('vw') || makeStr.includes('audi') || makeStr.includes('seat') || makeStr.includes('skoda')) {
+      keywords.push('vw', '504', '507', '502', '505', '508', '509', 'volkswagen', 'audi', 'skoda', 'seat')
+    } else if (makeStr.includes('mercedes') || makeStr.includes('benz')) {
+      keywords.push('mb', 'mercedes', '229.')
+    } else if (makeStr.includes('bmw') || makeStr.includes('mini')) {
+      keywords.push('bmw', 'll-04', 'll-01', 'll-12', 'll-14', 'll-17', 'longlife')
+    } else if (makeStr.includes('renault') || makeStr.includes('dacia')) {
+      keywords.push('rn', 'rn0700', 'rn0710', 'rn0720', 'rn17', 'renault')
+    } else if (makeStr.includes('peugeot') || makeStr.includes('citroen') || makeStr.includes('citroën') || makeStr.includes('psa') || makeStr.includes('ds')) {
+      keywords.push('psa', 'b71', 'peugeot', 'citroen')
+    } else if (makeStr.includes('ford')) {
+      keywords.push('wss', 'ford', 'm2c')
+    } else if (makeStr.includes('porsche')) {
+      keywords.push('porsche', 'a40', 'c30', 'c20')
+    } else if (makeStr.includes('fiat') || makeStr.includes('alfa') || makeStr.includes('lancia')) {
+      keywords.push('fiat', '9.55535')
+    } else if (makeStr.includes('opel') || makeStr.includes('gm') || makeStr.includes('chevrolet')) {
+      keywords.push('dexos', 'gm', 'opel', 'ov0401547')
+    } else {
+      keywords.push(...makeStr.split(/\s+/).filter(k => k.length >= 3))
+    }
+
+    return [...raw].sort((a, b) => {
+      const aLower = a.toLowerCase()
+      const bLower = b.toLowerCase()
+      const aMatches = keywords.some((kw) => aLower.includes(kw))
+      const bMatches = keywords.some((kw) => bLower.includes(kw))
+      if (aMatches && !bMatches) return -1
+      if (!aMatches && bMatches) return 1
+      return 0
+    })
+  }, [product.specs?.oemApprovals, matchedVehicle])
 
   // 1. Detect size/volume variants with images and sort ascending (250ml -> 500ml -> 1L -> 4L -> 5L -> 20L...)
   const sortedVariants = useMemo(() => {
@@ -335,9 +380,9 @@ export function ProductCard({ product, viewMode = 'grid' }: Props) {
           <CompatibilityStatus />
 
           {/* OEM Approvals */}
-          {product.specs?.oemApprovals && product.specs.oemApprovals.length > 0 && (
+          {sortedOemApprovals && sortedOemApprovals.length > 0 && (
             <div className="mt-2 flex flex-wrap gap-1">
-              {product.specs.oemApprovals.slice(0, 3).map((approval) => (
+              {sortedOemApprovals.slice(0, 3).map((approval) => (
                 <span
                   key={approval}
                   className="rounded border border-blue-200 bg-blue-50 px-1.5 py-0.5 text-[10px] font-semibold text-blue-700"
@@ -345,9 +390,9 @@ export function ProductCard({ product, viewMode = 'grid' }: Props) {
                   {approval}
                 </span>
               ))}
-              {product.specs.oemApprovals.length > 3 && (
+              {sortedOemApprovals.length > 3 && (
                 <span className="rounded border border-gray-200 bg-gray-50 px-1.5 py-0.5 text-[10px] font-semibold text-gray-500">
-                  +{product.specs.oemApprovals.length - 3}
+                  +{sortedOemApprovals.length - 3}
                 </span>
               )}
             </div>
@@ -569,9 +614,9 @@ export function ProductCard({ product, viewMode = 'grid' }: Props) {
         </div>
 
         {/* OEM Approvals */}
-        {product.specs?.oemApprovals && product.specs.oemApprovals.length > 0 && (
+        {sortedOemApprovals && sortedOemApprovals.length > 0 && (
           <div className="mt-1.5 flex flex-wrap gap-1">
-            {product.specs.oemApprovals.slice(0, 2).map((approval) => (
+            {sortedOemApprovals.slice(0, 2).map((approval) => (
               <span
                 key={approval}
                 className="rounded border border-blue-200 bg-blue-50 px-1.5 py-0.5 text-[8px] sm:text-[9px] font-semibold text-blue-700 leading-tight truncate max-w-full"
@@ -579,9 +624,9 @@ export function ProductCard({ product, viewMode = 'grid' }: Props) {
                 {approval}
               </span>
             ))}
-            {product.specs.oemApprovals.length > 2 && (
+            {sortedOemApprovals.length > 2 && (
               <span className="rounded border border-gray-200 bg-gray-50 px-1.5 py-0.5 text-[9px] font-semibold text-gray-500 leading-tight">
-                +{product.specs.oemApprovals.length - 2}
+                +{sortedOemApprovals.length - 2}
               </span>
             )}
           </div>
