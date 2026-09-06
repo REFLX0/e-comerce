@@ -3,6 +3,7 @@ import type { Order, PaginatedResponse } from '@/lib/types'
 
 export interface ShippingDto {
   fullName: string
+  email?: string
   phone: string
   wilaya: string
   city: string

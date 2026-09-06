@@ -132,6 +132,7 @@ export function CheckoutForm() {
           })),
           shipping: {
             fullName: `${data.firstName} ${data.lastName}`,
+            email: data.email,
             phone: data.phone,
             wilaya: data.wilaya,
             city: data.city,

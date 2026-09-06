@@ -5,7 +5,8 @@
   "compilerOptions": {
     "deleteOutDir": true,
     "assets": [
-      { "include": "admin/logo.jpg", "outDir": "dist/admin" }
+      { "include": "admin/logo.jpg", "outDir": "dist/admin" },
+      { "include": "mail/templates/**/*", "outDir": "dist" }
     ]
   }
 }

@@ -19,6 +19,7 @@ export class ShippingDto {
   @IsString() phone: string;
   @IsString() wilaya: string;
   @IsString() city: string;
+  @IsOptional() @IsString() email?: string;
 }
 
 export class CreateOrderDto {

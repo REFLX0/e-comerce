@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as handlebars from 'handlebars';
+import { DEFAULT_TEMPLATES } from './default-templates';
 
 export interface OrderEmailPayload {
   id: string;
@@ -45,9 +46,11 @@ export class MailService {
       this.apiKey = apiKey;
     }
 
-    this.adminEmail = this.config.get<string>(
-      'ADMIN_NOTIFICATION_EMAIL',
-      'specpart.tn@gmail.com',
+    this.adminEmail = this.cleanEmail(
+      this.config.get<string>(
+        'ADMIN_NOTIFICATION_EMAIL',
+        'specpart.tn@gmail.com',
+      ),
     );
     this.fromEmail = this.config.get<string>(
       'BREVO_FROM',
@@ -75,21 +78,37 @@ export class MailService {
       'login-alert'
     ];
 
-    try {
-      const templatesDir = path.join(__dirname, '..', '..', 'src', 'mail', 'templates');
-      
-      templateNames.forEach(name => {
-        const filePath = path.join(templatesDir, `${name}.hbs`);
+    const candidateDirs = [
+      path.join(__dirname, 'templates'),
+      path.join(__dirname, '..', '..', 'src', 'mail', 'templates'),
+      path.join(process.cwd(), 'src', 'mail', 'templates'),
+      path.join(process.cwd(), 'dist', 'src', 'mail', 'templates'),
+      path.join(process.cwd(), 'dist', 'mail', 'templates'),
+    ];
+
+    templateNames.forEach(name => {
+      let source: string | null = null;
+      for (const dir of candidateDirs) {
+        const filePath = path.join(dir, `${name}.hbs`);
         if (fs.existsSync(filePath)) {
-          const source = fs.readFileSync(filePath, 'utf8');
-          this.templates[name] = handlebars.compile(source);
-        } else {
-          this.logger.warn(`Template not found: ${filePath}`);
+          try {
+            source = fs.readFileSync(filePath, 'utf8');
+            break;
+          } catch {}
         }
-      });
-    } catch (error) {
-      this.logger.error(`Error loading templates: ${error.message}`);
-    }
+      }
+
+      // If not on disk, use embedded template fallback
+      if (!source && DEFAULT_TEMPLATES[name]) {
+        source = DEFAULT_TEMPLATES[name];
+      }
+
+      if (source) {
+        this.templates[name] = handlebars.compile(source);
+      } else {
+        this.logger.error(`Template not found anywhere: ${name}`);
+      }
+    });
   }
 
   private isConfigured(): boolean {
@@ -105,8 +124,34 @@ export class MailService {
     return template({ ...data, frontendUrl: this.frontendUrl, year: new Date().getFullYear() });
   }
 
+  private cleanEmail(raw?: string): string {
+    if (!raw) return '';
+    const match = raw.match(/<([^>]+)>/);
+    return (match ? match[1] : raw).trim();
+  }
+
+  private extractSender(fromInput?: string): { name: string; email: string } {
+    const raw = fromInput || this.fromEmail || 'Specpart <specpart.tn@gmail.com>';
+    const emailMatch = raw.match(/<([^>]+)>/);
+    const email = (emailMatch ? emailMatch[1] : raw).trim();
+    let name = 'Specpart';
+    if (raw.includes('<')) {
+      name = raw.split('<')[0].replace(/['"]/g, '').trim() || 'Specpart';
+    }
+    return { name, email };
+  }
+
   private async sendEmailViaBrevo(options: { to: string; subject: string; html: string; from?: string }): Promise<void> {
-    if (!this.apiKey) return;
+    if (!this.apiKey) {
+      this.logger.warn(`Brevo API key not set — email to ${options.to} skipped.`);
+      return;
+    }
+    const sender = this.extractSender(options.from);
+    const recipient = this.cleanEmail(options.to);
+    if (!recipient) {
+      this.logger.warn(`Cannot send email: recipient email is empty`);
+      return;
+    }
     try {
       const response = await fetch('https://api.brevo.com/v3/smtp/email', {
         method: 'POST',
@@ -116,18 +161,21 @@ export class MailService {
           'content-type': 'application/json'
         },
         body: JSON.stringify({
-          sender: { name: 'Specpart', email: options.from || this.fromEmail },
-          to: [{ email: options.to }],
+          sender: { name: sender.name, email: sender.email },
+          to: [{ email: recipient }],
           subject: options.subject,
           htmlContent: options.html
         })
       });
       if (!response.ok) {
         const errText = await response.text();
-        this.logger.error(`Brevo email failed: ${response.status} ${errText}`);
+        this.logger.error(`Brevo email to ${recipient} failed (${response.status}): ${errText}`);
+      } else {
+        const resData = (await response.json().catch(() => null)) as { messageId?: string } | null;
+        this.logger.log(`Brevo email dispatched to ${recipient} (MessageId: ${resData?.messageId || 'sent'})`);
       }
     } catch (err: any) {
-      this.logger.error(`Failed to send email via Brevo: ${err.message}`);
+      this.logger.error(`Failed to send email via Brevo to ${recipient}: ${err.message}`);
     }
   }
 

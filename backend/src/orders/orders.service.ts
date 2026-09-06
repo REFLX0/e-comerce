@@ -2,6 +2,7 @@ import {
   Injectable,
   BadRequestException,
   NotFoundException,
+  Logger,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { KafkaService } from '../kafka/kafka.service';
@@ -15,6 +16,8 @@ import { numberToWordsDT } from '../common/utils/number-to-words';
 
 @Injectable()
 export class OrdersService {
+  private readonly logger = new Logger(OrdersService.name);
+
   constructor(
     private readonly prisma: PrismaService,
     private readonly kafka: KafkaService,
@@ -212,8 +215,8 @@ export class OrdersService {
     });
 
     // Send dual order emails (Customer invoice + Admin sale notification)
-    let customerEmail: string | undefined;
-    if (userId) {
+    let customerEmail: string | undefined = dto.shipping.email?.trim();
+    if (!customerEmail && userId) {
       const user = await this.prisma.user.findUnique({
         where: { id: userId },
         select: { email: true },
@@ -242,7 +245,9 @@ export class OrdersService {
           };
         }),
       })
-      .catch(() => {});
+      .catch((err: any) => {
+        this.logger.error(`Failed to dispatch order emails for #${order.id}: ${err.message}`, err.stack);
+      });
 
     return order;
   }

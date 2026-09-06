@@ -73,6 +73,7 @@ services:
       - REDIS_PORT=6379
       - FRONTEND_URL=${NEXTAUTH_URL:?NEXTAUTH_URL is required}
       - JWT_SECRET=${JWT_SECRET:?JWT_SECRET is required}
+      - BREVO_API_KEY=${BREVO_API_KEY:-}
     depends_on:
       db:
         condition: service_healthy
@@ -135,6 +136,7 @@ services:
       - JWT_SECRET=${JWT_SECRET:?JWT_SECRET is required}
       - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID:-}
       - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET:-}
+      - BREVO_API_KEY=${BREVO_API_KEY:-}
     depends_on:
       backend:
         condition: service_healthy
