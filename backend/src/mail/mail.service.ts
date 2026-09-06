@@ -47,11 +47,11 @@ export class MailService {
 
     this.adminEmail = this.config.get<string>(
       'ADMIN_NOTIFICATION_EMAIL',
-      'specpart@hotmail.com',
+      'specpart.tn@gmail.com',
     );
     this.fromEmail = this.config.get<string>(
       'BREVO_FROM',
-      'Specpart <noreply@specpart.tn>',
+      'Specpart <specpart.tn@gmail.com>',
     );
     this.frontendUrl = this.config.get<string>(
       'FRONTEND_URL',
