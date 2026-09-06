@@ -30,6 +30,13 @@ export class OilFinderController {
         oemTokens,
         categorySlug: 'huiles-moteur',
       });
+      // 1b. If not found under huiles-moteur, search across all categories with exact OEM approval
+      if (productsResult.total === 0) {
+        productsResult = await this.productsService.findAll({
+          viscosity: oilSpec.viscosity,
+          oemTokens,
+        });
+      }
     }
 
     // 2. Secondary pass: ONLY if ZERO products found with exact OEM approval in catalog,
@@ -42,6 +49,12 @@ export class OilFinderController {
           acea: aceaClean,
           categorySlug: 'huiles-moteur',
         });
+        if (productsResult.total === 0) {
+          productsResult = await this.productsService.findAll({
+            viscosity: oilSpec.viscosity,
+            acea: aceaClean,
+          });
+        }
         if (productsResult.total > 0) {
           matchQuality = 'compatible_grade';
         }
@@ -95,7 +108,7 @@ export class OilFinderController {
       let score = 0;
       const rawApprovals = Array.isArray(prod.specs?.oemApprovals)
         ? prod.specs.oemApprovals
-        : [];
+        : (prod.specs?.OEMApprovals ? String(prod.specs.OEMApprovals).split(';').map((s: string) => s.trim()).filter(Boolean) : []);
       const approvalsStr = rawApprovals.join(' ').toLowerCase();
       const titleLower = (prod.nameFr || '').toLowerCase();
       const descLower = (prod.description || '').toLowerCase();
