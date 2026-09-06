@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { APP_GUARD } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD } from '@nestjs/core';
+import { SentryModule } from '@sentry/nestjs/setup';
+import { SentryGlobalFilter } from '@sentry/nestjs/setup';
 import { validateEnv } from './config/env.validation';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { PrismaModule } from './prisma/prisma.module';
@@ -32,6 +34,7 @@ import { InvoicesModule } from './invoices/invoices.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, validate: validateEnv }),
+    SentryModule.forRoot(),
     // Global default: 100 requests per 60 seconds.
     // Individual routes override this with @Throttle({ default: { limit: N, ttl: T } }).
     ThrottlerModule.forRoot([{ ttl: 60000, limit: 100 }]),
@@ -66,6 +69,8 @@ import { InvoicesModule } from './invoices/invoices.module';
     // the NestJS layer (not just by Nginx). Without this provider the
     // ThrottlerModule is imported but decorators have no effect.
     { provide: APP_GUARD, useClass: ThrottlerGuard },
+    // Sentry global exception filter — captures all unhandled exceptions
+    { provide: APP_FILTER, useClass: SentryGlobalFilter },
   ],
 })
 export class AppModule {}
