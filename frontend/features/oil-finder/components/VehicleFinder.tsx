@@ -1,9 +1,10 @@
 'use client'
 
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, useRef } from 'react'
 import {
-  Search, Car, ChevronRight, Check,
-  AlertCircle, Loader2, SlidersHorizontal, X, Fuel, Sparkles, RotateCcw
+  Search, Car, ChevronDown, Check,
+  Loader2, X, Fuel, Sparkles, RotateCcw,
+  CheckCircle2, AlertCircle, ShieldCheck, Gauge, ArrowRight
 } from 'lucide-react'
 import { useRouter, usePathname } from 'next/navigation'
 import { productsApi } from '@/lib/api/products'
@@ -15,9 +16,7 @@ interface VehicleFinderProps {
   initialVehicleType?: string | null
 }
 
-const STEP_LABELS = ['Marque', 'Modèle', 'Motorisation']
-
-// Top popular automotive brands
+// Top popular automotive brands for quick-select
 const POPULAR_MAKE_NAMES = [
   'RENAULT', 'PEUGEOT', 'VOLKSWAGEN', 'DACIA', 'CITROEN', 'CITROËN',
   'FIAT', 'BMW', 'MERCEDES-BENZ', 'MERCEDES', 'AUDI', 'TOYOTA',
@@ -64,34 +63,48 @@ function getBrandLogo(slug: string, name: string): string | null {
   return null
 }
 
-function BrandLogo({ make: { slug, name } }: { make: { slug: string; name: string } }) {
+function BrandLogo({ make, size = 'sm' }: { make: { slug: string; name: string }, size?: 'xs' | 'sm' | 'md' }) {
   const [loaded, setLoaded] = useState(false)
-  const logoSrc = getBrandLogo(slug, name)
+  const logoSrc = getBrandLogo(make.slug, make.name)
+  const px = size === 'xs' ? 'h-5 w-5' : size === 'md' ? 'h-8 w-8' : 'h-6 w-6'
+  const fallbackSize = size === 'xs' ? 'h-5 w-5 text-[9px]' : size === 'md' ? 'h-8 w-8 text-xs' : 'h-6 w-6 text-[10px]'
 
   if (!logoSrc) {
     return (
-      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-xs font-black text-slate-700 shadow-2xs group-hover:bg-blue-50 group-hover:text-blue-700 transition-colors">
-        {name.substring(0, 2).toUpperCase()}
+      <div className={`flex shrink-0 items-center justify-center rounded-lg bg-slate-100 font-black text-slate-700 ${fallbackSize}`}>
+        {make.name.substring(0, 2).toUpperCase()}
       </div>
     )
   }
 
   return (
-    <div className="relative flex h-10 w-10 shrink-0 items-center justify-center">
+    <div className={`relative flex shrink-0 items-center justify-center ${px}`}>
       {!loaded && (
-        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-100 text-xs font-bold text-slate-500">
-          {name.substring(0, 2).toUpperCase()}
+        <div className={`flex shrink-0 items-center justify-center rounded-lg bg-slate-100 font-bold text-slate-500 ${fallbackSize}`}>
+          {make.name.substring(0, 2).toUpperCase()}
         </div>
       )}
       <img
         src={logoSrc}
-        alt={name}
-        className={`h-8 w-8 object-contain transition-transform duration-200 group-hover:scale-110 ${loaded ? 'block' : 'hidden'}`}
+        alt={make.name}
+        className={`${px} object-contain ${loaded ? 'block' : 'hidden'}`}
         onLoad={() => setLoaded(true)}
         onError={() => setLoaded(false)}
       />
     </div>
   )
+}
+
+// Format year range badge
+function formatYearBadge(yearFrom?: number | null, yearTo?: number | null): string | null {
+  if (!yearFrom && !yearTo) return null
+  if (yearFrom && yearTo) {
+    if (yearFrom === yearTo) return `${yearFrom}`
+    return `${yearFrom} – ${yearTo}`
+  }
+  if (yearFrom) return `${yearFrom} – Présent`
+  if (yearTo) return `Jusqu'à ${yearTo}`
+  return null
 }
 
 export function VehicleFinder({ onClose, initialVehicleType }: VehicleFinderProps) {
@@ -100,35 +113,76 @@ export function VehicleFinder({ onClose, initialVehicleType }: VehicleFinderProp
   const locale = pathname?.split('/')[1] === 'en' ? 'en' : 'fr'
   const setVehicle = useVehicleStore((state) => state.setVehicle)
 
-  const [step, setStep] = useState(1)
+  // Dropdown visibility state
+  const [activeDropdown, setActiveDropdown] = useState<'make' | 'model' | 'engine' | null>(null)
 
+  // Search input filters inside dropdowns
+  const [makeSearch, setMakeSearch] = useState('')
+  const [modelSearch, setModelSearch] = useState('')
+  const [engineSearch, setEngineSearch] = useState('')
+  const [engineFuelFilter, setEngineFuelFilter] = useState<'all' | 'essence' | 'diesel' | 'hybrid'>('all')
+
+  // Data lists
   const [makes, setMakes] = useState<VehicleMake[]>([])
   const [models, setModels] = useState<VehicleModel[]>([])
   const [engines, setEngines] = useState<VehicleEngine[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
+  // Selected items
   const [selectedMake, setSelectedMake] = useState<VehicleMake | null>(null)
   const [selectedModel, setSelectedModel] = useState<VehicleModel | null>(null)
-  const [selectedEngine, setSelectedEngine] = useState<string | null>(null)
+  const [selectedEngine, setSelectedEngine] = useState<VehicleEngine | null>(null)
 
+  const containerRef = useRef<HTMLDivElement>(null)
+  const makeInputRef = useRef<HTMLInputElement>(null)
+  const modelInputRef = useRef<HTMLInputElement>(null)
+  const engineInputRef = useRef<HTMLInputElement>(null)
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+        setActiveDropdown(null)
+      }
+    }
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === 'Escape') setActiveDropdown(null)
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    document.addEventListener('keydown', handleKeyDown)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [])
+
+  // Auto-focus search input when a dropdown opens
+  useEffect(() => {
+    if (activeDropdown === 'make') {
+      setTimeout(() => makeInputRef.current?.focus(), 50)
+    } else if (activeDropdown === 'model') {
+      setTimeout(() => modelInputRef.current?.focus(), 50)
+    } else if (activeDropdown === 'engine') {
+      setTimeout(() => engineInputRef.current?.focus(), 50)
+    }
+  }, [activeDropdown])
+
+  // Load makes on mount
   useEffect(() => {
     let active = true
 
     const fetchInitialData = async () => {
-      await Promise.resolve()
-      if (!active) return
-
       setLoading(true)
       setError('')
 
       try {
         let data = await productsApi.getMakes(initialVehicleType ?? undefined)
-        // If the initial vehicle type returned fewer than 5 makes, load all available makes
         if (!data || data.length < 5) {
           data = await productsApi.getMakes()
         }
-        if (active) setMakes(data)
+        if (active && Array.isArray(data)) setMakes(data)
       } catch {
         if (active) setError('Impossible de charger les marques de véhicules')
       } finally {
@@ -140,8 +194,8 @@ export function VehicleFinder({ onClose, initialVehicleType }: VehicleFinderProp
     return () => { active = false }
   }, [initialVehicleType])
 
-  // Partition into Popular Makes and All Makes
-  const { popularMakes, allMakes } = useMemo(() => {
+  // Popular vs All makes
+  const { popularMakes, filteredMakes } = useMemo(() => {
     const popularMap = new Map<string, VehicleMake>()
     makes.forEach(m => {
       const upper = m.name.toUpperCase().trim()
@@ -161,65 +215,143 @@ export function VehicleFinder({ onClose, initialVehicleType }: VehicleFinderProp
       }
     })
 
-    return { popularMakes: popularList, allMakes: makes }
-  }, [makes])
+    const q = makeSearch.trim().toLowerCase()
+    const filtered = q
+      ? makes.filter(m => m.name.toLowerCase().includes(q) || m.slug.toLowerCase().includes(q))
+      : makes
+
+    return { popularMakes: popularList, filteredMakes: filtered }
+  }, [makes, makeSearch])
+
+  // Filtered models with generation and year search
+  const filteredModels = useMemo(() => {
+    const q = modelSearch.trim().toLowerCase()
+    if (!q) return models
+
+    // Check if user is searching by a 4-digit year e.g. "2014"
+    const isYearQuery = /^\d{4}$/.test(q)
+    const targetYear = isYearQuery ? parseInt(q, 10) : null
+
+    return models.filter(m => {
+      if (m.name.toLowerCase().includes(q) || m.slug.toLowerCase().includes(q)) return true
+      if (targetYear) {
+        const from = m.yearFrom || 1980
+        const to = m.yearTo || new Date().getFullYear() + 1
+        if (targetYear >= from && targetYear <= to) return true
+      }
+      return false
+    })
+  }, [models, modelSearch])
+
+  // Filtered engines by fuel type and search
+  const filteredEngines = useMemo(() => {
+    let list = engines
+
+    // 1. Filter by fuel tab
+    if (engineFuelFilter !== 'all') {
+      list = list.filter(eng => {
+        const fuel = (eng.fuelType || '').toLowerCase()
+        const code = eng.engineCode.toLowerCase()
+        if (engineFuelFilter === 'diesel') {
+          return fuel === 'diesel' || /tdci|dci|tdi|hdi|cdi|crdi|multijet|ecoblue|diesel/i.test(code)
+        }
+        if (engineFuelFilter === 'essence') {
+          return fuel === 'essence' || (!/tdci|dci|tdi|hdi|cdi|crdi|multijet|ecoblue|diesel/i.test(code) && !/hybrid|e-tech|phev/i.test(code))
+        }
+        if (engineFuelFilter === 'hybrid') {
+          return fuel === 'hybrid' || /hybrid|e-tech|phev|mhev/i.test(code)
+        }
+        return true
+      })
+    }
+
+    // 2. Filter by search query
+    const q = engineSearch.trim().toLowerCase()
+    if (!q) return list
+
+    return list.filter(eng => {
+      const code = eng.engineCode.toLowerCase()
+      const spec = (eng.previewOil?.viscosity || '').toLowerCase()
+      const oem = (eng.previewOil?.oemApproval || '').toLowerCase()
+      const hp = eng.powerHp ? `${eng.powerHp}ch` : ''
+      return code.includes(q) || spec.includes(q) || oem.includes(q) || hp.includes(q)
+    })
+  }, [engines, engineFuelFilter, engineSearch])
 
   const loadModels = (make: VehicleMake) => {
     setLoading(true)
     setError('')
     setModels([])
     productsApi.getModels(make.name)
-      .then(setModels)
+      .then(data => {
+        if (Array.isArray(data)) setModels(data)
+      })
       .catch(() => setError('Impossible de charger les modèles pour cette marque'))
       .finally(() => setLoading(false))
   }
 
-  const loadEngines = (model: VehicleModel) => {
-    if (!selectedMake) return
+  const loadEngines = (make: VehicleMake, model: VehicleModel) => {
     setLoading(true)
     setError('')
     setEngines([])
-    productsApi.getEngines(selectedMake.name, model.name)
-      .then(setEngines)
+    productsApi.getEngines(make.name, model.name)
+      .then(data => {
+        if (Array.isArray(data)) setEngines(data)
+      })
       .catch(() => setError('Impossible de charger les motorisations pour ce modèle'))
       .finally(() => setLoading(false))
   }
 
-  const selectMake = (make: VehicleMake) => {
+  const handleSelectMake = (make: VehicleMake) => {
     setSelectedMake(make)
     setSelectedModel(null)
     setSelectedEngine(null)
+    setMakeSearch('')
+    setModelSearch('')
+    setEngineSearch('')
     loadModels(make)
-    setStep(2)
+    setActiveDropdown('model')
   }
 
-  const selectModel = (model: VehicleModel) => {
+  const handleSelectModel = (model: VehicleModel) => {
+    if (!selectedMake) return
     setSelectedModel(model)
     setSelectedEngine(null)
-    loadEngines(model)
-    setStep(3)
+    setModelSearch('')
+    setEngineSearch('')
+    loadEngines(selectedMake, model)
+    setActiveDropdown('engine')
   }
 
-  const resetTo = (targetStep: number) => {
-    setStep(targetStep)
-    if (targetStep === 1) {
-      setSelectedMake(null)
-      setSelectedModel(null)
-      setSelectedEngine(null)
-    } else if (targetStep === 2) {
-      setSelectedModel(null)
-      setSelectedEngine(null)
-    }
+  const handleSelectEngine = (engine: VehicleEngine) => {
+    setSelectedEngine(engine)
+    setEngineSearch('')
+    setActiveDropdown(null)
+  }
+
+  const handleReset = () => {
+    setSelectedMake(null)
+    setSelectedModel(null)
+    setSelectedEngine(null)
+    setModels([])
+    setEngines([])
+    setMakeSearch('')
+    setModelSearch('')
+    setEngineSearch('')
+    setActiveDropdown('make')
   }
 
   const handleSearch = () => {
     if (!selectedMake || !selectedModel) return
     const makeSlug = selectedMake.slug || selectedMake.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')
     const modelSlug = selectedModel.slug || selectedModel.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')
+    const engineCode = selectedEngine ? selectedEngine.engineCode : ''
+
     const params = new URLSearchParams()
     params.set('make', makeSlug)
     params.set('model', modelSlug)
-    if (selectedEngine) params.set('engine', selectedEngine)
+    if (engineCode) params.set('engine', engineCode)
+
     setVehicle({
       type: selectedModel.vehicleType || initialVehicleType || 'automobile',
       makeId: selectedMake.id || makeSlug,
@@ -228,143 +360,524 @@ export function VehicleFinder({ onClose, initialVehicleType }: VehicleFinderProp
       modelId: selectedModel.id || modelSlug,
       modelName: selectedModel.name,
       modelSlug: modelSlug,
-      engineCode: selectedEngine ?? '',
+      engineCode: engineCode,
     })
+
     params.set('isOilFinder', 'true')
     if (onClose) onClose()
     router.push(`/${locale}/catalogue?${params.toString()}`)
   }
 
+  // Active confirmed recommendation spec if an engine is selected or preview is available
+  const activeSpec = selectedEngine?.previewOil
+
   return (
-    <div className="relative mx-auto w-full max-w-4xl overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-xl">
-      {/* ═══════════════ TOP SECTION: 3 DIRECT SELECT DROPDOWNS ═══════════════ */}
-      <div className="border-b border-slate-200/80 bg-gradient-to-r from-slate-50 via-white to-slate-50 p-5 sm:p-6">
-        <div className="mb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+    <div ref={containerRef} className="relative mx-auto w-full max-w-5xl rounded-2xl border border-slate-200/90 bg-white shadow-xl">
+      {/* ═══════════════ HEADER BAR ═══════════════ */}
+      <div className="border-b border-slate-100 bg-gradient-to-r from-slate-50/80 via-white to-slate-50/80 px-5 py-4 sm:px-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
-            <h2 className="text-base font-black text-[#0B1528] flex items-center gap-2">
-              <Sparkles size={16} className="text-amber-500" />
+            <h2 className="text-sm sm:text-base font-black text-[#001E3C] flex items-center gap-2">
+              <Sparkles size={16} className="text-[#D4A76A]" />
               Sélecteur de Véhicule
             </h2>
             <p className="text-xs text-slate-500">
-              Choisissez directement votre véhicule dans les listes ci-dessous sans avoir à taper
+              Choisissez votre marque, modèle et motorisation pour afficher immédiatement l&apos;huile homologuée
             </p>
           </div>
 
           {selectedMake && (
             <button
-              onClick={() => resetTo(1)}
-              className="inline-flex items-center gap-1 text-xs text-slate-400 hover:text-slate-700"
+              onClick={handleReset}
+              className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-400 hover:text-slate-700 transition cursor-pointer self-start sm:self-auto"
             >
-              <RotateCcw size={12} />
+              <RotateCcw size={13} />
               Recommencer
             </button>
           )}
         </div>
+      </div>
 
-        {/* 3 Main Visible Selection Controls */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          {/* Dropdown 1: Marque */}
-          <div className="flex flex-col gap-1.5">
+      {/* ═══════════════ 3 HORIZONTAL CONTROLS (MARQUE - MODÈLE - MOTORISATION) ═══════════════ */}
+      <div className="p-5 sm:p-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5 relative">
+          {/* ────────────────── 1. MARQUE ────────────────── */}
+          <div className="relative flex flex-col gap-1.5">
             <label className="text-[11px] font-bold uppercase tracking-wider text-slate-600 flex items-center gap-1.5">
-              <span className="flex h-4 w-4 items-center justify-center rounded-full bg-[#001E3C] text-[9px] text-white">1</span>
-              Marque
+              <span className="flex h-4 w-4 items-center justify-center rounded-full bg-[#001E3C] text-[9px] font-black text-white">1</span>
+              MARQUE
             </label>
-            <select
-              value={selectedMake?.slug || selectedMake?.name || selectedMake?.id || ''}
-              onChange={(e) => {
-                const found = makes.find(m => (m.slug || m.name || m.id) === e.target.value)
-                if (found) selectMake(found)
-              }}
-              className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-xs font-bold text-slate-900 shadow-2xs outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
-            >
-              <option value="" disabled>Sélectionner une marque...</option>
-              {allMakes.map(m => {
-                const val = m.slug || m.name || m.id
-                return (
-                  <option key={val} value={val}>
-                    {m.name}
-                  </option>
-                )
-              })}
-            </select>
-          </div>
 
-          {/* Dropdown 2: Modèle */}
-          <div className="flex flex-col gap-1.5">
-            <label className="text-[11px] font-bold uppercase tracking-wider text-slate-600 flex items-center gap-1.5">
-              <span className={`flex h-4 w-4 items-center justify-center rounded-full text-[9px] ${selectedMake ? 'bg-[#001E3C] text-white' : 'bg-slate-200 text-slate-500'}`}>2</span>
-              Modèle
-            </label>
-            <select
-              value={selectedModel?.slug || selectedModel?.name || selectedModel?.id || ''}
-              disabled={!selectedMake || models.length === 0}
-              onChange={(e) => {
-                const found = models.find(m => (m.slug || m.name || m.id) === e.target.value)
-                if (found) selectModel(found)
-              }}
-              className={`w-full rounded-xl border px-3 py-2.5 text-xs font-bold shadow-2xs outline-none transition ${
-                selectedMake
-                  ? 'border-slate-200 bg-white text-slate-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20'
-                  : 'border-slate-200/60 bg-slate-100 text-slate-400 cursor-not-allowed'
+            <button
+              type="button"
+              onClick={() => setActiveDropdown(activeDropdown === 'make' ? null : 'make')}
+              className={`w-full flex items-center justify-between gap-2 rounded-xl border px-3.5 py-2.5 text-xs font-bold text-left transition shadow-2xs outline-none cursor-pointer ${
+                activeDropdown === 'make'
+                  ? 'border-blue-600 ring-2 ring-blue-600/20 bg-white text-slate-900'
+                  : selectedMake
+                    ? 'border-slate-300 bg-white text-slate-900 hover:border-slate-400'
+                    : 'border-slate-200 bg-slate-50/70 text-slate-500 hover:border-slate-300 hover:bg-white'
               }`}
             >
-              <option value="" disabled>
-                {!selectedMake ? 'Sélectionnez d’abord la marque' : 'Sélectionner un modèle...'}
-              </option>
-              {models.map(m => {
-                const val = m.slug || m.name || m.id
-                return (
-                  <option key={val} value={val}>
-                    {m.name}
-                  </option>
-                )
-              })}
-            </select>
+              <div className="flex items-center gap-2.5 min-w-0 flex-1 truncate">
+                {selectedMake ? (
+                  <>
+                    <BrandLogo make={selectedMake} size="xs" />
+                    <span className="truncate font-black text-slate-900">{selectedMake.name}</span>
+                  </>
+                ) : (
+                  <span className="text-slate-400 font-medium">Sélectionner une marque...</span>
+                )}
+              </div>
+              <div className="flex items-center gap-1 shrink-0 text-slate-400">
+                {selectedMake && (
+                  <span
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      handleReset()
+                    }}
+                    className="p-1 hover:text-slate-700 rounded-full hover:bg-slate-100 transition"
+                  >
+                    <X size={12} />
+                  </span>
+                )}
+                <ChevronDown size={14} className={`transition-transform duration-200 ${activeDropdown === 'make' ? 'rotate-180 text-blue-600' : ''}`} />
+              </div>
+            </button>
+
+            {/* FLOATING DROPDOWN: MARQUE */}
+            {activeDropdown === 'make' && (
+              <div className="absolute top-[102%] left-0 right-0 z-50 rounded-2xl border border-slate-200 bg-white p-3 shadow-2xl animate-in fade-in zoom-in-95 duration-150 md:min-w-[340px]">
+                {/* Search box */}
+                <div className="relative mb-2.5">
+                  <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                  <input
+                    ref={makeInputRef}
+                    type="text"
+                    value={makeSearch}
+                    onChange={(e) => setMakeSearch(e.target.value)}
+                    placeholder="Rechercher une marque (ex: Ford, Renault)..."
+                    className="w-full rounded-xl border border-slate-200 bg-slate-50/50 pl-8 pr-3 py-2 text-xs font-semibold text-slate-900 outline-none focus:border-blue-500 focus:bg-white focus:ring-1 focus:ring-blue-500"
+                  />
+                  {makeSearch && (
+                    <button onClick={() => setMakeSearch('')} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                      <X size={12} />
+                    </button>
+                  )}
+                </div>
+
+                {/* Popular Brand Quick Pills (shown when not actively searching) */}
+                {!makeSearch && popularMakes.length > 0 && (
+                  <div className="mb-2.5 pb-2.5 border-b border-slate-100">
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5 px-1">
+                      Marques populaires
+                    </p>
+                    <div className="grid grid-cols-4 gap-1 max-h-28 overflow-y-auto pr-1">
+                      {popularMakes.slice(0, 12).map(pm => (
+                        <button
+                          key={pm.id || pm.name}
+                          type="button"
+                          onClick={() => handleSelectMake(pm)}
+                          className={`flex flex-col items-center justify-center p-1.5 rounded-lg border transition text-center cursor-pointer ${
+                            selectedMake?.name === pm.name
+                              ? 'border-blue-500 bg-blue-50/60 text-blue-900'
+                              : 'border-slate-100 bg-slate-50/60 hover:bg-blue-50/40 hover:border-blue-200 text-slate-700'
+                          }`}
+                        >
+                          <BrandLogo make={pm} size="xs" />
+                          <span className="text-[10px] font-bold truncate mt-1 max-w-full">{pm.name}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* All Makes List */}
+                <div className="max-h-56 overflow-y-auto space-y-0.5 pr-1">
+                  {filteredMakes.length === 0 ? (
+                    <div className="py-4 text-center text-xs text-slate-400">
+                      Aucune marque trouvée pour &quot;{makeSearch}&quot;
+                    </div>
+                  ) : (
+                    filteredMakes.map(m => {
+                      const isSelected = selectedMake?.name === m.name
+                      return (
+                        <button
+                          key={m.id || m.slug || m.name}
+                          type="button"
+                          onClick={() => handleSelectMake(m)}
+                          className={`w-full flex items-center justify-between gap-2.5 px-3 py-2 rounded-xl text-xs font-bold transition text-left cursor-pointer ${
+                            isSelected
+                              ? 'bg-[#001E3C] text-white'
+                              : 'text-slate-800 hover:bg-slate-100/80'
+                          }`}
+                        >
+                          <div className="flex items-center gap-2.5 truncate">
+                            <BrandLogo make={m} size="xs" />
+                            <span className="truncate">{m.name}</span>
+                          </div>
+                          {isSelected && <Check size={14} className="text-[#D4A76A] shrink-0" />}
+                        </button>
+                      )
+                    })
+                  )}
+                </div>
+              </div>
+            )}
           </div>
 
-          {/* Dropdown 3: Motorisation */}
-          <div className="flex flex-col gap-1.5">
+          {/* ────────────────── 2. MODÈLE ────────────────── */}
+          <div className="relative flex flex-col gap-1.5">
             <label className="text-[11px] font-bold uppercase tracking-wider text-slate-600 flex items-center gap-1.5">
-              <span className={`flex h-4 w-4 items-center justify-center rounded-full text-[9px] ${selectedModel ? 'bg-[#001E3C] text-white' : 'bg-slate-200 text-slate-500'}`}>3</span>
-              Motorisation
+              <span className={`flex h-4 w-4 items-center justify-center rounded-full text-[9px] font-black ${selectedMake ? 'bg-[#001E3C] text-white' : 'bg-slate-200 text-slate-400'}`}>2</span>
+              MODÈLE
             </label>
-            <select
-              value={selectedEngine || ''}
-              disabled={!selectedModel || engines.length === 0}
-              onChange={(e) => setSelectedEngine(e.target.value)}
-              className={`w-full rounded-xl border px-3 py-2.5 text-xs font-bold shadow-2xs outline-none transition ${
-                selectedModel
-                  ? 'border-slate-200 bg-white text-slate-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20'
-                  : 'border-slate-200/60 bg-slate-100 text-slate-400 cursor-not-allowed'
+
+            <button
+              type="button"
+              disabled={!selectedMake || loading}
+              onClick={() => setActiveDropdown(activeDropdown === 'model' ? null : 'model')}
+              className={`w-full flex items-center justify-between gap-2 rounded-xl border px-3.5 py-2.5 text-xs font-bold text-left transition shadow-2xs outline-none ${
+                !selectedMake
+                  ? 'border-slate-200/80 bg-slate-100/60 text-slate-400 cursor-not-allowed'
+                  : activeDropdown === 'model'
+                    ? 'border-blue-600 ring-2 ring-blue-600/20 bg-white text-slate-900 cursor-pointer'
+                    : selectedModel
+                      ? 'border-slate-300 bg-white text-slate-900 hover:border-slate-400 cursor-pointer'
+                      : 'border-slate-200 bg-slate-50/70 text-slate-600 hover:border-slate-300 hover:bg-white cursor-pointer'
               }`}
             >
-              <option value="" disabled>
-                {!selectedModel ? 'Sélectionnez d’abord le modèle' : 'Sélectionner une motorisation...'}
-              </option>
-              {engines.map(eng => {
-                const yearLabel = eng.yearFrom || eng.yearTo ? `(${eng.yearFrom || '…'}-${eng.yearTo || '…'})` : ''
-                return (
-                  <option key={eng.engineCode} value={eng.engineCode}>
-                    {eng.engineCode} {yearLabel}
-                  </option>
-                )
-              })}
-            </select>
+              <div className="flex items-center gap-2 min-w-0 flex-1 truncate">
+                {selectedModel ? (
+                  <>
+                    <span className="truncate font-black text-slate-900">{selectedModel.name}</span>
+                    {formatYearBadge(selectedModel.yearFrom, selectedModel.yearTo) && (
+                      <span className="shrink-0 rounded-md bg-blue-50 border border-blue-200/60 px-1.5 py-0.5 text-[10px] font-bold text-blue-700">
+                        {formatYearBadge(selectedModel.yearFrom, selectedModel.yearTo)}
+                      </span>
+                    )}
+                  </>
+                ) : (
+                  <span className={selectedMake ? 'text-slate-600' : 'text-slate-400'}>
+                    {!selectedMake ? 'Sélectionnez d’abord la marque' : loading ? 'Chargement des modèles...' : 'Sélectionner un modèle...'}
+                  </span>
+                )}
+              </div>
+              <div className="flex items-center gap-1 shrink-0 text-slate-400">
+                {loading && <Loader2 size={13} className="animate-spin text-blue-600" />}
+                {selectedModel && !loading && (
+                  <span
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      setSelectedModel(null)
+                      setSelectedEngine(null)
+                      setEngines([])
+                      setActiveDropdown('model')
+                    }}
+                    className="p-1 hover:text-slate-700 rounded-full hover:bg-slate-100 transition"
+                  >
+                    <X size={12} />
+                  </span>
+                )}
+                <ChevronDown size={14} className={`transition-transform duration-200 ${activeDropdown === 'model' ? 'rotate-180 text-blue-600' : ''}`} />
+              </div>
+            </button>
+
+            {/* FLOATING DROPDOWN: MODÈLE */}
+            {activeDropdown === 'model' && selectedMake && (
+              <div className="absolute top-[102%] left-0 right-0 z-50 rounded-2xl border border-slate-200 bg-white p-3 shadow-2xl animate-in fade-in zoom-in-95 duration-150 md:min-w-[360px]">
+                {/* Search box */}
+                <div className="relative mb-2.5">
+                  <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                  <input
+                    ref={modelInputRef}
+                    type="text"
+                    value={modelSearch}
+                    onChange={(e) => setModelSearch(e.target.value)}
+                    placeholder="Filtrer par modèle ou année (ex: Focus, 2014)..."
+                    className="w-full rounded-xl border border-slate-200 bg-slate-50/50 pl-8 pr-3 py-2 text-xs font-semibold text-slate-900 outline-none focus:border-blue-500 focus:bg-white focus:ring-1 focus:ring-blue-500"
+                  />
+                  {modelSearch && (
+                    <button onClick={() => setModelSearch('')} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                      <X size={12} />
+                    </button>
+                  )}
+                </div>
+
+                {/* Model List with Explicit Generations and Years */}
+                <div className="max-h-64 overflow-y-auto space-y-1 pr-1">
+                  {filteredModels.length === 0 ? (
+                    <div className="py-4 text-center text-xs text-slate-400">
+                      Aucun modèle trouvé pour &quot;{modelSearch}&quot;
+                    </div>
+                  ) : (
+                    filteredModels.map(m => {
+                      const isSelected = selectedModel?.name === m.name
+                      const yearLabel = formatYearBadge(m.yearFrom, m.yearTo)
+                      return (
+                        <button
+                          key={m.id || m.slug || m.name}
+                          type="button"
+                          onClick={() => handleSelectModel(m)}
+                          className={`w-full flex items-center justify-between gap-2 px-3 py-2 rounded-xl text-xs font-bold transition text-left cursor-pointer ${
+                            isSelected
+                              ? 'bg-[#001E3C] text-white'
+                              : 'text-slate-800 hover:bg-slate-100/80'
+                          }`}
+                        >
+                          <div className="flex flex-col min-w-0 pr-1">
+                            <span className="truncate">{m.name}</span>
+                          </div>
+                          <div className="flex items-center gap-2 shrink-0">
+                            {yearLabel && (
+                              <span className={`rounded-md px-1.5 py-0.5 text-[10px] font-bold ${
+                                isSelected
+                                  ? 'bg-white/20 text-white'
+                                  : 'bg-slate-100 text-slate-600 border border-slate-200/80'
+                              }`}>
+                                {yearLabel}
+                              </span>
+                            )}
+                            {isSelected && <Check size={14} className="text-[#D4A76A]" />}
+                          </div>
+                        </button>
+                      )
+                    })
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* ────────────────── 3. MOTORISATION ────────────────── */}
+          <div className="relative flex flex-col gap-1.5">
+            <label className="text-[11px] font-bold uppercase tracking-wider text-slate-600 flex items-center gap-1.5">
+              <span className={`flex h-4 w-4 items-center justify-center rounded-full text-[9px] font-black ${selectedModel ? 'bg-[#001E3C] text-white' : 'bg-slate-200 text-slate-400'}`}>3</span>
+              MOTORISATION
+            </label>
+
+            <button
+              type="button"
+              disabled={!selectedModel || loading}
+              onClick={() => setActiveDropdown(activeDropdown === 'engine' ? null : 'engine')}
+              className={`w-full flex items-center justify-between gap-2 rounded-xl border px-3.5 py-2.5 text-xs font-bold text-left transition shadow-2xs outline-none ${
+                !selectedModel
+                  ? 'border-slate-200/80 bg-slate-100/60 text-slate-400 cursor-not-allowed'
+                  : activeDropdown === 'engine'
+                    ? 'border-blue-600 ring-2 ring-blue-600/20 bg-white text-slate-900 cursor-pointer'
+                    : selectedEngine
+                      ? 'border-slate-300 bg-white text-slate-900 hover:border-slate-400 cursor-pointer'
+                      : 'border-slate-200 bg-slate-50/70 text-slate-600 hover:border-slate-300 hover:bg-white cursor-pointer'
+              }`}
+            >
+              <div className="flex items-center gap-2 min-w-0 flex-1 truncate">
+                {selectedEngine ? (
+                  <>
+                    <span className="truncate font-black text-slate-900">{selectedEngine.engineCode}</span>
+                    {selectedEngine.previewOil?.viscosity && (
+                      <span className="shrink-0 rounded-md bg-amber-100/90 border border-amber-300 px-1.5 py-0.5 text-[10px] font-black text-amber-900">
+                        {selectedEngine.previewOil.viscosity}
+                      </span>
+                    )}
+                  </>
+                ) : (
+                  <span className={selectedModel ? 'text-slate-600' : 'text-slate-400'}>
+                    {!selectedModel ? 'Sélectionnez d’abord le modèle' : loading ? 'Chargement...' : 'Sélectionner une motorisation...'}
+                  </span>
+                )}
+              </div>
+              <div className="flex items-center gap-1 shrink-0 text-slate-400">
+                {selectedEngine && (
+                  <span
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      setSelectedEngine(null)
+                      setActiveDropdown('engine')
+                    }}
+                    className="p-1 hover:text-slate-700 rounded-full hover:bg-slate-100 transition"
+                  >
+                    <X size={12} />
+                  </span>
+                )}
+                <ChevronDown size={14} className={`transition-transform duration-200 ${activeDropdown === 'engine' ? 'rotate-180 text-blue-600' : ''}`} />
+              </div>
+            </button>
+
+            {/* FLOATING DROPDOWN: MOTORISATION */}
+            {activeDropdown === 'engine' && selectedModel && (
+              <div className="absolute top-[102%] left-0 right-0 md:-left-24 md:right-0 z-50 rounded-2xl border border-slate-200 bg-white p-3 shadow-2xl animate-in fade-in zoom-in-95 duration-150 md:min-w-[420px]">
+                {/* Fuel Filter Pills Tabs */}
+                <div className="mb-2.5 flex items-center gap-1 p-1 bg-slate-100/80 rounded-xl">
+                  <button
+                    type="button"
+                    onClick={() => setEngineFuelFilter('all')}
+                    className={`flex-1 py-1 text-[11px] font-black rounded-lg transition cursor-pointer ${
+                      engineFuelFilter === 'all'
+                        ? 'bg-white text-slate-900 shadow-2xs'
+                        : 'text-slate-500 hover:text-slate-900'
+                    }`}
+                  >
+                    Tous
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setEngineFuelFilter('essence')}
+                    className={`flex-1 py-1 text-[11px] font-black rounded-lg transition cursor-pointer ${
+                      engineFuelFilter === 'essence'
+                        ? 'bg-emerald-600 text-white shadow-2xs'
+                        : 'text-slate-600 hover:text-emerald-700'
+                    }`}
+                  >
+                    Essence ⛽
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setEngineFuelFilter('diesel')}
+                    className={`flex-1 py-1 text-[11px] font-black rounded-lg transition cursor-pointer ${
+                      engineFuelFilter === 'diesel'
+                        ? 'bg-blue-600 text-white shadow-2xs'
+                        : 'text-slate-600 hover:text-blue-700'
+                    }`}
+                  >
+                    Diesel 🛢️
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setEngineFuelFilter('hybrid')}
+                    className={`flex-1 py-1 text-[11px] font-black rounded-lg transition cursor-pointer ${
+                      engineFuelFilter === 'hybrid'
+                        ? 'bg-purple-600 text-white shadow-2xs'
+                        : 'text-slate-600 hover:text-purple-700'
+                    }`}
+                  >
+                    Hybride ⚡
+                  </button>
+                </div>
+
+                {/* Search box */}
+                <div className="relative mb-2.5">
+                  <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                  <input
+                    ref={engineInputRef}
+                    type="text"
+                    value={engineSearch}
+                    onChange={(e) => setEngineSearch(e.target.value)}
+                    placeholder="Filtrer moteur ou puissance (ex: 1.0, 125ch, EcoBoost)..."
+                    className="w-full rounded-xl border border-slate-200 bg-slate-50/50 pl-8 pr-3 py-2 text-xs font-semibold text-slate-900 outline-none focus:border-blue-500 focus:bg-white focus:ring-1 focus:ring-blue-500"
+                  />
+                  {engineSearch && (
+                    <button onClick={() => setEngineSearch('')} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                      <X size={12} />
+                    </button>
+                  )}
+                </div>
+
+                {/* Engine List */}
+                <div className="max-h-64 overflow-y-auto space-y-1.5 pr-1">
+                  {filteredEngines.length === 0 ? (
+                    <div className="py-4 text-center text-xs text-slate-400">
+                      Aucune motorisation trouvée pour ce filtre.
+                    </div>
+                  ) : (
+                    filteredEngines.map(eng => {
+                      const isSelected = selectedEngine?.engineCode === eng.engineCode
+                      const isDieselEng = (eng.fuelType === 'diesel') || /tdci|dci|tdi|hdi|cdi|crdi|multijet|ecoblue|diesel/i.test(eng.engineCode)
+                      const isHybridEng = (eng.fuelType === 'hybrid') || /hybrid|e-tech|phev/i.test(eng.engineCode)
+
+                      return (
+                        <button
+                          key={eng.engineCode}
+                          type="button"
+                          onClick={() => handleSelectEngine(eng)}
+                          className={`w-full flex flex-col gap-1 p-2.5 rounded-xl text-left transition border cursor-pointer ${
+                            isSelected
+                              ? 'bg-blue-50/70 border-blue-500 ring-1 ring-blue-500/20'
+                              : 'border-slate-100 bg-slate-50/40 hover:bg-slate-100/70 hover:border-slate-200'
+                          }`}
+                        >
+                          <div className="flex items-center justify-between gap-2">
+                            <div className="flex items-center gap-2 truncate">
+                              <span className="text-xs font-black text-slate-900 truncate">
+                                {eng.engineCode}
+                              </span>
+                              <span className={`rounded-md px-1.5 py-0.5 text-[9px] font-black uppercase tracking-wider ${
+                                isHybridEng
+                                  ? 'bg-purple-100 text-purple-800'
+                                  : isDieselEng
+                                    ? 'bg-blue-100 text-blue-800'
+                                    : 'bg-emerald-100 text-emerald-800'
+                              }`}>
+                                {isHybridEng ? 'Hybride' : isDieselEng ? 'Diesel' : 'Essence'}
+                              </span>
+                            </div>
+                            {isSelected && <Check size={14} className="text-blue-600 shrink-0" />}
+                          </div>
+
+                          {/* Engine details and oil recommendation badge */}
+                          <div className="flex flex-wrap items-center gap-1.5 mt-0.5 text-[10px] text-slate-500">
+                            {eng.powerHp && (
+                              <span className="font-semibold text-slate-700">
+                                {eng.powerHp} ch
+                              </span>
+                            )}
+                            {eng.displacementCc && (
+                              <span>· {(eng.displacementCc / 1000).toFixed(1)}L</span>
+                            )}
+                            {formatYearBadge(eng.yearFrom, eng.yearTo) && (
+                              <span>· ({formatYearBadge(eng.yearFrom, eng.yearTo)})</span>
+                            )}
+                            {eng.previewOil?.viscosity && (
+                              <span className="ml-auto inline-flex items-center gap-1 rounded bg-amber-50 border border-amber-200/90 px-1.5 py-0.2 text-[10px] font-black text-amber-900">
+                                <span>Huile :</span>
+                                <strong className="text-amber-800">{eng.previewOil.viscosity}</strong>
+                              </span>
+                            )}
+                          </div>
+                        </button>
+                      )
+                    })
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
-        {/* Action Button Bar */}
+        {/* ═══════════════ CONFIRMED VEHICLE BAR & ACTION CTA ═══════════════ */}
         {selectedMake && selectedModel && (
-          <div className="mt-4 flex flex-col sm:flex-row items-center justify-between gap-3 pt-3 border-t border-slate-100">
-            <div className="text-xs text-slate-600 font-medium">
-              Véhicule choisi : <strong className="text-blue-900">{selectedMake.name} {selectedModel.name}</strong> {selectedEngine && <span>({selectedEngine})</span>}
+          <div className="mt-5 pt-4 border-t border-slate-100 flex flex-col md:flex-row items-center justify-between gap-3 animate-in fade-in duration-200">
+            <div className="flex items-center gap-3 min-w-0">
+              <BrandLogo make={selectedMake} size="md" />
+              <div>
+                <div className="text-xs sm:text-sm font-black text-[#001E3C] flex items-center gap-2 flex-wrap">
+                  <span>{selectedMake.name} {selectedModel.name}</span>
+                  {selectedEngine && (
+                    <span className="text-slate-600 font-bold">
+                      · {selectedEngine.engineCode}
+                    </span>
+                  )}
+                </div>
+
+                {/* Confirmed OEM Specification Tag */}
+                {activeSpec && (
+                  <div className="mt-1 flex items-center gap-2 text-xs">
+                    <span className="inline-flex items-center gap-1 rounded-lg bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 text-[11px] font-black text-amber-900">
+                      <ShieldCheck size={13} className="text-amber-600" />
+                      Huile certifiée : <strong className="text-amber-800">{activeSpec.viscosity}</strong>
+                      {activeSpec.oemApproval && <span className="text-amber-700 font-semibold">({activeSpec.oemApproval})</span>}
+                    </span>
+                  </div>
+                )}
+              </div>
             </div>
+
             <button
               onClick={handleSearch}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-[#001E3C] hover:bg-[#002B56] px-6 py-2.5 text-xs font-bold text-white shadow-md transition active:scale-95 cursor-pointer"
+              className="w-full md:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-[#001E3C] hover:bg-[#002B56] px-6 py-3 text-xs sm:text-sm font-black text-white shadow-md hover:shadow-lg transition active:scale-95 cursor-pointer shrink-0"
             >
-              <Search size={14} className="text-amber-400" />
-              Voir les huiles compatibles
+              <Search size={15} className="text-[#D4A76A]" />
+              <span>Voir les huiles compatibles</span>
+              <ArrowRight size={14} className="text-white/70" />
             </button>
           </div>
         )}

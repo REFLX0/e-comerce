@@ -2308,6 +2308,7 @@ export class OilFinderService {
       let tecdocTrim = '';
 
       try {
+        const engineFilter = engineCode ? `%${engineCode.trim().toLowerCase()}%` : null;
         const pcRows: any[] = await this.prisma.$queryRawUnsafe(`
           SELECT 
             COALESCE(NULLIF(pc.description, ''), pc.full_description) AS "description",
@@ -2328,8 +2329,14 @@ export class OilFinderService {
             OR $2 ILIKE '%' || LOWER(m.description) || '%'
             OR LOWER(m.description) ILIKE '%' || $2 || '%'
           )
+          ${engineFilter ? `AND (
+            LOWER(pc.description) ILIKE $3
+            OR LOWER(pc.full_description) ILIKE $3
+            OR $3 ILIKE '%' || LOWER(pc.description) || '%'
+          )` : ''}
+          ORDER BY (CASE WHEN pc.description IS NOT NULL AND pc.description != '' THEN 0 ELSE 1 END), pc.id ASC
           LIMIT 1
-        `, brandSlugs, slugify(model));
+        `, ...(engineFilter ? [brandSlugs, slugify(model), engineFilter] : [brandSlugs, slugify(model)]));
 
         if (pcRows.length > 0) {
           if (pcRows[0].yearFrom) tecdocYearFrom = pcRows[0].yearFrom;
@@ -2340,12 +2347,8 @@ export class OilFinderService {
         // TecDoc lookup optional
       }
 
-      // Preserve genuine engineCode passed by the caller (never clobber it with TecDoc first-row description)
-      const effectiveTrim = engineCode
-        ? (tecdocTrim && !tecdocTrim.toLowerCase().includes(engineCode.toLowerCase())
-            ? `${engineCode} ${tecdocTrim}`
-            : engineCode)
-        : tecdocTrim;
+      // Preserve genuine engineCode passed by caller; NEVER pollute it with unrelated tecdocTrim
+      const effectiveTrim = engineCode ? engineCode.trim() : tecdocTrim;
 
       const resolved = resolveAutomotiveOemSpec(
         make,
@@ -2510,11 +2513,23 @@ export class OilFinderService {
 
   async getModels(makeName: string) {
     const brandSlugs = resolveBrandSlugs(makeName);
-    const modelMap = new Map<string, string>();
+    const modelMap = new Map<string, { slug: string; name: string; yearFrom: number | null; yearTo: number | null }>();
 
     try {
       const tecdocRows: any[] = await this.prisma.$queryRawUnsafe(`
-        SELECT DISTINCT m.description AS name, LOWER(REGEXP_REPLACE(m.description, '[^a-zA-Z0-9]+', '-', 'g')) AS slug
+        SELECT 
+          m.description AS name, 
+          LOWER(REGEXP_REPLACE(m.description, '[^a-zA-Z0-9]+', '-', 'g')) AS slug,
+          CASE 
+            WHEN m.date_from::text ~ '^[12]\\d{3}' THEN SUBSTRING(m.date_from::text, 1, 4)::int
+            WHEN m.date_from::text ~ '\\d{4}$' THEN SUBSTRING(m.date_from::text, LENGTH(m.date_from::text)-3, 4)::int
+            ELSE NULL 
+          END AS "yearFrom",
+          CASE 
+            WHEN m.date_to::text ~ '^[12]\\d{3}' AND SUBSTRING(m.date_to::text, 1, 4) != '0000' THEN SUBSTRING(m.date_to::text, 1, 4)::int
+            WHEN m.date_to::text ~ '\\d{4}$' AND SUBSTRING(m.date_to::text, LENGTH(m.date_to::text)-3, 4) != '0000' THEN SUBSTRING(m.date_to::text, LENGTH(m.date_to::text)-3, 4)::int
+            ELSE NULL 
+          END AS "yearTo"
         FROM tecdoc.models m
         JOIN tecdoc.manufacturers mfr ON mfr.id = m.manufacturer_id
         WHERE m.can_be_displayed = true
@@ -2527,7 +2542,17 @@ export class OilFinderService {
         ORDER BY m.description ASC
       `, brandSlugs);
       for (const r of tecdocRows) {
-        if (r.name) modelMap.set(r.slug || slugify(r.name), r.name);
+        if (r.name) {
+          const s = r.slug || slugify(r.name);
+          if (!modelMap.has(s)) {
+            modelMap.set(s, {
+              slug: s,
+              name: r.name,
+              yearFrom: r.yearFrom != null ? Number(r.yearFrom) : null,
+              yearTo: r.yearTo != null ? Number(r.yearTo) : null,
+            });
+          }
+        }
       }
     } catch (e) {
       this.logger.error(`Error fetching models from TecDoc for make: ${makeName}`, e);
@@ -2536,7 +2561,7 @@ export class OilFinderService {
     try {
       const rows = await this.prisma.oilFinderVehicle?.findMany?.({
         where: { make: { equals: makeName.trim(), mode: 'insensitive' as const } },
-        select: { model: true },
+        select: { model: true, yearFrom: true, yearTo: true },
         distinct: ['model'],
         orderBy: { model: 'asc' },
       });
@@ -2544,7 +2569,16 @@ export class OilFinderService {
         for (const r of rows) {
           const s = slugify(r.model);
           if (r.model && !modelMap.has(s)) {
-            modelMap.set(s, r.model);
+            modelMap.set(s, {
+              slug: s,
+              name: r.model,
+              yearFrom: r.yearFrom || null,
+              yearTo: r.yearTo || null,
+            });
+          } else if (r.model && modelMap.has(s)) {
+            const existing = modelMap.get(s)!;
+            if (!existing.yearFrom && r.yearFrom) existing.yearFrom = r.yearFrom;
+            if (!existing.yearTo && r.yearTo) existing.yearTo = r.yearTo;
           }
         }
       }
@@ -2553,8 +2587,7 @@ export class OilFinderService {
     }
 
     if (modelMap.size > 0) {
-      return Array.from(modelMap.entries())
-        .map(([slug, name]) => ({ slug, name }))
+      return Array.from(modelMap.values())
         .sort((a, b) => a.name.localeCompare(b.name));
     }
 
@@ -2565,7 +2598,31 @@ export class OilFinderService {
     const brandSlugs = resolveBrandSlugs(makeName);
     const modelNorm = modelName.trim().toLowerCase();
 
-    const engineMap = new Map<string, { engineCode: string; yearFrom: number | null; yearTo: number | null }>();
+    const engineMap = new Map<string, {
+      engineCode: string;
+      yearFrom: number | null;
+      yearTo: number | null;
+      fuelType?: string;
+      displacementCc?: number | null;
+      powerHp?: number | null;
+      previewOil?: { viscosity: string; oemApproval: string };
+    }>();
+
+    // Helper to calculate preview specification
+    const computePreview = (code: string, yFrom: number | null, yTo: number | null) => {
+      try {
+        const spec = resolveAutomotiveOemSpec(makeName, modelName, code, yFrom, yTo);
+        return {
+          viscosity: spec.viscosity,
+          oemApproval: spec.oemApproval,
+          fuelType: spec.fuelType,
+          displacementCc: spec.displacementCc,
+          powerHp: spec.powerHp,
+        };
+      } catch {
+        return null;
+      }
+    };
 
     // 1. Query tecdoc.passengercars joined with tecdoc.models and tecdoc.manufacturers
     try {
@@ -2605,10 +2662,17 @@ export class OilFinderService {
         if (pc.engineCode) {
           const key = pc.engineCode.trim().toLowerCase();
           if (!engineMap.has(key)) {
+            const yFrom = pc.yearFrom != null ? Number(pc.yearFrom) : null;
+            const yTo = pc.yearTo != null ? Number(pc.yearTo) : null;
+            const prev = computePreview(pc.engineCode.trim(), yFrom, yTo);
             engineMap.set(key, {
               engineCode: pc.engineCode.trim(),
-              yearFrom: pc.yearFrom != null ? Number(pc.yearFrom) : null,
-              yearTo: pc.yearTo != null ? Number(pc.yearTo) : null,
+              yearFrom: yFrom,
+              yearTo: yTo,
+              fuelType: prev?.fuelType,
+              displacementCc: prev?.displacementCc,
+              powerHp: prev?.powerHp,
+              previewOil: prev ? { viscosity: prev.viscosity, oemApproval: prev.oemApproval } : undefined,
             });
           }
         }
@@ -2644,6 +2708,12 @@ export class OilFinderService {
           powerHp: true,
           fuelType: true,
           model: true,
+          oilSpec: {
+            select: {
+              viscosity: true,
+              oemApproval: true,
+            },
+          },
         },
         distinct: ['engineCode'],
         orderBy: { engineCode: 'asc' },
@@ -2663,10 +2733,24 @@ export class OilFinderService {
               e.engineCode.toLowerCase().includes(rawCode.toLowerCase())
             );
             if (!alreadyPresent) {
+              const yFrom = r.yearFrom || null;
+              const yTo = r.yearTo || null;
+              const oilPreview = r.oilSpec ? {
+                viscosity: r.oilSpec.viscosity,
+                oemApproval: r.oilSpec.oemApproval || '',
+              } : computePreview(rawCode, yFrom, yTo);
+
               engineMap.set(key, {
                 engineCode: label,
-                yearFrom: r.yearFrom || null,
-                yearTo: r.yearTo || null,
+                yearFrom: yFrom,
+                yearTo: yTo,
+                fuelType: r.fuelType || (oilPreview as any)?.fuelType,
+                displacementCc: r.displacementCc || (oilPreview as any)?.displacementCc,
+                powerHp: r.powerHp ? Math.round(r.powerHp) : (oilPreview as any)?.powerHp,
+                previewOil: oilPreview ? {
+                  viscosity: oilPreview.viscosity,
+                  oemApproval: oilPreview.oemApproval,
+                } : undefined,
               });
             }
           }

@@ -696,6 +696,32 @@ describe('OilFinderService', () => {
       }
     });
 
+    it('resolves official 5W-20 Ford WSS-M2C948-B spec (4.1L) for Ford Focus III 1.0 EcoBoost', async () => {
+      prisma.oilFinderVehicle.findMany.mockResolvedValue([]);
+      prisma.$queryRawUnsafe.mockResolvedValue([]);
+
+      const res = await service.findByVehicle('Ford', 'Focus III', '1.0 EcoBoost');
+      expect(res.status).toBe('found');
+      if (res.status === 'found') {
+        expect(res.oilSpec.viscosity).toBe('5W-20');
+        expect(res.oilSpec.capacityLiters).toBe(4.1);
+        expect(res.oilSpec.aceaStandard).toBe('C5');
+        expect(res.oilSpec.oemApproval).toContain('Ford WSS-M2C948-B');
+      }
+    });
+
+    it('resolves official 5W-30 Ford WSS-M2C913-D spec for Ford Focus II 1.6 TDCi', async () => {
+      prisma.oilFinderVehicle.findMany.mockResolvedValue([]);
+      prisma.$queryRawUnsafe.mockResolvedValue([]);
+
+      const res = await service.findByVehicle('Ford', 'Focus II', '1.6 TDCi');
+      expect(res.status).toBe('found');
+      if (res.status === 'found') {
+        expect(res.oilSpec.viscosity).toBe('5W-30');
+        expect(res.oilSpec.oemApproval).toContain('Ford WSS-M2C913');
+      }
+    });
+
     it('resolves official 0W-30 Ford WSS-M2C950-A spec (4.2L) for Ford Focus IV 1.5 EcoBlue', async () => {
       prisma.oilFinderVehicle.findMany.mockResolvedValue([]);
       prisma.$queryRawUnsafe.mockResolvedValue([]);

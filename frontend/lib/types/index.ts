@@ -78,17 +78,27 @@ export interface VehicleMake {
 }
 
 export interface VehicleModel {
-  id: string
-  makeId: string
-  vehicleType: VehicleType
+  id?: string
+  makeId?: string
+  vehicleType?: VehicleType
   name: string
   slug: string
+  yearFrom?: number | null
+  yearTo?: number | null
 }
 
 export interface VehicleEngine {
   engineCode: string
   yearFrom: number | null
   yearTo: number | null
+  fuelType?: 'essence' | 'diesel' | 'hybrid' | string
+  displacementCc?: number | null
+  powerHp?: number | null
+  powerKw?: number | null
+  previewOil?: {
+    viscosity: string
+    oemApproval: string
+  }
 }
 
 export interface VehicleCompatibility {

@@ -219,17 +219,20 @@ export function OilFinderTabs() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.25 }}
+              className="pb-24 sm:pb-32"
             >
               <div className="border-b border-slate-100 bg-slate-50/70 p-4 md:px-6">
                 <button
                   onClick={() => { setStep(2); setSearchMode(null) }}
-                  className="flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-gray-800 transition-colors"
+                  className="flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-gray-800 transition-colors cursor-pointer"
                 >
                   <ArrowLeft size={16} />
                   {t('back')}
                 </button>
               </div>
-              <VehicleFinder onClose={() => {}} initialVehicleType={vehicleType} />
+              <div className="p-4 sm:p-6 md:p-8">
+                <VehicleFinder onClose={() => {}} initialVehicleType={vehicleType} />
+              </div>
             </motion.div>
           )}
 
