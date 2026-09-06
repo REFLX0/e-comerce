@@ -9,10 +9,25 @@ function getCleanCatalog(): Record<string, any> {
   if (!cachedCleanCatalog) {
     const candidatePaths = [
       path.join(__dirname, 'clean-catalog-hierarchy.json'),
+      path.join(__dirname, 'src', 'oil-finder', 'clean-catalog-hierarchy.json'),
+      path.join(__dirname, 'oil-finder', 'clean-catalog-hierarchy.json'),
+      path.join(__dirname, '..', 'oil-finder', 'clean-catalog-hierarchy.json'),
+      path.join(__dirname, '..', 'src', 'oil-finder', 'clean-catalog-hierarchy.json'),
       path.join(__dirname, '..', '..', 'src', 'oil-finder', 'clean-catalog-hierarchy.json'),
+      path.join(__dirname, '..', '..', 'oil-finder-full-dataset', 'clean-catalog-hierarchy.json'),
+      path.join(process.cwd(), 'clean-catalog-hierarchy.json'),
       path.join(process.cwd(), 'src', 'oil-finder', 'clean-catalog-hierarchy.json'),
       path.join(process.cwd(), 'backend', 'src', 'oil-finder', 'clean-catalog-hierarchy.json'),
       path.join(process.cwd(), 'dist', 'src', 'oil-finder', 'clean-catalog-hierarchy.json'),
+      path.join(process.cwd(), 'dist', 'oil-finder', 'clean-catalog-hierarchy.json'),
+      path.join(process.cwd(), 'dist', 'clean-catalog-hierarchy.json'),
+      path.join(process.cwd(), 'oil-finder-full-dataset', 'clean-catalog-hierarchy.json'),
+      path.join(process.cwd(), 'backend', 'oil-finder-full-dataset', 'clean-catalog-hierarchy.json'),
+      '/app/clean-catalog-hierarchy.json',
+      '/app/dist/clean-catalog-hierarchy.json',
+      '/app/dist/oil-finder/clean-catalog-hierarchy.json',
+      '/app/dist/src/oil-finder/clean-catalog-hierarchy.json',
+      '/app/oil-finder-full-dataset/clean-catalog-hierarchy.json',
     ];
     for (const p of candidatePaths) {
       try {

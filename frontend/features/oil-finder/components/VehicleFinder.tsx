@@ -37,6 +37,41 @@ function formatGenTrigger(genName: string, modelName?: string): string {
   return s || genName
 }
 
+const FALLBACK_MAKES: VehicleMake[] = [
+  { slug: 'volkswagen', name: 'Volkswagen' },
+  { slug: 'peugeot', name: 'Peugeot' },
+  { slug: 'renault', name: 'Renault' },
+  { slug: 'audi', name: 'Audi' },
+  { slug: 'bmw', name: 'BMW' },
+  { slug: 'mercedes-benz', name: 'Mercedes-Benz' },
+  { slug: 'toyota', name: 'Toyota' },
+  { slug: 'hyundai', name: 'Hyundai' },
+  { slug: 'kia', name: 'Kia' },
+  { slug: 'seat', name: 'Seat' },
+  { slug: 'skoda', name: 'Skoda' },
+  { slug: 'citroen', name: 'Citroën' },
+  { slug: 'fiat', name: 'Fiat' },
+  { slug: 'ford', name: 'Ford' },
+  { slug: 'nissan', name: 'Nissan' },
+  { slug: 'dacia', name: 'Dacia' },
+  { slug: 'opel', name: 'Opel' },
+  { slug: 'alfa-romeo', name: 'Alfa Romeo' },
+  { slug: 'chevrolet', name: 'Chevrolet' },
+  { slug: 'honda', name: 'Honda' },
+  { slug: 'isuzu', name: 'Isuzu' },
+  { slug: 'iveco', name: 'Iveco' },
+  { slug: 'jaguar', name: 'Jaguar' },
+  { slug: 'jeep', name: 'Jeep' },
+  { slug: 'land-rover', name: 'Land Rover' },
+  { slug: 'mazda', name: 'Mazda' },
+  { slug: 'mini', name: 'Mini' },
+  { slug: 'mitsubishi', name: 'Mitsubishi' },
+  { slug: 'porsche', name: 'Porsche' },
+  { slug: 'smart', name: 'Smart' },
+  { slug: 'suzuki', name: 'Suzuki' },
+  { slug: 'volvo', name: 'Volvo' },
+]
+
 export function VehicleFinder({ onClose, initialVehicleType }: VehicleFinderProps) {
   const router = useRouter()
   const pathname = usePathname()
@@ -54,7 +89,7 @@ export function VehicleFinder({ onClose, initialVehicleType }: VehicleFinderProp
   const [engineFuelFilter, setEngineFuelFilter] = useState<'all' | 'essence' | 'diesel' | 'hybrid'>('all')
 
   // Data lists
-  const [makes, setMakes] = useState<VehicleMake[]>([])
+  const [makes, setMakes] = useState<VehicleMake[]>(FALLBACK_MAKES)
   const [models, setModels] = useState<VehicleModel[]>([])
   const [generations, setGenerations] = useState<VehicleGeneration[]>([])
   const [engines, setEngines] = useState<VehicleEngine[]>([])
@@ -115,9 +150,17 @@ export function VehicleFinder({ onClose, initialVehicleType }: VehicleFinderProp
         if (!data || data.length < 5) {
           data = await productsApi.getMakes()
         }
-        if (active && Array.isArray(data)) setMakes(data)
+        if (active) {
+          if (Array.isArray(data) && data.length > 0) {
+            setMakes(data)
+          } else {
+            setMakes(FALLBACK_MAKES)
+          }
+        }
       } catch {
-        if (active) setError('Impossible de charger les marques de véhicules')
+        if (active) {
+          setMakes(FALLBACK_MAKES)
+        }
       } finally {
         if (active) setLoading(false)
       }

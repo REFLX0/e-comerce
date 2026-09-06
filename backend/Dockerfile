@@ -36,6 +36,7 @@ RUN apk add --no-cache wget
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package*.json ./
 COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/src/oil-finder/clean-catalog-hierarchy.json ./clean-catalog-hierarchy.json
 COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/uploads ./uploads
 COPY --from=builder /app/scripts ./scripts
