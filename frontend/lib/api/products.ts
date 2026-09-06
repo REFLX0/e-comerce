@@ -79,7 +79,11 @@ export const productsApi = {
 
   getMakes: (vehicleType?: string) => apiGet<VehicleMake[]>('/oil-finder/makes', vehicleType ? { category: vehicleType } : undefined),
 
-  getModels: (makeName: string) => apiGet<VehicleModel[]>(`/oil-finder/makes/${encodeURIComponent(makeName)}/models`),
+  getModels: (makeName: string, category?: string) =>
+    apiGet<VehicleModel[]>(
+      `/oil-finder/makes/${encodeURIComponent(makeName)}/models`,
+      category ? { category } : undefined
+    ),
 
   getGenerations: (makeName: string, modelName: string) =>
     apiGet<VehicleGeneration[]>(`/oil-finder/models/${encodeURIComponent(makeName)}/${encodeURIComponent(modelName)}/generations`),

@@ -2492,14 +2492,32 @@ export class OilFinderService {
     const catalog = getCleanCatalog();
     const makeMap = new Map<string, string>();
 
-    // 1. Normalized Clean Hierarchy
-    for (const m of Object.values(catalog) as any[]) {
-      if (m.makeName && m.makeSlug) {
-        makeMap.set(m.makeSlug, m.makeName);
+    const catNorm = category?.toLowerCase().trim();
+    let targetCat: string | undefined = undefined;
+    if (catNorm) {
+      if (catNorm.includes('moto') || catNorm.includes('scooter') || catNorm.includes('2-roues') || catNorm.includes('karting')) {
+        targetCat = 'moto';
+      } else if (catNorm.includes('marine') || catNorm.includes('boat') || catNorm.includes('bateau')) {
+        targetCat = 'marine';
+      } else if (catNorm.includes('poids') || catNorm.includes('truck') || catNorm.includes('camion') || catNorm.includes('commercial')) {
+        targetCat = 'poids_lourd';
+      } else if (catNorm.includes('agri') || catNorm.includes('tractor') || catNorm.includes('tracteur')) {
+        targetCat = 'agricole';
+      } else if (catNorm.includes('auto') || catNorm.includes('car') || catNorm.includes('voiture')) {
+        targetCat = 'automobile';
       }
     }
 
-    // 2. Database VehicleMake
+    // 1. Normalized Clean Hierarchy — filtered by targetCat if provided
+    for (const m of Object.values(catalog) as any[]) {
+      if (m.makeName && m.makeSlug) {
+        if (!targetCat || !m.categories || m.categories.includes(targetCat)) {
+          makeMap.set(m.makeSlug, m.makeName);
+        }
+      }
+    }
+
+    // 2. Database VehicleMake (fallback)
     try {
       const dbMakes = await (this.prisma as any).vehicleMake?.findMany?.({
         select: { name: true, slug: true },
@@ -2508,7 +2526,10 @@ export class OilFinderService {
       if (dbMakes && dbMakes.length > 0) {
         for (const m of dbMakes) {
           if (m.slug && m.name && !makeMap.has(m.slug)) {
-            makeMap.set(m.slug, m.name);
+            const catMake = catalog[m.slug];
+            if (!targetCat || !catMake || !catMake.categories || catMake.categories.includes(targetCat)) {
+              makeMap.set(m.slug, m.name);
+            }
           }
         }
       }
@@ -2525,14 +2546,34 @@ export class OilFinderService {
     return [];
   }
 
-  async getModels(makeName: string) {
+  async getModels(makeName: string, category?: string) {
     const catalog = getCleanCatalog();
     const mSlug = slugify(makeName);
+
+    const catNorm = category?.toLowerCase().trim();
+    let targetCat: string | undefined = undefined;
+    if (catNorm) {
+      if (catNorm.includes('moto') || catNorm.includes('scooter') || catNorm.includes('2-roues') || catNorm.includes('karting')) {
+        targetCat = 'moto';
+      } else if (catNorm.includes('marine') || catNorm.includes('boat') || catNorm.includes('bateau')) {
+        targetCat = 'marine';
+      } else if (catNorm.includes('poids') || catNorm.includes('truck') || catNorm.includes('camion') || catNorm.includes('commercial')) {
+        targetCat = 'poids_lourd';
+      } else if (catNorm.includes('agri') || catNorm.includes('tractor') || catNorm.includes('tracteur')) {
+        targetCat = 'agricole';
+      } else if (catNorm.includes('auto') || catNorm.includes('car') || catNorm.includes('voiture')) {
+        targetCat = 'automobile';
+      }
+    }
 
     // 1. Clean Normalized Hierarchy
     const makeObj = catalog[mSlug] || Object.values(catalog).find((m: any) => slugify(m.makeName) === mSlug || m.makeSlug === mSlug);
     if (makeObj && makeObj.models) {
-      const cleanModels = Object.values(makeObj.models).map((mod: any) => {
+      let modelList = Object.values(makeObj.models) as any[];
+      if (targetCat) {
+        modelList = modelList.filter((mod: any) => !mod.category || mod.category === targetCat);
+      }
+      const cleanModels = modelList.map((mod: any) => {
         const gens = Object.values(mod.generations || {}) as any[];
         let yearFrom: number | null = null;
         let yearTo: number | null = null;

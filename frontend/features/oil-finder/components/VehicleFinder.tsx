@@ -37,40 +37,104 @@ function formatGenTrigger(genName: string, modelName?: string): string {
   return s || genName
 }
 
-const FALLBACK_MAKES: VehicleMake[] = [
-  { slug: 'volkswagen', name: 'Volkswagen' },
-  { slug: 'peugeot', name: 'Peugeot' },
-  { slug: 'renault', name: 'Renault' },
-  { slug: 'audi', name: 'Audi' },
-  { slug: 'bmw', name: 'BMW' },
-  { slug: 'mercedes-benz', name: 'Mercedes-Benz' },
-  { slug: 'toyota', name: 'Toyota' },
-  { slug: 'hyundai', name: 'Hyundai' },
-  { slug: 'kia', name: 'Kia' },
-  { slug: 'seat', name: 'Seat' },
-  { slug: 'skoda', name: 'Skoda' },
-  { slug: 'citroen', name: 'Citroën' },
-  { slug: 'fiat', name: 'Fiat' },
-  { slug: 'ford', name: 'Ford' },
-  { slug: 'nissan', name: 'Nissan' },
-  { slug: 'dacia', name: 'Dacia' },
-  { slug: 'opel', name: 'Opel' },
-  { slug: 'alfa-romeo', name: 'Alfa Romeo' },
-  { slug: 'chevrolet', name: 'Chevrolet' },
-  { slug: 'honda', name: 'Honda' },
-  { slug: 'isuzu', name: 'Isuzu' },
-  { slug: 'iveco', name: 'Iveco' },
-  { slug: 'jaguar', name: 'Jaguar' },
-  { slug: 'jeep', name: 'Jeep' },
-  { slug: 'land-rover', name: 'Land Rover' },
-  { slug: 'mazda', name: 'Mazda' },
-  { slug: 'mini', name: 'Mini' },
-  { slug: 'mitsubishi', name: 'Mitsubishi' },
-  { slug: 'porsche', name: 'Porsche' },
-  { slug: 'smart', name: 'Smart' },
-  { slug: 'suzuki', name: 'Suzuki' },
-  { slug: 'volvo', name: 'Volvo' },
-]
+const CATEGORY_FALLBACK_MAKES: Record<string, VehicleMake[]> = {
+  automobile: [
+    { slug: 'volkswagen', name: 'Volkswagen' },
+    { slug: 'peugeot', name: 'Peugeot' },
+    { slug: 'renault', name: 'Renault' },
+    { slug: 'audi', name: 'Audi' },
+    { slug: 'bmw', name: 'BMW' },
+    { slug: 'mercedes-benz', name: 'Mercedes-Benz' },
+    { slug: 'toyota', name: 'Toyota' },
+    { slug: 'hyundai', name: 'Hyundai' },
+    { slug: 'kia', name: 'Kia' },
+    { slug: 'seat', name: 'Seat' },
+    { slug: 'skoda', name: 'Skoda' },
+    { slug: 'citroen', name: 'Citroën' },
+    { slug: 'fiat', name: 'Fiat' },
+    { slug: 'ford', name: 'Ford' },
+    { slug: 'nissan', name: 'Nissan' },
+    { slug: 'dacia', name: 'Dacia' },
+    { slug: 'ds', name: 'DS Automobiles' },
+    { slug: 'opel', name: 'Opel' },
+    { slug: 'alfa-romeo', name: 'Alfa Romeo' },
+    { slug: 'chevrolet', name: 'Chevrolet' },
+    { slug: 'honda', name: 'Honda' },
+    { slug: 'jeep', name: 'Jeep' },
+    { slug: 'land-rover', name: 'Land Rover' },
+    { slug: 'mazda', name: 'Mazda' },
+    { slug: 'mini', name: 'Mini' },
+    { slug: 'mitsubishi', name: 'Mitsubishi' },
+    { slug: 'porsche', name: 'Porsche' },
+    { slug: 'smart', name: 'Smart' },
+    { slug: 'suzuki', name: 'Suzuki' },
+    { slug: 'volvo', name: 'Volvo' },
+  ],
+  moto: [
+    { slug: 'yamaha', name: 'Yamaha' },
+    { slug: 'honda', name: 'Honda' },
+    { slug: 'suzuki', name: 'Suzuki' },
+    { slug: 'kawasaki', name: 'Kawasaki' },
+    { slug: 'bmw', name: 'BMW' },
+    { slug: 'ktm', name: 'KTM' },
+    { slug: 'piaggio', name: 'Piaggio' },
+    { slug: 'vespa', name: 'Vespa' },
+    { slug: 'aprilia', name: 'Aprilia' },
+    { slug: 'kymco', name: 'Kymco' },
+    { slug: 'sym', name: 'SYM' },
+    { slug: 'moto-guzzi', name: 'Moto Guzzi' },
+    { slug: 'cfmoto', name: 'CFMOTO' },
+    { slug: 'zimota', name: 'Zimota' },
+    { slug: 'zontes', name: 'Zontes' },
+    { slug: 'senke', name: 'Senke' },
+  ],
+  marine: [
+    { slug: 'yamaha-marine', name: 'Yamaha Marine' },
+    { slug: 'honda-marine', name: 'Honda Marine' },
+    { slug: 'suzuki-marine', name: 'Suzuki Marine' },
+    { slug: 'mercury', name: 'Mercury' },
+    { slug: 'tohatsu', name: 'Tohatsu' },
+    { slug: 'parsun', name: 'Parsun' },
+    { slug: 'selva', name: 'Selva' },
+    { slug: 'yanmar', name: 'Yanmar' },
+  ],
+  poids_lourd: [
+    { slug: 'scania', name: 'Scania' },
+    { slug: 'volvo-trucks', name: 'Volvo Trucks' },
+    { slug: 'renault-trucks', name: 'Renault Trucks' },
+    { slug: 'man', name: 'MAN' },
+    { slug: 'mercedes-benz', name: 'Mercedes-Benz' },
+    { slug: 'iveco', name: 'Iveco' },
+    { slug: 'daf', name: 'DAF' },
+    { slug: 'isuzu', name: 'Isuzu' },
+    { slug: 'shacman', name: 'Shacman' },
+    { slug: 'sinotruk', name: 'Sinotruk' },
+    { slug: 'tata', name: 'Tata' },
+    { slug: 'king-long', name: 'King Long' },
+    { slug: 'otokar', name: 'Otokar' },
+  ],
+  agricole: [
+    { slug: 'massey-ferguson', name: 'Massey Ferguson' },
+    { slug: 'new-holland', name: 'New Holland' },
+    { slug: 'john-deere', name: 'John Deere' },
+    { slug: 'kubota', name: 'Kubota' },
+    { slug: 'landini', name: 'Landini' },
+    { slug: 'same', name: 'Same' },
+    { slug: 'solis', name: 'Solis' },
+    { slug: 'agrimont', name: 'Agrimont' },
+    { slug: 'lamborghini', name: 'Lamborghini' },
+    { slug: 'mahindra', name: 'Mahindra' },
+  ],
+}
+
+function getCategoryFallbackMakes(type?: string | null): VehicleMake[] {
+  const norm = (type || 'automobile').toLowerCase()
+  if (norm.includes('moto') || norm.includes('scooter') || norm.includes('2-roues')) return CATEGORY_FALLBACK_MAKES.moto
+  if (norm.includes('marine') || norm.includes('boat')) return CATEGORY_FALLBACK_MAKES.marine
+  if (norm.includes('poids') || norm.includes('truck')) return CATEGORY_FALLBACK_MAKES.poids_lourd
+  if (norm.includes('agri') || norm.includes('tract')) return CATEGORY_FALLBACK_MAKES.agricole
+  return CATEGORY_FALLBACK_MAKES.automobile
+}
 
 export function VehicleFinder({ onClose, initialVehicleType }: VehicleFinderProps) {
   const router = useRouter()
@@ -88,8 +152,8 @@ export function VehicleFinder({ onClose, initialVehicleType }: VehicleFinderProp
   const [engineSearch, setEngineSearch] = useState('')
   const [engineFuelFilter, setEngineFuelFilter] = useState<'all' | 'essence' | 'diesel' | 'hybrid'>('all')
 
-  // Data lists
-  const [makes, setMakes] = useState<VehicleMake[]>(FALLBACK_MAKES)
+  // Data lists — strictly categorized by vehicle type
+  const [makes, setMakes] = useState<VehicleMake[]>(() => getCategoryFallbackMakes(initialVehicleType))
   const [models, setModels] = useState<VehicleModel[]>([])
   const [generations, setGenerations] = useState<VehicleGeneration[]>([])
   const [engines, setEngines] = useState<VehicleEngine[]>([])
@@ -139,27 +203,27 @@ export function VehicleFinder({ onClose, initialVehicleType }: VehicleFinderProp
     }
   }, [activeDropdown])
 
-  // Load makes on mount
+  // Load makes on mount filtered strictly by category
   useEffect(() => {
     let active = true
+    const fallback = getCategoryFallbackMakes(initialVehicleType)
+    setMakes(fallback)
+
     const fetchInitialData = async () => {
       setLoading(true)
       setError('')
       try {
-        let data = await productsApi.getMakes(initialVehicleType ?? undefined)
-        if (!data || data.length < 5) {
-          data = await productsApi.getMakes()
-        }
+        const data = await productsApi.getMakes(initialVehicleType ?? undefined)
         if (active) {
           if (Array.isArray(data) && data.length > 0) {
             setMakes(data)
           } else {
-            setMakes(FALLBACK_MAKES)
+            setMakes(fallback)
           }
         }
       } catch {
         if (active) {
-          setMakes(FALLBACK_MAKES)
+          setMakes(fallback)
         }
       } finally {
         if (active) setLoading(false)
@@ -257,7 +321,7 @@ export function VehicleFinder({ onClose, initialVehicleType }: VehicleFinderProp
     setGenerations([])
     setEngines([])
     try {
-      const data = await productsApi.getModels(make.name)
+      const data = await productsApi.getModels(make.name, initialVehicleType ?? undefined)
       if (Array.isArray(data)) setModels(data)
     } catch {
       setError('Impossible de charger les modèles pour cette marque')

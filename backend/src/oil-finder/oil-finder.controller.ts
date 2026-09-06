@@ -255,8 +255,11 @@ export class OilFinderController {
   }
 
   @Get('makes/:make/models')
-  async getModels(@Param('make') make: string) {
-    return this.oilFinderService.getModels(make);
+  async getModels(
+    @Param('make') make: string,
+    @Query('category') category?: string,
+  ) {
+    return this.oilFinderService.getModels(make, category);
   }
 
   @Get('models/:make/:model/generations')
