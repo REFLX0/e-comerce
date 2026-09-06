@@ -94,7 +94,13 @@ export default function Footer() {
         <div className="mb-14 grid grid-cols-1 gap-10 border-b border-white/8 pb-14 sm:grid-cols-2 lg:grid-cols-12">
           {/* Col 1: Brand & Newsletter */}
           <div className="sm:col-span-2 lg:col-span-4">
-            <Link href="/" className="mb-5 inline-flex items-center gap-1.5 group">
+            <Link href="/" className="mb-5 inline-flex items-center gap-3 group">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/logo.png"
+                alt="SpecPart"
+                className="h-10 w-auto object-contain brightness-110 drop-shadow-sm transition-transform duration-200 group-hover:scale-105"
+              />
               <span className="text-2xl font-black tracking-wider uppercase text-white group-hover:text-brand-accent transition-colors">
                 SPEC<span className="text-brand-accent">PART</span>
               </span>

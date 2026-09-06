@@ -72,7 +72,7 @@ export interface ProductSpec {
 }
 
 export interface VehicleMake {
-  id: string
+  id?: string
   name: string
   slug: string
 }

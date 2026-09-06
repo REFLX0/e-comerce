@@ -129,12 +129,28 @@ const CATEGORY_FALLBACK_MAKES: Record<string, VehicleMake[]> = {
 
 function getCategoryFallbackMakes(type?: string | null): VehicleMake[] {
   const norm = (type || 'automobile').toLowerCase()
-  if (norm.includes('moto') || norm.includes('scooter') || norm.includes('2-roues')) return CATEGORY_FALLBACK_MAKES.moto
-  if (norm.includes('marine') || norm.includes('boat')) return CATEGORY_FALLBACK_MAKES.marine
-  if (norm.includes('poids') || norm.includes('truck')) return CATEGORY_FALLBACK_MAKES.poids_lourd
-  if (norm.includes('agri') || norm.includes('tract')) return CATEGORY_FALLBACK_MAKES.agricole
-  return CATEGORY_FALLBACK_MAKES.automobile
+  if (norm.includes('moto') || norm.includes('scooter') || norm.includes('2-roues')) return CATEGORY_FALLBACK_MAKES.moto ?? []
+  if (norm.includes('marine') || norm.includes('boat')) return CATEGORY_FALLBACK_MAKES.marine ?? []
+  if (norm.includes('poids') || norm.includes('truck')) return CATEGORY_FALLBACK_MAKES.poids_lourd ?? []
+  if (norm.includes('agri') || norm.includes('tract')) return CATEGORY_FALLBACK_MAKES.agricole ?? []
+  return CATEGORY_FALLBACK_MAKES.automobile ?? []
 }
+
+function StepBadge({ n, active }: { n: number; active: boolean }) {
+  return (
+    <span
+      className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[10px] font-black transition-colors ${
+        active
+          ? 'bg-[#D4A76A] text-[#16254c]'
+          : 'bg-white/10 text-white/50'
+      }`}
+    >
+      {n}
+    </span>
+  )
+}
+
+
 
 export function VehicleFinder({ onClose, initialVehicleType }: VehicleFinderProps) {
   const router = useRouter()
@@ -452,19 +468,6 @@ export function VehicleFinder({ onClose, initialVehicleType }: VehicleFinderProp
   }
 
   const activeSpec = selectedEngine?.previewOil
-
-  // ── Step badge ──────────────────────────────────────────────────────────────
-  const StepBadge = ({ n, active }: { n: number; active: boolean }) => (
-    <span
-      className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[10px] font-black transition-colors ${
-        active
-          ? 'bg-[#D4A76A] text-[#16254c]'
-          : 'bg-white/10 text-white/50'
-      }`}
-    >
-      {n}
-    </span>
-  )
 
   // ── Shared trigger button style ──────────────────────────────────────────────
   const triggerClass = (isOpen: boolean, isSelected: boolean, disabled: boolean) => {
