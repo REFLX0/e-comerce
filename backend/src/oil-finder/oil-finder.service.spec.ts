@@ -783,7 +783,7 @@ describe('OilFinderService', () => {
       const res = await service.findByVehicle('Opel', 'Corsa F', '1.2 Turbo - 100ch (2020)');
       expect(res.status).toBe('found');
       if (res.status === 'found') {
-        expect(res.oilSpec.viscosity).toBe('0W-30');
+        expect(res.oilSpec.viscosity).toBe('0W-20');
         expect(res.oilSpec.capacityLiters).toBe(3.5);
         expect(res.oilSpec.oemApproval).toContain('Opel OV0401547');
       }

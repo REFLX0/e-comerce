@@ -24,7 +24,7 @@ export class OilFinderController {
     }
 
     let productsResult = { data: [] as any[], total: 0 };
-    let matchQuality: 'exact_oem' | 'compatible_grade' | 'viscosity_only' | 'safety_net' = 'exact_oem';
+    let matchQuality: 'exact_oem' | 'compatible_grade' | 'viscosity_only' = 'exact_oem';
 
     // 1. Primary pass: match strictly by viscosity + exact OEM homologation tokens under huiles-moteur
     // (e.g. Castrol EDGE, Total Ineo Long Life, Shell Helix Ultra, Liqui Moly Top Tec 4200, Mannol Energy Combi LL)
@@ -91,18 +91,8 @@ export class OilFinderController {
       productsResult = await this.productsService.findAll({
         search: oilSpec.viscosity,
       });
-    }
-
-    // 6. Production safety net: ensure top motor oils are presented if specific spec has no exact matches in catalog
-    if (productsResult.total === 0) {
-      matchQuality = 'safety_net';
-      productsResult = await this.productsService.findAll({
-        categorySlug: 'huiles-moteur',
-      });
-      if (productsResult.total === 0) {
-        productsResult = await this.productsService.findAll({
-          limit: 12,
-        });
+      if (productsResult.total > 0) {
+        matchQuality = 'viscosity_only';
       }
     }
 
@@ -159,7 +149,7 @@ export class OilFinderController {
       const targetVisc = (oilSpec.viscosity || '').replace(/[\s-]/g, '').toUpperCase();
       const viscMatches = Boolean(targetVisc && prodVisc && (prodVisc.includes(targetVisc) || targetVisc.includes(prodVisc)));
 
-      const isConfirmed = matchQuality !== 'safety_net' && (
+      const isConfirmed = Boolean(
         matchingTokens.length > 0 ||
         (viscMatches && score >= 100) ||
         (viscMatches && matchQuality === 'viscosity_only')
