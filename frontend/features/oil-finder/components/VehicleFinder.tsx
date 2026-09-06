@@ -16,13 +16,7 @@ interface VehicleFinderProps {
   initialVehicleType?: string | null
 }
 
-// Top popular automotive brands for quick-select
-const POPULAR_MAKE_NAMES = [
-  'RENAULT', 'PEUGEOT', 'VOLKSWAGEN', 'DACIA', 'CITROEN', 'CITROËN',
-  'FIAT', 'BMW', 'MERCEDES-BENZ', 'MERCEDES', 'AUDI', 'TOYOTA',
-  'FORD', 'KIA', 'HYUNDAI', 'SEAT', 'NISSAN', 'OPEL', 'SKODA', 'LAND ROVER',
-  'VOLVO', 'JEEP', 'HONDA', 'CHEVROLET', 'SUZUKI', 'MITSUBISHI'
-]
+
 
 // Flexible, case-insensitive logo resolver
 function getBrandLogo(slug: string, name: string): string | null {
@@ -195,32 +189,12 @@ export function VehicleFinder({ onClose, initialVehicleType }: VehicleFinderProp
   }, [initialVehicleType])
 
   // Popular vs All makes
-  const { popularMakes, filteredMakes } = useMemo(() => {
-    const popularMap = new Map<string, VehicleMake>()
-    makes.forEach(m => {
-      const upper = m.name.toUpperCase().trim()
-      if (POPULAR_MAKE_NAMES.some(p => upper.includes(p) || p.includes(upper))) {
-        popularMap.set(m.name, m)
-      }
-    })
-
-    const popularList: VehicleMake[] = []
-    POPULAR_MAKE_NAMES.forEach(pName => {
-      for (const [name, make] of popularMap.entries()) {
-        if (name.toUpperCase().includes(pName)) {
-          if (!popularList.some(item => item.id === make.id)) {
-            popularList.push(make)
-          }
-        }
-      }
-    })
-
+  // Filtered makes directly by name
+  const filteredMakes = useMemo(() => {
     const q = makeSearch.trim().toLowerCase()
-    const filtered = q
+    return q
       ? makes.filter(m => m.name.toLowerCase().includes(q) || m.slug.toLowerCase().includes(q))
       : makes
-
-    return { popularMakes: popularList, filteredMakes: filtered }
   }, [makes, makeSearch])
 
   // Filtered models with generation and year search
@@ -466,34 +440,8 @@ export function VehicleFinder({ onClose, initialVehicleType }: VehicleFinderProp
                   )}
                 </div>
 
-                {/* Popular Brand Quick Pills (shown when not actively searching) */}
-                {!makeSearch && popularMakes.length > 0 && (
-                  <div className="mb-2.5 pb-2.5 border-b border-slate-100">
-                    <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5 px-1">
-                      Marques populaires
-                    </p>
-                    <div className="grid grid-cols-4 gap-1 max-h-28 overflow-y-auto pr-1">
-                      {popularMakes.slice(0, 12).map(pm => (
-                        <button
-                          key={pm.id || pm.name}
-                          type="button"
-                          onClick={() => handleSelectMake(pm)}
-                          className={`flex flex-col items-center justify-center p-1.5 rounded-lg border transition text-center cursor-pointer ${
-                            selectedMake?.name === pm.name
-                              ? 'border-blue-500 bg-blue-50/60 text-blue-900'
-                              : 'border-slate-100 bg-slate-50/60 hover:bg-blue-50/40 hover:border-blue-200 text-slate-700'
-                          }`}
-                        >
-                          <BrandLogo make={pm} size="xs" />
-                          <span className="text-[10px] font-bold truncate mt-1 max-w-full">{pm.name}</span>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
                 {/* All Makes List */}
-                <div className="max-h-56 overflow-y-auto space-y-0.5 pr-1">
+                <div className="max-h-64 overflow-y-auto space-y-0.5 pr-1">
                   {filteredMakes.length === 0 ? (
                     <div className="py-4 text-center text-xs text-slate-400">
                       Aucune marque trouvée pour &quot;{makeSearch}&quot;
