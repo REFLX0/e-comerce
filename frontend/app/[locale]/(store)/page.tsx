@@ -1,6 +1,5 @@
 import { HeroBanner } from '@/components/home/HeroBanner'
 import { BestSellers } from '@/components/home/BestSellers'
-import { CategoryGrid } from '@/components/home/CategoryGrid'
 import { TrustBadges } from '@/components/common/TrustBadges'
 import { BrandsBar } from '@/components/home/BrandsBar'
 import { WhySpecpart } from '@/components/home/WhySpecpart'
@@ -42,10 +41,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 4. Shop by Category */}
-      <CategoryGrid />
-
-      {/* 5. Best Sellers */}
+      {/* 4. Best Sellers */}
       <BestSellers />
 
       {/* 6. Brands */}
