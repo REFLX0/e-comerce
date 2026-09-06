@@ -614,6 +614,20 @@ describe('OilFinderService', () => {
       }
     });
 
+    it('resolves official 0W-30 Fiat 9.55535-GS1 spec (5.2L) for ALFA ROMEO GIULIA (952_) 2.0 (952ABA25B)', async () => {
+      prisma.oilFinderVehicle.findMany.mockResolvedValue([]);
+      prisma.$queryRawUnsafe.mockResolvedValue([]);
+
+      const res = await service.findByVehicle('ALFA ROMEO', 'GIULIA (952_)', '2.0 (952ABA25B)');
+      expect(res.status).toBe('found');
+      if (res.status === 'found') {
+        expect(res.oilSpec.viscosity).toBe('0W-30');
+        expect(res.oilSpec.capacityLiters).toBe(5.2);
+        expect(res.oilSpec.aceaStandard).toBe('C2');
+        expect(res.oilSpec.oemApproval).toContain('Fiat 9.55535-GS1');
+      }
+    });
+
     it('merges engines from both TecDoc and OilFinderVehicle in getEngines', async () => {
       prisma.$queryRawUnsafe.mockResolvedValue([
         { engineCode: '4.5 D-4D (VDJ200)', yearFrom: 2008, yearTo: 2021 },

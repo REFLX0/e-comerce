@@ -1121,6 +1121,66 @@ export function resolveAutomotiveOemSpec(
 
   // ── FIAT / ALFA ROMEO / JEEP / LANCIA ──
   if (isFiatFamily) {
+    // Alfa Romeo Giulia (952) & Stelvio (949)
+    const isGiuliaOrStelvio = /giulia|stelvio|952|949/i.test(combined);
+    if (isGiuliaOrStelvio) {
+      // 2.9 V6 Biturbo Quadrifoglio (510ch)
+      if (/2\.9|quadrifoglio/i.test(combined) || (powerHp && powerHp >= 500)) {
+        return {
+          viscosity: '0W-40',
+          apiStandard: 'SN',
+          aceaStandard: 'C3',
+          oemApproval: 'Fiat 9.55535-GH2',
+          capacityLiters: 7.0,
+          changeIntervalKm: 15000,
+          fuelType: 'essence',
+          displacementCc: 2891,
+          powerHp: powerHp || 510,
+        };
+      }
+      // 2.2 JTDM Diesel (136ch - 210ch)
+      if (isDiesel || /2\.2|jtd/i.test(combined)) {
+        return {
+          viscosity: '0W-20',
+          apiStandard: 'SN',
+          aceaStandard: 'C2',
+          oemApproval: 'Fiat 9.55535-DS1 / 9.55535-GS1',
+          capacityLiters: 4.3,
+          changeIntervalKm: 20000,
+          fuelType: 'diesel',
+          displacementCc: 2143,
+          powerHp: powerHp || 180,
+        };
+      }
+      // 2.0 Turbo MultiAir (952ABA25B, 200ch / 280ch Veloce / Q4)
+      return {
+        viscosity: '0W-30',
+        apiStandard: 'SN',
+        aceaStandard: 'C2',
+        oemApproval: 'Fiat 9.55535-GS1 / ACEA C2 (0W-30)',
+        capacityLiters: 5.2,
+        changeIntervalKm: 15000,
+        fuelType: 'essence',
+        displacementCc: displacementCc || 1995,
+        powerHp: powerHp || 200,
+      };
+    }
+
+    // FireFly 1.0 / 1.3 GSE Turbo (Fiat 500X, Tipo, Jeep Renegade, Compass 2018+)
+    if (/gse|firefly/i.test(combined) || (detectedYear >= 2018 && /renegade|compass|500x|tipo/i.test(combined) && !isDiesel)) {
+      return {
+        viscosity: '0W-20',
+        apiStandard: 'SN Plus',
+        aceaStandard: 'C2',
+        oemApproval: 'Fiat 9.55535-GSX / 9.55535-GS1',
+        capacityLiters: 3.8,
+        changeIntervalKm: 15000,
+        fuelType: 'essence',
+        displacementCc: displacementCc || 1332,
+        powerHp: powerHp || 150,
+      };
+    }
+
     if (isDiesel) {
       return {
         viscosity: '5W-30',
