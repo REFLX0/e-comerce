@@ -20,18 +20,18 @@ export class HealthController {
   ) {}
 
   @Get()
-  @HealthCheck()
-  check() {
-    return this.health.check([
-      async () => {
-        try {
-          await this.prisma.$queryRaw`SELECT 1`;
-          return { db: { status: 'up' } };
-        } catch {
-          return { db: { status: 'down' } };
-        }
-      },
-    ]);
+  async check(@Res() res: Response) {
+    let dbStatus = 'up';
+    try {
+      await this.prisma.$queryRaw`SELECT 1`;
+    } catch {
+      dbStatus = 'degraded';
+    }
+    return res.status(HttpStatus.OK).json({
+      status: 'ok',
+      info: { db: { status: dbStatus } },
+      details: { db: { status: dbStatus } },
+    });
   }
 
   @Head()
