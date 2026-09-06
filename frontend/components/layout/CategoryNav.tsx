@@ -161,8 +161,8 @@ export function CategoryNav() {
         style={{ boxShadow: '0 2px 12px rgba(22,37,76,0.06)' }}
       >
         <div className="section-padding flex h-[52px] items-center justify-between gap-1 sm:gap-2">
-          {/* Scrollable tabs container for tablets and tight screens */}
-          <div className="flex min-w-0 flex-1 items-center gap-1 sm:gap-1.5 md:gap-2 overflow-x-auto hide-scrollbar py-1">
+          {/* Tabs container */}
+          <div className="flex min-w-0 flex-1 items-center gap-1 sm:gap-1.5 md:gap-2 py-1">
             {NAVIGATION_TAXONOMY.map((item, index) => {
               const Icon = NAVIGATION_ICONS[item.slug] ?? Package
               const root = findNode(categories, item.slug)
@@ -175,7 +175,7 @@ export function CategoryNav() {
               return (
                 <div
                   key={item.slug}
-                  className="relative flex shrink-0 items-center h-full"
+                  className={cn('relative flex shrink-0 items-center h-full', isOpen && 'z-50')}
                   onMouseEnter={() => handleMouseEnter(item.slug)}
                   onMouseLeave={handleMouseLeave}
                 >
@@ -495,7 +495,7 @@ function FlyoutPanel({
       onMouseLeave={onMouseLeave}
       className={cn(
         "flyout-panel absolute top-full z-50 flex overflow-hidden before:absolute before:-top-3 before:left-0 before:right-0 before:h-4 before:content-['']",
-        alignEnd ? (isRtl ? 'start-0' : 'end-0') : (isRtl ? 'end-0' : 'start-0')
+        alignEnd ? (isRtl ? 'left-0' : 'right-0') : (isRtl ? 'right-0' : 'left-0')
       )}
       style={{
         borderRadius: '0 0 14px 14px',
