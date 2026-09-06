@@ -18,76 +18,7 @@ interface VehicleFinderProps {
 
 
 
-// Flexible, case-insensitive logo resolver
-function getBrandLogo(slug: string, name: string): string | null {
-  const s = (slug || '').toLowerCase().trim()
-  const n = (name || '').toLowerCase().trim()
 
-  if (s.includes('alfa') || n.includes('alfa')) return '/img/car-brands/alfa-romeo.png'
-  if (s.includes('audi') || n.includes('audi')) return '/img/car-brands/audi.png'
-  if (s.includes('bmw') || n.includes('bmw')) return '/img/car-brands/bmw.png'
-  if (s.includes('citroen') || n.includes('citroen') || n.includes('citroën')) return '/img/car-brands/citroen.png'
-  if (s.includes('dacia') || n.includes('dacia')) return '/img/car-brands/dacia.png'
-  if (s.includes('fiat') || n.includes('fiat')) return '/img/car-brands/fiat.png'
-  if (s.includes('ford') || n.includes('ford')) return '/img/car-brands/ford.png'
-  if (s.includes('hyundai') || n.includes('hyundai')) return '/img/car-brands/hyundai.png'
-  if (s.includes('kia') || n.includes('kia')) return '/img/car-brands/kia.png'
-  if (s.includes('mercedes') || n.includes('mercedes')) return '/img/car-brands/mercedes-benz.png'
-  if (s.includes('nissan') || n.includes('nissan')) return '/img/car-brands/nissan.png'
-  if (s.includes('opel') || n.includes('opel')) return '/img/car-brands/opel.png'
-  if (s.includes('peugeot') || n.includes('peugeot')) return '/img/car-brands/peugeot.png'
-  if (s.includes('renault') || n.includes('renault')) return '/img/car-brands/renault.png'
-  if (s.includes('seat') || n.includes('seat')) return '/img/car-brands/seat.png'
-  if (s.includes('skoda') || n.includes('skoda') || n.includes('škoda')) return '/img/car-brands/skoda.png'
-  if (s.includes('toyota') || n.includes('toyota')) return '/img/car-brands/toyota.png'
-  if (s.includes('volkswagen') || s === 'vw' || n.includes('volkswagen')) return '/img/car-brands/volkswagen.png'
-  if (s.includes('volvo') || n.includes('volvo')) return '/img/car-brands/volvo.png'
-  if (s.includes('land') || n.includes('land rover')) return '/img/car-brands/land-rover.png'
-  if (s.includes('jeep') || n.includes('jeep')) return '/img/car-brands/jeep.png'
-  if (s.includes('honda') || n.includes('honda')) return '/img/car-brands/honda.png'
-  if (s.includes('chevrolet') || n.includes('chevrolet')) return '/img/car-brands/chevrolet.png'
-  if (s.includes('porsche') || n.includes('porsche')) return '/img/car-brands/porsche.png'
-  if (s.includes('mitsubishi') || n.includes('mitsubishi')) return '/img/car-brands/mitsubishi.png'
-  if (s.includes('suzuki') || n.includes('suzuki')) return '/img/car-brands/suzuki.png'
-  if (s.includes('mazda') || n.includes('mazda')) return '/img/car-brands/mazda.png'
-  if (s.includes('mini') || n.includes('mini')) return '/img/car-brands/mini.png'
-  if (s.includes('abarth') || n.includes('abarth')) return '/img/car-brands/abarth.png'
-  if (s.includes('jaguar') || n.includes('jaguar')) return '/img/car-brands/jaguar.png'
-
-  return null
-}
-
-function BrandLogo({ make, size = 'sm' }: { make: { slug: string; name: string }, size?: 'xs' | 'sm' | 'md' }) {
-  const [loaded, setLoaded] = useState(false)
-  const logoSrc = getBrandLogo(make.slug, make.name)
-  const px = size === 'xs' ? 'h-5 w-5' : size === 'md' ? 'h-8 w-8' : 'h-6 w-6'
-  const fallbackSize = size === 'xs' ? 'h-5 w-5 text-[9px]' : size === 'md' ? 'h-8 w-8 text-xs' : 'h-6 w-6 text-[10px]'
-
-  if (!logoSrc) {
-    return (
-      <div className={`flex shrink-0 items-center justify-center rounded-lg bg-slate-100 font-black text-slate-700 ${fallbackSize}`}>
-        {make.name.substring(0, 2).toUpperCase()}
-      </div>
-    )
-  }
-
-  return (
-    <div className={`relative flex shrink-0 items-center justify-center ${px}`}>
-      {!loaded && (
-        <div className={`flex shrink-0 items-center justify-center rounded-lg bg-slate-100 font-bold text-slate-500 ${fallbackSize}`}>
-          {make.name.substring(0, 2).toUpperCase()}
-        </div>
-      )}
-      <img
-        src={logoSrc}
-        alt={make.name}
-        className={`${px} object-contain ${loaded ? 'block' : 'hidden'}`}
-        onLoad={() => setLoaded(true)}
-        onError={() => setLoaded(false)}
-      />
-    </div>
-  )
-}
 
 // Format year range badge
 function formatYearBadge(yearFrom?: number | null, yearTo?: number | null): string | null {
@@ -188,33 +119,37 @@ export function VehicleFinder({ onClose, initialVehicleType }: VehicleFinderProp
     return () => { active = false }
   }, [initialVehicleType])
 
-  // Popular vs All makes
-  // Filtered makes directly by name
+  // Filtered makes directly by name, sorted alphabetically
   const filteredMakes = useMemo(() => {
     const q = makeSearch.trim().toLowerCase()
-    return q
-      ? makes.filter(m => m.name.toLowerCase().includes(q) || m.slug.toLowerCase().includes(q))
+    const list = q
+      ? makes.filter(m => m.name.toLowerCase().includes(q) || (m.slug && m.slug.toLowerCase().includes(q)))
       : makes
+    return [...list].sort((a, b) => a.name.localeCompare(b.name, 'fr', { sensitivity: 'base' }))
   }, [makes, makeSearch])
 
-  // Filtered models with generation and year search
+  // Filtered models with generation and year search, sorted alphabetically
   const filteredModels = useMemo(() => {
     const q = modelSearch.trim().toLowerCase()
-    if (!q) return models
+    let list = models
 
-    // Check if user is searching by a 4-digit year e.g. "2014"
-    const isYearQuery = /^\d{4}$/.test(q)
-    const targetYear = isYearQuery ? parseInt(q, 10) : null
+    if (q) {
+      // Check if user is searching by a 4-digit year e.g. "2014"
+      const isYearQuery = /^\d{4}$/.test(q)
+      const targetYear = isYearQuery ? parseInt(q, 10) : null
 
-    return models.filter(m => {
-      if (m.name.toLowerCase().includes(q) || m.slug.toLowerCase().includes(q)) return true
-      if (targetYear) {
-        const from = m.yearFrom || 1980
-        const to = m.yearTo || new Date().getFullYear() + 1
-        if (targetYear >= from && targetYear <= to) return true
-      }
-      return false
-    })
+      list = models.filter(m => {
+        if (m.name.toLowerCase().includes(q) || (m.slug && m.slug.toLowerCase().includes(q))) return true
+        if (targetYear) {
+          const from = m.yearFrom || 1980
+          const to = m.yearTo || new Date().getFullYear() + 1
+          if (targetYear >= from && targetYear <= to) return true
+        }
+        return false
+      })
+    }
+
+    return [...list].sort((a, b) => a.name.localeCompare(b.name, 'fr', { sensitivity: 'base' }))
   }, [models, modelSearch])
 
   // Filtered engines by fuel type and search
@@ -393,12 +328,9 @@ export function VehicleFinder({ onClose, initialVehicleType }: VehicleFinderProp
                     : 'border-slate-200 bg-slate-50/70 text-slate-500 hover:border-slate-300 hover:bg-white'
               }`}
             >
-              <div className="flex items-center gap-2.5 min-w-0 flex-1 truncate">
+              <div className="flex items-center min-w-0 flex-1 truncate">
                 {selectedMake ? (
-                  <>
-                    <BrandLogo make={selectedMake} size="xs" />
-                    <span className="truncate font-black text-slate-900">{selectedMake.name}</span>
-                  </>
+                  <span className="truncate font-black text-slate-900">{selectedMake.name}</span>
                 ) : (
                   <span className="text-slate-400 font-medium">Sélectionner une marque...</span>
                 )}
@@ -460,10 +392,7 @@ export function VehicleFinder({ onClose, initialVehicleType }: VehicleFinderProp
                               : 'text-slate-800 hover:bg-slate-100/80'
                           }`}
                         >
-                          <div className="flex items-center gap-2.5 truncate">
-                            <BrandLogo make={m} size="xs" />
-                            <span className="truncate">{m.name}</span>
-                          </div>
+                          <span className="truncate">{m.name}</span>
                           {isSelected && <Check size={14} className="text-[#D4A76A] shrink-0" />}
                         </button>
                       )
@@ -795,7 +724,9 @@ export function VehicleFinder({ onClose, initialVehicleType }: VehicleFinderProp
         {selectedMake && selectedModel && (
           <div className="mt-5 pt-4 border-t border-slate-100 flex flex-col md:flex-row items-center justify-between gap-3 animate-in fade-in duration-200">
             <div className="flex items-center gap-3 min-w-0">
-              <BrandLogo make={selectedMake} size="md" />
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#001E3C] text-[#D4A76A]">
+                <Car size={20} />
+              </div>
               <div>
                 <div className="text-xs sm:text-sm font-black text-[#001E3C] flex items-center gap-2 flex-wrap">
                   <span>{selectedMake.name} {selectedModel.name}</span>

@@ -15,7 +15,7 @@ export function OilFinderTabs() {
   const t = useTranslations('OilFinder')
   const [step, setStep] = useState(1)
   const [vehicleType, setVehicleType] = useState<VehicleType | null>(null)
-  const [searchMode, setSearchMode] = useState<SearchMode | null>(null)
+  const [searchMode, setSearchMode] = useState<SearchMode>('vehicle')
 
   const VEHICLE_TYPES = [
     { id: 'automobile' as const, image: '/img/categories/automobile.jpg', fallbackIcon: Car, label: t('typeAutomobile'), sub: t('typeAutoSub') },
@@ -25,26 +25,22 @@ export function OilFinderTabs() {
     { id: 'agricole' as const, image: '/img/categories/agricole.jpg', fallbackIcon: Tractor, label: t('typeAgricole'), sub: t('typeAgricoleSub') },
   ]
 
-  const progress = (step / 3) * 100
+  const progress = (step / 2) * 100
   const selectedVehicle = VEHICLE_TYPES.find((type) => type.id === vehicleType)
 
   const handleSelectType = (type: VehicleType) => {
     setVehicleType(type)
+    setSearchMode('vehicle')
     setStep(2)
-  }
-
-  const handleSelectMode = (mode: SearchMode) => {
-    setSearchMode(mode)
-    setStep(3)
   }
 
   const handleReset = () => {
     setStep(1)
     setVehicleType(null)
-    setSearchMode(null)
+    setSearchMode('vehicle')
   }
 
-  const stepLabels = [t('stepVehicle'), t('stepMethod'), t('stepSearch')]
+  const stepLabels = [t('stepVehicle'), t('stepSearch')]
 
   return (
     <div id="oil-finder" className="mx-auto w-full max-w-6xl px-4">
@@ -62,14 +58,14 @@ export function OilFinderTabs() {
             </div>
             <button
               onClick={handleReset}
-              className="inline-flex items-center gap-2 self-start rounded-xl border border-white/15 bg-white/10 px-3 py-2 text-xs font-semibold text-white transition-colors hover:bg-white/20 sm:self-auto"
+              className="inline-flex items-center gap-2 self-start rounded-xl border border-white/15 bg-white/10 px-3 py-2 text-xs font-semibold text-white transition-colors hover:bg-white/20 sm:self-auto cursor-pointer"
             >
               <RotateCcw size={14} />
               {t('restart')}
             </button>
           </div>
 
-          <div className="mt-6 grid grid-cols-3 gap-2 sm:gap-4">
+          <div className="mt-6 grid grid-cols-2 gap-2 sm:gap-4 max-w-sm">
             {stepLabels.map((label, index) => {
               const stage = index + 1
               const isComplete = stage < step
@@ -80,7 +76,7 @@ export function OilFinderTabs() {
                     {isComplete ? <Check size={14} strokeWidth={3} /> : stage}
                   </div>
                   <span className={`hidden truncate text-xs font-semibold sm:block ${isCurrent || isComplete ? 'text-white' : 'text-white/70'}`}>{label}</span>
-                  {stage < 3 && <div className={`ml-auto h-px flex-1 ${isComplete ? 'bg-brand-accent' : 'bg-white/15'}`} />}
+                  {stage < 2 && <div className={`ml-auto h-px flex-1 ${isComplete ? 'bg-brand-accent' : 'bg-white/15'}`} />}
                 </div>
               )
             })}
@@ -159,101 +155,62 @@ export function OilFinderTabs() {
 
           {step === 2 && vehicleType && (
             <motion.div
-              key="step2"
+              key="step2-finder"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.25 }}
-              className="p-6 sm:p-8 md:p-10"
+              className="pb-12"
             >
-              <div className="mb-7 flex items-start gap-3">
+              {/* Category Breadcrumb & Secondary Specs Switcher */}
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 bg-slate-50/80 px-5 py-3.5 sm:px-8">
                 <button
                   onClick={handleReset}
-                  className="mt-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white text-gray-500 transition-colors hover:border-brand-primary/30 hover:text-brand-primary"
-                  aria-label={t('backToVehicle')}
+                  className="inline-flex items-center gap-2 text-xs font-bold text-slate-600 hover:text-brand-primary transition-colors cursor-pointer group"
                 >
-                  <ArrowLeft size={16} />
+                  <ArrowLeft size={15} className="group-hover:-translate-x-0.5 transition-transform" />
+                  <span>{t('backToVehicle')}</span>
+                  {selectedVehicle && (
+                    <span className="ml-1 inline-flex items-center gap-1.5 rounded-full bg-white border border-slate-200/80 px-2.5 py-0.5 text-[11px] font-extrabold text-brand-primary shadow-2xs">
+                      {selectedVehicle.label}
+                    </span>
+                  )}
                 </button>
-                <div>
-                  <p className="mb-2 text-xs font-bold uppercase tracking-[0.18em] text-brand-accent">{t('step2Label')}</p>
-                  <h3 className="text-2xl font-bold tracking-tight text-brand-primary">
-                    {t('step2Title')}
-                  </h3>
-                  <p className="mt-2 text-sm text-gray-500">
-                    {selectedVehicle?.label} · {t('step2Desc')}
-                  </p>
+
+                {/* Secondary toggle: by vehicle vs by specs */}
+                <div className="inline-flex items-center rounded-xl bg-slate-200/70 p-1 text-xs">
+                  <button
+                    type="button"
+                    onClick={() => setSearchMode('vehicle')}
+                    className={`rounded-lg px-3 py-1.5 font-bold transition cursor-pointer ${
+                      searchMode === 'vehicle'
+                        ? 'bg-white text-brand-primary shadow-xs'
+                        : 'text-slate-600 hover:text-slate-900'
+                    }`}
+                  >
+                    {t('byVehicle')}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setSearchMode('specs')}
+                    className={`rounded-lg px-3 py-1.5 font-bold transition cursor-pointer ${
+                      searchMode === 'specs'
+                        ? 'bg-white text-brand-primary shadow-xs'
+                        : 'text-slate-600 hover:text-slate-900'
+                    }`}
+                  >
+                    {t('bySpecs')}
+                  </button>
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                <button
-                  onClick={() => handleSelectMode('vehicle')}
-                  className="group flex min-h-56 flex-col items-start rounded-2xl border border-slate-200 bg-white p-6 text-left transition-all hover:-translate-y-1 hover:border-brand-primary/35 hover:shadow-[0_16px_30px_rgba(22,37,76,0.12)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
-                >
-                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-primary text-white shadow-lg shadow-brand-primary/15"><Car size={24} /></div>
-                  <div className="mt-auto">
-                    <span className="block text-lg font-bold text-brand-primary">{t('byVehicle')}</span>
-                    <span className="mt-2 block text-sm leading-6 text-gray-500">{t('byVehicleDesc')}</span>
-                    <span className="mt-5 inline-flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-brand-primary">{t('start')} <ChevronRight size={14} /></span>
-                  </div>
-                </button>
-                <button
-                  onClick={() => handleSelectMode('specs')}
-                  className="group flex min-h-56 flex-col items-start rounded-2xl border border-slate-200 bg-white p-6 text-left transition-all hover:-translate-y-1 hover:border-brand-primary/35 hover:shadow-[0_16px_30px_rgba(22,37,76,0.12)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
-                >
-                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-accent text-brand-primary shadow-lg shadow-brand-accent/20"><Search size={24} /></div>
-                  <div className="mt-auto">
-                    <span className="block text-lg font-bold text-brand-primary">{t('bySpecs')}</span>
-                    <span className="mt-2 block text-sm leading-6 text-gray-500">{t('bySpecsDesc')}</span>
-                    <span className="mt-5 inline-flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-brand-primary">{t('start')} <ChevronRight size={14} /></span>
-                  </div>
-                </button>
-              </div>
-            </motion.div>
-          )}
-
-          {step === 3 && searchMode === 'vehicle' && (
-            <motion.div
-              key="vehicle-finder"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.25 }}
-              className="pb-24 sm:pb-32"
-            >
-              <div className="border-b border-slate-100 bg-slate-50/70 p-4 md:px-6">
-                <button
-                  onClick={() => { setStep(2); setSearchMode(null) }}
-                  className="flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-gray-800 transition-colors cursor-pointer"
-                >
-                  <ArrowLeft size={16} />
-                  {t('back')}
-                </button>
-              </div>
               <div className="p-4 sm:p-6 md:p-8">
-                <VehicleFinder onClose={() => {}} initialVehicleType={vehicleType} />
+                {searchMode === 'vehicle' ? (
+                  <VehicleFinder onClose={() => {}} initialVehicleType={vehicleType} />
+                ) : (
+                  <EngineSpecFinder onClose={() => {}} initialVehicleType={vehicleType !== 'marine' ? vehicleType : null} />
+                )}
               </div>
-            </motion.div>
-          )}
-
-          {step === 3 && searchMode === 'specs' && (
-            <motion.div
-              key="specs-finder"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.25 }}
-            >
-              <div className="border-b border-slate-100 bg-slate-50/70 p-4 md:px-6">
-                <button
-                  onClick={() => { setStep(2); setSearchMode(null) }}
-                  className="flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-gray-800 transition-colors"
-                >
-                  <ArrowLeft size={16} />
-                  {t('back')}
-                </button>
-              </div>
-              <EngineSpecFinder onClose={() => {}} initialVehicleType={vehicleType !== 'marine' ? vehicleType : null} />
             </motion.div>
           )}
         </AnimatePresence>
