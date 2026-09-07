@@ -161,6 +161,14 @@ function cleanCommercialModel(rawDesc: string): { modelName: string; genHint: st
   const phaseSuffix = phaseMatch ? ` ${phaseMatch[2]}` : '';
   if (phaseMatch) s = phaseMatch[1].trim();
 
+  // Body-style suffix hints: "CORSA D Van" -> isolate "CORSA D" so the trailing single-letter
+  // generation code ("D") is still detected, instead of "Van" blocking it and the whole thing
+  // (including the generation letter) being mistaken for a separate model called "Corsa D Van".
+  // Confirmed against real TecDoc data: Opel alone has this exact pattern on Corsa A/B/C/D/E.
+  const bodyMatch = s.match(/^(.*?)\s+(Van|Box|Estate|Saloon|Hatchback|Pickup|Combi|Kombi|Cabriolet|Cabrio|Coupe|Convertible|Roadster|Wagon|Sedan)\s*$/i);
+  const bodyStyleSuffix = bodyMatch ? ` ${bodyMatch[2]}` : '';
+  if (bodyMatch) s = bodyMatch[1].trim();
+
   const tokens = s.split(/\s+/).filter(Boolean);
   const last = tokens[tokens.length - 1] || '';
   let baseTokens = tokens;
@@ -184,7 +192,7 @@ function cleanCommercialModel(rawDesc: string): { modelName: string; genHint: st
   const genCore = genToken ? `${baseName} ${genToken}` : baseName;
   return {
     modelName: baseName,
-    genHint: `${genCore}${phaseSuffix}${chassis ? ` (${chassis})` : ''}`.trim(),
+    genHint: `${genCore}${bodyStyleSuffix}${phaseSuffix}${chassis ? ` (${chassis})` : ''}`.trim(),
   };
 }
 
