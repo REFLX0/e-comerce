@@ -1,0 +1,4033 @@
+{
+  "makes": {
+    "volkswagen": {
+      "make": "volkswagen",
+      "models": {
+        "t-cross": {
+          "modelName": "T-Cross",
+          "rawGensCount": 1,
+          "normGens": {
+            "t-cross-i": {
+              "genName": "T-Cross",
+              "yearFrom": 2018,
+              "yearTo": 9999,
+              "enginesCount": 0,
+              "engines": []
+            }
+          },
+          "merges": [],
+          "phantoms": [],
+          "specAdditions": []
+        },
+        "polo": {
+          "modelName": "Polo",
+          "rawGensCount": 4,
+          "normGens": {
+            "polo-iii": {
+              "genName": "Polo III",
+              "yearFrom": 1994,
+              "yearTo": 2001,
+              "enginesCount": 7,
+              "engines": [
+                {
+                  "code": "1.2 (CGPA)",
+                  "fuel": "essence",
+                  "cc": 1198,
+                  "hp": 70,
+                  "years": "1994-2001",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.4 (CGGB)",
+                  "fuel": "essence",
+                  "cc": 1390,
+                  "hp": 85,
+                  "years": "1994-2001",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.6 TDI (CAYC)",
+                  "fuel": "diesel",
+                  "cc": 1598,
+                  "hp": 105,
+                  "years": "1994-2001",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.2 TSI (CBZA)",
+                  "fuel": "essence",
+                  "cc": 1197,
+                  "hp": 86,
+                  "years": "1994-2001",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.4 TDI",
+                  "fuel": "diesel",
+                  "cc": 1422,
+                  "hp": 75,
+                  "years": "1994-2001",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.0 TSI",
+                  "fuel": "essence",
+                  "cc": 999,
+                  "hp": 95,
+                  "years": "1994-2001",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.0",
+                  "fuel": "essence",
+                  "cc": 999,
+                  "hp": 60,
+                  "years": "1994-2001",
+                  "isPhantom": false,
+                  "oil": "null"
+                }
+              ]
+            },
+            "polo-iv": {
+              "genName": "Polo IV",
+              "yearFrom": 2001,
+              "yearTo": 2009,
+              "enginesCount": 7,
+              "engines": [
+                {
+                  "code": "1.2 (CGPA)",
+                  "fuel": "essence",
+                  "cc": 1198,
+                  "hp": 70,
+                  "years": "2001-2009",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.4 (CGGB)",
+                  "fuel": "essence",
+                  "cc": 1390,
+                  "hp": 85,
+                  "years": "2001-2009",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.6 TDI (CAYC)",
+                  "fuel": "diesel",
+                  "cc": 1598,
+                  "hp": 105,
+                  "years": "2001-2009",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.2 TSI (CBZA)",
+                  "fuel": "essence",
+                  "cc": 1197,
+                  "hp": 86,
+                  "years": "2001-2009",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.4 TDI",
+                  "fuel": "diesel",
+                  "cc": 1422,
+                  "hp": 75,
+                  "years": "2001-2009",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.0 TSI",
+                  "fuel": "essence",
+                  "cc": 999,
+                  "hp": 95,
+                  "years": "2001-2009",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.0",
+                  "fuel": "essence",
+                  "cc": 999,
+                  "hp": 60,
+                  "years": "2001-2009",
+                  "isPhantom": false,
+                  "oil": "null"
+                }
+              ]
+            },
+            "polo-v": {
+              "genName": "Polo V",
+              "yearFrom": 2009,
+              "yearTo": 2017,
+              "enginesCount": 7,
+              "engines": [
+                {
+                  "code": "1.2 (CGPA)",
+                  "fuel": "essence",
+                  "cc": 1198,
+                  "hp": 70,
+                  "years": "2009-2017",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.4 (CGGB)",
+                  "fuel": "essence",
+                  "cc": 1390,
+                  "hp": 85,
+                  "years": "2009-2017",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.6 TDI (CAYC)",
+                  "fuel": "diesel",
+                  "cc": 1598,
+                  "hp": 105,
+                  "years": "2009-2017",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.2 TSI (CBZA)",
+                  "fuel": "essence",
+                  "cc": 1197,
+                  "hp": 86,
+                  "years": "2009-2017",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.4 TDI",
+                  "fuel": "diesel",
+                  "cc": 1422,
+                  "hp": 75,
+                  "years": "2009-2017",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.0 TSI",
+                  "fuel": "essence",
+                  "cc": 999,
+                  "hp": 95,
+                  "years": "2009-2017",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.0",
+                  "fuel": "essence",
+                  "cc": 999,
+                  "hp": 60,
+                  "years": "2009-2017",
+                  "isPhantom": false,
+                  "oil": "null"
+                }
+              ]
+            },
+            "polo-vi": {
+              "genName": "Polo VI",
+              "yearFrom": 2017,
+              "yearTo": 9999,
+              "enginesCount": 8,
+              "engines": [
+                {
+                  "code": "1.0 TSI",
+                  "fuel": "essence",
+                  "cc": 999,
+                  "hp": 95,
+                  "years": "2017-9999",
+                  "isPhantom": false,
+                  "oil": "0W-20 (VW 508.00)"
+                },
+                {
+                  "code": "CFNA",
+                  "fuel": "essence",
+                  "cc": 1598,
+                  "hp": 110,
+                  "years": "2017-9999",
+                  "isPhantom": false,
+                  "oil": "5W-30 (VW 502.00)"
+                },
+                {
+                  "code": "1.2 (CGPA)",
+                  "fuel": "essence",
+                  "cc": 1198,
+                  "hp": 70,
+                  "years": "2017-9999",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.4 (CGGB)",
+                  "fuel": "essence",
+                  "cc": 1390,
+                  "hp": 85,
+                  "years": "2017-9999",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.6 TDI (CAYC)",
+                  "fuel": "diesel",
+                  "cc": 1598,
+                  "hp": 105,
+                  "years": "2017-9999",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.2 TSI (CBZA)",
+                  "fuel": "essence",
+                  "cc": 1197,
+                  "hp": 86,
+                  "years": "2017-9999",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.4 TDI",
+                  "fuel": "diesel",
+                  "cc": 1422,
+                  "hp": 75,
+                  "years": "2017-9999",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.0",
+                  "fuel": "essence",
+                  "cc": 999,
+                  "hp": 60,
+                  "years": "2017-9999",
+                  "isPhantom": false,
+                  "oil": "null"
+                }
+              ]
+            }
+          },
+          "merges": [],
+          "phantoms": [],
+          "specAdditions": []
+        },
+        "golf": {
+          "modelName": "Golf",
+          "rawGensCount": 5,
+          "normGens": {
+            "golf-iv": {
+              "genName": "Golf IV",
+              "yearFrom": 1997,
+              "yearTo": 2005,
+              "enginesCount": 4,
+              "engines": [
+                {
+                  "code": "1.9 TDI (ALH)",
+                  "fuel": "diesel",
+                  "cc": 1896,
+                  "hp": 90,
+                  "years": "1997-2005",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.9 SDI",
+                  "fuel": "diesel",
+                  "cc": 1896,
+                  "hp": 68,
+                  "years": "1997-2005",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.4 16V (AHW)",
+                  "fuel": "essence",
+                  "cc": 1390,
+                  "hp": 75,
+                  "years": "1997-2005",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.6 (AKL)",
+                  "fuel": "essence",
+                  "cc": 1595,
+                  "hp": 100,
+                  "years": "1997-2005",
+                  "isPhantom": false,
+                  "oil": "null"
+                }
+              ]
+            },
+            "golf-v": {
+              "genName": "Golf V",
+              "yearFrom": 2003,
+              "yearTo": 2009,
+              "enginesCount": 10,
+              "engines": [
+                {
+                  "code": "DPBA",
+                  "fuel": "essence",
+                  "cc": 1498,
+                  "hp": 131,
+                  "years": "2003-2009",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.4 TSI (CZCA)",
+                  "fuel": "essence",
+                  "cc": 1395,
+                  "hp": 125,
+                  "years": "2003-2009",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "2.0 TDI (CRLB)",
+                  "fuel": "diesel",
+                  "cc": 1968,
+                  "hp": 150,
+                  "years": "2003-2009",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.6 TDI (CLHA)",
+                  "fuel": "diesel",
+                  "cc": 1598,
+                  "hp": 105,
+                  "years": "2003-2009",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.2 TSI",
+                  "fuel": "essence",
+                  "cc": 1197,
+                  "hp": 105,
+                  "years": "2003-2009",
+                  "isPhantom": true,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.9 TDI",
+                  "fuel": "diesel",
+                  "cc": 1896,
+                  "hp": 105,
+                  "years": "2003-2009",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.9 TDI (ALH)",
+                  "fuel": "diesel",
+                  "cc": 1896,
+                  "hp": 90,
+                  "years": "2003-2009",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.9 SDI",
+                  "fuel": "diesel",
+                  "cc": 1896,
+                  "hp": 68,
+                  "years": "2003-2009",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.4 16V (AHW)",
+                  "fuel": "essence",
+                  "cc": 1390,
+                  "hp": 75,
+                  "years": "2003-2009",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.6 (AKL)",
+                  "fuel": "essence",
+                  "cc": 1595,
+                  "hp": 100,
+                  "years": "2003-2009",
+                  "isPhantom": false,
+                  "oil": "null"
+                }
+              ]
+            },
+            "golf-vi": {
+              "genName": "Golf VI",
+              "yearFrom": 2008,
+              "yearTo": 2013,
+              "enginesCount": 5,
+              "engines": [
+                {
+                  "code": "2.0 TDI (CRLB)",
+                  "fuel": "diesel",
+                  "cc": 1968,
+                  "hp": 150,
+                  "years": "2008-2013",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.6 TDI (CLHA)",
+                  "fuel": "diesel",
+                  "cc": 1598,
+                  "hp": 105,
+                  "years": "2008-2013",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.4 TSI (CZCA)",
+                  "fuel": "essence",
+                  "cc": 1395,
+                  "hp": 125,
+                  "years": "2008-2013",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.2 TSI",
+                  "fuel": "essence",
+                  "cc": 1197,
+                  "hp": 105,
+                  "years": "2008-2013",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.9 TDI",
+                  "fuel": "diesel",
+                  "cc": 1896,
+                  "hp": 105,
+                  "years": "2008-2013",
+                  "isPhantom": false,
+                  "oil": "null"
+                }
+              ]
+            },
+            "golf-vii": {
+              "genName": "Golf VII",
+              "yearFrom": 2012,
+              "yearTo": 2020,
+              "enginesCount": 5,
+              "engines": [
+                {
+                  "code": "1.4 TSI (CZCA)",
+                  "fuel": "essence",
+                  "cc": 1395,
+                  "hp": 125,
+                  "years": "2012-2020",
+                  "isPhantom": false,
+                  "oil": "5W-30 (VW 502.00)"
+                },
+                {
+                  "code": "1.6 TDI (CLHA)",
+                  "fuel": "diesel",
+                  "cc": 1598,
+                  "hp": 105,
+                  "years": "2012-2020",
+                  "isPhantom": false,
+                  "oil": "5W-30 (VW 504.00/507.00)"
+                },
+                {
+                  "code": "2.0 TDI (CRLB)",
+                  "fuel": "diesel",
+                  "cc": 1968,
+                  "hp": 150,
+                  "years": "2012-2020",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.2 TSI",
+                  "fuel": "essence",
+                  "cc": 1197,
+                  "hp": 105,
+                  "years": "2012-2020",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.9 TDI",
+                  "fuel": "diesel",
+                  "cc": 1896,
+                  "hp": 105,
+                  "years": "2012-2020",
+                  "isPhantom": true,
+                  "oil": "null"
+                }
+              ]
+            },
+            "golf-viii": {
+              "genName": "Golf VIII",
+              "yearFrom": 2020,
+              "yearTo": 9999,
+              "enginesCount": 6,
+              "engines": [
+                {
+                  "code": "DKTA",
+                  "fuel": "essence",
+                  "cc": 1498,
+                  "hp": 131,
+                  "years": "2020-9999",
+                  "isPhantom": false,
+                  "oil": "0W-20 (VW 508.00)"
+                },
+                {
+                  "code": "2.0 TDI (CRLB)",
+                  "fuel": "diesel",
+                  "cc": 1968,
+                  "hp": 150,
+                  "years": "2020-9999",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.6 TDI (CLHA)",
+                  "fuel": "diesel",
+                  "cc": 1598,
+                  "hp": 105,
+                  "years": "2020-9999",
+                  "isPhantom": true,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.4 TSI (CZCA)",
+                  "fuel": "essence",
+                  "cc": 1395,
+                  "hp": 125,
+                  "years": "2020-9999",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.2 TSI",
+                  "fuel": "essence",
+                  "cc": 1197,
+                  "hp": 105,
+                  "years": "2020-9999",
+                  "isPhantom": true,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.9 TDI",
+                  "fuel": "diesel",
+                  "cc": 1896,
+                  "hp": 105,
+                  "years": "2020-9999",
+                  "isPhantom": true,
+                  "oil": "null"
+                }
+              ]
+            }
+          },
+          "merges": [],
+          "phantoms": [
+            {
+              "generation": "Golf V",
+              "engineCode": "1.2 TSI",
+              "fuel": "essence",
+              "reason": "1.2 TSI launched on Golf VI (EA111), never on Golf IV or V"
+            },
+            {
+              "generation": "Golf VII",
+              "engineCode": "1.9 TDI",
+              "fuel": "diesel",
+              "reason": "1.9 TDI discontinued with Golf V (replaced by 1.6 TDI in Golf VI/VII)"
+            },
+            {
+              "generation": "Golf VIII",
+              "engineCode": "1.6 TDI (CLHA)",
+              "fuel": "diesel",
+              "reason": "1.6 TDI discontinued on Golf VIII in favor of 2.0 TDI Evo"
+            },
+            {
+              "generation": "Golf VIII",
+              "engineCode": "1.2 TSI",
+              "fuel": "essence",
+              "reason": "1.2 TSI discontinued with Golf VII, replaced by 1.0 TSI / 1.5 TSI on Golf VIII"
+            },
+            {
+              "generation": "Golf VIII",
+              "engineCode": "1.9 TDI",
+              "fuel": "diesel",
+              "reason": "1.9 TDI discontinued with Golf V (replaced by 1.6 TDI in Golf VI/VII)"
+            }
+          ],
+          "specAdditions": [
+            {
+              "generation": "Golf VII",
+              "engineCode": "1.4 TSI (CZCA)",
+              "viscosity": "5W-30",
+              "approval": "VW 502.00"
+            }
+          ]
+        },
+        "t-roc": {
+          "modelName": "T-Roc",
+          "rawGensCount": 1,
+          "normGens": {
+            "t-roc-i": {
+              "genName": "T-Roc",
+              "yearFrom": 2017,
+              "yearTo": 9999,
+              "enginesCount": 0,
+              "engines": []
+            }
+          },
+          "merges": [],
+          "phantoms": [],
+          "specAdditions": []
+        },
+        "tiguan": {
+          "modelName": "Tiguan",
+          "rawGensCount": 3,
+          "normGens": {
+            "tiguan-i": {
+              "genName": "Tiguan I",
+              "yearFrom": 2007,
+              "yearTo": 2016,
+              "enginesCount": 3,
+              "engines": [
+                {
+                  "code": "2.0 TDI",
+                  "fuel": "diesel",
+                  "cc": 1968,
+                  "hp": 150,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.4 TSI",
+                  "fuel": "essence",
+                  "cc": 1395,
+                  "hp": 150,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "2.0 TSI",
+                  "fuel": "essence",
+                  "cc": 1984,
+                  "hp": 180,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                }
+              ]
+            },
+            "tiguan-ii": {
+              "genName": "Tiguan II",
+              "yearFrom": 2016,
+              "yearTo": 2024,
+              "enginesCount": 3,
+              "engines": [
+                {
+                  "code": "2.0 TDI",
+                  "fuel": "diesel",
+                  "cc": 1968,
+                  "hp": 150,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.4 TSI",
+                  "fuel": "essence",
+                  "cc": 1395,
+                  "hp": 150,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "2.0 TSI",
+                  "fuel": "essence",
+                  "cc": 1984,
+                  "hp": 180,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                }
+              ]
+            },
+            "tiguan-iii": {
+              "genName": "Tiguan III",
+              "yearFrom": 2024,
+              "yearTo": 9999,
+              "enginesCount": 0,
+              "engines": []
+            }
+          },
+          "merges": [],
+          "phantoms": [],
+          "specAdditions": []
+        },
+        "touareg": {
+          "modelName": "Touareg",
+          "rawGensCount": 3,
+          "normGens": {
+            "touareg-i": {
+              "genName": "Touareg I",
+              "yearFrom": 2002,
+              "yearTo": 2010,
+              "enginesCount": 0,
+              "engines": []
+            },
+            "touareg-ii": {
+              "genName": "Touareg II",
+              "yearFrom": 2010,
+              "yearTo": 2018,
+              "enginesCount": 0,
+              "engines": []
+            },
+            "touareg-iii": {
+              "genName": "Touareg III",
+              "yearFrom": 2018,
+              "yearTo": 9999,
+              "enginesCount": 1,
+              "engines": [
+                {
+                  "code": "3.0 V6 TDI",
+                  "fuel": "diesel",
+                  "cc": 2967,
+                  "hp": 245,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                }
+              ]
+            }
+          },
+          "merges": [],
+          "phantoms": [],
+          "specAdditions": []
+        },
+        "passat": {
+          "modelName": "Passat",
+          "rawGensCount": 5,
+          "normGens": {
+            "passat-b5": {
+              "genName": "Passat B5",
+              "yearFrom": 1996,
+              "yearTo": 2005,
+              "enginesCount": 0,
+              "engines": []
+            },
+            "passat-b6": {
+              "genName": "Passat B6",
+              "yearFrom": 2005,
+              "yearTo": 2010,
+              "enginesCount": 0,
+              "engines": []
+            },
+            "passat-b7": {
+              "genName": "Passat B7",
+              "yearFrom": 2010,
+              "yearTo": 2014,
+              "enginesCount": 0,
+              "engines": []
+            },
+            "passat-b8": {
+              "genName": "Passat B8",
+              "yearFrom": 2014,
+              "yearTo": 2023,
+              "enginesCount": 0,
+              "engines": []
+            },
+            "passat-b9": {
+              "genName": "Passat B9",
+              "yearFrom": 2023,
+              "yearTo": 9999,
+              "enginesCount": 0,
+              "engines": []
+            }
+          },
+          "merges": [],
+          "phantoms": [],
+          "specAdditions": []
+        },
+        "caddy": {
+          "modelName": "Caddy",
+          "rawGensCount": 3,
+          "normGens": {
+            "caddy-iii": {
+              "genName": "Caddy III",
+              "yearFrom": 2004,
+              "yearTo": 2015,
+              "enginesCount": 4,
+              "engines": [
+                {
+                  "code": "2.0 TDI",
+                  "fuel": "diesel",
+                  "cc": 1968,
+                  "hp": 102,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.6 TDI",
+                  "fuel": "diesel",
+                  "cc": 1598,
+                  "hp": 102,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.9 TDI",
+                  "fuel": "diesel",
+                  "cc": 1896,
+                  "hp": 105,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "2.0 SDI",
+                  "fuel": "diesel",
+                  "cc": 1968,
+                  "hp": 70,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                }
+              ]
+            },
+            "caddy-iv": {
+              "genName": "Caddy IV",
+              "yearFrom": 2015,
+              "yearTo": 2020,
+              "enginesCount": 4,
+              "engines": [
+                {
+                  "code": "2.0 TDI",
+                  "fuel": "diesel",
+                  "cc": 1968,
+                  "hp": 102,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.6 TDI",
+                  "fuel": "diesel",
+                  "cc": 1598,
+                  "hp": 102,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.9 TDI",
+                  "fuel": "diesel",
+                  "cc": 1896,
+                  "hp": 105,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "2.0 SDI",
+                  "fuel": "diesel",
+                  "cc": 1968,
+                  "hp": 70,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                }
+              ]
+            },
+            "caddy-v": {
+              "genName": "Caddy V",
+              "yearFrom": 2020,
+              "yearTo": 9999,
+              "enginesCount": 0,
+              "engines": []
+            }
+          },
+          "merges": [],
+          "phantoms": [],
+          "specAdditions": []
+        },
+        "transporter": {
+          "modelName": "Transporter",
+          "rawGensCount": 2,
+          "normGens": {
+            "transporter-t5": {
+              "genName": "Transporter T5",
+              "yearFrom": 2003,
+              "yearTo": 2015,
+              "enginesCount": 0,
+              "engines": []
+            },
+            "transporter-t6": {
+              "genName": "Transporter T6 / T6.1",
+              "yearFrom": 2015,
+              "yearTo": 9999,
+              "enginesCount": 0,
+              "engines": []
+            }
+          },
+          "merges": [],
+          "phantoms": [],
+          "specAdditions": []
+        },
+        "sharan": {
+          "modelName": "Sharan",
+          "rawGensCount": 2,
+          "normGens": {
+            "sharan-i": {
+              "genName": "Sharan I",
+              "yearFrom": 1995,
+              "yearTo": 2010,
+              "enginesCount": 2,
+              "engines": [
+                {
+                  "code": "2.0 TDI",
+                  "fuel": "diesel",
+                  "cc": 1968,
+                  "hp": 140,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.4 TSI",
+                  "fuel": "essence",
+                  "cc": 1395,
+                  "hp": 150,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                }
+              ]
+            },
+            "sharan-ii": {
+              "genName": "Sharan II",
+              "yearFrom": 2010,
+              "yearTo": 2022,
+              "enginesCount": 2,
+              "engines": [
+                {
+                  "code": "2.0 TDI",
+                  "fuel": "diesel",
+                  "cc": 1968,
+                  "hp": 140,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.4 TSI",
+                  "fuel": "essence",
+                  "cc": 1395,
+                  "hp": 150,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                }
+              ]
+            }
+          },
+          "merges": [],
+          "phantoms": [],
+          "specAdditions": []
+        }
+      }
+    },
+    "audi": {
+      "make": "audi",
+      "models": {
+        "a3": {
+          "modelName": "A3",
+          "rawGensCount": 4,
+          "normGens": {
+            "a3-8l": {
+              "genName": "A3 (8L)",
+              "yearFrom": 1996,
+              "yearTo": 2003,
+              "enginesCount": 5,
+              "engines": [
+                {
+                  "code": "2.0 TDI",
+                  "fuel": "diesel",
+                  "cc": 1968,
+                  "hp": 150,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.6 TDI",
+                  "fuel": "diesel",
+                  "cc": 1598,
+                  "hp": 105,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.4 TFSI",
+                  "fuel": "essence",
+                  "cc": 1395,
+                  "hp": 125,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.2 TFSI",
+                  "fuel": "essence",
+                  "cc": 1197,
+                  "hp": 105,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.9 TDI",
+                  "fuel": "diesel",
+                  "cc": 1896,
+                  "hp": 105,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                }
+              ]
+            },
+            "a3-8p": {
+              "genName": "A3 (8P)",
+              "yearFrom": 2003,
+              "yearTo": 2013,
+              "enginesCount": 5,
+              "engines": [
+                {
+                  "code": "2.0 TDI",
+                  "fuel": "diesel",
+                  "cc": 1968,
+                  "hp": 150,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.6 TDI",
+                  "fuel": "diesel",
+                  "cc": 1598,
+                  "hp": 105,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.4 TFSI",
+                  "fuel": "essence",
+                  "cc": 1395,
+                  "hp": 125,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.2 TFSI",
+                  "fuel": "essence",
+                  "cc": 1197,
+                  "hp": 105,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.9 TDI",
+                  "fuel": "diesel",
+                  "cc": 1896,
+                  "hp": 105,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                }
+              ]
+            },
+            "a3-8v": {
+              "genName": "A3 (8V)",
+              "yearFrom": 2012,
+              "yearTo": 2020,
+              "enginesCount": 5,
+              "engines": [
+                {
+                  "code": "2.0 TDI",
+                  "fuel": "diesel",
+                  "cc": 1968,
+                  "hp": 150,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.6 TDI",
+                  "fuel": "diesel",
+                  "cc": 1598,
+                  "hp": 105,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.4 TFSI",
+                  "fuel": "essence",
+                  "cc": 1395,
+                  "hp": 125,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.2 TFSI",
+                  "fuel": "essence",
+                  "cc": 1197,
+                  "hp": 105,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.9 TDI",
+                  "fuel": "diesel",
+                  "cc": 1896,
+                  "hp": 105,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                }
+              ]
+            },
+            "a3-8y": {
+              "genName": "A3 (8Y)",
+              "yearFrom": 2020,
+              "yearTo": 9999,
+              "enginesCount": 5,
+              "engines": [
+                {
+                  "code": "2.0 TDI",
+                  "fuel": "diesel",
+                  "cc": 1968,
+                  "hp": 150,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.6 TDI",
+                  "fuel": "diesel",
+                  "cc": 1598,
+                  "hp": 105,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.4 TFSI",
+                  "fuel": "essence",
+                  "cc": 1395,
+                  "hp": 125,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.2 TFSI",
+                  "fuel": "essence",
+                  "cc": 1197,
+                  "hp": 105,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.9 TDI",
+                  "fuel": "diesel",
+                  "cc": 1896,
+                  "hp": 105,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                }
+              ]
+            }
+          },
+          "merges": [],
+          "phantoms": [],
+          "specAdditions": []
+        },
+        "a4": {
+          "modelName": "A4",
+          "rawGensCount": 5,
+          "normGens": {
+            "a4-b5": {
+              "genName": "A4 (B5)",
+              "yearFrom": 1994,
+              "yearTo": 2001,
+              "enginesCount": 0,
+              "engines": []
+            },
+            "a4-b6": {
+              "genName": "A4 (B6)",
+              "yearFrom": 2000,
+              "yearTo": 2004,
+              "enginesCount": 5,
+              "engines": [
+                {
+                  "code": "2.0 TDI",
+                  "fuel": "diesel",
+                  "cc": 1968,
+                  "hp": 143,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "2.0 TDI 150",
+                  "fuel": "diesel",
+                  "cc": 1968,
+                  "hp": 150,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.8 TFSI",
+                  "fuel": "essence",
+                  "cc": 1798,
+                  "hp": 160,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "2.0 TFSI",
+                  "fuel": "essence",
+                  "cc": 1984,
+                  "hp": 211,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.9 TDI",
+                  "fuel": "diesel",
+                  "cc": 1896,
+                  "hp": 130,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                }
+              ]
+            },
+            "a4-b7": {
+              "genName": "A4 (B7)",
+              "yearFrom": 2004,
+              "yearTo": 2008,
+              "enginesCount": 5,
+              "engines": [
+                {
+                  "code": "2.0 TDI",
+                  "fuel": "diesel",
+                  "cc": 1968,
+                  "hp": 143,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "2.0 TDI 150",
+                  "fuel": "diesel",
+                  "cc": 1968,
+                  "hp": 150,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.8 TFSI",
+                  "fuel": "essence",
+                  "cc": 1798,
+                  "hp": 160,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "2.0 TFSI",
+                  "fuel": "essence",
+                  "cc": 1984,
+                  "hp": 211,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.9 TDI",
+                  "fuel": "diesel",
+                  "cc": 1896,
+                  "hp": 130,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                }
+              ]
+            },
+            "a4-b8": {
+              "genName": "A4 (B8)",
+              "yearFrom": 2007,
+              "yearTo": 2015,
+              "enginesCount": 5,
+              "engines": [
+                {
+                  "code": "2.0 TDI",
+                  "fuel": "diesel",
+                  "cc": 1968,
+                  "hp": 143,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "2.0 TDI 150",
+                  "fuel": "diesel",
+                  "cc": 1968,
+                  "hp": 150,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.8 TFSI",
+                  "fuel": "essence",
+                  "cc": 1798,
+                  "hp": 160,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "2.0 TFSI",
+                  "fuel": "essence",
+                  "cc": 1984,
+                  "hp": 211,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.9 TDI",
+                  "fuel": "diesel",
+                  "cc": 1896,
+                  "hp": 130,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                }
+              ]
+            },
+            "a4-b9": {
+              "genName": "A4 (B9)",
+              "yearFrom": 2015,
+              "yearTo": 9999,
+              "enginesCount": 5,
+              "engines": [
+                {
+                  "code": "2.0 TDI",
+                  "fuel": "diesel",
+                  "cc": 1968,
+                  "hp": 143,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "2.0 TDI 150",
+                  "fuel": "diesel",
+                  "cc": 1968,
+                  "hp": 150,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.8 TFSI",
+                  "fuel": "essence",
+                  "cc": 1798,
+                  "hp": 160,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "2.0 TFSI",
+                  "fuel": "essence",
+                  "cc": 1984,
+                  "hp": 211,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.9 TDI",
+                  "fuel": "diesel",
+                  "cc": 1896,
+                  "hp": 130,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                }
+              ]
+            }
+          },
+          "merges": [],
+          "phantoms": [],
+          "specAdditions": []
+        },
+        "a6": {
+          "modelName": "A6",
+          "rawGensCount": 3,
+          "normGens": {
+            "c6": {
+              "genName": "A6 - C6",
+              "yearFrom": null,
+              "yearTo": null,
+              "enginesCount": 3,
+              "engines": [
+                {
+                  "code": "2.0 TDI",
+                  "fuel": "diesel",
+                  "cc": 1968,
+                  "hp": 177,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "3.0 TDI",
+                  "fuel": "diesel",
+                  "cc": 2967,
+                  "hp": 218,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "2.0 TFSI",
+                  "fuel": "essence",
+                  "cc": 1984,
+                  "hp": 211,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                }
+              ]
+            },
+            "c7": {
+              "genName": "A6 - C7",
+              "yearFrom": null,
+              "yearTo": null,
+              "enginesCount": 3,
+              "engines": [
+                {
+                  "code": "2.0 TDI",
+                  "fuel": "diesel",
+                  "cc": 1968,
+                  "hp": 177,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "3.0 TDI",
+                  "fuel": "diesel",
+                  "cc": 2967,
+                  "hp": 218,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "2.0 TFSI",
+                  "fuel": "essence",
+                  "cc": 1984,
+                  "hp": 211,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                }
+              ]
+            },
+            "c8": {
+              "genName": "A6 - C8",
+              "yearFrom": null,
+              "yearTo": null,
+              "enginesCount": 3,
+              "engines": [
+                {
+                  "code": "2.0 TDI",
+                  "fuel": "diesel",
+                  "cc": 1968,
+                  "hp": 177,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "3.0 TDI",
+                  "fuel": "diesel",
+                  "cc": 2967,
+                  "hp": 218,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "2.0 TFSI",
+                  "fuel": "essence",
+                  "cc": 1984,
+                  "hp": 211,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                }
+              ]
+            }
+          },
+          "merges": [],
+          "phantoms": [],
+          "specAdditions": []
+        },
+        "q3": {
+          "modelName": "Q3",
+          "rawGensCount": 2,
+          "normGens": {
+            "8u": {
+              "genName": "Q3 - 8U",
+              "yearFrom": null,
+              "yearTo": null,
+              "enginesCount": 3,
+              "engines": [
+                {
+                  "code": "2.0 TDI",
+                  "fuel": "diesel",
+                  "cc": 1968,
+                  "hp": 150,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.4 TFSI",
+                  "fuel": "essence",
+                  "cc": 1395,
+                  "hp": 125,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.5 TSI",
+                  "fuel": "essence",
+                  "cc": 1498,
+                  "hp": 150,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                }
+              ]
+            },
+            "f3": {
+              "genName": "Q3 - F3",
+              "yearFrom": null,
+              "yearTo": null,
+              "enginesCount": 3,
+              "engines": [
+                {
+                  "code": "2.0 TDI",
+                  "fuel": "diesel",
+                  "cc": 1968,
+                  "hp": 150,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.4 TFSI",
+                  "fuel": "essence",
+                  "cc": 1395,
+                  "hp": 125,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.5 TSI",
+                  "fuel": "essence",
+                  "cc": 1498,
+                  "hp": 150,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                }
+              ]
+            }
+          },
+          "merges": [],
+          "phantoms": [],
+          "specAdditions": []
+        },
+        "q5": {
+          "modelName": "Q5",
+          "rawGensCount": 2,
+          "normGens": {
+            "8r": {
+              "genName": "Q5 - 8R",
+              "yearFrom": null,
+              "yearTo": null,
+              "enginesCount": 2,
+              "engines": [
+                {
+                  "code": "2.0 TDI",
+                  "fuel": "diesel",
+                  "cc": 1968,
+                  "hp": 190,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "2.0 TFSI",
+                  "fuel": "essence",
+                  "cc": 1984,
+                  "hp": 252,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                }
+              ]
+            },
+            "fy": {
+              "genName": "Q5 - FY",
+              "yearFrom": null,
+              "yearTo": null,
+              "enginesCount": 2,
+              "engines": [
+                {
+                  "code": "2.0 TDI",
+                  "fuel": "diesel",
+                  "cc": 1968,
+                  "hp": 190,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "2.0 TFSI",
+                  "fuel": "essence",
+                  "cc": 1984,
+                  "hp": 252,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                }
+              ]
+            }
+          },
+          "merges": [],
+          "phantoms": [],
+          "specAdditions": []
+        },
+        "a1": {
+          "modelName": "A1",
+          "rawGensCount": 2,
+          "normGens": {
+            "8x": {
+              "genName": "A1 - 8X",
+              "yearFrom": null,
+              "yearTo": null,
+              "enginesCount": 3,
+              "engines": [
+                {
+                  "code": "1.4 TFSI",
+                  "fuel": "essence",
+                  "cc": 1395,
+                  "hp": 85,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.0 TFSI",
+                  "fuel": "essence",
+                  "cc": 999,
+                  "hp": 95,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.6 TDI",
+                  "fuel": "diesel",
+                  "cc": 1598,
+                  "hp": 90,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                }
+              ]
+            },
+            "sportback-gb": {
+              "genName": "Sportback (GB)",
+              "yearFrom": null,
+              "yearTo": null,
+              "enginesCount": 3,
+              "engines": [
+                {
+                  "code": "1.4 TFSI",
+                  "fuel": "essence",
+                  "cc": 1395,
+                  "hp": 85,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.0 TFSI",
+                  "fuel": "essence",
+                  "cc": 999,
+                  "hp": 95,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.6 TDI",
+                  "fuel": "diesel",
+                  "cc": 1598,
+                  "hp": 90,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                }
+              ]
+            }
+          },
+          "merges": [],
+          "phantoms": [],
+          "specAdditions": []
+        },
+        "a5": {
+          "modelName": "A5",
+          "rawGensCount": 4,
+          "normGens": {
+            "8t3": {
+              "genName": "A5 - 8T3",
+              "yearFrom": null,
+              "yearTo": null,
+              "enginesCount": 2,
+              "engines": [
+                {
+                  "code": "2.0 TDI",
+                  "fuel": "diesel",
+                  "cc": 1968,
+                  "hp": 190,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "2.0 TFSI",
+                  "fuel": "essence",
+                  "cc": 1984,
+                  "hp": 252,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                }
+              ]
+            },
+            "sportback-8ta": {
+              "genName": "Sportback (8TA)",
+              "yearFrom": null,
+              "yearTo": null,
+              "enginesCount": 2,
+              "engines": [
+                {
+                  "code": "2.0 TDI",
+                  "fuel": "diesel",
+                  "cc": 1968,
+                  "hp": 190,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "2.0 TFSI",
+                  "fuel": "essence",
+                  "cc": 1984,
+                  "hp": 252,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                }
+              ]
+            },
+            "f53-f5p": {
+              "genName": "F53, F5P",
+              "yearFrom": null,
+              "yearTo": null,
+              "enginesCount": 2,
+              "engines": [
+                {
+                  "code": "2.0 TDI",
+                  "fuel": "diesel",
+                  "cc": 1968,
+                  "hp": 190,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "2.0 TFSI",
+                  "fuel": "essence",
+                  "cc": 1984,
+                  "hp": 252,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                }
+              ]
+            },
+            "f5": {
+              "genName": "A5 - F5",
+              "yearFrom": null,
+              "yearTo": null,
+              "enginesCount": 2,
+              "engines": [
+                {
+                  "code": "2.0 TDI",
+                  "fuel": "diesel",
+                  "cc": 1968,
+                  "hp": 190,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "2.0 TFSI",
+                  "fuel": "essence",
+                  "cc": 1984,
+                  "hp": 252,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                }
+              ]
+            }
+          },
+          "merges": [],
+          "phantoms": [],
+          "specAdditions": []
+        }
+      }
+    },
+    "seat": {
+      "make": "seat",
+      "models": {
+        "ibiza": {
+          "modelName": "Ibiza",
+          "rawGensCount": 3,
+          "normGens": {
+            "ibiza-iii": {
+              "genName": "Ibiza III (6L)",
+              "yearFrom": 2002,
+              "yearTo": 2008,
+              "enginesCount": 5,
+              "engines": [
+                {
+                  "code": "1.2",
+                  "fuel": "essence",
+                  "cc": 1198,
+                  "hp": 70,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.4",
+                  "fuel": "essence",
+                  "cc": 1390,
+                  "hp": 85,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.6 TDI",
+                  "fuel": "diesel",
+                  "cc": 1598,
+                  "hp": 105,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.2 TSI",
+                  "fuel": "essence",
+                  "cc": 1197,
+                  "hp": 105,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.9 TDI",
+                  "fuel": "diesel",
+                  "cc": 1896,
+                  "hp": 100,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                }
+              ]
+            },
+            "ibiza-iv": {
+              "genName": "Ibiza IV (6J/6P)",
+              "yearFrom": 2008,
+              "yearTo": 2017,
+              "enginesCount": 5,
+              "engines": [
+                {
+                  "code": "1.2",
+                  "fuel": "essence",
+                  "cc": 1198,
+                  "hp": 70,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.4",
+                  "fuel": "essence",
+                  "cc": 1390,
+                  "hp": 85,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.6 TDI",
+                  "fuel": "diesel",
+                  "cc": 1598,
+                  "hp": 105,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.2 TSI",
+                  "fuel": "essence",
+                  "cc": 1197,
+                  "hp": 105,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.9 TDI",
+                  "fuel": "diesel",
+                  "cc": 1896,
+                  "hp": 100,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                }
+              ]
+            },
+            "ibiza-v": {
+              "genName": "Ibiza V (KJ1)",
+              "yearFrom": 2017,
+              "yearTo": 9999,
+              "enginesCount": 5,
+              "engines": [
+                {
+                  "code": "1.2",
+                  "fuel": "essence",
+                  "cc": 1198,
+                  "hp": 70,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.4",
+                  "fuel": "essence",
+                  "cc": 1390,
+                  "hp": 85,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.6 TDI",
+                  "fuel": "diesel",
+                  "cc": 1598,
+                  "hp": 105,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.2 TSI",
+                  "fuel": "essence",
+                  "cc": 1197,
+                  "hp": 105,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.9 TDI",
+                  "fuel": "diesel",
+                  "cc": 1896,
+                  "hp": 100,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                }
+              ]
+            }
+          },
+          "merges": [],
+          "phantoms": [],
+          "specAdditions": []
+        },
+        "arona": {
+          "modelName": "Arona",
+          "rawGensCount": 3,
+          "normGens": {
+            "mk1-2018-present": {
+              "genName": "Arona - MK1",
+              "yearFrom": 2018,
+              "yearTo": 9999,
+              "enginesCount": 2,
+              "engines": [
+                {
+                  "code": "CHZB",
+                  "fuel": "essence",
+                  "cc": 999,
+                  "hp": 95,
+                  "years": "2018-9999",
+                  "isPhantom": false,
+                  "oil": "0W-20 (VW 508.00)"
+                },
+                {
+                  "code": "DLAA",
+                  "fuel": "essence",
+                  "cc": 999,
+                  "hp": 115,
+                  "years": "2018-9999",
+                  "isPhantom": false,
+                  "oil": "0W-20 (VW 508.00)"
+                }
+              ]
+            },
+            "mk1-2018-2022": {
+              "genName": "Arona - MK1",
+              "yearFrom": 2018,
+              "yearTo": 2022,
+              "enginesCount": 1,
+              "engines": [
+                {
+                  "code": "CWVB",
+                  "fuel": "essence",
+                  "cc": 1598,
+                  "hp": 110,
+                  "years": "2018-2022",
+                  "isPhantom": false,
+                  "oil": "5W-30 (VW 502.00)"
+                }
+              ]
+            },
+            "kj7": {
+              "genName": "Arona - KJ7",
+              "yearFrom": null,
+              "yearTo": null,
+              "enginesCount": 2,
+              "engines": [
+                {
+                  "code": "1.0 TSI",
+                  "fuel": "essence",
+                  "cc": 999,
+                  "hp": 95,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.6 TDI",
+                  "fuel": "diesel",
+                  "cc": 1598,
+                  "hp": 95,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                }
+              ]
+            }
+          },
+          "merges": [],
+          "phantoms": [],
+          "specAdditions": []
+        },
+        "leon": {
+          "modelName": "Leon",
+          "rawGensCount": 4,
+          "normGens": {
+            "leon-i": {
+              "genName": "Leon I (1M)",
+              "yearFrom": 1999,
+              "yearTo": 2006,
+              "enginesCount": 4,
+              "engines": [
+                {
+                  "code": "2.0 TDI",
+                  "fuel": "diesel",
+                  "cc": 1968,
+                  "hp": 150,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.6 TDI",
+                  "fuel": "diesel",
+                  "cc": 1598,
+                  "hp": 105,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.2 TSI",
+                  "fuel": "essence",
+                  "cc": 1197,
+                  "hp": 105,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.4 TSI",
+                  "fuel": "essence",
+                  "cc": 1395,
+                  "hp": 125,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                }
+              ]
+            },
+            "leon-ii": {
+              "genName": "Leon II (1P)",
+              "yearFrom": 2005,
+              "yearTo": 2012,
+              "enginesCount": 4,
+              "engines": [
+                {
+                  "code": "2.0 TDI",
+                  "fuel": "diesel",
+                  "cc": 1968,
+                  "hp": 150,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.6 TDI",
+                  "fuel": "diesel",
+                  "cc": 1598,
+                  "hp": 105,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.2 TSI",
+                  "fuel": "essence",
+                  "cc": 1197,
+                  "hp": 105,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.4 TSI",
+                  "fuel": "essence",
+                  "cc": 1395,
+                  "hp": 125,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                }
+              ]
+            },
+            "leon-iii": {
+              "genName": "Leon III (5F)",
+              "yearFrom": 2012,
+              "yearTo": 2020,
+              "enginesCount": 4,
+              "engines": [
+                {
+                  "code": "2.0 TDI",
+                  "fuel": "diesel",
+                  "cc": 1968,
+                  "hp": 150,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.6 TDI",
+                  "fuel": "diesel",
+                  "cc": 1598,
+                  "hp": 105,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.2 TSI",
+                  "fuel": "essence",
+                  "cc": 1197,
+                  "hp": 105,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.4 TSI",
+                  "fuel": "essence",
+                  "cc": 1395,
+                  "hp": 125,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                }
+              ]
+            },
+            "leon-iv": {
+              "genName": "Leon IV (KL)",
+              "yearFrom": 2020,
+              "yearTo": 9999,
+              "enginesCount": 5,
+              "engines": [
+                {
+                  "code": "DKTA",
+                  "fuel": "essence",
+                  "cc": 1498,
+                  "hp": 150,
+                  "years": "2020-9999",
+                  "isPhantom": false,
+                  "oil": "0W-20 (VW 508.00)"
+                },
+                {
+                  "code": "2.0 TDI",
+                  "fuel": "diesel",
+                  "cc": 1968,
+                  "hp": 150,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.6 TDI",
+                  "fuel": "diesel",
+                  "cc": 1598,
+                  "hp": 105,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.2 TSI",
+                  "fuel": "essence",
+                  "cc": 1197,
+                  "hp": 105,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.4 TSI",
+                  "fuel": "essence",
+                  "cc": 1395,
+                  "hp": 125,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                }
+              ]
+            }
+          },
+          "merges": [],
+          "phantoms": [],
+          "specAdditions": []
+        },
+        "ateca": {
+          "modelName": "Ateca",
+          "rawGensCount": 3,
+          "normGens": {
+            "mk1-2017-present": {
+              "genName": "Ateca - MK1",
+              "yearFrom": 2017,
+              "yearTo": 9999,
+              "enginesCount": 2,
+              "engines": [
+                {
+                  "code": "CZDA",
+                  "fuel": "essence",
+                  "cc": 1395,
+                  "hp": 150,
+                  "years": "2017-9999",
+                  "isPhantom": false,
+                  "oil": "5W-30 (VW 502.00)"
+                },
+                {
+                  "code": "DFFA",
+                  "fuel": "diesel",
+                  "cc": 1968,
+                  "hp": 150,
+                  "years": "2017-9999",
+                  "isPhantom": false,
+                  "oil": "5W-30 (VW 504.00/507.00)"
+                }
+              ]
+            },
+            "mk1-2018-present": {
+              "genName": "Ateca - MK1",
+              "yearFrom": 2018,
+              "yearTo": 9999,
+              "enginesCount": 1,
+              "engines": [
+                {
+                  "code": "DKZA",
+                  "fuel": "essence",
+                  "cc": 1984,
+                  "hp": 190,
+                  "years": "2018-9999",
+                  "isPhantom": false,
+                  "oil": "0W-20 (VW 508.00)"
+                }
+              ]
+            },
+            "kh7": {
+              "genName": "Ateca - KH7",
+              "yearFrom": null,
+              "yearTo": null,
+              "enginesCount": 3,
+              "engines": [
+                {
+                  "code": "2.0 TDI",
+                  "fuel": "diesel",
+                  "cc": 1968,
+                  "hp": 150,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.0 TSI",
+                  "fuel": "essence",
+                  "cc": 999,
+                  "hp": 115,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.5 TSI",
+                  "fuel": "essence",
+                  "cc": 1498,
+                  "hp": 150,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                }
+              ]
+            }
+          },
+          "merges": [],
+          "phantoms": [],
+          "specAdditions": []
+        },
+        "tarraco": {
+          "modelName": "Tarraco",
+          "rawGensCount": 1,
+          "normGens": {
+            "mk1-2020-present": {
+              "genName": "Tarraco (MK1)",
+              "yearFrom": 2020,
+              "yearTo": 9999,
+              "enginesCount": 3,
+              "engines": [
+                {
+                  "code": "DFGA",
+                  "fuel": "diesel",
+                  "cc": 1968,
+                  "hp": 150,
+                  "years": "2020-9999",
+                  "isPhantom": false,
+                  "oil": "5W-30 (VW 504.00/507.00)"
+                },
+                {
+                  "code": "DDAA",
+                  "fuel": "diesel",
+                  "cc": 1968,
+                  "hp": 190,
+                  "years": "2020-9999",
+                  "isPhantom": false,
+                  "oil": "5W-30 (VW 504.00/507.00)"
+                },
+                {
+                  "code": "CZDA",
+                  "fuel": "essence",
+                  "cc": 1395,
+                  "hp": 150,
+                  "years": "2020-9999",
+                  "isPhantom": false,
+                  "oil": "5W-30 (VW 502.00)"
+                }
+              ]
+            }
+          },
+          "merges": [],
+          "phantoms": [],
+          "specAdditions": []
+        },
+        "alhambra": {
+          "modelName": "Alhambra",
+          "rawGensCount": 3,
+          "normGens": {
+            "mk2-2015-2020": {
+              "genName": "Alhambra - MK2",
+              "yearFrom": 2015,
+              "yearTo": 2020,
+              "enginesCount": 2,
+              "engines": [
+                {
+                  "code": "CRLB",
+                  "fuel": "diesel",
+                  "cc": 1968,
+                  "hp": 150,
+                  "years": "2015-2020",
+                  "isPhantom": false,
+                  "oil": "5W-30 (VW 504.00/507.00)"
+                },
+                {
+                  "code": "DDAA",
+                  "fuel": "diesel",
+                  "cc": 1968,
+                  "hp": 190,
+                  "years": "2015-2020",
+                  "isPhantom": false,
+                  "oil": "5W-30 (VW 504.00/507.00)"
+                }
+              ]
+            },
+            "710-711": {
+              "genName": "710, 711",
+              "yearFrom": null,
+              "yearTo": null,
+              "enginesCount": 3,
+              "engines": [
+                {
+                  "code": "2.0 TDI",
+                  "fuel": "diesel",
+                  "cc": 1968,
+                  "hp": 140,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.6 TDI",
+                  "fuel": "diesel",
+                  "cc": 1598,
+                  "hp": 105,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.4 TSI",
+                  "fuel": "essence",
+                  "cc": 1395,
+                  "hp": 125,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                }
+              ]
+            },
+            "alhambra-i": {
+              "genName": "Alhambra I",
+              "yearFrom": null,
+              "yearTo": null,
+              "enginesCount": 3,
+              "engines": [
+                {
+                  "code": "2.0 TDI",
+                  "fuel": "diesel",
+                  "cc": 1968,
+                  "hp": 140,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.6 TDI",
+                  "fuel": "diesel",
+                  "cc": 1598,
+                  "hp": 105,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.4 TSI",
+                  "fuel": "essence",
+                  "cc": 1395,
+                  "hp": 125,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                }
+              ]
+            }
+          },
+          "merges": [],
+          "phantoms": [],
+          "specAdditions": []
+        },
+        "altea": {
+          "modelName": "Altea",
+          "rawGensCount": 3,
+          "normGens": {
+            "5p1": {
+              "genName": "Altea - 5P1",
+              "yearFrom": null,
+              "yearTo": null,
+              "enginesCount": 3,
+              "engines": [
+                {
+                  "code": "2.0 TDI",
+                  "fuel": "diesel",
+                  "cc": 1968,
+                  "hp": 140,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.6 TDI",
+                  "fuel": "diesel",
+                  "cc": 1598,
+                  "hp": 105,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.4 TSI",
+                  "fuel": "essence",
+                  "cc": 1395,
+                  "hp": 125,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                }
+              ]
+            },
+            "xl-5p5-5p8": {
+              "genName": "XL (5P5, 5P8)",
+              "yearFrom": null,
+              "yearTo": null,
+              "enginesCount": 3,
+              "engines": [
+                {
+                  "code": "2.0 TDI",
+                  "fuel": "diesel",
+                  "cc": 1968,
+                  "hp": 140,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.6 TDI",
+                  "fuel": "diesel",
+                  "cc": 1598,
+                  "hp": 105,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.4 TSI",
+                  "fuel": "essence",
+                  "cc": 1395,
+                  "hp": 125,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                }
+              ]
+            },
+            "altea-i": {
+              "genName": "Altea I",
+              "yearFrom": null,
+              "yearTo": null,
+              "enginesCount": 3,
+              "engines": [
+                {
+                  "code": "2.0 TDI",
+                  "fuel": "diesel",
+                  "cc": 1968,
+                  "hp": 140,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.6 TDI",
+                  "fuel": "diesel",
+                  "cc": 1598,
+                  "hp": 105,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.4 TSI",
+                  "fuel": "essence",
+                  "cc": 1395,
+                  "hp": 125,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                }
+              ]
+            }
+          },
+          "merges": [],
+          "phantoms": [],
+          "specAdditions": []
+        },
+        "toledo": {
+          "modelName": "Toledo",
+          "rawGensCount": 2,
+          "normGens": {
+            "5p2": {
+              "genName": "Toledo - 5P2",
+              "yearFrom": null,
+              "yearTo": null,
+              "enginesCount": 3,
+              "engines": [
+                {
+                  "code": "2.0 TDI",
+                  "fuel": "diesel",
+                  "cc": 1968,
+                  "hp": 140,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.6 TDI",
+                  "fuel": "diesel",
+                  "cc": 1598,
+                  "hp": 105,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.4 TSI",
+                  "fuel": "essence",
+                  "cc": 1395,
+                  "hp": 125,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                }
+              ]
+            },
+            "toledo-i": {
+              "genName": "Toledo I",
+              "yearFrom": null,
+              "yearTo": null,
+              "enginesCount": 3,
+              "engines": [
+                {
+                  "code": "2.0 TDI",
+                  "fuel": "diesel",
+                  "cc": 1968,
+                  "hp": 140,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.6 TDI",
+                  "fuel": "diesel",
+                  "cc": 1598,
+                  "hp": 105,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.4 TSI",
+                  "fuel": "essence",
+                  "cc": 1395,
+                  "hp": 125,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                }
+              ]
+            }
+          },
+          "merges": [],
+          "phantoms": [],
+          "specAdditions": []
+        }
+      }
+    },
+    "skoda": {
+      "make": "skoda",
+      "models": {
+        "fabia": {
+          "modelName": "Fabia",
+          "rawGensCount": 4,
+          "normGens": {
+            "fabia-i": {
+              "genName": "Fabia I (6Y)",
+              "yearFrom": 1999,
+              "yearTo": 2008,
+              "enginesCount": 5,
+              "engines": [
+                {
+                  "code": "1.2",
+                  "fuel": "essence",
+                  "cc": 1198,
+                  "hp": 70,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.4",
+                  "fuel": "essence",
+                  "cc": 1390,
+                  "hp": 86,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.6 TDI",
+                  "fuel": "diesel",
+                  "cc": 1598,
+                  "hp": 105,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.2 TSI",
+                  "fuel": "essence",
+                  "cc": 1197,
+                  "hp": 86,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.4 TDI",
+                  "fuel": "diesel",
+                  "cc": 1422,
+                  "hp": 70,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                }
+              ]
+            },
+            "fabia-ii": {
+              "genName": "Fabia II (542)",
+              "yearFrom": 2007,
+              "yearTo": 2014,
+              "enginesCount": 5,
+              "engines": [
+                {
+                  "code": "1.2",
+                  "fuel": "essence",
+                  "cc": 1198,
+                  "hp": 70,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.4",
+                  "fuel": "essence",
+                  "cc": 1390,
+                  "hp": 86,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.6 TDI",
+                  "fuel": "diesel",
+                  "cc": 1598,
+                  "hp": 105,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.2 TSI",
+                  "fuel": "essence",
+                  "cc": 1197,
+                  "hp": 86,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.4 TDI",
+                  "fuel": "diesel",
+                  "cc": 1422,
+                  "hp": 70,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                }
+              ]
+            },
+            "fabia-iii": {
+              "genName": "Fabia III (NJ)",
+              "yearFrom": 2014,
+              "yearTo": 2021,
+              "enginesCount": 5,
+              "engines": [
+                {
+                  "code": "1.2",
+                  "fuel": "essence",
+                  "cc": 1198,
+                  "hp": 70,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.4",
+                  "fuel": "essence",
+                  "cc": 1390,
+                  "hp": 86,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.6 TDI",
+                  "fuel": "diesel",
+                  "cc": 1598,
+                  "hp": 105,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.2 TSI",
+                  "fuel": "essence",
+                  "cc": 1197,
+                  "hp": 86,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.4 TDI",
+                  "fuel": "diesel",
+                  "cc": 1422,
+                  "hp": 70,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                }
+              ]
+            },
+            "fabia-iv": {
+              "genName": "Fabia IV (PJ)",
+              "yearFrom": 2021,
+              "yearTo": 9999,
+              "enginesCount": 7,
+              "engines": [
+                {
+                  "code": "CHYB",
+                  "fuel": "essence",
+                  "cc": 999,
+                  "hp": 75,
+                  "years": "2022-9999",
+                  "isPhantom": false,
+                  "oil": "5W-30 (VW 502.00)"
+                },
+                {
+                  "code": "CHZB",
+                  "fuel": "essence",
+                  "cc": 999,
+                  "hp": 95,
+                  "years": "2022-9999",
+                  "isPhantom": false,
+                  "oil": "0W-20 (VW 508.00)"
+                },
+                {
+                  "code": "1.2",
+                  "fuel": "essence",
+                  "cc": 1198,
+                  "hp": 70,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.4",
+                  "fuel": "essence",
+                  "cc": 1390,
+                  "hp": 86,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.6 TDI",
+                  "fuel": "diesel",
+                  "cc": 1598,
+                  "hp": 105,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.2 TSI",
+                  "fuel": "essence",
+                  "cc": 1197,
+                  "hp": 86,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.4 TDI",
+                  "fuel": "diesel",
+                  "cc": 1422,
+                  "hp": 70,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                }
+              ]
+            }
+          },
+          "merges": [],
+          "phantoms": [],
+          "specAdditions": []
+        },
+        "scala": {
+          "modelName": "Scala",
+          "rawGensCount": 2,
+          "normGens": {
+            "nw-2022-present": {
+              "genName": "Scala - NW",
+              "yearFrom": 2022,
+              "yearTo": 9999,
+              "enginesCount": 1,
+              "engines": [
+                {
+                  "code": "DLAA",
+                  "fuel": "essence",
+                  "cc": 999,
+                  "hp": 110,
+                  "years": "2022-9999",
+                  "isPhantom": false,
+                  "oil": "0W-20 (VW 508.00)"
+                }
+              ]
+            },
+            "nw-2020-2023": {
+              "genName": "Scala - NW",
+              "yearFrom": 2020,
+              "yearTo": 2023,
+              "enginesCount": 1,
+              "engines": [
+                {
+                  "code": "CWVB",
+                  "fuel": "essence",
+                  "cc": 1598,
+                  "hp": 110,
+                  "years": "2020-2023",
+                  "isPhantom": false,
+                  "oil": "5W-30 (VW 502.00)"
+                }
+              ]
+            }
+          },
+          "merges": [],
+          "phantoms": [],
+          "specAdditions": []
+        },
+        "kamiq": {
+          "modelName": "Kamiq",
+          "rawGensCount": 1,
+          "normGens": {
+            "nw4-2019-present": {
+              "genName": "Kamiq (NW4)",
+              "yearFrom": 2019,
+              "yearTo": 9999,
+              "enginesCount": 2,
+              "engines": [
+                {
+                  "code": "CHZB",
+                  "fuel": "essence",
+                  "cc": 999,
+                  "hp": 95,
+                  "years": "2019-9999",
+                  "isPhantom": false,
+                  "oil": "0W-20 (VW 508.00)"
+                },
+                {
+                  "code": "DLAA",
+                  "fuel": "essence",
+                  "cc": 999,
+                  "hp": 115,
+                  "years": "2019-9999",
+                  "isPhantom": false,
+                  "oil": "0W-20 (VW 508.00)"
+                }
+              ]
+            }
+          },
+          "merges": [],
+          "phantoms": [],
+          "specAdditions": []
+        },
+        "octavia": {
+          "modelName": "Octavia",
+          "rawGensCount": 4,
+          "normGens": {
+            "octavia-i": {
+              "genName": "Octavia I (1U)",
+              "yearFrom": 1996,
+              "yearTo": 2010,
+              "enginesCount": 4,
+              "engines": [
+                {
+                  "code": "2.0 TDI",
+                  "fuel": "diesel",
+                  "cc": 1968,
+                  "hp": 150,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.6 TDI",
+                  "fuel": "diesel",
+                  "cc": 1598,
+                  "hp": 105,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.4 TSI",
+                  "fuel": "essence",
+                  "cc": 1395,
+                  "hp": 140,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.9 TDI",
+                  "fuel": "diesel",
+                  "cc": 1896,
+                  "hp": 105,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                }
+              ]
+            },
+            "octavia-ii": {
+              "genName": "Octavia II (1Z)",
+              "yearFrom": 2004,
+              "yearTo": 2013,
+              "enginesCount": 4,
+              "engines": [
+                {
+                  "code": "2.0 TDI",
+                  "fuel": "diesel",
+                  "cc": 1968,
+                  "hp": 150,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.6 TDI",
+                  "fuel": "diesel",
+                  "cc": 1598,
+                  "hp": 105,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.4 TSI",
+                  "fuel": "essence",
+                  "cc": 1395,
+                  "hp": 140,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.9 TDI",
+                  "fuel": "diesel",
+                  "cc": 1896,
+                  "hp": 105,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                }
+              ]
+            },
+            "octavia-iii": {
+              "genName": "Octavia III (5E)",
+              "yearFrom": 2012,
+              "yearTo": 2020,
+              "enginesCount": 4,
+              "engines": [
+                {
+                  "code": "2.0 TDI",
+                  "fuel": "diesel",
+                  "cc": 1968,
+                  "hp": 150,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.6 TDI",
+                  "fuel": "diesel",
+                  "cc": 1598,
+                  "hp": 105,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.4 TSI",
+                  "fuel": "essence",
+                  "cc": 1395,
+                  "hp": 140,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.9 TDI",
+                  "fuel": "diesel",
+                  "cc": 1896,
+                  "hp": 105,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                }
+              ]
+            },
+            "octavia-iv": {
+              "genName": "Octavia IV (NX)",
+              "yearFrom": 2020,
+              "yearTo": 9999,
+              "enginesCount": 4,
+              "engines": [
+                {
+                  "code": "2.0 TDI",
+                  "fuel": "diesel",
+                  "cc": 1968,
+                  "hp": 150,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.6 TDI",
+                  "fuel": "diesel",
+                  "cc": 1598,
+                  "hp": 105,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.4 TSI",
+                  "fuel": "essence",
+                  "cc": 1395,
+                  "hp": 140,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.9 TDI",
+                  "fuel": "diesel",
+                  "cc": 1896,
+                  "hp": 105,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                }
+              ]
+            }
+          },
+          "merges": [],
+          "phantoms": [],
+          "specAdditions": []
+        },
+        "karoq": {
+          "modelName": "Karoq",
+          "rawGensCount": 2,
+          "normGens": {
+            "mk1-2021-present": {
+              "genName": "Karoq - MK1",
+              "yearFrom": 2021,
+              "yearTo": 9999,
+              "enginesCount": 1,
+              "engines": [
+                {
+                  "code": "DKTA",
+                  "fuel": "essence",
+                  "cc": 1498,
+                  "hp": 150,
+                  "years": "2021-9999",
+                  "isPhantom": false,
+                  "oil": "0W-20 (VW 508.00)"
+                }
+              ]
+            },
+            "nu7": {
+              "genName": "Karoq - NU7",
+              "yearFrom": null,
+              "yearTo": null,
+              "enginesCount": 3,
+              "engines": [
+                {
+                  "code": "2.0 TDI",
+                  "fuel": "diesel",
+                  "cc": 1968,
+                  "hp": 150,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.0 TSI",
+                  "fuel": "essence",
+                  "cc": 999,
+                  "hp": 115,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.5 TSI",
+                  "fuel": "essence",
+                  "cc": 1498,
+                  "hp": 150,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                }
+              ]
+            }
+          },
+          "merges": [],
+          "phantoms": [],
+          "specAdditions": []
+        },
+        "kodiaq": {
+          "modelName": "Kodiaq",
+          "rawGensCount": 3,
+          "normGens": {
+            "mk1-2018-2023": {
+              "genName": "Kodiaq - MK1",
+              "yearFrom": 2018,
+              "yearTo": 2023,
+              "enginesCount": 2,
+              "engines": [
+                {
+                  "code": "DFGA",
+                  "fuel": "diesel",
+                  "cc": 1968,
+                  "hp": 150,
+                  "years": "2018-2023",
+                  "isPhantom": false,
+                  "oil": "5W-30 (VW 504.00/507.00)"
+                },
+                {
+                  "code": "DDAA",
+                  "fuel": "diesel",
+                  "cc": 1968,
+                  "hp": 190,
+                  "years": "2018-2023",
+                  "isPhantom": false,
+                  "oil": "5W-30 (VW 504.00/507.00)"
+                }
+              ]
+            },
+            "mk2-2024-present": {
+              "genName": "Kodiaq - MK2",
+              "yearFrom": 2024,
+              "yearTo": 9999,
+              "enginesCount": 2,
+              "engines": [
+                {
+                  "code": "DKZA",
+                  "fuel": "essence",
+                  "cc": 1984,
+                  "hp": 190,
+                  "years": "2024-9999",
+                  "isPhantom": false,
+                  "oil": "0W-20 (VW 508.00)"
+                },
+                {
+                  "code": "DFFA",
+                  "fuel": "diesel",
+                  "cc": 1968,
+                  "hp": 150,
+                  "years": "2024-9999",
+                  "isPhantom": false,
+                  "oil": "5W-30 (VW 504.00/507.00)"
+                }
+              ]
+            },
+            "ns7": {
+              "genName": "Kodiaq - NS7",
+              "yearFrom": null,
+              "yearTo": null,
+              "enginesCount": 3,
+              "engines": [
+                {
+                  "code": "2.0 TDI",
+                  "fuel": "diesel",
+                  "cc": 1968,
+                  "hp": 190,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.5 TSI",
+                  "fuel": "essence",
+                  "cc": 1498,
+                  "hp": 150,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "2.0 TSI",
+                  "fuel": "essence",
+                  "cc": 1984,
+                  "hp": 180,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                }
+              ]
+            }
+          },
+          "merges": [],
+          "phantoms": [],
+          "specAdditions": []
+        },
+        "superb": {
+          "modelName": "Superb",
+          "rawGensCount": 5,
+          "normGens": {
+            "mk3-2021-present": {
+              "genName": "Superb - MK3",
+              "yearFrom": 2021,
+              "yearTo": 9999,
+              "enginesCount": 1,
+              "engines": [
+                {
+                  "code": "DDAA",
+                  "fuel": "diesel",
+                  "cc": 1968,
+                  "hp": 190,
+                  "years": "2021-9999",
+                  "isPhantom": false,
+                  "oil": "5W-30 (VW 504.00/507.00)"
+                }
+              ]
+            },
+            "mk3-2019-present": {
+              "genName": "Superb - MK3",
+              "yearFrom": 2019,
+              "yearTo": 9999,
+              "enginesCount": 1,
+              "engines": [
+                {
+                  "code": "CZPA",
+                  "fuel": "essence",
+                  "cc": 1984,
+                  "hp": 190,
+                  "years": "2019-9999",
+                  "isPhantom": false,
+                  "oil": "0W-20 (VW 508.00)"
+                }
+              ]
+            },
+            "superb-i": {
+              "genName": "Superb I",
+              "yearFrom": null,
+              "yearTo": null,
+              "enginesCount": 3,
+              "engines": [
+                {
+                  "code": "2.0 TDI",
+                  "fuel": "diesel",
+                  "cc": 1968,
+                  "hp": 190,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.4 TSI",
+                  "fuel": "essence",
+                  "cc": 1395,
+                  "hp": 150,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "2.0 TSI",
+                  "fuel": "essence",
+                  "cc": 1984,
+                  "hp": 280,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                }
+              ]
+            },
+            "superb-ii": {
+              "genName": "Superb II",
+              "yearFrom": null,
+              "yearTo": null,
+              "enginesCount": 3,
+              "engines": [
+                {
+                  "code": "2.0 TDI",
+                  "fuel": "diesel",
+                  "cc": 1968,
+                  "hp": 190,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.4 TSI",
+                  "fuel": "essence",
+                  "cc": 1395,
+                  "hp": 150,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "2.0 TSI",
+                  "fuel": "essence",
+                  "cc": 1984,
+                  "hp": 280,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                }
+              ]
+            },
+            "superb-iii": {
+              "genName": "Superb III",
+              "yearFrom": null,
+              "yearTo": null,
+              "enginesCount": 3,
+              "engines": [
+                {
+                  "code": "2.0 TDI",
+                  "fuel": "diesel",
+                  "cc": 1968,
+                  "hp": 190,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.4 TSI",
+                  "fuel": "essence",
+                  "cc": 1395,
+                  "hp": 150,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "2.0 TSI",
+                  "fuel": "essence",
+                  "cc": 1984,
+                  "hp": 280,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                }
+              ]
+            }
+          },
+          "merges": [],
+          "phantoms": [],
+          "specAdditions": []
+        },
+        "kushaq": {
+          "modelName": "Kushaq",
+          "rawGensCount": 1,
+          "normGens": {
+            "mk1-2024-present": {
+              "genName": "Kushaq (MK1)",
+              "yearFrom": 2024,
+              "yearTo": 9999,
+              "enginesCount": 1,
+              "engines": [
+                {
+                  "code": "DLAA",
+                  "fuel": "essence",
+                  "cc": 999,
+                  "hp": 115,
+                  "years": "2024-9999",
+                  "isPhantom": false,
+                  "oil": "0W-20 (VW 508.00)"
+                }
+              ]
+            }
+          },
+          "merges": [],
+          "phantoms": [],
+          "specAdditions": []
+        },
+        "rapid": {
+          "modelName": "Rapid",
+          "rawGensCount": 2,
+          "normGens": {
+            "na2": {
+              "genName": "Rapid - NA2",
+              "yearFrom": null,
+              "yearTo": null,
+              "enginesCount": 2,
+              "engines": [
+                {
+                  "code": "1.2 TSI",
+                  "fuel": "essence",
+                  "cc": 1197,
+                  "hp": 86,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.6 TDI",
+                  "fuel": "diesel",
+                  "cc": 1598,
+                  "hp": 90,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                }
+              ]
+            },
+            "spaceback-nh1": {
+              "genName": "Spaceback (NH1)",
+              "yearFrom": null,
+              "yearTo": null,
+              "enginesCount": 2,
+              "engines": [
+                {
+                  "code": "1.2 TSI",
+                  "fuel": "essence",
+                  "cc": 1197,
+                  "hp": 86,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.6 TDI",
+                  "fuel": "diesel",
+                  "cc": 1598,
+                  "hp": 90,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                }
+              ]
+            }
+          },
+          "merges": [],
+          "phantoms": [],
+          "specAdditions": []
+        }
+      }
+    },
+    "cupra": {
+      "make": "cupra",
+      "models": {
+        "formentor": {
+          "modelName": "Formentor",
+          "rawGensCount": 1,
+          "normGens": {
+            "formentor": {
+              "genName": "Formentor (KM7)",
+              "yearFrom": 2020,
+              "yearTo": 9999,
+              "enginesCount": 11,
+              "engines": [
+                {
+                  "code": "CZDA",
+                  "fuel": "essence",
+                  "cc": 1395,
+                  "hp": 150,
+                  "years": "2022-9999",
+                  "isPhantom": false,
+                  "oil": "5W-30 (VW 502.00)"
+                },
+                {
+                  "code": "DNPA",
+                  "fuel": "essence",
+                  "cc": 1984,
+                  "hp": 310,
+                  "years": "2022-9999",
+                  "isPhantom": false,
+                  "oil": "0W-20 (VW 508.00)"
+                },
+                {
+                  "code": "DFFA",
+                  "fuel": "diesel",
+                  "cc": 1968,
+                  "hp": 150,
+                  "years": "2022-9999",
+                  "isPhantom": false,
+                  "oil": "5W-30 (VW 504.00/507.00)"
+                },
+                {
+                  "code": "DKTA",
+                  "fuel": "essence",
+                  "cc": 1498,
+                  "hp": 150,
+                  "years": "2023-9999",
+                  "isPhantom": false,
+                  "oil": "0W-20 (VW 508.00)"
+                },
+                {
+                  "code": "DKZA",
+                  "fuel": "essence",
+                  "cc": 1984,
+                  "hp": 190,
+                  "years": "2021-9999",
+                  "isPhantom": false,
+                  "oil": "0W-20 (VW 508.00)"
+                },
+                {
+                  "code": "DADA",
+                  "fuel": "essence",
+                  "cc": 1984,
+                  "hp": 245,
+                  "years": "2021-9999",
+                  "isPhantom": false,
+                  "oil": "0W-20 (VW 508.00)"
+                },
+                {
+                  "code": "1.5 TSI",
+                  "fuel": "essence",
+                  "cc": 1498,
+                  "hp": 150,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "2.0 TSI",
+                  "fuel": "essence",
+                  "cc": 1984,
+                  "hp": 190,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "2.0 TSI 4Drive",
+                  "fuel": "essence",
+                  "cc": 1984,
+                  "hp": 310,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.4 e-HYBRID",
+                  "fuel": "essence",
+                  "cc": 1395,
+                  "hp": 204,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "2.0 TDI",
+                  "fuel": "diesel",
+                  "cc": 1968,
+                  "hp": 150,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                }
+              ]
+            }
+          },
+          "merges": [],
+          "phantoms": [],
+          "specAdditions": []
+        },
+        "leon": {
+          "modelName": "Leon",
+          "rawGensCount": 1,
+          "normGens": {
+            "leon-iv": {
+              "genName": "Leon (KL)",
+              "yearFrom": 2020,
+              "yearTo": 9999,
+              "enginesCount": 0,
+              "engines": []
+            }
+          },
+          "merges": [],
+          "phantoms": [],
+          "specAdditions": []
+        },
+        "ateca": {
+          "modelName": "Ateca",
+          "rawGensCount": 1,
+          "normGens": {
+            "ateca": {
+              "genName": "Ateca (KH7)",
+              "yearFrom": 2018,
+              "yearTo": 9999,
+              "enginesCount": 8,
+              "engines": [
+                {
+                  "code": "DKZA",
+                  "fuel": "essence",
+                  "cc": 1984,
+                  "hp": 190,
+                  "years": "2021-9999",
+                  "isPhantom": false,
+                  "oil": "0W-20 (VW 508.00)"
+                },
+                {
+                  "code": "DNPA",
+                  "fuel": "essence",
+                  "cc": 1984,
+                  "hp": 300,
+                  "years": "2021-9999",
+                  "isPhantom": false,
+                  "oil": "0W-20 (VW 508.00)"
+                },
+                {
+                  "code": "DADA",
+                  "fuel": "essence",
+                  "cc": 1984,
+                  "hp": 245,
+                  "years": "2021-9999",
+                  "isPhantom": false,
+                  "oil": "0W-20 (VW 508.00)"
+                },
+                {
+                  "code": "1.5 TSI",
+                  "fuel": "essence",
+                  "cc": 1498,
+                  "hp": 150,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "2.0 TSI",
+                  "fuel": "essence",
+                  "cc": 1984,
+                  "hp": 190,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "2.0 TSI 4Drive",
+                  "fuel": "essence",
+                  "cc": 1984,
+                  "hp": 310,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.4 e-HYBRID",
+                  "fuel": "essence",
+                  "cc": 1395,
+                  "hp": 204,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "2.0 TDI",
+                  "fuel": "diesel",
+                  "cc": 1968,
+                  "hp": 150,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                }
+              ]
+            }
+          },
+          "merges": [],
+          "phantoms": [],
+          "specAdditions": []
+        },
+        "born": {
+          "modelName": "Born",
+          "rawGensCount": 1,
+          "normGens": {
+            "born": {
+              "genName": "Born (K11)",
+              "yearFrom": 2021,
+              "yearTo": 9999,
+              "enginesCount": 5,
+              "engines": [
+                {
+                  "code": "1.5 TSI",
+                  "fuel": "essence",
+                  "cc": 1498,
+                  "hp": 150,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "2.0 TSI",
+                  "fuel": "essence",
+                  "cc": 1984,
+                  "hp": 190,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "2.0 TSI 4Drive",
+                  "fuel": "essence",
+                  "cc": 1984,
+                  "hp": 310,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "1.4 e-HYBRID",
+                  "fuel": "essence",
+                  "cc": 1395,
+                  "hp": 204,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                },
+                {
+                  "code": "2.0 TDI",
+                  "fuel": "diesel",
+                  "cc": 1968,
+                  "hp": 150,
+                  "years": "?-?",
+                  "isPhantom": false,
+                  "oil": "null"
+                }
+              ]
+            }
+          },
+          "merges": [],
+          "phantoms": [],
+          "specAdditions": []
+        }
+      }
+    }
+  },
+  "totalRawEngines": 313,
+  "totalNormEngines": 313,
+  "totalMerges": 0,
+  "exactCodeMergesCount": 0,
+  "fuzzyMergesCount": 0,
+  "totalPhantoms": 5,
+  "totalEnrichedSpecs": 1,
+  "totalNullSpecs": 268,
+  "dpfCompliance": {
+    "totalDieselsPost2011": 49,
+    "lowSapsCount": 11,
+    "unverifiedCount": 38,
+    "hazardsCount": 0
+  }
+}
