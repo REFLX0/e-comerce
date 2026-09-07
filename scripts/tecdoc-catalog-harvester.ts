@@ -595,6 +595,26 @@ async function main() {
     }
   }
 
+  // ─── 5b. BACKFILL LEGACY ENGINES MISSING AN OIL SPEC ──────────────────────
+  // Pre-existing curated entries (seeded before automated harvesting) sometimes have
+  // oilSpec: null baked in from whoever created that data — the merge/dedup logic above
+  // only derives a spec for newly-extracted rows, so legacy nulls were never revisited.
+  // Backfill any engine, new or legacy, that has real fuel-type signal and isn't a
+  // genuine EV, using the exact same deterministic, audited rules as everything else.
+  let backfilledEngines = 0;
+  for (const m of Object.values(catalog)) {
+    for (const mod of Object.values(m.models)) {
+      for (const gen of Object.values(mod.generations)) {
+        for (const eng of gen.engines) {
+          if (eng.oilSpec) continue;
+          if (!eng.fuelType || eng.fuelType === 'electrique') continue;
+          eng.oilSpec = deriveOilSpecification(m.makeSlug, eng.fuelType, eng.yearFrom, eng.displacementCc, eng.powerHp);
+          if (eng.oilSpec) backfilledEngines++;
+        }
+      }
+    }
+  }
+
   // ─── 6. SAVE JSON CATALOG ─────────────────────────────────────────────────
   const saveTargets = [
     path.join(process.cwd(), 'backend/src/oil-finder/clean-catalog-hierarchy.json'),
@@ -623,6 +643,7 @@ async function main() {
   console.log(`\n💾 Saved updated catalog to ${savedCount} target paths.`);
   console.log(`- Total Makes in Catalog: ${Object.keys(catalog).length}`);
   console.log(`- Total New Engines Harvested & Enriched: ${totalNewEngines.toLocaleString()}`);
+  console.log(`- Legacy Engines Backfilled With a Spec: ${backfilledEngines.toLocaleString()}`);
 
   // ─── 7. PRISMA DATABASE SYNCHRONIZATION ───────────────────────────────────
   console.log('\n🔄 Synchronizing Prisma Database Tables (Vehicles & Oil Specs)...');
