@@ -182,6 +182,20 @@ function deriveOilSpecificationRaw(
   }
 
   // ── RENAULT / DACIA / NISSAN / ALPINE ───────────────────────────────────────
+  // Nissan's own petrol engines (VQ/MR/HR series, etc.) are independently designed —
+  // never Renault-derived — so they must NOT carry Renault's RN-prefixed approvals.
+  // Nissan diesel (dCi) engines in Europe genuinely are Renault-Nissan Alliance hardware,
+  // so those stay grouped with Renault below.
+  if (makeSlug === 'nissan' && !isDiesel) {
+    if (year >= 2018) {
+      return { viscosity: '0W-20', oemApproval: 'Nissan Genuine Oil (API SP, ILSAC GF-6)', aceaStandard: 'C5', apiStandard: 'SP', capacityLiters: capacity, changeIntervalKm: 15000 };
+    }
+    if (year >= 2008) {
+      return { viscosity: '5W-30', oemApproval: 'Nissan Genuine Oil (API SN)', aceaStandard: 'A5/B5', apiStandard: 'SN', capacityLiters: capacity, changeIntervalKm: 15000 };
+    }
+    return { viscosity: '5W-40', oemApproval: 'Nissan Genuine Oil (API SL)', aceaStandard: 'A3/B4', apiStandard: 'SL', capacityLiters: capacity, changeIntervalKm: 10000 };
+  }
+
   if (['renault', 'dacia', 'nissan', 'alpine'].includes(makeSlug)) {
     if (isDiesel) {
       if (year >= 2018) {
@@ -193,7 +207,8 @@ function deriveOilSpecificationRaw(
       return { viscosity: '5W-40', oemApproval: 'Renault RN0710', aceaStandard: 'A3/B4', apiStandard: 'SL/CF', capacityLiters: capacity, changeIntervalKm: 10000 };
     } else {
       // TCe RS / high-performance petrol (Megane RS, Clio RS, Alpine A110): High-SAPS is
-      // correct here — no FAP on these engines.
+      // correct here — no FAP on these engines. (Nissan petrol never reaches this branch —
+      // handled above.)
       if (powerHp && powerHp >= 175) {
         return { viscosity: '0W-40', oemApproval: 'Renault RN17 RSA / RN0710', aceaStandard: 'A3/B4', apiStandard: 'SN', capacityLiters: capacity, changeIntervalKm: 10000 };
       }
@@ -290,6 +305,18 @@ function deriveOilSpecificationRaw(
       return { viscosity: '5W-20', oemApproval: 'Ford WSS-M2C948-B', aceaStandard: 'C5', apiStandard: 'SN', capacityLiters: capacity, changeIntervalKm: 15000 };
     }
     return { viscosity: '5W-30', oemApproval: 'Ford WSS-M2C913-D', aceaStandard: 'A5/B5', apiStandard: 'SL/CF', capacityLiters: capacity, changeIntervalKm: 15000 };
+  }
+
+  // ── GM (CHEVROLET, CADILLAC, BUICK, GMC, OPEL/VAUXHALL PRE-2017 GM-ERA) ────
+  if (['chevrolet', 'cadillac', 'buick', 'gmc', 'gm'].includes(makeSlug)) {
+    if (isDiesel) {
+      // dexos2 is GM's own Low-SAPS diesel spec — DPF-safe.
+      return { viscosity: '5W-30', oemApproval: 'GM dexos2', aceaStandard: 'C3', apiStandard: 'SN', capacityLiters: capacity, changeIntervalKm: 15000 };
+    }
+    if (year >= 2011) {
+      return { viscosity: '5W-30', oemApproval: 'GM dexos1 Gen 2', aceaStandard: 'C5', apiStandard: 'SP', capacityLiters: capacity, changeIntervalKm: 15000 };
+    }
+    return { viscosity: '5W-30', oemApproval: 'GM dexos1', aceaStandard: 'A5/B5', apiStandard: 'SN', capacityLiters: capacity, changeIntervalKm: 10000 };
   }
 
   // ── VOLVO ──────────────────────────────────────────────────────────────────
