@@ -280,8 +280,25 @@ function deriveOilSpecificationRaw(
     }
   }
 
-  // ── STELLANTIS (PEUGEOT, CITROEN, DS, OPEL, VAUXHALL) ──────────────────────
-  if (['peugeot', 'citroen', 'ds', 'opel', 'vauxhall'].includes(makeSlug)) {
+  // ── OPEL / VAUXHALL — GM-owned until 2017, PSA/Stellantis-owned from 2017+ ──
+  // A pre-2018 Opel/Vauxhall was built with GM engineering and rated for GM's own dexos
+  // spec — it was NEVER PSA-rated, since Opel/Vauxhall didn't join PSA until 2017. Only
+  // 2018+ models (built on genuinely shared PSA platforms) carry real PSA B71 approvals.
+  if (['opel', 'vauxhall'].includes(makeSlug)) {
+    if (year >= 2018) {
+      return { viscosity: '0W-20', oemApproval: 'PSA B71 2010 (FPW9.55535/03)', aceaStandard: 'C5', apiStandard: 'SN Plus', capacityLiters: capacity, changeIntervalKm: 15000 };
+    }
+    if (isDiesel) {
+      return { viscosity: '5W-30', oemApproval: 'GM dexos2', aceaStandard: 'C3', apiStandard: 'SN', capacityLiters: capacity, changeIntervalKm: 15000 };
+    }
+    if (year >= 2011) {
+      return { viscosity: '5W-30', oemApproval: 'GM dexos1 Gen 2', aceaStandard: 'C5', apiStandard: 'SP', capacityLiters: capacity, changeIntervalKm: 15000 };
+    }
+    return { viscosity: '5W-30', oemApproval: 'GM dexos1', aceaStandard: 'A5/B5', apiStandard: 'SN', capacityLiters: capacity, changeIntervalKm: 10000 };
+  }
+
+  // ── STELLANTIS (PEUGEOT, CITROEN, DS) ───────────────────────────────────────
+  if (['peugeot', 'citroen', 'ds'].includes(makeSlug)) {
     if (year >= 2018) {
       return { viscosity: '0W-20', oemApproval: 'PSA B71 2010 (FPW9.55535/03)', aceaStandard: 'C5', apiStandard: 'SN Plus', capacityLiters: capacity, changeIntervalKm: 15000 };
     }
@@ -345,7 +362,9 @@ function deriveOilSpecificationRaw(
     return { viscosity: '5W-30', oemApproval: 'Ford WSS-M2C913-D', aceaStandard: 'A5/B5', apiStandard: 'SL/CF', capacityLiters: capacity, changeIntervalKm: 15000 };
   }
 
-  // ── GM (CHEVROLET, CADILLAC, BUICK, GMC, OPEL/VAUXHALL PRE-2017 GM-ERA) ────
+  // ── GM (CHEVROLET, CADILLAC, BUICK, GMC) ────────────────────────────────────
+  // Pre-2018 Opel/Vauxhall shares this exact GM dexos logic — see its own dedicated
+  // branch above, which needs the year-based PSA/GM split that this list doesn't.
   if (['chevrolet', 'cadillac', 'buick', 'gmc', 'gm'].includes(makeSlug)) {
     if (isDiesel) {
       // dexos2 is GM's own Low-SAPS diesel spec — DPF-safe.
