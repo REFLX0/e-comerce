@@ -151,16 +151,6 @@ const ROMAN_NUMERAL = /^(?:X{1,3}(?:IX|IV|V?I{0,3})?|IX|IV|VIII|VII|VI|V|III|II|
 function cleanCommercialModel(rawDesc: string): { modelName: string; genHint: string } {
   let s = (rawDesc || '').trim();
 
-  // Capture the trailing parenthetical chassis-code group, e.g. "(5G1, BQ1)"
-  const parenMatch = s.match(/\s*\(([^)]+)\)\s*$/);
-  const chassis = parenMatch ? parenMatch[1].trim() : '';
-  s = s.replace(/\s*\([^)]+\)\s*$/, '').trim();
-
-  // Phase / Facelift hints: "MEGANE II Phase 2" -> keep suffix, isolate base for gen matching
-  const phaseMatch = s.match(/^(.*?)\s+(Phase\s+\d+|Restylée|LCI|Facelift)\s*$/i);
-  const phaseSuffix = phaseMatch ? ` ${phaseMatch[2]}` : '';
-  if (phaseMatch) s = phaseMatch[1].trim();
-
   // Body-style suffix hints: "CORSA D Van" -> isolate "CORSA D" so the trailing single-letter
   // generation code ("D") is still detected, instead of "Van" blocking it and the whole thing
   // (including the generation letter) being mistaken for a separate model called "Corsa D Van".
@@ -175,9 +165,23 @@ function cleanCommercialModel(rawDesc: string): { modelName: string; genHint: st
   // Deliberately NOT touching "/" patterns that are genuinely part of the model name itself
   // (Ferrari "365 GTB/4", "348 tb/GTB") — those are correct as-is; forcing them apart would
   // corrupt real data instead of fixing a split.
-  const bodyMatch = s.match(/^(.*?)\s+((?:Van|Box|Estate|Saloon|Hatchback|Pickup|Combi|Kombi|Cabriolet|Cabrio|Coupe|Convertible|Roadster|Wagon|Sedan|Platform|Bus|MPV|Hardtop)\b.*)$/i);
+  // Runs BEFORE chassis-paren extraction: some models put the chassis code mid-string, before
+  // the body style ("MOVANO Mk I (A) Chassis/Cab", "COMBO Mk II (C) Box Body / Estate") — the
+  // chassis regex below only looks at the end of the string, so it'd miss "(A)"/"(C)" entirely
+  // unless the trailing body-style words are stripped first.
+  const bodyMatch = s.match(/^(.*?)\s+((?:Van|Box|Estate|Saloon|Hatchback|Pickup|Combi|Kombi|Cabriolet|Cabrio|Coupe|Convertible|Roadster|Wagon|Sedan|Platform|Chassis|Bus|MPV|Hardtop|Break)\b.*)$/i);
   const bodyStyleSuffix = bodyMatch ? ` ${bodyMatch[2]}` : '';
   if (bodyMatch) s = bodyMatch[1].trim();
+
+  // Capture the trailing parenthetical chassis-code group, e.g. "(5G1, BQ1)"
+  const parenMatch = s.match(/\s*\(([^)]+)\)\s*$/);
+  const chassis = parenMatch ? parenMatch[1].trim() : '';
+  s = s.replace(/\s*\([^)]+\)\s*$/, '').trim();
+
+  // Phase / Facelift hints: "MEGANE II Phase 2" -> keep suffix, isolate base for gen matching
+  const phaseMatch = s.match(/^(.*?)\s+(Phase\s+\d+|Restylée|LCI|Facelift)\s*$/i);
+  const phaseSuffix = phaseMatch ? ` ${phaseMatch[2]}` : '';
+  if (phaseMatch) s = phaseMatch[1].trim();
 
   const tokens = s.split(/\s+/).filter(Boolean);
   const last = tokens[tokens.length - 1] || '';
