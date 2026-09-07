@@ -81,7 +81,7 @@ services:
         condition: service_healthy
     volumes:
       - ./uploads:/app/uploads
-      - ./oil-finder-full-dataset:/app/oil-finder-full-dataset:ro
+      - ./oil-finder-full-dataset:/app/oil-finder-full-dataset
       - ./scripts:/app/scripts:ro
     restart: unless-stopped
     healthcheck:

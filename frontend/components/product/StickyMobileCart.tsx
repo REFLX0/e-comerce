@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from 'react'
+import { createPortal } from 'react-dom'
 import { useTranslations } from 'next-intl'
 import { ShoppingCart, MessageCircle } from 'lucide-react'
 import type { Product, ProductVariant } from '@/lib/types'
@@ -19,6 +20,15 @@ export function StickyMobileCart({ product, variant }: Props) {
   const [isVisible, setIsVisible] = useState(false)
   const { addItem } = useCartStore()
   const barRef = useRef<HTMLDivElement>(null)
+
+  // Portal straight to document.body — this component renders inside
+  // app/[locale]/template.tsx's page-transition motion.div, whose `transform`
+  // (left permanently on the element by Framer Motion after the entry
+  // animation settles) redefines the containing block for `position: fixed`
+  // descendants, making this bar scroll with page content instead of staying
+  // pinned to the viewport bottom. Requires a mounted guard for SSR.
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => setMounted(true), [])
 
   const isOutOfStock = variant.status === 'out_of_stock'
   const oldPrice = variant.priceTTC * 1.19
@@ -68,7 +78,9 @@ export function StickyMobileCart({ product, variant }: Props) {
     toast.success(t('addedToCart'), { preset: 'bouncy' })
   }
 
-  return (
+  if (!mounted) return null
+
+  return createPortal(
     <div
       ref={barRef}
       className={`fixed bottom-[60px] left-0 right-0 z-40 border-t border-gray-200 bg-white/95 backdrop-blur-xl shadow-overlay transition-transform duration-300 md:bottom-0 lg:hidden ${
@@ -103,6 +115,7 @@ export function StickyMobileCart({ product, variant }: Props) {
           </span>
         </button>
       </div>
-    </div>
+    </div>,
+    document.body
   )
 }

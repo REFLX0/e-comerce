@@ -8,26 +8,31 @@ let cachedCleanCatalog: any = null;
 function getCleanCatalog(): Record<string, any> {
   if (!cachedCleanCatalog) {
     const candidatePaths = [
+      // Bind-mounted from the host (docker-compose: ./oil-finder-full-dataset:/app/oil-finder-full-dataset,
+      // read-write) — the ONLY path the harvester's writes actually survive a container recreation.
+      // Every other candidate below is baked into the image at build time from whatever was last
+      // committed to git, so it silently reverts on every deploy if checked first. Keep this first.
+      '/app/oil-finder-full-dataset/clean-catalog-hierarchy.json',
+      path.join(process.cwd(), 'oil-finder-full-dataset', 'clean-catalog-hierarchy.json'),
+      path.join(process.cwd(), 'backend', 'oil-finder-full-dataset', 'clean-catalog-hierarchy.json'),
+      path.join(__dirname, '..', '..', 'oil-finder-full-dataset', 'clean-catalog-hierarchy.json'),
+
       path.join(__dirname, 'clean-catalog-hierarchy.json'),
       path.join(__dirname, 'src', 'oil-finder', 'clean-catalog-hierarchy.json'),
       path.join(__dirname, 'oil-finder', 'clean-catalog-hierarchy.json'),
       path.join(__dirname, '..', 'oil-finder', 'clean-catalog-hierarchy.json'),
       path.join(__dirname, '..', 'src', 'oil-finder', 'clean-catalog-hierarchy.json'),
       path.join(__dirname, '..', '..', 'src', 'oil-finder', 'clean-catalog-hierarchy.json'),
-      path.join(__dirname, '..', '..', 'oil-finder-full-dataset', 'clean-catalog-hierarchy.json'),
       path.join(process.cwd(), 'clean-catalog-hierarchy.json'),
       path.join(process.cwd(), 'src', 'oil-finder', 'clean-catalog-hierarchy.json'),
       path.join(process.cwd(), 'backend', 'src', 'oil-finder', 'clean-catalog-hierarchy.json'),
       path.join(process.cwd(), 'dist', 'src', 'oil-finder', 'clean-catalog-hierarchy.json'),
       path.join(process.cwd(), 'dist', 'oil-finder', 'clean-catalog-hierarchy.json'),
       path.join(process.cwd(), 'dist', 'clean-catalog-hierarchy.json'),
-      path.join(process.cwd(), 'oil-finder-full-dataset', 'clean-catalog-hierarchy.json'),
-      path.join(process.cwd(), 'backend', 'oil-finder-full-dataset', 'clean-catalog-hierarchy.json'),
       '/app/clean-catalog-hierarchy.json',
       '/app/dist/clean-catalog-hierarchy.json',
       '/app/dist/oil-finder/clean-catalog-hierarchy.json',
       '/app/dist/src/oil-finder/clean-catalog-hierarchy.json',
-      '/app/oil-finder-full-dataset/clean-catalog-hierarchy.json',
     ];
     for (const p of candidatePaths) {
       try {

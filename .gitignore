@@ -121,3 +121,10 @@ backend/*.tmp.js
 backend/test-facture.pdf
 backend/test-output.pdf
 backend/*.tmp.pdf
+
+# TecDoc harvester output — runtime-generated data, not source. Was previously
+# tracked, which meant every `git reset --hard` deploy silently wiped out the
+# harvester's accumulated work back to whatever snapshot was last committed.
+# Persisted instead via a read-write bind mount (docker-compose.yml).
+backend/src/oil-finder/clean-catalog-hierarchy.json
+oil-finder-full-dataset/clean-catalog-hierarchy.json

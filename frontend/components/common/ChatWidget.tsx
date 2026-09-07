@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { useSession } from 'next-auth/react'
 import { useTranslations, useLocale } from 'next-intl'
 import {
@@ -133,6 +134,18 @@ export function ChatWidget() {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const addItem = useCartStore((state) => state.addItem)
 
+  // Portal straight to document.body: this component is rendered inside
+  // app/[locale]/template.tsx's page-transition motion.div, which leaves a
+  // permanent (even if zero) `transform` on itself after the entry animation
+  // settles. Any transform on an ancestor redefines the containing block for
+  // `position: fixed` descendants (spec behavior, not a bug in Motion), which
+  // was making this button scroll with page content instead of staying
+  // pinned to the viewport. Portaling out of that subtree sidesteps it
+  // entirely. Requires a mounted guard since document.body doesn't exist
+  // during SSR.
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => setMounted(true), [])
+
   // Load from localStorage on mount
   useEffect(() => {
     try {
@@ -236,7 +249,9 @@ export function ChatWidget() {
     localStorage.removeItem('specpart_chat_history')
   }
 
-  return (
+  if (!mounted) return null
+
+  return createPortal(
     <>
       {/* ── Keyframes injected once ── */}
       <style>{`
@@ -633,6 +648,7 @@ export function ChatWidget() {
           )}
         </button>
       </div>
-    </>
+    </>,
+    document.body
   )
 }
