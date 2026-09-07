@@ -164,8 +164,11 @@ function cleanCommercialModel(rawDesc: string): { modelName: string; genHint: st
   // Body-style suffix hints: "CORSA D Van" -> isolate "CORSA D" so the trailing single-letter
   // generation code ("D") is still detected, instead of "Van" blocking it and the whole thing
   // (including the generation letter) being mistaken for a separate model called "Corsa D Van".
-  // Confirmed against real TecDoc data: Opel alone has this exact pattern on Corsa A/B/C/D/E.
-  const bodyMatch = s.match(/^(.*?)\s+(Van|Box|Estate|Saloon|Hatchback|Pickup|Combi|Kombi|Cabriolet|Cabrio|Coupe|Convertible|Roadster|Wagon|Sedan)\s*$/i);
+  // Matches from the FIRST body-style keyword onward (not just a single trailing word), since
+  // TecDoc also uses multi-word compounds here — confirmed on real data: Opel Corsa A-E all
+  // have single-word cases (Box/Hatchback/Estate/Van); Fiat Doblo III splits into THREE
+  // separate stray models over "Box Body / Estate" and "Platform/Chassis" without this.
+  const bodyMatch = s.match(/^(.*?)\s+((?:Van|Box|Estate|Saloon|Hatchback|Pickup|Combi|Kombi|Cabriolet|Cabrio|Coupe|Convertible|Roadster|Wagon|Sedan|Platform)\b.*)$/i);
   const bodyStyleSuffix = bodyMatch ? ` ${bodyMatch[2]}` : '';
   if (bodyMatch) s = bodyMatch[1].trim();
 
