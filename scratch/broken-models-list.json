@@ -1,0 +1,1922 @@
+[
+  {
+    "make": "alfa-romeo",
+    "model": "147",
+    "modelName": "147",
+    "genCount": 1,
+    "gens": [
+      "937 (\"937_\")"
+    ]
+  },
+  {
+    "make": "alfa-romeo",
+    "model": "156",
+    "modelName": "156",
+    "genCount": 2,
+    "gens": [
+      "932 (\"932_\")",
+      "sportwagon-932 (\"Sportwagon (932_\")"
+    ]
+  },
+  {
+    "make": "alfa-romeo",
+    "model": "stelvio",
+    "modelName": "Stelvio",
+    "genCount": 2,
+    "gens": [
+      "949 (\"949_\")",
+      "stelvio-ii-2016-2026 (\"Stelvio II (2016 - 2026)\")"
+    ]
+  },
+  {
+    "make": "alfa-romeo",
+    "model": "giulietta",
+    "modelName": "Giulietta",
+    "genCount": 1,
+    "gens": [
+      "940 (\"940_\")"
+    ]
+  },
+  {
+    "make": "alfa-romeo",
+    "model": "mito",
+    "modelName": "Mito",
+    "genCount": 1,
+    "gens": [
+      "955 (\"955_\")"
+    ]
+  },
+  {
+    "make": "chevrolet",
+    "model": "spark",
+    "modelName": "Spark",
+    "genCount": 4,
+    "gens": [
+      "spark-ii-2009-2015 (\"Spark II (2009 - 2015)\")",
+      "spark-ii-2016-2022 (\"Spark II (2016 - 2022)\")",
+      "m300 (\"M300\")",
+      "m400 (\"M400\")"
+    ]
+  },
+  {
+    "make": "chevrolet",
+    "model": "aveo",
+    "modelName": "Aveo",
+    "genCount": 4,
+    "gens": [
+      "aveo-v-2012-2018 (\"Aveo V (2012 - 2018)\")",
+      "aveo-vi-2012-2018 (\"Aveo VI (2012 - 2018)\")",
+      "kalos-t250-t255 (\"/ KALOS (T250, T255\")",
+      "t300 (\"T300\")"
+    ]
+  },
+  {
+    "make": "chevrolet",
+    "model": "kalos",
+    "modelName": "Kalos",
+    "genCount": 1,
+    "gens": [
+      "t300 (\"T300\")"
+    ]
+  },
+  {
+    "make": "chevrolet",
+    "model": "cruze",
+    "modelName": "CRUZE",
+    "genCount": 2,
+    "gens": [
+      "j300 (\"J300\")",
+      "j400 (\"J400\")"
+    ]
+  },
+  {
+    "make": "citroen",
+    "model": "c-elysee",
+    "modelName": "C-Elysee",
+    "genCount": 4,
+    "gens": [
+      "c-elysee-ii-2012-2018 (\"C-Elysee II (2012 - 2018)\")",
+      "c-elysee-ii-2018-2023 (\"C-Elysee II (2018 - 2023)\")",
+      "dd (\"DD_\")",
+      "c-elysee-i (\"C-Elysée I\")"
+    ]
+  },
+  {
+    "make": "citroen",
+    "model": "c4",
+    "modelName": "C4",
+    "genCount": 7,
+    "gens": [
+      "c4-i-2018-2022 (\"C4 I (2018 - 2022)\")",
+      "cactus-2014-2018 (\"Cactus (2014 - 2018)\")",
+      "cactus-2018-2021 (\"Cactus (2018 - 2021)\")",
+      "x-2022-present (\"X (2022 - Présent)\")",
+      "c4-i (\"C4 I\")",
+      "c4-ii (\"C4 II\")",
+      "cactus (\"CACTUS\")"
+    ]
+  },
+  {
+    "make": "citroen",
+    "model": "berlingo",
+    "modelName": "Berlingo",
+    "genCount": 10,
+    "gens": [
+      "berlingo-ii-2012-2018 (\"Berlingo II (2012 - 2018)\")",
+      "berlingo-iii-2018-present (\"Berlingo III (2018 - Présent)\")",
+      "mf-gjk-gfk (\"MF_, GJK_, GFK_\")",
+      "box-body-mpv-m (\"Box Body/MPV (M_\")",
+      "multispace-b9 (\"MULTISPACE (B9\")",
+      "box-body-mpv-b9 (\"Box Body/MPV (B9\")",
+      "er-ec (\"ER_, EC_\")",
+      "berlingo-ii (\"Berlingo II\")",
+      "berlingo-i (\"Berlingo I\")",
+      "b9 (\"B9\")"
+    ]
+  },
+  {
+    "make": "citroen",
+    "model": "jumpy",
+    "modelName": "Jumpy",
+    "genCount": 3,
+    "gens": [
+      "jumpy-iii-2016-present (\"Jumpy III (2016 - Présent)\")",
+      "u60 (\"U60\")",
+      "jumpy-ii (\"Jumpy II\")"
+    ]
+  },
+  {
+    "make": "citroen",
+    "model": "xsara",
+    "modelName": "Xsara",
+    "genCount": 6,
+    "gens": [
+      "n1 (\"N1\")",
+      "break-n2 (\"Break (N2\")",
+      "coupe-n0 (\"Coupe (N0\")",
+      "picasso-n68 (\"PICASSO (N68\")",
+      "picasso (\"Picasso\")",
+      "xsara-i (\"Xsara I\")"
+    ]
+  },
+  {
+    "make": "cupra",
+    "model": "formentor",
+    "modelName": "Formentor",
+    "genCount": 4,
+    "gens": [
+      "mk1-2022-present (\"MK1 (2022 - Présent)\")",
+      "mk1-2023-present (\"MK1 (2023 - Présent)\")",
+      "mk1-2021-present (\"MK1 (2021 - Présent)\")",
+      "km7 (\"KM7\")"
+    ]
+  },
+  {
+    "make": "cupra",
+    "model": "leon",
+    "modelName": "Leon",
+    "genCount": 5,
+    "gens": [
+      "sportstourer-2020-present (\"Sportstourer (2020 - Présent)\")",
+      "sportstourer-2021-present (\"Sportstourer (2021 - Présent)\")",
+      "sportstourer-2023-present (\"Sportstourer (2023 - Présent)\")",
+      "kl1 (\"KL1\")",
+      "km7 (\"KM7\")"
+    ]
+  },
+  {
+    "make": "cupra",
+    "model": "ateca",
+    "modelName": "Ateca",
+    "genCount": 4,
+    "gens": [
+      "mk1-2018-present (\"MK1 (2018 - Présent)\")",
+      "mk1-2021-present (\"MK1 (2021 - Présent)\")",
+      "kh7 (\"KH7\")",
+      "km7 (\"KM7\")"
+    ]
+  },
+  {
+    "make": "cupra",
+    "model": "born",
+    "modelName": "Born",
+    "genCount": 1,
+    "gens": [
+      "k11 (\"K11\")"
+    ]
+  },
+  {
+    "make": "fiat",
+    "model": "500",
+    "modelName": "500",
+    "genCount": 6,
+    "gens": [
+      "312 (\"312_\")",
+      "312-hybrid-2021-present (\"312 (Hybrid (2021 - Présent)\")",
+      "500-ii-2007-2020 (\"500 II (2007 - 2020)\")",
+      "c-312 (\"C (312_\")",
+      "l (\"L\")",
+      "x (\"X\")"
+    ]
+  },
+  {
+    "make": "fiat",
+    "model": "tipo",
+    "modelName": "Tipo",
+    "genCount": 9,
+    "gens": [
+      "356 (\"356\")",
+      "tipo-v-2016-present (\"Tipo V (2016 - Présent)\")",
+      "tipo-iv-2016-2021 (\"Tipo IV (2016 - 2021)\")",
+      "tipo-iii-2016-2018 (\"Tipo III (2016 - 2018)\")",
+      "tipo-vi-2016-2018 (\"Tipo VI (2016 - 2018)\")",
+      "tipo-vi-2018-present (\"Tipo VI (2018 - Présent)\")",
+      "estate-356 (\"Estate (356_\")",
+      "hatchback-356 (\"Hatchback (356_\")",
+      "saloon-356 (\"Saloon (356_\")"
+    ]
+  },
+  {
+    "make": "fiat",
+    "model": "500x",
+    "modelName": "500X",
+    "genCount": 4,
+    "gens": [
+      "334 (\"334_\")",
+      "500x-iv-2014-2018 (\"500X IV (2014 - 2018)\")",
+      "500x-vi-2014-2018 (\"500X VI (2014 - 2018)\")",
+      "500x-iii-2019-present (\"500X III (2019 - Présent)\")"
+    ]
+  },
+  {
+    "make": "fiat",
+    "model": "doblo",
+    "modelName": "Doblo",
+    "genCount": 10,
+    "gens": [
+      "263 (\"263\")",
+      "doblo-iii-2010-2022 (\"Doblo III (2010 - 2022)\")",
+      "doblo-vi-2015-2024 (\"Doblo VI (2015 - 2024)\")",
+      "doblo-v-2023-present (\"Doblo V (2023 - Présent)\")",
+      "box-body-mpv-223 (\"Box Body/MPV (223_\")",
+      "mpv-119-223 (\"MPV (119_, 223_\")",
+      "box-body-mpv-263 (\"Box Body/MPV (263_\")",
+      "estate-263 (\"Estate (263_\")",
+      "doblo-ii (\"Doblo II\")",
+      "doblo-i (\"Doblo I\")"
+    ]
+  },
+  {
+    "make": "fiat",
+    "model": "fiorino",
+    "modelName": "Fiorino",
+    "genCount": 4,
+    "gens": [
+      "225 (\"225\")",
+      "fiorino-iii-2008-present (\"Fiorino III (2008 - Présent)\")",
+      "box-body-mpv-225 (\"Box Body/MPV (225_\")",
+      "estate-225 (\"Estate (225_\")"
+    ]
+  },
+  {
+    "make": "fiat",
+    "model": "punto",
+    "modelName": "Punto",
+    "genCount": 6,
+    "gens": [
+      "188 (\"188_\")",
+      "199 (\"199_\")",
+      "van-188 (\"Van (188_\")",
+      "punto-ii (\"Punto II\")",
+      "evo-199 (\"EVO (199_\")",
+      "evo (\"Evo\")"
+    ]
+  },
+  {
+    "make": "fiat",
+    "model": "grande-punto",
+    "modelName": "Grande Punto",
+    "genCount": 1,
+    "gens": [
+      "199 (\"199_\")"
+    ]
+  },
+  {
+    "make": "fiat",
+    "model": "panda",
+    "modelName": "Panda",
+    "genCount": 5,
+    "gens": [
+      "169 (\"169_\")",
+      "312 (\"312\")",
+      "312-319 (\"312_, 319_\")",
+      "panda-ii (\"Panda II\")",
+      "panda-iii (\"Panda III\")"
+    ]
+  },
+  {
+    "make": "fiat",
+    "model": "qubo",
+    "modelName": "QUBO",
+    "genCount": 1,
+    "gens": [
+      "225 (\"225_\")"
+    ]
+  },
+  {
+    "make": "fiat",
+    "model": "palio",
+    "modelName": "PALIO",
+    "genCount": 2,
+    "gens": [
+      "178 (\"178_\")",
+      "weekend-178 (\"Weekend (178_\")"
+    ]
+  },
+  {
+    "make": "fiat",
+    "model": "siena",
+    "modelName": "SIENA",
+    "genCount": 1,
+    "gens": [
+      "178 (\"178_\")"
+    ]
+  },
+  {
+    "make": "fiat",
+    "model": "uno",
+    "modelName": "UNO",
+    "genCount": 2,
+    "gens": [
+      "146 (\"146_\")",
+      "178 (\"178\")"
+    ]
+  },
+  {
+    "make": "ford",
+    "model": "ranger",
+    "modelName": "Ranger",
+    "genCount": 4,
+    "gens": [
+      "t6-2016-2023 (\"T6 (2016 - 2023)\")",
+      "t7-2023-present (\"T7 (2023 - Présent)\")",
+      "er-eq (\"ER, EQ\")",
+      "tke (\"TKE\")"
+    ]
+  },
+  {
+    "make": "ford",
+    "model": "transit",
+    "modelName": "Transit",
+    "genCount": 5,
+    "gens": [
+      "custom-2013-present (\"Custom (2013 - Présent)\")",
+      "custom (\"CUSTOM\")",
+      "connect (\"CONNECT\")",
+      "transit-iv (\"Transit IV\")",
+      "transit-v (\"Transit V\")"
+    ]
+  },
+  {
+    "make": "ford",
+    "model": "c-max",
+    "modelName": "C-Max",
+    "genCount": 4,
+    "gens": [
+      "c-max-i (\"C-Max I\")",
+      "c-max-ii (\"C-Max II\")",
+      "max (\"MAX\")",
+      "cmax-ii (\"CMAX II\")"
+    ]
+  },
+  {
+    "make": "honda",
+    "model": "jazz",
+    "modelName": "Jazz",
+    "genCount": 6,
+    "gens": [
+      "jazz-vi-2020-present (\"Jazz VI (2020 - Présent)\")",
+      "jazz-ii (\"JAZZ II\")",
+      "jazz-iii (\"JAZZ III\")",
+      "jazz-iv (\"JAZZ IV\")",
+      "jazz-v (\"JAZZ V\")",
+      "gk (\"GK\")"
+    ]
+  },
+  {
+    "make": "honda",
+    "model": "hr-v",
+    "modelName": "HR-V",
+    "genCount": 4,
+    "gens": [
+      "hr-v-v-2022-present (\"HR-V V (2022 - Présent)\")",
+      "hr-v-v-2023-present (\"HR-V V (2023 - Présent)\")",
+      "hr-v-ii (\"HR-V II\")",
+      "zr (\"ZR\")"
+    ]
+  },
+  {
+    "make": "honda",
+    "model": "cr-v",
+    "modelName": "CR-V",
+    "genCount": 7,
+    "gens": [
+      "cr-v-v-2019-2022 (\"CR-V V (2019 - 2022)\")",
+      "cr-v-vi-2023-present (\"CR-V VI (2023 - Présent)\")",
+      "cr-v-ii (\"CR-V II\")",
+      "cr-v-iii (\"CR-V III\")",
+      "cr-v-iv (\"CR-V IV\")",
+      "cr-v-v (\"CR-V V\")",
+      "rw (\"RW\")"
+    ]
+  },
+  {
+    "make": "honda",
+    "model": "accord",
+    "modelName": "ACCORD",
+    "genCount": 3,
+    "gens": [
+      "accord-viii (\"ACCORD VIII\")",
+      "ix-cr (\"IX (CR\")",
+      "cr (\"CR\")"
+    ]
+  },
+  {
+    "make": "hyundai",
+    "model": "i10",
+    "modelName": "i10",
+    "genCount": 7,
+    "gens": [
+      "ba-2014-2023 (\"BA (2014 - 2023)\")",
+      "pa (\"PA\")",
+      "ba-ia (\"BA, IA\")",
+      "ac3-ai3 (\"AC3, AI3\")",
+      "i10-ii (\"i10 II\")",
+      "i10-i (\"i10 I\")",
+      "ia (\"IA\")"
+    ]
+  },
+  {
+    "make": "hyundai",
+    "model": "i20",
+    "modelName": "i20",
+    "genCount": 9,
+    "gens": [
+      "gb-2016-2020 (\"GB (2016 - 2020)\")",
+      "i20-ii-2016-2020 (\"i20 II (2016 - 2020)\")",
+      "bp-2020-2026 (\"BP (2020 - 2026)\")",
+      "pb-pbt (\"PB, PBT\")",
+      "gb-ib (\"GB, IB\")",
+      "bc3-bi3 (\"BC3, BI3\")",
+      "i20-ii (\"i20 II\")",
+      "i20-i (\"i20 I\")",
+      "gb (\"GB\")"
+    ]
+  },
+  {
+    "make": "hyundai",
+    "model": "tucson",
+    "modelName": "Tucson",
+    "genCount": 5,
+    "gens": [
+      "nx4-2021-2026 (\"NX4 (2021 - 2026)\")",
+      "jm (\"JM\")",
+      "tl-tle (\"TL, TLE\")",
+      "nx4e-nx4a (\"NX4E, NX4A\")",
+      "tl (\"TL\")"
+    ]
+  },
+  {
+    "make": "hyundai",
+    "model": "santa-fe",
+    "modelName": "Santa Fe",
+    "genCount": 5,
+    "gens": [
+      "nc-2024-2026 (\"NC (2024 - 2026)\")",
+      "santa-fe-ii (\"Santa Fe II\")",
+      "santa-fe-iii (\"Santa Fe III\")",
+      "santa-fe-iv (\"Santa Fe IV\")",
+      "dm (\"DM\")"
+    ]
+  },
+  {
+    "make": "hyundai",
+    "model": "i30",
+    "modelName": "i30",
+    "genCount": 4,
+    "gens": [
+      "pde-cn7-2017-2026 (\"PDE/CN7 (2017 - 2026)\")",
+      "fd (\"FD\")",
+      "gd (\"GD\")",
+      "pd (\"PD\")"
+    ]
+  },
+  {
+    "make": "hyundai",
+    "model": "accent",
+    "modelName": "Accent",
+    "genCount": 3,
+    "gens": [
+      "accent-iii (\"Accent III\")",
+      "accent-iv (\"Accent IV\")",
+      "rb (\"RB\")"
+    ]
+  },
+  {
+    "make": "jeep",
+    "model": "renegade",
+    "modelName": "Renegade",
+    "genCount": 9,
+    "gens": [
+      "renegade-iv-2014-2018 (\"Renegade IV (2014 - 2018)\")",
+      "renegade-iv-2014-2019 (\"Renegade IV (2014 - 2019)\")",
+      "renegade-vi-2014-2018 (\"Renegade VI (2014 - 2018)\")",
+      "renegade-ii-2014-2019 (\"Renegade II (2014 - 2019)\")",
+      "renegade-ii-2015-2019 (\"Renegade II (2015 - 2019)\")",
+      "renegade-iii-2019-present (\"Renegade III (2019 - Présent)\")",
+      "renegade-v-2020-present (\"Renegade V (2020 - Présent)\")",
+      "renegade-vi-2018-2023 (\"Renegade VI (2018 - 2023)\")",
+      "bu (\"BU\")"
+    ]
+  },
+  {
+    "make": "jeep",
+    "model": "compass",
+    "modelName": "Compass",
+    "genCount": 8,
+    "gens": [
+      "compass-iv-2017-2021 (\"Compass IV (2017 - 2021)\")",
+      "compass-iii-2021-present (\"Compass III (2021 - Présent)\")",
+      "compass-ii-2017-2021 (\"Compass II (2017 - 2021)\")",
+      "compass-v-2021-present (\"Compass V (2021 - Présent)\")",
+      "compass-vi-2017-2021 (\"Compass VI (2017 - 2021)\")",
+      "compass-vi-2018-2021 (\"Compass VI (2018 - 2021)\")",
+      "compass-ii (\"Compass II\")",
+      "mp (\"MP\")"
+    ]
+  },
+  {
+    "make": "jeep",
+    "model": "wrangler",
+    "modelName": "Wrangler",
+    "genCount": 5,
+    "gens": [
+      "wrangler-ii-2018-present (\"Wrangler II (2018 - Présent)\")",
+      "wrangler-ii-2022-present (\"Wrangler II (2022 - Présent)\")",
+      "wrangler-iii (\"Wrangler III\")",
+      "wrangler-iv (\"Wrangler IV\")",
+      "jl (\"JL\")"
+    ]
+  },
+  {
+    "make": "kia",
+    "model": "picanto",
+    "modelName": "Picanto",
+    "genCount": 6,
+    "gens": [
+      "ja-2017-2026 (\"JA (2017 - 2026)\")",
+      "ba (\"BA\")",
+      "ta (\"TA\")",
+      "ja (\"JA\")",
+      "picanto-ii (\"Picanto II\")",
+      "picanto-i (\"Picanto I\")"
+    ]
+  },
+  {
+    "make": "kia",
+    "model": "rio",
+    "modelName": "Rio",
+    "genCount": 5,
+    "gens": [
+      "qb-2017-2023 (\"QB (2017 - 2023)\")",
+      "rio-ii (\"Rio II\")",
+      "rio-iii (\"Rio III\")",
+      "rio-iv (\"Rio IV\")",
+      "ub (\"UB\")"
+    ]
+  },
+  {
+    "make": "kia",
+    "model": "ceed",
+    "modelName": "Ceed",
+    "genCount": 5,
+    "gens": [
+      "cd-2018-2026 (\"CD (2018 - 2026)\")",
+      "ceed-i (\"Ceed I\")",
+      "ceed-ii (\"Ceed II\")",
+      "ceed-iii (\"Ceed III\")",
+      "jd (\"JD\")"
+    ]
+  },
+  {
+    "make": "kia",
+    "model": "sportage",
+    "modelName": "Sportage",
+    "genCount": 6,
+    "gens": [
+      "nq5-2021-2026 (\"NQ5 (2021 - 2026)\")",
+      "je-km (\"JE_, KM_\")",
+      "sl (\"SL\")",
+      "ql-qle (\"QL, QLE\")",
+      "nq5 (\"NQ5\")",
+      "ql (\"QL\")"
+    ]
+  },
+  {
+    "make": "kia",
+    "model": "sorento",
+    "modelName": "Sorento",
+    "genCount": 6,
+    "gens": [
+      "mq4-2020-2026 (\"MQ4 (2020 - 2026)\")",
+      "bl (\"BL\")",
+      "sorento-ii (\"Sorento II\")",
+      "sorento-iii (\"Sorento III\")",
+      "sorento-iv (\"Sorento IV\")",
+      "um (\"UM\")"
+    ]
+  },
+  {
+    "make": "mitsubishi",
+    "model": "asx",
+    "modelName": "ASX",
+    "genCount": 7,
+    "gens": [
+      "asx-vi-2010-2018 (\"ASX VI (2010 - 2018)\")",
+      "asx-ii-2010-2018 (\"ASX II (2010 - 2018)\")",
+      "asx-viii-2010-2018 (\"ASX VIII (2010 - 2018)\")",
+      "asx-iii-2023-present (\"ASX III (2023 - Présent)\")",
+      "asx-v-2023-present (\"ASX V (2023 - Présent)\")",
+      "ga-w (\"GA_W\")",
+      "ga (\"GA\")"
+    ]
+  },
+  {
+    "make": "nissan",
+    "model": "micra",
+    "modelName": "Micra",
+    "genCount": 5,
+    "gens": [
+      "k14-2016-present (\"K14 (2016 - Présent)\")",
+      "micra-iii (\"Micra III\")",
+      "micra-iv (\"Micra IV\")",
+      "micra-v (\"Micra V\")",
+      "k13 (\"K13\")"
+    ]
+  },
+  {
+    "make": "nissan",
+    "model": "juke",
+    "modelName": "Juke",
+    "genCount": 4,
+    "gens": [
+      "f15-2010-2019 (\"F15 (2010 - 2019)\")",
+      "f16-2020-present (\"F16 (2020 - Présent)\")",
+      "f15 (\"X5 - F15 (2013 - 2018)\")",
+      "f16 (\"F16\")"
+    ]
+  },
+  {
+    "make": "nissan",
+    "model": "qashqai",
+    "modelName": "Qashqai",
+    "genCount": 5,
+    "gens": [
+      "j11-2014-2021 (\"J11 (2014 - 2021)\")",
+      "j12-2021-present (\"J12 (2021 - Présent)\")",
+      "qashqai-ii (\"Qashqai II\")",
+      "qashqai-i (\"Qashqai I\")",
+      "j11 (\"J11\")"
+    ]
+  },
+  {
+    "make": "nissan",
+    "model": "x-trail",
+    "modelName": "X-Trail",
+    "genCount": 6,
+    "gens": [
+      "t32-2014-2021 (\"T32 (2014 - 2021)\")",
+      "t33-2022-present (\"T33 (2022 - Présent)\")",
+      "x-trail-i (\"X-Trail I\")",
+      "x-trail-ii (\"X-Trail II\")",
+      "x-trail-iii (\"X-Trail III\")",
+      "t32 (\"T32\")"
+    ]
+  },
+  {
+    "make": "nissan",
+    "model": "navara",
+    "modelName": "Navara",
+    "genCount": 5,
+    "gens": [
+      "d40-2005-2015 (\"D40 (2005 - 2015)\")",
+      "d23-2015-present (\"D23 (2015 - Présent)\")",
+      "d22 (\"D22\")",
+      "d40 (\"D40\")",
+      "d23 (\"D23\")"
+    ]
+  },
+  {
+    "make": "opel",
+    "model": "mokka",
+    "modelName": "Mokka",
+    "genCount": 4,
+    "gens": [
+      "f-2020-present (\"F (2020 - Présent)\")",
+      "j13 (\"J13\")",
+      "x-j13 (\"X (J13\")",
+      "a (\"A\")"
+    ]
+  },
+  {
+    "make": "peugeot",
+    "model": "206",
+    "modelName": "206",
+    "genCount": 7,
+    "gens": [
+      "206 (\"206\")",
+      "hatchback-2a-c (\"Hatchback (2A/C\")",
+      "cc-2d (\"CC (2D\")",
+      "sw-2e-k (\"SW (2E/K\")",
+      "saloon (\"Saloon\")",
+      "2l-2m (\"+ (2L_, 2M_\")",
+      "standard (\"+\")"
+    ]
+  },
+  {
+    "make": "peugeot",
+    "model": "207",
+    "modelName": "207",
+    "genCount": 5,
+    "gens": [
+      "207 (\"207\")",
+      "wa-wc (\"WA_, WC_\")",
+      "cc-wd (\"CC (WD_\")",
+      "sw-wk (\"SW (WK_\")",
+      "saloon (\"Saloon\")"
+    ]
+  },
+  {
+    "make": "peugeot",
+    "model": "208",
+    "modelName": "208",
+    "genCount": 3,
+    "gens": [
+      "208 (\"208\")",
+      "208-ii-ub-up-2019-present (\"208 II (UB/UP) (2019 - Présent)\")",
+      "208-i-ca-cc-2012-2019 (\"208 I (CA/CC) (2012 - 2019)\")"
+    ]
+  },
+  {
+    "make": "peugeot",
+    "model": "301",
+    "modelName": "301",
+    "genCount": 5,
+    "gens": [
+      "301 (\"301\")",
+      "301-i-2012-2017 (\"301 I (2012 - 2017)\")",
+      "301-i-2012-2022 (\"301 I (2012 - 2022)\")",
+      "301-i-2013-2022 (\"301 I (2013 - 2022)\")",
+      "dd (\"DD_\")"
+    ]
+  },
+  {
+    "make": "peugeot",
+    "model": "307",
+    "modelName": "307",
+    "genCount": 5,
+    "gens": [
+      "307 (\"307\")",
+      "3a-c (\"3A/C\")",
+      "break-3e (\"Break (3E\")",
+      "sw-3h (\"SW (3H\")",
+      "cc-3b (\"CC (3B\")"
+    ]
+  },
+  {
+    "make": "peugeot",
+    "model": "308",
+    "modelName": "308",
+    "genCount": 6,
+    "gens": [
+      "308 (\"308\")",
+      "308-ii-2017-2021 (\"308 II (2017 - 2021)\")",
+      "308-ii-2014-2021 (\"308 II (2014 - 2021)\")",
+      "308-i (\"308 I\")",
+      "308-ii (\"308 II\")",
+      "308-iii (\"308 III\")"
+    ]
+  },
+  {
+    "make": "peugeot",
+    "model": "406",
+    "modelName": "406",
+    "genCount": 4,
+    "gens": [
+      "406 (\"406\")",
+      "8b (\"8B\")",
+      "break-8e-f (\"Break (8E/F\")",
+      "coupe-8c (\"Coupe (8C\")"
+    ]
+  },
+  {
+    "make": "peugeot",
+    "model": "2008",
+    "modelName": "2008",
+    "genCount": 5,
+    "gens": [
+      "2008 (\"2008\")",
+      "2008-i-2015-2019 (\"2008 I (2015 - 2019)\")",
+      "2008-ii-2019-2024 (\"2008 II (2019 - 2024)\")",
+      "2008-i (\"2008 I\")",
+      "2008-ii (\"2008 II\")"
+    ]
+  },
+  {
+    "make": "peugeot",
+    "model": "3008",
+    "modelName": "3008",
+    "genCount": 5,
+    "gens": [
+      "3008 (\"3008\")",
+      "3008-ii-2016-2021 (\"3008 II (2016 - 2021)\")",
+      "3008-ii-2020-2024 (\"3008 II (2020 - 2024)\")",
+      "suv-m (\"SUV (M_\")",
+      "0u (\"0U_\")"
+    ]
+  },
+  {
+    "make": "peugeot",
+    "model": "5008",
+    "modelName": "5008",
+    "genCount": 6,
+    "gens": [
+      "5008 (\"5008\")",
+      "5008-ii-2017-2021 (\"5008 II (2017 - 2021)\")",
+      "5008-ii-2017-2022 (\"5008 II (2017 - 2022)\")",
+      "5008-ii-2020-2024 (\"5008 II (2020 - 2024)\")",
+      "0u (\"0U_\")",
+      "5008-ii (\"5008 II\")"
+    ]
+  },
+  {
+    "make": "seat",
+    "model": "arona",
+    "modelName": "Arona",
+    "genCount": 3,
+    "gens": [
+      "mk1-2018-present (\"MK1 (2018 - Présent)\")",
+      "mk1-2018-2022 (\"MK1 (2018 - 2022)\")",
+      "kj7 (\"KJ7\")"
+    ]
+  },
+  {
+    "make": "seat",
+    "model": "leon",
+    "modelName": "Leon",
+    "genCount": 10,
+    "gens": [
+      "mk3-2013-2020 (\"MK3 (2013 - 2020)\")",
+      "mk3-2015-2020 (\"MK3 (2015 - 2020)\")",
+      "mk4-2020-present (\"MK4 (2020 - Présent)\")",
+      "1m1 (\"1M1\")",
+      "1p1 (\"1P1\")",
+      "5f1 (\"5F1\")",
+      "kl1 (\"KL1\")",
+      "leon-iii (\"Leon III\")",
+      "leon-ii (\"Leon II\")",
+      "5f (\"5F\")"
+    ]
+  },
+  {
+    "make": "seat",
+    "model": "ateca",
+    "modelName": "Ateca",
+    "genCount": 3,
+    "gens": [
+      "mk1-2017-present (\"MK1 (2017 - Présent)\")",
+      "mk1-2018-present (\"MK1 (2018 - Présent)\")",
+      "kh7 (\"KH7\")"
+    ]
+  },
+  {
+    "make": "seat",
+    "model": "altea",
+    "modelName": "Altea",
+    "genCount": 3,
+    "gens": [
+      "5p1 (\"5P1\")",
+      "xl-5p5-5p8 (\"XL (5P5, 5P8\")",
+      "altea-i (\"Altea I\")"
+    ]
+  },
+  {
+    "make": "seat",
+    "model": "toledo",
+    "modelName": "Toledo",
+    "genCount": 2,
+    "gens": [
+      "5p2 (\"5P2\")",
+      "toledo-i (\"Toledo I\")"
+    ]
+  },
+  {
+    "make": "skoda",
+    "model": "karoq",
+    "modelName": "Karoq",
+    "genCount": 2,
+    "gens": [
+      "mk1-2021-present (\"MK1 (2021 - Présent)\")",
+      "nu7 (\"NU7\")"
+    ]
+  },
+  {
+    "make": "skoda",
+    "model": "kodiaq",
+    "modelName": "Kodiaq",
+    "genCount": 3,
+    "gens": [
+      "mk1-2018-2023 (\"MK1 (2018 - 2023)\")",
+      "mk2-2024-present (\"MK2 (2024 - Présent)\")",
+      "ns7 (\"NS7\")"
+    ]
+  },
+  {
+    "make": "skoda",
+    "model": "rapid",
+    "modelName": "Rapid",
+    "genCount": 2,
+    "gens": [
+      "na2 (\"NA2\")",
+      "spaceback-nh1 (\"Spaceback (NH1\")"
+    ]
+  },
+  {
+    "make": "suzuki",
+    "model": "swift",
+    "modelName": "Swift",
+    "genCount": 7,
+    "gens": [
+      "mk5-2010-2017 (\"MK5 (2010 - 2017)\")",
+      "mk6-2017-2023 (\"MK6 (2017 - 2023)\")",
+      "mk7-2024-present (\"MK7 (2024 - Présent)\")",
+      "swift-ii (\"SWIFT II\")",
+      "swift-iii (\"SWIFT III\")",
+      "swift-iv (\"SWIFT IV\")",
+      "fz (\"FZ\")"
+    ]
+  },
+  {
+    "make": "suzuki",
+    "model": "vitara",
+    "modelName": "Vitara",
+    "genCount": 4,
+    "gens": [
+      "vitara-i-2015-2021 (\"Vitara I (2015 - 2021)\")",
+      "vitara-ii-2022-present (\"Vitara II (2022 - Présent)\")",
+      "vitara-ii (\"VITARA II\")",
+      "ly (\"LY\")"
+    ]
+  },
+  {
+    "make": "suzuki",
+    "model": "s-cross",
+    "modelName": "S-Cross",
+    "genCount": 5,
+    "gens": [
+      "s-cross-i-2013-2017 (\"S-Cross I (2013 - 2017)\")",
+      "s-cross-i-2017-2021 (\"S-Cross I (2017 - 2021)\")",
+      "s-cross-i-2013-2021 (\"S-Cross I (2013 - 2021)\")",
+      "s-cross-ii-2022-present (\"S-Cross II (2022 - Présent)\")",
+      "ly (\"LY\")"
+    ]
+  },
+  {
+    "make": "suzuki",
+    "model": "jimny",
+    "modelName": "Jimny",
+    "genCount": 2,
+    "gens": [
+      "mk4-2018-present (\"MK4 (2018 - Présent)\")",
+      "fj (\"FJ\")"
+    ]
+  },
+  {
+    "make": "suzuki",
+    "model": "celerio",
+    "modelName": "CELERIO",
+    "genCount": 1,
+    "gens": [
+      "lf (\"LF\")"
+    ]
+  },
+  {
+    "make": "suzuki",
+    "model": "alto",
+    "modelName": "ALTO",
+    "genCount": 2,
+    "gens": [
+      "gf (\"GF\")",
+      "lf (\"LF\")"
+    ]
+  },
+  {
+    "make": "toyota",
+    "model": "yaris",
+    "modelName": "Yaris",
+    "genCount": 11,
+    "gens": [
+      "xp130-2011-2020 (\"XP130 (2011 - 2020)\")",
+      "xp130-2011-2016 (\"XP130 (2011 - 2016)\")",
+      "xp210-2020-present (\"XP210 (2020 - Présent)\")",
+      "cross-2021-present (\"Cross (2021 - Présent)\")",
+      "p1 (\"_P1_\")",
+      "p9 (\"_P9_\")",
+      "p13 (\"_P13_\")",
+      "p21-pa1-ph1 (\"_P21_, _PA1_, _PH1_\")",
+      "yaris-iii (\"Yaris III\")",
+      "yaris-ii (\"Yaris II\")",
+      "yaris-i (\"Yaris I\")"
+    ]
+  },
+  {
+    "make": "toyota",
+    "model": "corolla",
+    "modelName": "Corolla",
+    "genCount": 8,
+    "gens": [
+      "sedan-2019-present (\"Sedan (2019 - Présent)\")",
+      "cross-2021-present (\"Cross (2021 - Présent)\")",
+      "e11 (\"_E11_\")",
+      "e12 (\"_E12_\")",
+      "e15 (\"_E15_\")",
+      "saloon-e18-zre17 (\"Saloon (_E18_, ZRE17_\")",
+      "saloon-e21 (\"Saloon (_E21_\")",
+      "e18 (\"E18\")"
+    ]
+  },
+  {
+    "make": "toyota",
+    "model": "c-hr",
+    "modelName": "C-HR",
+    "genCount": 2,
+    "gens": [
+      "zgx10-2016-2023 (\"ZGX10 (2016 - 2023)\")",
+      "ax10 (\"AX10_\")"
+    ]
+  },
+  {
+    "make": "toyota",
+    "model": "rav4",
+    "modelName": "RAV4",
+    "genCount": 4,
+    "gens": [
+      "xa50-2018-present (\"XA50 (2018 - Présent)\")",
+      "a4 (\"A4\")",
+      "rav-iv (\"RAV IV\")",
+      "rav-v (\"RAV V\")"
+    ]
+  },
+  {
+    "make": "toyota",
+    "model": "land-cruiser",
+    "modelName": "Land Cruiser",
+    "genCount": 14,
+    "gens": [
+      "prado-2015-2024 (\"Prado (2015 - 2024)\")",
+      "j300-2021-present (\"J300 (2021 - Présent)\")",
+      "j200-2008-2012 (\"J200 (2008 - 2012)\")",
+      "200-2008-2012 (\"200 (2008 - 2012)\")",
+      "j200-2008-2021 (\"J200 (2008 - 2021)\")",
+      "200-2008-2021 (\"200 (2008 - 2021)\")",
+      "j200-2012-2021 (\"J200 (2012 - 2021)\")",
+      "200-2012-2021 (\"200 (2012 - 2021)\")",
+      "100-1998-2007 (\"100 (1998 - 2007)\")",
+      "76-79-2007-present (\"76/79 (2007 - Présent)\")",
+      "j12 (\"J12_\")",
+      "prado-j12 (\"PRADO (J12_\")",
+      "j200 (\"J200\")",
+      "j300 (\"J300\")"
+    ]
+  },
+  {
+    "make": "toyota",
+    "model": "camry",
+    "modelName": "CAMRY",
+    "genCount": 4,
+    "gens": [
+      "xv4 (\"_XV4_\")",
+      "xv5 (\"_XV5_\")",
+      "xv7 (\"_XV7_\")",
+      "xv50 (\"XV50\")"
+    ]
+  },
+  {
+    "make": "toyota",
+    "model": "avensis",
+    "modelName": "Avensis",
+    "genCount": 3,
+    "gens": [
+      "t25 (\"_T25_\")",
+      "t27 (\"_T27_\")",
+      "t29 (\"_T29_\")"
+    ]
+  },
+  {
+    "make": "toyota",
+    "model": "auris",
+    "modelName": "Auris",
+    "genCount": 2,
+    "gens": [
+      "e15 (\"E15_\")",
+      "e18 (\"E18_\")"
+    ]
+  },
+  {
+    "make": "volkswagen",
+    "model": "polo",
+    "modelName": "Polo",
+    "genCount": 4,
+    "gens": [
+      "polo-vi-aw1-2017-present (\"Polo VI (AW1) (2017 - Présent)\")",
+      "polo-v-6r-6c-2009-2017 (\"Polo V (6R/6C) (2009 - 2017)\")",
+      "polo-iv-9n-2001-2009 (\"Polo IV (9N) (2001 - 2009)\")",
+      "polo-iii-6n-1994-2001 (\"Polo III (6N) (1994 - 2001)\")"
+    ]
+  },
+  {
+    "make": "volkswagen",
+    "model": "golf",
+    "modelName": "Golf",
+    "genCount": 5,
+    "gens": [
+      "golf-viii-cd1-2020-present (\"Golf VIII (CD1) (2020 - Présent)\")",
+      "golf-vii-5g1-2012-2020 (\"Golf VII (5G1) (2012 - 2020)\")",
+      "golf-v-1k1-2003-2009 (\"Golf V (1K1) (2003 - 2009)\")",
+      "golf-vi-5k1-2008-2013 (\"Golf VI (5K1) (2008 - 2013)\")",
+      "golf-iv-1j1-1997-2005 (\"Golf IV (1J1) (1997 - 2005)\")"
+    ]
+  },
+  {
+    "make": "volkswagen",
+    "model": "t-roc",
+    "modelName": "T-Roc",
+    "genCount": 3,
+    "gens": [
+      "a11-2018-present (\"A11 (2018 - Présent)\")",
+      "a1 (\"A1\")",
+      "roc (\"ROC\")"
+    ]
+  },
+  {
+    "make": "volkswagen",
+    "model": "tiguan",
+    "modelName": "Tiguan",
+    "genCount": 6,
+    "gens": [
+      "typ-5n-2008-2017 (\"Typ 5N (2008 - 2017)\")",
+      "typ-ad1-2017-present (\"Typ AD1 (2017 - Présent)\")",
+      "5n (\"5N_\")",
+      "ad1-ax1 (\"AD1, AX1\")",
+      "allspace-bw2-bj2 (\"ALLSPACE (BW2, BJ2\")",
+      "ad1 (\"AD1\")"
+    ]
+  },
+  {
+    "make": "volkswagen",
+    "model": "touareg",
+    "modelName": "Touareg",
+    "genCount": 5,
+    "gens": [
+      "typ-cr-2018-present (\"Typ CR (2018 - Présent)\")",
+      "7la-7l6-7l7 (\"7LA, 7L6, 7L7\")",
+      "7p5-7p6 (\"7P5, 7P6\")",
+      "cr7 (\"CR7\")",
+      "7p (\"7P\")"
+    ]
+  },
+  {
+    "make": "volkswagen",
+    "model": "transporter",
+    "modelName": "Transporter",
+    "genCount": 6,
+    "gens": [
+      "typ-sg-t6-2015-2024 (\"Typ SG (T6 (2015 - 2024)\")",
+      "typ-7h-t5-2010-2016 (\"Typ 7H (T5 (2010 - 2016)\")",
+      "transporter-v (\"Transporter V\")",
+      "transporter-vi (\"Transporter VI\")",
+      "t5 (\"T5\")",
+      "t6 (\"T6\")"
+    ]
+  },
+  {
+    "make": "bmw",
+    "model": "x1",
+    "modelName": "X1",
+    "genCount": 3,
+    "gens": [
+      "e84 (\"X1 - E84 (2009 - 2015)\")",
+      "f48 (\"X1 - F48 (2015 - 2022)\")",
+      "u11 (\"U11\")"
+    ]
+  },
+  {
+    "make": "isuzu",
+    "model": "d-max",
+    "modelName": "D-Max",
+    "genCount": 5,
+    "gens": [
+      "d-max-v-2016-present (\"D-Max V (2016 - Présent)\")",
+      "d-max-i (\"D-MAX I\")",
+      "d-max-ii (\"D-MAX II\")",
+      "d-max-iii (\"D-MAX III\")",
+      "tfr (\"TFR\")"
+    ]
+  },
+  {
+    "make": "mercedes-benz",
+    "model": "gla",
+    "modelName": "GLA",
+    "genCount": 3,
+    "gens": [
+      "x156 (\"X156\")",
+      "h247 (\"H247\")",
+      "gla (\"GLA\")"
+    ]
+  },
+  {
+    "make": "mercedes-benz",
+    "model": "glc",
+    "modelName": "GLC",
+    "genCount": 4,
+    "gens": [
+      "x253 (\"X253\")",
+      "coupe-c253 (\"Coupe (C253\")",
+      "x254 (\"X254\")",
+      "glc (\"GLC\")"
+    ]
+  },
+  {
+    "make": "mercedes-benz",
+    "model": "vito",
+    "modelName": "Vito",
+    "genCount": 3,
+    "gens": [
+      "vito-ii (\"Vito II\")",
+      "w639 (\"W639\")",
+      "w447 (\"W447\")"
+    ]
+  },
+  {
+    "make": "mercedes-benz",
+    "model": "viano",
+    "modelName": "VIANO",
+    "genCount": 2,
+    "gens": [
+      "w639 (\"W639\")",
+      "w447 (\"W447\")"
+    ]
+  },
+  {
+    "make": "mercedes-benz",
+    "model": "sprinter",
+    "modelName": "Sprinter",
+    "genCount": 3,
+    "gens": [
+      "sprinter-v (\"Sprinter V\")",
+      "sprinter-ii (\"Sprinter II\")",
+      "b906 (\"B906\")"
+    ]
+  },
+  {
+    "make": "audi",
+    "model": "a3",
+    "modelName": "A3",
+    "genCount": 7,
+    "gens": [
+      "8p1 (\"8P1\")",
+      "sportback-8pa (\"Sportback (8PA\")",
+      "8v1-8vk (\"8V1, 8VK\")",
+      "sportback-8va-8vf (\"Sportback (8VA, 8VF\")",
+      "sportback-8ya (\"Sportback (8YA\")",
+      "8l1 (\"8L1\")",
+      "8v (\"8V\")"
+    ]
+  },
+  {
+    "make": "audi",
+    "model": "a4",
+    "modelName": "A4",
+    "genCount": 5,
+    "gens": [
+      "8e2-b6 (\"8E2, B6\")",
+      "8ec-b7 (\"8EC, B7\")",
+      "8k2-b8 (\"8K2, B8\")",
+      "8w2-8wc-b9 (\"8W2, 8WC, B9\")",
+      "b8 (\"B8\")"
+    ]
+  },
+  {
+    "make": "audi",
+    "model": "a6",
+    "modelName": "A6",
+    "genCount": 3,
+    "gens": [
+      "c6 (\"C6\")",
+      "c7 (\"C7\")",
+      "c8 (\"C8\")"
+    ]
+  },
+  {
+    "make": "audi",
+    "model": "q3",
+    "modelName": "Q3",
+    "genCount": 2,
+    "gens": [
+      "8u (\"8U\")",
+      "f3 (\"F3\")"
+    ]
+  },
+  {
+    "make": "audi",
+    "model": "q5",
+    "modelName": "Q5",
+    "genCount": 2,
+    "gens": [
+      "8r (\"8R\")",
+      "fy (\"FY\")"
+    ]
+  },
+  {
+    "make": "audi",
+    "model": "a1",
+    "modelName": "A1",
+    "genCount": 2,
+    "gens": [
+      "8x (\"8X\")",
+      "sportback-gb (\"Sportback (GB\")"
+    ]
+  },
+  {
+    "make": "audi",
+    "model": "a5",
+    "modelName": "A5",
+    "genCount": 4,
+    "gens": [
+      "8t3 (\"8T3\")",
+      "sportback-8ta (\"Sportback (8TA\")",
+      "f53-f5p (\"F53, F5P\")",
+      "f5 (\"F5\")"
+    ]
+  },
+  {
+    "make": "lancia",
+    "model": "ypsilon",
+    "modelName": "YPSILON",
+    "genCount": 2,
+    "gens": [
+      "843 (\"843_\")",
+      "846 (\"846_\")"
+    ]
+  },
+  {
+    "make": "lancia",
+    "model": "delta",
+    "modelName": "DELTA",
+    "genCount": 2,
+    "gens": [
+      "844 (\"844\")",
+      "delta-iii (\"DELTA III\")"
+    ]
+  },
+  {
+    "make": "volvo",
+    "model": "s40",
+    "modelName": "S40",
+    "genCount": 2,
+    "gens": [
+      "s40-ii (\"S40 II\")",
+      "ms (\"MS\")"
+    ]
+  },
+  {
+    "make": "volvo",
+    "model": "v50",
+    "modelName": "V50",
+    "genCount": 2,
+    "gens": [
+      "mw (\"MW\")",
+      "ms (\"MS\")"
+    ]
+  },
+  {
+    "make": "volvo",
+    "model": "v40",
+    "modelName": "V40",
+    "genCount": 3,
+    "gens": [
+      "525 (\"525\")",
+      "525-526 (\"525, 526\")",
+      "cross-country (\"Cross Country\")"
+    ]
+  },
+  {
+    "make": "mazda",
+    "model": "cx-5",
+    "modelName": "CX-5",
+    "genCount": 2,
+    "gens": [
+      "ke (\"KE\")",
+      "kf (\"KF\")"
+    ]
+  },
+  {
+    "make": "mazda",
+    "model": "cx-3",
+    "modelName": "CX-3",
+    "genCount": 1,
+    "gens": [
+      "dk (\"DK\")"
+    ]
+  },
+  {
+    "make": "mazda",
+    "model": "mazda-2",
+    "modelName": "Mazda 2",
+    "genCount": 3,
+    "gens": [
+      "de (\"DE\")",
+      "dj (\"DJ\")",
+      "mazda-ii (\"Mazda II\")"
+    ]
+  },
+  {
+    "make": "mazda",
+    "model": "mazda-3",
+    "modelName": "Mazda 3",
+    "genCount": 5,
+    "gens": [
+      "bk (\"BK\")",
+      "bl (\"BL\")",
+      "bm (\"BM\")",
+      "bp (\"BP\")",
+      "mazda-iii (\"Mazda III\")"
+    ]
+  },
+  {
+    "make": "mazda",
+    "model": "mazda-6",
+    "modelName": "Mazda 6",
+    "genCount": 5,
+    "gens": [
+      "gg (\"GG\")",
+      "gh (\"GH\")",
+      "gj (\"GJ\")",
+      "gl (\"GL\")",
+      "mazda-vi (\"Mazda VI\")"
+    ]
+  },
+  {
+    "make": "subaru",
+    "model": "forester",
+    "modelName": "FORESTER",
+    "genCount": 5,
+    "gens": [
+      "forester-ii (\"FORESTER II\")",
+      "forester-iii (\"FORESTER III\")",
+      "forester-iv (\"FORESTER IV\")",
+      "forester-v (\"FORESTER V\")",
+      "sj (\"SJ\")"
+    ]
+  },
+  {
+    "make": "subaru",
+    "model": "outback",
+    "modelName": "OUTBACK",
+    "genCount": 4,
+    "gens": [
+      "outback-iii (\"OUTBACK III\")",
+      "outback-iv (\"OUTBACK IV\")",
+      "outback-v (\"OUTBACK V\")",
+      "bs (\"BS\")"
+    ]
+  },
+  {
+    "make": "subaru",
+    "model": "xv",
+    "modelName": "XV",
+    "genCount": 4,
+    "gens": [
+      "xv-i (\"XV I\")",
+      "xv-ii (\"XV II\")",
+      "gt (\"GT\")",
+      "xv (\"XV\")"
+    ]
+  },
+  {
+    "make": "land-rover",
+    "model": "discovery",
+    "modelName": "DISCOVERY",
+    "genCount": 4,
+    "gens": [
+      "sport-lc (\"SPORT (LC_\")",
+      "discovery-iv (\"DISCOVERY IV\")",
+      "discovery-v (\"DISCOVERY V\")",
+      "l462 (\"L462\")"
+    ]
+  },
+  {
+    "make": "land-rover",
+    "model": "freelander",
+    "modelName": "FREELANDER",
+    "genCount": 2,
+    "gens": [
+      "freelander-ii (\"FREELANDER II\")",
+      "lf (\"LF\")"
+    ]
+  },
+  {
+    "make": "land-rover",
+    "model": "defender",
+    "modelName": "DEFENDER",
+    "genCount": 3,
+    "gens": [
+      "90-l316 (\"90 (L316\")",
+      "110-l316 (\"110 (L316\")",
+      "l663 (\"L663\")"
+    ]
+  },
+  {
+    "make": "jaguar",
+    "model": "xe",
+    "modelName": "XE",
+    "genCount": 2,
+    "gens": [
+      "x760 (\"X760\")",
+      "xe (\"XE\")"
+    ]
+  },
+  {
+    "make": "jaguar",
+    "model": "f-pace",
+    "modelName": "F-PACE",
+    "genCount": 2,
+    "gens": [
+      "x761 (\"X761\")",
+      "f-pace (\"F-Pace\")"
+    ]
+  },
+  {
+    "make": "porsche",
+    "model": "911",
+    "modelName": "911",
+    "genCount": 3,
+    "gens": [
+      "911 (\"911\")",
+      "991 (\"991\")",
+      "992 (\"992\")"
+    ]
+  },
+  {
+    "make": "porsche",
+    "model": "cayenne",
+    "modelName": "CAYENNE",
+    "genCount": 4,
+    "gens": [
+      "9pa (\"9PA\")",
+      "cayenne-ii (\"CAYENNE II\")",
+      "cayenne-iii (\"CAYENNE III\")",
+      "9ya (\"9YA\")"
+    ]
+  },
+  {
+    "make": "porsche",
+    "model": "macan",
+    "modelName": "MACAN",
+    "genCount": 1,
+    "gens": [
+      "95b (\"95B\")"
+    ]
+  },
+  {
+    "make": "ds",
+    "model": "ds3",
+    "modelName": "DS3",
+    "genCount": 4,
+    "gens": [
+      "a5 (\"A5\")",
+      "ds-iii-2019-2022 (\"DS III (2019 - 2022)\")",
+      "ds-iii-2019-present (\"DS III (2019 - Présent)\")",
+      "ds-iii-2022-present (\"DS III (2022 - Présent)\")"
+    ]
+  },
+  {
+    "make": "ds",
+    "model": "ds4",
+    "modelName": "DS4",
+    "genCount": 3,
+    "gens": [
+      "e35 (\"E35\")",
+      "ds-iv-2021-present (\"DS IV (2021 - Présent)\")",
+      "ds-iv-2022-present (\"DS IV (2022 - Présent)\")"
+    ]
+  },
+  {
+    "make": "ds",
+    "model": "ds7",
+    "modelName": "DS7",
+    "genCount": 3,
+    "gens": [
+      "x74 (\"X74\")",
+      "ds-vii-2018-present (\"DS VII (2018 - Présent)\")",
+      "ds-vii-2020-present (\"DS VII (2020 - Présent)\")"
+    ]
+  },
+  {
+    "make": "ssangyong",
+    "model": "tivoli",
+    "modelName": "TIVOLI",
+    "genCount": 1,
+    "gens": [
+      "x100 (\"X100\")"
+    ]
+  },
+  {
+    "make": "ssangyong",
+    "model": "korando",
+    "modelName": "KORANDO",
+    "genCount": 3,
+    "gens": [
+      "korando-iii (\"KORANDO III\")",
+      "korando-iv (\"KORANDO IV\")",
+      "c200 (\"C200\")"
+    ]
+  },
+  {
+    "make": "mg",
+    "model": "mg3",
+    "modelName": "MG3",
+    "genCount": 2,
+    "gens": [
+      "sh (\"SH\")",
+      "mg-iii (\"MG III\")"
+    ]
+  },
+  {
+    "make": "mg",
+    "model": "mg5",
+    "modelName": "MG5",
+    "genCount": 1,
+    "gens": [
+      "apc (\"APC\")"
+    ]
+  },
+  {
+    "make": "mg",
+    "model": "zs",
+    "modelName": "ZS",
+    "genCount": 3,
+    "gens": [
+      "zs-az (\"ZS (AZ\")",
+      "zs-ev (\"ZS EV\")",
+      "zs (\"ZS\")"
+    ]
+  },
+  {
+    "make": "mg",
+    "model": "hs",
+    "modelName": "HS",
+    "genCount": 2,
+    "gens": [
+      "hs-apc (\"HS (APC\")",
+      "hs (\"HS\")"
+    ]
+  },
+  {
+    "make": "haval",
+    "model": "jolion",
+    "modelName": "JOLION",
+    "genCount": 1,
+    "gens": [
+      "hm (\"HM\")"
+    ]
+  },
+  {
+    "make": "haval",
+    "model": "h6",
+    "modelName": "H6",
+    "genCount": 2,
+    "gens": [
+      "b06 (\"B06\")",
+      "hm (\"HM\")"
+    ]
+  },
+  {
+    "make": "haval",
+    "model": "h2",
+    "modelName": "H2",
+    "genCount": 2,
+    "gens": [
+      "hg (\"HG\")",
+      "hm (\"HM\")"
+    ]
+  },
+  {
+    "make": "geely",
+    "model": "emgrand",
+    "modelName": "EMGRAND",
+    "genCount": 2,
+    "gens": [
+      "ec7 (\"EC7\")",
+      "emgrand-iii (\"EMGRAND III\")"
+    ]
+  },
+  {
+    "make": "lada",
+    "model": "vesta",
+    "modelName": "VESTA",
+    "genCount": 1,
+    "gens": [
+      "gfl11 (\"GFL11\")"
+    ]
+  },
+  {
+    "make": "lada",
+    "model": "largus",
+    "modelName": "LARGUS",
+    "genCount": 1,
+    "gens": [
+      "fs015r (\"FS015R\")"
+    ]
+  },
+  {
+    "make": "lada",
+    "model": "granta",
+    "modelName": "GRANTA",
+    "genCount": 1,
+    "gens": [
+      "2190 (\"2190\")"
+    ]
+  },
+  {
+    "make": "lada",
+    "model": "priora",
+    "modelName": "PRIORA",
+    "genCount": 2,
+    "gens": [
+      "2170 (\"2170\")",
+      "2190 (\"2190\")"
+    ]
+  },
+  {
+    "make": "lada",
+    "model": "kalina",
+    "modelName": "KALINA",
+    "genCount": 2,
+    "gens": [
+      "1119 (\"1119\")",
+      "2190 (\"2190\")"
+    ]
+  },
+  {
+    "make": "lada",
+    "model": "niva",
+    "modelName": "NIVA",
+    "genCount": 2,
+    "gens": [
+      "2121 (\"2121\")",
+      "2190 (\"2190\")"
+    ]
+  },
+  {
+    "make": "lexus",
+    "model": "is",
+    "modelName": "IS",
+    "genCount": 3,
+    "gens": [
+      "is-iii (\"IS III\")",
+      "is-ii (\"IS II\")",
+      "xe30 (\"XE30\")"
+    ]
+  },
+  {
+    "make": "lexus",
+    "model": "nx",
+    "modelName": "NX",
+    "genCount": 3,
+    "gens": [
+      "nx-i (\"NX I\")",
+      "nx-ii (\"NX II\")",
+      "az10 (\"AZ10\")"
+    ]
+  },
+  {
+    "make": "lexus",
+    "model": "rx",
+    "modelName": "RX",
+    "genCount": 4,
+    "gens": [
+      "rx-iii (\"RX III\")",
+      "rx-iv (\"RX IV\")",
+      "rx-v (\"RX V\")",
+      "al20 (\"AL20\")"
+    ]
+  },
+  {
+    "make": "infiniti",
+    "model": "q30",
+    "modelName": "Q30",
+    "genCount": 2,
+    "gens": [
+      "h15 (\"H15\")",
+      "v37 (\"V37\")"
+    ]
+  },
+  {
+    "make": "infiniti",
+    "model": "q50",
+    "modelName": "Q50",
+    "genCount": 1,
+    "gens": [
+      "v37 (\"V37\")"
+    ]
+  },
+  {
+    "make": "infiniti",
+    "model": "qx60",
+    "modelName": "QX60",
+    "genCount": 2,
+    "gens": [
+      "l50 (\"L50\")",
+      "v37 (\"V37\")"
+    ]
+  },
+  {
+    "make": "mini",
+    "model": "cooper",
+    "modelName": "Cooper",
+    "genCount": 5,
+    "gens": [
+      "f56 (\"F56\")",
+      "r50-r53 (\"R50, R53\")",
+      "r56 (\"R56\")",
+      "f55-f56 (\"F55, F56\")",
+      "cooper (\"Cooper\")"
+    ]
+  },
+  {
+    "make": "smart",
+    "model": "fortwo",
+    "modelName": "FORTWO",
+    "genCount": 5,
+    "gens": [
+      "453 (\"453\")",
+      "coupe-450 (\"Coupe (450\")",
+      "coupe-451 (\"Coupe (451\")",
+      "coupe-453 (\"Coupe (453\")",
+      "fortwo (\"Fortwo\")"
+    ]
+  },
+  {
+    "make": "smart",
+    "model": "forfour",
+    "modelName": "FORFOUR",
+    "genCount": 3,
+    "gens": [
+      "453 (\"453\")",
+      "454 (\"454\")",
+      "forfour (\"Forfour\")"
+    ]
+  },
+  {
+    "make": "dfsk",
+    "model": "glory",
+    "modelName": "GLORY",
+    "genCount": 4,
+    "gens": [
+      "560 (\"560\")",
+      "580 (\"580\")",
+      "ix5 (\"IX5\")",
+      "glory-i (\"Glory I\")"
+    ]
+  },
+  {
+    "make": "great-wall",
+    "model": "haval",
+    "modelName": "HAVAL",
+    "genCount": 1,
+    "gens": [
+      "h6 (\"H6\")"
+    ]
+  },
+  {
+    "make": "byd",
+    "model": "f3",
+    "modelName": "F3",
+    "genCount": 2,
+    "gens": [
+      "f3-i (\"F3 I\")",
+      "f3r (\"F3R\")"
+    ]
+  }
+]
