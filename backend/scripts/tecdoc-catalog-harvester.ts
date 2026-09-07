@@ -56,12 +56,14 @@ interface CleanGeneration {
 interface CleanModel {
   modelName: string;
   modelSlug: string;
+  category?: string;
   generations: Record<string, CleanGeneration>;
 }
 
 interface CleanMake {
   makeName: string;
   makeSlug: string;
+  categories?: string[];
   models: Record<string, CleanModel>;
 }
 
@@ -533,10 +535,16 @@ async function main() {
     const yearFrom = parseYearFromDateText(r.date_from_raw);
     const yearTo = parseYearFromDateText(r.date_to_raw);
 
+    // Every row this harvester touches comes from tecdoc.manufacturers.is_passenger_car =
+    // true — this data is automobile-only. Tag it so the storefront's Moto/Marine/Poids
+    // Lourd/Agricole category filters (which pass anything with no category through by
+    // default) correctly exclude it instead of leaking hundreds of car brands into every
+    // other vehicle category.
     if (!catalog[makeSlug]) {
       catalog[makeSlug] = {
         makeName,
         makeSlug,
+        categories: ['automobile'],
         models: {},
       };
     }
@@ -545,6 +553,7 @@ async function main() {
       catalog[makeSlug].models[modelSlug] = {
         modelName,
         modelSlug,
+        category: 'automobile',
         generations: {},
       };
     }
@@ -632,6 +641,26 @@ async function main() {
     }
   }
 
+  // ─── 5c. BACKFILL MISSING CATEGORY TAGS ────────────────────────────────────
+  // Same deal, different field: every make/model already in this catalog — whether from
+  // the pre-existing curated seed or any earlier harvester run before this fix existed —
+  // is automobile-only data (this script only ever queries is_passenger_car = true). Tag
+  // whatever's still missing it so the storefront's category filters stop leaking these
+  // hundreds of car brands into the Moto/Marine/Poids Lourd/Agricole categories.
+  let categoriesBackfilled = 0;
+  for (const m of Object.values(catalog)) {
+    if (!m.categories) {
+      m.categories = ['automobile'];
+      categoriesBackfilled++;
+    }
+    for (const mod of Object.values(m.models)) {
+      if (!mod.category) {
+        mod.category = 'automobile';
+        categoriesBackfilled++;
+      }
+    }
+  }
+
   // ─── 6. SAVE JSON CATALOG ─────────────────────────────────────────────────
   const saveTargets = [
     path.join(process.cwd(), 'backend/src/oil-finder/clean-catalog-hierarchy.json'),
@@ -661,6 +690,7 @@ async function main() {
   console.log(`- Total Makes in Catalog: ${Object.keys(catalog).length}`);
   console.log(`- Total New Engines Harvested & Enriched: ${totalNewEngines.toLocaleString()}`);
   console.log(`- Legacy Engines Backfilled With a Spec: ${backfilledEngines.toLocaleString()}`);
+  console.log(`- Makes/Models Tagged With Category "automobile": ${categoriesBackfilled.toLocaleString()}`);
 
   // ─── 7. PRISMA DATABASE SYNCHRONIZATION ───────────────────────────────────
   console.log('\n🔄 Synchronizing Prisma Database Tables (Vehicles & Oil Specs)...');
