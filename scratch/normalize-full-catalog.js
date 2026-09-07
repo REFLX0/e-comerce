@@ -68,10 +68,8 @@ function cleanRawGenName(name, modelName, genCount, yearFrom, yearTo, key) {
     }
   }
 
-  if (yearFrom && !cleaned.includes(String(yearFrom))) {
-    const toStr = yearTo && yearTo !== 9999 ? String(yearTo) : 'Présent';
-    cleaned = `${cleaned} (${yearFrom} - ${toStr})`;
-  }
+  // Decouple year range from genName: strip any baked-in (YYYY - YYYY) or (YYYY - Présent) suffix (supporting hyphen, en-dash, em-dash)
+  cleaned = cleaned.replace(/\s*\(\d{4}\s*[-\u2013\u2014]\s*[^)]+\)$/, '').trim();
   return cleaned;
 }
 

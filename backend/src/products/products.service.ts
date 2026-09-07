@@ -659,15 +659,20 @@ export class ProductsService {
     return this.cache.wrap(
       `products:slug:${slug}`,
       async () => {
-        const product = await this.prismaRead.db.product.findUnique({
-          where: { slug },
-          include: {
-            ...this.buildInclude(),
-            compatibilities: {
-              include: { vehicleModel: { include: { make: true } } },
+        let product: any = null;
+        try {
+          product = await this.prismaRead.db.product.findUnique({
+            where: { slug },
+            include: {
+              ...this.buildInclude(),
+              compatibilities: {
+                include: { vehicleModel: { include: { make: true } } },
+              },
             },
-          },
-        });
+          });
+        } catch (dbErr) {
+          this.logger.error(`[ProductsService.findBySlug] Error querying product table for slug "${slug}": ${(dbErr as Error).message}`);
+        }
         if (product) return this.serialize(product);
 
         // TecDoc fallback

@@ -30,7 +30,7 @@ function formatYearBadge(yearFrom?: number | null, yearTo?: number | null): stri
 
 // Format clean compact generation label for the trigger button to avoid ugly truncation
 function formatGenTrigger(genName: string, modelName?: string): string {
-  let s = genName.replace(/\s*\(\d{4}\s*-\s*[^)]+\)/g, '').trim()
+  let s = genName.replace(/\s*\(\d{4}\s*[-\u2013\u2014]\s*[^)]+\)/g, '').trim()
   if (modelName) {
     s = s.replace(new RegExp('^' + modelName + '\\s*', 'i'), '').trim()
   }
@@ -784,7 +784,8 @@ export function VehicleFinder({ onClose, initialVehicleType }: VehicleFinderProp
                   ) : (
                     filteredGenerations.map(g => {
                       const isSelected = selectedGeneration?.name === g.name
-                      const yearLabel = formatYearBadge(g.yearFrom, g.yearTo)
+                      const hasYearInName = /\(\d{4}\s*[-\u2013\u2014]/.test(g.name)
+                      const yearLabel = !hasYearInName ? formatYearBadge(g.yearFrom, g.yearTo) : null
                       return (
                         <button
                           key={g.id || g.slug || g.name}

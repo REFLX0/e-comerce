@@ -60,40 +60,71 @@ function isLowSaps(spec) {
   return LOW_SAPS_MARKERS.some(m => approvals.includes(m.toUpperCase()));
 }
 
-// Check if two engine records are physically the same engine within the SAME generation
-function isSamePhysicalEngine(e1, e2) {
-  // Exact code match
-  if (e1.engineCode && e2.engineCode && e1.engineCode.toLowerCase() === e2.engineCode.toLowerCase()) {
-    return true;
-  }
-  // Fuel type must match
+// Check if two engine records are physically the same engine within the SAME generation, and identify the match path
+function getEngineMatchReason(e1, e2) {
+  // 1. Fuel type must match
   if (e1.fuelType && e2.fuelType && e1.fuelType.toLowerCase() !== e2.fuelType.toLowerCase()) {
-    return false;
-  }
-  // Displacement check (+/- 15 cc)
-  if (e1.displacementCc && e2.displacementCc) {
-    if (Math.abs(e1.displacementCc - e2.displacementCc) > 15) return false;
-  } else {
-    return false;
-  }
-  // Horsepower check (+/- 3 hp)
-  if (e1.powerHp && e2.powerHp) {
-    if (Math.abs(e1.powerHp - e2.powerHp) > 3) return false;
-  } else {
-    return false;
+    return null;
   }
 
-  // DPF / Low-SAPS Parity Check:
+  // 2. DPF / Low-SAPS Parity Check:
   // If both carry oil specs and one is Low-SAPS (DPF Euro 5/6) and the other is High-SAPS (pre-DPF Euro 3/4), NEVER merge!
   if (e1.oilSpec && e2.oilSpec) {
     const e1Low = isLowSaps(e1.oilSpec);
     const e2Low = isLowSaps(e2.oilSpec);
     if (e1Low !== e2Low) {
-      return false; // protect DPF / SAPS boundary
+      return null; // protect DPF / SAPS boundary
     }
   }
 
-  return true;
+  // 3. Exact Code Match:
+  // Identical engine codes merge regardless of missing year data (essential for seed entries)
+  if (e1.engineCode && e2.engineCode && e1.engineCode.trim().toLowerCase() === e2.engineCode.trim().toLowerCase()) {
+    // If both happen to have known, verified years, ensure they don't strictly contradict
+    if (e1.yearFrom && e2.yearFrom) {
+      const e1From = e1.yearFrom;
+      const e1To = e1.yearTo && e1.yearTo !== 9999 ? e1.yearTo : 9999;
+      const e2From = e2.yearFrom;
+      const e2To = e2.yearTo && e2.yearTo !== 9999 ? e2.yearTo : 9999;
+      if (e1To < e2From || e2To < e1From) {
+        return null; // strictly separated production eras
+      }
+    }
+    return 'exact-code';
+  }
+
+  // 4. Fuzzy Displacement / Power Fallback:
+  // Keep the year-overlap requirement ONLY for the fuzzy path to prevent cross-era false merges.
+  // Default: Do NOT auto-merge on displacement/power alone if either side's production year is unknown!
+  if (!e1.yearFrom || !e2.yearFrom) {
+    return null;
+  }
+  const e1From = e1.yearFrom;
+  const e1To = e1.yearTo && e1.yearTo !== 9999 ? e1.yearTo : 9999;
+  const e2From = e2.yearFrom;
+  const e2To = e2.yearTo && e2.yearTo !== 9999 ? e2.yearTo : 9999;
+  if (e1To < e2From || e2To < e1From) {
+    return null; // strictly separated production eras within the generation
+  }
+
+  // Displacement check (+/- 15 cc)
+  if (e1.displacementCc && e2.displacementCc) {
+    if (Math.abs(e1.displacementCc - e2.displacementCc) > 15) return null;
+  } else {
+    return null;
+  }
+  // Horsepower check (+/- 3 hp)
+  if (e1.powerHp && e2.powerHp) {
+    if (Math.abs(e1.powerHp - e2.powerHp) > 3) return null;
+  } else {
+    return null;
+  }
+
+  return 'fuzzy';
+}
+
+function isSamePhysicalEngine(e1, e2) {
+  return getEngineMatchReason(e1, e2) !== null;
 }
 
 function mergeEngineRecords(existing, incoming) {
@@ -142,34 +173,36 @@ function mergeEngineRecords(existing, incoming) {
 }
 
 // 3. Known cross-generational template phantoms from build-popular-vehicles-sql.js
+// NOTE: All genPattern regexes MUST be anchored with ^ and $ to prevent regex leak across generations (e.g. /golf-v/ matching golf-vii)!
 const TEMPLATED_PHANTOM_PATTERNS = [
   // Volkswagen Golf
-  { make: 'volkswagen', model: 'golf', genPattern: /golf-vii|golf-viii/, engineCode: '1.9 TDI', reason: '1.9 TDI discontinued with Golf V (replaced by 1.6 TDI in Golf VI/VII)' },
-  { make: 'volkswagen', model: 'golf', genPattern: /golf-viii/, engineCode: '1.6 TDI', reason: '1.6 TDI discontinued on Golf VIII in favor of 2.0 TDI Evo' },
-  { make: 'volkswagen', model: 'golf', genPattern: /golf-iv|golf-v/, engineCode: '1.2 TSI', reason: '1.2 TSI (EA111) launched on Golf VI in 2009, never on Golf IV or V' },
-  { make: 'volkswagen', model: 'golf', genPattern: /golf-iv/, engineCode: '1.4 TSI', reason: '1.4 TSI twincharged/turbo launched on Golf V, never on Golf IV' },
+  { make: 'volkswagen', model: 'golf', genPattern: /^golf-(?:vii|viii)(?:-|$)/, engineCode: '1.9 TDI', reason: '1.9 TDI discontinued with Golf V (replaced by 1.6 TDI in Golf VI/VII)' },
+  { make: 'volkswagen', model: 'golf', genPattern: /^golf-viii(?:-|$)/, engineCode: '1.6 TDI', reason: '1.6 TDI discontinued on Golf VIII in favor of 2.0 TDI Evo' },
+  { make: 'volkswagen', model: 'golf', genPattern: /^golf-viii(?:-|$)/, engineCode: '1.2 TSI', reason: '1.2 TSI discontinued with Golf VII, replaced by 1.0 TSI / 1.5 TSI on Golf VIII' },
+  { make: 'volkswagen', model: 'golf', genPattern: /^golf-(?:iv|v)(?:-|$)/, engineCode: '1.2 TSI', reason: '1.2 TSI launched on Golf VI (EA111), never on Golf IV or V' },
+  { make: 'volkswagen', model: 'golf', genPattern: /^golf-iv(?:-|$)/, engineCode: '1.4 TSI', reason: '1.4 TSI launched on Golf V, never on Golf IV' },
   // Peugeot 206
-  { make: 'peugeot', model: '206', genPattern: /206\+/, engineCode: '2.0', reason: '2.0 S16/RC never offered on 206+' },
-  { make: 'peugeot', model: '206', genPattern: /206\+/, engineCode: '1.6 16V', reason: '1.6 16V 110hp TU5JP4 not offered on 206+ in Europe/Tunisia (only 1.1i, 1.4i, 1.4 HDi)' },
+  { make: 'peugeot', model: '206', genPattern: /^206-plus(?:-|$)/, engineCode: '2.0', reason: '2.0 S16/RC never offered on 206+' },
+  { make: 'peugeot', model: '206', genPattern: /^206-plus(?:-|$)/, engineCode: '1.6 16V', reason: '1.6 16V 110hp TU5JP4 not offered on 206+ in Europe/Tunisia' },
   // Renault Clio
-  { make: 'renault', model: 'clio', genPattern: /clio-ii/, engineCode: '0.9 TCe', reason: '0.9 TCe (H4Bt) launched in 2012 on Clio IV, never on Clio II' },
-  { make: 'renault', model: 'clio', genPattern: /clio-iii/, engineCode: '0.9 TCe', reason: '0.9 TCe launched on Clio IV, never on Clio III' },
+  { make: 'renault', model: 'clio', genPattern: /^clio-ii(?:-|$)/, engineCode: '0.9 TCe', reason: '0.9 TCe (H4Bt) launched in 2012 on Clio IV, never on Clio II' },
+  { make: 'renault', model: 'clio', genPattern: /^clio-iii(?:-|$)/, engineCode: '0.9 TCe', reason: '0.9 TCe launched on Clio IV, never on Clio III' },
   // Renault Megane
-  { make: 'renault', model: 'megane', genPattern: /megane-ii/, engineCode: '1.2 TCe', reason: '1.2 TCe (H5Ft) launched on Megane III in 2012, never on Megane II' },
+  { make: 'renault', model: 'megane', genPattern: /^megane-ii(?:-|$)/, engineCode: '1.2 TCe', reason: '1.2 TCe (H5Ft) launched on Megane III in 2012, never on Megane II' },
   // Citroen C3
-  { make: 'citroen', model: 'c3', genPattern: /c3-i/, engineCode: '1.2 PureTech', reason: 'PureTech EB engines launched in 2012 on C3 II, never on C3 I' },
+  { make: 'citroen', model: 'c3', genPattern: /^c3-i(?:-|$)/, engineCode: '1.2 PureTech', reason: 'PureTech EB engines launched in 2012 on C3 II, never on C3 I' },
   // Ford Focus
-  { make: 'ford', model: 'focus', genPattern: /focus-i|focus-ii/, engineCode: '1.0 EcoBoost', reason: '1.0 EcoBoost launched in 2012 on Focus III, never on Focus I or II' },
+  { make: 'ford', model: 'focus', genPattern: /^focus-(?:i|ii)(?:-|$)/, engineCode: '1.0 EcoBoost', reason: '1.0 EcoBoost launched in 2012 on Focus III, never on Focus I or II' },
   // Ford Fiesta
-  { make: 'ford', model: 'fiesta', genPattern: /fiesta-iv|fiesta-v/, engineCode: '1.0 EcoBoost', reason: '1.0 EcoBoost launched in late 2012 on Fiesta VI facelift, never on IV or V' },
+  { make: 'ford', model: 'fiesta', genPattern: /^fiesta-(?:iv|v)(?:-|$)/, engineCode: '1.0 EcoBoost', reason: '1.0 EcoBoost launched in late 2012 on Fiesta VI facelift, never on IV or V' },
   // Dacia (already defined)
-  { make: 'dacia', model: 'duster', genPattern: /duster-i/, engineCode: '1.3 TCe', reason: '1.3 TCe launched in 2019 on Duster II, never on Duster I' },
-  { make: 'dacia', model: 'duster', genPattern: /duster-i/, engineCode: '1.5 Blue dCi 115', reason: 'Blue dCi introduced in 2018 on Duster II, never on Duster I' },
-  { make: 'dacia', model: 'sandero', genPattern: /sandero-i/, engineCode: '0.9 TCe', reason: '0.9 TCe launched in late 2012 on Sandero II, never on Sandero I' },
-  { make: 'dacia', model: 'sandero', genPattern: /sandero-ii/, engineCode: '1.4 MPI', reason: '1.4 MPI discontinued before Sandero II launch, templated from Sandero I' },
-  { make: 'dacia', model: 'logan', genPattern: /logan-ii/, engineCode: '1.4 (LSA0, LSA5...)', reason: '1.4 MPI discontinued before Logan II, templated from Logan I' },
-  { make: 'dacia', model: 'logan', genPattern: /logan-ii/, engineCode: '1.6 MPI', reason: '1.6 MPI Euro 4 discontinued before Logan II, templated from Logan I' },
-  { make: 'dacia', model: 'logan', genPattern: /logan-ii/, engineCode: '1.5 dCi (LS0J, LS0Y)', reason: '68hp dCi Euro 4 discontinued before Logan II, templated from Logan I' }
+  { make: 'dacia', model: 'duster', genPattern: /^duster-i(?:-|$)/, engineCode: '1.3 TCe', reason: '1.3 TCe launched in 2019 on Duster II, never on Duster I' },
+  { make: 'dacia', model: 'duster', genPattern: /^duster-i(?:-|$)/, engineCode: '1.5 Blue dCi 115', reason: 'Blue dCi introduced in 2018 on Duster II, never on Duster I' },
+  { make: 'dacia', model: 'sandero', genPattern: /^sandero-i(?:-|$)/, engineCode: '0.9 TCe', reason: '0.9 TCe launched in late 2012 on Sandero II, never on Sandero I' },
+  { make: 'dacia', model: 'sandero', genPattern: /^sandero-ii(?:-|$)/, engineCode: '1.4 MPI', reason: '1.4 MPI discontinued before Sandero II launch, templated from Sandero I' },
+  { make: 'dacia', model: 'logan', genPattern: /^logan-ii(?:-|$)/, engineCode: '1.4 (LSA0, LSA5...)', reason: '1.4 MPI discontinued before Logan II, templated from Logan I' },
+  { make: 'dacia', model: 'logan', genPattern: /^logan-ii(?:-|$)/, engineCode: '1.6 MPI', reason: '1.6 MPI Euro 4 discontinued before Logan II, templated from Logan I' },
+  { make: 'dacia', model: 'logan', genPattern: /^logan-ii(?:-|$)/, engineCode: '1.5 dCi (LS0J, LS0Y)', reason: '68hp dCi Euro 4 discontinued before Logan II, templated from Logan I' }
 ];
 
 function tagTemplatedPhantoms(makeSlug, modelSlug, genSlug, engines) {
@@ -196,26 +229,98 @@ function tagTemplatedPhantoms(makeSlug, modelSlug, genSlug, engines) {
   });
 }
 
-// Find authentic spec match if available
-function enrichWithAuthenticSpec(makeSlug, modelSlug, genName, engine) {
-  if (engine.oilSpec && engine.oilSpec.viscosity) return engine;
+function extractGenNumber(s) {
+  if (!s) return null;
+  const str = s.toLowerCase();
+  if (/\b(viii|mk8|mk\s*8|8th)\b/.test(str)) return 8;
+  if (/\b(vii|mk7|mk\s*7|7th)\b/.test(str)) return 7;
+  if (/\b(vi|mk6|mk\s*6|6th)\b/.test(str)) return 6;
+  if (/\b(v|mk5|mk\s*5|5th)\b/.test(str)) return 5;
+  if (/\b(iv|mk4|mk\s*4|4th)\b/.test(str)) return 4;
+  if (/\b(iii|mk3|mk\s*3|3rd)\b/.test(str)) return 3;
+  if (/\b(ii|mk2|mk\s*2|2nd)\b/.test(str)) return 2;
+  if (/\b(i|mk1|mk\s*1|1st)\b/.test(str)) return 1;
+  return null;
+}
 
-  const match = authenticSpecs.find(a => {
-    if (a.make !== makeSlug) return false;
-    if (!a.model.includes(modelSlug) && !modelSlug.includes(a.model)) return false;
-    if (engine.fuelType && a.fuelType && engine.fuelType !== a.fuelType) return false;
-    if (engine.displacementCc && a.displacementCc && Math.abs(engine.displacementCc - a.displacementCc) <= 15) {
-      if (engine.powerHp && a.powerHp && Math.abs(engine.powerHp - a.powerHp) <= 3) {
-        return true;
+// Strict authentic spec enrichment:
+// Requires EXACT engine code match AND genuine generation/year overlap.
+// Zero fuzzy fallback on displacement/power alone.
+function enrichWithAuthenticSpec(makeSlug, modelSlug, genName, engine, targetGenYearFrom, targetGenYearTo) {
+  // If engine already has a verified spec, return as-is
+  // (we also sanitize raw contaminated entries on Golf V if detected)
+  if (engine.oilSpec && engine.oilSpec.viscosity) {
+    if (makeSlug === 'volkswagen' && modelSlug === 'golf') {
+      const gName = (genName || '').toLowerCase();
+      if ((gName.includes('golf v') || gName.includes('1k1')) && (engine.engineCode === 'DPBA' || engine.engineCode.includes('CZCA'))) {
+        return {
+          ...engine,
+          oilSpec: null
+        };
       }
     }
-    if (engine.engineCode && a.engineCode && (
-      engine.engineCode.toLowerCase().includes(a.engineCode.toLowerCase()) ||
-      a.engineCode.toLowerCase().includes(engine.engineCode.toLowerCase())
-    )) {
-      return true;
+    return engine;
+  }
+
+  const targetCode = (engine.engineCode || '').trim();
+  if (!targetCode) return engine;
+
+  const targetFrom = engine.yearFrom || targetGenYearFrom || null;
+  const targetTo = (engine.yearTo && engine.yearTo !== 9999 ? engine.yearTo : targetGenYearTo && targetGenYearTo !== 9999 ? targetGenYearTo : null) || 9999;
+
+  const match = authenticSpecs.find(a => {
+    // 1. Make match
+    if (a.make.toLowerCase() !== makeSlug.toLowerCase()) return false;
+
+    // 2. Model match
+    const cleanMod = modelSlug.toLowerCase().replace(/[^a-z0-9]/g, '');
+    const cleanAMod = a.model.toLowerCase().replace(/[^a-z0-9]/g, '');
+    if (cleanMod !== cleanAMod && !cleanMod.includes(cleanAMod) && !cleanAMod.includes(cleanMod)) return false;
+
+    // 3. Fuel type match
+    if (engine.fuelType && a.fuelType && engine.fuelType.toLowerCase() !== a.fuelType.toLowerCase()) return false;
+
+    // 4. Exact engine code match (STRICT: exact equality, or exact factory code in parentheses)
+    const aCode = (a.engineCode || '').trim().toLowerCase();
+    const tCode = targetCode.toLowerCase();
+    let exactCodeMatch = false;
+
+    if (aCode === tCode) {
+      exactCodeMatch = true;
+    } else {
+      const parenMatch = tCode.match(/\((.+?)\)/);
+      if (parenMatch && parenMatch[1].trim().toLowerCase() === aCode) {
+        exactCodeMatch = true;
+      }
     }
-    return false;
+
+    if (!exactCodeMatch) return false;
+
+    // 5. Genuine generation or year overlap
+    const authFrom = a.yearFrom || null;
+    const authTo = (a.yearTo && a.yearTo !== 9999 ? a.yearTo : null) || 9999;
+
+    // Check generation ordinal / roman numeral compatibility (e.g. Mk7 vs Mk8)
+    const tGenNum = extractGenNumber(genName);
+    const aGenNum = extractGenNumber(a.generation);
+    if (tGenNum !== null && aGenNum !== null && tGenNum !== aGenNum) {
+      return false; // Cross-generation mismatch (e.g. mk7.5 engine attached to Mk8)
+    }
+
+    if (targetFrom && authFrom) {
+      if (targetTo < authFrom || authTo < targetFrom) {
+        return false; // strictly separated production eras
+      }
+    } else {
+      // If years are missing, generation identifier must match
+      const tGenClean = (genName || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+      const aGenClean = (a.generation || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+      if (!aGenClean || (!tGenClean.includes(aGenClean) && !aGenClean.includes(tGenClean))) {
+        return false;
+      }
+    }
+
+    return true;
   });
 
   if (match) {
@@ -234,6 +339,7 @@ function enrichWithAuthenticSpec(makeSlug, modelSlug, genName, engine) {
 
 module.exports = {
   isSamePhysicalEngine,
+  getEngineMatchReason,
   mergeEngineRecords,
   tagTemplatedPhantoms,
   enrichWithAuthenticSpec,

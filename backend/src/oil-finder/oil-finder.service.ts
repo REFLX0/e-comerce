@@ -2634,12 +2634,18 @@ export class OilFinderService {
       const modelObj = makeObj.models[modSlug] || Object.values(makeObj.models).find((mod: any) => slugify(mod.modelName) === modSlug || mod.modelSlug === modSlug);
       if (modelObj && modelObj.generations) {
         return Object.values(modelObj.generations)
-          .map((g: any) => ({
-            name: g.genName,
-            slug: g.genSlug,
-            yearFrom: g.yearFrom || null,
-            yearTo: g.yearTo === 9999 ? null : g.yearTo || null,
-          }))
+          .map((g: any) => {
+            const cleanBase = (g.genName || '').replace(/\s*\(\d{4}\s*-\s*[^)]+\)$/, '').trim();
+            const to = g.yearTo === 9999 ? null : g.yearTo || null;
+            const yearRange = g.yearFrom ? ` (${g.yearFrom} - ${to ? to : 'Présent'})` : '';
+            return {
+              name: `${cleanBase}${yearRange}`,
+              rawName: cleanBase,
+              slug: g.genSlug,
+              yearFrom: g.yearFrom || null,
+              yearTo: to,
+            };
+          })
           .sort((a: any, b: any) => (a.yearFrom || 0) - (b.yearFrom || 0));
       }
     }
