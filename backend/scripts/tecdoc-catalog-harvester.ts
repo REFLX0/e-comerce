@@ -168,7 +168,14 @@ function cleanCommercialModel(rawDesc: string): { modelName: string; genHint: st
   // TecDoc also uses multi-word compounds here — confirmed on real data: Opel Corsa A-E all
   // have single-word cases (Box/Hatchback/Estate/Van); Fiat Doblo III splits into THREE
   // separate stray models over "Box Body / Estate" and "Platform/Chassis" without this.
-  const bodyMatch = s.match(/^(.*?)\s+((?:Van|Box|Estate|Saloon|Hatchback|Pickup|Combi|Kombi|Cabriolet|Cabrio|Coupe|Convertible|Roadster|Wagon|Sedan|Platform)\b.*)$/i);
+  // Confirmed against a full scan of every TecDoc model name with a "/" outside its chassis
+  // code (611 rows, all manufacturers) — "Platform/Chassis" and "Box Body / Estate" alone
+  // account for the large majority of it, across dozens of unrelated brands (VW, Iveco, Ford,
+  // Toyota, Isuzu, Land Rover, Mercedes...). Bus/MPV/Hardtop added from the same scan.
+  // Deliberately NOT touching "/" patterns that are genuinely part of the model name itself
+  // (Ferrari "365 GTB/4", "348 tb/GTB") — those are correct as-is; forcing them apart would
+  // corrupt real data instead of fixing a split.
+  const bodyMatch = s.match(/^(.*?)\s+((?:Van|Box|Estate|Saloon|Hatchback|Pickup|Combi|Kombi|Cabriolet|Cabrio|Coupe|Convertible|Roadster|Wagon|Sedan|Platform|Bus|MPV|Hardtop)\b.*)$/i);
   const bodyStyleSuffix = bodyMatch ? ` ${bodyMatch[2]}` : '';
   if (bodyMatch) s = bodyMatch[1].trim();
 
