@@ -2522,8 +2522,25 @@ export class OilFinderService {
       }
     }
 
-    // 2. Database VehicleMake (fallback)
+    // 2. Database VehicleMake (fallback) — covers makes seeded outside the TecDoc
+    // catalog (moto/marine/poids_lourd/agricole brands). Their real category lives
+    // on OilFinderVehicle rows: VehicleModel.vehicleType is left at its schema
+    // default (AUTOMOBILE) for every row and carries no real signal, so it can't be
+    // used here.
     try {
+      const categoryRows = targetCat
+        ? await this.prisma.oilFinderVehicle.findMany({
+            select: { make: true, category: true },
+            distinct: ['make', 'category'],
+          }).catch(() => [] as { make: string; category: string }[])
+        : [];
+      const categoriesByMakeSlug = new Map<string, Set<string>>();
+      for (const r of categoryRows) {
+        const s = slugify(r.make);
+        if (!categoriesByMakeSlug.has(s)) categoriesByMakeSlug.set(s, new Set());
+        categoriesByMakeSlug.get(s)!.add(r.category);
+      }
+
       const dbMakes = await (this.prisma as any).vehicleMake?.findMany?.({
         select: { name: true, slug: true },
         orderBy: { name: 'asc' },
@@ -2532,7 +2549,10 @@ export class OilFinderService {
         for (const m of dbMakes) {
           if (m.slug && m.name && !makeMap.has(m.slug)) {
             const catMake = catalog[m.slug];
-            if (!targetCat || !catMake || !catMake.categories || catMake.categories.includes(targetCat)) {
+            const cats = catMake?.categories
+              ? new Set<string>(catMake.categories)
+              : categoriesByMakeSlug.get(m.slug);
+            if (!targetCat || (cats && cats.has(targetCat))) {
               makeMap.set(m.slug, m.name);
             }
           }
