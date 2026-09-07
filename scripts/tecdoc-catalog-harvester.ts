@@ -85,22 +85,30 @@ function capitalizeWords(str: string): string {
 // column — EXTRACT() fails against it on the live VM), in formats that vary by import
 // batch: ISO ("2009-06-01"), "MM.YYYY", "YYYYMM", or plain "YYYY". Extract just the year,
 // defensively, without assuming any single format.
+// TecDoc uses "0000-00-00" as a placeholder for "not set" (seen on every still-in-production
+// vehicle's date_to) rather than an actual NULL — reject implausible years so callers never
+// see year 0 as a real value. 0 is not null/undefined, so it would otherwise slip straight
+// past every `?? fallback` check downstream as a literal (wrong) boundary.
+function plausibleYear(y: number): number | null {
+  return y >= 1900 && y <= 2100 ? y : null;
+}
+
 function parseYearFromDateText(raw: string | null | undefined): number | null {
   if (!raw) return null;
   const s = String(raw).trim();
   if (!s) return null;
 
   let m = s.match(/^(\d{4})-\d{1,2}-\d{1,2}/); // ISO: 2009-06-01
-  if (m) return parseInt(m[1], 10);
+  if (m) return plausibleYear(parseInt(m[1], 10));
 
   m = s.match(/^\d{1,2}\.(\d{4})$/); // MM.YYYY: 06.2009
-  if (m) return parseInt(m[1], 10);
+  if (m) return plausibleYear(parseInt(m[1], 10));
 
   m = s.match(/^(\d{4})(\d{2})$/); // YYYYMM: 200906
-  if (m) return parseInt(m[1], 10);
+  if (m) return plausibleYear(parseInt(m[1], 10));
 
   m = s.match(/\b(19\d{2}|20\d{2})\b/); // fallback: any plausible 4-digit year in the text
-  if (m) return parseInt(m[1], 10);
+  if (m) return plausibleYear(parseInt(m[1], 10));
 
   return null;
 }
@@ -115,6 +123,15 @@ function yearRangesOverlap(
   bFrom: number | null,
   bTo: number | null
 ): boolean {
+  // Defensive second layer: treat any non-plausible year (0, negative, etc.) as absent,
+  // regardless of what produced it — this function should never trust a bad year 0 as a
+  // real boundary even if some future caller forgets to run it through plausibleYear first.
+  const norm = (y: number | null) => (y != null && y >= 1900 && y <= 2100 ? y : null);
+  aFrom = norm(aFrom);
+  aTo = norm(aTo);
+  bFrom = norm(bFrom);
+  bTo = norm(bTo);
+
   if (aFrom == null && aTo == null) return false;
   if (bFrom == null && bTo == null) return false;
   const aStart = aFrom ?? -Infinity;
