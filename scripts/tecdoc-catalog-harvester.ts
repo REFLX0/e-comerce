@@ -495,10 +495,20 @@ async function main() {
 
   let totalNewEngines = 0;
 
+  // TecDoc's manufacturer.description sometimes uses a short/alternate form that slugifies
+  // to a DIFFERENT make than the one already curated in the catalog (e.g. raw name "VW"
+  // slugifies to "vw", a separate make from the existing hand-curated "volkswagen" entry) —
+  // discovered when a full VW harvest landed 118 real models under "vw" instead of merging
+  // into "volkswagen". Canonicalize known aliases so extraction always lands on one make.
+  const MAKE_SLUG_ALIASES: Record<string, string> = {
+    vw: 'volkswagen',
+  };
+
   for (const r of rows) {
     const makeName = (r.make_name || '').trim();
     if (!makeName) continue;
-    const makeSlug = slugify(makeName);
+    const rawMakeSlug = slugify(makeName);
+    const makeSlug = MAKE_SLUG_ALIASES[rawMakeSlug] || rawMakeSlug;
 
     const { modelName, genHint } = cleanCommercialModel(r.model_raw_name);
     const modelSlug = slugify(modelName);
