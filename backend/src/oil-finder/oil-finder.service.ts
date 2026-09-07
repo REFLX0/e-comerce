@@ -2537,8 +2537,11 @@ export class OilFinderService {
       const categoriesByMakeSlug = new Map<string, Set<string>>();
       for (const r of categoryRows) {
         const s = slugify(r.make);
+        // OilFinderVehicle.category uses 'poids' for heavy trucks; the rest of this
+        // file (targetCat resolution above, getModels()) uses 'poids_lourd'.
+        const normalizedCat = r.category === 'poids' ? 'poids_lourd' : r.category;
         if (!categoriesByMakeSlug.has(s)) categoriesByMakeSlug.set(s, new Set());
-        categoriesByMakeSlug.get(s)!.add(r.category);
+        categoriesByMakeSlug.get(s)!.add(normalizedCat);
       }
 
       const dbMakes = await (this.prisma as any).vehicleMake?.findMany?.({
