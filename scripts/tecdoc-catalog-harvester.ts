@@ -330,7 +330,10 @@ function deriveOilSpecificationRaw(
     if (isDiesel || year >= 2008) {
       return { viscosity: '5W-30', oemApproval: 'PSA B71 2290', aceaStandard: 'C2', apiStandard: 'SN/CF', capacityLiters: capacity, changeIntervalKm: 15000 };
     }
-    return { viscosity: '10W-40', oemApproval: 'PSA B71 2300', aceaStandard: 'A3/B4', apiStandard: 'SL/CF', capacityLiters: capacity, changeIntervalKm: 10000 };
+    // Pre-2008 naturally-aspirated PSA petrol (TU/EW-family engines, e.g. early C4/307/206):
+    // 5W-40 under PSA B71 2296 is the standard-documented spec for this era, not 10W-40 —
+    // corrected from a real report plus cross-check against known PSA oil-spec history.
+    return { viscosity: '5W-40', oemApproval: 'PSA B71 2296', aceaStandard: 'A3/B4', apiStandard: 'SL/CF', capacityLiters: capacity, changeIntervalKm: 10000 };
   }
 
   // ── FIAT / ALFA ROMEO / LANCIA / ABARTH / JEEP ─────────────────────────────
