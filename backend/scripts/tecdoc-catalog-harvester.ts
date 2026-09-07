@@ -136,10 +136,19 @@ function yearRangesOverlap(
 
   if (aFrom == null && aTo == null) return false;
   if (bFrom == null && bTo == null) return false;
+  // A missing yearTo does NOT mean "still in production forever" — it usually just means
+  // TecDoc never recorded an end date. Treating it as literal Infinity let a stray old row
+  // (e.g. yearFrom 2001, yearTo unknown) falsely "overlap" a much newer, already-dated
+  // generation (Fiat Doblo III, curated as 2010-2022) and corrupt its yearFrom down to 2001.
+  // Cap an open end at 5 years past its own start instead — long enough to still catch the
+  // legitimate case (a new row for a generation's LATER facelift merging into an existing
+  // curated entry that starts a few years earlier), short enough that a genuinely distant,
+  // different-era row no longer bridges across into an unrelated generation.
+  const OPEN_END_CAP_YEARS = 5;
   const aStart = aFrom ?? -Infinity;
-  const aEnd = aTo ?? Infinity;
+  const aEnd = aTo ?? (aFrom != null ? aFrom + OPEN_END_CAP_YEARS : Infinity);
   const bStart = bFrom ?? -Infinity;
-  const bEnd = bTo ?? Infinity;
+  const bEnd = bTo ?? (bFrom != null ? bFrom + OPEN_END_CAP_YEARS : Infinity);
   return aStart < bEnd && bStart < aEnd;
 }
 
@@ -554,6 +563,32 @@ async function main() {
   if (fs.existsSync(catalogPath)) {
     catalog = JSON.parse(fs.readFileSync(catalogPath, 'utf8'));
     console.log(`🔍 Loaded existing catalog with ${Object.keys(catalog).length} makes (existing generations extended, not overwritten).`);
+  }
+
+  // Self-heal: a generation's display name is sometimes a hand-curated "Name (YYYY - YYYY)"
+  // or "Name (YYYY - Présent)" range set deliberately correct — but a prior run's flawed
+  // year-overlap merge could have corrupted the separate numeric yearFrom/yearTo fields
+  // (e.g. Fiat "Doblo III (2010 - 2022)" ended up with yearFrom: 2001 after an unrelated old
+  // row wrongly bridged into it). Where the name states an explicit range, that's the
+  // authoritative value — resync the numeric fields to match it, every run.
+  let yearFieldsRepaired = 0;
+  for (const m of Object.values(catalog)) {
+    for (const mod of Object.values(m.models)) {
+      for (const gen of Object.values(mod.generations)) {
+        const rangeMatch = gen.genName.match(/\((\d{4})\s*-\s*(\d{4}|Présent|present)\)\s*$/);
+        if (!rangeMatch) continue;
+        const namedFrom = parseInt(rangeMatch[1], 10);
+        const namedTo = /présent|present/i.test(rangeMatch[2]) ? null : parseInt(rangeMatch[2], 10);
+        if (gen.yearFrom !== namedFrom || gen.yearTo !== namedTo) {
+          gen.yearFrom = namedFrom;
+          gen.yearTo = namedTo;
+          yearFieldsRepaired++;
+        }
+      }
+    }
+  }
+  if (yearFieldsRepaired > 0) {
+    console.log(`🩹 Resynced year range on ${yearFieldsRepaired.toLocaleString()} generations to match their own curated display name.`);
   }
 
   let totalNewEngines = 0;
