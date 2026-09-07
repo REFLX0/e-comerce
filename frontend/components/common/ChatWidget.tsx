@@ -271,7 +271,10 @@ export function ChatWidget() {
         .scroll-area::-webkit-scrollbar-thumb { background: rgba(22,37,76,0.15); border-radius: 4px; }
       `}</style>
 
-      <div className="fixed bottom-20 right-4 sm:bottom-6 sm:right-6 z-50 flex flex-col items-end gap-3">
+      {/* bottom offset on mobile grows via --sticky-cart-offset (set by StickyMobileCart)
+          so this button clears the sticky add-to-cart bar instead of overlapping it;
+          falls back to the original 5rem (bottom-20) when that var isn't set. */}
+      <div className="fixed bottom-[calc(5rem_+_var(--sticky-cart-offset,0px))] right-4 z-50 flex flex-col items-end gap-3 sm:bottom-6 sm:right-6">
 
         {/* ── Chat Window ───────────────────────────────────── */}
         {isOpen && (

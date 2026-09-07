@@ -28,12 +28,12 @@ export default function Header() {
           <MobileMenu />
 
           {/* Logo */}
-          <Link href="/" className="flex shrink-0 items-center group">
+          <Link href="/" className="flex shrink-0 items-center group ml-2 sm:ml-0">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/logo.jpg"
               alt="specpart"
-              className="h-10 w-auto object-contain sm:h-12 md:h-14 lg:h-16"
+              className="h-12 w-auto object-contain sm:h-12 md:h-14 lg:h-16"
             />
           </Link>
 

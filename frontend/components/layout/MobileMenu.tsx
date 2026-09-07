@@ -141,7 +141,7 @@ export default function MobileMenu() {
                       : 'border-brand-border/60 bg-brand-surface/30'
                   )}
                 >
-                  <div className="flex min-h-11 items-center justify-between px-3 py-2">
+                  <div className="flex min-h-11 items-center justify-between px-4 py-3">
                     <Link
                       href={`/categorie/${item.slug}`}
                       className={cn(

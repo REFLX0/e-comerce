@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useTranslations } from 'next-intl'
 import { ShoppingCart, MessageCircle } from 'lucide-react'
 import type { Product, ProductVariant } from '@/lib/types'
@@ -18,6 +18,7 @@ export function StickyMobileCart({ product, variant }: Props) {
   const t = useTranslations('ProductCard')
   const [isVisible, setIsVisible] = useState(false)
   const { addItem } = useCartStore()
+  const barRef = useRef<HTMLDivElement>(null)
 
   const isOutOfStock = variant.status === 'out_of_stock'
   const oldPrice = variant.priceTTC * 1.19
@@ -29,6 +30,31 @@ export function StickyMobileCart({ product, variant }: Props) {
     }
     window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
+  // Publish this bar's actual rendered height as a CSS var so other fixed
+  // elements (the ChatWidget launcher) can offset above it instead of being
+  // covered by it — 60px matches this bar's own bottom-[60px] offset (which
+  // clears MobileBottomNav), plus a 16px gap.
+  useEffect(() => {
+    const el = barRef.current
+    const updateOffset = () => {
+      document.documentElement.style.setProperty(
+        '--sticky-cart-offset',
+        isVisible && el ? `${el.offsetHeight + 60 + 16}px` : '0px'
+      )
+    }
+    updateOffset()
+    window.addEventListener('resize', updateOffset)
+    return () => window.removeEventListener('resize', updateOffset)
+  }, [isVisible])
+
+  // Don't leave the chat button permanently offset if this component unmounts
+  // (e.g. navigating away from the product page) while the bar was visible.
+  useEffect(() => {
+    return () => {
+      document.documentElement.style.setProperty('--sticky-cart-offset', '0px')
+    }
   }, [])
 
   const handleAddToCart = () => {
@@ -44,6 +70,7 @@ export function StickyMobileCart({ product, variant }: Props) {
 
   return (
     <div
+      ref={barRef}
       className={`fixed bottom-[60px] left-0 right-0 z-40 border-t border-gray-200 bg-white/95 backdrop-blur-xl shadow-overlay transition-transform duration-300 md:bottom-0 lg:hidden ${
         isVisible ? 'translate-y-0' : 'translate-y-full'
       }`}

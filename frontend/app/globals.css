@@ -202,12 +202,14 @@
     @apply bg-background text-foreground antialiased;
     min-width: 320px;
     text-rendering: geometricPrecision;
+    overflow-x: clip;
   }
   html {
     @apply font-sans;
     font-size: 16px;
     line-height: 1.5;
     scroll-behavior: smooth;
+    overflow-x: clip;
   }
 
   /* RTL: flip right-pointing chevrons so they still indicate "forward" */
