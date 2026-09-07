@@ -81,6 +81,30 @@ function capitalizeWords(str: string): string {
   return str.replace(/\b\w+/g, txt => txt.charAt(0).toUpperCase() + txt.substring(1).toLowerCase());
 }
 
+// TecDoc's date_from/date_to on this install are stored as free-text (not a real DATE
+// column — EXTRACT() fails against it on the live VM), in formats that vary by import
+// batch: ISO ("2009-06-01"), "MM.YYYY", "YYYYMM", or plain "YYYY". Extract just the year,
+// defensively, without assuming any single format.
+function parseYearFromDateText(raw: string | null | undefined): number | null {
+  if (!raw) return null;
+  const s = String(raw).trim();
+  if (!s) return null;
+
+  let m = s.match(/^(\d{4})-\d{1,2}-\d{1,2}/); // ISO: 2009-06-01
+  if (m) return parseInt(m[1], 10);
+
+  m = s.match(/^\d{1,2}\.(\d{4})$/); // MM.YYYY: 06.2009
+  if (m) return parseInt(m[1], 10);
+
+  m = s.match(/^(\d{4})(\d{2})$/); // YYYYMM: 200906
+  if (m) return parseInt(m[1], 10);
+
+  m = s.match(/\b(19\d{2}|20\d{2})\b/); // fallback: any plausible 4-digit year in the text
+  if (m) return parseInt(m[1], 10);
+
+  return null;
+}
+
 // Extract clean commercial model root (e.g. "GOLF VII (5G1)" -> "Golf", gen "Golf VII (5G1)")
 // Handles Roman-numeral generations (Golf VII, Clio IV, 208 I), single-letter GM/Opel-style
 // codes (Astra H, Corsa D, Vectra C), and Phase/facelift suffixes (Megane II Phase 2).
@@ -388,8 +412,8 @@ async function main() {
       pc.id AS car_id,
       pc.description AS car_desc,
       pc.full_description AS car_full_desc,
-      EXTRACT(YEAR FROM pc.date_from)::int AS year_from,
-      EXTRACT(YEAR FROM pc.date_to)::int AS year_to,
+      pc.date_from::text AS date_from_raw,
+      pc.date_to::text AS date_to_raw,
       e.description AS engine_code
     FROM tecdoc.manufacturers mfr
     JOIN tecdoc.models m ON m.manufacturer_id = mfr.id
@@ -400,7 +424,7 @@ async function main() {
       AND mfr.can_be_displayed = true
       AND m.can_be_displayed = true
       AND pc.can_be_displayed = true
-    ORDER BY mfr.description, m.description, pc.date_from ASC;
+    ORDER BY mfr.description, m.description;
   `;
 
   console.log('⏳ Querying PostgreSQL tecdoc schema...');
@@ -440,6 +464,8 @@ async function main() {
     const { modelName, genHint } = cleanCommercialModel(r.model_raw_name);
     const modelSlug = slugify(modelName);
     const genSlug = slugify(genHint);
+    const yearFrom = parseYearFromDateText(r.date_from_raw);
+    const yearTo = parseYearFromDateText(r.date_to_raw);
 
     if (!catalog[makeSlug]) {
       catalog[makeSlug] = {
@@ -461,15 +487,15 @@ async function main() {
       catalog[makeSlug].models[modelSlug].generations[genSlug] = {
         genName: genHint,
         genSlug,
-        yearFrom: r.year_from || null,
-        yearTo: r.year_to || null,
+        yearFrom: yearFrom || null,
+        yearTo: yearTo || null,
         engines: [],
       };
     }
 
     const genObj = catalog[makeSlug].models[modelSlug].generations[genSlug];
-    if (r.year_from && (!genObj.yearFrom || r.year_from < genObj.yearFrom)) genObj.yearFrom = r.year_from;
-    if (r.year_to && (!genObj.yearTo || r.year_to > genObj.yearTo)) genObj.yearTo = r.year_to;
+    if (yearFrom && (!genObj.yearFrom || yearFrom < genObj.yearFrom)) genObj.yearFrom = yearFrom;
+    if (yearTo && (!genObj.yearTo || yearTo > genObj.yearTo)) genObj.yearTo = yearTo;
 
     // Parse engine characteristics from car descriptions
     const descText = `${r.car_desc || ''} ${r.car_full_desc || ''}`;
@@ -494,15 +520,15 @@ async function main() {
       // Pure EVs carry no engine oil — never fabricate a spec (zero-hallucination rule).
       const oilSpec = isElectric
         ? null
-        : deriveOilSpecification(makeSlug, fuelType, r.year_from, displacementCc, powerHp);
+        : deriveOilSpecification(makeSlug, fuelType, yearFrom, displacementCc, powerHp);
       genObj.engines.push({
         engineCode,
         fuelType,
         displacementCc,
         powerHp,
         powerKw: powerHp ? Math.round(powerHp * 0.7355) : null,
-        yearFrom: r.year_from || null,
-        yearTo: r.year_to || null,
+        yearFrom: yearFrom || null,
+        yearTo: yearTo || null,
         oilSpec,
       });
       totalNewEngines++;
