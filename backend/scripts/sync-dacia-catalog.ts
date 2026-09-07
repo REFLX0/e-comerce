@@ -12,7 +12,7 @@ dotenv.config({ path: path.join(__dirname, '../.env') });
 import { PrismaClient } from '@prisma/client';
 import * as fs from 'fs';
 
-const prisma = new PrismaClient();
+const prisma: any = new PrismaClient();
 
 async function main() {
   console.log('🚀 Starting targeted Postgres sync for DACIA ONLY...');

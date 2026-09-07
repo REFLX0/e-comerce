@@ -9,7 +9,7 @@ import { PrismaClient } from '@prisma/client';
 import * as fs from 'fs';
 import * as path from 'path';
 
-const prisma = new PrismaClient();
+const prisma: any = new PrismaClient();
 
 interface CleanEngine {
   engineCode: string;
