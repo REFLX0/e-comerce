@@ -105,6 +105,25 @@ function parseYearFromDateText(raw: string | null | undefined): number | null {
   return null;
 }
 
+// Strict overlap (touching at a shared boundary year does NOT count — that's the normal
+// handover between two consecutive real generations, e.g. A3 (8L) ending 2003 and A3 (8P)
+// starting 2003). Requires at least one concrete year bound on each side, so two
+// generations that both entirely lack year data are never merged into each other.
+function yearRangesOverlap(
+  aFrom: number | null,
+  aTo: number | null,
+  bFrom: number | null,
+  bTo: number | null
+): boolean {
+  if (aFrom == null && aTo == null) return false;
+  if (bFrom == null && bTo == null) return false;
+  const aStart = aFrom ?? -Infinity;
+  const aEnd = aTo ?? Infinity;
+  const bStart = bFrom ?? -Infinity;
+  const bEnd = bTo ?? Infinity;
+  return aStart < bEnd && bStart < aEnd;
+}
+
 // Extract clean commercial model root (e.g. "GOLF VII (5G1)" -> "Golf", gen "Golf VII (5G1)")
 // Handles Roman-numeral generations (Golf VII, Clio IV, 208 I), single-letter GM/Opel-style
 // codes (Astra H, Corsa D, Vectra C), and Phase/facelift suffixes (Megane II Phase 2).
@@ -471,22 +490,15 @@ async function main() {
   let catalog: CleanCatalog = {};
   if (fs.existsSync(catalogPath)) {
     catalog = JSON.parse(fs.readFileSync(catalogPath, 'utf8'));
-    console.log(`🔍 Loaded existing catalog with ${Object.keys(catalog).length} makes (preserving Dacia & VAG).`);
+    console.log(`🔍 Loaded existing catalog with ${Object.keys(catalog).length} makes (existing generations extended, not overwritten).`);
   }
 
   let totalNewEngines = 0;
-  let skippedVerifiedEngines = 0;
 
   for (const r of rows) {
     const makeName = (r.make_name || '').trim();
     if (!makeName) continue;
     const makeSlug = slugify(makeName);
-
-    // Strictly skip already verified makes to preserve verified clean generations and audited specs
-    if (['dacia', 'volkswagen', 'audi', 'seat', 'skoda', 'cupra'].includes(makeSlug)) {
-      skippedVerifiedEngines++;
-      continue;
-    }
 
     const { modelName, genHint } = cleanCommercialModel(r.model_raw_name);
     const modelSlug = slugify(modelName);
@@ -510,17 +522,28 @@ async function main() {
       };
     }
 
-    if (!catalog[makeSlug].models[modelSlug].generations[genSlug]) {
-      catalog[makeSlug].models[modelSlug].generations[genSlug] = {
-        genName: genHint,
-        genSlug,
-        yearFrom: yearFrom || null,
-        yearTo: yearTo || null,
-        engines: [],
-      };
+    // Exact slug match first. If this is a make with pre-existing hand-curated generations
+    // (e.g. Audi/VW/Dacia), TecDoc's raw chassis-code text often won't slug-match a curated
+    // entry exactly (e.g. "A3 (8P1)" vs curated "A3 (8P)") — so fall back to matching by
+    // overlapping year range within the same model, and extend that existing generation
+    // instead of creating a visually-duplicate one in the storefront.
+    let genObj = catalog[makeSlug].models[modelSlug].generations[genSlug];
+    if (!genObj) {
+      const existingGens = Object.values(catalog[makeSlug].models[modelSlug].generations);
+      const overlapping = existingGens.find(g => yearRangesOverlap(g.yearFrom, g.yearTo, yearFrom, yearTo));
+      if (overlapping) {
+        genObj = overlapping;
+      } else {
+        genObj = {
+          genName: genHint,
+          genSlug,
+          yearFrom: yearFrom || null,
+          yearTo: yearTo || null,
+          engines: [],
+        };
+        catalog[makeSlug].models[modelSlug].generations[genSlug] = genObj;
+      }
     }
-
-    const genObj = catalog[makeSlug].models[modelSlug].generations[genSlug];
     if (yearFrom && (!genObj.yearFrom || yearFrom < genObj.yearFrom)) genObj.yearFrom = yearFrom;
     if (yearTo && (!genObj.yearTo || yearTo > genObj.yearTo)) genObj.yearTo = yearTo;
 
@@ -589,7 +612,6 @@ async function main() {
 
   console.log(`\n💾 Saved updated catalog to ${savedCount} target paths.`);
   console.log(`- Total Makes in Catalog: ${Object.keys(catalog).length}`);
-  console.log(`- Total Verified Engines Preserved: ${skippedVerifiedEngines.toLocaleString()}`);
   console.log(`- Total New Engines Harvested & Enriched: ${totalNewEngines.toLocaleString()}`);
 
   // ─── 7. PRISMA DATABASE SYNCHRONIZATION ───────────────────────────────────
