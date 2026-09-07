@@ -571,6 +571,13 @@ async function main() {
   let dbMakesCount = 0;
   let dbGensCount = 0;
   let dbEnginesCount = 0;
+  let makesProcessed = 0;
+  const totalMakes = Object.keys(catalog).length;
+
+  // Most engines within a brand/era share the exact same derived oil spec (same viscosity +
+  // OEM approval + ACEA class), so caching fingerprint -> spec.id here collapses what would
+  // otherwise be ~22k redundant upserts down to a few hundred distinct ones.
+  const oilSpecCache = new Map<string, string>();
 
   for (const [mSlug, m] of Object.entries(catalog)) {
     try {
@@ -615,31 +622,48 @@ async function main() {
             where: { generationId: genRecord.id },
           });
 
+          const engineRows: {
+            generationId: string;
+            name: string;
+            engineCode: string;
+            displacementCc: number | null;
+            powerHp: number | null;
+            powerKw: number | null;
+            fuelType: string;
+            oilSpecId: string | null;
+          }[] = [];
+
           for (const eng of gen.engines) {
             let oilSpecId: string | null = null;
             if (eng.oilSpec?.viscosity) {
               const fingerprint = `${slugify(eng.oilSpec.viscosity)}_${slugify(eng.oilSpec.oemApproval || 'generic')}_${slugify(eng.oilSpec.aceaStandard || 'std')}`;
-              const spec = await prisma.oilFinderOilSpec.upsert({
-                where: { fingerprint },
-                update: {
-                  viscosity: eng.oilSpec.viscosity,
-                  oemApproval: eng.oilSpec.oemApproval || null,
-                  aceaStandard: eng.oilSpec.aceaStandard || null,
-                  apiStandard: eng.oilSpec.apiStandard || null,
-                  capacityLiters: eng.oilSpec.capacityLiters || null,
-                  changeIntervalKm: eng.oilSpec.changeIntervalKm || null,
-                },
-                create: {
-                  viscosity: eng.oilSpec.viscosity,
-                  oemApproval: eng.oilSpec.oemApproval || null,
-                  aceaStandard: eng.oilSpec.aceaStandard || null,
-                  apiStandard: eng.oilSpec.apiStandard || null,
-                  capacityLiters: eng.oilSpec.capacityLiters || null,
-                  changeIntervalKm: eng.oilSpec.changeIntervalKm || null,
-                  fingerprint,
-                },
-              });
-              oilSpecId = spec.id;
+
+              let specId = oilSpecCache.get(fingerprint);
+              if (!specId) {
+                const spec = await prisma.oilFinderOilSpec.upsert({
+                  where: { fingerprint },
+                  update: {
+                    viscosity: eng.oilSpec.viscosity,
+                    oemApproval: eng.oilSpec.oemApproval || null,
+                    aceaStandard: eng.oilSpec.aceaStandard || null,
+                    apiStandard: eng.oilSpec.apiStandard || null,
+                    capacityLiters: eng.oilSpec.capacityLiters || null,
+                    changeIntervalKm: eng.oilSpec.changeIntervalKm || null,
+                  },
+                  create: {
+                    viscosity: eng.oilSpec.viscosity,
+                    oemApproval: eng.oilSpec.oemApproval || null,
+                    aceaStandard: eng.oilSpec.aceaStandard || null,
+                    apiStandard: eng.oilSpec.apiStandard || null,
+                    capacityLiters: eng.oilSpec.capacityLiters || null,
+                    changeIntervalKm: eng.oilSpec.changeIntervalKm || null,
+                    fingerprint,
+                  },
+                });
+                specId = spec.id;
+                oilSpecCache.set(fingerprint, specId);
+              }
+              oilSpecId = specId;
 
               // Also link in OilFinderVehicle for instant findByVehicle query resolution
               await prisma.oilFinderVehicle.upsert({
@@ -653,7 +677,7 @@ async function main() {
                   },
                 },
                 update: {
-                  oilSpecId: spec.id,
+                  oilSpecId,
                   fuelType: eng.fuelType,
                   displacementCc: eng.displacementCc || null,
                   powerHp: eng.powerHp ? Number(eng.powerHp) : null,
@@ -668,7 +692,7 @@ async function main() {
                   engineCode: eng.engineCode,
                   source: 'tecdoc-harvested',
                   confidence: 'high',
-                  oilSpecId: spec.id,
+                  oilSpecId,
                   fuelType: eng.fuelType,
                   displacementCc: eng.displacementCc || null,
                   powerHp: eng.powerHp ? Number(eng.powerHp) : null,
@@ -679,21 +703,31 @@ async function main() {
               });
             }
 
-            await prisma.vehicleEngine.create({
-              data: {
-                generationId: genRecord.id,
-                name: `${eng.engineCode} (${eng.powerHp ? eng.powerHp + ' ch' : ''})`.trim(),
-                engineCode: eng.engineCode,
-                displacementCc: eng.displacementCc || null,
-                powerHp: eng.powerHp ? Number(eng.powerHp) : null,
-                powerKw: eng.powerKw ? Number(eng.powerKw) : null,
-                fuelType: eng.fuelType || 'essence',
-                oilSpecId,
-              },
+            engineRows.push({
+              generationId: genRecord.id,
+              name: `${eng.engineCode} (${eng.powerHp ? eng.powerHp + ' ch' : ''})`.trim(),
+              engineCode: eng.engineCode,
+              displacementCc: eng.displacementCc || null,
+              powerHp: eng.powerHp ? Number(eng.powerHp) : null,
+              powerKw: eng.powerKw ? Number(eng.powerKw) : null,
+              fuelType: eng.fuelType || 'essence',
+              oilSpecId,
             });
-            dbEnginesCount++;
+          }
+
+          // One bulk insert per generation instead of one round trip per engine.
+          if (engineRows.length > 0) {
+            await prisma.vehicleEngine.createMany({ data: engineRows });
+            dbEnginesCount += engineRows.length;
           }
         }
+      }
+
+      makesProcessed++;
+      if (makesProcessed % 10 === 0 || makesProcessed === totalMakes) {
+        console.log(
+          `  ... synced ${makesProcessed}/${totalMakes} makes (${dbGensCount.toLocaleString()} generations, ${dbEnginesCount.toLocaleString()} engines so far)`
+        );
       }
     } catch (err: any) {
       console.warn(`Warning syncing make ${m.makeName}:`, err.message);
