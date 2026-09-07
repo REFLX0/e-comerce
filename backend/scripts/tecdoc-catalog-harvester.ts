@@ -82,42 +82,52 @@ function capitalizeWords(str: string): string {
 }
 
 // Extract clean commercial model root (e.g. "GOLF VII (5G1)" -> "Golf", gen "Golf VII (5G1)")
+// Handles Roman-numeral generations (Golf VII, Clio IV, 208 I), single-letter GM/Opel-style
+// codes (Astra H, Corsa D, Vectra C), and Phase/facelift suffixes (Megane II Phase 2).
+const ROMAN_NUMERAL = /^(?:X{1,3}(?:IX|IV|V?I{0,3})?|IX|IV|VIII|VII|VI|V|III|II|I|X)$/i;
+
 function cleanCommercialModel(rawDesc: string): { modelName: string; genHint: string } {
   let s = (rawDesc || '').trim();
-  const parenMatch = s.match(/\s*\(([^)]+)\)$/);
-  const chassis = parenMatch ? parenMatch[1] : '';
-  s = s.replace(/\s*\([^)]+\)$/, '').trim();
 
-  // Roman numerals or generation numbers: "GOLF VII", "CLIO IV", "208 I", "MEGANE III"
-  const romanMatch = s.match(/^(.*?)\s+(I{1,3}|IV|V?I{0,3}|VIII|IX|X|\d)(?:\s+.*)?$/i);
-  if (romanMatch) {
-    const baseName = capitalizeWords(romanMatch[1].trim());
-    const genRoman = romanMatch[2].toUpperCase();
-    return {
-      modelName: baseName,
-      genHint: `${baseName} ${genRoman}${chassis ? ` (${chassis})` : ''}`,
-    };
+  // Capture the trailing parenthetical chassis-code group, e.g. "(5G1, BQ1)"
+  const parenMatch = s.match(/\s*\(([^)]+)\)\s*$/);
+  const chassis = parenMatch ? parenMatch[1].trim() : '';
+  s = s.replace(/\s*\([^)]+\)\s*$/, '').trim();
+
+  // Phase / Facelift hints: "MEGANE II Phase 2" -> keep suffix, isolate base for gen matching
+  const phaseMatch = s.match(/^(.*?)\s+(Phase\s+\d+|Restylée|LCI|Facelift)\s*$/i);
+  const phaseSuffix = phaseMatch ? ` ${phaseMatch[2]}` : '';
+  if (phaseMatch) s = phaseMatch[1].trim();
+
+  const tokens = s.split(/\s+/).filter(Boolean);
+  const last = tokens[tokens.length - 1] || '';
+  let baseTokens = tokens;
+  let genToken = '';
+
+  if (tokens.length > 1 && ROMAN_NUMERAL.test(last)) {
+    // "GOLF VII", "CLIO IV", "208 I", "MEGANE III"
+    genToken = last.toUpperCase();
+    baseTokens = tokens.slice(0, -1);
+  } else if (tokens.length > 1 && /^[A-Z]$/.test(last)) {
+    // "ASTRA H", "CORSA D", "VECTRA C" — GM/Opel single-letter generation codes
+    genToken = last.toUpperCase();
+    baseTokens = tokens.slice(0, -1);
+  } else if (tokens.length > 1 && /^\d$/.test(last)) {
+    // Rare numeric generation suffix
+    genToken = last;
+    baseTokens = tokens.slice(0, -1);
   }
 
-  // Phase / Facelift hints: "MEGANE II Phase 2"
-  const phaseMatch = s.match(/^(.*?)\s+(Phase\s+\d+|Restylée|LCI)/i);
-  if (phaseMatch) {
-    const baseName = capitalizeWords(phaseMatch[1].trim());
-    return {
-      modelName: baseName,
-      genHint: s,
-    };
-  }
-
-  const baseName = capitalizeWords(s);
+  const baseName = capitalizeWords(baseTokens.join(' ').trim());
+  const genCore = genToken ? `${baseName} ${genToken}` : baseName;
   return {
     modelName: baseName,
-    genHint: chassis ? `${baseName} (${chassis})` : baseName,
+    genHint: `${genCore}${phaseSuffix}${chassis ? ` (${chassis})` : ''}`.trim(),
   };
 }
 
 // ─── 4. DETERMINISTIC OEM OIL SPECIFICATION ENGINE ────────────────────────────
-export function deriveOilSpecification(
+function deriveOilSpecificationRaw(
   makeSlug: string,
   fuelType: string,
   yearFrom: number | null,
@@ -158,6 +168,11 @@ export function deriveOilSpecification(
       }
       return { viscosity: '5W-40', oemApproval: 'Renault RN0710', aceaStandard: 'A3/B4', apiStandard: 'SL/CF', capacityLiters: capacity, changeIntervalKm: 10000 };
     } else {
+      // TCe RS / high-performance petrol (Megane RS, Clio RS, Alpine A110): High-SAPS is
+      // correct here — no FAP on these engines.
+      if (powerHp && powerHp >= 175) {
+        return { viscosity: '0W-40', oemApproval: 'Renault RN17 RSA / RN0710', aceaStandard: 'A3/B4', apiStandard: 'SN', capacityLiters: capacity, changeIntervalKm: 10000 };
+      }
       if (year >= 2018) {
         return { viscosity: '5W-30', oemApproval: 'Renault RN17', aceaStandard: 'C3', apiStandard: 'SN', capacityLiters: capacity, changeIntervalKm: 15000 };
       }
@@ -171,15 +186,20 @@ export function deriveOilSpecification(
   // ── VAG (VOLKSWAGEN, AUDI, SEAT, SKODA, CUPRA) ──────────────────────────────
   if (['volkswagen', 'audi', 'seat', 'skoda', 'cupra'].includes(makeSlug)) {
     if (isDiesel) {
+      // Pre-2007 diesels predate the EU5 DPF mandate — no FAP, so High-SAPS is safe and correct.
+      if (year < 2007) {
+        return { viscosity: '10W-40', oemApproval: 'VW 501.01/505.00', aceaStandard: 'B3/B4', apiStandard: 'CF', capacityLiters: capacity, changeIntervalKm: 10000 };
+      }
       return { viscosity: '5W-30', oemApproval: 'VW 504.00/507.00', aceaStandard: 'C3', apiStandard: 'SN', capacityLiters: capacity, changeIntervalKm: 15000 };
     } else {
-      if (year >= 2019 && displacementCc && displacementCc <= 1500) {
+      // EA211 evo / EA888 Gen 3B+/Gen 4 (2018+) run on the low-viscosity 508/509 spec
+      if (year >= 2018 && displacementCc && displacementCc <= 2000) {
         return { viscosity: '0W-20', oemApproval: 'VW 508.00/509.00', aceaStandard: 'C5', apiStandard: 'SP', capacityLiters: capacity, changeIntervalKm: 15000 };
       }
       if (year >= 2008) {
         return { viscosity: '5W-30', oemApproval: 'VW 504.00/507.00', aceaStandard: 'C3', apiStandard: 'SN', capacityLiters: capacity, changeIntervalKm: 15000 };
       }
-      return { viscosity: '5W-40', oemApproval: 'VW 502.00/505.01', aceaStandard: 'C3', apiStandard: 'SL/CF', capacityLiters: capacity, changeIntervalKm: 10000 };
+      return { viscosity: '5W-40', oemApproval: 'VW 502.00/505.01', aceaStandard: 'A3/B4', apiStandard: 'SL/CF', capacityLiters: capacity, changeIntervalKm: 10000 };
     }
   }
 
@@ -296,6 +316,63 @@ export function deriveOilSpecification(
   return { viscosity: '5W-40', oemApproval: 'Universal High-Performance', aceaStandard: 'A3/B4', apiStandard: 'SL/CF', capacityLiters: capacity, changeIntervalKm: 10000 };
 }
 
+function isDieselFuelText(fuelType: string): boolean {
+  const f = (fuelType || '').toLowerCase();
+  return (
+    f.includes('diesel') ||
+    f.includes('dci') ||
+    f.includes('tdi') ||
+    f.includes('hdi') ||
+    f.includes('cdi') ||
+    f.includes('crdi') ||
+    f.includes('d-4d')
+  );
+}
+
+// HARD SAFETY INVARIANT — independent of any per-brand branch above: a diesel built in
+// 2011 or later is assumed to carry a DPF/FAP. It is FORBIDDEN to hand back a High-SAPS
+// (A3/B4, or any non-C-class) ACEA rating for such an engine, since High-SAPS ash content
+// clogs the particulate filter. This runs as a final gate on every brand's output so a
+// mistake in one branch can never leak a filter-killing recommendation.
+function enforceFapSafety(
+  spec: CleanEngine['oilSpec'],
+  isDiesel: boolean,
+  year: number
+): CleanEngine['oilSpec'] {
+  if (!spec || !isDiesel || year < 2011) return spec;
+  const acea = (spec.aceaStandard || '').toUpperCase();
+  const isLowOrMidSaps = /\bC[1-6]\b/.test(acea);
+  if (isLowOrMidSaps) return spec;
+  return {
+    ...spec,
+    viscosity: spec.viscosity && /^0W/.test(spec.viscosity) ? spec.viscosity : '5W-30',
+    oemApproval: `${spec.oemApproval || 'OEM'} (Low-SAPS override — DPF safety)`,
+    aceaStandard: 'C3',
+    apiStandard: 'SN/CF',
+  };
+}
+
+// Pure battery-electric vehicles carry no engine oil at all. Never guess a spec for them.
+function isPureElectric(descText: string, displacementCc: number | null): boolean {
+  if (displacementCc) return false; // a parsed liter figure means it's a combustion engine
+  const t = (descText || '').toLowerCase();
+  const hybridMarkers = /hybrid|hybride|phev|mhev|hev\b|e-tech|e-hdi|e-hybrid/;
+  if (hybridMarkers.test(t)) return false; // hybrids with a combustion engine still need oil
+  const evMarkers = /(?:^|[^a-z])(100%?\s*electri|électriq|electric|\be-tron\b|\bev\b|kwh|zoe|\bleaf\b|ioniq\s*(5|6)|\bborn\b|bz4x|\btaycan\b|e-208|e-2008|e-c4|id\.\d|id\d\b)/;
+  return evMarkers.test(t);
+}
+
+export function deriveOilSpecification(
+  makeSlug: string,
+  fuelType: string,
+  yearFrom: number | null,
+  displacementCc: number | null,
+  powerHp: number | null
+): CleanEngine['oilSpec'] {
+  const raw = deriveOilSpecificationRaw(makeSlug, fuelType, yearFrom, displacementCc, powerHp);
+  return enforceFapSafety(raw, isDieselFuelText(fuelType), yearFrom || 2015);
+}
+
 // ─── 5. MAIN HARVESTER EXECUTION ──────────────────────────────────────────────
 async function main() {
   console.log('================================================================');
@@ -401,11 +478,12 @@ async function main() {
     const powerHp = hpMatch ? parseInt(hpMatch[1], 10) : null;
     const displacementCc = ccMatch ? Math.round(parseFloat(ccMatch[1]) * 1000) : null;
     const isDiesel = /diesel|hdi|dci|tdi|cdi|crdi|d-4d/i.test(descText);
-    const fuelType = isDiesel ? 'diesel' : 'essence';
+    const isElectric = !isDiesel && isPureElectric(descText, displacementCc);
+    const fuelType = isElectric ? 'electrique' : isDiesel ? 'diesel' : 'essence';
 
     const engineCode =
       (r.engine_code || '').trim() ||
-      (ccMatch ? `${ccMatch[1]} ${isDiesel ? 'Diesel' : 'Essence'}` : 'Moteur Standard');
+      (ccMatch ? `${ccMatch[1]} ${isDiesel ? 'Diesel' : 'Essence'}` : isElectric ? 'Moteur Electrique' : 'Moteur Standard');
 
     // Deduplicate within generation
     const exists = genObj.engines.some(
@@ -413,7 +491,10 @@ async function main() {
     );
 
     if (!exists) {
-      const oilSpec = deriveOilSpecification(makeSlug, fuelType, r.year_from, displacementCc, powerHp);
+      // Pure EVs carry no engine oil — never fabricate a spec (zero-hallucination rule).
+      const oilSpec = isElectric
+        ? null
+        : deriveOilSpecification(makeSlug, fuelType, r.year_from, displacementCc, powerHp);
       genObj.engines.push({
         engineCode,
         fuelType,
