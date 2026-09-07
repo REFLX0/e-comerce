@@ -5079,85 +5079,136 @@
     "makeName": "Dacia",
     "makeSlug": "dacia",
     "models": {
-      "sandero": {
-        "modelName": "Sandero",
-        "modelSlug": "sandero",
+      "dokker": {
+        "modelName": "Dokker",
+        "modelSlug": "dokker",
         "generations": {
-          "sandero-iii-2020-present": {
-            "genName": "Sandero III (2020 - Présent)",
-            "genSlug": "sandero-iii-2020-present",
-            "yearFrom": 2020,
-            "yearTo": 9999,
+          "dokker-i": {
+            "genName": "Dokker I",
+            "genSlug": "dokker-i",
+            "yearFrom": 2013,
+            "yearTo": 2021,
             "engines": [
               {
-                "engineCode": "H4D 470",
-                "fuelType": "essence",
-                "displacementCc": 999,
-                "powerHp": 91,
-                "powerKw": 67,
-                "yearFrom": 2020,
-                "yearTo": 9999,
+                "engineCode": "1.5 dCi 90 (K9K 626)",
+                "fuelType": "diesel",
+                "displacementCc": 1461,
+                "powerHp": 90,
+                "powerKw": 66,
+                "yearFrom": 2013,
+                "yearTo": 2021,
                 "oilSpec": {
                   "viscosity": "5W-30",
-                  "oemApproval": "RN17",
+                  "oemApproval": "RN0720",
                   "apiStandard": null,
-                  "aceaStandard": "C3",
-                  "capacityLiters": 4.1,
+                  "aceaStandard": "C4",
+                  "capacityLiters": 4.5,
                   "changeIntervalKm": 15000
                 }
               },
               {
-                "engineCode": "K9K 872",
+                "engineCode": "1.5 dCi 75",
                 "fuelType": "diesel",
                 "displacementCc": 1461,
-                "powerHp": 95,
-                "powerKw": 70,
-                "yearFrom": 2020,
-                "yearTo": 9999,
-                "oilSpec": {
-                  "viscosity": "5W-30",
-                  "oemApproval": "RN17",
-                  "apiStandard": null,
-                  "aceaStandard": "C3",
-                  "capacityLiters": 5.7,
-                  "changeIntervalKm": 15000
-                }
+                "powerHp": 75,
+                "powerKw": 55,
+                "yearFrom": null,
+                "yearTo": null,
+                "oilSpec": null
+              },
+              {
+                "engineCode": "1.6 MPI",
+                "fuelType": "essence",
+                "displacementCc": 1598,
+                "powerHp": 85,
+                "powerKw": 63,
+                "yearFrom": null,
+                "yearTo": null,
+                "oilSpec": null
               }
             ]
-          },
-          "stepway-2021-present": {
-            "genName": "Stepway (2021 - Présent)",
-            "genSlug": "stepway-2021-present",
-            "yearFrom": 2021,
-            "yearTo": 9999,
+          }
+        }
+      },
+      "sandero": {
+        "modelName": "Sandero",
+        "modelSlug": "sandero",
+        "generations": {
+          "sandero-i": {
+            "genName": "Sandero I",
+            "genSlug": "sandero-i",
+            "yearFrom": 2008,
+            "yearTo": 2012,
             "engines": [
               {
-                "engineCode": "H4D 470",
+                "engineCode": "K7M 800",
                 "fuelType": "essence",
-                "displacementCc": 999,
-                "powerHp": 91,
-                "powerKw": 67,
-                "yearFrom": 2021,
-                "yearTo": 9999,
+                "displacementCc": 1598,
+                "powerHp": 85,
+                "powerKw": 62,
+                "yearFrom": 2008,
+                "yearTo": 2012,
                 "oilSpec": {
                   "viscosity": "5W-30",
-                  "oemApproval": "RN17",
+                  "oemApproval": "RN0700",
                   "apiStandard": null,
-                  "aceaStandard": "C3",
-                  "capacityLiters": 4.1,
+                  "aceaStandard": "A3/B4",
+                  "capacityLiters": 3.3,
                   "changeIntervalKm": 15000
                 }
+              },
+              {
+                "engineCode": "1.4 MPI",
+                "fuelType": "essence",
+                "displacementCc": 1390,
+                "powerHp": 75,
+                "powerKw": null,
+                "yearFrom": null,
+                "yearTo": null,
+                "oilSpec": null
+              },
+              {
+                "engineCode": "1.2 16V",
+                "fuelType": "essence",
+                "displacementCc": 1149,
+                "powerHp": 75,
+                "powerKw": null,
+                "yearFrom": null,
+                "yearTo": null,
+                "oilSpec": null
+              },
+              {
+                "engineCode": "0.9 TCe",
+                "fuelType": "essence",
+                "displacementCc": 898,
+                "powerHp": 90,
+                "powerKw": null,
+                "yearFrom": null,
+                "yearTo": null,
+                "oilSpec": null,
+                "isTemplatedSeed": true,
+                "verificationNote": "0.9 TCe (H4B) launched in late 2012 on Sandero II, never on Sandero I"
+              },
+              {
+                "engineCode": "1.5 dCi",
+                "fuelType": "diesel",
+                "displacementCc": 1461,
+                "powerHp": 75,
+                "powerKw": null,
+                "yearFrom": null,
+                "yearTo": null,
+                "oilSpec": null
               }
             ]
           },
-          "sandero-ii-2012-2020": {
-            "genName": "Sandero II (2012 - 2020)",
-            "genSlug": "sandero-ii-2012-2020",
+          "sandero-ii": {
+            "genName": "Sandero II",
+            "genSlug": "sandero-ii",
             "yearFrom": 2012,
             "yearTo": 2020,
             "engines": [
               {
-                "engineCode": "H4B 400",
+                "engineCode": "0.9 TCe (H4B 400)",
                 "fuelType": "essence",
                 "displacementCc": 898,
                 "powerHp": 90,
@@ -5189,15 +5240,7 @@
                   "capacityLiters": 4.5,
                   "changeIntervalKm": 15000
                 }
-              }
-            ]
-          },
-          "stepway-2018-2020": {
-            "genName": "Stepway (2018 - 2020)",
-            "genSlug": "stepway-2018-2020",
-            "yearFrom": 2018,
-            "yearTo": 2020,
-            "engines": [
+              },
               {
                 "engineCode": "H4D 450",
                 "fuelType": "essence",
@@ -5214,188 +5257,251 @@
                   "capacityLiters": 4.1,
                   "changeIntervalKm": 15000
                 }
+              },
+              {
+                "engineCode": "1.4 MPI",
+                "fuelType": "essence",
+                "displacementCc": 1390,
+                "powerHp": 75,
+                "powerKw": 55,
+                "yearFrom": null,
+                "yearTo": null,
+                "oilSpec": null,
+                "isTemplatedSeed": true,
+                "verificationNote": "1.4 MPI (K7J) discontinued before Sandero II launch, templated from Sandero I"
+              },
+              {
+                "engineCode": "1.2 16V",
+                "fuelType": "essence",
+                "displacementCc": 1149,
+                "powerHp": 75,
+                "powerKw": 55,
+                "yearFrom": null,
+                "yearTo": null,
+                "oilSpec": null
+              },
+              {
+                "engineCode": "1.5 dCi",
+                "fuelType": "diesel",
+                "displacementCc": 1461,
+                "powerHp": 75,
+                "powerKw": 55,
+                "yearFrom": null,
+                "yearTo": null,
+                "oilSpec": null
               }
             ]
           },
-          "sandero-i-2008-2012": {
-            "genName": "Sandero I (2008 - 2012)",
-            "genSlug": "sandero-i-2008-2012",
-            "yearFrom": 2008,
-            "yearTo": 2012,
+          "sandero-iii": {
+            "genName": "Sandero III",
+            "genSlug": "sandero-iii",
+            "yearFrom": 2020,
+            "yearTo": 9999,
             "engines": [
               {
-                "engineCode": "K7M 800",
+                "engineCode": "H4D 470",
                 "fuelType": "essence",
-                "displacementCc": 1598,
-                "powerHp": 85,
-                "powerKw": 62,
-                "yearFrom": 2008,
-                "yearTo": 2012,
+                "displacementCc": 999,
+                "powerHp": 91,
+                "powerKw": 67,
+                "yearFrom": 2021,
+                "yearTo": 9999,
                 "oilSpec": {
                   "viscosity": "5W-30",
-                  "oemApproval": "RN0700",
+                  "oemApproval": "RN17",
                   "apiStandard": null,
-                  "aceaStandard": "A3/B4",
-                  "capacityLiters": 3.3,
+                  "aceaStandard": "C3",
+                  "capacityLiters": 4.1,
+                  "changeIntervalKm": 15000
+                }
+              },
+              {
+                "engineCode": "K9K 872",
+                "fuelType": "diesel",
+                "displacementCc": 1461,
+                "powerHp": 95,
+                "powerKw": 70,
+                "yearFrom": 2020,
+                "yearTo": 9999,
+                "oilSpec": {
+                  "viscosity": "5W-30",
+                  "oemApproval": "RN17",
+                  "apiStandard": null,
+                  "aceaStandard": "C3",
+                  "capacityLiters": 5.7,
                   "changeIntervalKm": 15000
                 }
               }
             ]
-          },
-          "sandero-i": {
-            "genName": "Sandero I",
-            "genSlug": "sandero-i",
-            "yearFrom": null,
-            "yearTo": null,
-            "engines": [
-              {
-                "engineCode": "1.4 MPI",
-                "fuelType": "essence",
-                "displacementCc": 1390,
-                "powerHp": 75,
-                "powerKw": null,
-                "yearFrom": null,
-                "yearTo": null,
-                "oilSpec": null
-              },
-              {
-                "engineCode": "1.2 16V",
-                "fuelType": "essence",
-                "displacementCc": 1149,
-                "powerHp": 75,
-                "powerKw": null,
-                "yearFrom": null,
-                "yearTo": null,
-                "oilSpec": null
-              },
-              {
-                "engineCode": "0.9 TCe",
-                "fuelType": "essence",
-                "displacementCc": 898,
-                "powerHp": 90,
-                "powerKw": null,
-                "yearFrom": null,
-                "yearTo": null,
-                "oilSpec": null
-              },
-              {
-                "engineCode": "1.5 dCi",
-                "fuelType": "diesel",
-                "displacementCc": 1461,
-                "powerHp": 75,
-                "powerKw": null,
-                "yearFrom": null,
-                "yearTo": null,
-                "oilSpec": null
-              }
-            ]
-          },
-          "sandero-ii": {
-            "genName": "Sandero II",
-            "genSlug": "sandero-ii",
-            "yearFrom": null,
-            "yearTo": null,
-            "engines": [
-              {
-                "engineCode": "1.4 MPI",
-                "fuelType": "essence",
-                "displacementCc": 1390,
-                "powerHp": 75,
-                "powerKw": null,
-                "yearFrom": null,
-                "yearTo": null,
-                "oilSpec": null
-              },
-              {
-                "engineCode": "1.2 16V",
-                "fuelType": "essence",
-                "displacementCc": 1149,
-                "powerHp": 75,
-                "powerKw": null,
-                "yearFrom": null,
-                "yearTo": null,
-                "oilSpec": null
-              },
-              {
-                "engineCode": "0.9 TCe",
-                "fuelType": "essence",
-                "displacementCc": 898,
-                "powerHp": 90,
-                "powerKw": null,
-                "yearFrom": null,
-                "yearTo": null,
-                "oilSpec": null
-              },
-              {
-                "engineCode": "1.5 dCi",
-                "fuelType": "diesel",
-                "displacementCc": 1461,
-                "powerHp": 75,
-                "powerKw": null,
-                "yearFrom": null,
-                "yearTo": null,
-                "oilSpec": null
-              }
-            ]
-          },
-          "stepway": {
-            "genName": "Stepway",
-            "genSlug": "stepway",
-            "yearFrom": null,
-            "yearTo": null,
-            "engines": [
-              {
-                "engineCode": "1.4 MPI",
-                "fuelType": "essence",
-                "displacementCc": 1390,
-                "powerHp": 75,
-                "powerKw": null,
-                "yearFrom": null,
-                "yearTo": null,
-                "oilSpec": null
-              },
-              {
-                "engineCode": "1.2 16V",
-                "fuelType": "essence",
-                "displacementCc": 1149,
-                "powerHp": 75,
-                "powerKw": null,
-                "yearFrom": null,
-                "yearTo": null,
-                "oilSpec": null
-              },
-              {
-                "engineCode": "0.9 TCe",
-                "fuelType": "essence",
-                "displacementCc": 898,
-                "powerHp": 90,
-                "powerKw": null,
-                "yearFrom": null,
-                "yearTo": null,
-                "oilSpec": null
-              },
-              {
-                "engineCode": "1.5 dCi",
-                "fuelType": "diesel",
-                "displacementCc": 1461,
-                "powerHp": 75,
-                "powerKw": null,
-                "yearFrom": null,
-                "yearTo": null,
-                "oilSpec": null
-              }
-            ]
           }
-        },
-        "category": "automobile"
+        }
       },
       "logan": {
         "modelName": "Logan",
         "modelSlug": "logan",
         "generations": {
-          "logan-iii-2020-present": {
-            "genName": "Logan III (2020 - Présent)",
-            "genSlug": "logan-iii-2020-present",
+          "logan-i": {
+            "genName": "Logan I",
+            "genSlug": "logan-i",
+            "yearFrom": 2004,
+            "yearTo": 2013,
+            "engines": [
+              {
+                "engineCode": "1.4 (LSA0, LSA5...)",
+                "fuelType": "essence",
+                "displacementCc": 1390,
+                "powerHp": 75,
+                "powerKw": 55,
+                "yearFrom": null,
+                "yearTo": null,
+                "oilSpec": null
+              },
+              {
+                "engineCode": "1.2 16V",
+                "fuelType": "essence",
+                "displacementCc": 1149,
+                "powerHp": 75,
+                "powerKw": 55,
+                "yearFrom": null,
+                "yearTo": null,
+                "oilSpec": null
+              },
+              {
+                "engineCode": "1.6 MPI",
+                "fuelType": "essence",
+                "displacementCc": 1598,
+                "powerHp": 87,
+                "powerKw": 64,
+                "yearFrom": null,
+                "yearTo": null,
+                "oilSpec": null
+              },
+              {
+                "engineCode": "1.5 dCi (LS0J, LS0Y)",
+                "fuelType": "diesel",
+                "displacementCc": 1461,
+                "powerHp": 68,
+                "powerKw": 50,
+                "yearFrom": null,
+                "yearTo": null,
+                "oilSpec": null
+              },
+              {
+                "engineCode": "1.5 dCi",
+                "fuelType": "diesel",
+                "displacementCc": 1461,
+                "powerHp": 75,
+                "powerKw": 55,
+                "yearFrom": null,
+                "yearTo": null,
+                "oilSpec": null
+              },
+              {
+                "engineCode": "0.9 TCe 90",
+                "fuelType": "essence",
+                "displacementCc": 898,
+                "powerHp": 90,
+                "powerKw": 66,
+                "yearFrom": null,
+                "yearTo": null,
+                "oilSpec": null
+              }
+            ]
+          },
+          "logan-ii": {
+            "genName": "Logan II",
+            "genSlug": "logan-ii",
+            "yearFrom": 2013,
+            "yearTo": 2020,
+            "engines": [
+              {
+                "engineCode": "B4D",
+                "fuelType": "essence",
+                "displacementCc": 999,
+                "powerHp": 75,
+                "powerKw": 55,
+                "yearFrom": 2014,
+                "yearTo": 2020,
+                "oilSpec": {
+                  "viscosity": "5W-30",
+                  "oemApproval": "RN0710",
+                  "apiStandard": null,
+                  "aceaStandard": "C3",
+                  "capacityLiters": 4,
+                  "changeIntervalKm": 15000
+                }
+              },
+              {
+                "engineCode": "1.4 (LSA0, LSA5...)",
+                "fuelType": "essence",
+                "displacementCc": 1390,
+                "powerHp": 75,
+                "powerKw": null,
+                "yearFrom": null,
+                "yearTo": null,
+                "oilSpec": null,
+                "isTemplatedSeed": true,
+                "verificationNote": "Chassis LSA0 and 1.4 MPI discontinued before Logan II, templated from Logan I"
+              },
+              {
+                "engineCode": "1.2 16V",
+                "fuelType": "essence",
+                "displacementCc": 1149,
+                "powerHp": 75,
+                "powerKw": null,
+                "yearFrom": null,
+                "yearTo": null,
+                "oilSpec": null
+              },
+              {
+                "engineCode": "1.6 MPI",
+                "fuelType": "essence",
+                "displacementCc": 1598,
+                "powerHp": 87,
+                "powerKw": null,
+                "yearFrom": null,
+                "yearTo": null,
+                "oilSpec": null,
+                "isTemplatedSeed": true,
+                "verificationNote": "1.6 MPI (K7M 710 Euro 4) discontinued before Logan II, templated from Logan I"
+              },
+              {
+                "engineCode": "1.5 dCi (LS0J, LS0Y)",
+                "fuelType": "diesel",
+                "displacementCc": 1461,
+                "powerHp": 68,
+                "powerKw": null,
+                "yearFrom": null,
+                "yearTo": null,
+                "oilSpec": null,
+                "isTemplatedSeed": true,
+                "verificationNote": "Chassis LS0J and 68hp dCi Euro 4 discontinued before Logan II, templated from Logan I"
+              },
+              {
+                "engineCode": "1.5 dCi",
+                "fuelType": "diesel",
+                "displacementCc": 1461,
+                "powerHp": 75,
+                "powerKw": null,
+                "yearFrom": null,
+                "yearTo": null,
+                "oilSpec": null
+              },
+              {
+                "engineCode": "0.9 TCe 90",
+                "fuelType": "essence",
+                "displacementCc": 898,
+                "powerHp": 90,
+                "powerKw": null,
+                "yearFrom": null,
+                "yearTo": null,
+                "oilSpec": null
+              }
+            ]
+          },
+          "logan-iii": {
+            "genName": "Logan III",
+            "genSlug": "logan-iii",
             "yearFrom": 2020,
             "yearTo": 9999,
             "engines": [
@@ -5434,246 +5540,188 @@
                 }
               }
             ]
-          },
-          "logan-ii-2014-2020": {
-            "genName": "Logan II (2014 - 2020)",
-            "genSlug": "logan-ii-2014-2020",
-            "yearFrom": 2014,
-            "yearTo": 2020,
-            "engines": [
-              {
-                "engineCode": "B4D",
-                "fuelType": "essence",
-                "displacementCc": 999,
-                "powerHp": 75,
-                "powerKw": 55,
-                "yearFrom": 2014,
-                "yearTo": 2020,
-                "oilSpec": {
-                  "viscosity": "5W-30",
-                  "oemApproval": "RN0710",
-                  "apiStandard": null,
-                  "aceaStandard": "C3",
-                  "capacityLiters": 4,
-                  "changeIntervalKm": 15000
-                }
-              }
-            ]
-          },
-          "logan-i": {
-            "genName": "Logan I",
-            "genSlug": "logan-i",
-            "yearFrom": null,
-            "yearTo": null,
-            "engines": [
-              {
-                "engineCode": "1.4 (LSA0, LSA5...)",
-                "fuelType": "essence",
-                "displacementCc": 1390,
-                "powerHp": 75,
-                "powerKw": null,
-                "yearFrom": null,
-                "yearTo": null,
-                "oilSpec": null
-              },
-              {
-                "engineCode": "1.2 16V",
-                "fuelType": "essence",
-                "displacementCc": 1149,
-                "powerHp": 75,
-                "powerKw": null,
-                "yearFrom": null,
-                "yearTo": null,
-                "oilSpec": null
-              },
-              {
-                "engineCode": "1.6 MPI",
-                "fuelType": "essence",
-                "displacementCc": 1598,
-                "powerHp": 87,
-                "powerKw": null,
-                "yearFrom": null,
-                "yearTo": null,
-                "oilSpec": null
-              },
-              {
-                "engineCode": "1.5 dCi (LS0J, LS0Y)",
-                "fuelType": "diesel",
-                "displacementCc": 1461,
-                "powerHp": 68,
-                "powerKw": null,
-                "yearFrom": null,
-                "yearTo": null,
-                "oilSpec": null
-              },
-              {
-                "engineCode": "1.5 dCi",
-                "fuelType": "diesel",
-                "displacementCc": 1461,
-                "powerHp": 75,
-                "powerKw": null,
-                "yearFrom": null,
-                "yearTo": null,
-                "oilSpec": null
-              },
-              {
-                "engineCode": "0.9 TCe 90",
-                "fuelType": "essence",
-                "displacementCc": 898,
-                "powerHp": 90,
-                "powerKw": null,
-                "yearFrom": null,
-                "yearTo": null,
-                "oilSpec": null
-              }
-            ]
-          },
-          "logan-ii": {
-            "genName": "Logan II",
-            "genSlug": "logan-ii",
-            "yearFrom": null,
-            "yearTo": null,
-            "engines": [
-              {
-                "engineCode": "1.4 (LSA0, LSA5...)",
-                "fuelType": "essence",
-                "displacementCc": 1390,
-                "powerHp": 75,
-                "powerKw": null,
-                "yearFrom": null,
-                "yearTo": null,
-                "oilSpec": null
-              },
-              {
-                "engineCode": "1.2 16V",
-                "fuelType": "essence",
-                "displacementCc": 1149,
-                "powerHp": 75,
-                "powerKw": null,
-                "yearFrom": null,
-                "yearTo": null,
-                "oilSpec": null
-              },
-              {
-                "engineCode": "1.6 MPI",
-                "fuelType": "essence",
-                "displacementCc": 1598,
-                "powerHp": 87,
-                "powerKw": null,
-                "yearFrom": null,
-                "yearTo": null,
-                "oilSpec": null
-              },
-              {
-                "engineCode": "1.5 dCi (LS0J, LS0Y)",
-                "fuelType": "diesel",
-                "displacementCc": 1461,
-                "powerHp": 68,
-                "powerKw": null,
-                "yearFrom": null,
-                "yearTo": null,
-                "oilSpec": null
-              },
-              {
-                "engineCode": "1.5 dCi",
-                "fuelType": "diesel",
-                "displacementCc": 1461,
-                "powerHp": 75,
-                "powerKw": null,
-                "yearFrom": null,
-                "yearTo": null,
-                "oilSpec": null
-              },
-              {
-                "engineCode": "0.9 TCe 90",
-                "fuelType": "essence",
-                "displacementCc": 898,
-                "powerHp": 90,
-                "powerKw": null,
-                "yearFrom": null,
-                "yearTo": null,
-                "oilSpec": null
-              }
-            ]
-          },
-          "mcv-ks": {
-            "genName": "MCV (KS_",
-            "genSlug": "mcv-ks",
-            "yearFrom": null,
-            "yearTo": null,
-            "engines": [
-              {
-                "engineCode": "1.4 (LSA0, LSA5...)",
-                "fuelType": "essence",
-                "displacementCc": 1390,
-                "powerHp": 75,
-                "powerKw": null,
-                "yearFrom": null,
-                "yearTo": null,
-                "oilSpec": null
-              },
-              {
-                "engineCode": "1.2 16V",
-                "fuelType": "essence",
-                "displacementCc": 1149,
-                "powerHp": 75,
-                "powerKw": null,
-                "yearFrom": null,
-                "yearTo": null,
-                "oilSpec": null
-              },
-              {
-                "engineCode": "1.6 MPI",
-                "fuelType": "essence",
-                "displacementCc": 1598,
-                "powerHp": 87,
-                "powerKw": null,
-                "yearFrom": null,
-                "yearTo": null,
-                "oilSpec": null
-              },
-              {
-                "engineCode": "1.5 dCi (LS0J, LS0Y)",
-                "fuelType": "diesel",
-                "displacementCc": 1461,
-                "powerHp": 68,
-                "powerKw": null,
-                "yearFrom": null,
-                "yearTo": null,
-                "oilSpec": null
-              },
-              {
-                "engineCode": "1.5 dCi",
-                "fuelType": "diesel",
-                "displacementCc": 1461,
-                "powerHp": 75,
-                "powerKw": null,
-                "yearFrom": null,
-                "yearTo": null,
-                "oilSpec": null
-              },
-              {
-                "engineCode": "0.9 TCe 90",
-                "fuelType": "essence",
-                "displacementCc": 898,
-                "powerHp": 90,
-                "powerKw": null,
-                "yearFrom": null,
-                "yearTo": null,
-                "oilSpec": null
-              }
-            ]
           }
-        },
-        "category": "automobile"
+        }
       },
       "duster": {
         "modelName": "Duster",
         "modelSlug": "duster",
         "generations": {
-          "duster-iii-2024-present": {
-            "genName": "Duster III (2024 - Présent)",
-            "genSlug": "duster-iii-2024-present",
+          "duster-i": {
+            "genName": "Duster I",
+            "genSlug": "duster-i",
+            "yearFrom": 2010,
+            "yearTo": 2018,
+            "engines": [
+              {
+                "engineCode": "1.6 16V (K4M 606)",
+                "fuelType": "essence",
+                "displacementCc": 1598,
+                "powerHp": 105,
+                "powerKw": 77,
+                "yearFrom": 2010,
+                "yearTo": 2018,
+                "oilSpec": {
+                  "viscosity": "5W-30",
+                  "oemApproval": "RN0700",
+                  "apiStandard": "SN",
+                  "aceaStandard": "A3/B4",
+                  "capacityLiters": 4.1,
+                  "changeIntervalKm": 15000
+                }
+              },
+              {
+                "engineCode": "1.5 dCi 110 4x4 (K9K 898)",
+                "fuelType": "diesel",
+                "displacementCc": 1461,
+                "powerHp": 109,
+                "powerKw": 80,
+                "yearFrom": 2010,
+                "yearTo": 2018,
+                "oilSpec": {
+                  "viscosity": "5W-30",
+                  "oemApproval": "RN0720",
+                  "apiStandard": null,
+                  "aceaStandard": "C4",
+                  "capacityLiters": 5,
+                  "changeIntervalKm": 15000
+                }
+              },
+              {
+                "engineCode": "1.5 Blue dCi 115",
+                "fuelType": "diesel",
+                "displacementCc": 1461,
+                "powerHp": 115,
+                "powerKw": 85,
+                "yearFrom": null,
+                "yearTo": null,
+                "oilSpec": null,
+                "isTemplatedSeed": true,
+                "verificationNote": "Blue dCi (SCR AdBlue) introduced in 2018 on Duster II, never on Duster I"
+              },
+              {
+                "engineCode": "1.3 TCe",
+                "fuelType": "essence",
+                "displacementCc": 1332,
+                "powerHp": 130,
+                "powerKw": 96,
+                "yearFrom": null,
+                "yearTo": null,
+                "oilSpec": null,
+                "isTemplatedSeed": true,
+                "verificationNote": "1.3 TCe (H5Ht) launched in 2019 on Duster II, never on Duster I"
+              }
+            ]
+          },
+          "duster-ii": {
+            "genName": "Duster II",
+            "genSlug": "duster-ii",
+            "yearFrom": 2018,
+            "yearTo": 2024,
+            "engines": [
+              {
+                "engineCode": "H4M 738",
+                "fuelType": "essence",
+                "displacementCc": 1598,
+                "powerHp": 114,
+                "powerKw": 84,
+                "yearFrom": 2018,
+                "yearTo": 2024,
+                "oilSpec": {
+                  "viscosity": "5W-30",
+                  "oemApproval": "RN17",
+                  "apiStandard": null,
+                  "aceaStandard": "A3/B4",
+                  "capacityLiters": 4.2,
+                  "changeIntervalKm": 15000
+                }
+              },
+              {
+                "engineCode": "K9K 656",
+                "fuelType": "diesel",
+                "displacementCc": 1461,
+                "powerHp": 90,
+                "powerKw": 66,
+                "yearFrom": 2018,
+                "yearTo": 2024,
+                "oilSpec": {
+                  "viscosity": "5W-30",
+                  "oemApproval": "RN17",
+                  "apiStandard": null,
+                  "aceaStandard": "C3",
+                  "capacityLiters": 4.5,
+                  "changeIntervalKm": 15000
+                }
+              },
+              {
+                "engineCode": "1.3 TCe (H5Ht 480)",
+                "fuelType": "essence",
+                "displacementCc": 1332,
+                "powerHp": 131,
+                "powerKw": 96,
+                "yearFrom": 2019,
+                "yearTo": 2024,
+                "oilSpec": {
+                  "viscosity": "5W-30",
+                  "oemApproval": "RN17",
+                  "apiStandard": null,
+                  "aceaStandard": "C3",
+                  "capacityLiters": 4.8,
+                  "changeIntervalKm": 15000
+                }
+              },
+              {
+                "engineCode": "H4D 470",
+                "fuelType": "essence",
+                "displacementCc": 999,
+                "powerHp": 91,
+                "powerKw": 67,
+                "yearFrom": 2019,
+                "yearTo": 2024,
+                "oilSpec": {
+                  "viscosity": "5W-30",
+                  "oemApproval": "RN17",
+                  "apiStandard": null,
+                  "aceaStandard": "C3",
+                  "capacityLiters": 4.1,
+                  "changeIntervalKm": 15000
+                }
+              },
+              {
+                "engineCode": "1.5 dCi 110 4x4",
+                "fuelType": "diesel",
+                "displacementCc": 1461,
+                "powerHp": 110,
+                "powerKw": 81,
+                "yearFrom": null,
+                "yearTo": null,
+                "oilSpec": null
+              },
+              {
+                "engineCode": "1.5 Blue dCi 115",
+                "fuelType": "diesel",
+                "displacementCc": 1461,
+                "powerHp": 115,
+                "powerKw": 85,
+                "yearFrom": null,
+                "yearTo": null,
+                "oilSpec": null
+              },
+              {
+                "engineCode": "1.6 16V",
+                "fuelType": "essence",
+                "displacementCc": 1598,
+                "powerHp": 105,
+                "powerKw": 77,
+                "yearFrom": null,
+                "yearTo": null,
+                "oilSpec": null
+              }
+            ]
+          },
+          "duster-iii": {
+            "genName": "Duster III",
+            "genSlug": "duster-iii",
             "yearFrom": 2024,
             "yearTo": 9999,
             "engines": [
@@ -5729,335 +5777,47 @@
                 }
               }
             ]
-          },
-          "duster-ii-2019-2024": {
-            "genName": "Duster II (2019 - 2024)",
-            "genSlug": "duster-ii-2019-2024",
-            "yearFrom": 2019,
-            "yearTo": 2024,
+          }
+        }
+      },
+      "lodgy": {
+        "modelName": "Lodgy",
+        "modelSlug": "lodgy",
+        "generations": {
+          "lodgy-i": {
+            "genName": "Lodgy I",
+            "genSlug": "lodgy-i",
+            "yearFrom": 2013,
+            "yearTo": 2022,
             "engines": [
               {
-                "engineCode": "H5Ht 480",
-                "fuelType": "essence",
-                "displacementCc": 1332,
-                "powerHp": 131,
-                "powerKw": 96,
-                "yearFrom": 2019,
-                "yearTo": 2024,
-                "oilSpec": {
-                  "viscosity": "5W-30",
-                  "oemApproval": "RN17",
-                  "apiStandard": null,
-                  "aceaStandard": "C3",
-                  "capacityLiters": 4.8,
-                  "changeIntervalKm": 15000
-                }
-              },
-              {
-                "engineCode": "H4D 470",
-                "fuelType": "essence",
-                "displacementCc": 999,
-                "powerHp": 91,
-                "powerKw": 67,
-                "yearFrom": 2019,
-                "yearTo": 2024,
-                "oilSpec": {
-                  "viscosity": "5W-30",
-                  "oemApproval": "RN17",
-                  "apiStandard": null,
-                  "aceaStandard": "C3",
-                  "capacityLiters": 4.1,
-                  "changeIntervalKm": 15000
-                }
-              }
-            ]
-          },
-          "duster-ii-2018-2024": {
-            "genName": "Duster II (2018 - 2024)",
-            "genSlug": "duster-ii-2018-2024",
-            "yearFrom": 2018,
-            "yearTo": 2024,
-            "engines": [
-              {
-                "engineCode": "H4M 738",
-                "fuelType": "essence",
-                "displacementCc": 1598,
-                "powerHp": 114,
-                "powerKw": 84,
-                "yearFrom": 2018,
-                "yearTo": 2024,
-                "oilSpec": {
-                  "viscosity": "5W-30",
-                  "oemApproval": "RN17",
-                  "apiStandard": null,
-                  "aceaStandard": "A3/B4",
-                  "capacityLiters": 4.2,
-                  "changeIntervalKm": 15000
-                }
-              },
-              {
-                "engineCode": "K9K 656",
-                "fuelType": "diesel",
-                "displacementCc": 1461,
-                "powerHp": 90,
-                "powerKw": 66,
-                "yearFrom": 2018,
-                "yearTo": 2024,
-                "oilSpec": {
-                  "viscosity": "5W-30",
-                  "oemApproval": "RN17",
-                  "apiStandard": null,
-                  "aceaStandard": "C3",
-                  "capacityLiters": 4.5,
-                  "changeIntervalKm": 15000
-                }
-              }
-            ]
-          },
-          "duster-i-2010-2018": {
-            "genName": "Duster I (2010 - 2018)",
-            "genSlug": "duster-i-2010-2018",
-            "yearFrom": 2010,
-            "yearTo": 2018,
-            "engines": [
-              {
-                "engineCode": "K4M 606",
-                "fuelType": "essence",
-                "displacementCc": 1598,
-                "powerHp": 105,
-                "powerKw": 77,
-                "yearFrom": 2010,
-                "yearTo": 2018,
-                "oilSpec": {
-                  "viscosity": "5W-30",
-                  "oemApproval": "RN0700",
-                  "apiStandard": "SN",
-                  "aceaStandard": "A3/B4",
-                  "capacityLiters": 4.1,
-                  "changeIntervalKm": 15000
-                }
-              },
-              {
-                "engineCode": "K9K 898",
+                "engineCode": "K9K 846",
                 "fuelType": "diesel",
                 "displacementCc": 1461,
                 "powerHp": 109,
                 "powerKw": 80,
-                "yearFrom": 2010,
-                "yearTo": 2018,
+                "yearFrom": 2013,
+                "yearTo": 2022,
                 "oilSpec": {
                   "viscosity": "5W-30",
-                  "oemApproval": "RN0720",
+                  "oemApproval": "RN0710",
                   "apiStandard": null,
-                  "aceaStandard": "C4",
-                  "capacityLiters": 5,
+                  "aceaStandard": "C3",
+                  "capacityLiters": 4.4,
                   "changeIntervalKm": 15000
                 }
               }
             ]
-          },
-          "hs": {
-            "genName": "HS_",
-            "genSlug": "hs",
-            "yearFrom": null,
-            "yearTo": null,
-            "engines": [
-              {
-                "engineCode": "1.5 dCi 110 4x4",
-                "fuelType": "diesel",
-                "displacementCc": 1461,
-                "powerHp": 110,
-                "powerKw": null,
-                "yearFrom": null,
-                "yearTo": null,
-                "oilSpec": null
-              },
-              {
-                "engineCode": "1.5 Blue dCi 115",
-                "fuelType": "diesel",
-                "displacementCc": 1461,
-                "powerHp": 115,
-                "powerKw": null,
-                "yearFrom": null,
-                "yearTo": null,
-                "oilSpec": null
-              },
-              {
-                "engineCode": "1.6 16V",
-                "fuelType": "essence",
-                "displacementCc": 1598,
-                "powerHp": 105,
-                "powerKw": null,
-                "yearFrom": null,
-                "yearTo": null,
-                "oilSpec": null
-              },
-              {
-                "engineCode": "1.3 TCe",
-                "fuelType": "essence",
-                "displacementCc": 1332,
-                "powerHp": 130,
-                "powerKw": null,
-                "yearFrom": null,
-                "yearTo": null,
-                "oilSpec": null
-              }
-            ]
-          },
-          "hm": {
-            "genName": "HM_",
-            "genSlug": "hm",
-            "yearFrom": null,
-            "yearTo": null,
-            "engines": [
-              {
-                "engineCode": "1.5 dCi 110 4x4",
-                "fuelType": "diesel",
-                "displacementCc": 1461,
-                "powerHp": 110,
-                "powerKw": null,
-                "yearFrom": null,
-                "yearTo": null,
-                "oilSpec": null
-              },
-              {
-                "engineCode": "1.5 Blue dCi 115",
-                "fuelType": "diesel",
-                "displacementCc": 1461,
-                "powerHp": 115,
-                "powerKw": null,
-                "yearFrom": null,
-                "yearTo": null,
-                "oilSpec": null
-              },
-              {
-                "engineCode": "1.6 16V",
-                "fuelType": "essence",
-                "displacementCc": 1598,
-                "powerHp": 105,
-                "powerKw": null,
-                "yearFrom": null,
-                "yearTo": null,
-                "oilSpec": null
-              },
-              {
-                "engineCode": "1.3 TCe",
-                "fuelType": "essence",
-                "displacementCc": 1332,
-                "powerHp": 130,
-                "powerKw": null,
-                "yearFrom": null,
-                "yearTo": null,
-                "oilSpec": null
-              }
-            ]
-          },
-          "duster-ii": {
-            "genName": "Duster II",
-            "genSlug": "duster-ii",
-            "yearFrom": null,
-            "yearTo": null,
-            "engines": [
-              {
-                "engineCode": "1.5 dCi 110 4x4",
-                "fuelType": "diesel",
-                "displacementCc": 1461,
-                "powerHp": 110,
-                "powerKw": null,
-                "yearFrom": null,
-                "yearTo": null,
-                "oilSpec": null
-              },
-              {
-                "engineCode": "1.5 Blue dCi 115",
-                "fuelType": "diesel",
-                "displacementCc": 1461,
-                "powerHp": 115,
-                "powerKw": null,
-                "yearFrom": null,
-                "yearTo": null,
-                "oilSpec": null
-              },
-              {
-                "engineCode": "1.6 16V",
-                "fuelType": "essence",
-                "displacementCc": 1598,
-                "powerHp": 105,
-                "powerKw": null,
-                "yearFrom": null,
-                "yearTo": null,
-                "oilSpec": null
-              },
-              {
-                "engineCode": "1.3 TCe",
-                "fuelType": "essence",
-                "displacementCc": 1332,
-                "powerHp": 130,
-                "powerKw": null,
-                "yearFrom": null,
-                "yearTo": null,
-                "oilSpec": null
-              }
-            ]
-          },
-          "duster-i": {
-            "genName": "Duster I",
-            "genSlug": "duster-i",
-            "yearFrom": null,
-            "yearTo": null,
-            "engines": [
-              {
-                "engineCode": "1.5 dCi 110 4x4",
-                "fuelType": "diesel",
-                "displacementCc": 1461,
-                "powerHp": 110,
-                "powerKw": null,
-                "yearFrom": null,
-                "yearTo": null,
-                "oilSpec": null
-              },
-              {
-                "engineCode": "1.5 Blue dCi 115",
-                "fuelType": "diesel",
-                "displacementCc": 1461,
-                "powerHp": 115,
-                "powerKw": null,
-                "yearFrom": null,
-                "yearTo": null,
-                "oilSpec": null
-              },
-              {
-                "engineCode": "1.6 16V",
-                "fuelType": "essence",
-                "displacementCc": 1598,
-                "powerHp": 105,
-                "powerKw": null,
-                "yearFrom": null,
-                "yearTo": null,
-                "oilSpec": null
-              },
-              {
-                "engineCode": "1.3 TCe",
-                "fuelType": "essence",
-                "displacementCc": 1332,
-                "powerHp": 130,
-                "powerKw": null,
-                "yearFrom": null,
-                "yearTo": null,
-                "oilSpec": null
-              }
-            ]
           }
-        },
-        "category": "automobile"
+        }
       },
       "jogger": {
         "modelName": "Jogger",
         "modelSlug": "jogger",
         "generations": {
-          "jogger-i-2022-present": {
-            "genName": "Jogger I (2022 - Présent)",
-            "genSlug": "jogger-i-2022-present",
+          "jogger-i": {
+            "genName": "Jogger I",
+            "genSlug": "jogger-i",
             "yearFrom": 2022,
             "yearTo": 9999,
             "engines": [
@@ -6097,191 +5857,9 @@
               }
             ]
           }
-        },
-        "category": "automobile"
-      },
-      "lodgy": {
-        "modelName": "Lodgy",
-        "modelSlug": "lodgy",
-        "generations": {
-          "lodgy-i-2013-2022": {
-            "genName": "Lodgy I (2013 - 2022)",
-            "genSlug": "lodgy-i-2013-2022",
-            "yearFrom": 2013,
-            "yearTo": 2022,
-            "engines": [
-              {
-                "engineCode": "K9K 846",
-                "fuelType": "diesel",
-                "displacementCc": 1461,
-                "powerHp": 109,
-                "powerKw": 80,
-                "yearFrom": 2013,
-                "yearTo": 2022,
-                "oilSpec": {
-                  "viscosity": "5W-30",
-                  "oemApproval": "RN0710",
-                  "apiStandard": null,
-                  "aceaStandard": "C3",
-                  "capacityLiters": 4.4,
-                  "changeIntervalKm": 15000
-                }
-              }
-            ]
-          }
-        },
-        "category": "automobile"
-      },
-      "dokker": {
-        "modelName": "Dokker",
-        "modelSlug": "dokker",
-        "generations": {
-          "dokker-i-2013-2021": {
-            "genName": "Dokker I (2013 - 2021)",
-            "genSlug": "dokker-i-2013-2021",
-            "yearFrom": 2013,
-            "yearTo": 2021,
-            "engines": [
-              {
-                "engineCode": "K9K 626",
-                "fuelType": "diesel",
-                "displacementCc": 1461,
-                "powerHp": 90,
-                "powerKw": 66,
-                "yearFrom": 2013,
-                "yearTo": 2021,
-                "oilSpec": {
-                  "viscosity": "5W-30",
-                  "oemApproval": "RN0720",
-                  "apiStandard": null,
-                  "aceaStandard": "C4",
-                  "capacityLiters": 4.5,
-                  "changeIntervalKm": 15000
-                }
-              }
-            ]
-          },
-          "sd": {
-            "genName": "SD_",
-            "genSlug": "sd",
-            "yearFrom": null,
-            "yearTo": null,
-            "engines": [
-              {
-                "engineCode": "1.5 dCi 75",
-                "fuelType": "diesel",
-                "displacementCc": 1461,
-                "powerHp": 75,
-                "powerKw": null,
-                "yearFrom": null,
-                "yearTo": null,
-                "oilSpec": null
-              },
-              {
-                "engineCode": "1.5 dCi 90",
-                "fuelType": "diesel",
-                "displacementCc": 1461,
-                "powerHp": 90,
-                "powerKw": null,
-                "yearFrom": null,
-                "yearTo": null,
-                "oilSpec": null
-              },
-              {
-                "engineCode": "1.6 MPI",
-                "fuelType": "essence",
-                "displacementCc": 1598,
-                "powerHp": 85,
-                "powerKw": null,
-                "yearFrom": null,
-                "yearTo": null,
-                "oilSpec": null
-              }
-            ]
-          },
-          "express-fsd": {
-            "genName": "Express (FSD_",
-            "genSlug": "express-fsd",
-            "yearFrom": null,
-            "yearTo": null,
-            "engines": [
-              {
-                "engineCode": "1.5 dCi 75",
-                "fuelType": "diesel",
-                "displacementCc": 1461,
-                "powerHp": 75,
-                "powerKw": null,
-                "yearFrom": null,
-                "yearTo": null,
-                "oilSpec": null
-              },
-              {
-                "engineCode": "1.5 dCi 90",
-                "fuelType": "diesel",
-                "displacementCc": 1461,
-                "powerHp": 90,
-                "powerKw": null,
-                "yearFrom": null,
-                "yearTo": null,
-                "oilSpec": null
-              },
-              {
-                "engineCode": "1.6 MPI",
-                "fuelType": "essence",
-                "displacementCc": 1598,
-                "powerHp": 85,
-                "powerKw": null,
-                "yearFrom": null,
-                "yearTo": null,
-                "oilSpec": null
-              }
-            ]
-          },
-          "dokker-i": {
-            "genName": "Dokker I",
-            "genSlug": "dokker-i",
-            "yearFrom": null,
-            "yearTo": null,
-            "engines": [
-              {
-                "engineCode": "1.5 dCi 75",
-                "fuelType": "diesel",
-                "displacementCc": 1461,
-                "powerHp": 75,
-                "powerKw": null,
-                "yearFrom": null,
-                "yearTo": null,
-                "oilSpec": null
-              },
-              {
-                "engineCode": "1.5 dCi 90",
-                "fuelType": "diesel",
-                "displacementCc": 1461,
-                "powerHp": 90,
-                "powerKw": null,
-                "yearFrom": null,
-                "yearTo": null,
-                "oilSpec": null
-              },
-              {
-                "engineCode": "1.6 MPI",
-                "fuelType": "essence",
-                "displacementCc": 1598,
-                "powerHp": 85,
-                "powerKw": null,
-                "yearFrom": null,
-                "yearTo": null,
-                "oilSpec": null
-              }
-            ]
-          }
-        },
-        "category": "automobile"
+        }
       }
-    },
-    "categories": [
-      "automobile"
-    ]
+    }
   },
   "fiat": {
     "makeName": "Fiat",

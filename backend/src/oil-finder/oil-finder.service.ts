@@ -2707,6 +2707,10 @@ export class OilFinderService {
           const seen = new Set<string>();
           const result: any[] = [];
           for (const eng of targetEngines) {
+            // Templated phantom entries from generic seed templates must never be served in the selector dropdown
+            if (eng.isTemplatedSeed) {
+              continue;
+            }
             const key = `${eng.engineCode.toLowerCase()}_${eng.powerHp || ''}_${eng.fuelType || ''}`;
             if (!seen.has(key)) {
               seen.add(key);
