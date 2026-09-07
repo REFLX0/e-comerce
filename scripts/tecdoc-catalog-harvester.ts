@@ -381,8 +381,8 @@ async function main() {
 
   // Query all displayable passenger cars with their linked engine codes
   const query = `
-    SELECT 
-      mfr.name AS make_name,
+    SELECT
+      mfr.description AS make_name,
       m.id AS model_id,
       m.description AS model_raw_name,
       pc.id AS car_id,
@@ -396,11 +396,11 @@ async function main() {
     JOIN tecdoc.passengercars pc ON pc.model_id = m.id
     LEFT JOIN tecdoc.passengercars_link_engines le ON le.car_id = pc.id
     LEFT JOIN tecdoc.engines e ON e.id = le.engine_id
-    WHERE mfr.is_passenger_car = true 
+    WHERE mfr.is_passenger_car = true
       AND mfr.can_be_displayed = true
       AND m.can_be_displayed = true
       AND pc.can_be_displayed = true
-    ORDER BY mfr.name, m.description, pc.date_from ASC;
+    ORDER BY mfr.description, m.description, pc.date_from ASC;
   `;
 
   console.log('⏳ Querying PostgreSQL tecdoc schema...');
