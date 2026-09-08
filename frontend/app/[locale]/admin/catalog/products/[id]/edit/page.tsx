@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react'
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { adminApi } from '@/lib/api/admin'
 import { useRouter, useParams } from 'next/navigation'
 import { gooeyToast as toast } from 'goey-toast'
@@ -54,6 +54,7 @@ function categoryLabel(category: any) {
 export default function EditProductPage() {
   const t = useTranslations('Admin')
   const router = useRouter()
+  const queryClient = useQueryClient()
   const params = useParams()
   const locale = useLocale()
   const id = params.id as string
@@ -299,6 +300,7 @@ export default function EditProductPage() {
   const updateMutation = useMutation({
     mutationFn: (body: any) => adminApi.updateProduct(id, body),
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-products'] })
       toast.success(t('productUpdated') || 'Produit modifié avec succès !')
       router.push(localizedHref('/admin/catalog/products'))
     },

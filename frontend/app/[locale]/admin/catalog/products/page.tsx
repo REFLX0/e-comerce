@@ -35,7 +35,12 @@ interface Product {
 function productName(p: Product, t: any) { return p.nameFr ?? p.name ?? t('productNoName') }
 function brandName(p: Product) { return typeof p.brand === 'string' ? p.brand : p.brand?.name }
 function categoryName(p: Product) { return typeof p.category === 'string' ? p.category : p.category?.nameFr ?? p.category?.name }
-function productSku(p: Product) { return p.variants?.[0]?.skuVariant ?? p.sku }
+// product.sku is the single field the edit form's "Référence SKU / Code Article"
+// input actually writes to. variants[].skuVariant is a separate, independently
+// derived per-variant stock code (e.g. "<sku>-U") set at import/creation time and
+// never kept in sync with sku edits -- showing it here made every admin SKU edit
+// look like it silently failed, even though the save always succeeded.
+function productSku(p: Product) { return p.sku ?? p.variants?.[0]?.skuVariant }
 function productPrice(p: Product) { return p.variants?.[0]?.price ?? p.price ?? 0 }
 function productStock(p: Product) {
   if (typeof p.stock === 'number') return p.stock
