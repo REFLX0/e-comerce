@@ -461,6 +461,7 @@ model OilFinderOilSpec {
   apiStandard      String?
   aceaStandard     String?
   oemApproval      String?
+  jasoStandard     String?
   capacityLiters   Float?
   changeIntervalKm Int?
   fingerprint      String             @unique

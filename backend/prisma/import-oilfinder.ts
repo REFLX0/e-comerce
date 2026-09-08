@@ -53,6 +53,7 @@ interface VehicleEntry {
   oilSpecAPI?: string | null
   oilSpecACEA?: string | null
   oilSpecOEM?: string | null
+  oilSpecJASO?: string | null
   oilCapacityLiters?: number | null
   oilChangeIntervalKm?: number | null
   hydraulicTransmissionOilType?: string | null
@@ -102,8 +103,8 @@ function asFloat(value: unknown, rowLabel: string, skipped: string[]): number | 
 }
 
 /** Canonical spec key — lowercase, trimmed, ordered, JSON-encoded. */
-function specFingerprint(viscosity: string, api: string | null, acea: string | null, oem: string | null): string {
-  return JSON.stringify([normStr(viscosity), norm(api), norm(acea), norm(oem)])
+function specFingerprint(viscosity: string, api: string | null, acea: string | null, oem: string | null, jaso: string | null): string {
+  return JSON.stringify([normStr(viscosity), norm(api), norm(acea), norm(oem), norm(jaso)])
 }
 
 function highestSeverity(fieldSeverities: Record<string, string>): string {
@@ -177,6 +178,7 @@ async function loadVehicles(skipped: string[]) {
         oilSpecAPI: e.oilSpecAPI ? String(e.oilSpecAPI).trim() : null,
         oilSpecACEA: e.oilSpecACEA ? String(e.oilSpecACEA).trim() : null,
         oilSpecOEM: e.oilSpecOEM ? String(e.oilSpecOEM).trim() : null,
+        oilSpecJASO: e.oilSpecJASO ? String(e.oilSpecJASO).trim() : null,
         oilCapacityLiters: capacityLiters,
         oilChangeIntervalKm: changeIntervalKm,
         hydraulicTransmissionOilType: e.hydraulicTransmissionOilType ? String(e.hydraulicTransmissionOilType).trim() : null,
@@ -265,7 +267,7 @@ async function main() {
       const seen = new Map<string, string>() // fingerprint → specId (within run)
 
       for (const v of vehicles) {
-        const fingerprint = specFingerprint(v.oilViscosity, v.oilSpecAPI ?? null, v.oilSpecACEA ?? null, v.oilSpecOEM ?? null)
+        const fingerprint = specFingerprint(v.oilViscosity, v.oilSpecAPI ?? null, v.oilSpecACEA ?? null, v.oilSpecOEM ?? null, v.oilSpecJASO ?? null)
         let specId = seen.get(fingerprint)
         if (!specId) {
           const existing = await tx.oilFinderOilSpec.findUnique({ where: { fingerprint }, select: { id: true } })
@@ -273,7 +275,7 @@ async function main() {
             specId = existing.id
             const updated = await tx.oilFinderOilSpec.updateMany({
               where: { id: specId, OR: [{ viscosity: { not: v.oilViscosity } }, { capacityLiters: { not: v.oilCapacityLiters ?? null } }] },
-              data: { viscosity: v.oilViscosity, apiStandard: v.oilSpecAPI, aceaStandard: v.oilSpecACEA, oemApproval: v.oilSpecOEM, capacityLiters: v.oilCapacityLiters, changeIntervalKm: v.oilChangeIntervalKm },
+              data: { viscosity: v.oilViscosity, apiStandard: v.oilSpecAPI, aceaStandard: v.oilSpecACEA, oemApproval: v.oilSpecOEM, jasoStandard: v.oilSpecJASO, capacityLiters: v.oilCapacityLiters, changeIntervalKm: v.oilChangeIntervalKm },
             })
             if (updated.count) specUpdated++
           } else {
@@ -283,6 +285,7 @@ async function main() {
                 apiStandard: v.oilSpecAPI,
                 aceaStandard: v.oilSpecACEA,
                 oemApproval: v.oilSpecOEM,
+                jasoStandard: v.oilSpecJASO,
                 capacityLiters: v.oilCapacityLiters,
                 changeIntervalKm: v.oilChangeIntervalKm,
                 fingerprint,

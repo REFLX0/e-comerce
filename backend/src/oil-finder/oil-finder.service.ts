@@ -48,7 +48,7 @@ function getCleanCatalog(): Record<string, any> {
 
 export type OilSpecRef = Pick<
   OilFinderOilSpec,
-  'id' | 'viscosity' | 'apiStandard' | 'aceaStandard' | 'oemApproval' | 'capacityLiters' | 'changeIntervalKm'
+  'id' | 'viscosity' | 'apiStandard' | 'aceaStandard' | 'oemApproval' | 'jasoStandard' | 'capacityLiters' | 'changeIntervalKm'
 >
 
 export interface OilFinderCandidate {
@@ -2759,6 +2759,7 @@ export class OilFinderService {
                 previewOil: eng.oilSpec ? {
                   viscosity: eng.oilSpec.viscosity,
                   oemApproval: eng.oilSpec.oemApproval,
+                  jasoStandard: eng.oilSpec.jasoStandard,
                 } : undefined,
               });
             }
@@ -2792,6 +2793,7 @@ export class OilFinderService {
           previewOil: e.oilSpec ? {
             viscosity: e.oilSpec.viscosity,
             oemApproval: e.oilSpec.oemApproval,
+            jasoStandard: e.oilSpec.jasoStandard,
           } : undefined,
         }));
       }

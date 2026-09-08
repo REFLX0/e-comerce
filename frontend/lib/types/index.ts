@@ -108,6 +108,7 @@ export interface VehicleEngine {
   previewOil?: {
     viscosity: string
     oemApproval: string
+    jasoStandard?: string | null
   }
 }
 

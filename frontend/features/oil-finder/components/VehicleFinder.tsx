@@ -1008,6 +1008,7 @@ export function VehicleFinder({ onClose, initialVehicleType }: VehicleFinderProp
                       <ShieldCheck size={11} />
                       Huile certifiée : <strong>{activeSpec.viscosity}</strong>
                       {activeSpec.oemApproval && <span className="opacity-75">({activeSpec.oemApproval})</span>}
+                      {activeSpec.jasoStandard && <span className="opacity-75">· JASO {activeSpec.jasoStandard}</span>}
                     </span>
                   </div>
                 )}
