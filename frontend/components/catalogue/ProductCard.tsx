@@ -597,7 +597,7 @@ export function ProductCard({ product, viewMode = 'grid' }: Props) {
             </span>
           ) : <span />}
           <span className="text-[8px] sm:text-[9px] font-semibold uppercase text-gray-400 tracking-wider">
-            Réf: {formatSKU(defaultVariant?.sku)}
+            Réf: {formatSKU(product.sku || defaultVariant?.sku)}
           </span>
         </div>
 

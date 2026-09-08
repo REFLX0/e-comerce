@@ -46,7 +46,7 @@ export function ProductInfo({ product, variants: externalVariants, selectedVaria
             {product.brand.name}
           </Link>
         )}
-        <span className="font-mono text-xs text-gray-400">{t('ref')} {formatSKU(selectedVariant.sku)}</span>
+        <span className="font-mono text-xs text-gray-400">{t('ref')} {formatSKU(product.sku || selectedVariant.sku)}</span>
       </div>
 
       {/* Title */}
