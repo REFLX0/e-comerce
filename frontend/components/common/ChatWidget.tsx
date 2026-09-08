@@ -286,10 +286,13 @@ export function ChatWidget() {
         .scroll-area::-webkit-scrollbar-thumb { background: rgba(22,37,76,0.15); border-radius: 4px; }
       `}</style>
 
-      {/* bottom offset on mobile grows via --sticky-cart-offset (set by StickyMobileCart)
-          so this button clears the sticky add-to-cart bar instead of overlapping it;
-          falls back to the original 5rem (bottom-20) when that var isn't set. */}
-      <div className="fixed bottom-[calc(5rem_+_var(--sticky-cart-offset,0px))] right-4 z-50 flex flex-col items-end gap-3 sm:bottom-6 sm:right-6">
+      {/* bottom offset on mobile clears the sticky add-to-cart bar (via
+          --sticky-cart-offset, set by StickyMobileCart) when it's visible;
+          otherwise falls back to the default 5rem clearance above the mobile
+          bottom nav. Uses max() rather than addition — --sticky-cart-offset
+          already includes its own bottom-nav clearance, so summing the two
+          double-counted it and pushed the button far higher than needed. */}
+      <div className="fixed bottom-[max(5rem,var(--sticky-cart-offset,0px))] right-4 z-50 flex flex-col items-end gap-3 sm:bottom-6 sm:right-6">
 
         {/* ── Chat Window ───────────────────────────────────── */}
         {isOpen && (
