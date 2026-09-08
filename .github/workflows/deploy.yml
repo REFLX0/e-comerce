@@ -32,9 +32,11 @@ jobs:
             
             cd ${{ env.DEPLOY_DIR }}
             
-            # Pull latest changes from GitHub
+            # Pull latest changes from GitHub. --ff-only (not reset --hard) so
+            # this fails loudly instead of silently destroying any uncommitted
+            # work sitting on the VM if the working tree isn't clean.
             git fetch origin main
-            git reset --hard origin/main
+            git merge --ff-only origin/main
             
             # Build custom app images
             docker compose build frontend backend
