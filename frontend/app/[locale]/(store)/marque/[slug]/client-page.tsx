@@ -109,7 +109,6 @@ export default function BrandPage({ params }: { params: Promise<{ slug: string }
                   {t('productsInBrand', { brandName: brand?.name })}
                 </h2>
                 <p className="mt-1 flex items-center gap-2 text-gray-500">
-                  {t('productsFound', { count: productsData?.total || 0 })}
                   {isFetching && !productsLoading && (
                     <Loader2 size={13} className="animate-spin text-[#E10600]" aria-label={t('updating')} />
                   )}

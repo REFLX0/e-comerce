@@ -196,7 +196,6 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
 
           <div className="mb-6 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
             <p className="flex items-center gap-2 text-gray-500" aria-live="polite">
-              {t('productsFound', { count: data?.total || 0 })}
               {isFetching && !isLoading && (
                 <Loader2 size={13} className="animate-spin text-[#E10600]" aria-label={t('updating')} />
               )}
