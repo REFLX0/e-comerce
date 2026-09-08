@@ -71,7 +71,7 @@
     "hydraulicOilCapacityLiters": 38.0,
     "oilChangeIntervalKm": null,
     "emissionStandard": "Stage III",
-    "source": "tractordata.com SAME Explorer II 90 (SAME 4.0L 4-cyl); lectura-specs.com Explorer Special 90 (SDF 1000.4 WT); scribd.com Explorer 90 manual (SDF Special 9 15W-40)",
+    "source": "tractordata.com SAME Explorer II 90 (SAME 4.0L 4-cyl); lectura-specs.com Explorer Special 90 (SDF 1000.4 WT); scribd.com Explorer 90 manual (SDF Special 9 15W-40). CONFIRMED model exists via official same-tractors.com Explorer III 90-100-110 Stage IIIA brochure (Explorer³ 100: 4-cyl, 4038cc, 99hp/73kW — matches this entry). UNCONFIRMED: that brochure is marketing spec only and does not give oil capacities, so the viscosity/API/capacity figures below still come from the Explorer 90 sources, not a 100-specific document.",
     "confidence": "medium",
     "matchAmbiguity": null,
     "engineOilCapacityLiters": 10.0,

@@ -45,8 +45,8 @@
     "hydraulicOilCapacityLiters": 30.0,
     "oilChangeIntervalKm": null,
     "emissionStandard": "Stage IIIB",
-    "source": "lamborghini-tractors.com Crono Stage V (2.887L 3-cyl FARMotion, 71kW); lectura-specs.com Crono 100 (displacement 2.887L, 71kW); selinawamucii.com (3620cc Nitro 100 reference)",
-    "confidence": "medium",
+    "source": "lamborghini-tractors.com Crono Stage V (2.887L 3-cyl FARMotion, 71kW); lectura-specs.com Crono 100 (displacement 2.887L, 71kW); selinawamucii.com (3620cc Nitro 100 reference). UNRESOLVED: this entry's own generation field says Stage IIIB but its cited source is Stage V — a later emissions generation with likely different oil requirements. A follow-up search found no Crono-100-specific operator manual to settle which is correct; do not trust the oil spec here until the emissions generation is confirmed from the tractor's serial plate or an actual manual.",
+    "confidence": "low",
     "matchAmbiguity": null,
     "engineOilCapacityLiters": 8.0,
     "engineOilChangeIntervalHours": 300
