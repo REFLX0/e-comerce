@@ -102,9 +102,16 @@ function asFloat(value: unknown, rowLabel: string, skipped: string[]): number | 
   return n
 }
 
-/** Canonical spec key — lowercase, trimmed, ordered, JSON-encoded. */
-function specFingerprint(viscosity: string, api: string | null, acea: string | null, oem: string | null, jaso: string | null): string {
-  return JSON.stringify([normStr(viscosity), norm(api), norm(acea), norm(oem), norm(jaso)])
+/**
+ * Canonical spec key — lowercase, trimmed, ordered, JSON-encoded.
+ * Includes capacity: two engines can require the identical oil grade/approval
+ * yet hold very different sump sizes (e.g. a 150hp vs. 300hp outboard sharing
+ * the same viscosity/API/OEM text) — without capacity here they'd collapse
+ * onto one shared spec row and each subsequent import would silently
+ * overwrite the other's capacity.
+ */
+function specFingerprint(viscosity: string, api: string | null, acea: string | null, oem: string | null, jaso: string | null, capacityLiters: number | null): string {
+  return JSON.stringify([normStr(viscosity), norm(api), norm(acea), norm(oem), norm(jaso), capacityLiters ?? null])
 }
 
 function highestSeverity(fieldSeverities: Record<string, string>): string {
@@ -267,7 +274,7 @@ async function main() {
       const seen = new Map<string, string>() // fingerprint → specId (within run)
 
       for (const v of vehicles) {
-        const fingerprint = specFingerprint(v.oilViscosity, v.oilSpecAPI ?? null, v.oilSpecACEA ?? null, v.oilSpecOEM ?? null, v.oilSpecJASO ?? null)
+        const fingerprint = specFingerprint(v.oilViscosity, v.oilSpecAPI ?? null, v.oilSpecACEA ?? null, v.oilSpecOEM ?? null, v.oilSpecJASO ?? null, v.oilCapacityLiters ?? null)
         let specId = seen.get(fingerprint)
         if (!specId) {
           const existing = await tx.oilFinderOilSpec.findUnique({ where: { fingerprint }, select: { id: true } })
