@@ -2,20 +2,17 @@
 
 import { useState } from 'react'
 import { Car, Bike, Truck, Tractor, Search, ArrowLeft, Check, ChevronRight, RotateCcw, Sparkles } from 'lucide-react'
-import { EngineSpecFinder } from './EngineSpecFinder'
 import { VehicleFinder } from './VehicleFinder'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useTranslations } from 'next-intl'
 import Image from 'next/image'
 
 type VehicleType = 'automobile' | 'moto' | 'poids_lourd' | 'agricole' | 'marine'
-type SearchMode = 'vehicle' | 'specs'
 
 export function OilFinderTabs() {
   const t = useTranslations('OilFinder')
   const [step, setStep] = useState(1)
   const [vehicleType, setVehicleType] = useState<VehicleType | null>(null)
-  const [searchMode, setSearchMode] = useState<SearchMode>('vehicle')
 
   const VEHICLE_TYPES = [
     { id: 'automobile' as const, image: '/img/categories/automobile.jpg', fallbackIcon: Car, label: t('typeAutomobile'), sub: t('typeAutoSub') },
@@ -30,14 +27,12 @@ export function OilFinderTabs() {
 
   const handleSelectType = (type: VehicleType) => {
     setVehicleType(type)
-    setSearchMode('vehicle')
     setStep(2)
   }
 
   const handleReset = () => {
     setStep(1)
     setVehicleType(null)
-    setSearchMode('vehicle')
   }
 
   const stepLabels = [t('stepVehicle'), t('stepSearch')]
@@ -162,7 +157,7 @@ export function OilFinderTabs() {
               transition={{ duration: 0.25 }}
               className="pb-12"
             >
-              {/* Category Breadcrumb & Secondary Specs Switcher */}
+              {/* Category Breadcrumb */}
               <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 bg-slate-50/80 px-5 py-3.5 sm:px-8">
                 <button
                   onClick={handleReset}
@@ -176,40 +171,10 @@ export function OilFinderTabs() {
                     </span>
                   )}
                 </button>
-
-                {/* Secondary toggle: by vehicle vs by specs */}
-                <div className="inline-flex items-center rounded-xl bg-slate-200/70 p-1 text-xs">
-                  <button
-                    type="button"
-                    onClick={() => setSearchMode('vehicle')}
-                    className={`rounded-lg px-3 py-1.5 font-bold transition cursor-pointer ${
-                      searchMode === 'vehicle'
-                        ? 'bg-white text-brand-primary shadow-xs'
-                        : 'text-slate-600 hover:text-slate-900'
-                    }`}
-                  >
-                    {t('byVehicle')}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setSearchMode('specs')}
-                    className={`rounded-lg px-3 py-1.5 font-bold transition cursor-pointer ${
-                      searchMode === 'specs'
-                        ? 'bg-white text-brand-primary shadow-xs'
-                        : 'text-slate-600 hover:text-slate-900'
-                    }`}
-                  >
-                    {t('bySpecs')}
-                  </button>
-                </div>
               </div>
 
               <div className="p-4 sm:p-6 md:p-8">
-                {searchMode === 'vehicle' ? (
-                  <VehicleFinder onClose={() => {}} initialVehicleType={vehicleType} />
-                ) : (
-                  <EngineSpecFinder onClose={() => {}} initialVehicleType={vehicleType !== 'marine' ? vehicleType : null} />
-                )}
+                <VehicleFinder onClose={() => {}} initialVehicleType={vehicleType} />
               </div>
             </motion.div>
           )}
