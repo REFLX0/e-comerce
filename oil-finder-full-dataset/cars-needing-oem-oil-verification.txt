@@ -1,0 +1,663 @@
+SPECPART.TECH — AUTOMOBILE MAKES WITHOUT A DEDICATED OIL SPEC
+================================================================
+Generated 2026-09-08 (v2, now with per-engine breakdown). Source:
+backend/scripts/tecdoc-catalog-harvester.ts, function
+deriveOilSpecification(), cross-checked against actual populated engines
+in the live catalog DB. These makes have NO manufacturer-specific branch,
+so every engine under them currently gets one of two generic fallback
+specs instead of a real OEM spec:
+
+  - Diesel, built 2011 or later: 5W-30, "Universal Low-SAPS DPF Compliant",
+    ACEA C3, API SN/CF
+  - Everything else: 5W-40, "Universal High-Performance", ACEA A3/B4,
+    API SL/CF
+
+Trucks (Iveco, DAF, MAN, Scania, etc.), motorcycles, marine, and
+farm-tractor brands are NOT in this list -- they use separate datasets
+already checked in an earlier pass. Pure-EV-only brands (Tesla, Fisker,
+etc.) are also excluded since they carry no engine oil at all.
+
+Each make below lists its real engine families as they exist in the
+catalog: fuel type, displacement, and the year range they span, so you
+(or your research agent) can look up era-correct specs instead of one
+number for the whole brand. Where a make has more than 6 distinct
+engine families, only the top 6 by volume are shown (labeled) -- the
+rest are minor/rare variants.
+
+Format for your answers, one block per ENGINE FAMILY (not just per
+make) if the spec actually differs across eras/fuel types -- otherwise
+one block per make is fine:
+  MAKE (engine family, e.g. "essence 2000cc 1984-2005"):
+  - Viscosity:
+  - API spec:
+  - ACEA spec (or "none"):
+  - OEM-specific oil name (or "none"):
+  - Source:
+
+----------------------------------------------------------------------
+SECTION A — LIKELY NOT ACTUAL RESEARCH NEEDED (same engines as a brand
+we already cover correctly). Flagging these so you can just confirm
+"yes, same as X" instead of re-researching from scratch. I have NOT
+applied any of these yet -- waiting on your go-ahead.
+----------------------------------------------------------------------
+ALPINA (115 engines total, 16 distinct engine families, top 6 shown)  [BMW-platform tuner -> same as BMW?]:
+    - essence, unknown cc, 2007-present (47 engines)
+    - essence, 3400cc, 1978-2006 (14 engines)
+    - essence, 4600cc, 1988-2002 (8 engines)
+    - essence, 3000cc, 1978-1996 (8 engines)
+    - essence, 4400cc, 2003-2010 (7 engines)
+    - essence, 2700cc, 1985-1992 (7 engines)
+
+FORD-USA (61 engines total, 12 distinct engine families, top 6 shown)  [same brand as "Ford", split catalog slug -> same as Ford?]:
+    - essence, 2300cc, 2004-2010 (10 engines)
+    - essence, 4600cc, 1993-2010 (10 engines)
+    - essence, 5000cc, 1977-2010 (10 engines)
+    - essence, 4000cc, 1985-2010 (8 engines)
+    - essence, 5400cc, 1996-2010 (5 engines)
+    - essence, 3000cc, 1985-2000 (4 engines)
+
+INFINITI (65 engines total, 13 distinct engine families, top 6 shown)  [Nissan's luxury division -> same as Nissan?]:
+    - essence, unknown cc, 2002-present (26 engines)
+    - essence, 3000cc, 1989-present (8 engines)
+    - essence, 2000cc, 1990-present (6 engines)
+    - diesel, 1991cc, ?-present (5 engines)
+    - essence, 3498cc, ?-present (5 engines)
+    - essence, 3700cc, 2013-present (5 engines)
+
+GENESIS (3 engines total, 3 distinct engine families)  [Hyundai's luxury division -> same as Hyundai?]:
+    - essence, 3300cc, 2016-present (1 engines)
+    - essence, 3800cc, 2016-present (1 engines)
+    - essence, 5000cc, 2016-present (1 engines)
+
+MERCEDES-BENZ-BBDC (1 engines total, 1 distinct engine families)  [Beijing Benz Automotive (China JV) -> same as Mercedes-Benz?]:
+    - essence, 4000cc, 2010-2012 (1 engines)
+
+IRMSCHER (4 engines total, 3 distinct engine families)  [Opel tuner -> same as Opel?]:
+    - essence, 4000cc, 1990-1996 (2 engines)
+    - essence, 3600cc, 1988-1990 (1 engines)
+    - essence, 1600cc, 1997-present (1 engines)
+
+BITTER (6 engines total, 2 distinct engine families)  [Opel-based -> same as Opel?]:
+    - essence, 3000cc, 1987-1992 (4 engines)
+    - essence, 4000cc, 1987-1992 (2 engines)
+
+CALLAWAY (3 engines total, 1 distinct engine families)  [Chevrolet Corvette tuner -> same as Chevrolet?]:
+    - essence, 5700cc, 1998-2003 (3 engines)
+
+RUF (10 engines total, 1 distinct engine families)  [Porsche-based tuner -> same as Porsche?]:
+    - essence, 3800cc, 2008-present (10 engines)
+
+WIESMANN (28 engines total, 7 distinct engine families, top 6 shown)  [BMW-engine sports car -> same as BMW?]:
+    - essence, 4400cc, 2003-present (8 engines)
+    - essence, 5000cc, 2007-present (4 engines)
+    - essence, 4000cc, 2003-present (4 engines)
+    - essence, 4800cc, 2003-present (4 engines)
+    - essence, 3200cc, 1996-2003 (4 engines)
+    - essence, 3000cc, 1996-2003 (2 engines)
+
+MERCURY (7 engines total, 7 distinct engine families, top 6 shown)  [defunct Ford luxury brand -> same as Ford?]:
+    - essence, 2785cc, 2014-present (1 engines)
+    - essence, 1498cc, 2016-present (1 engines)
+    - essence, 2953cc, 2016-present (1 engines)
+    - essence, 324cc, 2018-present (1 engines)
+    - essence, 3357cc, 2014-present (1 engines)
+    - essence, 995cc, 2016-present (1 engines)
+
+LINCOLN (4 engines total, 4 distinct engine families)  [Ford's luxury brand -> same as Ford?]:
+    - essence, 4000cc, 1998-present (1 engines)
+    - essence, 5400cc, 1997-2002 (1 engines)
+    - essence, 3000cc, 1998-present (1 engines)
+    - essence, 3900cc, 1998-present (1 engines)
+
+PONTIAC (9 engines total, 5 distinct engine families)  [defunct GM brand -> same as Chevrolet/GM?]:
+    - essence, 3100cc, 1981-1999 (3 engines)
+    - essence, 3800cc, 1975-1999 (2 engines)
+    - essence, 2800cc, 1979-1981 (2 engines)
+    - essence, 3400cc, 1989-1999 (1 engines)
+    - essence, 5000cc, 1981-1992 (1 engines)
+
+OLDSMOBILE (6 engines total, 3 distinct engine families)  [defunct GM brand -> same as Chevrolet/GM?]:
+    - essence, 3400cc, 1988-1997 (2 engines)
+    - essence, 2800cc, 1988-1997 (2 engines)
+    - essence, 3100cc, 1988-1997 (2 engines)
+
+HUMMER (4 engines total, 3 distinct engine families)  [GM-owned -> same as Chevrolet/GM?]:
+    - essence, 3700cc, 2006-present (2 engines)
+    - essence, 6500cc, 1992-2004 (1 engines)
+    - essence, 5300cc, 2006-present (1 engines)
+
+MAYBACH (4 engines total, 2 distinct engine families)  [Mercedes ultra-luxury -> same as Mercedes-Benz?]:
+    - essence, 6000cc, 2002-2012 (2 engines)
+    - essence, 5500cc, 2002-2012 (2 engines)
+
+ISDERA (5 engines total, 4 distinct engine families)  [Mercedes-engine based -> same as Mercedes-Benz?]:
+    - essence, 6000cc, 1984-2001 (2 engines)
+    - essence, 5000cc, 1984-2001 (1 engines)
+    - essence, 6900cc, 1993-2001 (1 engines)
+    - essence, 5600cc, 1984-2001 (1 engines)
+
+GLAS (10 engines total, 2 distinct engine families)  [historic, absorbed by BMW -> same as BMW?]:
+    - essence, unknown cc, 1955-1969 (9 engines)
+    - essence, 1700cc, 1964-1968 (1 engines)
+
+NSU (9 engines total, 4 distinct engine families)  [historic, absorbed by Audi -> same as Audi?]:
+    - essence, unknown cc, 1961-1974 (4 engines)
+    - essence, 1000cc, 1961-1977 (3 engines)
+    - essence, 1200cc, 1965-1971 (1 engines)
+    - essence, 600cc, 1964-1967 (1 engines)
+
+AUTOBIANCHI (27 engines total, 7 distinct engine families, top 6 shown)  [historic Fiat sub-brand -> same as Fiat?]:
+    - essence, 1000cc, 1969-1995 (8 engines)
+    - essence, 500cc, 1957-1969 (6 engines)
+    - essence, 1400cc, 1964-1972 (3 engines)
+    - essence, 1200cc, 1964-1970 (3 engines)
+    - essence, 1100cc, 1985-1995 (3 engines)
+    - essence, 900cc, 1969-1985 (2 engines)
+
+ZASTAVA (8 engines total, 4 distinct engine families)  [Yugoslav, Fiat-licensed -> same as Fiat?]:
+    - essence, unknown cc, 1981-1995 (3 engines)
+    - essence, 1100cc, 1973-1993 (3 engines)
+    - essence, 1300cc, 1991-2008 (1 engines)
+    - essence, 1200cc, 2005-present (1 engines)
+
+ASIA-MOTORS (3 engines total, 3 distinct engine families)  [Korean, Kia-related -> same as Kia?]:
+    - essence, 2200cc, 1993-1999 (1 engines)
+    - essence, 2700cc, 1993-1999 (1 engines)
+    - essence, 1800cc, 1993-1999 (1 engines)
+
+----------------------------------------------------------------------
+SECTION C — LIKELY DATA-TAGGING ISSUES, NOT REAL RESEARCH TARGETS
+These don't look like real passenger-car engines for this make (wrong
+displacement scale for the vehicle type). Probably a catalog
+mis-classification to flag/fix in code rather than something to look
+up an oil spec for. Skip these unless you want to double check.
+----------------------------------------------------------------------
+ASTRA (5 engines total, 3 distinct engine families)  [8.7-12.9L diesel = heavy-truck-scale, not a car. This is almost certainly Astra SpA (Iveco Group heavy dump trucks/construction vehicles), mistagged into the automobile catalog instead of the truck one. Probably a code fix (recategorize), not an oil-spec question.]:
+    - diesel, 8700cc, 2010-present (2 engines)
+    - diesel, 12882cc, 2009-present (2 engines)
+    - diesel, 6700cc, 2011-present (1 engines)
+
+SLC (2 engines total, 2 distinct engine families)  [125-150cc "essence" = moped/scooter-scale, not a car. Likely mistagged into automobile catalog.]:
+    - essence, 125cc, 2018-present (1 engines)
+    - essence, 150cc, 2019-present (1 engines)
+
+SMT (1 engines total, 1 distinct engine families)  [125cc "essence" = moped/scooter-scale, not a car. Likely mistagged into automobile catalog.]:
+    - essence, 125cc, 2018-present (1 engines)
+
+DONGFENG (4 engines total, 2 distinct engine families)  [8.9-13L diesel = heavy-truck-scale, not a passenger car. Likely mistagged; Dongfeng also makes real passenger cars but these specific engines are commercial-truck-sized.]:
+    - diesel, 8880cc, 2012-present (3 engines)
+    - diesel, 13000cc, 2015-present (1 engines)
+
+FAW (2 engines total, 2 distinct engine families)  [7.7-11L diesel = heavy-truck-scale, not a passenger car. Likely mistagged.]:
+    - diesel, 11050cc, 2015-present (1 engines)
+    - diesel, 7700cc, 2008-present (1 engines)
+
+YANMAR (4 engines total, 3 distinct engine families)  [Yanmar is primarily a marine/industrial diesel engine maker (also appears correctly in the agricole dataset). These 4 automobile-tagged entries may be a cross-tagging artifact rather than real passenger vehicles -- worth checking before researching.]:
+    - diesel, 2186cc, 2015-present (2 engines)
+    - diesel, 1571cc, 2006-present (1 engines)
+    - diesel, 4156cc, 2010-present (1 engines)
+
+----------------------------------------------------------------------
+SECTION B — GENUINE DISTINCT MANUFACTURERS, NEED REAL RESEARCH
+(sorted by number of engines currently affected -- please prioritize
+the ones near the top; the long tail at the bottom is mostly
+low-volume classic/defunct brands, include or skip at your discretion)
+----------------------------------------------------------------------
+ROVER (243 engines total, 10 distinct engine families, top 6 shown):
+    - essence, unknown cc, 1963-2000 (155 engines)
+    - essence, 2000cc, 1984-2005 (27 engines)
+    - essence, 1400cc, 1989-2005 (21 engines)
+    - essence, 1800cc, 1993-2005 (16 engines)
+    - essence, 1600cc, 1984-2005 (15 engines)
+    - essence, 2500cc, 1999-2005 (3 engines)
+
+SAAB (208 engines total, 16 distinct engine families, top 6 shown):
+    - essence, 2000cc, 1972-2015 (125 engines)
+    - essence, 2300cc, 1978-2009 (22 engines)
+    - essence, 1900cc, 1997-2015 (16 engines)
+    - essence, 2800cc, 2002-2015 (10 engines)
+    - essence, 3000cc, 1984-2009 (6 engines)
+    - essence, 2200cc, 1997-2015 (5 engines)
+
+LADA (115 engines total, 11 distinct engine families, top 6 shown):
+    - essence, unknown cc, 1970-2013 (40 engines)
+    - essence, 1600cc, 1983-present (34 engines)
+    - essence, 1596cc, ?-present (16 engines)
+    - essence, 1500cc, 1986-2013 (9 engines)
+    - essence, 1400cc, 2004-2013 (5 engines)
+    - essence, 1700cc, 1997-present (3 engines)
+
+DAIHATSU (110 engines total, 12 distinct engine families, top 6 shown):
+    - essence, 1000cc, 1977-present (38 engines)
+    - essence, 1300cc, 1981-present (19 engines)
+    - essence, 1600cc, 1981-2001 (14 engines)
+    - essence, 2800cc, 1985-1998 (12 engines)
+    - essence, 800cc, 1983-2002 (10 engines)
+    - essence, 1500cc, 1993-present (7 engines)
+
+TALBOT (110 engines total, 16 distinct engine families, top 6 shown):
+    - essence, 1300cc, 1961-1986 (22 engines)
+    - essence, 1100cc, 1961-1986 (20 engines)
+    - essence, 1600cc, 1970-1986 (19 engines)
+    - essence, 1400cc, 1974-1986 (14 engines)
+    - essence, 900cc, 1961-1986 (8 engines)
+    - essence, 1200cc, 1968-1986 (8 engines)
+
+BENTLEY (99 engines total, 5 distinct engine families):
+    - essence, 6000cc, 2003-present (58 engines)
+    - essence, 4000cc, 2003-present (22 engines)
+    - essence, 6700cc, 1991-2013 (10 engines)
+    - essence, 6800cc, 1981-present (8 engines)
+    - essence, 4400cc, 1998-2013 (1 engines)
+
+ISUZU (92 engines total, 24 distinct engine families, top 6 shown):
+    - essence, 1500cc, 1985-1993 (11 engines)
+    - diesel, 2499cc, ?-present (10 engines)
+    - essence, 2000cc, 1981-1996 (9 engines)
+    - essence, 2200cc, 1983-1996 (8 engines)
+    - essence, 1600cc, 1985-1993 (7 engines)
+    - diesel, 2999cc, 2012-present (7 engines)
+
+MASERATI (88 engines total, 15 distinct engine families, top 6 shown):
+    - essence, 4700cc, 1967-present (18 engines)
+    - essence, 4200cc, 1967-present (14 engines)
+    - essence, 2000cc, 1975-2001 (11 engines)
+    - essence, 3000cc, 1974-present (11 engines)
+    - essence, 2800cc, 1985-2001 (8 engines)
+    - essence, unknown cc, 1981-1994 (5 engines)
+
+DAEWOO (86 engines total, 13 distinct engine families, top 6 shown):
+    - essence, 2000cc, 1991-present (17 engines)
+    - essence, 1600cc, 1997-present (16 engines)
+    - essence, 1800cc, 1991-present (13 engines)
+    - essence, 1500cc, 1991-2008 (11 engines)
+    - essence, 2900cc, 1999-present (6 engines)
+    - essence, 1400cc, 2002-present (6 engines)
+
+FERRARI (77 engines total, 19 distinct engine families, top 6 shown):
+    - essence, unknown cc, 1969-2012 (19 engines)
+    - essence, 6300cc, 2011-present (6 engines)
+    - essence, 4300cc, 2005-present (6 engines)
+    - essence, 3400cc, 1984-1995 (6 engines)
+    - essence, 3900cc, 2008-present (6 engines)
+    - essence, 3600cc, 1999-2005 (4 engines)
+
+CHRYSLER (130 engines total, 19 distinct engine families, top 6 shown):
+    - essence, 2500cc, 1986-2008 (21 engines)
+    - essence, 2000cc, 1994-2010 (18 engines)
+    - essence, 2700cc, 1992-2012 (14 engines)
+    - essence, 2400cc, 1995-2010 (12 engines)
+    - essence, 3500cc, 1992-2012 (10 engines)
+    - essence, 3000cc, 1986-2012 (9 engines)
+
+DODGE (148 engines total, 25 distinct engine families, top 6 shown):
+    - essence, 5900cc, 1983-2012 (22 engines)
+    - essence, 5700cc, 1991-present (22 engines)
+    - essence, 5200cc, 1983-2008 (13 engines)
+    - essence, 2000cc, 1994-present (12 engines)
+    - essence, 2400cc, 1995-present (10 engines)
+    - essence, 4700cc, 1991-present (8 engines)
+
+SSANGYONG (69 engines total, 13 distinct engine families, top 6 shown):
+    - essence, 2000cc, 1993-present (14 engines)
+    - essence, 2300cc, 1993-present (14 engines)
+    - essence, 2900cc, 1993-present (8 engines)
+    - essence, 3200cc, 1993-present (8 engines)
+    - essence, 2200cc, 1988-present (7 engines)
+    - essence, 2700cc, 2002-present (5 engines)
+
+AUSTIN (67 engines total, 7 distinct engine families, top 6 shown):
+    - essence, unknown cc, 1967-1993 (22 engines)
+    - essence, 1300cc, 1967-1993 (18 engines)
+    - essence, 2000cc, 1982-1993 (11 engines)
+    - essence, 1600cc, 1983-1993 (6 engines)
+    - essence, 1500cc, 1973-1983 (4 engines)
+    - essence, 1000cc, 1973-1990 (4 engines)
+
+MG (62 engines total, 14 distinct engine families, top 6 shown):
+    - essence, unknown cc, 1967-2009 (21 engines)
+    - essence, 1800cc, 1962-present (12 engines)
+    - essence, 2000cc, 1983-2005 (9 engines)
+    - essence, 1490cc, ?-present (6 engines)
+    - essence, 3000cc, 1967-1990 (3 engines)
+    - essence, 1498cc, ?-present (2 engines)
+
+CHERY (55 engines total, 4 distinct engine families):
+    - essence, 1598cc, ?-present (22 engines)
+    - essence, 1083cc, ?-present (11 engines)
+    - essence, 1497cc, ?-present (11 engines)
+    - essence, 1498cc, ?-present (11 engines)
+
+TRIUMPH (55 engines total, 10 distinct engine families, top 6 shown):
+    - essence, 2000cc, 1953-1981 (16 engines)
+    - essence, unknown cc, 1961-1981 (16 engines)
+    - essence, 2500cc, 1967-1976 (7 engines)
+    - essence, 1300cc, 1962-1985 (4 engines)
+    - essence, 1500cc, 1962-1980 (4 engines)
+    - essence, 1600cc, 1962-1971 (2 engines)
+
+TVR (48 engines total, 17 distinct engine families, top 6 shown):
+    - essence, 2800cc, 1980-1996 (6 engines)
+    - essence, 4000cc, 1986-2006 (5 engines)
+    - essence, 3000cc, 1969-1980 (5 engines)
+    - essence, 4200cc, 1985-2003 (5 engines)
+    - essence, unknown cc, 1967-1971 (4 engines)
+    - essence, 3900cc, 1984-2003 (4 engines)
+
+DFSK (48 engines total, 6 distinct engine families):
+    - essence, 1205cc, ?-present (9 engines)
+    - essence, 1798cc, ?-present (9 engines)
+    - essence, 1310cc, ?-present (9 engines)
+    - essence, 1498cc, ?-present (9 engines)
+    - essence, 1300cc, 2011-present (8 engines)
+    - essence, 1000cc, 2011-present (4 engines)
+
+GEELY (43 engines total, 7 distinct engine families, top 6 shown):
+    - essence, 1300cc, 2005-present (14 engines)
+    - essence, 1500cc, 2005-present (9 engines)
+    - essence, 1100cc, 2005-present (6 engines)
+    - essence, 1000cc, 2005-present (6 engines)
+    - essence, 1997cc, ?-present (3 engines)
+    - essence, 1498cc, ?-present (3 engines)
+
+LAMBORGHINI (36 engines total, 10 distinct engine families, top 6 shown):
+    - essence, 6500cc, 2007-present (10 engines)
+    - essence, unknown cc, 1968-1996 (8 engines)
+    - essence, 5200cc, 1983-present (7 engines)
+    - essence, 5000cc, 2003-present (3 engines)
+    - essence, 5700cc, 1998-2000 (2 engines)
+    - essence, 4800cc, 1980-1992 (2 engines)
+
+PLYMOUTH (35 engines total, 7 distinct engine families, top 6 shown):
+    - essence, 2000cc, 1989-present (10 engines)
+    - essence, 2200cc, 1986-1994 (9 engines)
+    - essence, 2500cc, 1986-2001 (7 engines)
+    - essence, 3000cc, 1986-2001 (4 engines)
+    - essence, 2400cc, 1989-2001 (2 engines)
+    - essence, 3300cc, 1989-2001 (2 engines)
+
+MORGAN (32 engines total, 9 distinct engine families, top 6 shown):
+    - essence, 1600cc, 1968-present (9 engines)
+    - essence, 2000cc, 1985-present (6 engines)
+    - essence, 4400cc, 2000-present (6 engines)
+    - essence, 4800cc, 2000-present (3 engines)
+    - essence, 1800cc, 1968-2005 (2 engines)
+    - essence, 3500cc, 1968-2001 (2 engines)
+
+PROTON (31 engines total, 5 distinct engine families):
+    - essence, unknown cc, 1994-2004 (18 engines)
+    - essence, 1500cc, 2000-present (6 engines)
+    - essence, 1300cc, 2000-present (3 engines)
+    - essence, 1600cc, 2001-present (2 engines)
+    - essence, 2000cc, 2000-present (2 engines)
+
+PUCH (31 engines total, 1 distinct engine families):
+    - essence, unknown cc, 1979-2000 (31 engines)
+
+GREAT-WALL (27 engines total, 2 distinct engine families):
+    - diesel, 1996cc, ?-present (18 engines)
+    - essence, 2378cc, ?-present (9 engines)
+
+BYD (27 engines total, 2 distinct engine families):
+    - essence, 1497cc, ?-present (18 engines)
+    - essence, 998cc, ?-present (9 engines)
+
+LDV (26 engines total, 3 distinct engine families):
+    - essence, 2500cc, 1989-2009 (22 engines)
+    - diesel, 2500cc, 1998-2009 (3 engines)
+    - essence, 2300cc, 1998-2001 (1 engines)
+
+FSO (23 engines total, 8 distinct engine families, top 6 shown):
+    - essence, 1500cc, 1967-1992 (7 engines)
+    - essence, 1600cc, 1974-2002 (5 engines)
+    - essence, 1900cc, 1977-2002 (3 engines)
+    - essence, 1300cc, 1967-1992 (3 engines)
+    - essence, 600cc, 1972-1991 (2 engines)
+    - essence, 1400cc, 1992-2002 (1 engines)
+
+DAIMLER (22 engines total, 7 distinct engine families, top 6 shown):
+    - essence, 4200cc, 1968-1993 (6 engines)
+    - essence, 5300cc, 1969-1993 (6 engines)
+    - essence, 4000cc, 1986-2003 (4 engines)
+    - essence, 3600cc, 1986-1994 (2 engines)
+    - essence, 6000cc, 1986-2003 (2 engines)
+    - essence, 3400cc, 1969-1993 (1 engines)
+
+LOTUS (22 engines total, 7 distinct engine families, top 6 shown):
+    - essence, 2200cc, 1974-1996 (7 engines)
+    - essence, 3500cc, 2015-present (4 engines)
+    - essence, 1800cc, 1998-2012 (4 engines)
+    - essence, 2000cc, 1974-1988 (3 engines)
+    - essence, 1600cc, 1966-1995 (2 engines)
+    - essence, 1500cc, 1966-1976 (1 engines)
+
+GAZ (22 engines total, 6 distinct engine families):
+    - essence, 2500cc, 1970-2013 (8 engines)
+    - essence, 2400cc, 1970-2013 (6 engines)
+    - essence, 2300cc, 1970-2013 (4 engines)
+    - essence, 2100cc, 1970-1993 (2 engines)
+    - essence, 3800cc, 2010-present (1 engines)
+    - essence, unknown cc, 1966-1975 (1 engines)
+
+LLOYD (21 engines total, 3 distinct engine families):
+    - essence, 600cc, 1953-1961 (11 engines)
+    - essence, 400cc, 1953-1961 (8 engines)
+    - essence, 200cc, 1953-1961 (2 engines)
+
+AIXAM (21 engines total, 4 distinct engine families):
+    - essence, 400cc, 2005-present (10 engines)
+    - essence, 600cc, 2005-present (6 engines)
+    - essence, 500cc, 1997-present (4 engines)
+    - electrique, unknown cc, 2012-present (1 engines)
+
+AUTO-UNION (18 engines total, 7 distinct engine families, top 6 shown):
+    - essence, unknown cc, 1953-1969 (6 engines)
+    - essence, 900cc, 1953-1966 (4 engines)
+    - essence, 700cc, 1950-1966 (4 engines)
+    - essence, 1000cc, 1958-1965 (1 engines)
+    - essence, 800cc, 1959-1966 (1 engines)
+    - essence, 200cc, 1956-1969 (1 engines)
+
+MCLAREN (17 engines total, 4 distinct engine families):
+    - essence, 3800cc, 2013-present (11 engines)
+    - essence, unknown cc, 2011-2014 (3 engines)
+    - essence, 6000cc, 1993-1998 (2 engines)
+    - essence, 4000cc, 2017-present (1 engines)
+
+TATA (15 engines total, 7 distinct engine families, top 6 shown):
+    - essence, 1400cc, 1998-present (5 engines)
+    - essence, 1900cc, 1994-2006 (4 engines)
+    - diesel, 5883cc, 2005-present (2 engines)
+    - essence, 3000cc, 1999-2007 (1 engines)
+    - diesel, 6700cc, 2012-present (1 engines)
+    - diesel, 5635cc, 2016-present (1 engines)
+
+ROLLS-ROYCE (14 engines total, 3 distinct engine families):
+    - essence, 6700cc, 1977-present (9 engines)
+    - essence, unknown cc, 2008-present (4 engines)
+    - essence, 6600cc, 2015-present (1 engines)
+
+MORRIS (14 engines total, 4 distinct engine families):
+    - essence, unknown cc, 1967-1980 (9 engines)
+    - essence, 1300cc, 1971-1980 (2 engines)
+    - essence, 1700cc, 1971-1980 (2 engines)
+    - essence, 1800cc, 1971-1980 (1 engines)
+
+TRABANT (12 engines total, 2 distinct engine families):
+    - essence, 600cc, 1966-1990 (9 engines)
+    - essence, 1100cc, 1990-1991 (3 engines)
+
+MOSKVICH (12 engines total, 2 distinct engine families):
+    - essence, 1500cc, 1971-2001 (8 engines)
+    - essence, 1400cc, 1958-1969 (4 engines)
+
+AUSTIN-HEALEY (11 engines total, 5 distinct engine families):
+    - essence, 1300cc, 1966-1971 (4 engines)
+    - essence, 1100cc, 1964-1966 (2 engines)
+    - essence, 3000cc, 1964-1968 (2 engines)
+    - essence, 2900cc, 1959-1961 (2 engines)
+    - essence, 2600cc, 1957-1959 (1 engines)
+
+AC (11 engines total, 5 distinct engine families):
+    - essence, 4900cc, 1990-2001 (4 engines)
+    - essence, 4600cc, 1993-2001 (2 engines)
+    - essence, 7000cc, 1965-1974 (2 engines)
+    - essence, 6200cc, 1990-1997 (2 engines)
+    - essence, 5800cc, 1990-1997 (1 engines)
+
+UAZ (10 engines total, 5 distinct engine families):
+    - essence, 2700cc, 2002-present (4 engines)
+    - essence, 2400cc, 1966-2011 (3 engines)
+    - essence, 2500cc, 2002-present (1 engines)
+    - essence, 2200cc, 2002-present (1 engines)
+    - essence, 2300cc, 2004-present (1 engines)
+
+HAVAL (10 engines total, 2 distinct engine families):
+    - essence, 1996cc, ?-present (5 engines)
+    - essence, 1497cc, ?-present (5 engines)
+
+BARKAS (9 engines total, 2 distinct engine families):
+    - essence, 1000cc, 1967-1991 (6 engines)
+    - essence, 1300cc, 1967-1991 (3 engines)
+
+SPYKER (8 engines total, 2 distinct engine families):
+    - essence, 4200cc, 2000-present (6 engines)
+    - essence, unknown cc, 2007-present (2 engines)
+
+MARCOS (6 engines total, 4 distinct engine families):
+    - essence, 5700cc, 2004-present (3 engines)
+    - essence, 5000cc, 2002-2004 (1 engines)
+    - essence, 2500cc, 2002-present (1 engines)
+    - essence, 4000cc, 1995-1999 (1 engines)
+
+LANDWIND-JMC (6 engines total, 4 distinct engine families):
+    - essence, 1600cc, 2011-present (3 engines)
+    - essence, 2400cc, 2005-present (1 engines)
+    - essence, 2000cc, 2005-present (1 engines)
+    - essence, 2800cc, 2005-present (1 engines)
+
+LIGIER (6 engines total, 2 distinct engine families):
+    - essence, unknown cc, 2002-present (3 engines)
+    - essence, 500cc, 1999-2006 (3 engines)
+
+BERTONE (6 engines total, 4 distinct engine families):
+    - essence, 1600cc, 1989-1999 (2 engines)
+    - essence, 2000cc, 1989-1999 (2 engines)
+    - essence, 2700cc, 1989-1999 (1 engines)
+    - essence, 2400cc, 1989-1999 (1 engines)
+
+BEDFORD (6 engines total, 4 distinct engine families):
+    - essence, 2000cc, 1969-1987 (2 engines)
+    - essence, 2300cc, 1969-1987 (2 engines)
+    - essence, 2100cc, 1969-1987 (1 engines)
+    - essence, 1800cc, 1969-1987 (1 engines)
+
+BRILLIANCE (5 engines total, 4 distinct engine families):
+    - essence, 1800cc, 2007-present (2 engines)
+    - essence, 2400cc, 2007-present (1 engines)
+    - essence, 2000cc, 2007-present (1 engines)
+    - essence, 1600cc, 2007-present (1 engines)
+
+ARO (5 engines total, 3 distinct engine families):
+    - essence, unknown cc, 1984-2003 (2 engines)
+    - essence, 2700cc, 1978-1998 (2 engines)
+    - essence, 2500cc, 1978-1998 (1 engines)
+
+CATERHAM (5 engines total, 4 distinct engine families):
+    - essence, 2000cc, 1986-present (2 engines)
+    - essence, 2300cc, 1986-1991 (1 engines)
+    - essence, 1600cc, 1986-1991 (1 engines)
+    - essence, 1800cc, 1986-1991 (1 engines)
+
+PAGANI (5 engines total, 2 distinct engine families):
+    - essence, 7300cc, 2009-2013 (3 engines)
+    - essence, 6000cc, 2011-present (2 engines)
+
+INNOCENTI (5 engines total, 3 distinct engine families):
+    - essence, 1300cc, 1974-1982 (3 engines)
+    - essence, 1500cc, 1974-1975 (1 engines)
+    - essence, 1000cc, 1974-1982 (1 engines)
+
+BUGATTI (4 engines total, 2 distinct engine families):
+    - essence, 8000cc, 2003-present (3 engines)
+    - essence, unknown cc, 1991-1996 (1 engines)
+
+RILEY (4 engines total, 3 distinct engine families):
+    - essence, unknown cc, 1965-1969 (2 engines)
+    - essence, 1000cc, 1963-1968 (1 engines)
+    - essence, 1700cc, 1961-1968 (1 engines)
+
+MITSUOKA (3 engines total, 2 distinct engine families):
+    - essence, 2000cc, 2009-present (2 engines)
+    - essence, 3300cc, 2006-present (1 engines)
+
+ZAZ (3 engines total, 3 distinct engine families):
+    - essence, 1100cc, 1989-2007 (1 engines)
+    - essence, 1200cc, 1989-2007 (1 engines)
+    - essence, 1300cc, 1989-2007 (1 engines)
+
+KOENIGSEGG (3 engines total, 2 distinct engine families):
+    - essence, 5000cc, 2011-present (2 engines)
+    - essence, 4700cc, 2004-2006 (1 engines)
+
+LTI (3 engines total, 3 distinct engine families):
+    - essence, 2500cc, 1997-present (1 engines)
+    - essence, 2700cc, 1997-present (1 engines)
+    - diesel, 2400cc, 1997-present (1 engines)
+
+METROCAB (2 engines total, 2 distinct engine families):
+    - essence, 2400cc, 1991-2006 (1 engines)
+    - essence, 2500cc, 1991-2006 (1 engines)
+
+AMC (2 engines total, 1 distinct engine families):
+    - essence, 4200cc, 1979-1985 (2 engines)
+
+PININFARINA (2 engines total, 1 distinct engine families):
+    - essence, unknown cc, 1982-1985 (2 engines)
+
+SANTANA (2 engines total, 2 distinct engine families):
+    - essence, 2800cc, 2002-present (1 engines)
+    - essence, 1600cc, 1998-present (1 engines)
+
+DE-LOREAN (1 engines total, 1 distinct engine families):
+    - essence, 2900cc, 1981-1983 (1 engines)
+
+MINELLI (1 engines total, 1 distinct engine families):
+    - essence, unknown cc, 1998-present (1 engines)
+
+BRISTOL (1 engines total, 1 distinct engine families):
+    - essence, 6600cc, 1973-1976 (1 engines)
+
+ARTEGA (1 engines total, 1 distinct engine families):
+    - essence, 3600cc, 2009-present (1 engines)
+
+VECTOR (1 engines total, 1 distinct engine families):
+    - essence, 5700cc, 1996-1998 (1 engines)
+
+SHUANGHUAN (1 engines total, 1 distinct engine families):
+    - essence, 2400cc, 2005-2011 (1 engines)
+
+DONKERVOORT (1 engines total, 1 distinct engine families):
+    - essence, unknown cc, 2017-present (1 engines)
+
+BORGWARD (1 engines total, 1 distinct engine families):
+    - essence, 1500cc, 1954-1962 (1 engines)
+
+DE-TOMASO (1 engines total, 1 distinct engine families):
+    - essence, 5800cc, 1974-1978 (1 engines)
+
+CHANGAN (2 engines total, 2 distinct engine families):
+    - diesel, 1997cc, 2020-present (1 engines)
+    - diesel, 2499cc, 2020-present (1 engines)
+
+JAC (2 engines total, 2 distinct engine families):
+    - diesel, 6494cc, 2012-present (1 engines)
+    - diesel, 2771cc, 2010-present (1 engines)
+
+STEYR (2 engines total, 2 distinct engine families):
+    - essence, 600cc, 1959-1974 (1 engines)
+    - essence, unknown cc, 1959-1973 (1 engines)
+
+WARTBURG (6 engines total, 2 distinct engine families):
+    - essence, 1000cc, 1966-1991 (4 engines)
+    - essence, 1300cc, 1966-1991 (2 engines)

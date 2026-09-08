@@ -268,7 +268,7 @@ function deriveOilSpecificationRaw(
   // never Renault-derived — so they must NOT carry Renault's RN-prefixed approvals.
   // Nissan diesel (dCi) engines in Europe genuinely are Renault-Nissan Alliance hardware,
   // so those stay grouped with Renault below.
-  if (makeSlug === 'nissan' && !isDiesel) {
+  if (['nissan', 'infiniti'].includes(makeSlug) && !isDiesel) {
     if (year >= 2018) {
       return { viscosity: '0W-20', oemApproval: 'Nissan Genuine Oil (API SP, ILSAC GF-6)', aceaStandard: 'C5', apiStandard: 'SP', capacityLiters: capacity, changeIntervalKm: 15000 };
     }
@@ -278,7 +278,7 @@ function deriveOilSpecificationRaw(
     return { viscosity: '5W-40', oemApproval: 'Nissan Genuine Oil (API SL)', aceaStandard: 'A3/B4', apiStandard: 'SL', capacityLiters: capacity, changeIntervalKm: 10000 };
   }
 
-  if (['renault', 'dacia', 'nissan', 'alpine'].includes(makeSlug)) {
+  if (['renault', 'dacia', 'nissan', 'alpine', 'infiniti'].includes(makeSlug)) {
     if (isDiesel) {
       if (year >= 2018) {
         return { viscosity: '5W-30', oemApproval: 'Renault RN17', aceaStandard: 'C3', apiStandard: 'SN', capacityLiters: capacity, changeIntervalKm: 15000 };
@@ -328,7 +328,7 @@ function deriveOilSpecificationRaw(
   // A pre-2018 Opel/Vauxhall was built with GM engineering and rated for GM's own dexos
   // spec — it was NEVER PSA-rated, since Opel/Vauxhall didn't join PSA until 2017. Only
   // 2018+ models (built on genuinely shared PSA platforms) carry real PSA B71 approvals.
-  if (['opel', 'vauxhall'].includes(makeSlug)) {
+  if (['opel', 'vauxhall', 'irmscher', 'bitter', 'bedford'].includes(makeSlug)) {
     if (year >= 2018) {
       return { viscosity: '0W-20', oemApproval: 'PSA B71 2010 (FPW9.55535/03)', aceaStandard: 'C5', apiStandard: 'SN Plus', capacityLiters: capacity, changeIntervalKm: 15000 };
     }
@@ -375,7 +375,7 @@ function deriveOilSpecificationRaw(
   }
 
   // ── FIAT / ALFA ROMEO / LANCIA / ABARTH / JEEP ─────────────────────────────
-  if (['fiat', 'alfa-romeo', 'lancia', 'abarth', 'jeep'].includes(makeSlug)) {
+  if (['fiat', 'alfa-romeo', 'lancia', 'abarth', 'jeep', 'autobianchi', 'zastava'].includes(makeSlug)) {
     if (isDiesel) {
       if (year >= 2016) {
         return { viscosity: '0W-30', oemApproval: 'Fiat 9.55535-DS1', aceaStandard: 'C2', apiStandard: 'SN', capacityLiters: capacity, changeIntervalKm: 15000 };
@@ -396,7 +396,7 @@ function deriveOilSpecificationRaw(
   }
 
   // ── BMW & MINI ─────────────────────────────────────────────────────────────
-  if (['bmw', 'mini'].includes(makeSlug)) {
+  if (['bmw', 'mini', 'alpina', 'wiesmann'].includes(makeSlug)) {
     if (year >= 2017 && !isDiesel && displacementCc && displacementCc <= 2000) {
       return { viscosity: '0W-20', oemApproval: 'BMW Longlife-17 FE+', aceaStandard: 'C5', apiStandard: 'SP', capacityLiters: capacity, changeIntervalKm: 15000 };
     }
@@ -417,7 +417,7 @@ function deriveOilSpecificationRaw(
   }
 
   // ── MERCEDES-BENZ & SMART ──────────────────────────────────────────────────
-  if (['mercedes-benz', 'mercedes', 'smart'].includes(makeSlug)) {
+  if (['mercedes-benz', 'mercedes', 'smart', 'mercedes-benz-bbdc', 'maybach', 'isdera', 'puch'].includes(makeSlug)) {
     if (year >= 2016 && !isDiesel && displacementCc && displacementCc <= 2000) {
       return { viscosity: '5W-30', oemApproval: 'MB 229.52', aceaStandard: 'C3', apiStandard: 'SP', capacityLiters: capacity, changeIntervalKm: 15000 };
     }
@@ -428,7 +428,7 @@ function deriveOilSpecificationRaw(
   }
 
   // ── FORD ───────────────────────────────────────────────────────────────────
-  if (makeSlug === 'ford') {
+  if (['ford', 'ford-usa', 'mercury', 'lincoln'].includes(makeSlug)) {
     if (isDiesel && year >= 2014) {
       return { viscosity: '0W-30', oemApproval: 'Ford WSS-M2C950-A', aceaStandard: 'C2', apiStandard: 'SN', capacityLiters: capacity, changeIntervalKm: 15000 };
     }
@@ -441,7 +441,7 @@ function deriveOilSpecificationRaw(
   // ── GM (CHEVROLET, CADILLAC, BUICK, GMC) ────────────────────────────────────
   // Pre-2018 Opel/Vauxhall shares this exact GM dexos logic — see its own dedicated
   // branch above, which needs the year-based PSA/GM split that this list doesn't.
-  if (['chevrolet', 'cadillac', 'buick', 'gmc', 'gm'].includes(makeSlug)) {
+  if (['chevrolet', 'cadillac', 'buick', 'gmc', 'gm', 'callaway', 'pontiac', 'oldsmobile', 'hummer'].includes(makeSlug)) {
     if (isDiesel) {
       // dexos2 is GM's own Low-SAPS diesel spec — DPF-safe.
       return { viscosity: '5W-30', oemApproval: 'GM dexos2', aceaStandard: 'C3', apiStandard: 'SN', capacityLiters: capacity, changeIntervalKm: 15000 };
@@ -472,7 +472,7 @@ function deriveOilSpecificationRaw(
   }
 
   // ── PORSCHE ────────────────────────────────────────────────────────────────
-  if (makeSlug === 'porsche') {
+  if (['porsche', 'ruf'].includes(makeSlug)) {
     if (isDiesel) {
       return { viscosity: '5W-30', oemApproval: 'Porsche C30', aceaStandard: 'C3', apiStandard: 'SN', capacityLiters: capacity, changeIntervalKm: 15000 };
     }
@@ -483,7 +483,7 @@ function deriveOilSpecificationRaw(
   }
 
   // ── ASIAN OEMS (TOYOTA, HYUNDAI, KIA, HONDA, MITSUBISHI, SUZUKI, MAZDA) ────
-  if (['toyota', 'hyundai', 'kia', 'honda', 'mitsubishi', 'suzuki', 'lexus', 'mazda', 'subaru'].includes(makeSlug)) {
+  if (['toyota', 'hyundai', 'kia', 'honda', 'mitsubishi', 'suzuki', 'lexus', 'mazda', 'subaru', 'genesis'].includes(makeSlug)) {
     if (isDiesel) {
       return { viscosity: '5W-30', oemApproval: 'Asian OEM C2/C3 DPF', aceaStandard: 'C2 / C3', apiStandard: 'SN/CF', capacityLiters: capacity, changeIntervalKm: 15000 };
     }
@@ -504,6 +504,268 @@ function deriveOilSpecificationRaw(
     }
     // AM-developed V12 (2004+) and pre-2004 classic models.
     return { viscosity: '5W-40', oemApproval: 'Castrol Edge Professional (Aston Martin factory-fill partner)', aceaStandard: 'A3/B4', apiStandard: 'SN', capacityLiters: capacity, changeIntervalKm: 10000 };
+  }
+
+  // ── ROVER ──────────────────────────────────────────────────────────────────
+  // Verified against the Rover 75 Owner's Handbook, MG Rover-era petrol range only
+  // (1998-2005, 1400-2500cc). Pre-1998 Rover (Metro/200/400/800/SD1-era, mechanically
+  // unrelated engines) intentionally left on the generic fallback — not covered.
+  if (makeSlug === 'rover' && !isDiesel && year >= 1998 && displacementCc && displacementCc >= 1400 && displacementCc <= 2500) {
+    return { viscosity: '10W-40', aceaStandard: displacementCc <= 1800 ? 'A1/A2' : 'A2', capacityLiters: capacity, changeIntervalKm: 10000 };
+  }
+
+  // ── SAAB ───────────────────────────────────────────────────────────────────
+  if (makeSlug === 'saab') {
+    if (year >= 2003 && !isDiesel) {
+      return { viscosity: '0W-30', oemApproval: 'GM-LL-A-025', aceaStandard: 'A2/B2 or A3/B3-B4', apiStandard: 'SH/SJ/SL', capacityLiters: capacity, changeIntervalKm: 15000 };
+    }
+    if (isDiesel) {
+      return { viscosity: '10W-40', aceaStandard: 'B2-96/B3-96', apiStandard: 'CD+', capacityLiters: capacity, changeIntervalKm: 10000 };
+    }
+    return { viscosity: '10W-40', oemApproval: 'Saab Turbo engine oil', aceaStandard: 'A2-96/A3-96', apiStandard: 'SG/SH', capacityLiters: capacity, changeIntervalKm: 10000 };
+  }
+
+  // ── BENTLEY ────────────────────────────────────────────────────────────────
+  if (makeSlug === 'bentley') {
+    if (year >= 2012 && displacementCc && displacementCc <= 4200) {
+      return { viscosity: '5W-30', oemApproval: 'VW 504.00/507.00; Bentley G 052 195 (V8)', capacityLiters: capacity, changeIntervalKm: 15000 };
+    }
+    if (year >= 2012) {
+      return { viscosity: '0W-40', oemApproval: 'Mobil 1 New Life / Bentley G 052 930 (W12)', capacityLiters: capacity, changeIntervalKm: 15000 };
+    }
+    return { viscosity: '0W-40', oemApproval: 'Mobil 1 0W-40 (Bentley factory-fill, Continental GT 2004-2011)', capacityLiters: capacity, changeIntervalKm: 15000 };
+  }
+
+  // ── FERRARI ────────────────────────────────────────────────────────────────
+  if (makeSlug === 'ferrari') {
+    return { viscosity: '5W-40', oemApproval: 'Shell Helix Ultra 5W-40 (Ferrari factory-fill/sole service recommendation)', aceaStandard: 'A3/B4', apiStandard: 'SN/CF', capacityLiters: capacity, changeIntervalKm: 10000 };
+  }
+
+  // ── LAMBORGHINI ──────────────────────────────────────────────────────────
+  // Automobiles only. Diesel-tagged Lamborghini entries in this catalog are almost
+  // certainly mistagged Lamborghini Trattori tractor data (a different, unrelated
+  // company) — deliberately excluded here rather than given a fabricated car spec.
+  if (makeSlug === 'lamborghini' && !isDiesel) {
+    if (year >= 2018) {
+      return { viscosity: '0W-40', oemApproval: 'Porsche C40 / VW 511.00 (Urus)', capacityLiters: capacity, changeIntervalKm: 15000 };
+    }
+    return { viscosity: '5W-30', oemApproval: 'VW 504.00 (Castrol SLX LongLife III)', capacityLiters: capacity, changeIntervalKm: 15000 };
+  }
+
+  // ── CHRYSLER / DODGE ───────────────────────────────────────────────────────
+  // Verified against 2007 Sebring and 2007-2019 Charger owner's manuals — MS-6395 is
+  // the constant OEM approval across the group; 5W-20 is the majority-cited viscosity.
+  // Plymouth (same corporate group but pre-2000, not covered by these manuals)
+  // deliberately excluded — left on the generic fallback.
+  if (['chrysler', 'dodge'].includes(makeSlug) && !isDiesel && year >= 2000) {
+    return { viscosity: '5W-20', oemApproval: 'DaimlerChrysler/FCA MS-6395', capacityLiters: capacity, changeIntervalKm: 10000 };
+  }
+
+  // ── MASERATI ───────────────────────────────────────────────────────────────
+  if (makeSlug === 'maserati' && year >= 2014) {
+    if (year >= 2018 && displacementCc && displacementCc <= 3000) {
+      return { viscosity: '10W-60', oemApproval: 'Shell Helix Ultra Racing 10W-60 (Maserati bulletin MAS002103)', aceaStandard: 'A3/B3, A3/B4', apiStandard: 'SN/CF', capacityLiters: capacity, changeIntervalKm: 10000 };
+    }
+    return { viscosity: '5W-40', oemApproval: 'Shell Helix Ultra Maserati 5W-40 (Maserati bulletin MAS002103)', aceaStandard: 'A3/B3, A3/B4', apiStandard: 'SL/CF', capacityLiters: capacity, changeIntervalKm: 10000 };
+  }
+
+  // ── SSANGYONG ──────────────────────────────────────────────────────────────
+  if (makeSlug === 'ssangyong') {
+    if (isDiesel) {
+      return { viscosity: '15W-40', oemApproval: 'MB Sheet 229.1/229.3 (preferred); SsangYong genuine oil', aceaStandard: 'B2/B3/B4', apiStandard: 'CG or higher', capacityLiters: capacity, changeIntervalKm: 10000 };
+    }
+    return { viscosity: '15W-40', oemApproval: 'MB Sheet 229.1 or 229.3; SsangYong genuine oil', apiStandard: 'SH or higher', capacityLiters: capacity, changeIntervalKm: 10000 };
+  }
+
+  // ── DAEWOO ─────────────────────────────────────────────────────────────────
+  if (makeSlug === 'daewoo') {
+    return { viscosity: '10W-40', oemApproval: 'MB Sheet 229.1 (Musso-based applications)', aceaStandard: 'A2 or A3', apiStandard: 'SH or higher', capacityLiters: capacity, changeIntervalKm: 10000 };
+  }
+
+  // ── MG ─────────────────────────────────────────────────────────────────────
+  if (makeSlug === 'mg') {
+    if (year >= 2010) {
+      return { viscosity: '0W-20', oemApproval: 'SAIC Motor-recommended engine oil', aceaStandard: 'C5', apiStandard: 'SP', capacityLiters: capacity, changeIntervalKm: 15000 };
+    }
+    return { viscosity: '10W-40', oemApproval: 'MG Rover specification', aceaStandard: 'A2 or A3 (A1 except VVC engines)', apiStandard: 'SH or SJ', capacityLiters: capacity, changeIntervalKm: 10000 };
+  }
+
+  // ── LADA ───────────────────────────────────────────────────────────────────
+  if (makeSlug === 'lada') {
+    if (year >= 2015) {
+      return { viscosity: '5W-40', oemApproval: 'STO AAI 003 B5/B6 (LADA-recommended lubricant)', apiStandard: 'SL, SM, or SN', capacityLiters: capacity, changeIntervalKm: 10000 };
+    }
+    if (isDiesel) {
+      return { viscosity: '10W-40', aceaStandard: 'B2-96 minimum', apiStandard: 'SG/CF', capacityLiters: capacity, changeIntervalKm: 10000 };
+    }
+    return { viscosity: '10W-40', aceaStandard: 'A2-96', apiStandard: 'SG/SH/CD', capacityLiters: capacity, changeIntervalKm: 10000 };
+  }
+
+  // ── DAIHATSU ───────────────────────────────────────────────────────────────
+  // Verified only for the 3SZ-VE/K3-VE (Terios-era, 1300-1500cc) family; other
+  // Daihatsu displacements/eras intentionally left on the generic fallback.
+  if (makeSlug === 'daihatsu' && displacementCc && displacementCc >= 1300 && displacementCc <= 1500) {
+    return { viscosity: '0W-20', apiStandard: 'SJ or higher', capacityLiters: capacity, changeIntervalKm: 10000 };
+  }
+
+  // ── HAVAL ──────────────────────────────────────────────────────────────────
+  if (makeSlug === 'haval' && !isDiesel) {
+    return { viscosity: '0W-20', oemApproval: 'Haval/GWM OEM-recommended fully synthetic oil', aceaStandard: 'C5', apiStandard: 'SN or SP', capacityLiters: capacity, changeIntervalKm: 10000 };
+  }
+
+  // ── GREAT WALL ─────────────────────────────────────────────────────────────
+  // Verified only for the GW4D20D diesel (Wingle 7); petrol Great Wall left on fallback.
+  if (makeSlug === 'great-wall' && isDiesel) {
+    return { viscosity: year >= 2011 ? '5W-30' : '0W-30', oemApproval: 'Great Wall OEM-specified engine oil', capacityLiters: capacity, changeIntervalKm: 10000 };
+  }
+
+  // ── CHERY ──────────────────────────────────────────────────────────────────
+  if (makeSlug === 'chery' && !isDiesel) {
+    if (year >= 2020) {
+      return { viscosity: '0W-20', oemApproval: 'Chery genuine engine oil', aceaStandard: 'C5', capacityLiters: capacity, changeIntervalKm: 10000 };
+    }
+    return { viscosity: '5W-30', apiStandard: 'SH or SJ', capacityLiters: capacity, changeIntervalKm: 10000 };
+  }
+
+  // ── DFSK ───────────────────────────────────────────────────────────────────
+  if (makeSlug === 'dfsk' && !isDiesel) {
+    return { viscosity: '5W-30', apiStandard: 'SM or higher', oemApproval: 'DFSK engine-oil specification', capacityLiters: capacity, changeIntervalKm: 10000 };
+  }
+
+  // ── BYD ────────────────────────────────────────────────────────────────────
+  if (makeSlug === 'byd' && !isDiesel) {
+    return { viscosity: '0W-20', oemApproval: 'BYD engine-oil specification', aceaStandard: 'C5', capacityLiters: capacity, changeIntervalKm: 10000 };
+  }
+
+  // ── LANDWIND-JMC ───────────────────────────────────────────────────────────
+  if (makeSlug === 'landwind-jmc') {
+    if (isDiesel) {
+      return { viscosity: '10W-40', oemApproval: 'Landwind-approved diesel oil', apiStandard: 'CI-4', capacityLiters: capacity, changeIntervalKm: 10000 };
+    }
+    return { viscosity: '5W-40', oemApproval: 'Landwind-approved engine oil', apiStandard: 'SN or higher', capacityLiters: capacity, changeIntervalKm: 10000 };
+  }
+
+  // ── BRILLIANCE ─────────────────────────────────────────────────────────────
+  if (makeSlug === 'brilliance' && !isDiesel) {
+    return { viscosity: '5W-30', oemApproval: 'Brilliance-approved oil', apiStandard: 'SL or higher', capacityLiters: capacity, changeIntervalKm: 10000 };
+  }
+
+  // ── LOTUS ──────────────────────────────────────────────────────────────────
+  if (makeSlug === 'lotus') {
+    if (year >= 2022) {
+      return { viscosity: '0W-40', oemApproval: 'Total Quartz 9000 Energy (Lotus Emira factory-fill)', aceaStandard: 'A3/B4', apiStandard: 'SN', capacityLiters: capacity, changeIntervalKm: 10000 };
+    }
+    return { viscosity: '5W-40', oemApproval: 'PETRONAS Syntium Racer X1 5W-40 (Lotus approval PE-00137)', aceaStandard: 'A3/B4', apiStandard: 'SM', capacityLiters: capacity, changeIntervalKm: 10000 };
+  }
+
+  // ── MORGAN ─────────────────────────────────────────────────────────────────
+  // Only MY2023+ (Plus Four/Plus Six, genuine BMW-sourced engines) covered — earlier
+  // Morgans use a mix of Ford/Rover/Triumph-derived engines with no single safe answer.
+  if (makeSlug === 'morgan' && year >= 2023) {
+    return { viscosity: '0W-30', oemApproval: 'Genuine BMW-specification engine oil', aceaStandard: 'A2/B2, A2/B3, A3/B3 (Plus Four) or C2/C3 (Plus Six)', capacityLiters: capacity, changeIntervalKm: 15000 };
+  }
+
+  // ── MCLAREN ────────────────────────────────────────────────────────────────
+  if (makeSlug === 'mclaren' && year >= 2011) {
+    return { viscosity: '5W-40', oemApproval: 'Gulf Formula Elite 5W-40 (McLaren approved product)', aceaStandard: 'C3', apiStandard: 'SP', capacityLiters: capacity, changeIntervalKm: 10000 };
+  }
+
+  // ── ISUZU ──────────────────────────────────────────────────────────────────
+  if (makeSlug === 'isuzu' && isDiesel) {
+    return { viscosity: '10W-30', oemApproval: 'Isuzu BESCO CLEAN / BESCO CLEAN SUPER (JASO DH-2)', aceaStandard: 'E6 or E9', apiStandard: 'CI-4 or CJ-4', capacityLiters: capacity, changeIntervalKm: 10000 };
+  }
+
+  // ── PROTON ─────────────────────────────────────────────────────────────────
+  if (makeSlug === 'proton') {
+    if (year >= 2020) {
+      return { viscosity: '5W-30', oemApproval: 'Proton Genuine Oil (PGO)', apiStandard: 'SP / ILSAC GF-6A', capacityLiters: capacity, changeIntervalKm: 10000 };
+    }
+    return { viscosity: '10W-30', oemApproval: 'PETRONAS Syntium / Proton Genuine Oil', apiStandard: 'SL or higher', capacityLiters: capacity, changeIntervalKm: 10000 };
+  }
+
+  // ── TATA ───────────────────────────────────────────────────────────────────
+  // Verified only for the Revotron 1.2T (Bolt-era, ~1200cc petrol); other Tata
+  // engines (including all diesel) intentionally left on the generic fallback.
+  if (makeSlug === 'tata' && !isDiesel && displacementCc && displacementCc <= 1200) {
+    return { viscosity: '5W-30', oemApproval: 'Castrol Magnatec Professional T 5W-30 (Tata Motors recommended)', aceaStandard: 'A5/B5', capacityLiters: capacity, changeIntervalKm: 10000 };
+  }
+
+  // ── AUSTIN ─────────────────────────────────────────────────────────────────
+  if (makeSlug === 'austin') {
+    return { viscosity: year >= 1983 ? '10W-40' : '15W-50', capacityLiters: capacity, changeIntervalKm: 8000 };
+  }
+
+  // ── CLASSIC BRITISH (TALBOT, MORRIS, AUSTIN-HEALEY, RILEY, TRIUMPH) ─────────
+  // No modern factory approval exists for any of these — period manuals predate
+  // API/ACEA entirely. 20W-50 is the commonly-cited period-correct multigrade;
+  // this is deliberately NOT paired with a fabricated API/ACEA code.
+  if (['talbot', 'morris', 'austin-healey', 'riley', 'triumph'].includes(makeSlug)) {
+    return { viscosity: '20W-50', capacityLiters: capacity, changeIntervalKm: 6000 };
+  }
+
+  // ── TVR ────────────────────────────────────────────────────────────────────
+  if (makeSlug === 'tvr') {
+    if (year >= 2002) {
+      return { viscosity: '10W-40', oemApproval: 'Carlube Triple R 10W-40 (semi-synthetic, Speed Six era)', capacityLiters: capacity, changeIntervalKm: 8000 };
+    }
+    return { viscosity: '5W-50', oemApproval: 'Mobil 1 (TVR-recommended, Rover V8 era)', capacityLiters: capacity, changeIntervalKm: 6000 };
+  }
+
+  // ── UAZ ────────────────────────────────────────────────────────────────────
+  if (makeSlug === 'uaz') {
+    return { viscosity: '10W-40', oemApproval: 'STO AAI-003-98 B4/D2', apiStandard: 'SG/CD or higher (SH, SJ, SL, SM)', capacityLiters: capacity, changeIntervalKm: 10000 };
+  }
+
+  // ── FSO ────────────────────────────────────────────────────────────────────
+  if (makeSlug === 'fso') {
+    return { viscosity: '15W-40', apiStandard: isDiesel ? 'SG/CD or CD' : 'SG/CD', capacityLiters: capacity, changeIntervalKm: 8000 };
+  }
+
+  // ── GAZ ────────────────────────────────────────────────────────────────────
+  if (makeSlug === 'gaz') {
+    return { viscosity: '15W-40', apiStandard: 'SF, SG, SH, or SJ', capacityLiters: capacity, changeIntervalKm: 8000 };
+  }
+
+  // ── ZAZ ────────────────────────────────────────────────────────────────────
+  if (makeSlug === 'zaz') {
+    return { viscosity: '15W-40', apiStandard: 'SG, SH, or SJ', capacityLiters: capacity, changeIntervalKm: 8000 };
+  }
+
+  // ── AIXAM ──────────────────────────────────────────────────────────────────
+  if (makeSlug === 'aixam' && isDiesel) {
+    return { viscosity: '10W-30', oemApproval: 'Aixam Mega oil by Yacco (Kubota Z482 microcar engine)', capacityLiters: capacity, changeIntervalKm: 8000 };
+  }
+
+  // ── DAIMLER (Jaguar-derived legacy) ─────────────────────────────────────────
+  if (makeSlug === 'daimler') {
+    return { viscosity: '15W-50', oemApproval: 'Jaguar BLS-OL-02', apiStandard: 'SE/CC', capacityLiters: capacity, changeIntervalKm: 8000 };
+  }
+
+  // ── DE LOREAN ──────────────────────────────────────────────────────────────
+  if (makeSlug === 'de-lorean') {
+    return { viscosity: '20W-50', oemApproval: 'Castrol conventional 20W-50 (Classic DeLorean Motor Company guidance)', apiStandard: 'SF', capacityLiters: capacity, changeIntervalKm: 6000 };
+  }
+
+  // ── BUGATTI ────────────────────────────────────────────────────────────────
+  if (makeSlug === 'bugatti') {
+    return { viscosity: '10W-60', oemApproval: 'Castrol EDGE 10W-60 (VW 501.00/505.00)', aceaStandard: 'A3/B4', capacityLiters: capacity, changeIntervalKm: 10000 };
+  }
+
+  // ── KOENIGSEGG ─────────────────────────────────────────────────────────────
+  if (makeSlug === 'koenigsegg') {
+    return { viscosity: '10W-60', oemApproval: 'Castrol EDGE 10W-60 (Koenigsegg approved)', aceaStandard: 'A3/B4', capacityLiters: capacity, changeIntervalKm: 10000 };
+  }
+
+  // ── ROLLS-ROYCE ────────────────────────────────────────────────────────────
+  // Only the BMW Group era (2003+, Phantom/Ghost/Wraith onward) is handled — it
+  // follows BMW's own Longlife approval chain. Pre-2003 Crewe-era Rolls-Royce
+  // (6750cc V8/V12) predates that and needs its own service material, not
+  // covered here — intentionally left on the generic fallback.
+  if (makeSlug === 'rolls-royce' && year >= 2003) {
+    if (year >= 2017 && displacementCc && displacementCc <= 2000) {
+      return { viscosity: '0W-20', oemApproval: 'BMW Longlife-17 FE+', aceaStandard: 'C5', apiStandard: 'SP', capacityLiters: capacity, changeIntervalKm: 15000 };
+    }
+    return { viscosity: '5W-30', oemApproval: 'BMW Longlife-04 (LL-04)', aceaStandard: 'C3', apiStandard: 'SN', capacityLiters: capacity, changeIntervalKm: 15000 };
   }
 
   // ── GENERIC & CHINESE OEMS STRICTLY OBSERVING DPF / SAPS SAFETY ────────────
