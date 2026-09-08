@@ -188,9 +188,11 @@ services:
     # user (via gosu) rather than as root (the container's default user) —
     # postgres refuses outright to run as root, and running pg_basebackup as
     # root leaves every copied file root-owned, which postgres then can't
-    # read even after switching users. The chown is a cheap idempotent
-    # safety net for data dirs that were already initialized as root before
-    # this fix (from an earlier version of this command).
+    # read even after switching users. Docker also creates a fresh named
+    # volume's mountpoint as world-writable (1777), which postgres rejects
+    # outright regardless of ownership, hence the chmod. Both are cheap,
+    # idempotent safety nets for data dirs already initialized this way by
+    # an earlier version of this command.
     command: |
       sh -c "
       if [ ! -s /var/lib/postgresql/data/PG_VERSION ]; then
@@ -198,6 +200,7 @@ services:
         gosu postgres pg_basebackup -h db -D /var/lib/postgresql/data -U ${POSTGRES_USER} -Fp -Xs -R
       fi
       chown -R postgres:postgres /var/lib/postgresql/data
+      chmod 700 /var/lib/postgresql/data
       exec gosu postgres postgres
       "
     volumes:
