@@ -218,7 +218,7 @@ export default function CataloguePage() {
     <div className="bg-white">
       <section className="relative isolate overflow-hidden bg-[#0B0B0C] text-white">
         <div
-          className="pointer-events-none absolute inset-y-0 right-0 w-full bg-[url('/img/hero/hero_car_bg.png')] bg-cover bg-right bg-no-repeat opacity-30 mix-blend-screen lg:w-3/4"
+          className="pointer-events-none absolute inset-y-0 right-0 hidden w-full bg-[url('/img/hero/hero_car_bg.png')] bg-cover bg-right bg-no-repeat opacity-30 mix-blend-screen sm:block lg:w-3/4"
           aria-hidden="true"
         />
         <div className="section-padding relative py-12 md:py-16">
