@@ -165,6 +165,7 @@ services:
     command: ["postgres", "-c", "wal_level=replica", "-c", "max_wal_senders=3", "-c", "max_replication_slots=3", "-c", "hot_standby=on"]
     volumes:
       - specpart_pgdata:/var/lib/postgresql/data
+      - ./docker/postgres/init-replication-hba.sh:/docker-entrypoint-initdb.d/init-replication-hba.sh:ro
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
@@ -182,14 +183,22 @@ services:
     env_file: backend/.env
     environment:
       PGPASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
-    # If the data dir is empty, take a base backup from 'db', then start postgres
+    # If the data dir is empty, take a base backup from 'db', then start postgres.
+    # Must run pg_basebackup and postgres itself as the unprivileged `postgres`
+    # user (via gosu) rather than as root (the container's default user) —
+    # postgres refuses outright to run as root, and running pg_basebackup as
+    # root leaves every copied file root-owned, which postgres then can't
+    # read even after switching users. The chown is a cheap idempotent
+    # safety net for data dirs that were already initialized as root before
+    # this fix (from an earlier version of this command).
     command: |
       sh -c "
       if [ ! -s /var/lib/postgresql/data/PG_VERSION ]; then
         echo 'Initializing replica from primary...'
-        pg_basebackup -h db -D /var/lib/postgresql/data -U ${POSTGRES_USER} -Fp -Xs -R
+        gosu postgres pg_basebackup -h db -D /var/lib/postgresql/data -U ${POSTGRES_USER} -Fp -Xs -R
       fi
-      exec postgres
+      chown -R postgres:postgres /var/lib/postgresql/data
+      exec gosu postgres postgres
       "
     volumes:
       - specpart_pgdata_replica:/var/lib/postgresql/data
