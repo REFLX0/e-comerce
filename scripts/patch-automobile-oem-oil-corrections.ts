@@ -36,7 +36,7 @@ const AFFECTED_MAKES = [
   'chery', 'dfsk', 'byd', 'landwind-jmc', 'brilliance', 'lotus', 'morgan', 'mclaren',
   'isuzu', 'proton', 'tata', 'austin', 'talbot', 'morris', 'austin-healey', 'riley', 'triumph',
   'tvr', 'uaz', 'fso', 'gaz', 'zaz', 'aixam', 'daimler', 'de-lorean', 'bugatti', 'koenigsegg',
-  'rolls-royce',
+  'rolls-royce', 'nissan', 'infiniti', 'volvo',
 ];
 
 function slugify(text: string): string {
