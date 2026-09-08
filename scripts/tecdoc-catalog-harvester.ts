@@ -411,11 +411,22 @@ function deriveOilSpecificationRaw(
   }
 
   // ── BMW & MINI ─────────────────────────────────────────────────────────────
+  // TecDoc links an engine to every car generation it was ever fitted to, including
+  // older-looking nameplate generations that got this engine added in a later facelift
+  // -- so `year` (sourced from generation.yearFrom) can be an artifact that's decades
+  // older than the engine itself. Confirmed live: N55 B30 A (a real 2009+ engine) was
+  // linked to "3 (E46)" (1998-2013), computing year=1998 and wrongly returning the
+  // pre-2004 Longlife-98 spec for ~100 engine rows across the N-family. BMW's N-series
+  // (N40/42/43/45/46/47/51/52/53/54/55/57/62/63/73...) and B-series are well-documented
+  // as 2001+ (N42/N46) or, for every other N/B code, solidly 2004+ -- so for any of
+  // those (excluding the two ambiguous 2001-era codes), the pre-2004 brackets below are
+  // never legitimate regardless of what `year` computes to.
+  const isModernBmwFamily = /^(N(?!42\b|46\b)[0-9]|B[0-9])/.test(normEngineCode);
   if (['bmw', 'mini', 'alpina', 'wiesmann'].includes(makeSlug)) {
     if (year >= 2017 && !isDiesel && displacementCc && displacementCc <= 2000) {
       return { viscosity: '0W-20', oemApproval: 'BMW Longlife-17 FE+', aceaStandard: 'C5', apiStandard: 'SP', capacityLiters: capacity, changeIntervalKm: 15000 };
     }
-    if (isDiesel || year >= 2004) {
+    if (isDiesel || year >= 2004 || isModernBmwFamily) {
       return { viscosity: '5W-30', oemApproval: 'BMW Longlife-04 (LL-04)', aceaStandard: 'C3', apiStandard: 'SN', capacityLiters: capacity, changeIntervalKm: 15000 };
     }
     if (year >= 1995) {
