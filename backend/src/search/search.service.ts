@@ -347,15 +347,26 @@ export class SearchService implements OnModuleInit {
           _source: ['name', 'slug', 'brand', 'sku'],
           query: {
             bool: {
-              must: [
+              // 'sku' is a `keyword` field -- phrase_prefix is only valid on `text`
+              // fields, so it was split out into its own wildcard clause below.
+              // Combining both in one multi_match made OpenSearch reject EVERY
+              // query with a 400, silently dropping every autocomplete search to
+              // the much weaker Postgres fallback.
+              should: [
                 {
                   multi_match: {
                     query,
-                    fields: ['name^4', 'sku^5', 'brand^3'],
+                    fields: ['name^4', 'brand^3'],
                     type: 'phrase_prefix',
                   },
                 },
+                {
+                  wildcard: {
+                    sku: { value: `*${query.toLowerCase()}*`, case_insensitive: true, boost: 5 },
+                  },
+                },
               ],
+              minimum_should_match: 1,
               filter: [{ term: { isPublished: true } }],
             },
           },
@@ -385,22 +396,34 @@ export class SearchService implements OnModuleInit {
     return [...new Set(tokens)];
   }
 
+  // Used only when OpenSearch is unavailable or a query returns zero hits there.
+  // Matches products.service.ts's buildSearchConditions(): split the query into
+  // words and require EVERY word to match (AND across words, OR across fields
+  // per word) instead of treating the whole query as one literal substring --
+  // "stop smoke" as one un-split token would never match "Diesel stop smoke"
+  // unless it appeared verbatim in that exact position.
   buildPrismaSearchWhere(q: string): Prisma.ProductWhereInput {
-    const tokens = this.searchTokens(q);
+    const words = q.trim().split(/\s+/).filter(Boolean);
+    const wordConditions: Prisma.ProductWhereInput[] = words.map((word) => {
+      const terms = this.searchTokens(word);
+      return {
+        OR: terms.flatMap((term) => [
+          { nameFr: { contains: term, mode: 'insensitive' as const } },
+          { sku: { contains: term, mode: 'insensitive' as const } },
+          { brand: { name: { contains: term, mode: 'insensitive' as const } } },
+          { specs: { viscosity: { contains: term, mode: 'insensitive' as const } } },
+          { specs: { OEMApprovals: { contains: term, mode: 'insensitive' as const } } },
+          { specs: { aeceaStandard: { contains: term, mode: 'insensitive' as const } } },
+          { specs: { apiStandard: { contains: term, mode: 'insensitive' as const } } },
+          { specs: { jasoStandard: { contains: term, mode: 'insensitive' as const } } },
+          { description: { contains: term, mode: 'insensitive' as const } },
+          { category: { nameFr: { contains: term, mode: 'insensitive' as const } } },
+        ]),
+      };
+    });
     return {
       isPublished: true,
-      OR: tokens.flatMap((term) => [
-        { nameFr: { contains: term, mode: 'insensitive' } },
-        { sku: { contains: term, mode: 'insensitive' } },
-        { brand: { name: { contains: term, mode: 'insensitive' } } },
-        { specs: { viscosity: { contains: term, mode: 'insensitive' } } },
-        { specs: { OEMApprovals: { contains: term, mode: 'insensitive' } } },
-        { specs: { aeceaStandard: { contains: term, mode: 'insensitive' } } },
-        { specs: { apiStandard: { contains: term, mode: 'insensitive' } } },
-        { specs: { jasoStandard: { contains: term, mode: 'insensitive' } } },
-        { description: { contains: term, mode: 'insensitive' } },
-        { category: { nameFr: { contains: term, mode: 'insensitive' } } },
-      ]),
+      AND: wordConditions,
     };
   }
 
@@ -508,8 +531,11 @@ export class SearchService implements OnModuleInit {
 
     const osResult = await this.search({ query: q, page, limit });
     if (osResult && osResult.total > 0) {
+      // Re-check isPublished: the OpenSearch index can briefly lag a product
+      // being unpublished (only a full reindex clears a stale doc), so trusting
+      // OpenSearch's own filter alone could leak an unpublished product here.
       const products = await this.prismaRead.db.product.findMany({
-        where: { id: { in: osResult.ids } },
+        where: { id: { in: osResult.ids }, isPublished: true },
         include: this.buildInclude(),
       });
       const map = new Map(products.map((p) => [p.id, p]));
@@ -538,7 +564,7 @@ export class SearchService implements OnModuleInit {
 
     const osSlugs = await this.getSuggestions(q, limit);
     if (osSlugs) {
-      const products = await this.prismaRead.db.product.findMany({ where: { slug: { in: osSlugs } }, include: this.buildInclude() });
+      const products = await this.prismaRead.db.product.findMany({ where: { slug: { in: osSlugs }, isPublished: true }, include: this.buildInclude() });
       const map = new Map(products.map((p) => [p.slug, p]));
       return osSlugs.map((s) => map.get(s)).filter(Boolean).map((p) => this.serializeSearch(p));
     }
