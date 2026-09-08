@@ -38,7 +38,7 @@
     "oilSpecAPI": "CI-4",
     "oilSpecACEA": "E7",
     "oilSpecOEM": "MAN M 3275-1",
-    "oilCapacityLiters": 21.5,
+    "oilCapacityLiters": 26,
     "gearboxOilSeparate": true,
     "gearboxOilSpec": null,
     "oilChangeIntervalKm": 60000,

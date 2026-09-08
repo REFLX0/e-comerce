@@ -32,20 +32,21 @@
     "engineCode": "333cc 2-cyl EFI",
     "displacementCc": 333,
     "fuelType": "essence",
-    "powerKw": 11.0,
+    "powerKw": 11,
     "powerHp": 15,
-    "oilSpecOEM": "Tohatsu 4-Stroke Outboard Motor Oil",
+    "oilSpecOEM": "Tohatsu Genuine FC-W 4-Stroke Outboard Motor Oil (NMMA FC-W certified)",
     "coolingSystem": null,
     "source": "tohatsu.com MFS15E specs (333cc, 1.0L oil); defender.com; Tohatsu owner manual",
     "confidence": "high",
     "matchAmbiguity": null,
     "engineType": "hors-bord 4-temps",
-    "oilViscosity": "10W-30",
+    "oilViscosity": "10W-30/10W-40",
     "oilSpecMarine": "FC-W",
-    "oilCapacityLiters": 1.0,
+    "oilCapacityLiters": 1,
     "gearOilSpec": "Tohatsu Premium Gear Lube (API GL-5 SAE 80W-90)",
     "gearOilCapacityLiters": 0.37,
-    "oilChangeIntervalHours": 100
+    "oilChangeIntervalHours": 100,
+    "oilSpecAPI": "SH, SJ or SL"
   },
   {
     "make": "TOHATSU",
@@ -58,18 +59,19 @@
     "fuelType": "essence",
     "powerKw": 14.7,
     "powerHp": 20,
-    "oilSpecOEM": "Tohatsu 4-Stroke Outboard Motor Oil",
+    "oilSpecOEM": "Tohatsu Genuine FC-W 4-Stroke Outboard Motor Oil (NMMA FC-W certified)",
     "coolingSystem": null,
     "source": "tohatsu.com MFS20E specs (333cc, 1.0L oil); defender.com; Tohatsu owner manual",
     "confidence": "high",
     "matchAmbiguity": null,
     "engineType": "hors-bord 4-temps",
-    "oilViscosity": "10W-30",
+    "oilViscosity": "10W-30/10W-40",
     "oilSpecMarine": "FC-W",
-    "oilCapacityLiters": 1.0,
+    "oilCapacityLiters": 1,
     "gearOilSpec": "Tohatsu Premium Gear Lube (API GL-5 SAE 80W-90)",
     "gearOilCapacityLiters": 0.37,
-    "oilChangeIntervalHours": 100
+    "oilChangeIntervalHours": 100,
+    "oilSpecAPI": "SH, SJ or SL"
   },
   {
     "make": "TOHATSU",
@@ -82,7 +84,7 @@
     "fuelType": "essence",
     "powerKw": 18.4,
     "powerHp": 25,
-    "oilSpecOEM": "Tohatsu 4-Stroke Outboard Motor Oil",
+    "oilSpecOEM": "Tohatsu Genuine FC-W 4-Stroke Outboard Motor Oil (NMMA FC-W certified)",
     "coolingSystem": null,
     "source": "tohatsu.com MFS25D specs (500cc, 1.7L oil); Tohatsu service manual",
     "confidence": "high",
@@ -90,10 +92,11 @@
     "engineType": "hors-bord 4-temps",
     "oilViscosity": "10W-30",
     "oilSpecMarine": "FC-W",
-    "oilCapacityLiters": 1.7,
+    "oilCapacityLiters": 1.8,
     "gearOilSpec": "Tohatsu Premium Gear Lube (API GL-5 SAE 80W-90)",
     "gearOilCapacityLiters": 0.36,
-    "oilChangeIntervalHours": 100
+    "oilChangeIntervalHours": 100,
+    "oilSpecAPI": "SF, SG, SH or SJ"
   },
   {
     "make": "TOHATSU",
@@ -106,7 +109,7 @@
     "fuelType": "essence",
     "powerKw": 22.1,
     "powerHp": 30,
-    "oilSpecOEM": "Tohatsu 4-Stroke Outboard Motor Oil",
+    "oilSpecOEM": "Tohatsu Genuine FC-W 4-Stroke Outboard Motor Oil (NMMA FC-W certified)",
     "coolingSystem": null,
     "source": "tohatsu.com MFS30D specs (500cc, 1.7L oil); Tohatsu service manual",
     "confidence": "high",
@@ -114,10 +117,11 @@
     "engineType": "hors-bord 4-temps",
     "oilViscosity": "10W-30",
     "oilSpecMarine": "FC-W",
-    "oilCapacityLiters": 1.7,
+    "oilCapacityLiters": 1.8,
     "gearOilSpec": "Tohatsu Premium Gear Lube (API GL-5 SAE 80W-90)",
     "gearOilCapacityLiters": 0.36,
-    "oilChangeIntervalHours": 100
+    "oilChangeIntervalHours": 100,
+    "oilSpecAPI": "SF, SG, SH or SJ"
   },
   {
     "make": "TOHATSU",
@@ -130,7 +134,7 @@
     "fuelType": "essence",
     "powerKw": 36.8,
     "powerHp": 50,
-    "oilSpecOEM": "Tohatsu 4-Stroke Outboard Motor Oil",
+    "oilSpecOEM": "Tohatsu Genuine FC-W 4-Stroke Outboard Motor Oil (NMMA FC-W certified)",
     "coolingSystem": null,
     "source": "tohatsu.com MFS50A specs (866cc, 2.4L oil); defender.com; Tohatsu owner manual",
     "confidence": "high",
@@ -141,7 +145,8 @@
     "oilCapacityLiters": 2.4,
     "gearOilSpec": "Tohatsu Premium Gear Lube (API GL-5 SAE 80W-90)",
     "gearOilCapacityLiters": 0.5,
-    "oilChangeIntervalHours": 100
+    "oilChangeIntervalHours": 100,
+    "oilSpecAPI": "SH, SJ or SL"
   },
   {
     "make": "TOHATSU",
@@ -154,7 +159,7 @@
     "fuelType": "essence",
     "powerKw": 44.1,
     "powerHp": 60,
-    "oilSpecOEM": "Tohatsu 4-Stroke Outboard Motor Oil",
+    "oilSpecOEM": "Tohatsu Genuine FC-W 4-Stroke Outboard Motor Oil (NMMA FC-W certified)",
     "coolingSystem": null,
     "source": "tohatsu.com MFS60A specs (866cc, 2.4L oil); boatsales.com.au; Tohatsu owner manual",
     "confidence": "medium",
@@ -165,7 +170,8 @@
     "oilCapacityLiters": 2.4,
     "gearOilSpec": "Tohatsu Premium Gear Lube (API GL-5 SAE 80W-90)",
     "gearOilCapacityLiters": 0.5,
-    "oilChangeIntervalHours": 100
+    "oilChangeIntervalHours": 100,
+    "oilSpecAPI": "SH, SJ or SL"
   },
   {
     "make": "TOHATSU",
@@ -178,18 +184,19 @@
     "fuelType": "essence",
     "powerKw": 66.2,
     "powerHp": 90,
-    "oilSpecOEM": "Tohatsu 4-Stroke Outboard Motor Oil",
+    "oilSpecOEM": "Tohatsu Genuine FC-W 4-Stroke Outboard Motor Oil (NMMA FC-W certified)",
     "coolingSystem": null,
     "source": "tohatsu.com MFS90A specs (1995cc, 4.2L oil); Tohatsu owner manual",
     "confidence": "medium",
     "matchAmbiguity": null,
     "engineType": "hors-bord 4-temps",
-    "oilViscosity": "10W-30",
+    "oilViscosity": "10W-30 (10W-40 also approved)",
     "oilSpecMarine": "FC-W",
     "oilCapacityLiters": 4.2,
     "gearOilSpec": "Tohatsu Premium Gear Lube (API GL-5 SAE 80W-90)",
     "gearOilCapacityLiters": 0.95,
-    "oilChangeIntervalHours": 100
+    "oilChangeIntervalHours": 100,
+    "oilSpecAPI": "SH, SJ or SL"
   },
   {
     "make": "TOHATSU",
@@ -202,17 +209,18 @@
     "fuelType": "essence",
     "powerKw": 84.6,
     "powerHp": 115,
-    "oilSpecOEM": "Tohatsu 4-Stroke Outboard Motor Oil",
+    "oilSpecOEM": "Tohatsu Genuine FC-W 4-Stroke Outboard Motor Oil (NMMA FC-W certified)",
     "coolingSystem": null,
     "source": "tohatsu.com MFS115A specs (1995cc, 4.2L oil); tradeaboat.com.au; boatsales.com.au",
     "confidence": "medium",
     "matchAmbiguity": null,
     "engineType": "hors-bord 4-temps",
-    "oilViscosity": "10W-30",
+    "oilViscosity": "10W-30 (10W-40 also approved)",
     "oilSpecMarine": "FC-W",
     "oilCapacityLiters": 4.2,
     "gearOilSpec": "Tohatsu Premium Gear Lube (API GL-5 SAE 80W-90)",
     "gearOilCapacityLiters": 0.95,
-    "oilChangeIntervalHours": 100
+    "oilChangeIntervalHours": 100,
+    "oilSpecAPI": "SH, SJ or SL"
   }
 ]
