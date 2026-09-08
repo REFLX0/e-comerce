@@ -284,7 +284,22 @@ model Product {
   reviews          Review[]
   wishlistItems    WishlistItem[]
   createdAt        DateTime              @default(now())
+  technicalCharacteristics String?       @db.Text
+  compatibleVehiclesNote   String?       @db.Text
+  oemReferences    ProductOemReference[]
 
+  @@schema("public")
+}
+
+model ProductOemReference {
+  id        String  @id @default(cuid())
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  brand     String
+  reference String
+  sortOrder Int     @default(0)
+
+  @@index([productId])
   @@schema("public")
 }
 

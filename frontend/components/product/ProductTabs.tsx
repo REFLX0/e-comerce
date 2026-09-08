@@ -113,7 +113,25 @@ export function ProductTabs({ product }: Props) {
     if (!product.attributes?.length) return []
     return product.attributes.map((a) => ({ label: a.title, value: a.value }))
   }, [product.attributes])
-  const specRows = useMemo(() => [...toSpecRows(product.specs, t), ...tecdocAttributeRows, ...details.technicalDetails], [product.specs, tecdocAttributeRows, details.technicalDetails, t])
+  const manualTechnicalRows = useMemo(() => {
+    if (!product.technicalCharacteristics) return []
+    return product.technicalCharacteristics
+      .split('\n')
+      .map((line) => line.replace(/^[\s•·\-]+/, '').trim())
+      .filter(Boolean)
+      .map((line) => {
+        const separatorIndex = line.search(/\s*[:–—]\s*/)
+        if (separatorIndex > 0) {
+          return {
+            label: line.slice(0, separatorIndex).trim(),
+            value: line.slice(separatorIndex).replace(/^\s*[:–—]\s*/, '').trim(),
+          }
+        }
+        return { label: '', value: line }
+      })
+  }, [product.technicalCharacteristics])
+  const specRows = useMemo(() => [...toSpecRows(product.specs, t), ...tecdocAttributeRows, ...details.technicalDetails, ...manualTechnicalRows], [product.specs, tecdocAttributeRows, details.technicalDetails, manualTechnicalRows, t])
+  const hasOeReferences = Boolean(product.oeNumbers?.length) || Boolean(product.oemReferences?.length)
 
   return (
     <div className="border-brand-surface-dark mt-16 rounded-2xl border bg-white p-6 shadow-sm md:p-10">
@@ -121,8 +139,8 @@ export function ProductTabs({ product }: Props) {
         <TabsList className="border-brand-surface-dark hide-scrollbar mb-8 h-auto w-full flex-nowrap justify-start overflow-x-auto rounded-none border-b bg-transparent p-0">
           <ProductTab value="description">{t('description')}</ProductTab>
           <ProductTab value="specs">{t('specifications')}</ProductTab>
-          {product.oeNumbers?.length ? (
-            <ProductTab value="oe">Références Constructeur ({product.oeNumbers.length})</ProductTab>
+          {hasOeReferences ? (
+            <ProductTab value="oe">Références Constructeur ({(product.oeNumbers?.length || 0) + (product.oemReferences?.length || 0)})</ProductTab>
           ) : null}
           <ProductTab value="compatibility">{t('compatibility')}</ProductTab>
           {product.crossList?.length ? (
@@ -154,10 +172,16 @@ export function ProductTabs({ product }: Props) {
           )}
         </TabsContent>
 
-        {product.oeNumbers?.length ? (
+        {hasOeReferences ? (
           <TabsContent value="oe" className="mt-0">
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-              {product.oeNumbers.map((oe, idx) => (
+              {(product.oemReferences || []).map((oe, idx) => (
+                <div key={`manual-${oe.brand}-${oe.reference}-${idx}`} className="flex items-center justify-between p-3 rounded-lg border border-gray-100 bg-gray-50/50">
+                  <span className="text-xs font-semibold uppercase text-gray-500">{oe.brand}</span>
+                  <span className="font-mono text-sm font-bold text-brand-primary">{oe.reference}</span>
+                </div>
+              ))}
+              {(product.oeNumbers || []).map((oe, idx) => (
                 <div key={`${oe.manufacturer}-${oe.oenNumber}-${idx}`} className="flex items-center justify-between p-3 rounded-lg border border-gray-100 bg-gray-50/50">
                   <span className="text-xs font-semibold uppercase text-gray-500">{oe.manufacturer}</span>
                   <span className="font-mono text-sm font-bold text-brand-primary">{oe.oenNumber}</span>
@@ -169,6 +193,19 @@ export function ProductTabs({ product }: Props) {
 
         <TabsContent value="compatibility" className="mt-0">
           <div className="space-y-8">
+            {/* 0. Manually entered compatible vehicles note */}
+            {product.compatibleVehiclesNote ? (
+              <div>
+                <h3 className="text-base font-bold text-brand-primary mb-3 flex items-center gap-2">
+                  <Check size={18} className="text-green-600" />
+                  Véhicules Compatibles
+                </h3>
+                <div className="rounded-xl border border-gray-100 bg-gray-50/70 p-4 text-sm text-gray-700 whitespace-pre-line leading-relaxed">
+                  {product.compatibleVehiclesNote}
+                </div>
+              </div>
+            ) : null}
+
             {/* 1. OEM Approvals / Homologations constructeurs (For Oils & Lubricants) */}
             {product.specs?.oemApprovals && product.specs.oemApprovals.length > 0 ? (
               <div>

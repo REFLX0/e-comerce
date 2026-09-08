@@ -83,6 +83,16 @@ export class ProductSpecsDto {
   HybridCompatible?: boolean;
 }
 
+export class OemReferenceDto {
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  id?: string;
+
+  @ApiProperty() @IsString() @MinLength(1) brand: string;
+  @ApiProperty() @IsString() @MinLength(1) reference: string;
+}
+
 export class CreateProductDto {
   @ApiProperty() @IsString() @MinLength(1) nameFr: string;
   @ApiProperty() @IsString() @MinLength(1) slug: string;
@@ -134,4 +144,18 @@ export class CreateProductDto {
   @ValidateNested()
   @Type(() => ProductSpecsDto)
   specs?: ProductSpecsDto;
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  technicalCharacteristics?: string;
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  compatibleVehiclesNote?: string;
+  @ApiProperty({ required: false, type: [OemReferenceDto] })
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => OemReferenceDto)
+  oemReferences?: OemReferenceDto[];
 }

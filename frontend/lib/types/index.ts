@@ -142,6 +142,9 @@ export interface Product {
   variants: ProductVariant[]
   specs?: ProductSpec
   compatibility?: VehicleCompatibility[]
+  oemReferences?: Array<{ id?: string; brand: string; reference: string }>
+  technicalCharacteristics?: string
+  compatibleVehiclesNote?: string
   tags: string[]
   isBestSeller: boolean
   isNew: boolean

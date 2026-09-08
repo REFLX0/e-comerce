@@ -67,6 +67,7 @@ export class AdminService {
         variants: { orderBy: { price: 'asc' } },
         images: { orderBy: { sortOrder: 'asc' } },
         specs: true,
+        oemReferences: { orderBy: { sortOrder: 'asc' } },
       },
     });
   }
@@ -133,7 +134,7 @@ export class AdminService {
   }
 
   async createProduct(dto: CreateProductDto) {
-    const { price, brandId, categoryId, stock, images, variants, specs, packageUnit, ...rest } =
+    const { price, brandId, categoryId, stock, images, variants, specs, packageUnit, oemReferences, ...rest } =
       dto;
     const sku = dto.sku || `SKU-${dto.slug || dto.nameFr}-${Date.now()}`;
     const data: Prisma.ProductCreateInput = {
@@ -195,14 +196,26 @@ export class AdminService {
       };
     }
 
+    if (oemReferences && oemReferences.length > 0) {
+      data.oemReferences = {
+        create: oemReferences
+          .filter((r) => r.brand?.trim() && r.reference?.trim())
+          .map((r, idx) => ({
+            brand: r.brand.trim(),
+            reference: r.reference.trim(),
+            sortOrder: idx,
+          })),
+      };
+    }
+
     return this.prisma.product.create({
       data,
-      include: { brand: true, category: true, variants: true, images: true, specs: true },
+      include: { brand: true, category: true, variants: true, images: true, specs: true, oemReferences: true },
     });
   }
 
   async updateProduct(id: string, data: any) {
-    const { price, stock, variants, images, specs, packageUnit, ...productData } = data;
+    const { price, stock, variants, images, specs, packageUnit, oemReferences, ...productData } = data;
     const updateData: Prisma.ProductUncheckedUpdateInput = {};
 
     for (const key of [
@@ -215,6 +228,8 @@ export class AdminService {
       'categoryId',
       'isPublished',
       'isFeatured',
+      'technicalCharacteristics',
+      'compatibleVehiclesNote',
     ] as const) {
       if (productData[key] !== undefined) {
         (updateData as any)[key] = productData[key];
@@ -249,6 +264,21 @@ export class AdminService {
             productId: id,
             url,
             isPrimary: idx === 0,
+            sortOrder: idx,
+          })),
+        });
+      }
+    }
+
+    if (Array.isArray(oemReferences)) {
+      await this.prisma.productOemReference.deleteMany({ where: { productId: id } });
+      const validRefs = oemReferences.filter((r: any) => r.brand?.trim() && r.reference?.trim());
+      if (validRefs.length > 0) {
+        await this.prisma.productOemReference.createMany({
+          data: validRefs.map((r: any, idx: number) => ({
+            productId: id,
+            brand: r.brand.trim(),
+            reference: r.reference.trim(),
             sortOrder: idx,
           })),
         });
@@ -389,7 +419,7 @@ export class AdminService {
 
     const updatedProduct = await this.prisma.product.findUnique({
       where: { id },
-      include: { brand: true, category: true, variants: true, images: true, specs: true },
+      include: { brand: true, category: true, variants: true, images: true, specs: true, oemReferences: true },
     });
 
     if (updatedProduct) {

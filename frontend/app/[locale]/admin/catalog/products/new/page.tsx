@@ -49,6 +49,11 @@ interface VariantItem {
   imageUrl?: string | null
 }
 
+interface OemReferenceItem {
+  brand: string
+  reference: string
+}
+
 function categoryLabel(category: any) {
   const name = category.nameFr ?? category.name ?? 'Category'
   return category.parent?.nameFr ? `${category.parent.nameFr} / ${name}` : name
@@ -94,6 +99,11 @@ export default function NewProductPage() {
   const [DPFCompatible, setDPFCompatible] = useState(false)
   const [TurboCompatible, setTurboCompatible] = useState(false)
   const [HybridCompatible, setHybridCompatible] = useState(false)
+
+  // Reference d'origine (OEM), Caracteristiques techniques & Vehicules compatibles
+  const [oemReferences, setOemReferences] = useState<OemReferenceItem[]>([])
+  const [technicalCharacteristics, setTechnicalCharacteristics] = useState('')
+  const [compatibleVehiclesNote, setCompatibleVehiclesNote] = useState('')
 
   // Images Management
   const [images, setImages] = useState<ImageItem[]>([])
@@ -336,6 +346,12 @@ export default function NewProductPage() {
         TurboCompatible,
         HybridCompatible,
       }
+
+      payload.technicalCharacteristics = technicalCharacteristics.trim() || undefined
+      payload.compatibleVehiclesNote = compatibleVehiclesNote.trim() || undefined
+      payload.oemReferences = oemReferences
+        .filter((r) => r.brand.trim() && r.reference.trim())
+        .map((r) => ({ brand: r.brand.trim(), reference: r.reference.trim() }))
 
       createMutation.mutate(payload)
     } catch {
@@ -809,6 +825,83 @@ export default function NewProductPage() {
                 Compatible Hybride
               </label>
             </div>
+          </div>
+        </div>
+
+        {/* OEM References, Technical Characteristics & Compatible Vehicles Card */}
+        <div className="rounded-3xl border border-slate-200/90 bg-white p-5 sm:p-7 shadow-sm space-y-5">
+          <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
+            <Wrench size={17} className="text-[#16254c]" />
+            <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wider">
+              Référence d&apos;Origine, Caractéristiques &amp; Véhicules Compatibles
+            </h2>
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-xs font-semibold text-slate-700">Référence(s) d&apos;origine (OEM)</label>
+            <div className="space-y-2">
+              {oemReferences.map((ref, idx) => (
+                <div key={idx} className="flex gap-2 items-center">
+                  <input
+                    type="text"
+                    value={ref.brand}
+                    onChange={(e) => {
+                      const value = e.target.value
+                      setOemReferences(oemReferences.map((r, i) => (i === idx ? { ...r, brand: value } : r)))
+                    }}
+                    placeholder="Marque (ex: Bosch)"
+                    className="w-40 rounded-2xl border border-slate-200 bg-slate-50/60 px-4 py-2.5 text-sm font-semibold outline-none focus:border-[#16254c] focus:bg-white"
+                  />
+                  <input
+                    type="text"
+                    value={ref.reference}
+                    onChange={(e) => {
+                      const value = e.target.value
+                      setOemReferences(oemReferences.map((r, i) => (i === idx ? { ...r, reference: value } : r)))
+                    }}
+                    placeholder="Référence (ex: 0451103316)"
+                    className="flex-1 rounded-2xl border border-slate-200 bg-slate-50/60 px-4 py-2.5 text-sm font-semibold outline-none focus:border-[#16254c] focus:bg-white"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setOemReferences(oemReferences.filter((_, i) => i !== idx))}
+                    className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-slate-400 hover:bg-rose-50 hover:text-rose-600 transition-colors"
+                  >
+                    <Trash2 size={15} />
+                  </button>
+                </div>
+              ))}
+              <button
+                type="button"
+                onClick={() => setOemReferences([...oemReferences, { brand: '', reference: '' }])}
+                className="inline-flex items-center gap-1.5 rounded-xl border border-dashed border-slate-300 px-3 py-2 text-xs font-bold text-slate-600 hover:border-[#16254c] hover:text-[#16254c] transition-colors"
+              >
+                <Plus size={14} />
+                <span>Ajouter une référence</span>
+              </button>
+            </div>
+          </div>
+
+          <div className="space-y-1">
+            <label className="text-xs font-semibold text-slate-700">Caractéristiques techniques</label>
+            <textarea
+              value={technicalCharacteristics}
+              onChange={(e) => setTechnicalCharacteristics(e.target.value)}
+              rows={4}
+              placeholder="ex: Poids: 500g, Diamètre: 76mm, Matériau: Aluminium..."
+              className="w-full rounded-2xl border border-slate-200 bg-slate-50/60 px-4 py-2.5 text-sm font-medium outline-none focus:border-[#16254c] focus:bg-white resize-y"
+            />
+          </div>
+
+          <div className="space-y-1">
+            <label className="text-xs font-semibold text-slate-700">Véhicules compatibles</label>
+            <textarea
+              value={compatibleVehiclesNote}
+              onChange={(e) => setCompatibleVehiclesNote(e.target.value)}
+              rows={3}
+              placeholder="ex: Renault Clio IV 2013-2019, Peugeot 208 I 2012-2019..."
+              className="w-full rounded-2xl border border-slate-200 bg-slate-50/60 px-4 py-2.5 text-sm font-medium outline-none focus:border-[#16254c] focus:bg-white resize-y"
+            />
           </div>
         </div>
 

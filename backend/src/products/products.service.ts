@@ -285,6 +285,7 @@ export class ProductsService {
         }
       },
       specs: true,
+      oemReferences: { orderBy: { sortOrder: 'asc' as const } },
       reviews: {
         where: { isApproved: true },
         select: { rating: true },
@@ -1385,6 +1386,11 @@ export class ProductsService {
       variants,
       specs,
       compatibility,
+      oemReferences: Array.isArray(product.oemReferences)
+        ? product.oemReferences.map((r: any) => ({ id: r.id, brand: r.brand, reference: r.reference }))
+        : [],
+      technicalCharacteristics: product.technicalCharacteristics || undefined,
+      compatibleVehiclesNote: product.compatibleVehiclesNote || undefined,
       isBestSeller: Boolean(product.isFeatured),
       isNew: product.createdAt
         ? Date.now() - new Date(product.createdAt).getTime() < 30 * 24 * 60 * 60 * 1000
