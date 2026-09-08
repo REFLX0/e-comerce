@@ -359,7 +359,10 @@ function deriveOilSpecificationRaw(
       if (year >= 2010) {
         return { viscosity: '5W-40', oemApproval: 'Fiat 9.55535-S2', aceaStandard: 'C3', apiStandard: 'SN', capacityLiters: capacity, changeIntervalKm: 15000 };
       }
-      return { viscosity: '10W-40', oemApproval: 'Fiat 9.55535-G2 / D2', aceaStandard: 'A3/B4', apiStandard: 'SL/CF', capacityLiters: capacity, changeIntervalKm: 10000 };
+      // 'D2' (Fiat's diesel-only approval) and 'CF' (a diesel-only API category) were
+      // previously listed here despite this being the petrol branch — corrected after a
+      // live report on an Abarth 500/595/695 1.4 T-Jet showing this diesel-contaminated spec.
+      return { viscosity: '10W-40', oemApproval: null, aceaStandard: 'A3/B4', apiStandard: 'SL', capacityLiters: capacity, changeIntervalKm: 10000 };
     }
   }
 
