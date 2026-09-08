@@ -321,6 +321,7 @@
         "sortPriceDesc": "Price: high to low",
         "searchAllCatalog": "Search the full catalog",
         "compatiblePartsHint": "Parts compatible with your {vehicle}",
+        "vehicleNotRecognizedHint": "We couldn't verify compatibility with \"{vehicle}\" — showing this category's general catalogue instead.",
         "loading": "Loading...",
         "categoryLoadError": "Unable to load category information.",
         "noProductsInCategory": "No products match your criteria in this category.",

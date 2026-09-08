@@ -286,8 +286,8 @@ export default function CataloguePage() {
             <p className="text-xl font-black tracking-[-0.03em] text-[#111]">{t('catalogTitle')}</p>
             {!isLoading && !isSearchMode && <p className="mt-1 text-sm text-neutral-500">{t('catalogueHint')}</p>}
             {isVehicleSearch && !isLoading && (
-              <p className="mt-1 text-sm font-medium text-[#16254c]">
-                {t('compatiblePartsHint', { vehicle: vehicleLabel })}
+              <p className={`mt-1 text-sm font-medium ${data?.unmatchedVehicle ? 'text-amber-600' : 'text-[#16254c]'}`}>
+                {t(data?.unmatchedVehicle ? 'vehicleNotRecognizedHint' : 'compatiblePartsHint', { vehicle: vehicleLabel })}
               </p>
             )}
           </div>

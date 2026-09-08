@@ -162,8 +162,8 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
                   {category?.nameFr || category?.name || slug.replace(/-/g, ' ')}
                 </h1>
                 {isVehicleSearch && (
-                  <p className="mt-1 text-sm font-medium text-[#16254c]">
-                    {t('compatiblePartsHint', { vehicle: vehicleLabel })}
+                  <p className={`mt-1 text-sm font-medium ${data?.unmatchedVehicle ? 'text-amber-600' : 'text-[#16254c]'}`}>
+                    {t(data?.unmatchedVehicle ? 'vehicleNotRecognizedHint' : 'compatiblePartsHint', { vehicle: vehicleLabel })}
                   </p>
                 )}
                 {category?.description && (

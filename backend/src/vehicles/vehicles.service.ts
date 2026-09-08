@@ -207,7 +207,11 @@ export class VehiclesService {
       this.prisma.product.count({ where }),
     ]);
 
-    // Safety fallback: if 0 products found with strict vehicle name filtering, fallback to general/category products
+    // Safety fallback: if 0 products found with strict vehicle name filtering, fallback to general/category products.
+    // This path only kicks in when the make/model never resolved to anything real (unknown slug, or a
+    // non-automobile vehicle type like agricole/moto/marine leaking in) — those products were never actually
+    // matched against the vehicle, so they must NOT be tagged as confirmed-compatible below.
+    let usedUnmatchedFallback = false;
     if (total === 0 && where.AND) {
       const fallbackWhere: Prisma.ProductWhereInput = { isPublished: true };
       this.applyFilters(fallbackWhere, filters);
@@ -223,18 +227,20 @@ export class VehiclesService {
       if (fbTotal > 0) {
         data = fbData;
         total = fbTotal;
+        usedUnmatchedFallback = true;
       }
     }
 
     return {
       data: data.map((product) => ({
         ...this.productsService.serialize(product),
-        compatLevel: 'confirmed',
+        ...(usedUnmatchedFallback ? {} : { compatLevel: 'confirmed' as const }),
       })),
       total,
       page,
       limit,
       totalPages: Math.ceil(total / limit),
+      unmatchedVehicle: usedUnmatchedFallback,
     };
   }
 

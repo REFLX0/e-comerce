@@ -321,6 +321,7 @@
         "sortPriceDesc": "Prix décroissant",
         "searchAllCatalog": "Rechercher dans tout le catalogue",
         "compatiblePartsHint": "Pièces compatibles avec votre {vehicle}",
+        "vehicleNotRecognizedHint": "Nous n'avons pas pu vérifier la compatibilité avec « {vehicle} » — affichage du catalogue général de cette catégorie.",
         "loading": "Chargement...",
         "categoryLoadError": "Impossible de charger les informations de la catégorie.",
         "noProductsInCategory": "Aucun produit ne correspond à vos critères dans cette catégorie.",

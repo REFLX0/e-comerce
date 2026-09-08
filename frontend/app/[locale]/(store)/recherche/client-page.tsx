@@ -114,8 +114,8 @@ export default function SearchPage() {
               </h1>
               <p className="mt-1 text-gray-500">{t('resultsFound', { count: data?.total || 0 })}</p>
               {isVehicleSearch && !isLoading && (
-                <p className="mt-1 text-sm font-medium text-[#16254c]">
-                  {t('compatiblePartsHint', { vehicle: vehicleLabel })}
+                <p className={`mt-1 text-sm font-medium ${data?.unmatchedVehicle ? 'text-amber-600' : 'text-[#16254c]'}`}>
+                  {t(data?.unmatchedVehicle ? 'vehicleNotRecognizedHint' : 'compatiblePartsHint', { vehicle: vehicleLabel })}
                 </p>
               )}
             </div>

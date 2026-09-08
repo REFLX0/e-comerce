@@ -62,7 +62,7 @@ export const productsApi = {
     page?: number
     limit?: number
   }) =>
-    apiGet<PaginatedResponse<Product & { compatLevel?: 'confirmed' | 'check' }>>(
+    apiGet<PaginatedResponse<Product & { compatLevel?: 'confirmed' | 'check' }> & { unmatchedVehicle?: boolean }>(
       '/vehicles/compatible/page',
       params as Record<string, string | number | boolean | undefined>
     ),

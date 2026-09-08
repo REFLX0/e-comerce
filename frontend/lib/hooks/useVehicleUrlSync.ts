@@ -59,6 +59,13 @@ export function useVehicleUrlSync(enabled = true) {
 
   useEffect(() => {
     if (!enabled || !vehicle) return
+    // These pages (category browsing, catalogue, search) only understand
+    // automobile make/model/generation/engine compatibility filtering. A
+    // moto/marine/agricole/poids-lourd vehicle picked in the Oil Finder must
+    // never get auto-copied into their URL — it doesn't match anything real
+    // there, and the backend's compatibility fallback then silently returns
+    // the whole unfiltered category tagged as "compatible" instead of erroring.
+    if (vehicle.type !== 'automobile') return
     const isExplicitAll = searchParams.get('all') === '1'
     if (isExplicitAll) return
 

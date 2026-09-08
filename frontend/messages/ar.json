@@ -321,6 +321,7 @@
         "sortPriceDesc": "السعر: من الأعلى إلى الأقل",
         "searchAllCatalog": "البحث في كامل الكتالوج",
         "compatiblePartsHint": "قطع غيار متوافقة مع مركبتك {vehicle}",
+        "vehicleNotRecognizedHint": "لم نتمكن من التحقق من التوافق مع \"{vehicle}\" — نعرض الفهرس العام لهذه الفئة بدلاً من ذلك.",
         "loading": "جارٍ التحميل...",
         "categoryLoadError": "تعذر تحميل معلومات الفئة.",
         "noProductsInCategory": "لا توجد منتجات مطابقة لمعاييرك في هذه الفئة.",
