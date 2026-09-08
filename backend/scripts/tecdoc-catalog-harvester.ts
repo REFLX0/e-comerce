@@ -362,7 +362,7 @@ function deriveOilSpecificationRaw(
       // 'D2' (Fiat's diesel-only approval) and 'CF' (a diesel-only API category) were
       // previously listed here despite this being the petrol branch — corrected after a
       // live report on an Abarth 500/595/695 1.4 T-Jet showing this diesel-contaminated spec.
-      return { viscosity: '10W-40', oemApproval: null, aceaStandard: 'A3/B4', apiStandard: 'SL', capacityLiters: capacity, changeIntervalKm: 10000 };
+      return { viscosity: '10W-40', oemApproval: undefined, aceaStandard: 'A3/B4', apiStandard: 'SL', capacityLiters: capacity, changeIntervalKm: 10000 };
     }
   }
 

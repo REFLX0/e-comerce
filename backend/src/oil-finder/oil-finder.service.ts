@@ -2420,10 +2420,12 @@ export class OilFinderService {
         apiStandard: resolved.apiStandard || dbSpec.apiStandard,
         aceaStandard: resolved.aceaStandard || dbSpec.aceaStandard,
         oemApproval: resolved.oemApproval || dbSpec.oemApproval,
+        jasoStandard: dbSpec.jasoStandard,
         capacityLiters: resolved.capacityLiters || dbSpec.capacityLiters,
         changeIntervalKm: resolved.changeIntervalKm || dbSpec.changeIntervalKm,
       } : {
         id: `oem-${matchedBrandKey}-${slugify(resolved.viscosity)}`,
+        jasoStandard: null,
         ...resolved,
       };
 
