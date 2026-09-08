@@ -403,7 +403,17 @@ function deriveOilSpecificationRaw(
     if (isDiesel || year >= 2004) {
       return { viscosity: '5W-30', oemApproval: 'BMW Longlife-04 (LL-04)', aceaStandard: 'C3', apiStandard: 'SN', capacityLiters: capacity, changeIntervalKm: 15000 };
     }
-    return { viscosity: '5W-40', oemApproval: 'BMW Longlife-01 (LL-01)', aceaStandard: 'A3/B4', apiStandard: 'SL/CF', capacityLiters: capacity, changeIntervalKm: 10000 };
+    if (year >= 1995) {
+      // BMW Longlife-98 (LL-98) era — the precursor to LL-01, introduced ~1998.
+      return { viscosity: '5W-40', oemApproval: 'BMW Longlife-98 (LL-98)', aceaStandard: 'A3/B4', apiStandard: 'SL/CF', capacityLiters: capacity, changeIntervalKm: 10000 };
+    }
+    // Pre-1995 classic BMW (E21/E30/early E36, M10/M20/M30/M40/M42 engines) predates
+    // BMW's "Longlife" branding entirely (LL-98 didn't launch until ~1998) — attaching
+    // it here was anachronistic. Confirmed live on an E30: BMW's own period owner's
+    // manual specified a temperature-graduated conventional multigrade (10W-40 for
+    // cooler climates up to 20W-50 for hot), not a fixed modern-style grade or
+    // Longlife approval. 10W-40 is the best-documented, most broadly-cited figure.
+    return { viscosity: '10W-40', apiStandard: 'SG/SH', capacityLiters: capacity, changeIntervalKm: 10000 };
   }
 
   // ── MERCEDES-BENZ & SMART ──────────────────────────────────────────────────
