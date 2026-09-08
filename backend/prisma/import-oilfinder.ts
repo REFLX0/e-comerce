@@ -82,6 +82,15 @@ function normStr(str: unknown): string {
   return norm(str) ?? ''
 }
 
+function slugify(text: unknown): string {
+  return String(text ?? '')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+}
+
 function asInt(value: unknown, rowLabel: string, skipped: string[]): number | null {
   if (value == null || value === '') return null
   const n = Number(value)
@@ -111,7 +120,22 @@ function asFloat(value: unknown, rowLabel: string, skipped: string[]): number | 
  * overwrite the other's capacity.
  */
 function specFingerprint(viscosity: string, api: string | null, acea: string | null, oem: string | null, jaso: string | null, capacityLiters: number | null): string {
-  return JSON.stringify([normStr(viscosity), norm(api), norm(acea), norm(oem), norm(jaso), capacityLiters ?? null])
+  // Slugified string-template, matching tecdoc-catalog-harvester.ts's style -- the two
+  // scripts previously used incompatible formats (this one via JSON.stringify) for what's
+  // conceptually the same "is this the same spec" question, which silently produced
+  // duplicate OilFinderOilSpec rows for identical specs whenever both scripts touched the
+  // same logical entry. Deliberately keeps the extra jaso/capacity fields this function
+  // already hashed (see block comment above) -- moto/marine specs legitimately need that
+  // finer granularity that automobile specs don't, so the two fingerprints are still not
+  // expected to collide across categories; only the STRING FORMAT is now unified.
+  return [
+    slugify(viscosity),
+    slugify(api || 'anyapi'),
+    slugify(acea || 'std'),
+    slugify(oem || 'generic'),
+    slugify(jaso || 'nojaso'),
+    capacityLiters != null ? slugify(String(capacityLiters)) : 'nocap',
+  ].join('_')
 }
 
 function highestSeverity(fieldSeverities: Record<string, string>): string {
