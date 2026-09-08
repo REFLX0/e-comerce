@@ -139,7 +139,7 @@ export function OilFinderTabs() {
 
                       {/* Label container: clean solid white bottom with no gradient bleed */}
                       <div className="relative w-full z-10 p-3.5 text-center bg-white border-t border-slate-100 transition-colors group-hover:bg-slate-50/60">
-                        <span className="block text-sm font-black uppercase tracking-wider text-[#16254c] group-hover:text-[#D4A76A] transition-colors">
+                        <span className="block break-words text-sm font-black uppercase tracking-wider text-[#16254c] group-hover:text-[#D4A76A] transition-colors">
                           {type.label}
                         </span>
                         <span className="mt-0.5 block text-[11px] font-medium text-gray-500">
