@@ -157,7 +157,7 @@ function yearRangesOverlap(
 // codes (Astra H, Corsa D, Vectra C), and Phase/facelift suffixes (Megane II Phase 2).
 const ROMAN_NUMERAL = /^(?:X{1,3}(?:IX|IV|V?I{0,3})?|IX|IV|VIII|VII|VI|V|III|II|I|X)$/i;
 
-function cleanCommercialModel(rawDesc: string): { modelName: string; genHint: string } {
+function cleanCommercialModel(rawDesc: string, makeSlug?: string): { modelName: string; genHint: string } {
   let s = (rawDesc || '').trim();
 
   // Body-style suffix hints: "CORSA D Van" -> isolate "CORSA D" so the trailing single-letter
@@ -178,7 +178,20 @@ function cleanCommercialModel(rawDesc: string): { modelName: string; genHint: st
   // the body style ("MOVANO Mk I (A) Chassis/Cab", "COMBO Mk II (C) Box Body / Estate") — the
   // chassis regex below only looks at the end of the string, so it'd miss "(A)"/"(C)" entirely
   // unless the trailing body-style words are stripped first.
-  const bodyMatch = s.match(/^(.*?)\s+((?:Van|Box|Estate|Saloon|Hatchback|Pickup|Combi|Kombi|Cabriolet|Cabrio|Coupe|Convertible|Roadster|Wagon|Sedan|Platform|Chassis|Bus|MPV|Hardtop|Break)\b.*)$/i);
+  // "Volante" is Aston Martin's own convertible designation (TecDoc uses it as a
+  // generic body-style suffix across their whole range, e.g. "DB9 Volante"), safe
+  // to treat as a body style for any make since no other manufacturer models it.
+  // "Vantage" is ALSO used by TecDoc as a generic Aston Martin coupe/closed-body
+  // suffix ("DB9 Vantage", "VANQUISH Vantage") — but "Vantage" is ALSO a real,
+  // standalone Aston Martin model in its own right, so stripping it globally would
+  // be wrong for other brands and confusing even within Aston Martin; restrict it
+  // to Aston Martin specifically, where TecDoc's raw data confirmed the pattern
+  // (every DB-series/Virage/Zagato/Vanquish model carries a spurious "Vantage" or
+  // "Vantage Vantage" suffix that visibly conflates them with the actual Vantage
+  // model — reported live via a "DB11 Vantage" listing that reads as if DB11 and
+  // Vantage, two entirely different cars, had been merged into one).
+  const astonVantageSuffix = makeSlug === 'aston-martin' ? '|Vantage' : '';
+  const bodyMatch = s.match(new RegExp(`^(.*?)\\s+((?:Van|Box|Estate|Saloon|Hatchback|Pickup|Combi|Kombi|Cabriolet|Cabrio|Coupe|Convertible|Roadster|Wagon|Sedan|Platform|Chassis|Bus|MPV|Hardtop|Break|Volante${astonVantageSuffix})\\b.*)$`, 'i'));
   const bodyStyleSuffix = bodyMatch ? ` ${bodyMatch[2]}` : '';
   if (bodyMatch) s = bodyMatch[1].trim();
 
@@ -345,6 +358,22 @@ function deriveOilSpecificationRaw(
     return { viscosity: '5W-40', oemApproval: 'PSA B71 2296', aceaStandard: 'A3/B4', apiStandard: 'SL/CF', capacityLiters: capacity, changeIntervalKm: 10000 };
   }
 
+  // ── ABARTH ─────────────────────────────────────────────────────────────────
+  // Abarth's turbo performance engines (T-Jet 1.4, GSE 1.4, GSE 1.75) ran a fixed,
+  // distinctly-branded spec across their whole production life — NOT the base-Fiat
+  // year brackets below, which are tuned for economy models and would otherwise
+  // misclassify a 2008 Abarth 500/595 the same as a base 2008 Fiat Panda. Confirmed
+  // live: an Abarth 500/595/695 (312_) 1.4 T-Jet was falling into the shared
+  // fallback branch (pre-2010) purely because its generation starts in 2008, even
+  // though Selenia Abarth 10W-50 has been the spec since launch.
+  if (makeSlug === 'abarth' && !isDiesel) {
+    if (year >= 2016) {
+      // 695/Turismo/Competizione-era Digitek Pure Energy switch.
+      return { viscosity: '5W-40', oemApproval: 'Fiat 9.55535-S3 (Selenia Digitek Pure Energy)', aceaStandard: 'C3', apiStandard: 'SN', capacityLiters: capacity, changeIntervalKm: 10000 };
+    }
+    return { viscosity: '10W-50', oemApproval: 'Fiat 9.55535-S2 (Selenia Abarth)', aceaStandard: 'C3', apiStandard: 'SL', capacityLiters: capacity, changeIntervalKm: 10000 };
+  }
+
   // ── FIAT / ALFA ROMEO / LANCIA / ABARTH / JEEP ─────────────────────────────
   if (['fiat', 'alfa-romeo', 'lancia', 'abarth', 'jeep'].includes(makeSlug)) {
     if (isDiesel) {
@@ -452,6 +481,19 @@ function deriveOilSpecificationRaw(
       return { viscosity: '0W-20', oemApproval: 'Asian OEM Modern Hybrid / Fuel Economy', aceaStandard: 'C5', apiStandard: 'SP / ILSAC GF-6', capacityLiters: capacity, changeIntervalKm: 15000 };
     }
     return { viscosity: '5W-30', oemApproval: 'Asian OEM Standard', aceaStandard: 'A5/B5 / C2', apiStandard: 'SN/CF', capacityLiters: capacity, changeIntervalKm: 10000 };
+  }
+
+  // ── ASTON MARTIN ───────────────────────────────────────────────────────────
+  // Aston Martin doesn't publish alphanumeric approval codes the way VW/BMW/MB do;
+  // Castrol Edge Professional is their long-documented factory-fill/official partner.
+  if (makeSlug === 'aston-martin') {
+    if (year >= 2016 && displacementCc && displacementCc <= 4200) {
+      // AMG-sourced M177/M178 twin-turbo V8 (DB11/Vantage/DBS V8) — follows the
+      // Mercedes-AMG lineage's own low-SAPS MB 229.5-family requirement.
+      return { viscosity: '5W-30', oemApproval: 'Castrol Edge Professional (MB 229.5 family — AMG-sourced V8)', aceaStandard: 'C3', apiStandard: 'SN', capacityLiters: capacity, changeIntervalKm: 15000 };
+    }
+    // AM-developed V12 (2004+) and pre-2004 classic models.
+    return { viscosity: '5W-40', oemApproval: 'Castrol Edge Professional (Aston Martin factory-fill partner)', aceaStandard: 'A3/B4', apiStandard: 'SN', capacityLiters: capacity, changeIntervalKm: 10000 };
   }
 
   // ── GENERIC & CHINESE OEMS STRICTLY OBSERVING DPF / SAPS SAFETY ────────────
@@ -611,7 +653,7 @@ async function main() {
     const rawMakeSlug = slugify(makeName);
     const makeSlug = MAKE_SLUG_ALIASES[rawMakeSlug] || rawMakeSlug;
 
-    const { modelName, genHint } = cleanCommercialModel(r.model_raw_name);
+    const { modelName, genHint } = cleanCommercialModel(r.model_raw_name, makeSlug);
     const modelSlug = slugify(modelName);
     const genSlug = slugify(genHint);
     const yearFrom = parseYearFromDateText(r.date_from_raw);
