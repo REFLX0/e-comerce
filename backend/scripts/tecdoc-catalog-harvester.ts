@@ -1164,7 +1164,12 @@ async function main() {
           for (const eng of gen.engines) {
             let oilSpecId: string | null = null;
             if (eng.oilSpec?.viscosity) {
-              const fingerprint = `${slugify(eng.oilSpec.viscosity)}_${slugify(eng.oilSpec.oemApproval || 'generic')}_${slugify(eng.oilSpec.aceaStandard || 'std')}`;
+              // MUST include apiStandard: two branches can legitimately share the same
+              // viscosity/oemApproval/aceaStandard while differing only in apiStandard
+              // (e.g. GAZ vs ZAZ both land on "15W-40, no OEM code, no ACEA class" but
+              // have different API text) -- without this, they'd collide onto the same
+              // spec row and each upsert would silently overwrite the other's apiStandard.
+              const fingerprint = `${slugify(eng.oilSpec.viscosity)}_${slugify(eng.oilSpec.oemApproval || 'generic')}_${slugify(eng.oilSpec.aceaStandard || 'std')}_${slugify(eng.oilSpec.apiStandard || 'anyapi')}`;
 
               let specId = oilSpecCache.get(fingerprint);
               if (!specId) {

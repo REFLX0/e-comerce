@@ -555,7 +555,10 @@ async function main() {
       continue;
     }
 
-    const fingerprint = `${slugify(spec.viscosity)}_${slugify(spec.oemApproval || 'generic')}_${slugify(spec.aceaStandard || 'std')}`;
+    // MUST include apiStandard -- see the matching comment in tecdoc-catalog-harvester.ts.
+    // Without it, e.g. GAZ and ZAZ (same viscosity/OEM/ACEA, different API text) collide
+    // onto the same spec row and keep overwriting each other's apiStandard forever.
+    const fingerprint = `${slugify(spec.viscosity)}_${slugify(spec.oemApproval || 'generic')}_${slugify(spec.aceaStandard || 'std')}_${slugify(spec.apiStandard || 'anyapi')}`;
     const current = eng.oilSpec;
     const alreadyCorrect =
       current &&
