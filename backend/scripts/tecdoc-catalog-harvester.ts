@@ -238,8 +238,10 @@ function deriveOilSpecificationRaw(
   fuelType: string,
   yearFrom: number | null,
   displacementCc: number | null,
-  powerHp: number | null
+  powerHp: number | null,
+  engineCode?: string
 ): CleanEngine['oilSpec'] {
+  const normEngineCode = (engineCode || '').toUpperCase().replace(/\s+/g, ' ').trim();
   const normFuel = (fuelType || '').toLowerCase();
   const isDiesel =
     normFuel.includes('diesel') ||
@@ -261,6 +263,19 @@ function deriveOilSpecificationRaw(
     else if (displacementCc <= 2500) capacity = isDiesel ? 6.0 : 5.5;
     else if (displacementCc <= 3200) capacity = 7.0;
     else capacity = 8.5;
+  }
+
+  // ── RENAULT K9K 782 (specific engine-code override) ────────────────────────
+  // The same physical engine variant (K9K 782, confirmed live: 1.5L diesel,
+  // 4.5L oil capacity) shows up under multiple car generations with different
+  // yearFrom values (e.g. Laguna from 2007, Latitude from 2010) purely
+  // because that's when THAT MODEL launched, not when this engine tune
+  // debuted. The generic year-bracket logic below was inconsistently
+  // classifying the identical engine as both pre-2010 (RN0710/5W-40) and
+  // 2010+ (RN0720/5W-30) depending only on which car it happened to be
+  // listed under. K9K 782 is confirmed RN0720/5W-30 across the board.
+  if (makeSlug === 'renault' && normEngineCode === 'K9K 782') {
+    return { viscosity: '5W-30', oemApproval: 'Renault RN0720', aceaStandard: 'C4', apiStandard: 'SM', capacityLiters: 4.5, changeIntervalKm: 15000 };
   }
 
   // ── RENAULT / DACIA / NISSAN / ALPINE ───────────────────────────────────────
@@ -826,9 +841,10 @@ export function deriveOilSpecification(
   fuelType: string,
   yearFrom: number | null,
   displacementCc: number | null,
-  powerHp: number | null
+  powerHp: number | null,
+  engineCode?: string
 ): CleanEngine['oilSpec'] {
-  const raw = deriveOilSpecificationRaw(makeSlug, fuelType, yearFrom, displacementCc, powerHp);
+  const raw = deriveOilSpecificationRaw(makeSlug, fuelType, yearFrom, displacementCc, powerHp, engineCode);
   return enforceFapSafety(raw, isDieselFuelText(fuelType), yearFrom || 2015);
 }
 
@@ -1007,7 +1023,7 @@ async function main() {
       // Pure EVs carry no engine oil — never fabricate a spec (zero-hallucination rule).
       const oilSpec = isElectric
         ? null
-        : deriveOilSpecification(makeSlug, fuelType, yearFrom, displacementCc, powerHp);
+        : deriveOilSpecification(makeSlug, fuelType, yearFrom, displacementCc, powerHp, engineCode);
       genObj.engines.push({
         engineCode,
         fuelType,
@@ -1035,7 +1051,7 @@ async function main() {
         for (const eng of gen.engines) {
           if (eng.oilSpec) continue;
           if (!eng.fuelType || eng.fuelType === 'electrique') continue;
-          eng.oilSpec = deriveOilSpecification(m.makeSlug, eng.fuelType, eng.yearFrom, eng.displacementCc, eng.powerHp);
+          eng.oilSpec = deriveOilSpecification(m.makeSlug, eng.fuelType, eng.yearFrom, eng.displacementCc, eng.powerHp, eng.engineCode);
           if (eng.oilSpec) backfilledEngines++;
         }
       }
