@@ -587,6 +587,11 @@ async function main() {
       AND mfr.can_be_displayed = true
       AND m.can_be_displayed = true
       AND pc.can_be_displayed = true
+      -- TecDoc engine id 20085 ("AM6U5", 4.2L V8) is bad source data linked to Aston
+      -- Martin DB9: the real DB9 was always 6.0L V12 (engine AM3/AM11), no V8 variant
+      -- ever existed. Confirmed live and reported by a user; excluded here so it can't
+      -- resurface on the next harvest run rather than patching the DB after each one.
+      AND NOT (e.id = 20085 AND m.description ILIKE 'DB9%')
     ORDER BY mfr.description, m.description;
   `;
 
