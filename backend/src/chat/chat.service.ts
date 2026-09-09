@@ -61,6 +61,35 @@ function formatProducts(products: any[]): string {
 /** Cap on messages[] to avoid runaway token costs */
 const MAX_HISTORY = 20;
 const MAX_MSG_LEN = 2000;
+
+// Engine-oil category slugs per vehicle class. searchProducts() is plain keyword
+// text search with no vehicle-type awareness, so without this a car query can
+// surface motorcycle oil (wet-clutch friction modifiers) and vice versa — both
+// genuinely wrong, not just a bad match. Category is the one reliably-populated
+// signal for this (specs.vehicleTypes is present in the schema but not actually
+// set on products), so results are filtered against this allow-list before use.
+const OIL_CATEGORY_SLUGS: Record<string, string[]> = {
+  automobile: ['huiles-moteur', 'auto-synthese', 'auto-semi', 'auto-minerale'],
+  moto: ['moto-huiles'],
+  marine: ['marine-moteurs'],
+};
+
+/** Wrap `searcher`, over-fetching to absorb the category filter, then keep only
+ * hits whose own category matches `vehicleType` — never trust the query text
+ * alone to have kept the vehicle class correct. */
+function searchOilForVehicleType(
+  searcher: (q: string, limit: number) => Promise<any[]>,
+  vehicleType: string,
+) {
+  const allowedSlugs = OIL_CATEGORY_SLUGS[vehicleType];
+  return async (q: string, limit: number) => {
+    const candidates = await searcher(q, limit * 4);
+    const filtered = allowedSlugs
+      ? candidates.filter((p) => allowedSlugs.includes(p.category?.slug))
+      : candidates;
+    return filtered.slice(0, limit);
+  };
+}
 const OPENROUTER_TIMEOUT_MS = 25000;
 
 /** fetch() has no default timeout — an unresponsive upstream would otherwise
@@ -251,17 +280,29 @@ RÈGLES D'ACTION :
         function: {
           name: 'oil_for_vehicle',
           description:
-            "Rechercher les huiles moteur recommandées pour un véhicule spécifique (marque, modèle, viscosité)",
+            "Rechercher les huiles moteur recommandées pour un véhicule spécifique (type, marque, modèle, carburant, viscosité). Ne JAMAIS deviner vehicleType : une voiture/camion/utilitaire est 'automobile', une moto/scooter est 'moto', un bateau est 'marine' — une huile automobile n'est PAS adaptée à une moto (embrayage humide) et inversement, ne les mélange jamais.",
           parameters: {
             type: 'object',
             properties: {
+              vehicleType: {
+                type: 'string',
+                enum: ['automobile', 'moto', 'marine'],
+                description:
+                  "Catégorie du véhicule — déduis-la du message du client (ex: 'CBR 600' ou 'scooter' → moto ; 'Golf 7' ou 'camion' → automobile ; 'bateau', 'hors-bord' → marine). Demande à l'utilisateur si ce n'est pas clair, ne suppose jamais 'automobile' par défaut.",
+              },
               make: {
                 type: 'string',
-                description: "Marque (ex: 'Volkswagen', 'Renault', 'Peugeot', 'BMW')",
+                description: "Marque (ex: 'Volkswagen', 'Renault', 'Peugeot', 'BMW', 'Honda')",
               },
               model: {
                 type: 'string',
-                description: "Modèle (ex: 'Polo 6', 'Golf 7', 'Clio 4')",
+                description: "Modèle (ex: 'Polo 6', 'Golf 7', 'Clio 4', 'CBR 600')",
+              },
+              fuelType: {
+                type: 'string',
+                enum: ['essence', 'diesel'],
+                description:
+                  "Carburant (uniquement pertinent pour vehicleType='automobile'). Demande-le au client si ambigu, ne le suppose pas.",
               },
               viscosity: {
                 type: 'string',
@@ -269,7 +310,7 @@ RÈGLES D'ACTION :
                   "Viscosité optionnelle (ex: '5W-40', '5W-30', '10W-40')",
               },
             },
-            required: ['make', 'model'],
+            required: ['vehicleType', 'make', 'model'],
           },
         },
       },
@@ -388,29 +429,41 @@ RÈGLES D'ACTION :
 
           // ── oil_for_vehicle ───────────────────────────────────────────
           else if (toolName === 'oil_for_vehicle') {
+            const vehicleType: string = args.vehicleType?.trim().toLowerCase() ?? '';
             const make = args.make?.trim() ?? '';
             const model = args.model?.trim() ?? '';
+            const fuelType = args.fuelType?.trim() ?? '';
             const viscosity = args.viscosity?.trim() ?? '';
 
+            const vehicleWord = vehicleType === 'moto' ? 'moto' : vehicleType === 'marine' ? 'marine' : '';
+            const words = (parts: (string | undefined)[]) =>
+              parts.filter((p) => p && p.trim()).join(' ');
+
             const queries = [
-              viscosity ? `huile ${viscosity} ${make}` : '',
-              viscosity ? `huile ${viscosity}` : '',
-              `huile ${make} ${model}`,
-              `huile moteur ${make}`,
-              'huile moteur 5W-40',
-              'huile moteur 5W-30',
+              viscosity ? words(['huile', vehicleWord, viscosity, make]) : '',
+              words(['huile', vehicleWord, fuelType, make, model]),
+              words(['huile', vehicleWord, make, model]),
+              viscosity ? words(['huile', vehicleWord, viscosity]) : '',
+              words(['huile', 'moteur', vehicleWord]),
             ];
 
-            const products = await firstNonEmpty(
-              queries,
-              (q, l) => this.searchService.searchProducts(q, l),
-              6,
-            );
+            const products = OIL_CATEGORY_SLUGS[vehicleType]
+              ? await firstNonEmpty(
+                  queries,
+                  searchOilForVehicleType(
+                    (q, l) => this.searchService.searchProducts(q, l),
+                    vehicleType,
+                  ),
+                  6,
+                )
+              : [];
 
             if (products.length > 0) {
               toolResult = `Huiles de haute qualité recommandées pour ${make} ${model}${viscosity ? ` (${viscosity})` : ''} :\n${formatProducts(products)}`;
+            } else if (!OIL_CATEGORY_SLUGS[vehicleType]) {
+              toolResult = `Type de véhicule non reconnu ("${vehicleType || 'inconnu'}") — demande au client de préciser s'il s'agit d'une automobile, d'une moto ou d'un bateau.`;
             } else {
-              toolResult = `Consultez notre catalogue complet d'huiles moteur sur notre boutique.`;
+              toolResult = `Aucune huile spécifique trouvée pour ${make} ${model} dans cette catégorie (${vehicleType}). Ne recommande PAS une huile d'une autre catégorie de véhicule — invite plutôt le client à consulter le catalogue complet ou à contacter le service client.`;
             }
           }
 
