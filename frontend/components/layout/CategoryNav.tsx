@@ -286,6 +286,10 @@ export function CategoryNav() {
         <nav
           aria-label={t('catalog')}
           className="flex overflow-x-auto hide-scrollbar py-2 px-3 gap-2"
+          style={{
+            WebkitMaskImage: `linear-gradient(to ${isRtl ? 'left' : 'right'}, black 0%, black calc(100% - 28px), transparent 100%)`,
+            maskImage: `linear-gradient(to ${isRtl ? 'left' : 'right'}, black 0%, black calc(100% - 28px), transparent 100%)`,
+          }}
         >
           {NAVIGATION_TAXONOMY.map((item) => {
             const Icon = NAVIGATION_ICONS[item.slug] ?? Package

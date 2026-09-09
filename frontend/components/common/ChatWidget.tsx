@@ -292,7 +292,7 @@ export function ChatWidget() {
           bottom nav. Uses max() rather than addition — --sticky-cart-offset
           already includes its own bottom-nav clearance, so summing the two
           double-counted it and pushed the button far higher than needed. */}
-      <div className="fixed bottom-[max(5rem,var(--sticky-cart-offset,0px))] right-4 z-50 flex flex-col items-end gap-3 sm:bottom-6 sm:right-6">
+      <div className="fixed bottom-[max(5rem,var(--sticky-cart-offset,0px))] right-4 z-40 flex flex-col items-end gap-3 sm:bottom-6 sm:right-6">
 
         {/* ── Chat Window ───────────────────────────────────── */}
         {isOpen && (
