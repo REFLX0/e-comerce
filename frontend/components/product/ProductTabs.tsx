@@ -286,36 +286,53 @@ export function ProductTabs({ product }: Props) {
                   ))}
                 </ul>
               </div>
-            ) : (
-              /* Fallback intelligent compatibility summary for oils based on approvals */
-              <div>
-                <h3 className="text-base font-bold text-brand-primary mb-2 flex items-center gap-2">
-                  <Check size={18} className="text-green-600" />
-                  Compatibilité & Recommandations
-                </h3>
-                <div className="rounded-xl border border-blue-100 bg-blue-50/50 p-5 text-sm text-blue-950 space-y-3">
-                  <p className="leading-relaxed font-medium">
-                    Ce produit est universellement compatible avec l'ensemble des véhicules dont le manuel constructeur préconise :
-                  </p>
-                  <ul className="list-disc list-inside space-y-1 text-xs text-blue-900 ml-2">
-                    {product.specs?.viscosity && (
-                      <li>La viscosité SAE <strong>{product.specs.viscosity}</strong></li>
-                    )}
-                    {product.specs?.aceaSpec && (
-                      <li>Le standard européen <strong>ACEA {product.specs.aceaSpec}</strong> {product.specs.dpfCompatible ? '(compatible Filtre à Particules DPF/FAP)' : ''}</li>
-                    )}
-                    {product.specs?.apiSpec && (
-                      <li>La classification <strong>API {product.specs.apiSpec}</strong></li>
-                    )}
-                    {product.specs?.jasoSpec && (
-                      <li>La spécification moto <strong>JASO {product.specs.jasoSpec}</strong> (adaptée aux embrayages à bain d'huile)</li>
-                    )}
-                  </ul>
-                  <p className="text-xs text-gray-500 pt-2 border-t border-blue-100/60">
-                    💡 Conseil d'expert : Utilisez le sélecteur de véhicule SpecPart en haut de page pour vérifier la compatibilité exacte avec votre carte grise.
-                  </p>
+            ) : product.compatibleVehiclesNote ? null : (
+              product.specs?.viscosity || product.specs?.aceaSpec || product.specs?.apiSpec || product.specs?.jasoSpec ? (
+                /* Fallback intelligent compatibility summary for oils based on approvals */
+                <div>
+                  <h3 className="text-base font-bold text-brand-primary mb-2 flex items-center gap-2">
+                    <Check size={18} className="text-green-600" />
+                    Compatibilité & Recommandations
+                  </h3>
+                  <div className="rounded-xl border border-blue-100 bg-blue-50/50 p-5 text-sm text-blue-950 space-y-3">
+                    <p className="leading-relaxed font-medium">
+                      Ce produit est universellement compatible avec l'ensemble des véhicules dont le manuel constructeur préconise :
+                    </p>
+                    <ul className="list-disc list-inside space-y-1 text-xs text-blue-900 ml-2">
+                      {product.specs?.viscosity && (
+                        <li>La viscosité SAE <strong>{product.specs.viscosity}</strong></li>
+                      )}
+                      {product.specs?.aceaSpec && (
+                        <li>Le standard européen <strong>ACEA {product.specs.aceaSpec}</strong> {product.specs.dpfCompatible ? '(compatible Filtre à Particules DPF/FAP)' : ''}</li>
+                      )}
+                      {product.specs?.apiSpec && (
+                        <li>La classification <strong>API {product.specs.apiSpec}</strong></li>
+                      )}
+                      {product.specs?.jasoSpec && (
+                        <li>La spécification moto <strong>JASO {product.specs.jasoSpec}</strong> (adaptée aux embrayages à bain d'huile)</li>
+                      )}
+                    </ul>
+                    <p className="text-xs text-gray-500 pt-2 border-t border-blue-100/60">
+                      💡 Conseil d'expert : Utilisez le sélecteur de véhicule SpecPart en haut de page pour vérifier la compatibilité exacte avec votre carte grise.
+                    </p>
+                  </div>
                 </div>
-              </div>
+              ) : (
+                /* Honest empty state: no structured compatibility data of any kind for this product */
+                <div>
+                  <h3 className="text-base font-bold text-brand-primary mb-2 flex items-center gap-2">
+                    Compatibilité
+                  </h3>
+                  <div className="rounded-xl border border-gray-100 bg-gray-50/70 p-5 text-sm text-gray-600 space-y-2">
+                    <p className="leading-relaxed">
+                      Aucune information de compatibilité détaillée n&apos;est disponible pour cet article pour le moment.
+                    </p>
+                    <p className="text-xs text-gray-500 pt-2 border-t border-gray-200">
+                      💡 Utilisez le sélecteur de véhicule SpecPart en haut de page ou contactez-nous via WhatsApp pour vérifier la compatibilité avec votre véhicule.
+                    </p>
+                  </div>
+                </div>
+              )
             )}
           </div>
         </TabsContent>
