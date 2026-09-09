@@ -42,6 +42,16 @@ const CATEGORIES: { key: string; categoryId: string; manifest: string; folder: s
   { key: 'habitacle', categoryId: 'cmtnthkmm000qnpcyyvb395yl', manifest: 'cropped_habitacle.txt', folder: 'cropped_habitacle' },
 ];
 
+// Images an earlier (buggier) crop pass may have already uploaded with a bad
+// partial crop (one axis detected fine, the other not) — reset these specific
+// slugs back to their untouched original file rather than leave a mangled crop live.
+const REVERT_CATEGORIES: { key: string; categoryId: string; manifest: string; folder: string }[] = [
+  { key: 'huile', categoryId: 'cmtnthkmk000onpcyhhmbhx6h', manifest: 'unsafe_huile.txt', folder: 'orig_huile' },
+  { key: 'air', categoryId: 'cmtnthkmj000nnpcye0lojphe', manifest: 'unsafe_air.txt', folder: 'orig_air' },
+  { key: 'carburant', categoryId: 'cmtnthkml000pnpcy8efrdk1l', manifest: 'unsafe_carburant.txt', folder: 'orig_carburant' },
+  { key: 'habitacle', categoryId: 'cmtnthkmm000qnpcyyvb395yl', manifest: 'unsafe_habitacle.txt', folder: 'orig_habitacle' },
+];
+
 function stripAccents(s: string): string {
   return s.normalize('NFD').replace(/[̀-ͯ]/g, '');
 }
@@ -63,62 +73,77 @@ async function uploadImage(localPath: string): Promise<string> {
   return `/storage/${MINIO_BUCKET}/${filename}`;
 }
 
+async function processCategory(cat: { key: string; categoryId: string; manifest: string; folder: string }) {
+  const manifestPath = path.join(DATA_DIR, cat.manifest);
+  if (!fs.existsSync(manifestPath)) {
+    console.warn(`  ⚠️  Manifest not found: ${manifestPath} — skipping category ${cat.key}`);
+    return { fixed: 0, notFound: 0 };
+  }
+  const filenames = fs.readFileSync(manifestPath, 'utf-8').split('\n').map((l) => l.trim()).filter(Boolean);
+  console.log(`\n[${cat.key}] ${filenames.length} images in manifest`);
+
+  let fixed = 0;
+  let notFound = 0;
+
+  for (const filename of filenames) {
+    const slug = filename.replace(/\.(jpg|jpeg|png)$/i, '');
+    let product = await prisma.product.findFirst({ where: { slug, categoryId: cat.categoryId }, select: { id: true } });
+    if (!product) {
+      // Some source images had accents stripped from the filename during
+      // an earlier download step; the DB slug (from the original CSV) may
+      // still carry them — fall back to an accent-insensitive match.
+      const candidates = await prisma.product.findMany({ where: { categoryId: cat.categoryId }, select: { id: true, slug: true } });
+      const match = candidates.find((c) => stripAccents(c.slug) === slug);
+      if (match) product = { id: match.id };
+    }
+    if (!product) {
+      notFound++;
+      console.warn(`  ⚠️  No product for slug: ${slug}`);
+      continue;
+    }
+
+    const localPath = path.join(DATA_DIR, cat.folder, filename);
+    if (!fs.existsSync(localPath)) {
+      notFound++;
+      console.warn(`  ⚠️  Local file missing: ${localPath}`);
+      continue;
+    }
+
+    const newUrl = await uploadImage(localPath);
+    if (APPLY) {
+      await prisma.productImage.updateMany({ where: { productId: product.id, isPrimary: true }, data: { url: newUrl } });
+    }
+    fixed++;
+  }
+
+  console.log(`[${cat.key}] fixed=${fixed} notFound=${notFound}`);
+  return { fixed, notFound };
+}
+
 async function main() {
   console.log(`Mode: ${APPLY ? 'APPLY' : 'DRY-RUN (add --apply to write + upload)'}`);
 
   let totalFixed = 0;
   let totalNotFound = 0;
 
+  console.log('\n=== Cropped images ===');
   for (const cat of CATEGORIES) {
-    const manifestPath = path.join(DATA_DIR, cat.manifest);
-    if (!fs.existsSync(manifestPath)) {
-      console.warn(`  ⚠️  Manifest not found: ${manifestPath} — skipping category ${cat.key}`);
-      continue;
-    }
-    const filenames = fs.readFileSync(manifestPath, 'utf-8').split('\n').map((l) => l.trim()).filter(Boolean);
-    console.log(`\n[${cat.key}] ${filenames.length} images in manifest`);
-
-    let fixed = 0;
-    let notFound = 0;
-
-    for (const filename of filenames) {
-      const slug = filename.replace(/\.(jpg|jpeg|png)$/i, '');
-      let product = await prisma.product.findFirst({ where: { slug, categoryId: cat.categoryId }, select: { id: true } });
-      if (!product) {
-        // Some source images had accents stripped from the filename during
-        // an earlier download step; the DB slug (from the original CSV) may
-        // still carry them — fall back to an accent-insensitive match.
-        const candidates = await prisma.product.findMany({ where: { categoryId: cat.categoryId }, select: { id: true, slug: true } });
-        const match = candidates.find((c) => stripAccents(c.slug) === slug);
-        if (match) product = { id: match.id };
-      }
-      if (!product) {
-        notFound++;
-        console.warn(`  ⚠️  No product for slug: ${slug}`);
-        continue;
-      }
-
-      const localPath = path.join(DATA_DIR, cat.folder, filename);
-      if (!fs.existsSync(localPath)) {
-        notFound++;
-        console.warn(`  ⚠️  Local file missing: ${localPath}`);
-        continue;
-      }
-
-      const newUrl = await uploadImage(localPath);
-      if (APPLY) {
-        await prisma.productImage.updateMany({ where: { productId: product.id, isPrimary: true }, data: { url: newUrl } });
-      }
-      fixed++;
-    }
-
-    console.log(`[${cat.key}] fixed=${fixed} notFound=${notFound}`);
+    const { fixed, notFound } = await processCategory(cat);
     totalFixed += fixed;
+    totalNotFound += notFound;
+  }
+
+  console.log('\n=== Reverts (unsafe crops -> original) ===');
+  let totalReverted = 0;
+  for (const cat of REVERT_CATEGORIES) {
+    const { fixed, notFound } = await processCategory(cat);
+    totalReverted += fixed;
     totalNotFound += notFound;
   }
 
   console.log(`\n${APPLY ? 'APPLIED' : 'PLAN'}`);
   console.log(`  Total fixed:     ${totalFixed}`);
+  console.log(`  Total reverted:  ${totalReverted}`);
   console.log(`  Total not found: ${totalNotFound}`);
   if (!APPLY) console.log('\nRe-run with --apply to write these changes.');
 }
