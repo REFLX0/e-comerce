@@ -57,12 +57,14 @@ export class AuthController {
 
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
+  @Throttle({ default: { limit: 20, ttl: 60000 } })
   refresh(@Body('refreshToken') token: string) {
     return this.authService.refresh(token);
   }
 
   @Post('logout')
   @HttpCode(HttpStatus.OK)
+  @Throttle({ default: { limit: 20, ttl: 60000 } })
   logout(
     @Body('refreshToken') token: string,
     @Req() req: Request,
@@ -93,6 +95,7 @@ export class AuthController {
 
   @Post('newsletter')
   @HttpCode(HttpStatus.OK)
+  @Throttle({ default: { limit: 3, ttl: 60000 } })
   subscribeNewsletter(@Body('email') email: string) {
     return this.authService.subscribeNewsletter(email);
   }
