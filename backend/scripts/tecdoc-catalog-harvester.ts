@@ -1229,8 +1229,23 @@ async function main() {
 
   if (catalog.mg?.models?.mg) {
     const phantom = catalog.mg.models.mg;
+    const unrouted: string[] = [];
     for (const [gk, gv] of Object.entries(phantom.generations)) {
-      const targetSlug = gk.includes('zs') ? 'zs' : gk.includes('hs') ? 'hs' : 'mg3';
+      const label = gv.genName || gk;
+      let targetSlug: string | null = null;
+      if (/\bzs\b/i.test(label) || gk.includes('zs')) targetSlug = 'zs';
+      else if (/\bhs\b/i.test(label) || gk.includes('hs')) targetSlug = 'hs';
+      else {
+        // Numbered MG models (MG3, MG5, MG6, ...) — read the actual number out of the
+        // generation's own name instead of assuming it's always the 3 (that default
+        // once put a real "Mg 6 Saloon" generation under "MG3").
+        const numMatch = label.match(/\bmg\s*(\d)\b/i) || label.match(/\b(\d)\b/);
+        targetSlug = numMatch ? `mg${numMatch[1]}` : null;
+      }
+      if (!targetSlug) {
+        unrouted.push(gk);
+        continue;
+      }
       if (!catalog.mg.models[targetSlug]) {
         catalog.mg.models[targetSlug] = {
           modelName: targetSlug.toUpperCase(),
@@ -1240,8 +1255,14 @@ async function main() {
         };
       }
       catalog.mg.models[targetSlug].generations[gk] = gv;
+      delete phantom.generations[gk];
     }
-    delete catalog.mg.models.mg;
+    // Leave anything unroutable behind in the phantom bucket rather than guess —
+    // it'll keep showing up under a nonsense "MG" model until fixed by hand via
+    // scripts/fix-catalog-phantom-models.ts, which reports it under NEEDS MANUAL REVIEW.
+    if (unrouted.length === 0) {
+      delete catalog.mg.models.mg;
+    }
   }
 
   if (catalog.mini?.models?.mini) {

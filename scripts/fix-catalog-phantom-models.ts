@@ -177,16 +177,44 @@ function cleanCatalog(catalog: CleanCatalog): { renamed: string[]; merged: strin
 
   if (catalog.mg?.models?.mg) {
     const phantom = catalog.mg.models.mg;
-    const names = genNames(phantom);
+    const routed: string[] = [];
+    const unrouted: string[] = [];
     for (const [gk, gv] of Object.entries(phantom.generations)) {
-      const targetSlug = gk.includes('zs') ? 'zs' : gk.includes('hs') ? 'hs' : 'mg3';
+      const label = gv.genName || gk;
+      let targetSlug: string | null = null;
+      if (/\bzs\b/i.test(label) || gk.includes('zs')) targetSlug = 'zs';
+      else if (/\bhs\b/i.test(label) || gk.includes('hs')) targetSlug = 'hs';
+      else {
+        // Numbered MG models (MG3, MG5, MG6, ...) — read the actual number out of the
+        // generation's own name instead of assuming it's always the 3, which is what
+        // put an "Mg 6 Saloon" generation under "MG3" before this check existed.
+        const numMatch = label.match(/\bmg\s*(\d)\b/i) || label.match(/\b(\d)\b/);
+        targetSlug = numMatch ? `mg${numMatch[1]}` : null;
+      }
+
+      if (!targetSlug) {
+        unrouted.push(label);
+        continue;
+      }
       if (!catalog.mg.models[targetSlug]) {
         catalog.mg.models[targetSlug] = { modelName: targetSlug.toUpperCase(), modelSlug: targetSlug, category: 'automobile', generations: {} };
       }
       catalog.mg.models[targetSlug].generations[gk] = gv;
+      routed.push(`${label} -> ${targetSlug.toUpperCase()}`);
     }
-    delete catalog.mg.models.mg;
-    merged.push(`mg: "mg" -> zs / hs / mg3 (by generation) | generations moved: ${names.join(', ') || '(none)'}`);
+    if (unrouted.length === 0) {
+      delete catalog.mg.models.mg;
+    } else {
+      // Leave the unroutable generations behind in the phantom bucket rather than
+      // guessing — surfaced below for manual review.
+      for (const [gk, gv] of Object.entries(phantom.generations)) {
+        if (!unrouted.includes(gv.genName || gk)) delete phantom.generations[gk];
+      }
+    }
+    merged.push(`mg: "mg" -> ${routed.join(', ') || '(none)'}`);
+    if (unrouted.length > 0) {
+      review.push(`mg: "mg" left with ${unrouted.length} generation(s) that couldn't be identified: ${unrouted.join(', ')} — route these by hand`);
+    }
   }
 
   if (catalog.mini?.models?.mini) {
