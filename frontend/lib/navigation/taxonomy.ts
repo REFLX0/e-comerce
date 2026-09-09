@@ -121,6 +121,11 @@ export const NAVIGATION_TAXONOMY: NavigationTaxonomyItem[] = [
         label: 'Accessoires Auto',
         labelKey: 'accessoiresAuto',
         hint: 'Équipements, Outillage, Sécurité',
+        children: [
+          { slug: 'lavage-carrosserie', label: 'Lavage, Carrosserie & Detailing' },
+          { slug: 'nettoyage-interieur', label: 'Nettoyage & Entretien Intérieur' },
+          { slug: 'produits-divers', label: 'Produits divers & Maintenance' },
+        ],
       },
     ],
   },
