@@ -1,0 +1,279 @@
+/**
+ * One-off: clean the ALREADY-HARVESTED clean-catalog-hierarchy.json in place.
+ *
+ * The harvester (scripts/tecdoc-catalog-harvester.ts) had a bug where a handful of
+ * makes get a bare series/class digit or a make-name-as-model phantom entry instead
+ * of the real commercial model name (reported live: BMW's model picker showing "3"
+ * and "2" as if they were car models, sitting next to the real "Série 3"/"Série 2").
+ * That harvester bug is now fixed so future harvests self-heal, but the CURRENTLY
+ * live catalog file was generated before the fix and still has the bad entries baked
+ * in — this script cleans that existing file directly, no re-harvest (no DB) needed.
+ * Mirrors the exact same fixup tables as the harvester so both stay consistent.
+ *
+ * Usage (inside the backend container):
+ *   npx tsx scripts/fix-catalog-phantom-models.ts            # dry-run report
+ *   npx tsx scripts/fix-catalog-phantom-models.ts --apply     # write the fix
+ *
+ * After --apply, restart the backend so it drops its in-memory cache and re-reads
+ * the file: docker compose restart backend
+ */
+import * as fs from 'fs';
+import * as path from 'path';
+
+const APPLY = process.argv.includes('--apply');
+
+interface CleanEngine { engineCode: string; powerHp: number | null; fuelType: string }
+interface CleanGeneration { engines: CleanEngine[]; [k: string]: any }
+interface CleanModel { modelName: string; modelSlug: string; category?: string; generations: Record<string, CleanGeneration> }
+interface CleanMake { makeName: string; makeSlug: string; categories?: string[]; models: Record<string, CleanModel> }
+type CleanCatalog = Record<string, CleanMake>;
+
+const MODEL_SLUG_ALIASES: Record<string, { name: string; slug: string }> = {
+  'bmw:1': { name: 'Série 1', slug: 'serie-1' },
+  'bmw:2': { name: 'Série 2', slug: 'serie-2' },
+  'bmw:3': { name: 'Série 3', slug: 'serie-3' },
+  'bmw:4': { name: 'Série 4', slug: 'serie-4' },
+  'bmw:5': { name: 'Série 5', slug: 'serie-5' },
+  'bmw:6': { name: 'Série 6', slug: 'serie-6' },
+  'bmw:7': { name: 'Série 7', slug: 'serie-7' },
+  'bmw:8': { name: 'Série 8', slug: 'serie-8' },
+  'mercedes-benz:a': { name: 'Classe A', slug: 'classe-a' },
+  'mercedes-benz:a-class': { name: 'Classe A', slug: 'classe-a' },
+  'mercedes-benz:b': { name: 'Classe B', slug: 'classe-b' },
+  'mercedes-benz:c': { name: 'Classe C', slug: 'classe-c' },
+  'mercedes-benz:c-class': { name: 'Classe C', slug: 'classe-c' },
+  'mercedes-benz:e': { name: 'Classe E', slug: 'classe-e' },
+  'mercedes-benz:e-class': { name: 'Classe E', slug: 'classe-e' },
+  'mercedes-benz:g': { name: 'Classe G', slug: 'classe-g' },
+  'mercedes-benz:s': { name: 'Classe S', slug: 'classe-s' },
+  'mercedes-benz:v': { name: 'Classe V', slug: 'classe-v' },
+  'volkswagen:t': { name: 'T-Roc', slug: 't-roc' },
+  'volkswagen:troc': { name: 'T-Roc', slug: 't-roc' },
+  'ford:c': { name: 'C-Max', slug: 'c-max' },
+  'ford:cmax': { name: 'C-Max', slug: 'c-max' },
+  'toyota:rav': { name: 'RAV4', slug: 'rav4' },
+  'toyota:chr': { name: 'C-HR', slug: 'c-hr' },
+  'honda:crv': { name: 'CR-V', slug: 'cr-v' },
+  'honda:hrv': { name: 'HR-V', slug: 'hr-v' },
+  'nissan:xtrail': { name: 'X-Trail', slug: 'x-trail' },
+  'mazda:2': { name: 'Mazda 2', slug: 'mazda-2' },
+  'mazda:mazda2': { name: 'Mazda 2', slug: 'mazda-2' },
+  'mazda:3': { name: 'Mazda 3', slug: 'mazda-3' },
+  'mazda:mazda3': { name: 'Mazda 3', slug: 'mazda-3' },
+  'mazda:6': { name: 'Mazda 6', slug: 'mazda-6' },
+  'mazda:mazda6': { name: 'Mazda 6', slug: 'mazda-6' },
+  'mazda:cx5': { name: 'CX-5', slug: 'cx-5' },
+  'mazda:cx3': { name: 'CX-3', slug: 'cx-3' },
+  'isuzu:dmax': { name: 'D-Max', slug: 'd-max' },
+};
+
+function mergeModel(catalog: CleanCatalog, makeSlug: string, sourceSlug: string, targetSlug: string, targetName?: string): boolean {
+  const make = catalog[makeSlug];
+  const source = make?.models?.[sourceSlug];
+  if (!source) return false;
+
+  if (!make.models[targetSlug]) {
+    make.models[targetSlug] = {
+      modelName: targetName || source.modelName,
+      modelSlug: targetSlug,
+      category: source.category || 'automobile',
+      generations: {},
+    };
+  }
+  const target = make.models[targetSlug];
+  if (targetName) target.modelName = targetName;
+
+  for (const [genKey, genVal] of Object.entries(source.generations)) {
+    if (!target.generations[genKey]) {
+      target.generations[genKey] = genVal;
+    } else {
+      const existing = target.generations[genKey].engines;
+      const seen = new Set(existing.map((e) => `${e.engineCode}_${e.powerHp || ''}_${e.fuelType || ''}`));
+      for (const eng of genVal.engines) {
+        const k = `${eng.engineCode}_${eng.powerHp || ''}_${eng.fuelType || ''}`;
+        if (!seen.has(k)) {
+          seen.add(k);
+          existing.push(eng);
+        }
+      }
+    }
+  }
+  delete make.models[sourceSlug];
+  return true;
+}
+
+function dropIfPresent(catalog: CleanCatalog, makeSlug: string, modelSlug: string): boolean {
+  if (catalog[makeSlug]?.models?.[modelSlug]) {
+    delete catalog[makeSlug].models[modelSlug];
+    return true;
+  }
+  return false;
+}
+
+function cleanCatalog(catalog: CleanCatalog): { renamed: string[]; merged: string[]; dropped: string[] } {
+  const renamed: string[] = [];
+  const merged: string[] = [];
+  const dropped: string[] = [];
+
+  // 1. Bare digit/letter fragments that should be a named Série/Classe/etc model.
+  for (const [key, alias] of Object.entries(MODEL_SLUG_ALIASES)) {
+    const [makeSlug, rawSlug] = key.split(':');
+    const make = catalog[makeSlug];
+    if (!make?.models?.[rawSlug]) continue;
+    if (rawSlug === alias.slug) continue; // already correct, nothing to do
+    const label = `${makeSlug}: "${rawSlug}" -> "${alias.name}" (${alias.slug})`;
+    if (mergeModel(catalog, makeSlug, rawSlug, alias.slug, alias.name)) {
+      renamed.push(label);
+    }
+  }
+
+  // 2. Unconditional make-name-as-model merges.
+  if (mergeModel(catalog, 'porsche', 'porsche', '911', '911')) merged.push('porsche: "porsche" -> "911"');
+  if (mergeModel(catalog, 'subaru', 'subaru', 'xv', 'XV')) merged.push('subaru: "subaru" -> "xv"');
+
+  // 3. Phantom fragments with no recoverable identity.
+  for (const [mk, mod] of [
+    ['cupra', 'cupra'], ['chery', 'chery'], ['dfsk', 'dfsk'], ['great-wall', 'great'],
+    ['byd', 'byd'], ['isuzu', 'isuzu'], ['mahindra', 'mahindra'], ['mahindra', 'kuv'], ['mahindra', 'xuv'],
+  ] as const) {
+    if (dropIfPresent(catalog, mk, mod)) dropped.push(`${mk}: "${mod}"`);
+  }
+
+  // 4. Conditional routing by generation-key content.
+  if (catalog.jaguar?.models?.jaguar) {
+    const phantom = catalog.jaguar.models.jaguar;
+    for (const [gk, gv] of Object.entries(phantom.generations)) {
+      const targetSlug = gk.includes('f-pace') ? 'f-pace' : gk.includes('xe') ? 'xe' : null;
+      if (targetSlug && catalog.jaguar.models[targetSlug]) {
+        catalog.jaguar.models[targetSlug].generations[gk] = gv;
+      }
+    }
+    delete catalog.jaguar.models.jaguar;
+    merged.push('jaguar: "jaguar" -> xe / f-pace (by generation)');
+  }
+
+  if (catalog.mg?.models?.mg) {
+    const phantom = catalog.mg.models.mg;
+    for (const [gk, gv] of Object.entries(phantom.generations)) {
+      const targetSlug = gk.includes('zs') ? 'zs' : gk.includes('hs') ? 'hs' : 'mg3';
+      if (!catalog.mg.models[targetSlug]) {
+        catalog.mg.models[targetSlug] = { modelName: targetSlug.toUpperCase(), modelSlug: targetSlug, category: 'automobile', generations: {} };
+      }
+      catalog.mg.models[targetSlug].generations[gk] = gv;
+    }
+    delete catalog.mg.models.mg;
+    merged.push('mg: "mg" -> zs / hs / mg3 (by generation)');
+  }
+
+  if (catalog.mini?.models?.mini) {
+    const phantom = catalog.mini.models.mini;
+    if (!catalog.mini.models.cooper) {
+      catalog.mini.models.cooper = { modelName: 'Mini Hatch / Cooper', modelSlug: 'cooper', category: 'automobile', generations: {} };
+    }
+    for (const [gk, gv] of Object.entries(phantom.generations)) {
+      if (gk.includes('countryman')) {
+        if (!catalog.mini.models.countryman) catalog.mini.models.countryman = { modelName: 'Countryman', modelSlug: 'countryman', category: 'automobile', generations: {} };
+        catalog.mini.models.countryman.generations[gk] = gv;
+      } else if (gk.includes('clubman')) {
+        if (!catalog.mini.models.clubman) catalog.mini.models.clubman = { modelName: 'Clubman', modelSlug: 'clubman', category: 'automobile', generations: {} };
+        catalog.mini.models.clubman.generations[gk] = gv;
+      } else {
+        catalog.mini.models.cooper.generations[gk] = gv;
+      }
+    }
+    delete catalog.mini.models.mini;
+    merged.push('mini: "mini" -> cooper / countryman / clubman (by generation)');
+  }
+
+  if (catalog.smart?.models?.smart) {
+    const phantom = catalog.smart.models.smart;
+    for (const [gk, gv] of Object.entries(phantom.generations)) {
+      const targetSlug = gk.includes('four') ? 'forfour' : 'fortwo';
+      if (catalog.smart.models[targetSlug]) {
+        catalog.smart.models[targetSlug].generations[gk] = gv;
+      }
+    }
+    delete catalog.smart.models.smart;
+    merged.push('smart: "smart" -> fortwo / forfour (by generation)');
+  }
+
+  return { renamed, merged, dropped };
+}
+
+function countModelsAndEngines(catalog: CleanCatalog): { models: number; engines: number } {
+  let models = 0;
+  let engines = 0;
+  for (const make of Object.values(catalog)) {
+    for (const mod of Object.values(make.models)) {
+      models++;
+      for (const gen of Object.values(mod.generations)) {
+        engines += gen.engines.length;
+      }
+    }
+  }
+  return { models, engines };
+}
+
+function main() {
+  console.log(`Mode: ${APPLY ? 'APPLY' : 'DRY-RUN (add --apply to write the fix)'}`);
+
+  const candidatePaths = [
+    '/app/oil-finder-full-dataset/clean-catalog-hierarchy.json',
+    path.join(process.cwd(), 'oil-finder-full-dataset', 'clean-catalog-hierarchy.json'),
+    path.join(__dirname, '..', 'src', 'oil-finder', 'clean-catalog-hierarchy.json'),
+    path.join(process.cwd(), 'src', 'oil-finder', 'clean-catalog-hierarchy.json'),
+  ];
+  const sourcePath = candidatePaths.find((p) => fs.existsSync(p));
+  if (!sourcePath) {
+    throw new Error(`Could not find clean-catalog-hierarchy.json in any of: ${candidatePaths.join(', ')}`);
+  }
+  console.log(`Reading: ${sourcePath}`);
+
+  const catalog: CleanCatalog = JSON.parse(fs.readFileSync(sourcePath, 'utf8'));
+  const before = countModelsAndEngines(catalog);
+
+  const { renamed, merged, dropped } = cleanCatalog(catalog);
+  const after = countModelsAndEngines(catalog);
+
+  console.log(`\nRenamed/merged bare fragments (${renamed.length}):`);
+  renamed.forEach((l) => console.log('  ' + l));
+  console.log(`\nMake-name-as-model merges (${merged.length}):`);
+  merged.forEach((l) => console.log('  ' + l));
+  console.log(`\nDropped phantom entries with no recoverable data (${dropped.length}):`);
+  dropped.forEach((l) => console.log('  ' + l));
+
+  console.log(`\nModels before: ${before.models} -> after: ${after.models}`);
+  console.log(`Engines before: ${before.engines} -> after: ${after.engines}`);
+  if (after.engines !== before.engines) {
+    console.log(`  (engine count changed only from de-duplicating engines that existed under two names for the same model)`);
+  }
+
+  if (!APPLY) {
+    console.log('\nDry run only — nothing written. Re-run with --apply to write the fix.');
+    return;
+  }
+
+  const saveTargets = [
+    '/app/oil-finder-full-dataset/clean-catalog-hierarchy.json',
+    path.join(process.cwd(), 'oil-finder-full-dataset', 'clean-catalog-hierarchy.json'),
+    path.join(__dirname, '..', 'src', 'oil-finder', 'clean-catalog-hierarchy.json'),
+    path.join(process.cwd(), 'src', 'oil-finder', 'clean-catalog-hierarchy.json'),
+  ];
+  let saved = 0;
+  const json = JSON.stringify(catalog, null, 2);
+  for (const target of saveTargets) {
+    try {
+      if (fs.existsSync(path.dirname(target))) {
+        fs.writeFileSync(target, json, 'utf8');
+        saved++;
+        console.log(`Wrote: ${target}`);
+      }
+    } catch (e: any) {
+      console.warn(`Could not write ${target}: ${e?.message}`);
+    }
+  }
+  console.log(`\nSaved to ${saved} location(s). Restart the backend to clear its in-memory cache:`);
+  console.log('  docker compose restart backend');
+}
+
+main();

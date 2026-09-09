@@ -951,14 +951,66 @@ async function main() {
     vw: 'volkswagen',
   };
 
+  // Some manufacturers' raw TecDoc model_raw_name is a bare series/class digit or a
+  // fragment code rather than the commercial name customers actually search for — e.g.
+  // BMW rows come in with model_raw_name "3" instead of "Série 3", so every harvest
+  // recreated a stray "3" model bucket sitting right next to the real, already-curated
+  // "Série 3" (reported live: the storefront's BMW model picker showing "3" and "2" as
+  // if they were car models). Canonicalize known raw model slugs to the correct
+  // commercial name + slug BEFORE a bucket is ever created, so the bad fragment merges
+  // straight into the right model instead of spawning a visible duplicate. Keyed by
+  // "makeSlug:rawModelSlug" (rawModelSlug = slugify(cleanCommercialModel's own output),
+  // i.e. matched post-parse, same as modelSlug below).
+  const MODEL_SLUG_ALIASES: Record<string, { name: string; slug: string }> = {
+    'bmw:1': { name: 'Série 1', slug: 'serie-1' },
+    'bmw:2': { name: 'Série 2', slug: 'serie-2' },
+    'bmw:3': { name: 'Série 3', slug: 'serie-3' },
+    'bmw:4': { name: 'Série 4', slug: 'serie-4' },
+    'bmw:5': { name: 'Série 5', slug: 'serie-5' },
+    'bmw:6': { name: 'Série 6', slug: 'serie-6' },
+    'bmw:7': { name: 'Série 7', slug: 'serie-7' },
+    'bmw:8': { name: 'Série 8', slug: 'serie-8' },
+    'mercedes-benz:a': { name: 'Classe A', slug: 'classe-a' },
+    'mercedes-benz:a-class': { name: 'Classe A', slug: 'classe-a' },
+    'mercedes-benz:b': { name: 'Classe B', slug: 'classe-b' },
+    'mercedes-benz:c': { name: 'Classe C', slug: 'classe-c' },
+    'mercedes-benz:c-class': { name: 'Classe C', slug: 'classe-c' },
+    'mercedes-benz:e': { name: 'Classe E', slug: 'classe-e' },
+    'mercedes-benz:e-class': { name: 'Classe E', slug: 'classe-e' },
+    'mercedes-benz:g': { name: 'Classe G', slug: 'classe-g' },
+    'mercedes-benz:s': { name: 'Classe S', slug: 'classe-s' },
+    'mercedes-benz:v': { name: 'Classe V', slug: 'classe-v' },
+    'volkswagen:t': { name: 'T-Roc', slug: 't-roc' },
+    'volkswagen:troc': { name: 'T-Roc', slug: 't-roc' },
+    'ford:c': { name: 'C-Max', slug: 'c-max' },
+    'ford:cmax': { name: 'C-Max', slug: 'c-max' },
+    'toyota:rav': { name: 'RAV4', slug: 'rav4' },
+    'toyota:chr': { name: 'C-HR', slug: 'c-hr' },
+    'honda:crv': { name: 'CR-V', slug: 'cr-v' },
+    'honda:hrv': { name: 'HR-V', slug: 'hr-v' },
+    'nissan:xtrail': { name: 'X-Trail', slug: 'x-trail' },
+    'mazda:2': { name: 'Mazda 2', slug: 'mazda-2' },
+    'mazda:mazda2': { name: 'Mazda 2', slug: 'mazda-2' },
+    'mazda:3': { name: 'Mazda 3', slug: 'mazda-3' },
+    'mazda:mazda3': { name: 'Mazda 3', slug: 'mazda-3' },
+    'mazda:6': { name: 'Mazda 6', slug: 'mazda-6' },
+    'mazda:mazda6': { name: 'Mazda 6', slug: 'mazda-6' },
+    'mazda:cx5': { name: 'CX-5', slug: 'cx-5' },
+    'mazda:cx3': { name: 'CX-3', slug: 'cx-3' },
+    'isuzu:dmax': { name: 'D-Max', slug: 'd-max' },
+  };
+
   for (const r of rows) {
     const makeName = (r.make_name || '').trim();
     if (!makeName) continue;
     const rawMakeSlug = slugify(makeName);
     const makeSlug = MAKE_SLUG_ALIASES[rawMakeSlug] || rawMakeSlug;
 
-    const { modelName, genHint } = cleanCommercialModel(r.model_raw_name, makeSlug);
-    const modelSlug = slugify(modelName);
+    const { modelName: rawModelName, genHint } = cleanCommercialModel(r.model_raw_name, makeSlug);
+    const rawModelSlug = slugify(rawModelName);
+    const modelAlias = MODEL_SLUG_ALIASES[`${makeSlug}:${rawModelSlug}`];
+    const modelName = modelAlias?.name || rawModelName;
+    const modelSlug = modelAlias?.slug || rawModelSlug;
     const genSlug = slugify(genHint);
     const yearFrom = parseYearFromDateText(r.date_from_raw);
     const yearTo = parseYearFromDateText(r.date_to_raw);
@@ -1087,6 +1139,139 @@ async function main() {
         categoriesBackfilled++;
       }
     }
+  }
+
+  // ─── 5d. FIX PHANTOM "MAKE-NAME-AS-MODEL" ENTRIES ─────────────────────────
+  // A handful of manufacturers have TecDoc rows whose model_raw_name is just the make
+  // name itself (e.g. a "Porsche" model under the Porsche make, "Jaguar" under Jaguar) —
+  // cleanCommercialModel() has no way to know that isn't a real commercial model name,
+  // so it sails through as a nonsense duplicate-of-the-make entry every single harvest.
+  // Route each into its real model using whatever generation-code signal is available;
+  // where no such signal exists and the fragment is a pure duplicate of the make with no
+  // useful data of its own, drop it — these were manually vetted once already, ported
+  // here so the fix survives every future harvest instead of reverting on the next run.
+  const mergeModel = (
+    makeSlug: string,
+    sourceSlug: string,
+    targetSlug: string,
+    targetName?: string,
+  ) => {
+    const make = catalog[makeSlug];
+    const source = make?.models?.[sourceSlug];
+    if (!source) return;
+
+    if (!make.models[targetSlug]) {
+      make.models[targetSlug] = {
+        modelName: targetName || source.modelName,
+        modelSlug: targetSlug,
+        category: source.category || 'automobile',
+        generations: {},
+      };
+    }
+    const target = make.models[targetSlug];
+    if (targetName) target.modelName = targetName;
+
+    for (const [genKey, genVal] of Object.entries(source.generations)) {
+      if (!target.generations[genKey]) {
+        target.generations[genKey] = genVal;
+      } else {
+        const existing = target.generations[genKey].engines;
+        const seen = new Set(existing.map((e) => `${e.engineCode}_${e.powerHp || ''}_${e.fuelType || ''}`));
+        for (const eng of genVal.engines) {
+          const k = `${eng.engineCode}_${eng.powerHp || ''}_${eng.fuelType || ''}`;
+          if (!seen.has(k)) {
+            seen.add(k);
+            existing.push(eng);
+          }
+        }
+      }
+    }
+    delete make.models[sourceSlug];
+  };
+
+  const dropIfPresent = (makeSlug: string, modelSlug: string) => {
+    if (catalog[makeSlug]?.models?.[modelSlug]) {
+      delete catalog[makeSlug].models[modelSlug];
+    }
+  };
+
+  // Simple unconditional merges: the phantom bucket's data all belongs to one real model.
+  mergeModel('porsche', 'porsche', '911', '911');
+  mergeModel('subaru', 'subaru', 'xv', 'XV');
+
+  // No recoverable model identity in the fragment itself — drop rather than mislabel.
+  dropIfPresent('cupra', 'cupra');
+  dropIfPresent('chery', 'chery');
+  dropIfPresent('dfsk', 'dfsk');
+  dropIfPresent('great-wall', 'great');
+  dropIfPresent('byd', 'byd');
+  dropIfPresent('isuzu', 'isuzu');
+  dropIfPresent('mahindra', 'mahindra');
+  dropIfPresent('mahindra', 'kuv');
+  dropIfPresent('mahindra', 'xuv');
+
+  // Conditional: route by generation-key content since the phantom bucket mixes several
+  // real models together.
+  if (catalog.jaguar?.models?.jaguar) {
+    const phantom = catalog.jaguar.models.jaguar;
+    for (const [gk, gv] of Object.entries(phantom.generations)) {
+      const targetSlug = gk.includes('f-pace') ? 'f-pace' : gk.includes('xe') ? 'xe' : null;
+      if (targetSlug && catalog.jaguar.models[targetSlug]) {
+        catalog.jaguar.models[targetSlug].generations[gk] = gv;
+      }
+    }
+    delete catalog.jaguar.models.jaguar;
+  }
+
+  if (catalog.mg?.models?.mg) {
+    const phantom = catalog.mg.models.mg;
+    for (const [gk, gv] of Object.entries(phantom.generations)) {
+      const targetSlug = gk.includes('zs') ? 'zs' : gk.includes('hs') ? 'hs' : 'mg3';
+      if (!catalog.mg.models[targetSlug]) {
+        catalog.mg.models[targetSlug] = {
+          modelName: targetSlug.toUpperCase(),
+          modelSlug: targetSlug,
+          category: 'automobile',
+          generations: {},
+        };
+      }
+      catalog.mg.models[targetSlug].generations[gk] = gv;
+    }
+    delete catalog.mg.models.mg;
+  }
+
+  if (catalog.mini?.models?.mini) {
+    const phantom = catalog.mini.models.mini;
+    if (!catalog.mini.models.cooper) {
+      catalog.mini.models.cooper = { modelName: 'Mini Hatch / Cooper', modelSlug: 'cooper', category: 'automobile', generations: {} };
+    }
+    for (const [gk, gv] of Object.entries(phantom.generations)) {
+      if (gk.includes('countryman')) {
+        if (!catalog.mini.models.countryman) {
+          catalog.mini.models.countryman = { modelName: 'Countryman', modelSlug: 'countryman', category: 'automobile', generations: {} };
+        }
+        catalog.mini.models.countryman.generations[gk] = gv;
+      } else if (gk.includes('clubman')) {
+        if (!catalog.mini.models.clubman) {
+          catalog.mini.models.clubman = { modelName: 'Clubman', modelSlug: 'clubman', category: 'automobile', generations: {} };
+        }
+        catalog.mini.models.clubman.generations[gk] = gv;
+      } else {
+        catalog.mini.models.cooper.generations[gk] = gv;
+      }
+    }
+    delete catalog.mini.models.mini;
+  }
+
+  if (catalog.smart?.models?.smart) {
+    const phantom = catalog.smart.models.smart;
+    for (const [gk, gv] of Object.entries(phantom.generations)) {
+      const targetSlug = gk.includes('four') ? 'forfour' : 'fortwo';
+      if (catalog.smart.models[targetSlug]) {
+        catalog.smart.models[targetSlug].generations[gk] = gv;
+      }
+    }
+    delete catalog.smart.models.smart;
   }
 
   // ─── 6. SAVE JSON CATALOG ─────────────────────────────────────────────────
