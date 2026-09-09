@@ -1,23 +1,18 @@
 /**
- * One-off import: "Filtre à air" catalog from a CSV (same layout as
- * tomobile_filtres_a_huile.csv) + local watermarked image folder.
+ * One-off import: "Filtre carburant" catalog from a CSV (same layout as
+ * tomobile_filtres_a_huile.csv / tomobile_filtres_a_air.csv) + local
+ * watermarked image folder.
  *
- * Unlike the oil-filter import, the source CSV already carries real,
- * per-product-scraped compat/specs/OEM data (columns "Vehicules
- * Compatibles" / "Caracteristiques Techniques" / "References Origine"),
- * so this script writes compatibleVehiclesNote / technicalCharacteristics /
- * oemReferences directly at creation time — no separate enrichment pass.
+ * Same approach as import-air-filters.ts: the source CSV already carries
+ * real, per-product-scraped compat/specs/OEM data, so this writes
+ * compatibleVehiclesNote / technicalCharacteristics / oemReferences
+ * directly at creation time, and generates a short factual description
+ * up front from the product's own structured data instead of importing
+ * the long marketing-style "Description détaillée" column.
  *
- * The long "Description détaillée" column is marketing filler (same issue
- * fixed for oil filters via shorten-oil-filter-descriptions.ts); instead of
- * importing it and shortening later, this script generates a short factual
- * description up front from the product's own structured data (brand,
- * compatible makes, filter type, vehicle count) using the same templates
- * proven on the oil-filter catalog.
- *
- * Usage (inside the backend container, with CSV + imgs/ under /app/import-air-filters):
- *   npx tsx scripts/import-air-filters.ts            # dry-run report
- *   npx tsx scripts/import-air-filters.ts --apply     # write changes + upload images
+ * Usage (inside the backend container):
+ *   npx tsx scripts/import-fuel-filters.ts            # dry-run report
+ *   npx tsx scripts/import-fuel-filters.ts --apply     # write changes + upload images
  */
 import { PrismaClient } from '@prisma/client';
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
@@ -26,8 +21,8 @@ import * as path from 'path';
 
 const APPLY = process.argv.includes('--apply');
 const DATA_DIR = path.dirname(__filename);
-const CSV_PATH = path.join(DATA_DIR, 'tomobile_filtres_a_air.csv');
-const CATEGORY_ID = 'cmtnthkmj000nnpcye0lojphe'; // Filtre à air
+const CSV_PATH = path.join(DATA_DIR, 'tomobile_filtres_carburant.csv');
+const CATEGORY_ID = 'cmtnthkml000pnpcy8efrdk1l'; // Filtre à carburant
 
 const prisma = new PrismaClient();
 
@@ -147,7 +142,7 @@ function toTitleCaseMake(make: string): string {
     .replace(/\bDs\b/, 'DS');
 }
 
-const FILTER_LABEL = 'air';
+const FILTER_LABEL = 'carburant';
 
 function generateDescription(brand: string, sku: string, makes: string[], filterType: string | null, vehicleCount: number, oemCount: number): string {
   const hasType = !!filterType;
@@ -279,11 +274,12 @@ async function main() {
     const price = parseFloat(r['Prix de Vente (TND) *']?.trim() || '0') || 0;
     const photoUrl = r['Photo URL']?.trim();
     const vehiclesRaw = r['Vehicules Compatibles']?.trim() || '';
-    const compatLines = vehiclesRaw ? vehiclesRaw.split('|').map((s) => s.trim()).filter(Boolean) : [];
+    const compatLines = vehiclesRaw && vehiclesRaw !== '-' ? vehiclesRaw.split('|').map((s) => s.trim()).filter(Boolean) : [];
     const compatibleVehiclesNote = compatLines.length ? compatLines.join('\n') : undefined;
-    const technicalCharacteristics = r['Caracteristiques Techniques']?.trim() || undefined;
+    const technicalCharacteristicsRaw = r['Caracteristiques Techniques']?.trim() || '';
+    const technicalCharacteristics = technicalCharacteristicsRaw && technicalCharacteristicsRaw !== '-' ? technicalCharacteristicsRaw : undefined;
     const oemRaw = r['References Origine']?.trim() || '';
-    const oemReferences = oemRaw
+    const oemReferences = oemRaw && oemRaw !== '-'
       ? oemRaw.split('|').map((s) => s.trim()).filter(Boolean).map((entry) => {
           const m = entry.match(/^(\S+)\s+(.+)$/);
           return m ? { brand: m[1], reference: m[2] } : { brand: rawBrand || '', reference: entry };
