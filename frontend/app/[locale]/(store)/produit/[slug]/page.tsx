@@ -63,6 +63,11 @@ export default async function ProductPage({ params }: Props) {
 
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://specpart.tech'
   const productUrl = `${baseUrl}/${locale}/produit/${product.slug}`
+  // Pricing lives on variants, not a top-level product.price field — that field
+  // doesn't exist on the API response, so JSON-LD offers.price was silently
+  // omitted (JSON.stringify drops undefined keys), breaking rich-snippet
+  // eligibility for every product.
+  const jsonLdPrice = product.variants?.[0]?.priceTTC
 
   return (
     <div className="bg-brand-surface min-h-screen">
@@ -84,8 +89,8 @@ export default async function ProductPage({ params }: Props) {
               '@type': 'Offer',
               url: productUrl,
               priceCurrency: 'TND',
-              price: product.price,
-              availability: (product.stock ?? 1) > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+              price: jsonLdPrice,
+              availability: (product.variants?.[0]?.stock ?? product.stock ?? 1) > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
             },
           }),
         }}

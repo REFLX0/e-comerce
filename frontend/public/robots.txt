@@ -9,4 +9,4 @@ Disallow: /en/auth/
 Disallow: /fr/auth/
 Disallow: /_next/
 
-Sitemap: https://kiosquetn.dev/sitemap.xml
+Sitemap: https://specpart.tech/sitemap.xml
