@@ -10,8 +10,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: 'Nav' })
   
+  const tCat = await getTranslations({ locale, namespace: 'Catalogue' })
+  const description = tCat('catalogMetaDescription')
+
   return {
     title: `${t('catalog')} | specpart`,
+    description,
     alternates: {
       canonical: `/${locale}/catalogue`,
       languages: {
@@ -19,6 +23,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         en: `/en/catalogue`,
         ar: `/ar/catalogue`,
       },
+    },
+    openGraph: {
+      title: `${t('catalog')} | specpart`,
+      description,
+      type: 'website',
     },
   }
 }

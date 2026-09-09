@@ -330,6 +330,7 @@
         "noResultsFor": "No products match your search \"{q}\".",
         "categoryNotFound": "Category not found",
         "categoryMetaDescription": "Discover our products in the {name} category",
+        "catalogMetaDescription": "specpart's full catalog: engine oils, auto parts, filters, batteries, motorcycle and marine accessories. Delivery across Tunisia in 24 to 48h.",
         "loadingBrand": "Loading brand...",
         "brandNotFound": "Brand not found",
         "productsInBrand": "{brandName} products",

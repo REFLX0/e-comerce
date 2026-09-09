@@ -131,18 +131,40 @@ export default async function RootLayout({
                       name: 'specpart',
                       description: tLayout('description') || 'specpart',
                       inLanguage: locale,
+                      publisher: { '@id': `${process.env.NEXT_PUBLIC_SITE_URL || 'https://specpart.tech'}/#organization` },
+                      potentialAction: {
+                        '@type': 'SearchAction',
+                        target: {
+                          '@type': 'EntryPoint',
+                          urlTemplate: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://specpart.tech'}/${locale}/catalogue?search={search_term_string}`,
+                        },
+                        'query-input': 'required name=search_term_string',
+                      },
                     },
                     {
-                      '@type': 'Organization',
+                      // AutoPartsStore (a LocalBusiness/AutomotiveBusiness subtype) rather than
+                      // a generic Organization — tells Google this is a physical, local store
+                      // serving Tunisia, which is what local-pack / "near me" ranking keys off.
+                      '@type': 'AutoPartsStore',
                       '@id': `${process.env.NEXT_PUBLIC_SITE_URL || 'https://specpart.tech'}/#organization`,
                       name: 'specpart',
                       url: process.env.NEXT_PUBLIC_SITE_URL || 'https://specpart.tech',
                       logo: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://specpart.tech'}/icon.jpg`,
+                      image: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://specpart.tech'}/icon.jpg`,
+                      // TODO: add `sameAs: [...]` once the real Facebook/Instagram URLs are in —
+                      // the footer's current links aren't the real accounts (per user), and wrong
+                      // sameAs entries actively hurt entity verification, so omit until correct.
+                      areaServed: {
+                        '@type': 'Country',
+                        name: 'Tunisia',
+                      },
                       contactPoint: {
                         '@type': 'ContactPoint',
                         telephone: '+21629294195',
                         contactType: 'customer service',
                         email: 'specpart@hotmail.com',
+                        areaServed: 'TN',
+                        availableLanguage: ['fr', 'ar', 'en'],
                       },
                       address: {
                         '@type': 'PostalAddress',
@@ -150,6 +172,12 @@ export default async function RootLayout({
                         addressLocality: 'La Marsa',
                         postalCode: '2046',
                         addressCountry: 'TN',
+                      },
+                      openingHoursSpecification: {
+                        '@type': 'OpeningHoursSpecification',
+                        dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+                        opens: '08:00',
+                        closes: '18:00',
                       },
                     },
                   ],

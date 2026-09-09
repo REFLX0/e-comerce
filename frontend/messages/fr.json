@@ -330,6 +330,7 @@
         "noResultsFor": "Aucun produit ne correspond à la recherche \"{q}\".",
         "categoryNotFound": "Catégorie introuvable",
         "categoryMetaDescription": "Découvrez nos produits dans la catégorie {name}",
+        "catalogMetaDescription": "Catalogue complet specpart : huiles moteur, pièces auto, filtres, batteries, accessoires moto et marine. Livraison partout en Tunisie sous 24 à 48h.",
         "loadingBrand": "Chargement de la marque...",
         "brandNotFound": "Marque introuvable",
         "productsInBrand": "Produits {brandName}",
