@@ -1195,9 +1195,13 @@ async function main() {
     }
   };
 
-  // Simple unconditional merges: the phantom bucket's data all belongs to one real model.
-  mergeModel('porsche', 'porsche', '911', '911');
-  mergeModel('subaru', 'subaru', 'xv', 'XV');
+  // NOTE: deliberately NOT auto-merging catalog.porsche.models.porsche -> '911' or
+  // catalog.subaru.models.subaru -> 'xv' here. Porsche sells far more than the 911 and
+  // Subaru far more than the XV — collapsing an unattended, unreviewed phantom bucket
+  // into one specific model on every harvest risks silently mislabeling a future
+  // Cayenne/Panamera/Macan/Boxster row as a 911 with no human ever seeing it happen.
+  // If that bucket appears, run scripts/fix-catalog-phantom-models.ts and inspect its
+  // generation names by hand before deciding where they really belong.
 
   // No recoverable model identity in the fragment itself — drop rather than mislabel.
   dropIfPresent('cupra', 'cupra');

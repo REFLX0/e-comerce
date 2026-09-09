@@ -67,10 +67,15 @@ const MODEL_SLUG_ALIASES: Record<string, { name: string; slug: string }> = {
   'isuzu:dmax': { name: 'D-Max', slug: 'd-max' },
 };
 
-function mergeModel(catalog: CleanCatalog, makeSlug: string, sourceSlug: string, targetSlug: string, targetName?: string): boolean {
+function genNames(model: CleanModel): string[] {
+  return Object.values(model.generations).map((g) => g.genName || '(unnamed)');
+}
+
+function mergeModel(catalog: CleanCatalog, makeSlug: string, sourceSlug: string, targetSlug: string, targetName?: string): { genNames: string[] } | null {
   const make = catalog[makeSlug];
   const source = make?.models?.[sourceSlug];
-  if (!source) return false;
+  if (!source) return null;
+  const movedGenNames = genNames(source);
 
   if (!make.models[targetSlug]) {
     make.models[targetSlug] = {
@@ -99,49 +104,67 @@ function mergeModel(catalog: CleanCatalog, makeSlug: string, sourceSlug: string,
     }
   }
   delete make.models[sourceSlug];
-  return true;
+  return { genNames: movedGenNames };
 }
 
-function dropIfPresent(catalog: CleanCatalog, makeSlug: string, modelSlug: string): boolean {
-  if (catalog[makeSlug]?.models?.[modelSlug]) {
-    delete catalog[makeSlug].models[modelSlug];
-    return true;
-  }
-  return false;
+function dropIfPresent(catalog: CleanCatalog, makeSlug: string, modelSlug: string): { genNames: string[] } | null {
+  const model = catalog[makeSlug]?.models?.[modelSlug];
+  if (!model) return null;
+  const names = genNames(model);
+  delete catalog[makeSlug].models[modelSlug];
+  return { genNames: names };
 }
 
-function cleanCatalog(catalog: CleanCatalog): { renamed: string[]; merged: string[]; dropped: string[] } {
+function cleanCatalog(catalog: CleanCatalog): { renamed: string[]; merged: string[]; dropped: string[]; review: string[] } {
   const renamed: string[] = [];
   const merged: string[] = [];
   const dropped: string[] = [];
+  const review: string[] = [];
 
   // 1. Bare digit/letter fragments that should be a named Série/Classe/etc model.
+  // Low ambiguity: these makes have no OTHER real model that a bare digit could mean
+  // instead (BMW never sells anything just called "3"; same logic for Mercedes classes).
   for (const [key, alias] of Object.entries(MODEL_SLUG_ALIASES)) {
     const [makeSlug, rawSlug] = key.split(':');
     const make = catalog[makeSlug];
     if (!make?.models?.[rawSlug]) continue;
     if (rawSlug === alias.slug) continue; // already correct, nothing to do
-    const label = `${makeSlug}: "${rawSlug}" -> "${alias.name}" (${alias.slug})`;
-    if (mergeModel(catalog, makeSlug, rawSlug, alias.slug, alias.name)) {
-      renamed.push(label);
+    const result = mergeModel(catalog, makeSlug, rawSlug, alias.slug, alias.name);
+    if (result) {
+      renamed.push(`${makeSlug}: "${rawSlug}" -> "${alias.name}" (${alias.slug}) | generations moved: ${result.genNames.join(', ') || '(none)'}`);
     }
   }
 
-  // 2. Unconditional make-name-as-model merges.
-  if (mergeModel(catalog, 'porsche', 'porsche', '911', '911')) merged.push('porsche: "porsche" -> "911"');
-  if (mergeModel(catalog, 'subaru', 'subaru', 'xv', 'XV')) merged.push('subaru: "subaru" -> "xv"');
+  // 2. Make-name-as-model phantom entries where the ONLY sane target is ambiguous
+  // (Porsche sells far more than the 911; Subaru sells far more than the XV) — never
+  // auto-merge these, just surface exactly what's in them so a human decides. Ported
+  // from a prior one-off cleanup that DID auto-merge these; downgraded to review-only
+  // here because that assumption was never re-checked against today's live data.
+  for (const [mk, mod, guess] of [
+    ['porsche', 'porsche', '911'],
+    ['subaru', 'subaru', 'xv'],
+  ] as const) {
+    const model = catalog[mk]?.models?.[mod];
+    if (model) {
+      const names = genNames(model);
+      review.push(`${mk}: "${mod}" (${names.length} generation(s): ${names.join(', ') || '(none)'}) — NOT auto-merged into "${guess}", check these are really all ${guess} before merging by hand`);
+    }
+  }
 
   // 3. Phantom fragments with no recoverable identity.
   for (const [mk, mod] of [
     ['cupra', 'cupra'], ['chery', 'chery'], ['dfsk', 'dfsk'], ['great-wall', 'great'],
     ['byd', 'byd'], ['isuzu', 'isuzu'], ['mahindra', 'mahindra'], ['mahindra', 'kuv'], ['mahindra', 'xuv'],
   ] as const) {
-    if (dropIfPresent(catalog, mk, mod)) dropped.push(`${mk}: "${mod}"`);
+    const result = dropIfPresent(catalog, mk, mod);
+    if (result) dropped.push(`${mk}: "${mod}" | generations discarded: ${result.genNames.join(', ') || '(none)'}`);
   }
 
-  // 4. Conditional routing by generation-key content.
+  // 4. Conditional routing by generation-key content — each generation's own key names
+  // the real model (e.g. "f-pace", "countryman"), so this isn't a blind guess like #2.
   if (catalog.jaguar?.models?.jaguar) {
     const phantom = catalog.jaguar.models.jaguar;
+    const names = genNames(phantom);
     for (const [gk, gv] of Object.entries(phantom.generations)) {
       const targetSlug = gk.includes('f-pace') ? 'f-pace' : gk.includes('xe') ? 'xe' : null;
       if (targetSlug && catalog.jaguar.models[targetSlug]) {
@@ -149,11 +172,12 @@ function cleanCatalog(catalog: CleanCatalog): { renamed: string[]; merged: strin
       }
     }
     delete catalog.jaguar.models.jaguar;
-    merged.push('jaguar: "jaguar" -> xe / f-pace (by generation)');
+    merged.push(`jaguar: "jaguar" -> xe / f-pace (by generation) | generations moved: ${names.join(', ') || '(none)'}`);
   }
 
   if (catalog.mg?.models?.mg) {
     const phantom = catalog.mg.models.mg;
+    const names = genNames(phantom);
     for (const [gk, gv] of Object.entries(phantom.generations)) {
       const targetSlug = gk.includes('zs') ? 'zs' : gk.includes('hs') ? 'hs' : 'mg3';
       if (!catalog.mg.models[targetSlug]) {
@@ -162,11 +186,12 @@ function cleanCatalog(catalog: CleanCatalog): { renamed: string[]; merged: strin
       catalog.mg.models[targetSlug].generations[gk] = gv;
     }
     delete catalog.mg.models.mg;
-    merged.push('mg: "mg" -> zs / hs / mg3 (by generation)');
+    merged.push(`mg: "mg" -> zs / hs / mg3 (by generation) | generations moved: ${names.join(', ') || '(none)'}`);
   }
 
   if (catalog.mini?.models?.mini) {
     const phantom = catalog.mini.models.mini;
+    const names = genNames(phantom);
     if (!catalog.mini.models.cooper) {
       catalog.mini.models.cooper = { modelName: 'Mini Hatch / Cooper', modelSlug: 'cooper', category: 'automobile', generations: {} };
     }
@@ -182,11 +207,12 @@ function cleanCatalog(catalog: CleanCatalog): { renamed: string[]; merged: strin
       }
     }
     delete catalog.mini.models.mini;
-    merged.push('mini: "mini" -> cooper / countryman / clubman (by generation)');
+    merged.push(`mini: "mini" -> cooper / countryman / clubman (by generation) | generations moved: ${names.join(', ') || '(none)'}`);
   }
 
   if (catalog.smart?.models?.smart) {
     const phantom = catalog.smart.models.smart;
+    const names = genNames(phantom);
     for (const [gk, gv] of Object.entries(phantom.generations)) {
       const targetSlug = gk.includes('four') ? 'forfour' : 'fortwo';
       if (catalog.smart.models[targetSlug]) {
@@ -194,10 +220,10 @@ function cleanCatalog(catalog: CleanCatalog): { renamed: string[]; merged: strin
       }
     }
     delete catalog.smart.models.smart;
-    merged.push('smart: "smart" -> fortwo / forfour (by generation)');
+    merged.push(`smart: "smart" -> fortwo / forfour (by generation) | generations moved: ${names.join(', ') || '(none)'}`);
   }
 
-  return { renamed, merged, dropped };
+  return { renamed, merged, dropped, review };
 }
 
 function countModelsAndEngines(catalog: CleanCatalog): { models: number; engines: number } {
@@ -232,7 +258,7 @@ function main() {
   const catalog: CleanCatalog = JSON.parse(fs.readFileSync(sourcePath, 'utf8'));
   const before = countModelsAndEngines(catalog);
 
-  const { renamed, merged, dropped } = cleanCatalog(catalog);
+  const { renamed, merged, dropped, review } = cleanCatalog(catalog);
   const after = countModelsAndEngines(catalog);
 
   console.log(`\nRenamed/merged bare fragments (${renamed.length}):`);
@@ -241,6 +267,8 @@ function main() {
   merged.forEach((l) => console.log('  ' + l));
   console.log(`\nDropped phantom entries with no recoverable data (${dropped.length}):`);
   dropped.forEach((l) => console.log('  ' + l));
+  console.log(`\nNEEDS MANUAL REVIEW — not touched, ambiguous target (${review.length}):`);
+  review.forEach((l) => console.log('  ' + l));
 
   console.log(`\nModels before: ${before.models} -> after: ${after.models}`);
   console.log(`Engines before: ${before.engines} -> after: ${after.engines}`);
