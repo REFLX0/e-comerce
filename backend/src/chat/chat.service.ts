@@ -34,6 +34,19 @@ function getProductPrice(p: any): string {
   return price !== null && price !== undefined ? `${Number(price).toFixed(3)} TND` : 'Prix sur demande';
 }
 
+// The system prompt tells the model to always use a bare relative path for
+// internal links, but LLM instruction-following isn't 100% reliable — it can
+// still rewrite a correct `/produit/slug` link from a tool result into an
+// absolute one (sometimes even with the wrong/dead domain) while composing
+// its final answer. Strip any domain it adds back off, deterministically,
+// rather than relying on prompt wording alone to prevent it.
+const INTERNAL_LINK_PREFIXES = ['/produit/', '/categorie/', '/marque/', '/contact', '/auth/login', '/panier', '/compte'];
+function stripDomainFromInternalLinks(text: string): string {
+  return text.replace(/\]\(https?:\/\/[^)\s/]+(\/[^)\s]*)\)/g, (match, path) =>
+    INTERNAL_LINK_PREFIXES.some((p) => path.startsWith(p)) ? `](${path})` : match,
+  );
+}
+
 function formatProducts(products: any[]): string {
   return products
     .map((p: any) => {
@@ -489,13 +502,13 @@ RÈGLES D'ACTION :
           secondData?.choices?.[0]?.message?.content?.trim() ??
           "Je n'ai pas pu récupérer les informations.";
         return {
-          reply: finalReply,
+          reply: stripDomainFromInternalLinks(finalReply),
           clientActions: clientActions.length > 0 ? clientActions : undefined,
         };
       }
 
       return {
-        reply: replyMessage.content?.trim() ?? '',
+        reply: stripDomainFromInternalLinks(replyMessage.content?.trim() ?? ''),
         clientActions: clientActions.length > 0 ? clientActions : undefined,
       };
     } catch (err) {
