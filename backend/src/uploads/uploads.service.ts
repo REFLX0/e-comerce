@@ -3,6 +3,7 @@ import { v2 as cloudinary } from 'cloudinary';
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 import * as fs from 'fs';
 import * as path from 'path';
+import { applyWatermark } from './watermark.util';
 
 @Injectable()
 export class UploadsService {
@@ -43,9 +44,17 @@ export class UploadsService {
     }
   }
 
-  async uploadImage(file: Express.Multer.File): Promise<string> {
+  async uploadImage(file: Express.Multer.File, watermark = false): Promise<string> {
     if (!file) {
       throw new Error('Aucun fichier reçu.');
+    }
+
+    if (watermark) {
+      try {
+        file = { ...file, buffer: await applyWatermark(file.buffer) };
+      } catch (err: any) {
+        this.logger.warn(`Watermarking failed (${err?.message}), uploading original image.`);
+      }
     }
 
     if (this.useMinio && this.s3Client) {

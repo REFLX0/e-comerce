@@ -75,9 +75,10 @@ export const adminApi = {
   getProduct: (id: string) =>
     api.get(`/admin/products/${id}`),
 
-  uploadImage: (file: File) => {
+  uploadImage: (file: File, watermark = false) => {
     const formData = new FormData()
     formData.append('file', file)
+    if (watermark) formData.append('watermark', 'true')
     return api.post<{ url: string }>('/uploads/image', formData)
   },
 

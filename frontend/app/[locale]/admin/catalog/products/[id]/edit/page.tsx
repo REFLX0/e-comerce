@@ -353,7 +353,7 @@ export default function EditProductPage() {
       const uploadedImageUrls: string[] = await Promise.all(
         orderedImages.map(async (img) => {
           if (img.file) {
-            const res = await adminApi.uploadImage(img.file)
+            const res = await adminApi.uploadImage(img.file, true)
             return (res as any).url || (res as any).data?.url || ''
           }
           return img.url || ''
@@ -367,7 +367,7 @@ export default function EditProductPage() {
         const variantImageUrls: (string | null)[] = await Promise.all(
           variants.map(async (v) => {
             if (v.imageFile) {
-              const res = await adminApi.uploadImage(v.imageFile)
+              const res = await adminApi.uploadImage(v.imageFile, true)
               return (res as any).url || (res as any).data?.url || null
             }
             return v.imageUrl || null

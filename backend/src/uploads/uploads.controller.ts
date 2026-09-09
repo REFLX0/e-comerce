@@ -7,6 +7,7 @@ import {
   HttpCode,
   HttpStatus,
   BadRequestException,
+  Body,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiTags, ApiBearerAuth, ApiConsumes } from '@nestjs/swagger';
@@ -45,11 +46,14 @@ export class UploadsController {
       },
     }),
   )
-  async uploadImage(@UploadedFile() file: Express.Multer.File) {
+  async uploadImage(
+    @UploadedFile() file: Express.Multer.File,
+    @Body('watermark') watermark?: string,
+  ) {
     if (!file) {
       throw new BadRequestException('No image file received');
     }
-    const url = await this.uploadsService.uploadImage(file);
+    const url = await this.uploadsService.uploadImage(file, watermark === 'true');
     return { url };
   }
 }
