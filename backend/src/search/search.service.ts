@@ -562,8 +562,14 @@ export class SearchService implements OnModuleInit {
     if (!query || query.trim().length < 2) return [];
     const q = query.trim();
 
+    // `getSuggestions` returns `null` only when OpenSearch is unavailable —
+    // a real, empty `[]` (query ran fine, zero hits) must still fall through
+    // to the Postgres fallback below, same as getSuggestionsWithFallback does.
+    // An earlier `if (osSlugs)` check treated that empty array as truthy and
+    // returned zero results outright, silently breaking every chatbot search
+    // whose phrase_prefix query didn't exactly match (e.g. accents, word order).
     const osSlugs = await this.getSuggestions(q, limit);
-    if (osSlugs) {
+    if (osSlugs && osSlugs.length > 0) {
       const products = await this.prismaRead.db.product.findMany({ where: { slug: { in: osSlugs }, isPublished: true }, include: this.buildInclude() });
       const map = new Map(products.map((p) => [p.slug, p]));
       return osSlugs.map((s) => map.get(s)).filter(Boolean).map((p) => this.serializeSearch(p));

@@ -48,6 +48,15 @@ function formatProducts(products: any[]): string {
 /** Cap on messages[] to avoid runaway token costs */
 const MAX_HISTORY = 20;
 const MAX_MSG_LEN = 2000;
+const OPENROUTER_TIMEOUT_MS = 25000;
+
+/** fetch() has no default timeout — an unresponsive upstream would otherwise
+ * hold the request (and the caller's rate-limit slot) open indefinitely. */
+function fetchWithTimeout(url: string, options: RequestInit, timeoutMs: number): Promise<Response> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  return fetch(url, { ...options, signal: controller.signal }).finally(() => clearTimeout(timer));
+}
 
 @Injectable()
 export class ChatService {
@@ -311,7 +320,7 @@ RÈGLES D'ACTION :
     };
 
     try {
-      const response = await fetch(
+      const response = await fetchWithTimeout(
         'https://openrouter.ai/api/v1/chat/completions',
         {
           method: 'POST',
@@ -321,6 +330,7 @@ RÈGLES D'ACTION :
           },
           body: JSON.stringify(payload),
         },
+        OPENROUTER_TIMEOUT_MS,
       );
 
       if (!response.ok) {
@@ -456,7 +466,7 @@ RÈGLES D'ACTION :
 
         // Second LLM call — no tools to avoid loop
         const { tools: _t, tool_choice: _tc, ...payloadNoTools } = payload;
-        const secondResponse = await fetch(
+        const secondResponse = await fetchWithTimeout(
           'https://openrouter.ai/api/v1/chat/completions',
           {
             method: 'POST',
@@ -466,7 +476,13 @@ RÈGLES D'ACTION :
             },
             body: JSON.stringify(payloadNoTools),
           },
+          OPENROUTER_TIMEOUT_MS,
         );
+
+        if (!secondResponse.ok) {
+          this.logger.error(`OpenRouter second call failed: ${secondResponse.status}`);
+          throw new HttpException('Erreur OpenRouter', HttpStatus.BAD_GATEWAY);
+        }
 
         const secondData = await secondResponse.json();
         const finalReply =
