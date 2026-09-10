@@ -91,7 +91,14 @@ async function applyTiledWatermark(buffer: Buffer): Promise<Buffer> {
       <rect width="${width}" height="${height}" fill="url(#wm)" />
     </svg>
   `;
-  return image.composite([{ input: Buffer.from(svg), top: 0, left: 0 }]).jpeg({ quality: 90 }).toBuffer();
+  // Flatten against white BEFORE the JPEG encode — a transparent source would
+  // otherwise default to sharp's black flatten background (confirmed live: a
+  // re-processed legacy PNG came out with a black backdrop without this).
+  return image
+    .flatten({ background: '#ffffff' })
+    .composite([{ input: Buffer.from(svg), top: 0, left: 0 }])
+    .jpeg({ quality: 90 })
+    .toBuffer();
 }
 
 async function downloadImage(url: string): Promise<Buffer> {

@@ -65,7 +65,14 @@ async function applyTiledWatermark(buffer: Buffer): Promise<Buffer> {
       <rect width="${width}" height="${height}" fill="url(#wm)" />
     </svg>
   `;
-  return image.composite([{ input: Buffer.from(svg), top: 0, left: 0 }]).jpeg({ quality: 90 }).toBuffer();
+  // Flatten against white BEFORE the JPEG encode: a transparent source (several
+  // legacy PNGs are) would otherwise default to sharp's black flatten background,
+  // silently turning a clean product photo into one with a black backdrop.
+  return image
+    .flatten({ background: '#ffffff' })
+    .composite([{ input: Buffer.from(svg), top: 0, left: 0 }])
+    .jpeg({ quality: 90 })
+    .toBuffer();
 }
 
 // The source photo behind every broken watermark is unaffected (the bug is
