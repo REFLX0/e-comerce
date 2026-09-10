@@ -1073,7 +1073,19 @@ async function main() {
     const ccMatch = descText.match(/(\d\.\d)\s*(?:l|16v|hdi|tdi|dci|vti|tsi|tfsi)?/i);
     const powerHp = hpMatch ? parseInt(hpMatch[1], 10) : null;
     const displacementCc = ccMatch ? Math.round(parseFloat(ccMatch[1]) * 1000) : null;
-    const isDiesel = /diesel|hdi|dci|tdi|cdi|crdi|d-4d/i.test(descText);
+    // descText alone missed GM/Opel/Vauxhall's own "DT" diesel-turbo engine-code family
+    // (e.g. "Z 13 DTH", "Z 19 DT", "A 17 DTC") whose car_desc/car_full_desc text doesn't
+    // spell out "diesel" — 274 engines across Opel/Vauxhall/Saab/Chevrolet/Cadillac/
+    // Bedford (all GM-platform brands) were misclassified as essence and given a
+    // gasoline oil spec (GM dexos1) as a result. Verified: every engine whose code has a
+    // standalone "DT" or "DT"+one-letter token (Z13DTH, Z19DT, A17DTC/DTE/DTF/DTN/DTR/
+    // DTS/DTI/DTJ, B16DTH/DTR/DTU, B13DTN, Y17DTL, ...) was diesel with zero exceptions
+    // found across the whole catalog. Check the raw engine code too, not just the
+    // free-text description.
+    const rawEngineCode = (r.engine_code || '').toUpperCase();
+    const isDiesel =
+      /diesel|hdi|dci|tdi|cdi|crdi|d-4d/i.test(descText) ||
+      /\b(TDI|HDI|DCI|CDI|CRDI|D-4D|CDTI|JTD|DDIS|DTEC|BLUEHDI|DT[A-Z]?)\b/.test(rawEngineCode);
     const isElectric = !isDiesel && isPureElectric(descText, displacementCc);
     const fuelType = isElectric ? 'electrique' : isDiesel ? 'diesel' : 'essence';
 
@@ -1528,7 +1540,12 @@ async function main() {
   await prisma.$disconnect();
 }
 
-main().catch(err => {
-  console.error('Fatal Harvest Error:', err);
-  process.exit(1);
-});
+// Guarded so other scripts (e.g. recompute-oil-specs.ts) can import
+// deriveOilSpecification from this file without triggering a full DB harvest
+// as a side effect of the import.
+if (require.main === module) {
+  main().catch(err => {
+    console.error('Fatal Harvest Error:', err);
+    process.exit(1);
+  });
+}
