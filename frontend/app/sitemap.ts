@@ -62,6 +62,21 @@ export default async function sitemap({ id }: { id: number }): Promise<MetadataR
       for (const cat of categories) {
         addEntry(`/categorie/${cat.slug}`, 0.8, 'weekly')
       }
+
+      // Programmatic SEO: /huile-moteur pages
+      addEntry('/huile-moteur', 0.9, 'weekly')
+      const vehicleModels = await db.vehicleModel.findMany({
+        select: {
+          slug: true,
+          make: { select: { slug: true } },
+        },
+      })
+      for (const model of vehicleModels) {
+        // Make hub page (once per make — deduplicate)
+        addEntry(`/huile-moteur/${model.make.slug}`, 0.8, 'weekly')
+        // Model detail page
+        addEntry(`/huile-moteur/${model.make.slug}/${model.slug}`, 0.85, 'weekly')
+      }
     } else {
       // Products
       const pageIndex = id - 1
