@@ -29,8 +29,12 @@ FROM node:20-alpine AS production
 
 WORKDIR /app
 
-# wget is used by the docker-compose healthcheck
-RUN apk add --no-cache wget
+# wget is used by the docker-compose healthcheck.
+# fontconfig + a real sans-serif font are needed for sharp's bundled librsvg to
+# render SVG <text> (product-photo watermarking): Alpine ships neither by
+# default, so every watermark call silently rendered blank or as "tofu box"
+# missing-glyph placeholders instead of readable text.
+RUN apk add --no-cache wget fontconfig ttf-dejavu
 
 # Copy only what the production runtime needs
 COPY --from=builder /app/node_modules ./node_modules
