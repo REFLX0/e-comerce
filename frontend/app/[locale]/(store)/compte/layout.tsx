@@ -187,7 +187,15 @@ export default function CompteLayout({ children }: { children: React.ReactNode }
     }
   }, [isMounted, locale, nextAuthStatus, router, setAuth])
 
-  const handleLogout = () => { logout(); router.push('/') }
+  const handleLogout = async () => {
+    // 1. Clear NestJS backend cookies
+    await logout()
+    // 2. Destroy the NextAuth session cookie
+    const { signOut } = await import('next-auth/react')
+    await signOut({ redirect: false })
+    // 3. Hard navigate to fully reset all React state and memory caches
+    window.location.href = `/${locale}`
+  }
 
   if (!isMounted || isCheckingAuth || !user) {
     return (
