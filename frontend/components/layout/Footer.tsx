@@ -88,7 +88,7 @@ export default function Footer() {
   }
 
   return (
-    <footer className="bg-brand-primary-dark">
+    <footer className="bg-brand-primary-dark pb-20 md:pb-0">
       <div className="section-padding pt-16 pb-10">
         {/* 12-column grid: 4 cols for Brand/Newsletter, 2 cols each for the 4 link categories */}
         <div className="mb-14 grid grid-cols-1 gap-10 border-b border-white/8 pb-14 sm:grid-cols-2 lg:grid-cols-12">

@@ -67,7 +67,7 @@ export function LanguageSwitcher() {
 
       {isOpen && (
         <div 
-          className="absolute right-0 mt-2 w-44 rounded-2xl border border-slate-200 bg-white p-1.5 shadow-xl shadow-slate-900/10 z-50 animate-in fade-in zoom-in-95 duration-150"
+          className="absolute right-0 mt-2 w-44 rounded-2xl border border-slate-200 bg-white p-1.5 shadow-xl shadow-slate-900/10 z-[60] animate-in fade-in zoom-in-95 duration-150"
           role="menu"
         >
           {LOCALES.map((item) => {
