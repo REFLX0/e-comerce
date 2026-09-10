@@ -124,6 +124,8 @@ export const NAVIGATION_TAXONOMY: NavigationTaxonomyItem[] = [
         children: [
           { slug: 'lavage-carrosserie', label: 'Lavage, Carrosserie & Detailing' },
           { slug: 'nettoyage-interieur', label: 'Nettoyage & Entretien Intérieur' },
+          { slug: 'outillage-atelier', label: 'Outillage & Atelier' },
+          { slug: 'confort-equipements-auto', label: 'Confort & Équipements Auto' },
           { slug: 'produits-divers', label: 'Produits divers & Maintenance' },
         ],
       },
