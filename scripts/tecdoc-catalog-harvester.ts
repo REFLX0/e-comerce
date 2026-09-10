@@ -905,6 +905,7 @@ const APPROVAL_INTRODUCED: { re: RegExp; year: number }[] = [
   { re: /dexos\s*1/i, year: 2011 },
   { re: /dexos\s*2/i, year: 2010 },
   { re: /GM-LL-[AB]-025/i, year: 2002 },
+  { re: /WSS-M2C913-D/i, year: 2012 },
   { re: /WSS-M2C913/i, year: 2002 },
   { re: /WSS-M2C948/i, year: 2012 },
   { re: /WSS-M2C950/i, year: 2014 },
@@ -941,7 +942,24 @@ function enforceEraSafety(spec: CleanEngine['oilSpec'], year: number | null): Cl
   if (!spec || !year) return spec;
   let out = { ...spec };
 
-  const anachronistic = APPROVAL_INTRODUCED.some((a) => a.re.test(out.oemApproval || '') && year + 2 < a.year);
+  // Two passes, because naming specs individually can only ever catch the ones you
+  // thought of. The table below handles the 1993+ era where the exact year matters;
+  // the blanket rule handles everything older.
+  let anachronistic = APPROVAL_INTRODUCED.some((a) => a.re.test(out.oemApproval || '') && year + 2 < a.year);
+
+  // Before ~1993 no manufacturer approval scheme of the kind we quote today existed —
+  // ACEA's oil sequences start in 1996, API SH in 1993. So a pre-1993 car cannot carry
+  // ANY branded approval, whether or not it appears in the table above. This catches the
+  // long tail an enumeration always misses: a Volvo VCC spec on a 1959 Amazon, a JLR
+  // spec on a 1961 E-Type, "Saab Turbo oil" on a 1960 two-stroke 96, a Ferrari
+  // factory-fill partnership on a 1967 car. Guidance explicitly written FOR classics is
+  // kept, since that's a genuine recommendation rather than a back-dated approval.
+  const PRE_APPROVAL_ERA = 1993;
+  const isClassicGuidance = /classic|conventional|vintage|heritage/i.test(out.oemApproval || '');
+  if (year < PRE_APPROVAL_ERA && out.oemApproval && !isClassicGuidance) {
+    anachronistic = true;
+  }
+
   if (anachronistic) {
     delete out.oemApproval;
   }
@@ -955,6 +973,11 @@ function enforceEraSafety(spec: CleanEngine['oilSpec'], year: number | null): Cl
   if (year < 2004 && (/\bC[1-6]\b/.test(aceaUpper) || /\bA5\/B5\b/.test(aceaUpper))) {
     out.aceaStandard = 'A3/B4';
     out.apiStandard = out.apiStandard && /S[GHJ]/.test(out.apiStandard) ? out.apiStandard : 'SL/CF';
+    // ...and drop an approval label that still advertises the low-SAPS/DPF property we
+    // just removed, so the two fields can't contradict each other on the page.
+    if (/low-saps|dpf|C[1-6]\s*\/?\s*C?[1-6]?\b/i.test(out.oemApproval || '')) {
+      delete out.oemApproval;
+    }
   }
 
   // Viscosity floor only for cars we just established predate modern approval schemes,
