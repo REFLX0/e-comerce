@@ -20,7 +20,7 @@
  */
 import * as fs from 'fs';
 import * as path from 'path';
-import { deriveOilSpecification } from './tecdoc-catalog-harvester';
+import { deriveOilSpecification, isDieselEngine } from './tecdoc-catalog-harvester';
 
 const APPLY = process.argv.includes('--apply');
 
@@ -37,16 +37,9 @@ function specEqual(a: any, b: any): boolean {
   return JSON.stringify(a ?? null) === JSON.stringify(b ?? null);
 }
 
-// GM/Opel/Vauxhall's own "DT" diesel-turbo engine-code family (Z13DTH, Z19DT, A17DTC,
-// B16DTU, ...) isn't caught by the original free-text fuel detection, which only
-// scanned car_desc — their description text doesn't spell out "diesel". Fixed at the
-// source in tecdoc-catalog-harvester.ts for future harvests; this repairs engines that
-// already exist in the catalog with the wrong fuelType baked in (confirmed live: Opel
-// Astra H "Z 13 DTH" stored as fuelType "essence", which then derived a gasoline spec,
-// GM dexos1, for what is unambiguously a diesel engine). Verified against the whole
-// catalog: every engine with a standalone "DT" or "DT"+one-letter code token was
-// diesel, zero exceptions, across Opel/Vauxhall/Saab/Chevrolet/Cadillac/Bedford.
-const DIESEL_CODE_PATTERN = /\b(TDI|HDI|DCI|CDI|CRDI|D-4D|CDTI|JTD|DDIS|DTEC|BLUEHDI|DT[A-Z]?)\b/i;
+// Fuel-type detection reuses isDieselEngine() from the harvester rather than keeping a
+// second copy of the patterns here — a duplicated rule that drifts out of sync is exactly
+// the class of bug this whole script exists to repair.
 
 function main() {
   console.log(`Mode: ${APPLY ? 'APPLY' : 'DRY-RUN (add --apply to write the corrections)'}`);
@@ -78,7 +71,8 @@ function main() {
         for (const eng of gen.engines as Engine[]) {
           totalEngines++;
 
-          if (eng.fuelType !== 'diesel' && eng.fuelType !== 'electrique' && DIESEL_CODE_PATTERN.test(eng.engineCode || '')) {
+          const codeSaysDiesel = isDieselEngine(makeSlug, '', eng.engineCode || '');
+          if (eng.fuelType !== 'diesel' && eng.fuelType !== 'electrique' && codeSaysDiesel) {
             fuelTypeFixes.push({ make: make.makeName, model: mod.modelName, gen: gen.genName, engineCode: eng.engineCode, from: eng.fuelType, to: 'diesel' });
             fuelTypeFixed++;
             if (APPLY) eng.fuelType = 'diesel';
@@ -88,7 +82,7 @@ function main() {
             skippedElectric++;
             continue;
           }
-          const effectiveFuelType = APPLY ? eng.fuelType : (DIESEL_CODE_PATTERN.test(eng.engineCode || '') ? 'diesel' : eng.fuelType);
+          const effectiveFuelType = APPLY ? eng.fuelType : (codeSaysDiesel ? 'diesel' : eng.fuelType);
           const newSpec = deriveOilSpecification(makeSlug, effectiveFuelType, eng.yearFrom, eng.displacementCc, eng.powerHp, eng.engineCode);
           if (specEqual(eng.oilSpec, newSpec)) {
             unchanged++;

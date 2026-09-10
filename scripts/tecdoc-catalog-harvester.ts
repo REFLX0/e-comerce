@@ -344,6 +344,12 @@ function deriveOilSpecificationRaw(
   // spec — it was NEVER PSA-rated, since Opel/Vauxhall didn't join PSA until 2017. Only
   // 2018+ models (built on genuinely shared PSA platforms) carry real PSA B71 approvals.
   if (['opel', 'vauxhall', 'irmscher', 'bitter', 'bedford'].includes(makeSlug)) {
+    // 2018+ Opel/Vauxhall runs PSA hardware. Diesel must be checked FIRST: B71 2010 is
+    // PSA's 0W-20 PETROL spec (PureTech), and handing it to a BlueHDi diesel is both the
+    // wrong grade and the wrong approval. PSA's Euro 6 diesel spec is B71 2312 (0W-30, C2).
+    if (year >= 2018 && isDiesel) {
+      return { viscosity: '0W-30', oemApproval: 'PSA B71 2312', aceaStandard: 'C2', apiStandard: 'SN', capacityLiters: capacity, changeIntervalKm: 15000 };
+    }
     if (year >= 2018) {
       return { viscosity: '0W-20', oemApproval: 'PSA B71 2010 (FPW9.55535/03)', aceaStandard: 'C5', apiStandard: 'SN Plus', capacityLiters: capacity, changeIntervalKm: 15000 };
     }
@@ -358,7 +364,9 @@ function deriveOilSpecificationRaw(
 
   // ── STELLANTIS (PEUGEOT, CITROEN, DS) ───────────────────────────────────────
   if (['peugeot', 'citroen', 'ds'].includes(makeSlug)) {
-    if (year >= 2018) {
+    // B71 2010 is the 0W-20 PureTech PETROL spec — never a diesel recommendation. A 2018+
+    // BlueHDi falls through to the B71 2312 (0W-30, C2) branch below, which is its real spec.
+    if (year >= 2018 && !isDiesel) {
       return { viscosity: '0W-20', oemApproval: 'PSA B71 2010 (FPW9.55535/03)', aceaStandard: 'C5', apiStandard: 'SN Plus', capacityLiters: capacity, changeIntervalKm: 15000 };
     }
     if (year >= 2014) {
@@ -426,8 +434,18 @@ function deriveOilSpecificationRaw(
     if (year >= 2017 && !isDiesel && displacementCc && displacementCc <= 2000) {
       return { viscosity: '0W-20', oemApproval: 'BMW Longlife-17 FE+', aceaStandard: 'C5', apiStandard: 'SP', capacityLiters: capacity, changeIntervalKm: 15000 };
     }
-    if (isDiesel || year >= 2004 || isModernBmwFamily) {
+    if (year >= 2004 || isModernBmwFamily) {
       return { viscosity: '5W-30', oemApproval: 'BMW Longlife-04 (LL-04)', aceaStandard: 'C3', apiStandard: 'SN', capacityLiters: capacity, changeIntervalKm: 15000 };
+    }
+    // Pre-2004 diesels (M47/M57 in the E46/E39 era) predate LL-04 and have no DPF, so the
+    // correct spec is the High-SAPS LL-98 5W-40 they actually shipped with — not LL-04,
+    // which the old `isDiesel` short-circuit handed to every diesel regardless of age.
+    if (isDiesel && year >= 1998) {
+      return { viscosity: '5W-40', oemApproval: 'BMW Longlife-98 (LL-98)', aceaStandard: 'A3/B4', apiStandard: 'SL/CF', capacityLiters: capacity, changeIntervalKm: 10000 };
+    }
+    // Mechanical-injection BMW diesels (M21, early M51) predate the Longlife scheme entirely.
+    if (isDiesel) {
+      return { viscosity: '15W-40', aceaStandard: 'B3/B4', apiStandard: 'CF', capacityLiters: capacity, changeIntervalKm: 7500 };
     }
     if (year >= 1995) {
       // BMW Longlife-98 (LL-98) era — the precursor to LL-01, introduced ~1998.
@@ -801,6 +819,33 @@ function deriveOilSpecificationRaw(
   return { viscosity: '5W-40', oemApproval: 'Universal High-Performance', aceaStandard: 'A3/B4', apiStandard: 'SL/CF', capacityLiters: capacity, changeIntervalKm: 10000 };
 }
 
+// Fuel type can't be read from car_desc alone — several manufacturers' descriptions never
+// spell out "diesel", and the engine code is the reliable signal. Each pattern below is a
+// deterministic manufacturer convention, validated against the whole catalog before being
+// trusted (every match was consistent; zero contradicting engines found):
+//   GM/Opel/Vauxhall/Saab/Chevrolet/Cadillac/Bedford — "DT"/"DT"+letter (Z13DTH, Z19DT)
+//   Mercedes (+ SsangYong, who license MB units) — "OM" = Ölmotor, every MB diesel ever
+//   BMW/Mini/Alpina — family+displacement where D = Diesel, B = Benzin (N47D20 vs N43B20)
+//   PSA (+ Ford, who used DV6 as "TDCi") — DV/DW engine families
+// Scoped per make family rather than applied globally, so a coincidentally-similar code
+// from an unrelated manufacturer can't be swept up.
+export function isDieselEngine(makeSlug: string, descText: string, rawEngineCode: string): boolean {
+  const code = (rawEngineCode || '').toUpperCase();
+  if (/diesel|hdi|dci|tdi|cdi|crdi|d-4d/i.test(descText || '')) return true;
+  if (/\b(TDI|SDI|HDI|DCI|CDI|CRDI|D-4D|CDTI|JTD|DDIS|DTEC|BLUEHDI)\b/.test(code)) return true;
+
+  const GM_FAMILY = ['opel', 'vauxhall', 'saab', 'chevrolet', 'cadillac', 'bedford', 'irmscher', 'bitter', 'daewoo', 'suzuki', 'holden'];
+  const MB_FAMILY = ['mercedes-benz', 'mercedes', 'mercedes-benz-bbdc', 'smart', 'maybach', 'ssangyong', 'puch'];
+  const BMW_FAMILY = ['bmw', 'mini', 'alpina', 'rolls-royce', 'wiesmann'];
+  const PSA_FAMILY = ['peugeot', 'citroen', 'ds', 'ford', 'opel', 'vauxhall', 'mitsubishi', 'volvo'];
+
+  if (GM_FAMILY.includes(makeSlug) && /\bDT[A-Z]?\b/.test(code)) return true;
+  if (MB_FAMILY.includes(makeSlug) && /^OM\s?\d{3}/.test(code)) return true;
+  if (BMW_FAMILY.includes(makeSlug) && /^[MNBS]\d{2}D\d{2}/.test(code)) return true;
+  if (PSA_FAMILY.includes(makeSlug) && /^(DV|DW)\d/.test(code)) return true;
+  return false;
+}
+
 function isDieselFuelText(fuelType: string): boolean {
   const f = (fuelType || '').toLowerCase();
   return (
@@ -837,6 +882,91 @@ function enforceFapSafety(
   };
 }
 
+// Year each manufacturer approval scheme was actually published. Used to stop the brand
+// branches from claiming a car carries an approval that didn't exist when it was built.
+const APPROVAL_INTRODUCED: { re: RegExp; year: number }[] = [
+  { re: /BMW Longlife-98|LL-98/i, year: 1998 },
+  { re: /BMW Longlife-01|LL-01/i, year: 2001 },
+  { re: /BMW Longlife-04|LL-04/i, year: 2004 },
+  { re: /Longlife-12|LL-12/i, year: 2012 },
+  { re: /Longlife-17|LL-17/i, year: 2017 },
+  { re: /MB 229\.1\b/i, year: 1997 },
+  { re: /MB 229\.3\b/i, year: 1998 },
+  { re: /MB 229\.5\b/i, year: 2002 },
+  { re: /MB 229\.51\b/i, year: 2004 },
+  { re: /MB 229\.52\b/i, year: 2014 },
+  { re: /VW 50[12]\.0/i, year: 1997 },
+  { re: /VW 505\.01/i, year: 1999 },
+  { re: /VW 504\.00|507\.00/i, year: 2006 },
+  { re: /VW 508\.00|509\.00/i, year: 2018 },
+  { re: /B71 2290/i, year: 2008 },
+  { re: /B71 2312/i, year: 2013 },
+  { re: /B71 2010/i, year: 2018 },
+  { re: /dexos\s*1/i, year: 2011 },
+  { re: /dexos\s*2/i, year: 2010 },
+  { re: /GM-LL-[AB]-025/i, year: 2002 },
+  { re: /WSS-M2C913/i, year: 2002 },
+  { re: /WSS-M2C948/i, year: 2012 },
+  { re: /WSS-M2C950/i, year: 2014 },
+  { re: /RN0700|RN0710/i, year: 2007 },
+  { re: /RN0720/i, year: 2010 },
+  { re: /\bRN17\b/i, year: 2017 },
+  { re: /9\.55535/i, year: 2003 },
+  { re: /Porsche A40/i, year: 1997 },
+  { re: /Porsche C[234]0/i, year: 2016 },
+  { re: /ILSAC|GF-\d/i, year: 2001 },
+  { re: /JASO D[HL]-?\d/i, year: 2005 },
+];
+
+// Only applied to vehicles old enough that their approval was stripped as anachronistic,
+// and only to genuinely modern thin grades (0W-xx / 5W-xx). A brand branch that already
+// returns a period-appropriate 10W-40 or thicker is left alone — those values are
+// researched per-brand and shouldn't be overridden by a generic floor.
+const VISCOSITY_FLOOR = [
+  { before: 1980, grade: '20W-50' },
+  { before: 1995, grade: '10W-40' },
+];
+
+// HARD SAFETY INVARIANT #2 — era correctness. Two things a per-brand branch can get wrong
+// for an old vehicle, both caught here so no branch can leak them:
+//   1. Claiming an approval that post-dates the car (a 1977 BMW cannot be "Longlife-01",
+//      a 1969 Bedford cannot be "dexos1"). Strip it rather than state something false.
+//   2. Handing a pre-2004 engine a low-SAPS ACEA C-class oil. Those grades deliberately cut
+//      the anti-wear (ZDDP) additives to protect catalysts and DPFs; engines of that era —
+//      especially flat-tappet designs — depend on that additive level, so a C-class oil is
+//      an actual wear risk, not just a mislabel. Pre-2004 gets High-SAPS A3/B4 instead.
+// Also floors the viscosity: modern 0W-20/5W-30 grades are too thin for the bearing
+// clearances of an engine built decades before those grades existed.
+function enforceEraSafety(spec: CleanEngine['oilSpec'], year: number | null): CleanEngine['oilSpec'] {
+  if (!spec || !year) return spec;
+  let out = { ...spec };
+
+  const anachronistic = APPROVAL_INTRODUCED.some((a) => a.re.test(out.oemApproval || '') && year + 2 < a.year);
+  if (anachronistic) {
+    delete out.oemApproval;
+  }
+
+  // Pre-2004: neither the low-SAPS C-classes nor the low-HTHS fuel-economy A5/B5 class
+  // existed, and both are wrong here for the same underlying reason — they trade away the
+  // additive level / oil-film strength that an engine of this era relies on. A5/B5 is also
+  // physically incompatible with the thick grades these cars take (a 20W-50 cannot meet a
+  // low-HTHS spec), so leaving it produces a self-contradictory recommendation.
+  const aceaUpper = (out.aceaStandard || '').toUpperCase();
+  if (year < 2004 && (/\bC[1-6]\b/.test(aceaUpper) || /\bA5\/B5\b/.test(aceaUpper))) {
+    out.aceaStandard = 'A3/B4';
+    out.apiStandard = out.apiStandard && /S[GHJ]/.test(out.apiStandard) ? out.apiStandard : 'SL/CF';
+  }
+
+  // Viscosity floor only for cars we just established predate modern approval schemes,
+  // and only against 0W/5W grades that are too thin for that era's bearing clearances.
+  if (anachronistic && /^[05]W/.test(out.viscosity || '')) {
+    const floor = VISCOSITY_FLOOR.find((f) => year < f.before);
+    if (floor) out.viscosity = floor.grade;
+  }
+
+  return out;
+}
+
 // Pure battery-electric vehicles carry no engine oil at all. Never guess a spec for them.
 function isPureElectric(descText: string, displacementCc: number | null): boolean {
   if (displacementCc) return false; // a parsed liter figure means it's a combustion engine
@@ -856,7 +986,8 @@ export function deriveOilSpecification(
   engineCode?: string
 ): CleanEngine['oilSpec'] {
   const raw = deriveOilSpecificationRaw(makeSlug, fuelType, yearFrom, displacementCc, powerHp, engineCode);
-  return enforceFapSafety(raw, isDieselFuelText(fuelType), yearFrom || 2015);
+  const fapSafe = enforceFapSafety(raw, isDieselFuelText(fuelType), yearFrom || 2015);
+  return enforceEraSafety(fapSafe, yearFrom);
 }
 
 // ─── 5. MAIN HARVESTER EXECUTION ──────────────────────────────────────────────
@@ -1082,10 +1213,14 @@ async function main() {
     // DTS/DTI/DTJ, B16DTH/DTR/DTU, B13DTN, Y17DTL, ...) was diesel with zero exceptions
     // found across the whole catalog. Check the raw engine code too, not just the
     // free-text description.
+    // Mercedes: "OM" (Ölmotor) prefixes every diesel they've ever built (OM615/616/617
+    // in the classic 240D/300D, through OM651/654 today); petrol is "M". 281 OM-coded
+    // engines were sitting in the catalog tagged as essence.
+    // BMW/Mini/Alpina: family letter + displacement where B = Benzin (petrol) and
+    // D = Diesel (N47D20 diesel vs N43B20 petrol).
+    // PSA: DV/DW engine families are diesel (DV5, DW10); EP/ET/TU/EB are petrol.
     const rawEngineCode = (r.engine_code || '').toUpperCase();
-    const isDiesel =
-      /diesel|hdi|dci|tdi|cdi|crdi|d-4d/i.test(descText) ||
-      /\b(TDI|HDI|DCI|CDI|CRDI|D-4D|CDTI|JTD|DDIS|DTEC|BLUEHDI|DT[A-Z]?)\b/.test(rawEngineCode);
+    const isDiesel = isDieselEngine(makeSlug, descText, rawEngineCode);
     const isElectric = !isDiesel && isPureElectric(descText, displacementCc);
     const fuelType = isElectric ? 'electrique' : isDiesel ? 'diesel' : 'essence';
 
