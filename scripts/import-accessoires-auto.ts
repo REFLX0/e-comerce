@@ -16,10 +16,8 @@
  * bucket rather than trusted blindly.
  *
  * One image per product (matching the single-primary-image convention used by
- * every other catalog import), watermarked with the same bottom-right corner
- * "specpart" mark as the rest of the scraped catalog (see download_watermark.py) —
- * NOT the diagonal tiled mark used for admin-panel uploads, which is a distinct,
- * separate style for a different purpose.
+ * every other catalog import), watermarked with the same diagonal tiled
+ * "specpart" mark used for admin-panel uploads (backend/src/uploads/watermark.util.ts).
  *
  * Usage (inside the backend container):
  *   npx tsx scripts/import-accessoires-auto.ts            # dry-run report
@@ -67,28 +65,30 @@ interface SourceProduct {
   shortDesc: string;
 }
 
-// Same look as every other scraped-catalog photo: bold "specpart", bottom-right
-// corner, semi-transparent white with a subtle black shadow. Deliberately the
-// corner style, not the diagonal tiled mark used for admin-panel uploads.
-async function applyCornerWatermark(buffer: Buffer): Promise<Buffer> {
+// "specpart" tiled diagonally across the whole photo — same mark as admin-panel
+// uploads (backend/src/uploads/watermark.util.ts) — so it can't be cropped out.
+async function applyTiledWatermark(buffer: Buffer): Promise<Buffer> {
   const image = sharp(buffer, { failOn: 'none' });
   const metadata = await image.metadata();
   const width = metadata.width ?? 800;
   const height = metadata.height ?? 800;
 
-  const fontSize = Math.max(12, Math.round(width * 0.09));
-  const margin = Math.max(4, Math.round(width * 0.03));
-  const x = width - margin;
-  const y = height - margin;
+  const fontSize = Math.max(10, Math.round(width * 0.045));
+  const tileWidth = fontSize * 6.5;
+  const tileHeight = fontSize * 4.5;
+  const textY = tileHeight * 0.65;
 
   const svg = `
     <svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
-      <text x="${x + 1}" y="${y + 1}" text-anchor="end" dominant-baseline="text-bottom"
-        font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="${fontSize}"
-        fill="black" fill-opacity="0.47">specpart</text>
-      <text x="${x}" y="${y}" text-anchor="end" dominant-baseline="text-bottom"
-        font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="${fontSize}"
-        fill="white" fill-opacity="0.75">specpart</text>
+      <defs>
+        <pattern id="wm" width="${tileWidth}" height="${tileHeight}" patternUnits="userSpaceOnUse" patternTransform="rotate(-30)">
+          <text x="1" y="${textY + 1}" font-family="Arial, Helvetica, sans-serif" font-weight="700"
+            font-size="${fontSize}" fill="black" fill-opacity="0.16">specpart</text>
+          <text x="0" y="${textY}" font-family="Arial, Helvetica, sans-serif" font-weight="700"
+            font-size="${fontSize}" fill="white" fill-opacity="0.3">specpart</text>
+        </pattern>
+      </defs>
+      <rect width="${width}" height="${height}" fill="url(#wm)" />
     </svg>
   `;
   return image.composite([{ input: Buffer.from(svg), top: 0, left: 0 }]).jpeg({ quality: 90 }).toBuffer();
@@ -196,7 +196,7 @@ async function main() {
     let imageUrl: string;
     try {
       const raw = await downloadImage(p.images[0]);
-      const watermarked = await applyCornerWatermark(raw);
+      const watermarked = await applyTiledWatermark(raw);
       imageUrl = await uploadImage(watermarked);
     } catch (e: any) {
       failed++;
