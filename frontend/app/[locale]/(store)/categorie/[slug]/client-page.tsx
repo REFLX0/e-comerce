@@ -16,7 +16,7 @@ import { ProductGridSkeleton } from '@/components/common/Skeleton'
 import { ErrorState } from '@/components/common/ErrorState'
 import { EmptyState } from '@/components/common/EmptyState'
 import { useSearchParams } from 'next/navigation'
-import { useTranslations } from 'next-intl'
+import { useTranslations, useLocale } from 'next-intl'
 import { useRouter, Link } from '@/i18n/routing'
 import { ChevronRight, Loader2 } from 'lucide-react'
 import { use } from 'react'
@@ -24,6 +24,7 @@ import { useVehicleUrlSync } from '@/lib/hooks/useVehicleUrlSync'
 import { useVehicleStore } from '@/lib/store/vehicle.store'
 import { formatVehicleDisplayLabel } from '@/lib/utils/compatibility'
 import { NAVIGATION_TAXONOMY } from '@/lib/navigation/taxonomy'
+import { FAQSchema } from '@/components/common/FAQSchema'
 
 const VEHICLE_QUERY_KEYS = ['make', 'model', 'engine']
 
@@ -33,6 +34,7 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
   const router = useRouter()
   const t = useTranslations('Catalogue')
   const tTax = useTranslations('Taxonomy')
+  const locale = useLocale()
 
   const storedVehicle = useVehicleStore((state) => state.vehicle)
   useVehicleUrlSync(true)
@@ -217,6 +219,20 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
             <ErrorState onRetry={() => refetch()} />
           ) : data && data.data.length > 0 ? (
             <>
+              <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{
+                  __html: JSON.stringify({
+                    '@context': 'https://schema.org',
+                    '@type': 'ItemList',
+                    itemListElement: data.data.map((product: any, index: number) => ({
+                      '@type': 'ListItem',
+                      position: index + 1,
+                      url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://specpart.tech'}/${locale}/produit/${product.slug}`
+                    }))
+                  })
+                }}
+              />
               <ProductGrid products={data.data} />
               <Pagination currentPage={data.page} totalPages={data.totalPages} />
             </>
@@ -237,6 +253,23 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
               }
             />
           )}
+          
+          {/* AEO: Dynamic FAQ Schema Placeholder */}
+          {category?.nameFr && (
+            <FAQSchema 
+              faqs={[
+                {
+                  question: `Comment choisir les meilleurs produits de la catégorie ${category.nameFr} ?`,
+                  answer: `Pour bien choisir vos ${category.nameFr}, assurez-vous de vérifier la compatibilité avec la marque, le modèle et l'année de votre véhicule. Vous pouvez utiliser notre sélecteur de véhicule en haut de page.`
+                },
+                {
+                  question: `Proposez-vous la livraison pour la catégorie ${category.nameFr} ?`,
+                  answer: `Oui, nous livrons tous nos produits, y compris la catégorie ${category.nameFr}, partout en Tunisie avec un paiement à la livraison sécurisé.`
+                }
+              ]} 
+            />
+          )}
+
         </div>
       </div>
     </div>

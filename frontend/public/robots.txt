@@ -9,4 +9,11 @@ Disallow: /en/auth/
 Disallow: /fr/auth/
 Disallow: /_next/
 
+# Block faceted search parameters to save crawl budget
+Disallow: /*?*brand=*
+Disallow: /*?*price=*
+Disallow: /*?*sort=*
+Disallow: /*?*viscosity=*
+Disallow: /*?*oem=*
+Disallow: /*?*q=*
 Sitemap: https://specpart.tech/sitemap.xml
