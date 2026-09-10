@@ -65,6 +65,10 @@ const MODEL_SLUG_ALIASES: Record<string, { name: string; slug: string }> = {
   'mazda:cx5': { name: 'CX-5', slug: 'cx-5' },
   'mazda:cx3': { name: 'CX-3', slug: 'cx-3' },
   'isuzu:dmax': { name: 'D-Max', slug: 'd-max' },
+  // Same car, split into two model buckets by an apostrophe/hyphen inconsistency —
+  // found via a full-catalog scan (duplicate model names within the same make).
+  'kia:cee-d': { name: 'Ceed', slug: 'ceed' },
+  'mitsubishi:l-200': { name: 'L200', slug: 'l200' },
 };
 
 function genNames(model: CleanModel): string[] {
@@ -132,6 +136,21 @@ function cleanCatalog(catalog: CleanCatalog): { renamed: string[]; merged: strin
     const result = mergeModel(catalog, makeSlug, rawSlug, alias.slug, alias.name);
     if (result) {
       renamed.push(`${makeSlug}: "${rawSlug}" -> "${alias.name}" (${alias.slug}) | generations moved: ${result.genNames.join(', ') || '(none)'}`);
+    }
+  }
+
+  // 1b. DS make-name-as-model phantom — unlike Porsche/Subaru below, this one is NOT a
+  // guess: its only generation is explicitly named "Ds 3" and no "ds3" model exists yet,
+  // so there's no ambiguity about where it belongs. Found via a full-catalog scan.
+  if (catalog.ds?.models?.ds) {
+    const phantom = catalog.ds.models.ds;
+    const names = genNames(phantom);
+    const looksLikeDs3 = Object.values(phantom.generations).every((g) => /\bds\s*3\b/i.test(g.genName || ''));
+    if (looksLikeDs3 && !catalog.ds.models.ds3) {
+      const result = mergeModel(catalog, 'ds', 'ds', 'ds3', 'DS 3');
+      if (result) merged.push(`ds: "ds" -> "DS 3" (ds3) | generations moved: ${result.genNames.join(', ')}`);
+    } else {
+      review.push(`ds: "ds" (${names.length} generation(s): ${names.join(', ') || '(none)'}) — NOT auto-merged, generation name doesn't clearly say "DS 3" or a "ds3" model already exists`);
     }
   }
 

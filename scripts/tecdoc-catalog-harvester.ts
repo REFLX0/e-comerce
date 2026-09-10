@@ -998,6 +998,10 @@ async function main() {
     'mazda:cx5': { name: 'CX-5', slug: 'cx-5' },
     'mazda:cx3': { name: 'CX-3', slug: 'cx-3' },
     'isuzu:dmax': { name: 'D-Max', slug: 'd-max' },
+    // Same car, split into two model buckets by an apostrophe/hyphen inconsistency —
+    // found via a full-catalog scan (duplicate model names within the same make).
+    'kia:cee-d': { name: 'Ceed', slug: 'ceed' },
+    'mitsubishi:l-200': { name: 'L200', slug: 'l200' },
   };
 
   for (const r of rows) {
@@ -1194,6 +1198,16 @@ async function main() {
       delete catalog[makeSlug].models[modelSlug];
     }
   };
+
+  // DS make-name-as-model phantom: unlike Porsche/Subaru below, not a guess — its only
+  // generation is explicitly named "Ds 3" and no "ds3" model exists yet.
+  if (catalog.ds?.models?.ds) {
+    const phantom = catalog.ds.models.ds;
+    const looksLikeDs3 = Object.values(phantom.generations).every((g) => /\bds\s*3\b/i.test(g.genName || ''));
+    if (looksLikeDs3 && !catalog.ds.models.ds3) {
+      mergeModel('ds', 'ds', 'ds3', 'DS 3');
+    }
+  }
 
   // NOTE: deliberately NOT auto-merging catalog.porsche.models.porsche -> '911' or
   // catalog.subaru.models.subaru -> 'xv' here. Porsche sells far more than the 911 and
