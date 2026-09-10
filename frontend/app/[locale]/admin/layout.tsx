@@ -14,7 +14,8 @@ import {
   LayoutDashboard, ShoppingCart, Package, Users, Tag,
   Truck, CreditCard, Star, Settings, ChevronRight,
   Menu, BarChart2, FolderTree, Layers, LogOut,
-  Search, ChevronDown, LifeBuoy, Mail, ShoppingBag, FileText
+  Search, ChevronDown, LifeBuoy, Mail, ShoppingBag, FileText,
+  FileUp
 } from 'lucide-react'
 
 type NavItemShape = {
@@ -251,6 +252,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
     },
     { label: t('customers'), icon: Users, href: '/admin/customers' },
     { label: t('promotions'), icon: Tag, href: '/admin/promotions' },
+    { label: t('priceUpdates'), icon: FileUp, href: '/admin/price-updates' },
     { label: t('supportTickets'), icon: LifeBuoy, href: '/admin/tickets' },
     { label: t('contactMessages'), icon: Mail, href: '/admin/contact-messages' },
     { label: t('shipping'), icon: Truck, href: '/admin/shipping' },
@@ -464,6 +466,7 @@ function SearchModal({ locale }: { locale: string }) {
     { label: t('inventory'), href: '/admin/catalog/inventory', icon: Layers },
     { label: t('customers'), href: '/admin/customers', icon: Users },
     { label: t('promotions'), href: '/admin/promotions', icon: Tag },
+    { label: t('priceUpdates'), href: '/admin/price-updates', icon: FileUp },
     { label: t('contactMessages'), href: '/admin/contact-messages', icon: Mail },
     { label: t('supportTickets'), href: '/admin/tickets', icon: LifeBuoy },
     { label: t('shipping'), href: '/admin/shipping', icon: Truck },

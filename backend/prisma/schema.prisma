@@ -105,6 +105,27 @@ enum InvoiceStatus {
   @@schema("public")
 }
 
+enum PriceImportStatus {
+  PREVIEW    // Parsed and matched, nothing written to product prices yet
+  APPLIED    // Selected items were written to product prices
+  ROLLED_BACK // A previously-applied import was reverted
+
+  @@schema("public")
+}
+
+enum PriceImportItemStatus {
+  MATCHED           // Article number found a unique product+variant, price parsed OK
+  NOT_FOUND         // Article number does not exist in the catalog
+  AMBIGUOUS         // Article number matched a product with 0 or >1 variants
+  DUPLICATE         // Same article number appeared more than once in this PDF
+  INVALID_PRICE     // Price missing or failed to parse
+  APPLIED           // This item's price was written to the product
+  SKIPPED           // Admin left this item unselected at apply time
+  ROLLED_BACK       // This item's price was reverted by a rollback
+
+  @@schema("public")
+}
+
 // ─────────────────────────────────────────
 //  AUTHENTICATION & CORE USER (public schema)
 // ─────────────────────────────────────────
@@ -131,6 +152,9 @@ model User {
   wishlist             WishlistItem[]
   cars                 UserCar[]
   tickets              SupportTicket[]
+  priceImportsUploaded   PriceImport[] @relation("PriceImportUploadedBy")
+  priceImportsApplied    PriceImport[] @relation("PriceImportAppliedBy")
+  priceImportsRolledBack PriceImport[] @relation("PriceImportRolledBackBy")
   createdAt            DateTime        @default(now())
   updatedAt            DateTime        @updatedAt
 
@@ -287,6 +311,7 @@ model Product {
   technicalCharacteristics String?       @db.Text
   compatibleVehiclesNote   String?       @db.Text
   oemReferences    ProductOemReference[]
+  priceImportItems PriceImportItem[]
 
   @@schema("public")
 }
@@ -317,6 +342,7 @@ model ProductVariant {
   warehouse       String?     // Location/bin in warehouse e.g. "A-04"
   imageUrl        String?
   orderItems      OrderItem[]
+  priceImportItems PriceImportItem[]
 
   @@schema("public")
 }
@@ -738,6 +764,86 @@ model InvoiceLine {
   vatAmount   Float
   totalTTC    Float
 
+  @@schema("public")
+}
+
+// ─────────────────────────────────────────
+//  SUPPLIER PDF PRICE IMPORT (public schema)
+// ─────────────────────────────────────────
+
+// One uploaded supplier price-list PDF. Created in PREVIEW status as soon as
+// parsing+matching finishes — nothing is written to product prices until an
+// admin explicitly applies it (moves to APPLIED). A completed import can be
+// reverted (ROLLED_BACK) using the old-price snapshots on its items.
+model PriceImport {
+  id             String            @id @default(cuid())
+  filename       String
+  fileUrl        String?           // original PDF, stored in the same object storage as product photos
+  supplier       String?           // detected from the PDF/parser, e.g. "LIQUI MOLY / SCOREP"
+  parserKey      String            // which SupplierPriceParser handled this file
+  status         PriceImportStatus @default(PREVIEW)
+
+  uploadedById   String?
+  uploadedBy     User?             @relation("PriceImportUploadedBy", fields: [uploadedById], references: [id], onDelete: SetNull)
+  appliedById    String?
+  appliedBy      User?             @relation("PriceImportAppliedBy", fields: [appliedById], references: [id], onDelete: SetNull)
+  rolledBackById String?
+  rolledBackBy   User?             @relation("PriceImportRolledBackBy", fields: [rolledBackById], references: [id], onDelete: SetNull)
+
+  detectedCount  Int               @default(0)
+  matchedCount   Int               @default(0)
+  unmatchedCount Int               @default(0)
+  duplicateCount Int               @default(0)
+  updatedCount   Int               @default(0)
+
+  appliedAt      DateTime?
+  rolledBackAt   DateTime?
+
+  items          PriceImportItem[]
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+
+  @@index([status, createdAt])
+  @@schema("public")
+}
+
+// One PDF row. Kept even for NOT_FOUND/duplicate rows so the admin can see
+// exactly what the parser read — nothing here ever auto-creates a Product.
+model PriceImportItem {
+  id       String      @id @default(cuid())
+  importId String
+  import   PriceImport @relation(fields: [importId], references: [id], onDelete: Cascade)
+  rowIndex Int // position within the PDF, for a stable/original display order
+
+  articleNumber String
+  description   String?
+  content       String? // pack size as printed, e.g. "20 l"
+
+  // Raw parsed values (European-decimal already normalized). Null when the
+  // PDF cell was empty or unparsable — an empty extracted value must never
+  // overwrite an existing price, so these stay null rather than 0.
+  newSupplierPrice Float? // PDF "nouveau prix"     -> ProductVariant.costPrice
+  newSellingPrice  Float? // PDF "VENTE PUB TTC"    -> ProductVariant.price
+
+  productId String?
+  product   Product?        @relation(fields: [productId], references: [id], onDelete: SetNull)
+  variantId String?
+  variant   ProductVariant? @relation(fields: [variantId], references: [id], onDelete: SetNull)
+
+  // Snapshot of what was in the database at match time — this is what a
+  // rollback restores, not a recalculation.
+  oldSellingPrice  Float?
+  oldSupplierPrice Float?
+  changePercent    Float? // (newSellingPrice - oldSellingPrice) / oldSellingPrice * 100
+
+  status       PriceImportItemStatus
+  isSuspicious Boolean               @default(false)
+  warning      String? // e.g. "Suspicious price change: +9900%", "Duplicate article 1121"
+  selected     Boolean               @default(true) // admin's checkbox state at apply time
+  appliedAt    DateTime?
+
+  @@index([importId])
+  @@index([articleNumber])
   @@schema("public")
 }
 

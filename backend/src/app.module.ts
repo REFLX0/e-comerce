@@ -30,6 +30,7 @@ import { ChatModule } from './chat/chat.module';
 import { OilFinderModule } from './oil-finder/oil-finder.module';
 import { MailModule } from './mail/mail.module';
 import { InvoicesModule } from './invoices/invoices.module';
+import { PriceImportModule } from './price-import/price-import.module';
 
 @Module({
   imports: [
@@ -63,6 +64,7 @@ import { InvoicesModule } from './invoices/invoices.module';
     ChatModule,
     OilFinderModule,
     InvoicesModule,
+    PriceImportModule,
   ],
   providers: [
     // Wire ThrottlerGuard globally so @Throttle() decorators are enforced at
