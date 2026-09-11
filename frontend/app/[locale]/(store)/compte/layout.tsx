@@ -120,7 +120,6 @@ export default function CompteLayout({ children }: { children: React.ReactNode }
 
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
   const setAuth = useAuthStore((s) => s.setAuth)
-  const logout = useAuthStore((s) => s.logout)
   const user = useAuthStore((s) => s.user)
   const router = useRouter()
   const pathname = usePathname()
@@ -187,14 +186,13 @@ export default function CompteLayout({ children }: { children: React.ReactNode }
     }
   }, [isMounted, locale, nextAuthStatus, router, setAuth])
 
-  const handleLogout = async () => {
-    // 1. Clear NestJS backend cookies
-    await logout()
-    // 2. Destroy the NextAuth session cookie
-    const { signOut } = await import('next-auth/react')
-    await signOut({ redirect: false })
-    // 3. Hard navigate to fully reset all React state and memory caches
-    window.location.href = `/${locale}`
+  const handleLogout = () => {
+    // Plain navigation, not next-auth's signOut(): that runs as a Server Action,
+    // so a browser holding a bundle from an earlier deployment calls an action id
+    // the server no longer has, it fails silently, and the user stays signed in.
+    // This route clears the backend and next-auth cookies server-side, then
+    // redirects -- which also resets all React state and in-memory caches.
+    window.location.href = `/api/auth/force-logout?callbackUrl=/${locale}`
   }
 
   if (!isMounted || isCheckingAuth || !user) {

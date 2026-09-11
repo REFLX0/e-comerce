@@ -144,19 +144,14 @@ function Sidebar({
   const t = useTranslations('Admin')
   const locale = useLocale()
   const user = useAuthStore((s) => s.user)
-  const logout = useAuthStore((s) => s.logout)
-  const router = useRouter()
 
-  const handleLogout = async () => {
-    // 1. Clear NestJS backend cookies (access_token + refresh_token)
-    await logout()
-    // 2. Destroy the NextAuth session cookie (next-auth.session-token)
-    //    Without this, the middleware still sees req.auth as ADMIN and
-    //    bounces the next user straight back to /admin.
-    const { signOut } = await import('next-auth/react')
-    await signOut({ redirect: false })
-    // 3. Hard navigate to wipe any React state / memory caches
-    window.location.href = `/${locale}/auth/login`
+  const handleLogout = () => {
+    // Plain navigation, not next-auth's signOut(): that runs as a Server Action,
+    // so a browser holding a bundle from an earlier deployment calls an action id
+    // the server no longer has, it fails silently, and the admin stays signed in
+    // (middleware keeps seeing req.auth as ADMIN). This route clears the backend
+    // and next-auth cookies server-side, then redirects.
+    window.location.href = `/api/auth/force-logout?callbackUrl=/${locale}/auth/login`
   }
 
   return (

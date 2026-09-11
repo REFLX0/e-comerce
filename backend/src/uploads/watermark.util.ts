@@ -31,7 +31,12 @@ export async function applyWatermark(buffer: Buffer): Promise<Buffer> {
     </svg>
   `;
 
+  // Flatten against white BEFORE compositing: product photos are frequently
+  // transparent cutout PNGs, and dropping the alpha channel later without a
+  // background leaves whatever RGB sat under the transparent pixels — usually
+  // (0,0,0), i.e. a solid black background baked permanently into the file.
   return image
+    .flatten({ background: '#ffffff' })
     .composite([{ input: Buffer.from(svg), top: 0, left: 0 }])
     .toBuffer();
 }
