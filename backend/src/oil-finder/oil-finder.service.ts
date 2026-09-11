@@ -2776,6 +2776,7 @@ export class OilFinderService {
     makeName: string,
     modelName: string,
     generationName?: string,
+    { excludeHarvested = false }: { excludeHarvested?: boolean } = {},
   ): Promise<void> {
     try {
       const rows = await this.prisma.oilFinderVehicle.findMany({
@@ -2784,6 +2785,15 @@ export class OilFinderService {
           model: { equals: modelName.trim(), mode: 'insensitive' },
           ...(generationName
             ? { generation: { contains: generationName.trim(), mode: 'insensitive' } }
+            : {}),
+          // The catalogue is itself built from the TecDoc harvest, so rows
+          // carrying that source add nothing to a catalogue result but their own
+          // defects — the harvest copied one engine list onto every model of a
+          // make, which is how a Mahindra Bolero ends up offering the KUV100's
+          // 1.2 mFalcon. They are still served when the catalogue has no entry
+          // for the model, since then they are the only data there is.
+          ...(excludeHarvested
+            ? { NOT: { source: { contains: 'tecdoc-harvested', mode: 'insensitive' } } }
             : {}),
         },
         include: { oilSpec: true },
@@ -2878,7 +2888,7 @@ export class OilFinderService {
               });
             }
           }
-          await this.mergeVerifiedEngines(result, seen, makeName, modelName, generationName);
+          await this.mergeVerifiedEngines(result, seen, makeName, modelName, generationName, { excludeHarvested: true });
           return result.sort((a, b) => (a.powerHp || 0) - (b.powerHp || 0));
         }
       }
@@ -2915,7 +2925,7 @@ export class OilFinderService {
             } : undefined,
           };
         });
-        await this.mergeVerifiedEngines(result, seen, makeName, modelName, generationName);
+        await this.mergeVerifiedEngines(result, seen, makeName, modelName, generationName, { excludeHarvested: true });
         return result;
       }
     } catch {

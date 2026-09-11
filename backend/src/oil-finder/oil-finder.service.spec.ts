@@ -904,6 +904,21 @@ describe('OilFinderService', () => {
         expect(codes).toEqual(expect.arrayContaining(['4.5 D-4D (VDJ200)', '3UR-FE', '4.7 VVT-i V8']));
       });
 
+      // The catalogue is built from the TecDoc harvest, and that harvest copied a
+      // single engine list onto every model of a make — which is how a Mahindra
+      // Bolero came to offer the KUV100's 1.2 mFalcon. Merging those rows back
+      // over the catalogue would reintroduce exactly that.
+      it('does not merge tecdoc-harvested rows over a catalogue result', async () => {
+        catalogueWith([
+          { engineCode: '4.5 D-4D (VDJ200)', fuelType: 'diesel', displacementCc: 4461, powerHp: 235 },
+        ]);
+        prisma.oilFinderVehicle.findMany.mockResolvedValue([]);
+
+        await service.getEngines('TOYOTA', 'Land Cruiser');
+        const where = prisma.oilFinderVehicle.findMany.mock.calls[0][0].where;
+        expect(where.NOT.source.contains).toBe('tecdoc-harvested');
+      });
+
       it('does not offer the same engine twice when power differs', async () => {
         catalogueWith([
           { engineCode: '3UR-FE', fuelType: 'essence', displacementCc: 5663, powerHp: null },
