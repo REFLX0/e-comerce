@@ -50,7 +50,11 @@ export async function GET(req: NextRequest) {
     // Backend being unreachable must not block clearing the local session.
   }
 
-  const response = NextResponse.redirect(new URL(target, req.nextUrl.origin))
+  // A relative Location, rather than NextResponse.redirect(): behind the nginx
+  // proxy req.nextUrl.origin is the container's own bind address, so building an
+  // absolute URL from it sends the browser to http://0.0.0.0:3000. Browsers
+  // resolve a relative Location against the request URL, which is the public one.
+  const response = new NextResponse(null, { status: 307, headers: { Location: target } })
   for (const name of AUTH_COOKIES) {
     response.cookies.set(name, '', { path: '/', maxAge: 0 })
   }
