@@ -396,6 +396,18 @@ describe('OilFinderService', () => {
       expect(names).not.toContain('YAMAHA');
     });
 
+    // Regression: the catalogue's categories used to replace the database's
+    // rather than add to them, so KTM — known to the catalogue only as the X-Bow
+    // sports car — never appeared under moto despite its bikes being seeded.
+    it('unions catalogue and database categories for the same make', async () => {
+      __setCleanCatalogForTests({
+        ktm: { makeName: 'KTM', makeSlug: 'ktm', categories: ['automobile'], models: {} },
+      });
+      seed([{ make: 'KTM', category: 'moto' }]);
+      expect((await service.getMakes('moto')).map((m) => m.name)).toContain('KTM');
+      expect((await service.getMakes('automobile')).map((m) => m.name)).toContain('KTM');
+    });
+
     it('still lists a genuinely dual-category brand under both', async () => {
       seed([
         { make: 'MERCEDES-BENZ', category: 'automobile' },
@@ -857,26 +869,62 @@ describe('OilFinderService', () => {
       }
     });
 
-    it('merges engines from both TecDoc and OilFinderVehicle in getEngines', async () => {
-      // The clean catalogue short-circuits this merge when it has the model, and
-      // it resolves from disk — including stale dist/ output. Pin it empty so the
-      // merge this test is named for is actually the code path under test.
-      __setCleanCatalogForTests({});
-      prisma.$queryRawUnsafe.mockResolvedValue([
-        { engineCode: '4.5 D-4D (VDJ200)', yearFrom: 2008, yearTo: 2021 },
-      ]);
-      prisma.oilFinderVehicle.findMany.mockResolvedValue([
-        { engineCode: '3UR-FE', yearFrom: 2008, yearTo: 2021, displacementCc: 5663, powerHp: 381, fuelType: 'essence', model: 'Land Cruiser 200' },
-        { engineCode: '4.7 VVT-i V8', yearFrom: 2008, yearTo: 2012, displacementCc: 4664, powerHp: 288, fuelType: 'essence', model: 'Land Cruiser 200' },
-      ]);
+    describe('getEngines — catalogue merged with verified rows', () => {
+      afterEach(() => __setCleanCatalogForTests(null));
 
-      const engines = await service.getEngines('TOYOTA', 'Land Cruiser');
-      expect(engines.length).toBeGreaterThanOrEqual(3);
-      const codes = engines.map((e) => e.engineCode);
-      expect(codes.some((c) => c.includes('4.5 D-4D'))).toBe(true);
-      expect(codes.some((c) => c.includes('3UR-FE') || c.includes('5.7L'))).toBe(true);
-      expect(codes.some((c) => c.includes('4.7 VVT-i') || c.includes('4.7'))).toBe(true);
-      __setCleanCatalogForTests(null);
+      const catalogueWith = (engines: any[]) =>
+        __setCleanCatalogForTests({
+          toyota: {
+            makeName: 'TOYOTA',
+            makeSlug: 'toyota',
+            categories: ['automobile'],
+            models: {
+              'land-cruiser': {
+                modelName: 'Land Cruiser',
+                modelSlug: 'land-cruiser',
+                category: 'automobile',
+                generations: {
+                  'j20': { genName: 'J20', genSlug: 'j20', yearFrom: 2008, yearTo: 2021, engines },
+                },
+              },
+            },
+          },
+        });
+
+      it('appends verified engines the catalogue is missing', async () => {
+        catalogueWith([
+          { engineCode: '4.5 D-4D (VDJ200)', fuelType: 'diesel', displacementCc: 4461, powerHp: 235 },
+        ]);
+        prisma.oilFinderVehicle.findMany.mockResolvedValue([
+          { engineCode: '3UR-FE', yearFrom: 2008, yearTo: 2021, displacementCc: 5663, powerHp: 381, fuelType: 'essence', oilSpec: null },
+          { engineCode: '4.7 VVT-i V8', yearFrom: 2008, yearTo: 2012, displacementCc: 4664, powerHp: 288, fuelType: 'essence', oilSpec: null },
+        ]);
+
+        const codes = (await service.getEngines('TOYOTA', 'Land Cruiser')).map((e) => e.engineCode);
+        expect(codes).toEqual(expect.arrayContaining(['4.5 D-4D (VDJ200)', '3UR-FE', '4.7 VVT-i V8']));
+      });
+
+      it('does not offer the same engine twice when power differs', async () => {
+        catalogueWith([
+          { engineCode: '3UR-FE', fuelType: 'essence', displacementCc: 5663, powerHp: null },
+        ]);
+        prisma.oilFinderVehicle.findMany.mockResolvedValue([
+          { engineCode: '3UR-FE', yearFrom: 2008, yearTo: 2021, displacementCc: 5663, powerHp: 381, fuelType: 'essence', oilSpec: null },
+        ]);
+
+        const codes = (await service.getEngines('TOYOTA', 'Land Cruiser')).map((e) => e.engineCode);
+        expect(codes.filter((c) => c === '3UR-FE')).toHaveLength(1);
+      });
+
+      it('serves verified rows for a model the catalogue does not know at all', async () => {
+        __setCleanCatalogForTests({});
+        prisma.oilFinderVehicle.findMany.mockResolvedValue([
+          { engineCode: '1.5 mHawk D70', yearFrom: 2011, yearTo: 9999, displacementCc: 1493, powerHp: null, fuelType: 'diesel', oilSpec: null },
+        ]);
+
+        const engines = await service.getEngines('MAHINDRA', 'Bolero');
+        expect(engines.map((e) => e.engineCode)).toEqual(['1.5 mHawk D70']);
+      });
     });
   });
 });

@@ -2533,15 +2533,46 @@ export class OilFinderService {
 
     const targetCat = normalizeCategory(category);
 
-    // 1. Normalized Clean Hierarchy — filtered by targetCat if provided
+    // A make's range can be described by both stores at once: the catalogue
+    // covers TecDoc makes, OilFinderVehicle covers the hand-seeded moto/marine/
+    // truck brands, and some makes appear in both with *different* categories —
+    // the catalogue knows KTM only as the X-Bow sports car while the database
+    // holds its motorcycles. Union the two, because letting either store win
+    // outright hides the half of the brand the other one describes.
+    const catsBySlug = new Map<string, Set<VehicleCategory>>();
+    const addCat = (slug: string, raw?: string | null) => {
+      const c = normalizeCategory(raw);
+      if (!c) return;
+      if (!catsBySlug.has(slug)) catsBySlug.set(slug, new Set());
+      catsBySlug.get(slug)!.add(c);
+    };
+
     for (const m of Object.values(catalog) as any[]) {
-      if (m.makeName && m.makeSlug) {
-        const cats = Array.isArray(m.categories)
-          ? m.categories.map((c: string) => normalizeCategory(c)).filter(Boolean)
-          : null;
-        if (!targetCat || !cats?.length || cats.includes(targetCat)) {
-          makeMap.set(m.makeSlug, m.makeName);
-        }
+      if (!m.makeSlug || !Array.isArray(m.categories)) continue;
+      for (const c of m.categories) addCat(m.makeSlug, c);
+    }
+
+    try {
+      if (targetCat) {
+        const categoryRows = await this.prisma.oilFinderVehicle
+          .findMany({
+            select: { make: true, category: true },
+            distinct: ['make', 'category'],
+          })
+          .catch(() => [] as { make: string; category: string }[]);
+        for (const r of categoryRows) addCat(slugify(r.make), r.category);
+      }
+    } catch {
+      // ignore
+    }
+
+    // 1. Normalized Clean Hierarchy. A catalogue make with no category at all is
+    // kept for every filter rather than hidden from all of them.
+    for (const m of Object.values(catalog) as any[]) {
+      if (!m.makeName || !m.makeSlug) continue;
+      const cats = catsBySlug.get(m.makeSlug);
+      if (!targetCat || !cats?.size || cats.has(targetCat)) {
+        makeMap.set(m.makeSlug, m.makeName);
       }
     }
 
@@ -2549,23 +2580,10 @@ export class OilFinderService {
     // catalog (moto/marine/poids_lourd/agricole brands). Their real category lives
     // on OilFinderVehicle rows: VehicleModel.vehicleType is left at its schema
     // default (AUTOMOBILE) for every row and carries no real signal, so it can't be
-    // used here.
+    // used here. Unlike the catalogue above, a make nothing has categorised stays
+    // out of a filtered list — that is what keeps uncategorised seed rows from
+    // appearing under every category.
     try {
-      const categoryRows = targetCat
-        ? await this.prisma.oilFinderVehicle.findMany({
-            select: { make: true, category: true },
-            distinct: ['make', 'category'],
-          }).catch(() => [] as { make: string; category: string }[])
-        : [];
-      const categoriesByMakeSlug = new Map<string, Set<string>>();
-      for (const r of categoryRows) {
-        const s = slugify(r.make);
-        const normalizedCat = normalizeCategory(r.category);
-        if (!normalizedCat) continue;
-        if (!categoriesByMakeSlug.has(s)) categoriesByMakeSlug.set(s, new Set());
-        categoriesByMakeSlug.get(s)!.add(normalizedCat);
-      }
-
       const dbMakes = await (this.prisma as any).vehicleMake?.findMany?.({
         select: { name: true, slug: true },
         orderBy: { name: 'asc' },
@@ -2573,15 +2591,8 @@ export class OilFinderService {
       if (dbMakes && dbMakes.length > 0) {
         for (const m of dbMakes) {
           if (m.slug && m.name && !makeMap.has(m.slug)) {
-            const catMake = catalog[m.slug];
-            const cats = catMake?.categories
-              ? new Set<string>(
-                  (catMake.categories as string[])
-                    .map((c) => normalizeCategory(c))
-                    .filter((c): c is VehicleCategory => Boolean(c)),
-                )
-              : categoriesByMakeSlug.get(m.slug);
-            if (!targetCat || (cats && cats.has(targetCat))) {
+            const cats = catsBySlug.get(m.slug);
+            if (!targetCat || cats?.has(targetCat)) {
               makeMap.set(m.slug, m.name);
             }
           }
@@ -2651,7 +2662,33 @@ export class OilFinderService {
         orderBy: { name: 'asc' },
       });
       if (dbModels && dbModels.length > 0) {
-        return dbModels.map((m: any) => ({
+        let list = dbModels;
+        // VehicleModel.vehicleType is left at its AUTOMOBILE default for every
+        // row, so the only usable category signal is the OilFinderVehicle rows
+        // behind each model. Without this, a make whose catalogue models all
+        // filtered out (KTM under 'moto' — the catalogue knows only the X-Bow)
+        // would fall through to here and return its whole range unfiltered.
+        if (targetCat) {
+          const rows = await this.prisma.oilFinderVehicle
+            .findMany({
+              where: { make: { equals: makeName.trim(), mode: 'insensitive' } },
+              select: { model: true, category: true },
+              distinct: ['model', 'category'],
+            })
+            .catch(() => [] as { model: string; category: string }[]);
+          const allowed = new Set(
+            rows
+              .filter((r) => normalizeCategory(r.category) === targetCat)
+              .map((r) => slugify(r.model)),
+          );
+          if (allowed.size > 0) {
+            const filtered = list.filter(
+              (m: any) => allowed.has(slugify(m.name)) || allowed.has(m.slug),
+            );
+            if (filtered.length > 0) list = filtered;
+          }
+        }
+        return list.map((m: any) => ({
           name: m.name,
           slug: m.slug,
           yearFrom: null,
@@ -2721,6 +2758,69 @@ export class OilFinderService {
     return [];
   }
 
+  /**
+   * Adds OilFinderVehicle engines that the catalogue does not already list.
+   *
+   * The catalogue is bulk-derived from TecDoc and assigns oil specs by era and
+   * displacement, so it misses engines and whole model years. OilFinderVehicle
+   * is the opposite: small, hand-verified, per-engine, and the target of every
+   * correction. Returning the catalogue alone therefore hid exactly the rows
+   * that had been checked against a manufacturer manual.
+   *
+   * Catalogue entries win on conflict — they carry generation and power data the
+   * verified rows often leave null — so this only ever appends.
+   */
+  private async mergeVerifiedEngines(
+    result: any[],
+    seen: Set<string>,
+    makeName: string,
+    modelName: string,
+    generationName?: string,
+  ): Promise<void> {
+    try {
+      const rows = await this.prisma.oilFinderVehicle.findMany({
+        where: {
+          make: { equals: makeName.trim(), mode: 'insensitive' },
+          model: { equals: modelName.trim(), mode: 'insensitive' },
+          ...(generationName
+            ? { generation: { contains: generationName.trim(), mode: 'insensitive' } }
+            : {}),
+        },
+        include: { oilSpec: true },
+      });
+      for (const r of rows) {
+        if (!r.engineCode) continue;
+        const key = `${r.engineCode.toLowerCase()}_${r.powerHp || ''}_${r.fuelType || ''}`;
+        // Also treat a bare code match as a duplicate: the catalogue frequently
+        // has the same engine with power left null, and offering the customer
+        // "2.2 mHawk" twice is worse than losing the second row's spec.
+        const codeOnly = [...seen].some(
+          (k) => k.split('_')[0] === r.engineCode!.toLowerCase(),
+        );
+        if (seen.has(key) || codeOnly) continue;
+        seen.add(key);
+        result.push({
+          engineCode: r.engineCode,
+          yearFrom: r.yearFrom || null,
+          yearTo: r.yearTo === 9999 ? null : r.yearTo || null,
+          fuelType: r.fuelType,
+          displacementCc: r.displacementCc,
+          powerHp: r.powerHp,
+          powerKw: r.powerKw,
+          previewOil: r.oilSpec
+            ? {
+                viscosity: r.oilSpec.viscosity,
+                oemApproval: r.oilSpec.oemApproval,
+                jasoStandard: r.oilSpec.jasoStandard,
+              }
+            : undefined,
+        });
+      }
+    } catch {
+      // ignore — the catalogue result stands on its own
+    }
+  }
+
   async getEngines(makeName: string, modelName: string, generationName?: string) {
     const catalog = getCleanCatalog();
     const mSlug = slugify(makeName);
@@ -2778,6 +2878,7 @@ export class OilFinderService {
               });
             }
           }
+          await this.mergeVerifiedEngines(result, seen, makeName, modelName, generationName);
           return result.sort((a, b) => (a.powerHp || 0) - (b.powerHp || 0));
         }
       }
@@ -2798,21 +2899,35 @@ export class OilFinderService {
         orderBy: { powerHp: 'asc' },
       });
       if (dbEngines && dbEngines.length > 0) {
-        return dbEngines.map((e: any) => ({
-          engineCode: e.engineCode,
-          fuelType: e.fuelType,
-          displacementCc: e.displacementCc,
-          powerHp: e.powerHp,
-          powerKw: e.powerKw,
-          previewOil: e.oilSpec ? {
-            viscosity: e.oilSpec.viscosity,
-            oemApproval: e.oilSpec.oemApproval,
-            jasoStandard: e.oilSpec.jasoStandard,
-          } : undefined,
-        }));
+        const seen = new Set<string>();
+        const result = dbEngines.map((e: any) => {
+          seen.add(`${(e.engineCode || '').toLowerCase()}_${e.powerHp || ''}_${e.fuelType || ''}`);
+          return {
+            engineCode: e.engineCode,
+            fuelType: e.fuelType,
+            displacementCc: e.displacementCc,
+            powerHp: e.powerHp,
+            powerKw: e.powerKw,
+            previewOil: e.oilSpec ? {
+              viscosity: e.oilSpec.viscosity,
+              oemApproval: e.oilSpec.oemApproval,
+              jasoStandard: e.oilSpec.jasoStandard,
+            } : undefined,
+          };
+        });
+        await this.mergeVerifiedEngines(result, seen, makeName, modelName, generationName);
+        return result;
       }
     } catch {
       // ignore
+    }
+
+    // 3. Verified OilFinderVehicle rows on their own — a model seeded only by a
+    // manual correction has neither a catalogue node nor a VehicleEngine row.
+    const verifiedOnly: any[] = [];
+    await this.mergeVerifiedEngines(verifiedOnly, new Set<string>(), makeName, modelName, generationName);
+    if (verifiedOnly.length > 0) {
+      return verifiedOnly.sort((a, b) => (a.powerHp || 0) - (b.powerHp || 0));
     }
 
     return [{ engineCode: 'Moteur standard / D’origine', yearFrom: null, yearTo: null }];
