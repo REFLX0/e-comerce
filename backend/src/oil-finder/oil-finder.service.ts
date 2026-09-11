@@ -46,6 +46,15 @@ function getCleanCatalog(): Record<string, any> {
   return cachedCleanCatalog || {};
 }
 
+/**
+ * Pins the catalogue for a test. Without this, getCleanCatalog() walks a list of
+ * candidate paths that includes stale `dist/` build output, so a suite's result
+ * depends on whether the box happens to have a built copy lying around.
+ */
+export function __setCleanCatalogForTests(catalog: Record<string, any> | null): void {
+  cachedCleanCatalog = catalog;
+}
+
 export type OilSpecRef = Pick<
   OilFinderOilSpec,
   'id' | 'viscosity' | 'apiStandard' | 'aceaStandard' | 'oemApproval' | 'jasoStandard' | 'capacityLiters' | 'changeIntervalKm'
@@ -88,6 +97,29 @@ export type OilFinderResult =
     }
 
 const normFuel = (fuelType: string): string => fuelType.trim().toLowerCase()
+
+/**
+ * Canonical vehicle categories. Everything that reaches a comparison — the
+ * `?category=` query string, `OilFinderVehicle.category`, and the `category` /
+ * `categories` fields in the clean catalogue — goes through here first.
+ *
+ * The stored values are not consistent: the catalogue file writes `poids_lourd`
+ * while OilFinderVehicle rows were seeded as `poids-lourd`, so comparing raw
+ * strings made the heavy-truck filter match nothing at all and return an empty
+ * make list.
+ */
+export type VehicleCategory = 'automobile' | 'moto' | 'marine' | 'poids_lourd' | 'agricole';
+
+export function normalizeCategory(value?: string | null): VehicleCategory | undefined {
+  if (!value) return undefined;
+  const v = value.toLowerCase().trim();
+  if (/moto|scooter|2-roues|deux-roues|karting|bike/.test(v)) return 'moto';
+  if (/marine|boat|bateau|outboard|hors-bord/.test(v)) return 'marine';
+  if (/poids|lourd|truck|camion|commercial|utilitaire|bus/.test(v)) return 'poids_lourd';
+  if (/agri|tractor|tracteur|farm/.test(v)) return 'agricole';
+  if (/auto|car|voiture|vl\b/.test(v)) return 'automobile';
+  return undefined;
+}
 
 function slugify(text: string): string {
   return text
@@ -2499,26 +2531,15 @@ export class OilFinderService {
     const catalog = getCleanCatalog();
     const makeMap = new Map<string, string>();
 
-    const catNorm = category?.toLowerCase().trim();
-    let targetCat: string | undefined = undefined;
-    if (catNorm) {
-      if (catNorm.includes('moto') || catNorm.includes('scooter') || catNorm.includes('2-roues') || catNorm.includes('karting')) {
-        targetCat = 'moto';
-      } else if (catNorm.includes('marine') || catNorm.includes('boat') || catNorm.includes('bateau')) {
-        targetCat = 'marine';
-      } else if (catNorm.includes('poids') || catNorm.includes('truck') || catNorm.includes('camion') || catNorm.includes('commercial')) {
-        targetCat = 'poids_lourd';
-      } else if (catNorm.includes('agri') || catNorm.includes('tractor') || catNorm.includes('tracteur')) {
-        targetCat = 'agricole';
-      } else if (catNorm.includes('auto') || catNorm.includes('car') || catNorm.includes('voiture')) {
-        targetCat = 'automobile';
-      }
-    }
+    const targetCat = normalizeCategory(category);
 
     // 1. Normalized Clean Hierarchy — filtered by targetCat if provided
     for (const m of Object.values(catalog) as any[]) {
       if (m.makeName && m.makeSlug) {
-        if (!targetCat || !m.categories || m.categories.includes(targetCat)) {
+        const cats = Array.isArray(m.categories)
+          ? m.categories.map((c: string) => normalizeCategory(c)).filter(Boolean)
+          : null;
+        if (!targetCat || !cats?.length || cats.includes(targetCat)) {
           makeMap.set(m.makeSlug, m.makeName);
         }
       }
@@ -2539,9 +2560,8 @@ export class OilFinderService {
       const categoriesByMakeSlug = new Map<string, Set<string>>();
       for (const r of categoryRows) {
         const s = slugify(r.make);
-        // OilFinderVehicle.category uses 'poids' for heavy trucks; the rest of this
-        // file (targetCat resolution above, getModels()) uses 'poids_lourd'.
-        const normalizedCat = r.category === 'poids' ? 'poids_lourd' : r.category;
+        const normalizedCat = normalizeCategory(r.category);
+        if (!normalizedCat) continue;
         if (!categoriesByMakeSlug.has(s)) categoriesByMakeSlug.set(s, new Set());
         categoriesByMakeSlug.get(s)!.add(normalizedCat);
       }
@@ -2555,7 +2575,11 @@ export class OilFinderService {
           if (m.slug && m.name && !makeMap.has(m.slug)) {
             const catMake = catalog[m.slug];
             const cats = catMake?.categories
-              ? new Set<string>(catMake.categories)
+              ? new Set<string>(
+                  (catMake.categories as string[])
+                    .map((c) => normalizeCategory(c))
+                    .filter((c): c is VehicleCategory => Boolean(c)),
+                )
               : categoriesByMakeSlug.get(m.slug);
             if (!targetCat || (cats && cats.has(targetCat))) {
               makeMap.set(m.slug, m.name);
@@ -2580,28 +2604,16 @@ export class OilFinderService {
     const catalog = getCleanCatalog();
     const mSlug = slugify(makeName);
 
-    const catNorm = category?.toLowerCase().trim();
-    let targetCat: string | undefined = undefined;
-    if (catNorm) {
-      if (catNorm.includes('moto') || catNorm.includes('scooter') || catNorm.includes('2-roues') || catNorm.includes('karting')) {
-        targetCat = 'moto';
-      } else if (catNorm.includes('marine') || catNorm.includes('boat') || catNorm.includes('bateau')) {
-        targetCat = 'marine';
-      } else if (catNorm.includes('poids') || catNorm.includes('truck') || catNorm.includes('camion') || catNorm.includes('commercial')) {
-        targetCat = 'poids_lourd';
-      } else if (catNorm.includes('agri') || catNorm.includes('tractor') || catNorm.includes('tracteur')) {
-        targetCat = 'agricole';
-      } else if (catNorm.includes('auto') || catNorm.includes('car') || catNorm.includes('voiture')) {
-        targetCat = 'automobile';
-      }
-    }
+    const targetCat = normalizeCategory(category);
 
     // 1. Clean Normalized Hierarchy
     const makeObj = catalog[mSlug] || Object.values(catalog).find((m: any) => slugify(m.makeName) === mSlug || m.makeSlug === mSlug);
     if (makeObj && makeObj.models) {
       let modelList = Object.values(makeObj.models) as any[];
       if (targetCat) {
-        modelList = modelList.filter((mod: any) => !mod.category || mod.category === targetCat);
+        modelList = modelList.filter(
+          (mod: any) => !mod.category || normalizeCategory(mod.category) === targetCat,
+        );
       }
       const cleanModels = modelList.map((mod: any) => {
         const gens = Object.values(mod.generations || {}) as any[];

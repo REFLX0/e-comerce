@@ -4,6 +4,7 @@ import {
   resolveBrandSlugs,
   extractEngineVariants,
   extractModelKeywords,
+  __setCleanCatalogForTests,
 } from './oil-finder.service';
 import { PrismaService } from '../prisma/prisma.service';
 
@@ -51,12 +52,14 @@ describe('OilFinderService', () => {
   let service: OilFinderService;
   let prisma: {
     oilFinderVehicle: { findMany: jest.Mock };
+    vehicleMake: { findMany: jest.Mock };
     $queryRawUnsafe: jest.Mock;
   };
 
   beforeEach(async () => {
     prisma = {
       oilFinderVehicle: { findMany: jest.fn() },
+      vehicleMake: { findMany: jest.fn().mockResolvedValue([]) },
       $queryRawUnsafe: jest.fn().mockResolvedValue([]),
     };
 
@@ -323,44 +326,83 @@ describe('OilFinderService', () => {
     });
   });
 
-  describe('getMakes & getEngines — presets and catalogue helper', () => {
-    it('returns motorcycle make presets when category is moto', async () => {
-      prisma.$queryRawUnsafe.mockResolvedValueOnce([
-        { name: 'HONDA' },
-        { name: 'KAWASAKI' },
-        { name: 'YAMAHA' },
+  describe('getMakes — category filtering', () => {
+    // getMakes() reads the clean catalogue first and falls back to VehicleMake
+    // for anything absent from it, taking each make's category from its
+    // OilFinderVehicle rows. Pin the catalogue empty so these exercise the
+    // database path only.
+    beforeEach(() => __setCleanCatalogForTests({}));
+    afterEach(() => __setCleanCatalogForTests(null));
+
+    const seed = (rows: Array<{ make: string; category: string }>) => {
+      prisma.oilFinderVehicle.findMany.mockResolvedValue(rows);
+      prisma.vehicleMake.findMany.mockResolvedValue(
+        [...new Set(rows.map((r) => r.make))].map((name) => ({
+          name,
+          slug: name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, ''),
+        })),
+      );
+    };
+
+    it('returns motorcycle makes when category is moto', async () => {
+      seed([
+        { make: 'YAMAHA', category: 'moto' },
+        { make: 'KAWASAKI', category: 'moto' },
+        { make: 'RENAULT', category: 'automobile' },
       ]);
-      const makes = await service.getMakes('moto');
-      const names = makes.map((m) => m.name);
-      expect(names).toContain('YAMAHA');
-      expect(names).toContain('HONDA');
-      expect(names).toContain('KAWASAKI');
+      const names = (await service.getMakes('moto')).map((m) => m.name);
+      expect(names).toEqual(expect.arrayContaining(['YAMAHA', 'KAWASAKI']));
+      expect(names).not.toContain('RENAULT');
     });
 
-    it('returns truck make presets when category is cv / poids lourd', async () => {
-      prisma.$queryRawUnsafe.mockResolvedValueOnce([
-        { name: 'MERCEDES-BENZ TRUCKS' },
-        { name: 'SCANIA' },
-        { name: 'VOLVO TRUCKS' },
+    it('returns agricultural makes when category is agri', async () => {
+      seed([
+        { make: 'JOHN DEERE', category: 'agricole' },
+        { make: 'MASSEY FERGUSON', category: 'agricole' },
+        { make: 'RENAULT', category: 'automobile' },
       ]);
-      const makes = await service.getMakes('poids-lourds');
-      const names = makes.map((m) => m.name);
-      expect(names).toContain('MERCEDES-BENZ TRUCKS');
-      expect(names).toContain('VOLVO TRUCKS');
-      expect(names).toContain('SCANIA');
+      const names = (await service.getMakes('agricole')).map((m) => m.name);
+      expect(names).toEqual(expect.arrayContaining(['JOHN DEERE', 'MASSEY FERGUSON']));
+      expect(names).not.toContain('RENAULT');
     });
 
-    it('returns agricultural make presets when category is agri', async () => {
-      prisma.$queryRawUnsafe.mockResolvedValueOnce([
-        { name: 'JOHN DEERE' },
-        { name: 'MASSEY FERGUSON' },
-        { name: 'NEW HOLLAND' },
+    // Regression: OilFinderVehicle rows were seeded as 'poids-lourd' while the
+    // query resolved to 'poids_lourd', so the comparison never matched and the
+    // heavy-truck filter returned an empty list for every spelling of the query.
+    it.each(['poids-lourds', 'poids_lourd', 'camion', 'truck'])(
+      'returns truck makes for category %s regardless of separator',
+      async (query) => {
+        seed([
+          { make: 'SCANIA', category: 'poids-lourd' },
+          { make: 'VOLVO TRUCKS', category: 'poids-lourd' },
+          { make: 'RENAULT', category: 'automobile' },
+        ]);
+        const names = (await service.getMakes(query)).map((m) => m.name);
+        expect(names).toEqual(expect.arrayContaining(['SCANIA', 'VOLVO TRUCKS']));
+        expect(names).not.toContain('RENAULT');
+      },
+    );
+
+    // Regression: a brand present in both a correctly categorised row set and an
+    // 'automobile' duplicate leaked into the car dropdown, because both spellings
+    // slugify to the same key and the union of their categories was used.
+    it('keeps a moto-only brand out of the automobile list', async () => {
+      seed([
+        { make: 'YAMAHA', category: 'moto' },
+        { make: 'RENAULT', category: 'automobile' },
       ]);
-      const makes = await service.getMakes('agricole');
-      const names = makes.map((m) => m.name);
-      expect(names).toContain('JOHN DEERE');
-      expect(names).toContain('MASSEY FERGUSON');
-      expect(names).toContain('NEW HOLLAND');
+      const names = (await service.getMakes('automobile')).map((m) => m.name);
+      expect(names).toContain('RENAULT');
+      expect(names).not.toContain('YAMAHA');
+    });
+
+    it('still lists a genuinely dual-category brand under both', async () => {
+      seed([
+        { make: 'MERCEDES-BENZ', category: 'automobile' },
+        { make: 'MERCEDES-BENZ', category: 'poids-lourd' },
+      ]);
+      expect((await service.getMakes('automobile')).map((m) => m.name)).toContain('MERCEDES-BENZ');
+      expect((await service.getMakes('poids_lourd')).map((m) => m.name)).toContain('MERCEDES-BENZ');
     });
   });
 
@@ -816,6 +858,10 @@ describe('OilFinderService', () => {
     });
 
     it('merges engines from both TecDoc and OilFinderVehicle in getEngines', async () => {
+      // The clean catalogue short-circuits this merge when it has the model, and
+      // it resolves from disk — including stale dist/ output. Pin it empty so the
+      // merge this test is named for is actually the code path under test.
+      __setCleanCatalogForTests({});
       prisma.$queryRawUnsafe.mockResolvedValue([
         { engineCode: '4.5 D-4D (VDJ200)', yearFrom: 2008, yearTo: 2021 },
       ]);
@@ -830,6 +876,7 @@ describe('OilFinderService', () => {
       expect(codes.some((c) => c.includes('4.5 D-4D'))).toBe(true);
       expect(codes.some((c) => c.includes('3UR-FE') || c.includes('5.7L'))).toBe(true);
       expect(codes.some((c) => c.includes('4.7 VVT-i') || c.includes('4.7'))).toBe(true);
+      __setCleanCatalogForTests(null);
     });
   });
 });
