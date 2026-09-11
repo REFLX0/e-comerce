@@ -84,12 +84,35 @@ function fingerprintOf(spec: OilSpecInput): string {
 }
 
 async function main() {
-  const models: ModelInput[] = JSON.parse(fs.readFileSync(DATA_PATH, 'utf-8'));
+  const raw = JSON.parse(fs.readFileSync(DATA_PATH, 'utf-8'));
+  // The file is either a bare array of models, or { purgeFabricatedMakes, models }.
+  const models: ModelInput[] = Array.isArray(raw) ? raw : raw.models;
+  const purgeMakes: string[] = Array.isArray(raw) ? [] : raw.purgeFabricatedMakes || [];
+
   console.log(`Mode: ${APPLY ? 'APPLY' : 'DRY-RUN'}`);
   console.log(`Models in data file: ${models.length}\n`);
 
   const snapshot: unknown[] = [];
   let deleted = 0;
+
+  // Whole-make purge: these brands' catalogue rows are fabricated end to end,
+  // including junk model names (a "model" literally called CHERY) and duplicate
+  // spellings of the same car (TIGGO 2 / Tiggo 2). Canonical models are
+  // re-inserted from the researched list below.
+  for (const make of purgeMakes) {
+    const doomed = await prisma.oilFinderVehicle.findMany({
+      where: { make: { equals: make, mode: 'insensitive' }, source: FABRICATED_SOURCE },
+      include: { oilSpec: true },
+    });
+    if (!doomed.length) continue;
+    snapshot.push(...doomed);
+    deleted += doomed.length;
+    const distinctModels = new Set(doomed.map((d) => d.model)).size;
+    console.log(`  - ${make}: purging ${doomed.length} fabricated row(s) across ${distinctModels} model name(s)`);
+    if (APPLY) {
+      await prisma.oilFinderVehicle.deleteMany({ where: { id: { in: doomed.map((d) => d.id) } } });
+    }
+  }
   let inserted = 0;
   let alreadyPresent = 0;
   const specCache = new Map<string, string>();
