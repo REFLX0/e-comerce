@@ -1,121 +1,185 @@
 {
-  "purgeFabricatedMakes": [],
+  "purgeFabricatedMakes": ["MAHINDRA"],
   "models": [
     {
-      "make": "MG",
-      "model": "RX5",
-      "generation": "RX5 (2016 - Présent)",
+      "make": "MAHINDRA",
+      "model": "KUV100",
+      "generation": "KUV100 / KUV100 NXT (2016 - Présent)",
       "yearFrom": 2016,
       "yearTo": 9999,
       "category": "automobile",
-      "source": "MG RX5 owner's handbook (via manualslib, Engine Oil Specification p.299): engine oil meeting API/ILSAC SN/GF-5, SAE 5W-30. auto-data.net MG RX5 1.5T 169 hp. Oil capacity not stated in the retrieved pages, left unset",
+      "source": "Mahindra KUV100 owner's manual (Lubricants and Capacities): recommended fluid is Mahindra MAXIMILE FEO V2; in emergency an oil meeting minimum API SL SAE 15W-40 may be used; engine oil capacity 3.5 L. Engines per cardekho/Wikipedia: 1.2 mFalcon G80 petrol and 1.2 mFalcon D75 diesel",
       "confidence": "medium",
       "engines": [
         {
-          "engineCode": "1.5T",
-          "displacementCc": 1490,
-          "powerHp": 169,
-          "fuelType": "essence",
-          "spec": {
-            "viscosity": "5W-30",
-            "apiStandard": "SN / ILSAC GF-5",
-            "aceaStandard": null,
-            "oemApproval": "MG API SN / ILSAC GF-5",
-            "capacityLiters": null,
-            "changeIntervalKm": null
-          }
-        }
-      ]
-    },
-    {
-      "make": "SUZUKI",
-      "model": "Dzire",
-      "generation": "Dzire (2017 - Présent)",
-      "yearFrom": 2017,
-      "yearTo": 9999,
-      "category": "automobile",
-      "source": "mycarhelpline.com Maruti Suzuki engine oil guide: Swift/Dzire K12M/K12N 1.2 petrol BS6 takes SAE 0W-16, 3.1 L, 10 000 km interval (MY2013-2018 versions specify 0W-20). Indian-market figures - the Dzire is the Indian-built Swift saloon",
-      "confidence": "low",
-      "engines": [
-        {
-          "engineCode": "1.2 (K12M)",
-          "displacementCc": 1197,
+          "engineCode": "1.2 mFalcon G80",
+          "displacementCc": 1198,
           "powerHp": 82,
           "fuelType": "essence",
           "spec": {
-            "viscosity": "0W-20",
-            "apiStandard": "SN",
+            "viscosity": "15W-40",
+            "apiStandard": "SL",
             "aceaStandard": null,
-            "oemApproval": "Suzuki 0W-20 (MY2013-2018)",
-            "capacityLiters": 3.1,
-            "changeIntervalKm": 10000
+            "oemApproval": "Mahindra MAXIMILE FEO V2 (min. API SL 15W-40)",
+            "capacityLiters": 3.5,
+            "changeIntervalKm": null
           }
         },
         {
-          "engineCode": "1.2 Dualjet (K12N)",
-          "displacementCc": 1197,
-          "powerHp": 90,
-          "fuelType": "essence",
+          "engineCode": "1.2 mFalcon D75",
+          "displacementCc": 1198,
+          "powerHp": 77,
+          "fuelType": "diesel",
           "spec": {
-            "viscosity": "0W-16",
-            "apiStandard": "SN",
+            "viscosity": "15W-40",
+            "apiStandard": "SL",
             "aceaStandard": null,
-            "oemApproval": "Suzuki 0W-16",
-            "capacityLiters": 3.1,
-            "changeIntervalKm": 10000
+            "oemApproval": "Mahindra MAXIMILE FEO V2 (min. API SL 15W-40)",
+            "capacityLiters": 3.5,
+            "changeIntervalKm": null
           }
         }
       ]
     },
     {
-      "make": "KIA",
-      "model": "Sonet",
-      "generation": "QY / QYC (2020 - Présent)",
-      "yearFrom": 2020,
+      "make": "MAHINDRA",
+      "model": "Bolero",
+      "generation": "Bolero (2011 - Présent)",
+      "yearFrom": 2011,
       "yearTo": 9999,
       "category": "automobile",
-      "source": "automobilecars.in Kia engine oil capacity & grade table: Sonet 1.2 petrol 3.4 L SAE 0W-20, 1.0 T-GDi 3.6 L SAE 0W-30, 1.5 diesel 4.8 L. choise.ravenol.com lists Sonet QY/QYC 1.2 MPi (G4LF) from 2020. Indian-market figures; European Kia guidance for these engines is 5W-30 ACEA C3, so treat viscosity as market-dependent",
+      "source": "91wheels / zigwheels Mahindra Bolero oil capacity ~6.0 L; Bolero uses the m2DiCR / mHawk D70 1.5 diesel. Mahindra's published grade for these engines is Mahindra MAXIMILE with a minimum API SL SAE 15W-40 alternative (per the KUV100 owner's manual). Consumer-site sourcing, not the Bolero manual itself",
       "confidence": "low",
       "engines": [
         {
-          "engineCode": "1.2 MPi (G4LF)",
-          "displacementCc": 1197,
-          "powerHp": 83,
-          "fuelType": "essence",
-          "spec": {
-            "viscosity": "0W-20",
-            "apiStandard": "SN",
-            "aceaStandard": null,
-            "oemApproval": "Hyundai / Kia 0W-20",
-            "capacityLiters": 3.4,
-            "changeIntervalKm": null
-          }
-        },
-        {
-          "engineCode": "1.0 T-GDi (G3LC)",
-          "displacementCc": 998,
-          "powerHp": 120,
-          "fuelType": "essence",
-          "spec": {
-            "viscosity": "0W-30",
-            "apiStandard": "SN",
-            "aceaStandard": null,
-            "oemApproval": "Hyundai / Kia 0W-30",
-            "capacityLiters": 3.6,
-            "changeIntervalKm": null
-          }
-        },
-        {
-          "engineCode": "1.5 CRDi (D4FC)",
+          "engineCode": "1.5 mHawk D70 (m2DiCR)",
           "displacementCc": 1493,
-          "powerHp": 115,
+          "powerHp": null,
           "fuelType": "diesel",
           "spec": {
-            "viscosity": "5W-30",
-            "apiStandard": null,
-            "aceaStandard": "C3",
-            "oemApproval": "Hyundai / Kia ACEA C3",
-            "capacityLiters": 4.8,
+            "viscosity": "15W-40",
+            "apiStandard": "SL/CI-4",
+            "aceaStandard": null,
+            "oemApproval": "Mahindra MAXIMILE (min. 15W-40)",
+            "capacityLiters": 6.0,
+            "changeIntervalKm": null
+          }
+        }
+      ]
+    },
+    {
+      "make": "MAHINDRA",
+      "model": "Scorpio",
+      "generation": "Scorpio (2014 - Présent)",
+      "yearFrom": 2014,
+      "yearTo": 9999,
+      "category": "automobile",
+      "source": "auto-data.net Mahindra Scorpio facelift 2017 2.2 mHawk 120 hp; 91wheels Scorpio Classic oil capacity 6.0 L (2.2 mHawk BS6 also quoted at 6 L). Grade: Mahindra MAXIMILE, minimum API SL 15W-40; 10W-40 synthetic is widely quoted as an accepted alternative. Consumer-site sourcing",
+      "confidence": "low",
+      "engines": [
+        {
+          "engineCode": "2.2 mHawk",
+          "displacementCc": 2179,
+          "powerHp": 120,
+          "fuelType": "diesel",
+          "spec": {
+            "viscosity": "15W-40",
+            "apiStandard": "SL/CI-4",
+            "aceaStandard": null,
+            "oemApproval": "Mahindra MAXIMILE (min. 15W-40)",
+            "capacityLiters": 6.0,
+            "changeIntervalKm": null
+          }
+        }
+      ]
+    },
+    {
+      "make": "MAHINDRA",
+      "model": "XUV300",
+      "generation": "XUV300 (2019 - Présent)",
+      "yearFrom": 2019,
+      "yearTo": 9999,
+      "category": "automobile",
+      "source": "91wheels Mahindra XUV300 engine oil quantity ~6.0 L; Wikipedia XUV300 engine line-up (1.2 turbo petrol, 1.5 diesel). Grade taken from Mahindra's published minimum (API SL 15W-40) - the quoted 6 L figure most likely refers to the diesel, so capacity on the petrol is left unset",
+      "confidence": "low",
+      "engines": [
+        {
+          "engineCode": "1.2 T (mStallion)",
+          "displacementCc": 1197,
+          "powerHp": null,
+          "fuelType": "essence",
+          "spec": {
+            "viscosity": "15W-40",
+            "apiStandard": "SL",
+            "aceaStandard": null,
+            "oemApproval": "Mahindra MAXIMILE (min. 15W-40)",
+            "capacityLiters": null,
+            "changeIntervalKm": null
+          }
+        },
+        {
+          "engineCode": "1.5 D",
+          "displacementCc": 1497,
+          "powerHp": null,
+          "fuelType": "diesel",
+          "spec": {
+            "viscosity": "15W-40",
+            "apiStandard": "SL/CI-4",
+            "aceaStandard": null,
+            "oemApproval": "Mahindra MAXIMILE (min. 15W-40)",
+            "capacityLiters": 6.0,
+            "changeIntervalKm": null
+          }
+        }
+      ]
+    },
+    {
+      "make": "MAHINDRA",
+      "model": "XUV500",
+      "generation": "XUV500 (2011 - 2021)",
+      "yearFrom": 2011,
+      "yearTo": 2021,
+      "category": "automobile",
+      "source": "XUV500 uses the same 2.2 mHawk diesel family as the Scorpio (Wikipedia); capacity and grade taken from the Scorpio figures (6.0 L, Mahindra MAXIMILE / min. API SL 15W-40). Family-derived, not a model-specific manual",
+      "confidence": "low",
+      "engines": [
+        {
+          "engineCode": "2.2 mHawk",
+          "displacementCc": 2179,
+          "powerHp": null,
+          "fuelType": "diesel",
+          "spec": {
+            "viscosity": "15W-40",
+            "apiStandard": "SL/CI-4",
+            "aceaStandard": null,
+            "oemApproval": "Mahindra MAXIMILE (min. 15W-40)",
+            "capacityLiters": 6.0,
+            "changeIntervalKm": null
+          }
+        }
+      ]
+    },
+    {
+      "make": "MAHINDRA",
+      "model": "Thar",
+      "generation": "Thar (2020 - Présent)",
+      "yearFrom": 2020,
+      "yearTo": 9999,
+      "category": "automobile",
+      "source": "Thar uses the 2.2 mHawk diesel shared with the Scorpio (Wikipedia); grade and capacity family-derived from the Scorpio figures (Mahindra MAXIMILE / min. API SL 15W-40, 6.0 L). Not a model-specific manual",
+      "confidence": "low",
+      "engines": [
+        {
+          "engineCode": "2.2 mHawk",
+          "displacementCc": 2184,
+          "powerHp": null,
+          "fuelType": "diesel",
+          "spec": {
+            "viscosity": "15W-40",
+            "apiStandard": "SL/CI-4",
+            "aceaStandard": null,
+            "oemApproval": "Mahindra MAXIMILE (min. 15W-40)",
+            "capacityLiters": 6.0,
             "changeIntervalKm": null
           }
         }
