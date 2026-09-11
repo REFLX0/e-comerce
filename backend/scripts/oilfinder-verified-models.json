@@ -2,815 +2,120 @@
   "purgeFabricatedMakes": [],
   "models": [
     {
-      "make": "HAVAL",
-      "model": "Jolion",
-      "generation": "Jolion (2020 - Présent)",
+      "make": "MG",
+      "model": "RX5",
+      "generation": "RX5 (2016 - Présent)",
+      "yearFrom": 2016,
+      "yearTo": 9999,
+      "category": "automobile",
+      "source": "MG RX5 owner's handbook (via manualslib, Engine Oil Specification p.299): engine oil meeting API/ILSAC SN/GF-5, SAE 5W-30. auto-data.net MG RX5 1.5T 169 hp. Oil capacity not stated in the retrieved pages, left unset",
+      "confidence": "medium",
+      "engines": [
+        {
+          "engineCode": "1.5T",
+          "displacementCc": 1490,
+          "powerHp": 169,
+          "fuelType": "essence",
+          "spec": {
+            "viscosity": "5W-30",
+            "apiStandard": "SN / ILSAC GF-5",
+            "aceaStandard": null,
+            "oemApproval": "MG API SN / ILSAC GF-5",
+            "capacityLiters": null,
+            "changeIntervalKm": null
+          }
+        }
+      ]
+    },
+    {
+      "make": "SUZUKI",
+      "model": "Dzire",
+      "generation": "Dzire (2017 - Présent)",
+      "yearFrom": 2017,
+      "yearTo": 9999,
+      "category": "automobile",
+      "source": "mycarhelpline.com Maruti Suzuki engine oil guide: Swift/Dzire K12M/K12N 1.2 petrol BS6 takes SAE 0W-16, 3.1 L, 10 000 km interval (MY2013-2018 versions specify 0W-20). Indian-market figures - the Dzire is the Indian-built Swift saloon",
+      "confidence": "low",
+      "engines": [
+        {
+          "engineCode": "1.2 (K12M)",
+          "displacementCc": 1197,
+          "powerHp": 82,
+          "fuelType": "essence",
+          "spec": {
+            "viscosity": "0W-20",
+            "apiStandard": "SN",
+            "aceaStandard": null,
+            "oemApproval": "Suzuki 0W-20 (MY2013-2018)",
+            "capacityLiters": 3.1,
+            "changeIntervalKm": 10000
+          }
+        },
+        {
+          "engineCode": "1.2 Dualjet (K12N)",
+          "displacementCc": 1197,
+          "powerHp": 90,
+          "fuelType": "essence",
+          "spec": {
+            "viscosity": "0W-16",
+            "apiStandard": "SN",
+            "aceaStandard": null,
+            "oemApproval": "Suzuki 0W-16",
+            "capacityLiters": 3.1,
+            "changeIntervalKm": 10000
+          }
+        }
+      ]
+    },
+    {
+      "make": "KIA",
+      "model": "Sonet",
+      "generation": "QY / QYC (2020 - Présent)",
       "yearFrom": 2020,
       "yearTo": 9999,
       "category": "automobile",
-      "source": "choise.ravenol.com Haval Jolion 1.5 2WD (CC7150BA01B): 0W-30/5W-30 ACEA C2, basic fill 3.3 L; auto-data.net Jolion 1.5T GW4B15D 150 hp 1499 cc",
-      "confidence": "medium",
-      "replaceFabricated": true,
+      "source": "automobilecars.in Kia engine oil capacity & grade table: Sonet 1.2 petrol 3.4 L SAE 0W-20, 1.0 T-GDi 3.6 L SAE 0W-30, 1.5 diesel 4.8 L. choise.ravenol.com lists Sonet QY/QYC 1.2 MPi (G4LF) from 2020. Indian-market figures; European Kia guidance for these engines is 5W-30 ACEA C3, so treat viscosity as market-dependent",
+      "confidence": "low",
       "engines": [
         {
-          "engineCode": "1.5T (GW4B15D)",
-          "displacementCc": 1499,
-          "powerHp": 150,
+          "engineCode": "1.2 MPi (G4LF)",
+          "displacementCc": 1197,
+          "powerHp": 83,
+          "fuelType": "essence",
+          "spec": {
+            "viscosity": "0W-20",
+            "apiStandard": "SN",
+            "aceaStandard": null,
+            "oemApproval": "Hyundai / Kia 0W-20",
+            "capacityLiters": 3.4,
+            "changeIntervalKm": null
+          }
+        },
+        {
+          "engineCode": "1.0 T-GDi (G3LC)",
+          "displacementCc": 998,
+          "powerHp": 120,
           "fuelType": "essence",
           "spec": {
             "viscosity": "0W-30",
-            "apiStandard": "SP",
-            "aceaStandard": "C2",
-            "oemApproval": "GWM Haval ACEA C2",
-            "capacityLiters": 3.3,
-            "changeIntervalKm": null
-          }
-        }
-      ]
-    },
-    {
-      "make": "HAVAL",
-      "model": "H6",
-      "generation": "H6 III (2020 - Présent)",
-      "yearFrom": 2020,
-      "yearTo": 9999,
-      "category": "automobile",
-      "source": "choise.ravenol.com Haval H6 III B01 1.5 2WD (GW4B15A/GW4B15D, 153/183 hp): 5W-30 API SN/SP ACEA C3, 4.0 L + 0.3 L filter",
-      "confidence": "medium",
-      "replaceFabricated": true,
-      "engines": [
-        {
-          "engineCode": "1.5T (GW4B15A)",
-          "displacementCc": 1499,
-          "powerHp": 153,
-          "fuelType": "essence",
-          "spec": {
-            "viscosity": "5W-30",
-            "apiStandard": "SN/SP",
-            "aceaStandard": "C3",
-            "oemApproval": "GWM Haval ACEA C3",
-            "capacityLiters": 4.3,
-            "changeIntervalKm": null
-          }
-        },
-        {
-          "engineCode": "1.5T (GW4B15D)",
-          "displacementCc": 1499,
-          "powerHp": 183,
-          "fuelType": "essence",
-          "spec": {
-            "viscosity": "5W-30",
-            "apiStandard": "SN/SP",
-            "aceaStandard": "C3",
-            "oemApproval": "GWM Haval ACEA C3",
-            "capacityLiters": 4.3,
-            "changeIntervalKm": null
-          }
-        }
-      ]
-    },
-    {
-      "make": "HAVAL",
-      "model": "Dargo",
-      "generation": "Dargo / Big Dog (2023 - Présent)",
-      "yearFrom": 2023,
-      "yearTo": 9999,
-      "category": "automobile",
-      "source": "choise.ravenol.com Haval Dargo 1.5 FWD/2WD (GW4B15L, 185 hp / 136 kW): 5W-20 or 0W-20, API SN Plus/SP (RC), ACEA A5/B5, 5.0 L",
-      "confidence": "medium",
-      "replaceFabricated": true,
-      "engines": [
-        {
-          "engineCode": "1.5T (GW4B15L)",
-          "displacementCc": 1499,
-          "powerHp": 185,
-          "fuelType": "essence",
-          "spec": {
-            "viscosity": "0W-20",
-            "apiStandard": "SN Plus/SP",
-            "aceaStandard": "A5/B5",
-            "oemApproval": "GWM Haval API SP / ACEA A5-B5",
-            "capacityLiters": 5,
-            "changeIntervalKm": null
-          }
-        }
-      ]
-    },
-    {
-      "make": "HAVAL",
-      "model": "F7",
-      "generation": "F7 II / F7x (2022 - Présent)",
-      "yearFrom": 2022,
-      "yearTo": 9999,
-      "category": "automobile",
-      "source": "choise.ravenol.com Haval F7 II / F7x 1.5T 2WD (GW4B15D / GW4B15C): 0W-20, API SN (RC)/SQ (RC), ACEA C5/C6, 4.1 L",
-      "confidence": "medium",
-      "replaceFabricated": true,
-      "engines": [
-        {
-          "engineCode": "1.5T (GW4B15D)",
-          "displacementCc": 1499,
-          "powerHp": null,
-          "fuelType": "essence",
-          "spec": {
-            "viscosity": "0W-20",
-            "apiStandard": "SN (RC)",
-            "aceaStandard": "C5",
-            "oemApproval": "GWM Haval ACEA C5",
-            "capacityLiters": 4.1,
-            "changeIntervalKm": null
-          }
-        }
-      ]
-    },
-    {
-      "make": "CHERY",
-      "model": "Tiggo 4 Pro",
-      "generation": "T19FL (2021 - Présent)",
-      "yearFrom": 2021,
-      "yearTo": 9999,
-      "category": "automobile",
-      "source": "choise.ravenol.com Chery Tiggo 4 Pro T19FL 1.5 2WD (SQRE4G15C / SQRE4T15C): 5W-40, API SN Plus/SP, ACEA A3/B4, 4.0 L",
-      "confidence": "medium",
-      "replaceFabricated": true,
-      "engines": [
-        {
-          "engineCode": "1.5 (SQRE4G15C)",
-          "displacementCc": 1498,
-          "powerHp": null,
-          "fuelType": "essence",
-          "spec": {
-            "viscosity": "5W-40",
-            "apiStandard": "SN Plus/SP",
-            "aceaStandard": "A3/B4",
-            "oemApproval": "Chery API SP / ACEA A3-B4",
-            "capacityLiters": 4,
-            "changeIntervalKm": null
-          }
-        },
-        {
-          "engineCode": "1.5T (SQRE4T15C)",
-          "displacementCc": 1498,
-          "powerHp": 147,
-          "fuelType": "essence",
-          "spec": {
-            "viscosity": "5W-40",
-            "apiStandard": "SN Plus/SP",
-            "aceaStandard": "A3/B4",
-            "oemApproval": "Chery API SP / ACEA A3-B4",
-            "capacityLiters": 4,
-            "changeIntervalKm": null
-          }
-        }
-      ]
-    },
-    {
-      "make": "CHERY",
-      "model": "Tiggo 7 Pro",
-      "generation": "T1E (2020 - Présent)",
-      "yearFrom": 2020,
-      "yearTo": 9999,
-      "category": "automobile",
-      "source": "choise.ravenol.com Chery Tiggo 7 Pro T1E: 1.5T (SQRE4T15C) and 1.6T (SQR F4J16) 5W-30 API SQ (RC), 4.0 L; auto-data.net Tiggo 7 II Pro 1.5 TCI 145 hp",
-      "confidence": "medium",
-      "replaceFabricated": true,
-      "engines": [
-        {
-          "engineCode": "1.5T (SQRE4T15C)",
-          "displacementCc": 1498,
-          "powerHp": 145,
-          "fuelType": "essence",
-          "spec": {
-            "viscosity": "5W-40",
-            "apiStandard": "SN Plus/SP",
-            "aceaStandard": "A3/B4",
-            "oemApproval": "Chery API SP / ACEA A3-B4",
-            "capacityLiters": 4,
-            "changeIntervalKm": null
-          }
-        },
-        {
-          "engineCode": "1.6T (SQR F4J16)",
-          "displacementCc": 1598,
-          "powerHp": 197,
-          "fuelType": "essence",
-          "spec": {
-            "viscosity": "5W-30",
-            "apiStandard": "SP",
+            "apiStandard": "SN",
             "aceaStandard": null,
-            "oemApproval": "Chery API SP",
-            "capacityLiters": 4,
-            "changeIntervalKm": null
-          }
-        }
-      ]
-    },
-    {
-      "make": "GEELY",
-      "model": "Coolray",
-      "generation": "SX11 (2018 - Présent)",
-      "yearFrom": 2018,
-      "yearTo": 9999,
-      "category": "automobile",
-      "source": "choise.ravenol.com Geely Coolray SX11 1.5T (JLH-3G15TD / JLE-3G15TD): 0W-20, API SQ (RC), ACEA C5/C6; Geely recommended fluids guide: VCC RBS0-2AE 0W-20, ~4.0 L (Ravenol page's 5.6 L figure is the coolant volume, not engine oil)",
-      "confidence": "medium",
-      "replaceFabricated": true,
-      "engines": [
-        {
-          "engineCode": "1.5T (JLH-3G15TD)",
-          "displacementCc": 1477,
-          "powerHp": null,
-          "fuelType": "essence",
-          "spec": {
-            "viscosity": "0W-20",
-            "apiStandard": "SP",
-            "aceaStandard": "C5",
-            "oemApproval": "VCC RBS0-2AE",
-            "capacityLiters": 4,
-            "changeIntervalKm": null
-          }
-        }
-      ]
-    },
-    {
-      "make": "CHERY",
-      "model": "QQ3",
-      "generation": "QQ3 / S11 (2003 - Présent)",
-      "yearFrom": 2003,
-      "yearTo": 9999,
-      "category": "automobile",
-      "source": "choise.ravenol.com Chery QQ3 1.1 2WD (SQR472F/SQR472FF/SQR472ZF): 10W-40, API CF/SN Plus/SP, ACEA A3/B4, 3.5 L. Ravenol lists the QQ3 range as 0.8 (SQR372), 1.0 (SQR371F) and 1.1 only - it has no turbo variant",
-      "confidence": "medium",
-      "engines": [
-        {
-          "engineCode": "0.8 (SQR372)",
-          "displacementCc": 812,
-          "powerHp": null,
-          "fuelType": "essence",
-          "spec": {
-            "viscosity": "10W-40",
-            "apiStandard": "SN Plus/SP",
-            "aceaStandard": "A3/B4",
-            "oemApproval": "Chery ACEA A3-B4",
-            "capacityLiters": null,
-            "changeIntervalKm": null
-          }
-        },
-        {
-          "engineCode": "1.0 (SQR371F)",
-          "displacementCc": 1083,
-          "powerHp": null,
-          "fuelType": "essence",
-          "spec": {
-            "viscosity": "10W-40",
-            "apiStandard": "SN Plus/SP",
-            "aceaStandard": "A3/B4",
-            "oemApproval": "Chery ACEA A3-B4",
-            "capacityLiters": null,
-            "changeIntervalKm": null
-          }
-        },
-        {
-          "engineCode": "1.1 (SQR472F)",
-          "displacementCc": 1083,
-          "powerHp": 68,
-          "fuelType": "essence",
-          "spec": {
-            "viscosity": "10W-40",
-            "apiStandard": "SN Plus/SP",
-            "aceaStandard": "A3/B4",
-            "oemApproval": "Chery ACEA A3-B4",
-            "capacityLiters": 3.5,
-            "changeIntervalKm": null
-          }
-        }
-      ]
-    },
-    {
-      "make": "CHERY",
-      "model": "Tiggo 2",
-      "generation": "Tiggo 2 II (2023 - Présent)",
-      "yearFrom": 2023,
-      "yearTo": 9999,
-      "category": "automobile",
-      "source": "choise.ravenol.com Chery Tiggo 2 II 1.5 2WD (SQRD4G15): 5W-30, API SN/SP, ACEA C3. Capacity not stated on the source page, left unset rather than estimated",
-      "confidence": "medium",
-      "engines": [
-        {
-          "engineCode": "1.5 (SQRD4G15)",
-          "displacementCc": 1498,
-          "powerHp": null,
-          "fuelType": "essence",
-          "spec": {
-            "viscosity": "5W-30",
-            "apiStandard": "SN/SP",
-            "aceaStandard": "C3",
-            "oemApproval": "Chery ACEA C3",
-            "capacityLiters": null,
-            "changeIntervalKm": null
-          }
-        }
-      ]
-    },
-    {
-      "make": "CHERY",
-      "model": "Tiggo 4",
-      "generation": "T17 / T19 (2017 - Présent)",
-      "yearFrom": 2017,
-      "yearTo": 9999,
-      "category": "automobile",
-      "source": "choise.ravenol.com Chery Tiggo 4 T17/T19 1.5 T 2WD (SQRE4T15B) and Tiggo 4 Pro T19FL (SQRE4G15C/SQRE4T15C): 5W-40, API SN Plus/SP, ACEA A3/B4, 4.0 L",
-      "confidence": "medium",
-      "engines": [
-        {
-          "engineCode": "1.5 (SQRE4G15)",
-          "displacementCc": 1498,
-          "powerHp": null,
-          "fuelType": "essence",
-          "spec": {
-            "viscosity": "5W-40",
-            "apiStandard": "SN Plus/SP",
-            "aceaStandard": "A3/B4",
-            "oemApproval": "Chery API SP / ACEA A3-B4",
-            "capacityLiters": 4,
-            "changeIntervalKm": null
-          }
-        },
-        {
-          "engineCode": "1.5T (SQRE4T15B)",
-          "displacementCc": 1498,
-          "powerHp": 147,
-          "fuelType": "essence",
-          "spec": {
-            "viscosity": "5W-40",
-            "apiStandard": "SN Plus/SP",
-            "aceaStandard": "A3/B4",
-            "oemApproval": "Chery API SP / ACEA A3-B4",
-            "capacityLiters": 4,
-            "changeIntervalKm": null
-          }
-        }
-      ]
-    },
-    {
-      "make": "CHERY",
-      "model": "Tiggo 4 Pro",
-      "generation": "T19FL (2021 - Présent)",
-      "yearFrom": 2021,
-      "yearTo": 9999,
-      "category": "automobile",
-      "source": "choise.ravenol.com Chery Tiggo 4 Pro T19FL 1.5 2WD (SQRE4G15C / SQRE4T15C): 5W-40, API SN Plus/SP, ACEA A3/B4, 4.0 L",
-      "confidence": "medium",
-      "engines": [
-        {
-          "engineCode": "1.5 (SQRE4G15C)",
-          "displacementCc": 1498,
-          "powerHp": null,
-          "fuelType": "essence",
-          "spec": {
-            "viscosity": "5W-40",
-            "apiStandard": "SN Plus/SP",
-            "aceaStandard": "A3/B4",
-            "oemApproval": "Chery API SP / ACEA A3-B4",
-            "capacityLiters": 4,
-            "changeIntervalKm": null
-          }
-        },
-        {
-          "engineCode": "1.5T (SQRE4T15C)",
-          "displacementCc": 1498,
-          "powerHp": 147,
-          "fuelType": "essence",
-          "spec": {
-            "viscosity": "5W-40",
-            "apiStandard": "SN Plus/SP",
-            "aceaStandard": "A3/B4",
-            "oemApproval": "Chery API SP / ACEA A3-B4",
-            "capacityLiters": 4,
-            "changeIntervalKm": null
-          }
-        }
-      ]
-    },
-    {
-      "make": "CHERY",
-      "model": "Tiggo 7",
-      "generation": "T15 (2017 - Présent)",
-      "yearFrom": 2017,
-      "yearTo": 9999,
-      "category": "automobile",
-      "source": "choise.ravenol.com Chery Tiggo 7 / Tiggo 7 Pro: 1.5T (SQRE4T15C) 5W-40 ACEA A3/B4 4.0 L; 1.6T (SQR F4J16) 5W-30 API SP 4.0 L",
-      "confidence": "medium",
-      "engines": [
-        {
-          "engineCode": "1.5T (SQRE4T15C)",
-          "displacementCc": 1498,
-          "powerHp": 147,
-          "fuelType": "essence",
-          "spec": {
-            "viscosity": "5W-40",
-            "apiStandard": "SN Plus/SP",
-            "aceaStandard": "A3/B4",
-            "oemApproval": "Chery API SP / ACEA A3-B4",
-            "capacityLiters": 4,
-            "changeIntervalKm": null
-          }
-        }
-      ]
-    },
-    {
-      "make": "CHERY",
-      "model": "Tiggo 7 Pro",
-      "generation": "T1E (2020 - Présent)",
-      "yearFrom": 2020,
-      "yearTo": 9999,
-      "category": "automobile",
-      "source": "choise.ravenol.com Chery Tiggo 7 Pro T1E: 1.5T (SQRE4T15C) and 1.6T (SQR F4J16) 5W-30 API SQ (RC), 4.0 L; auto-data.net Tiggo 7 II Pro 1.5 TCI 145 hp",
-      "confidence": "medium",
-      "engines": [
-        {
-          "engineCode": "1.5T (SQRE4T15C)",
-          "displacementCc": 1498,
-          "powerHp": 145,
-          "fuelType": "essence",
-          "spec": {
-            "viscosity": "5W-40",
-            "apiStandard": "SN Plus/SP",
-            "aceaStandard": "A3/B4",
-            "oemApproval": "Chery API SP / ACEA A3-B4",
-            "capacityLiters": 4,
-            "changeIntervalKm": null
-          }
-        },
-        {
-          "engineCode": "1.6T (SQR F4J16)",
-          "displacementCc": 1598,
-          "powerHp": 197,
-          "fuelType": "essence",
-          "spec": {
-            "viscosity": "5W-30",
-            "apiStandard": "SP",
-            "aceaStandard": null,
-            "oemApproval": "Chery API SP",
-            "capacityLiters": 4,
-            "changeIntervalKm": null
-          }
-        }
-      ]
-    },
-    {
-      "make": "CHERY",
-      "model": "Tiggo 8",
-      "generation": "T18 (2017 - Présent)",
-      "yearFrom": 2017,
-      "yearTo": 9999,
-      "category": "automobile",
-      "source": "choise.ravenol.com Chery Tiggo 8: 1.5 2WD (SQRE4T15C/SQRE4T15B) and 2.0 2WD (SQRD4T20), 2017-present. 1.5T spec taken from the same SQRE4T15 family page (5W-40 ACEA A3/B4, 4.0 L); the 2.0T page was not retrieved so its capacity is left unset",
-      "confidence": "medium",
-      "engines": [
-        {
-          "engineCode": "1.5T (SQRE4T15C)",
-          "displacementCc": 1498,
-          "powerHp": 147,
-          "fuelType": "essence",
-          "spec": {
-            "viscosity": "5W-40",
-            "apiStandard": "SN Plus/SP",
-            "aceaStandard": "A3/B4",
-            "oemApproval": "Chery API SP / ACEA A3-B4",
-            "capacityLiters": 4,
-            "changeIntervalKm": null
-          }
-        },
-        {
-          "engineCode": "2.0T (SQRD4T20)",
-          "displacementCc": 1998,
-          "powerHp": null,
-          "fuelType": "essence",
-          "spec": {
-            "viscosity": "5W-30",
-            "apiStandard": "SP",
-            "aceaStandard": null,
-            "oemApproval": "Chery API SP",
-            "capacityLiters": null,
-            "changeIntervalKm": null
-          }
-        }
-      ]
-    },
-    {
-      "make": "CHERY",
-      "model": "Arrizo 5",
-      "generation": "Arrizo 5 (2015 - Présent)",
-      "yearFrom": 2015,
-      "yearTo": 9999,
-      "category": "automobile",
-      "source": "Chery Arrizo 5 uses the SQRE4G15/SQRE4T15 ACTECO family shared with the Tiggo 4; spec taken from choise.ravenol.com for that engine family (5W-40, API SN Plus/SP, ACEA A3/B4, 4.0 L). Model-specific Ravenol page covers only the Arrizo 5e EV, so this is family-derived",
-      "confidence": "low",
-      "engines": [
-        {
-          "engineCode": "1.5 (SQRE4G15)",
-          "displacementCc": 1498,
-          "powerHp": 106,
-          "fuelType": "essence",
-          "spec": {
-            "viscosity": "5W-40",
-            "apiStandard": "SN Plus/SP",
-            "aceaStandard": "A3/B4",
-            "oemApproval": "Chery API SP / ACEA A3-B4",
-            "capacityLiters": 4,
-            "changeIntervalKm": null
-          }
-        },
-        {
-          "engineCode": "1.5T (SQRE4T15)",
-          "displacementCc": 1498,
-          "powerHp": 147,
-          "fuelType": "essence",
-          "spec": {
-            "viscosity": "5W-40",
-            "apiStandard": "SN Plus/SP",
-            "aceaStandard": "A3/B4",
-            "oemApproval": "Chery API SP / ACEA A3-B4",
-            "capacityLiters": 4,
-            "changeIntervalKm": null
-          }
-        }
-      ]
-    },
-    {
-      "make": "CHERY",
-      "model": "Tiggo 3X",
-      "generation": "Tiggo 3X / Tiggo 2 Pro (2016 - 2026)",
-      "yearFrom": 2016,
-      "yearTo": 2026,
-      "category": "automobile",
-      "source": "choise.ravenol.com Chery Tiggo 2 Pro / Tiggo 3x 1.5 2WD (SQRD4G15 / SQRD4G15B / SQRE4G15C): 5W-40 (also 5W-30), API SN Plus/SP, ACEA A3/B4, basic fill 4.3 L. Same page lists the 1.0 turbo (SQRE3T10, 2018-2023)",
-      "confidence": "medium",
-      "engines": [
-        {
-          "engineCode": "1.0T (SQRE3T10)",
-          "displacementCc": 999,
-          "powerHp": null,
-          "fuelType": "essence",
-          "spec": {
-            "viscosity": "5W-40",
-            "apiStandard": "SN Plus/SP",
-            "aceaStandard": "A3/B4",
-            "oemApproval": "Chery API SP / ACEA A3-B4",
-            "capacityLiters": 4.3,
-            "changeIntervalKm": null
-          }
-        },
-        {
-          "engineCode": "1.5 (SQRD4G15B)",
-          "displacementCc": 1498,
-          "powerHp": null,
-          "fuelType": "essence",
-          "spec": {
-            "viscosity": "5W-40",
-            "apiStandard": "SN Plus/SP",
-            "aceaStandard": "A3/B4",
-            "oemApproval": "Chery API SP / ACEA A3-B4",
-            "capacityLiters": 4.3,
-            "changeIntervalKm": null
-          }
-        }
-      ]
-    },
-    {
-      "make": "CHERY",
-      "model": "Arrizo 6",
-      "generation": "Arrizo 6 (2018 - Présent)",
-      "yearFrom": 2018,
-      "yearTo": 9999,
-      "category": "automobile",
-      "source": "Chery Arrizo 6 uses the SQRE4T15 ACTECO 1.5T shared with the Tiggo 4/7; spec taken from choise.ravenol.com for that engine family (5W-40, API SN Plus/SP, ACEA A3/B4, 4.0 L). No model-specific Ravenol page was retrieved, so this is family-derived",
-      "confidence": "low",
-      "engines": [
-        {
-          "engineCode": "1.5T (SQRE4T15C)",
-          "displacementCc": 1498,
-          "powerHp": 147,
-          "fuelType": "essence",
-          "spec": {
-            "viscosity": "5W-40",
-            "apiStandard": "SN Plus/SP",
-            "aceaStandard": "A3/B4",
-            "oemApproval": "Chery API SP / ACEA A3-B4",
-            "capacityLiters": 4,
-            "changeIntervalKm": null
-          }
-        }
-      ]
-    },
-    {
-      "make": "CHANGAN",
-      "model": "CS35 Plus",
-      "generation": "S111 (2021 - Présent)",
-      "yearFrom": 2021,
-      "yearTo": 9999,
-      "category": "automobile",
-      "source": "choise.ravenol.com Changan CS35 Plus / CS35 Plus MCA S111 1.4 T 2WD (JL473ZQ3 / JL473ZQ9): 0W-20, API SN (RC)/SQ (RC), ACEA C5/C6, basic fill 4.0 L",
-      "confidence": "medium",
-      "engines": [
-        {
-          "engineCode": "1.4T (JL473ZQ3)",
-          "displacementCc": 1389,
-          "powerHp": null,
-          "fuelType": "essence",
-          "spec": {
-            "viscosity": "0W-20",
-            "apiStandard": "SN (RC)/SP",
-            "aceaStandard": "C5",
-            "oemApproval": "Changan ACEA C5",
-            "capacityLiters": 4,
-            "changeIntervalKm": null
-          }
-        }
-      ]
-    },
-    {
-      "make": "CHANGAN",
-      "model": "CS55 Plus",
-      "generation": "S203 (2020 - Présent)",
-      "yearFrom": 2020,
-      "yearTo": 9999,
-      "category": "automobile",
-      "source": "choise.ravenol.com Changan CS55 Plus / UNI-S S203 1.5T 2WD (JL473ZQ7). Spec taken from the Ravenol page for the same JL473ZQ7 engine in the CS75/CS75 Plus: 0W-30 / 5W-30, API SN/SQ (RC), ACEA A3/B4, 4.4 L",
-      "confidence": "medium",
-      "engines": [
-        {
-          "engineCode": "1.5T (JL473ZQ7)",
-          "displacementCc": 1498,
-          "powerHp": null,
-          "fuelType": "essence",
-          "spec": {
-            "viscosity": "5W-30",
-            "apiStandard": "SN/SP",
-            "aceaStandard": "A3/B4",
-            "oemApproval": "Changan ACEA A3-B4",
-            "capacityLiters": 4.4,
-            "changeIntervalKm": null
-          }
-        }
-      ]
-    },
-    {
-      "make": "CHANGAN",
-      "model": "CS75 Plus",
-      "generation": "S301 / S311 (2014 - Présent)",
-      "yearFrom": 2014,
-      "yearTo": 9999,
-      "category": "automobile",
-      "source": "choise.ravenol.com Changan CS75 / CS75 Plus S301/S311 1.5T 2WD (JL473ZQ7, 2022-): 0W-30 / 5W-30, API SN/SQ (RC), ACEA A3/B4, 4.4 L. Ravenol also lists the earlier JL476ZQCA/JL476ZQCF 1.5T from 2014",
-      "confidence": "medium",
-      "engines": [
-        {
-          "engineCode": "1.5T (JL473ZQ7)",
-          "displacementCc": 1498,
-          "powerHp": null,
-          "fuelType": "essence",
-          "spec": {
-            "viscosity": "5W-30",
-            "apiStandard": "SN/SP",
-            "aceaStandard": "A3/B4",
-            "oemApproval": "Changan ACEA A3-B4",
-            "capacityLiters": 4.4,
-            "changeIntervalKm": null
-          }
-        },
-        {
-          "engineCode": "1.5T (JL476ZQCF)",
-          "displacementCc": 1498,
-          "powerHp": null,
-          "fuelType": "essence",
-          "spec": {
-            "viscosity": "5W-30",
-            "apiStandard": "SN/SP",
-            "aceaStandard": "A3/B4",
-            "oemApproval": "Changan ACEA A3-B4",
-            "capacityLiters": 4.4,
-            "changeIntervalKm": null
-          }
-        }
-      ]
-    },
-    {
-      "make": "FIAT",
-      "model": "Egea",
-      "generation": "356 / 357 (2015 - Présent)",
-      "yearFrom": 2015,
-      "yearTo": 9999,
-      "category": "automobile",
-      "source": "Fiat Egea is the Turkish-market name for the Fiat Tipo (356/357) - same car, same engines (en.wikipedia.org Fiat Tipo 2015; auto-data.net Fiat Egea 356). Specs mirrored from this database's own tecdoc-harvested Fiat Tipo rows for the matching engine codes",
-      "confidence": "medium",
-      "engines": [
-        {
-          "engineCode": "1.4 (843A1.000)",
-          "displacementCc": 1368,
-          "powerHp": 95,
-          "fuelType": "essence",
-          "spec": {
-            "viscosity": "5W-40",
-            "apiStandard": null,
-            "aceaStandard": "C3",
-            "oemApproval": "Fiat 9.55535-S2",
+            "oemApproval": "Hyundai / Kia 0W-30",
             "capacityLiters": 3.6,
             "changeIntervalKm": null
           }
         },
         {
-          "engineCode": "1.3 D Multijet (199B1.000)",
-          "displacementCc": 1248,
-          "powerHp": 95,
+          "engineCode": "1.5 CRDi (D4FC)",
+          "displacementCc": 1493,
+          "powerHp": 115,
           "fuelType": "diesel",
-          "spec": {
-            "viscosity": "0W-30",
-            "apiStandard": null,
-            "aceaStandard": "C2",
-            "oemApproval": "Fiat 9.55535-DS1",
-            "capacityLiters": 4.5,
-            "changeIntervalKm": null
-          }
-        },
-        {
-          "engineCode": "1.6 D Multijet (937AM5000)",
-          "displacementCc": 1598,
-          "powerHp": 120,
-          "fuelType": "diesel",
-          "spec": {
-            "viscosity": "0W-30",
-            "apiStandard": null,
-            "aceaStandard": "C2",
-            "oemApproval": "Fiat 9.55535-DS1",
-            "capacityLiters": 4.5,
-            "changeIntervalKm": null
-          }
-        },
-        {
-          "engineCode": "1.6 D Multijet AdBlue (937AM5000)",
-          "displacementCc": 1598,
-          "powerHp": 130,
-          "fuelType": "diesel",
-          "spec": {
-            "viscosity": "0W-20",
-            "apiStandard": null,
-            "aceaStandard": "C5",
-            "oemApproval": "Fiat 9.55535-DSX",
-            "capacityLiters": 4.8,
-            "changeIntervalKm": null
-          }
-        }
-      ]
-    },
-    {
-      "make": "PEUGEOT",
-      "model": "Landtrek",
-      "generation": "Landtrek (2020 - Présent)",
-      "yearFrom": 2020,
-      "yearTo": 9999,
-      "category": "automobile",
-      "source": "auto-data.net Peugeot Landtrek 1.9D 150 hp - same D20TCIE engine as the Changan Hunter already in this database (the Landtrek is built on the Changan Kaicene/Hunter platform); 15W-40 API CI-4, 10.8 L",
-      "confidence": "low",
-      "engines": [
-        {
-          "engineCode": "1.9D (D20TCIE)",
-          "displacementCc": 1997,
-          "powerHp": 150,
-          "fuelType": "diesel",
-          "spec": {
-            "viscosity": "15W-40",
-            "apiStandard": "CI-4",
-            "aceaStandard": null,
-            "oemApproval": null,
-            "capacityLiters": 10.8,
-            "changeIntervalKm": null
-          }
-        }
-      ]
-    },
-    {
-      "make": "MG",
-      "model": "ZS",
-      "generation": "ZS II (2017 - Présent)",
-      "yearFrom": 2017,
-      "yearTo": 9999,
-      "category": "automobile",
-      "source": "choise.ravenol.com MG-ZS II 1.0T GDI GPF (engine LIY, 2018-): 5W-30, API SN, ACEA C3, 4.0 L",
-      "confidence": "medium",
-      "engines": [
-        {
-          "engineCode": "1.0T GDI (LIY)",
-          "displacementCc": 999,
-          "powerHp": null,
-          "fuelType": "essence",
           "spec": {
             "viscosity": "5W-30",
-            "apiStandard": "SN",
+            "apiStandard": null,
             "aceaStandard": "C3",
-            "oemApproval": "MG ACEA C3",
-            "capacityLiters": 4,
+            "oemApproval": "Hyundai / Kia ACEA C3",
+            "capacityLiters": 4.8,
             "changeIntervalKm": null
           }
         }
