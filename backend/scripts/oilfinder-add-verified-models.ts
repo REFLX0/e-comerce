@@ -83,6 +83,227 @@ function fingerprintOf(spec: OilSpecInput): string {
   ].join('_');
 }
 
+const VEHICLE_TYPE_BY_CATEGORY: Record<string, 'AUTOMOBILE' | 'MOTO' | 'POIDS_LOURD' | 'AGRICOLE'> = {
+  automobile: 'AUTOMOBILE',
+  moto: 'MOTO',
+  'poids-lourd': 'POIDS_LOURD',
+  agricole: 'AGRICOLE',
+};
+
+/** Ensures the make -> model -> generation -> engine chain exists so the car is browsable. */
+async function upsertCatalogue(m: ModelInput, category: string): Promise<number> {
+  const makeSlug = slugify(m.make);
+  const make = await prisma.vehicleMake.upsert({
+    where: { slug: makeSlug },
+    update: {},
+    create: { name: m.make, slug: makeSlug },
+  });
+
+  const modelSlug = slugify(`${m.make} ${m.model}`);
+  const model = await prisma.vehicleModel.upsert({
+    where: { slug: modelSlug },
+    update: {},
+    create: {
+      makeId: make.id,
+      name: m.model,
+      slug: modelSlug,
+      vehicleType: VEHICLE_TYPE_BY_CATEGORY[category] || 'AUTOMOBILE',
+    },
+  });
+
+  const generationSlug = slugify(m.generation);
+  const generation = await prisma.vehicleGeneration.upsert({
+    where: { modelId_slug: { modelId: model.id, slug: generationSlug } },
+    update: {},
+    create: {
+      modelId: model.id,
+      name: m.generation,
+      slug: generationSlug,
+      yearFrom: m.yearFrom ?? null,
+      yearTo: m.yearTo === 9999 ? null : m.yearTo ?? null,
+    },
+  });
+
+  let added = 0;
+  for (const eng of m.engines) {
+    const existing = await prisma.vehicleEngine.findFirst({
+      where: { generationId: generation.id, engineCode: eng.engineCode },
+    });
+    if (existing) continue;
+
+    const spec = await prisma.oilFinderOilSpec.findUnique({
+      where: { fingerprint: fingerprintOf(eng.spec) },
+    });
+
+    await prisma.vehicleEngine.create({
+      data: {
+        generationId: generation.id,
+        name: eng.powerHp ? `${eng.engineCode} ${eng.powerHp} ch` : eng.engineCode,
+        engineCode: eng.engineCode,
+        displacementCc: eng.displacementCc ?? null,
+        powerHp: eng.powerHp ?? null,
+        fuelType: eng.fuelType,
+        oilSpecId: spec?.id ?? null,
+      },
+    });
+    added++;
+  }
+  return added;
+}
+
+/**
+ * The make/model/engine dropdowns read clean-catalog-hierarchy.json first and
+ * only fall back to the database when a make is absent from it. So a car added
+ * to the DB alone stays invisible for any make already in this file (Geely has
+ * bl/ck/hq/mr/pu in here, which is why Coolray never appeared). This merges the
+ * verified models into that file, which is bind-mounted and therefore survives
+ * container recreation.
+ */
+async function updateCleanCatalog(models: ModelInput[]): Promise<{ added: number; carried: number; path: string } | null> {
+  const candidates = [
+    '/app/oil-finder-full-dataset/clean-catalog-hierarchy.json',
+    path.join(process.cwd(), 'oil-finder-full-dataset', 'clean-catalog-hierarchy.json'),
+  ];
+  const catalogPath = candidates.find((p) => fs.existsSync(p));
+  if (!catalogPath) {
+    console.log('  ! clean-catalog-hierarchy.json not found - browse dropdowns NOT updated');
+    return null;
+  }
+
+  const catalog = JSON.parse(fs.readFileSync(catalogPath, 'utf-8'));
+  let added = 0;
+
+  for (const m of models) {
+    const makeSlug = slugify(m.make);
+    if (!catalog[makeSlug]) {
+      catalog[makeSlug] = { makeName: m.make, makeSlug, categories: [], models: {} };
+    }
+    const makeNode = catalog[makeSlug];
+    makeNode.models = makeNode.models || {};
+
+    const category = m.category || 'automobile';
+    if (Array.isArray(makeNode.categories) && !makeNode.categories.includes(category)) {
+      makeNode.categories.push(category);
+    }
+
+    const modelSlug = slugify(m.model);
+    if (!makeNode.models[modelSlug]) {
+      makeNode.models[modelSlug] = {
+        modelName: m.model,
+        modelSlug,
+        category,
+        generations: {},
+      };
+    }
+    const modelNode = makeNode.models[modelSlug];
+    modelNode.generations = modelNode.generations || {};
+
+    const genSlug = slugify(m.generation);
+    if (!modelNode.generations[genSlug]) {
+      modelNode.generations[genSlug] = {
+        genName: m.generation,
+        genSlug,
+        yearFrom: m.yearFrom ?? null,
+        yearTo: m.yearTo === 9999 ? null : m.yearTo ?? null,
+        engines: [],
+      };
+    }
+    const genNode = modelNode.generations[genSlug];
+    genNode.engines = genNode.engines || [];
+
+    for (const eng of m.engines) {
+      if (genNode.engines.some((e: any) => e.engineCode === eng.engineCode)) continue;
+      genNode.engines.push({
+        engineCode: eng.engineCode,
+        fuelType: eng.fuelType,
+        displacementCc: eng.displacementCc ?? null,
+        powerHp: eng.powerHp ?? null,
+        powerKw: null,
+        yearFrom: m.yearFrom ?? null,
+        yearTo: m.yearTo === 9999 ? null : m.yearTo ?? null,
+        oilSpec: {
+          viscosity: eng.spec.viscosity,
+          oemApproval: eng.spec.oemApproval ?? null,
+          aceaStandard: eng.spec.aceaStandard ?? null,
+          apiStandard: eng.spec.apiStandard ?? null,
+          capacityLiters: eng.spec.capacityLiters ?? null,
+          changeIntervalKm: eng.spec.changeIntervalKm ?? null,
+        },
+      });
+      added++;
+    }
+  }
+
+  // Adding a make to this file SUPPRESSES the database fallback for it, so any
+  // model that only existed in the DB would silently vanish from the dropdown
+  // (that is how Changan's Hunter/Kaicene and Haval's H2 disappeared). Carry
+  // those across for every make touched here.
+  let carried = 0;
+  for (const makeSlug of new Set(models.map((m) => slugify(m.make)))) {
+    const makeNode = catalog[makeSlug];
+    if (!makeNode) continue;
+
+    const dbModels = await prisma.vehicleModel.findMany({
+      where: { make: { slug: makeSlug } },
+      include: {
+        generations: { include: { engines: { include: { oilSpec: true } } } },
+      },
+    });
+
+    for (const dbModel of dbModels) {
+      const slug = slugify(dbModel.name);
+      if (makeNode.models[slug]) continue;
+
+      const generations: Record<string, unknown> = {};
+      for (const gen of dbModel.generations) {
+        generations[slugify(gen.name)] = {
+          genName: gen.name,
+          genSlug: slugify(gen.name),
+          yearFrom: gen.yearFrom,
+          yearTo: gen.yearTo,
+          engines: gen.engines.map((e) => ({
+            engineCode: e.engineCode,
+            fuelType: e.fuelType,
+            displacementCc: e.displacementCc,
+            powerHp: e.powerHp,
+            powerKw: e.powerKw,
+            yearFrom: gen.yearFrom,
+            yearTo: gen.yearTo,
+            oilSpec: e.oilSpec
+              ? {
+                  viscosity: e.oilSpec.viscosity,
+                  oemApproval: e.oilSpec.oemApproval,
+                  aceaStandard: e.oilSpec.aceaStandard,
+                  apiStandard: e.oilSpec.apiStandard,
+                  capacityLiters: e.oilSpec.capacityLiters,
+                  changeIntervalKm: e.oilSpec.changeIntervalKm,
+                }
+              : null,
+          })),
+        };
+      }
+      if (!Object.keys(generations).length) continue;
+
+      makeNode.models[slug] = {
+        modelName: dbModel.name,
+        modelSlug: slug,
+        category: 'automobile',
+        generations,
+      };
+      carried++;
+      console.log(`    ~ carried over existing DB model: ${makeNode.makeName} ${dbModel.name}`);
+    }
+  }
+
+  if (added > 0 || carried > 0) {
+    const backup = `${catalogPath}.bak-${Date.now()}`;
+    fs.copyFileSync(catalogPath, backup);
+    fs.writeFileSync(catalogPath, JSON.stringify(catalog));
+    console.log(`  Catalogue file updated (backup: ${backup})`);
+  }
+  return { added, carried, path: catalogPath };
+}
+
 async function main() {
   const raw = JSON.parse(fs.readFileSync(DATA_PATH, 'utf-8'));
   // The file is either a bare array of models, or { purgeFabricatedMakes, models }.
@@ -115,6 +336,7 @@ async function main() {
   }
   let inserted = 0;
   let alreadyPresent = 0;
+  let cataloguedEngines = 0;
   const specCache = new Map<string, string>();
 
   for (const m of models) {
@@ -207,6 +429,17 @@ async function main() {
         });
       }
     }
+
+    // OilFinderVehicle only backs the lookup-by-spec path. The make/model/engine
+    // dropdowns a customer actually clicks through read the catalogue chain
+    // (VehicleMake -> VehicleModel -> VehicleGeneration -> VehicleEngine), so a
+    // car is only findable once it exists there too.
+    if (APPLY) {
+      const catalogued = await upsertCatalogue(m, category);
+      cataloguedEngines += catalogued;
+    } else {
+      cataloguedEngines += m.engines.length;
+    }
   }
 
   if (snapshot.length) {
@@ -218,6 +451,13 @@ async function main() {
   console.log(`  Fabricated rows removed: ${deleted}`);
   console.log(`  Vehicle rows inserted:   ${inserted}`);
   console.log(`  Already present:         ${alreadyPresent}`);
+  console.log(`  Catalogue engines added: ${cataloguedEngines} (make/model/generation/engine browse chain)`);
+
+  if (APPLY) {
+    const cat = await updateCleanCatalog(models);
+    if (cat) console.log(`  Browse-dropdown entries added: ${cat.added}, existing DB models carried over: ${cat.carried} -> ${cat.path}`);
+    console.log('\n  NOTE: the catalogue file is cached in-process; restart the backend for it to take effect.');
+  }
   if (!APPLY) console.log('\nRe-run with --apply to write these changes.');
 }
 
