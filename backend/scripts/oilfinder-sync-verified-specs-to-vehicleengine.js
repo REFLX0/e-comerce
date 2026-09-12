@@ -22,6 +22,11 @@ const { PrismaClient } = require('@prisma/client');
 
 const APPLY = process.argv.includes('--apply');
 const CATEGORIES = ['moto', 'marine', 'agricole'];
+// Widening this to poids-lourd is not safe: it would pull a Mercedes OM615 down
+// from MB 229.51 to a generic 229.5 and a 1960s DAF from 20W-50 to 5W-40, because
+// for trucks the catalogue is often the better source. Vehicles outside the three
+// categories are named individually instead.
+const ALSO = [{ make: 'PIAGGIO', model: 'M500' }];
 
 const up = (v) => String(v || '').toUpperCase().trim();
 
@@ -29,7 +34,15 @@ async function main() {
   const prisma = new PrismaClient();
 
   const verified = await prisma.oilFinderVehicle.findMany({
-    where: { category: { in: CATEGORIES } },
+    where: {
+      OR: [
+        { category: { in: CATEGORIES } },
+        ...ALSO.map((a) => ({
+          make: { equals: a.make, mode: 'insensitive' },
+          model: { equals: a.model, mode: 'insensitive' },
+        })),
+      ],
+    },
     select: { make: true, model: true, engineCode: true, category: true, oilSpecId: true, oilSpec: true },
   });
   const byKey = new Map();
