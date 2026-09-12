@@ -186,15 +186,28 @@ const OEM_HOT_CLIMATE_SPECS: Array<{
   },
 ];
 
-export function resolveHotClimateAlternative(spec: {
-  viscosity?: string | null;
-  aceaStandard?: string | null;
-  apiStandard?: string | null;
-  oemApproval?: string | null;
-}): { viscosity: string; reason: string } | null {
+export function resolveHotClimateAlternative(
+  spec: {
+    viscosity?: string | null;
+    aceaStandard?: string | null;
+    apiStandard?: string | null;
+    oemApproval?: string | null;
+  },
+  vehicle?: { yearFrom?: number | null; fuelType?: string | null },
+): { viscosity: string; reason: string } | null {
   const v = (spec.viscosity || '').trim().toUpperCase();
   const m = /^(\d+W)-?(\d+)$/.exec(v);
   if (!m) return null;
+
+  // Every direct-injection petrol sold from the Euro 6d-TEMP deadline in
+  // September 2018 carries a particulate filter, and a high-SAPS 40-weight
+  // blocks a GPF exactly as it blocks a DPF. Not every 2018 petrol is direct
+  // injection — Hyundai's port-injected G4LA and G4LC are not — but the engine
+  // code does not say which, and withholding the alternative from an engine
+  // that could have taken it costs the customer nothing, while offering it to a
+  // GPF engine costs them the filter. So the whole year is withheld.
+  const petrol = !vehicle?.fuelType || /essence|petrol|gasoline/i.test(vehicle.fuelType);
+  if (petrol && (vehicle?.yearFrom ?? 0) >= 2018) return null;
 
   const [, cold, hotStr] = m;
   const hot = Number(hotStr);
@@ -291,13 +304,16 @@ function isDuplicateEngine(
 }
 
 /** The oil summary shown against an engine in the selector. */
-function toPreviewOil(spec: any): any {
+function toPreviewOil(
+  spec: any,
+  vehicle?: { yearFrom?: number | null; fuelType?: string | null },
+): any {
   if (!spec) return undefined;
   return {
     viscosity: spec.viscosity,
     oemApproval: spec.oemApproval,
     jasoStandard: spec.jasoStandard,
-    hotClimateAlternative: resolveHotClimateAlternative(spec),
+    hotClimateAlternative: resolveHotClimateAlternative(spec, vehicle),
   };
 }
 
@@ -2990,7 +3006,7 @@ export class OilFinderService {
           displacementCc: r.displacementCc,
           powerHp: r.powerHp,
           powerKw: r.powerKw,
-          previewOil: toPreviewOil(r.oilSpec),
+          previewOil: toPreviewOil(r.oilSpec, { yearFrom: r.yearFrom, fuelType: r.fuelType }),
         });
       }
     } catch {
@@ -3048,7 +3064,7 @@ export class OilFinderService {
                 displacementCc: eng.displacementCc,
                 powerHp: eng.powerHp,
                 powerKw: eng.powerKw,
-                previewOil: toPreviewOil(eng.oilSpec),
+                previewOil: toPreviewOil(eng.oilSpec, { yearFrom: eng.yearFrom, fuelType: eng.fuelType }),
               });
             }
           }
@@ -3089,7 +3105,7 @@ export class OilFinderService {
           displacementCc: e.displacementCc,
           powerHp: e.powerHp,
           powerKw: e.powerKw,
-          previewOil: toPreviewOil(e.oilSpec),
+          previewOil: toPreviewOil(e.oilSpec, { fuelType: e.fuelType }),
         }));
         await this.mergeVerifiedEngines(result, makeName, modelName, generationName, { excludeHarvested: true });
         return result;

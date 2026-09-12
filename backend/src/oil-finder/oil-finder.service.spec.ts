@@ -392,6 +392,22 @@ describe('OilFinderService', () => {
       expect(resolveHotClimateAlternative({ viscosity: '20W-50' })).toBeNull();
     });
 
+    // Every direct-injection petrol from the Euro 6d-TEMP deadline carries a
+    // particulate filter, and a high-SAPS 40-weight blocks a GPF as surely as it
+    // blocks a DPF. A Hyundai Tucson NX4's 1.6 T-GDi was being offered 5W-40.
+    it('withholds a heavier grade from a petrol engine built from 2018', () => {
+      const spec = { viscosity: '5W-30', apiStandard: 'SM/SN' };
+      expect(resolveHotClimateAlternative(spec, { yearFrom: 2020, fuelType: 'essence' })).toBeNull();
+      expect(resolveHotClimateAlternative(spec, { yearFrom: 2018, fuelType: 'essence' })).toBeNull();
+    });
+
+    it('still offers one to an older petrol engine, where the advice belongs', () => {
+      const spec = { viscosity: '5W-30', apiStandard: 'SL/SM' };
+      expect(
+        resolveHotClimateAlternative(spec, { yearFrom: 2011, fuelType: 'essence' }),
+      ).toMatchObject({ viscosity: '5W-40' });
+    });
+
     it('returns null rather than guessing at an unparseable grade', () => {
       expect(resolveHotClimateAlternative({ viscosity: null })).toBeNull();
       expect(resolveHotClimateAlternative({ viscosity: 'SAE 30' })).toBeNull();
