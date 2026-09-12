@@ -1,0 +1,70 @@
+{
+  "makes": ["KIA", "HYUNDAI"],
+  "note": "Supplement to the Hyundai/Kia family table, covering the engines whose codes follow neither the G-prefix petrol nor D-prefix diesel convention and so kept the fabricated 'Asian OEM Standard' approval. Most are Mazda-derived units from Kia's Ford/Mazda period — the B-series petrols in the Pride and Sephia, the FE in the Clarus and Sportage, and the RF and R2 diesels — plus Kia's own J2, the 2.7 diesel in the K2700 and Pregio that is everywhere in Tunisia as a light truck and was recorded as petrol. Hyundai's DJY is PSA's XUD9 diesel, fitted to the Lantra, and is given the same figures as the PSA table uses for it.",
+
+  "engines": [
+    {
+      "codes": ["J2"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "15W-40", "apiStandard": "CF", "aceaStandard": "B3/B4", "oemApproval": null, "capacityLiters": 8.0, "changeIntervalKm": 7500 },
+      "confidence": "low",
+      "source": "Kia J2 2.7 indirect-injection diesel — K2700, Pregio, Besta. Recorded as petrol. Pre-common-rail with no particulate filter, so a conventional 15W-40 is correct and suits hot climates; the capacity is a family figure rather than a manual one."
+    },
+    {
+      "codes": ["RF", "RF-CX", "R2"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "15W-40", "apiStandard": "CF", "aceaStandard": "B3/B4", "oemApproval": null, "capacityLiters": 5.5, "changeIntervalKm": 7500 },
+      "confidence": "low",
+      "source": "Mazda-derived RF 2.0 and R2 2.2 diesels — Sportage, Retona, Carnival, Besta. Capacity is a family figure."
+    },
+    {
+      "codes": ["DJY"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "10W-40", "apiStandard": "SL/CF", "aceaStandard": "A3/B4", "oemApproval": "PSA B71 2294", "capacityLiters": 4.75, "changeIntervalKm": 10000 },
+      "confidence": "high",
+      "source": "DJY is PSA's XUD9A 1.9 diesel, fitted to the Hyundai Lantra, and was recorded as petrol here exactly as it was under Peugeot. Same 4.75 L change capacity and 10W-40 grade as the PSA entry."
+    },
+    {
+      "codes": ["B3LA"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "5W-30", "apiStandard": "SL/SM", "aceaStandard": null, "oemApproval": null, "capacityLiters": 3.0, "changeIntervalKm": 10000 },
+      "confidence": "low",
+      "source": "1.0 three-cylinder — Picanto, i10. Small sump; capacity is a family estimate."
+    },
+    {
+      "codes": ["B3", "B5", "B6", "B3A5", "BFD", "GA6D", "ZY-VE", "TB"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "10W-40", "apiStandard": "SL", "aceaStandard": "A3/B4", "oemApproval": null, "capacityLiters": 3.5, "changeIntervalKm": 7500 },
+      "confidence": "low",
+      "source": "Mazda B-series 1.3-1.6 petrol — Pride, Sephia, Shuma, Avella, Carens. Pre-1998 designs; 10W-40 is the conventional grade and suits hot climates. Capacity is a family estimate."
+    },
+    {
+      "codes": ["FE", "FE (8V)", "FE (16V)", "OK24N", "OK26Y", "T8", "G4BB"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "10W-40", "apiStandard": "SL", "aceaStandard": "A3/B4", "oemApproval": null, "capacityLiters": 4.0, "changeIntervalKm": 7500 },
+      "confidence": "low",
+      "source": "Mazda-derived FE 2.0 and the 1.8 units — Clarus, Sportage, Retona, Sephia, Elantra. Capacity is a family estimate."
+    },
+    {
+      "codes": ["A3E", "A5D", "G15B", "CJTA"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "5W-30", "apiStandard": "SL/SM", "aceaStandard": null, "oemApproval": null, "capacityLiters": 3.3, "changeIntervalKm": 10000 },
+      "confidence": "low",
+      "source": "Kia's own 1.3/1.5 petrols — Rio, Avella. Capacity is a family estimate."
+    },
+    {
+      "codes": ["K5", "KRV6", "G4BS"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "5W-30", "apiStandard": "SL/SM", "aceaStandard": null, "oemApproval": null, "capacityLiters": 4.3, "changeIntervalKm": 10000 },
+      "confidence": "low",
+      "source": "2.4/2.5 petrol — Carnival, Sonata. Capacity is a family estimate."
+    },
+    {
+      "codes": ["G8BA", "G8BE", "8A80"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "5W-30", "apiStandard": "SL/SM", "aceaStandard": null, "oemApproval": null, "capacityLiters": 6.5, "changeIntervalKm": 10000 },
+      "confidence": "low",
+      "source": "Hyundai's 4.5-5.0 V8 — Equus / Centennial. Capacity is a family estimate."
+    }
+  ]
+}
