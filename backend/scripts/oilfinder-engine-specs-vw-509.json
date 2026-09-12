@@ -1,0 +1,21 @@
+{
+  "makes": ["VW", "VOLKSWAGEN", "SKODA", "SEAT", "AUDI"],
+  "note": "Correction. The Golf VIII generation 2.0 TDI was given 5W-30 VW 507.00 on the reasoning that a modern VW diesel with a particulate filter takes 507.00 - an era rule, applied without checking the engine, which is the exact failure this whole exercise has been undoing. The EA288 evo in the Golf VIII, Octavia IV, Leon IV and Passat B9 is specified VW 509.00, which exists only in 0W-20. oil-select.com puts the Golf VIII 2.0 TDI on 509.00 explicitly. The two specifications are NOT interchangeable in either direction - VW 509.00 was designed around different bearing clearances and oil pump pressures, so a 5W-30 507.00 oil is not a substitute for it any more than a 0W-20 509.00 oil is a substitute in an older TDI. Note that the Golf VIII 1.0 and 1.5 TSI are the other way round: they keep 504.00/507.00 and are deliberately left alone here.",
+
+  "engines": [
+    {
+      "codes": ["DTTA", "DTTC", "DTSA", "DTSB", "DSRB", "DXRB", "DTRA"],
+      "fuelType": "diesel",
+      "spec": {
+        "viscosity": "0W-20",
+        "apiStandard": "SN",
+        "aceaStandard": "C6",
+        "oemApproval": "VW 509.00 (non interchangeable avec 507.00)",
+        "capacityLiters": 4.5,
+        "changeIntervalKm": 15000
+      },
+      "confidence": "medium",
+      "source": "The 2.0 TDI EA288 evo engine codes in the Golf VIII (DSRB, DTSA, DTSB, DTTA, DTTC, DXRB per the Volkswagen parts catalogue) and the Passat B9. oil-select.com: the Golf VIII 2.0 TDI requires VW 509 00, which is published only in SAE 0W-20 and is not backward compatible with 504.00/507.00. Capacity is a family figure rather than a manual one."
+    }
+  ]
+}
