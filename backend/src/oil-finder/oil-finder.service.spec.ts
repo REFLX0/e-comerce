@@ -997,6 +997,24 @@ describe('OilFinderService', () => {
         expect(codes.filter((c) => c === '3UR-FE')).toHaveLength(1);
       });
 
+      // Regression: the database fallback matched on model name alone, so a
+      // make/model pair that does not exist ("VW Octavia") returned whichever
+      // manufacturer does build that model.
+      it('scopes the database fallback to the requested make', async () => {
+        __setCleanCatalogForTests({});
+        prisma.oilFinderVehicle.findMany.mockResolvedValue([]);
+        const vehicleEngine = { findMany: jest.fn().mockResolvedValue([]) };
+        (prisma as any).vehicleEngine = vehicleEngine;
+
+        await service.getEngines('VW', 'Octavia');
+
+        const where = vehicleEngine.findMany.mock.calls[0][0].where;
+        expect(where.generation.model.make).toBeDefined();
+        expect(where.generation.model.make.OR).toEqual(
+          expect.arrayContaining([{ slug: 'vw' }]),
+        );
+      });
+
       it('serves verified rows for a model the catalogue does not know at all', async () => {
         __setCleanCatalogForTests({});
         prisma.oilFinderVehicle.findMany.mockResolvedValue([

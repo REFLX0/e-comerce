@@ -2988,6 +2988,16 @@ export class OilFinderService {
           generation: {
             model: {
               name: { equals: modelName.trim(), mode: 'insensitive' },
+              // Without this the lookup matches on model name alone, so asking
+              // for a model a make does not build returns another manufacturer's
+              // engines: "VW Octavia" served Skoda's line-up and "Skoda Passat"
+              // served VW's.
+              make: {
+                OR: [
+                  { slug: mSlug },
+                  { name: { equals: makeName.trim(), mode: 'insensitive' } },
+                ],
+              },
             },
             ...(generationName ? { name: { contains: generationName.trim(), mode: 'insensitive' } } : {}),
           },
