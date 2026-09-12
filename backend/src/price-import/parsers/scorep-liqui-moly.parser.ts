@@ -4,21 +4,7 @@ import {
 } from './supplier-price-parser.interface';
 import { PdfPage, PdfTextItem, groupIntoLines } from './pdf-text-extractor';
 import { convertEuropeanDecimal } from './decimal.util';
-
-type ColumnKey =
-  'article' | 'description' | 'content' | 'supplierPrice' | 'sellingPrice';
-
-// Not anchored to string-start: these are matched against the whole merged
-// header line, so a pattern must be findable wherever its column happens to
-// sit (order between suppliers can vary — only "prix"/"ttc" naming is fixed
-// by the spec).
-const COLUMN_HEADER_PATTERNS: Record<ColumnKey, RegExp> = {
-  article: /article|référence|réf\.?\s*(n°|num)|ref\.?\s*(n°|num)/i,
-  description: /désignation|description|libell/i,
-  content: /content|contenance|conditionnement/i,
-  supplierPrice: /nouveau\s*prix/i,
-  sellingPrice: /vente\s*pub|prix\s*public|ttc/i,
-};
+import { ColumnKey, COLUMN_HEADER_PATTERNS } from './column-header-patterns';
 
 interface ColumnBounds {
   key: ColumnKey;
@@ -50,6 +36,16 @@ export class ScorepLiquiMolyParser implements SupplierPriceParser {
     );
   }
 
+  // Header cells can themselves word-wrap onto multiple physical lines (e.g.
+  // "Article number" -> "Article" / "number", "VENTE PUB TTC" -> "VENTE PUB" /
+  // "TTC"), and a single-line cell like "nouveau prix" sitting vertically
+  // centered next to a wrapped cell lands on a *third*, different y-band. A
+  // real supplier PDF exercised this: the header ends up spread across up to
+  // 3 line-groups, none of which alone contains both "nouveau prix" and
+  // "vente pub"/"ttc" — so header detection must consider a window of nearby
+  // lines together, not just one line at a time.
+  private static readonly MAX_HEADER_WINDOW = 3;
+
   parse(pages: PdfPage[]): ParsedPriceRow[] {
     const rows: ParsedPriceRow[] = [];
     let currentBounds: ColumnBounds[] | null = null;
@@ -58,10 +54,12 @@ export class ScorepLiquiMolyParser implements SupplierPriceParser {
       const lines = groupIntoLines(page.items);
       let bodyLines = lines;
 
-      const headerIdx = lines.findIndex((line) => this.isHeaderLine(line));
-      if (headerIdx !== -1) {
-        currentBounds = this.detectColumnBounds(lines[headerIdx]);
-        bodyLines = lines.slice(headerIdx + 1);
+      const header = this.findHeaderWindow(lines);
+      if (header) {
+        currentBounds = this.detectColumnBounds(
+          header.lines.flat(),
+        );
+        bodyLines = lines.slice(header.endIdx + 1);
       }
 
       if (!currentBounds) continue; // haven't seen a header yet on any page — skip until we do
@@ -81,8 +79,31 @@ export class ScorepLiquiMolyParser implements SupplierPriceParser {
     return rows;
   }
 
-  private isHeaderLine(line: PdfTextItem[]): boolean {
-    const text = line.map((i) => i.str).join(' ');
+  /**
+   * Scans consecutive-line windows (1 up to MAX_HEADER_WINDOW lines) starting
+   * at each line, looking for the smallest window whose combined text
+   * contains both the "nouveau prix" and "vente pub"/"ttc" patterns.
+   */
+  private findHeaderWindow(
+    lines: PdfTextItem[][],
+  ): { lines: PdfTextItem[][]; endIdx: number } | null {
+    for (let i = 0; i < lines.length; i++) {
+      for (
+        let w = 1;
+        w <= ScorepLiquiMolyParser.MAX_HEADER_WINDOW && i + w <= lines.length;
+        w++
+      ) {
+        const window = lines.slice(i, i + w);
+        if (this.isHeaderWindow(window)) {
+          return { lines: window, endIdx: i + w - 1 };
+        }
+      }
+    }
+    return null;
+  }
+
+  private isHeaderWindow(window: PdfTextItem[][]): boolean {
+    const text = window.map((l) => l.map((i) => i.str).join(' ')).join(' ');
     return (
       COLUMN_HEADER_PATTERNS.supplierPrice.test(text) &&
       COLUMN_HEADER_PATTERNS.sellingPrice.test(text)

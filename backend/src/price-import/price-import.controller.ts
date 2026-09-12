@@ -20,6 +20,10 @@ import { Roles } from '../common/decorators/roles.decorator';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
 import { PriceImportService } from './price-import.service';
 import { ApplyPriceImportDto } from './dto/apply-price-import.dto';
+import { isSpreadsheetFile } from './parsers/spreadsheet-price-parser.util';
+
+const ACCEPTED_TYPE_ERROR =
+  'Only PDF, CSV or XLSX files are accepted.';
 
 @ApiTags('admin-price-imports')
 @ApiBearerAuth()
@@ -36,11 +40,9 @@ export class PriceImportController {
     FileInterceptor('file', {
       limits: { fileSize: 20 * 1024 * 1024 }, // 20 MB max
       fileFilter: (_req, file, cb) => {
-        if (file.mimetype !== 'application/pdf') {
-          return cb(
-            new BadRequestException('Only PDF files are accepted.'),
-            false,
-          );
+        const isPdf = file.mimetype === 'application/pdf';
+        if (!isPdf && !isSpreadsheetFile(file.originalname, file.mimetype)) {
+          return cb(new BadRequestException(ACCEPTED_TYPE_ERROR), false);
         }
         cb(null, true);
       },

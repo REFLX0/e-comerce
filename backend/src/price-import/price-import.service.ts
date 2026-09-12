@@ -14,6 +14,10 @@ import { UploadsService } from '../uploads/uploads.service';
 import { ParserRegistry } from './parsers/parser-registry';
 import { extractPdfPages } from './parsers/pdf-text-extractor';
 import { ParsedPriceRow } from './parsers/supplier-price-parser.interface';
+import {
+  isSpreadsheetFile,
+  parseSpreadsheet,
+} from './parsers/spreadsheet-price-parser.util';
 import { analyzePriceChange } from './price-change-analysis.util';
 
 const APPLY_TRANSACTION_TIMEOUT_MS = 60_000;
@@ -32,31 +36,53 @@ export class PriceImportService {
 
   async createPreview(file: Express.Multer.File, uploadedById: string) {
     if (!file?.buffer?.length) {
-      throw new BadRequestException('No PDF file received.');
+      throw new BadRequestException('No file received.');
     }
 
-    const pages = await extractPdfPages(file.buffer);
-    const fullText = pages
-      .map((p) => p.items.map((i) => i.str).join(' '))
-      .join('\n');
-
-    const parser = this.parserRegistry.findParser(fullText);
-    if (!parser) {
-      throw new BadRequestException(
-        'Unrecognized price list format. No parser matches this PDF (expected columns: Article number, Description, Content, nouveau prix, VENTE PUB TTC).',
-      );
-    }
-
+    const isSpreadsheet = isSpreadsheetFile(file.originalname, file.mimetype);
     let rows: ParsedPriceRow[];
-    try {
-      rows = parser.parse(pages);
-    } catch (err: any) {
-      throw new BadRequestException(err?.message || 'Failed to parse PDF.');
+    let supplierLabel: string;
+    let supplierKey: string;
+
+    if (isSpreadsheet) {
+      // CSV/XLSX escape hatch: a spreadsheet's columns are found by name, not
+      // by guessing text position on a page, so it isn't exposed to the PDF
+      // layout quirks (wrapped header cells, scanned pages with no text
+      // layer) that a supplier's PDF export can have.
+      try {
+        rows = await parseSpreadsheet(file.buffer, file.originalname);
+      } catch (err: any) {
+        throw new BadRequestException(
+          err?.message || 'Failed to parse this file.',
+        );
+      }
+      supplierLabel = 'Import CSV/XLSX';
+      supplierKey = 'SPREADSHEET_IMPORT';
+    } else {
+      const pages = await extractPdfPages(file.buffer);
+      const fullText = pages
+        .map((p) => p.items.map((i) => i.str).join(' '))
+        .join('\n');
+
+      const parser = this.parserRegistry.findParser(fullText);
+      if (!parser) {
+        throw new BadRequestException(
+          'Unrecognized price list format. No parser matches this PDF (expected columns: Article number, Description, Content, nouveau prix, VENTE PUB TTC).',
+        );
+      }
+
+      try {
+        rows = parser.parse(pages);
+      } catch (err: any) {
+        throw new BadRequestException(err?.message || 'Failed to parse PDF.');
+      }
+      supplierLabel = parser.supplierLabel;
+      supplierKey = parser.supplierKey;
     }
 
     if (rows.length === 0) {
       throw new BadRequestException(
-        'No product rows were detected in this PDF.',
+        'No product rows were detected in this file.',
       );
     }
 
@@ -65,12 +91,17 @@ export class PriceImportService {
     let fileUrl: string | null = null;
     try {
       fileUrl = await this.uploadsService.uploadImage(
-        { ...file, mimetype: 'application/pdf' },
+        {
+          ...file,
+          mimetype: isSpreadsheet
+            ? file.mimetype || 'application/octet-stream'
+            : 'application/pdf',
+        },
         false,
       );
     } catch (err: any) {
       this.logger.warn(
-        `Failed to store original PDF (${err?.message}); continuing without fileUrl.`,
+        `Failed to store original file (${err?.message}); continuing without fileUrl.`,
       );
     }
 
@@ -88,8 +119,8 @@ export class PriceImportService {
       data: {
         filename: file.originalname,
         fileUrl,
-        supplier: parser.supplierLabel,
-        parserKey: parser.supplierKey,
+        supplier: supplierLabel,
+        parserKey: supplierKey,
         status: PriceImportStatus.PREVIEW,
         uploadedById,
         detectedCount: rows.length,

@@ -87,6 +87,50 @@ describe('ScorepLiquiMolyParser', () => {
       ]),
     ).toThrow(/header/i);
   });
+
+  // Regression: a real SCOREP/LIQUI MOLY price list wraps "Article number"
+  // and "VENTE PUB TTC" onto 2 lines each within the header row, while
+  // "Description"/"Content"/"nouveau prix" stay single-line and sit
+  // vertically centered between them -- spreading the header across 3
+  // distinct y-bands, none of which alone contains both "nouveau prix" and
+  // "vente pub"/"ttc". This previously made the parser miss the header
+  // entirely and throw "Unable to locate the price table header" even
+  // though every column was present, just wrapped.
+  it('finds a header whose cells wrap across multiple lines', () => {
+    const rows = parser.parse([
+      {
+        pageNumber: 1,
+        items: [
+          { str: 'Article', x: 50, y: 812, width: 40, height: 10 },
+          { str: 'VENTE', x: 465, y: 812, width: 40, height: 10 },
+          { str: 'PUB', x: 500, y: 812, width: 30, height: 10 },
+          { str: 'Description', x: 105, y: 800, width: 100, height: 10 },
+          { str: 'Content', x: 300, y: 800, width: 50, height: 10 },
+          { str: 'nouveau', x: 385, y: 800, width: 40, height: 10 },
+          { str: 'prix', x: 420, y: 800, width: 30, height: 10 },
+          { str: 'number', x: 50, y: 788, width: 40, height: 10 },
+          { str: 'TTC', x: 465, y: 788, width: 30, height: 10 },
+          { str: '1121', x: 50, y: 750, width: 30, height: 10 },
+          {
+            str: 'Touring High Tech Super SHPD 15W-40',
+            x: 105,
+            y: 750,
+            width: 190,
+            height: 10,
+          },
+          { str: '20 l', x: 300, y: 750, width: 30, height: 10 },
+          { str: '373,7812', x: 385, y: 750, width: 40, height: 10 },
+          { str: '491,504', x: 465, y: 750, width: 40, height: 10 },
+        ],
+      },
+    ]);
+
+    expect(rows.length).toBe(1);
+    expect(rows[0].articleNumber).toBe('1121');
+    expect(rows[0].content).toBe('20 l');
+    expect(rows[0].supplierPrice).toBeCloseTo(373.7812, 4);
+    expect(rows[0].sellingPrice).toBeCloseTo(491.504, 3);
+  });
 });
 
 describe('convertEuropeanDecimal', () => {

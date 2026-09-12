@@ -81,9 +81,17 @@ export default function AdminPriceUpdatesPage() {
 
   const { stageKey, resetStage } = useStagedProgress(previewMutation.isPending)
 
+  const ACCEPTED_EXTENSIONS = /\.(pdf|csv|xlsx?)$/i
+  const ACCEPTED_MIMETYPES = new Set([
+    'application/pdf',
+    'text/csv',
+    'application/vnd.ms-excel',
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  ])
+
   const handleFile = (file: File | null | undefined) => {
     if (!file) return
-    if (file.type !== 'application/pdf') {
+    if (!ACCEPTED_MIMETYPES.has(file.type) && !ACCEPTED_EXTENSIONS.test(file.name)) {
       toast.error(t('genericParseError'))
       return
     }
@@ -174,7 +182,7 @@ export default function AdminPriceUpdatesPage() {
               <input
                 ref={fileInputRef}
                 type="file"
-                accept="application/pdf"
+                accept=".pdf,.csv,.xlsx,.xls,application/pdf,text/csv,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                 className="hidden"
                 onChange={(e) => handleFile(e.target.files?.[0])}
               />
