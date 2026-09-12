@@ -222,6 +222,18 @@ export function resolveHotClimateAlternative(spec: {
   };
 }
 
+/**
+ * An engine code reduced to what identifies the engine, for comparing entries
+ * that came from different stores: punctuation dropped and any trailing
+ * parenthetical trim removed, so "D16DTF (1.6 e-XDi)" and "D16DTF" match.
+ */
+function baseEngineCode(code?: string | null): string {
+  return String(code || '')
+    .replace(/\s*\(.*$/, '')
+    .toUpperCase()
+    .replace(/[^A-Z0-9]/g, '');
+}
+
 /** The oil summary shown against an engine in the selector. */
 function toPreviewOil(spec: any): any {
   if (!spec) return undefined;
@@ -2917,9 +2929,12 @@ export class OilFinderService {
         const key = `${r.engineCode.toLowerCase()}_${r.powerHp || ''}_${r.fuelType || ''}`;
         // Also treat a bare code match as a duplicate: the catalogue frequently
         // has the same engine with power left null, and offering the customer
-        // "2.2 mHawk" twice is worse than losing the second row's spec.
+        // "2.2 mHawk" twice is worse than losing the second row's spec. The two
+        // stores also punctuate differently and one often appends a trim — the
+        // catalogue's "D16DTF" and a verified row's "D16DTF (1.6 e-XDi)" are one
+        // engine — so compare on the normalised base code.
         const codeOnly = [...seen].some(
-          (k) => k.split('_')[0] === r.engineCode!.toLowerCase(),
+          (k) => baseEngineCode(k.split('_')[0]) === baseEngineCode(r.engineCode),
         );
         if (seen.has(key) || codeOnly) continue;
         seen.add(key);

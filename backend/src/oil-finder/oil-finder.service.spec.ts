@@ -997,6 +997,20 @@ describe('OilFinderService', () => {
         );
       });
 
+      // The two stores punctuate differently and one often appends a trim, so
+      // "D16DTF" and "D16DTF (1.6 e-XDi)" reached the customer as two engines.
+      it('treats a trailing trim in the code as the same engine', async () => {
+        catalogueWith([
+          { engineCode: 'D16DTF', fuelType: 'diesel', displacementCc: 1597, powerHp: 115 },
+        ]);
+        prisma.oilFinderVehicle.findMany.mockResolvedValue([
+          { engineCode: 'D16DTF (1.6 e-XDi)', yearFrom: 2015, yearTo: 9999, displacementCc: 1597, powerHp: 136, fuelType: 'diesel', oilSpec: null },
+        ]);
+
+        const codes = (await service.getEngines('TOYOTA', 'Land Cruiser')).map((e) => e.engineCode);
+        expect(codes).toEqual(['D16DTF']);
+      });
+
       it('does not offer the same engine twice when power differs', async () => {
         catalogueWith([
           { engineCode: '3UR-FE', fuelType: 'essence', displacementCc: 5663, powerHp: null },

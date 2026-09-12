@@ -1,0 +1,168 @@
+{
+  "makes": [
+    "GEELY",
+    "SSANGYONG"
+  ],
+  "note": "Cleans up the catalogue entries these two makes carried alongside the fabricated OilFinderVehicle rows. Geely's whole range sat on '5W-40 Universal High-Performance'. SsangYong's sat on '15W-40 MB Sheet 229.1' with every engine recorded as petrol — including the D20DT/D20DTR/D20DTF e-XDi diesels, which run a particulate filter and need a low-SAPS 5W-30, and the OM662 that the catalogue calls '2.9 Essence'. The Mercedes-derived petrols genuinely do take an MB-sheet oil, so those keep it. Capacities are family figures unless stated otherwise.",
+  "engines": [
+    {
+      "patterns": [
+        "^D20DT",
+        "^D16DT",
+        "^D27DT"
+      ],
+      "fuelType": "diesel",
+      "spec": {
+        "viscosity": "5W-30",
+        "apiStandard": "CF",
+        "aceaStandard": "C3",
+        "oemApproval": "Low-SAPS (FAP/DPF)",
+        "capacityLiters": 7.0,
+        "changeIntervalKm": 10000
+      },
+      "confidence": "low",
+      "source": "SsangYong's own e-XDi common-rail diesels — D16DTF/D16DTR 1.6, D20DT/D20DTF/D20DTR 2.0, D27DT 2.7 (Tivoli, Korando, Actyon, Rexton, Kyron). Recorded as petrol on a 15W-40 MB sheet, which is neither the right fuel nor a grade their particulate filter tolerates. Capacity is a family figure."
+    },
+    {
+      "patterns": [
+        "^(OM6|OM 6)",
+        "^2\\.9 ",
+        "^2\\.3 Diesel"
+      ],
+      "fuelType": "diesel",
+      "spec": {
+        "viscosity": "15W-40",
+        "apiStandard": "CF",
+        "aceaStandard": "B3/B4",
+        "oemApproval": "MB 229.1",
+        "capacityLiters": 7.5,
+        "changeIntervalKm": 7500
+      },
+      "confidence": "low",
+      "source": "The Mercedes OM601/OM602/OM662 indirect-injection diesels SsangYong built under licence (Musso, Korando, Istana), which the catalogue lists as '2.9 Essence'. Pre-common-rail and no particulate filter, so a conventional 15W-40 is correct and suits hot climates."
+    },
+    {
+      "patterns": [
+        "^G1[56]"
+      ],
+      "fuelType": "essence",
+      "spec": {
+        "viscosity": "5W-30",
+        "apiStandard": "SN",
+        "aceaStandard": "C3",
+        "oemApproval": null,
+        "capacityLiters": 4.0,
+        "changeIntervalKm": 10000
+      },
+      "confidence": "medium",
+      "source": "SsangYong's own G16DF 1.6 e-XGi and G15TF 1.5 T-GDi (Tivoli, Korando, XLV). AUTODOC and autopartspro give the Tivoli 1.6 petrol a 4.0 L fill on 5W-30 meeting ACEA C3. These are modern direct-injection units, not the licensed Mercedes petrols that keep an MB sheet."
+    },
+    {
+      "patterns": [
+        "^(M 1|M1)0",
+        "^(M 1|M1)1",
+        "^(M 1|M1)6",
+        "^G2",
+        "^G3",
+        "^E2",
+        "^E3",
+        "^2\\.[0-9] Essence",
+        "^3\\.[0-9] Essence"
+      ],
+      "fuelType": "essence",
+      "spec": {
+        "viscosity": "5W-40",
+        "apiStandard": "SL/SN",
+        "aceaStandard": "A3/B4",
+        "oemApproval": "MB 229.1",
+        "capacityLiters": 6.0,
+        "changeIntervalKm": 10000
+      },
+      "confidence": "low",
+      "source": "The Mercedes M104, M111 and M161 petrol engines SsangYong built under licence, and their G/E-series derivatives (Musso, Korando, Rexton, Chairman). An MB-sheet oil is genuinely correct for these; only the grade and the sump figure are family-derived."
+    },
+    {
+      "patterns": [
+        "^JL[DY]-?4G2",
+        "^2\\.0 \\(JL486"
+      ],
+      "fuelType": "essence",
+      "spec": {
+        "viscosity": "5W-30",
+        "apiStandard": "SL/SN",
+        "aceaStandard": "A3/B4",
+        "oemApproval": null,
+        "capacityLiters": 4.5,
+        "changeIntervalKm": 7500
+      },
+      "confidence": "medium",
+      "source": "mymotorlist.com Geely JLD-4G20: 5W-30, 4.5 L (Atlas, Emgrand X7, Emgrand 8). Also covers the catalogue's descriptive '2.0 (JL486ZQ)' entry for the same engine."
+    },
+    {
+      "patterns": [
+        "^JL[DY]-?4G1",
+        "^1\\.5 \\(JLy"
+      ],
+      "fuelType": "essence",
+      "spec": {
+        "viscosity": "5W-30",
+        "apiStandard": "SL/SN",
+        "aceaStandard": "A3/B4",
+        "oemApproval": null,
+        "capacityLiters": 4.0,
+        "changeIntervalKm": 7500
+      },
+      "confidence": "medium",
+      "source": "mymotorlist.com Geely JLY-4G15: 5W-30, 4.0 L (Emgrand EC7, Emgrand 7). Also covers the catalogue's descriptive '1.5 (JLy-4G15B)' entry for the same engine."
+    },
+    {
+      "patterns": [
+        "^MR4"
+      ],
+      "fuelType": "essence",
+      "spec": {
+        "viscosity": "5W-30",
+        "apiStandard": "SL",
+        "aceaStandard": "A3/B4",
+        "oemApproval": null,
+        "capacityLiters": 3.7,
+        "changeIntervalKm": 7500
+      },
+      "confidence": "low",
+      "source": "Geely MR479Q / MR479QA 1.5 and MR481QA 1.8 — the Mitsubishi 4G18-derived units in the CK, MK and Emgrand. Capacity is a family figure."
+    },
+    {
+      "patterns": [
+        "^JL3"
+      ],
+      "fuelType": "essence",
+      "spec": {
+        "viscosity": "5W-30",
+        "apiStandard": "SL",
+        "aceaStandard": "A3/B4",
+        "oemApproval": null,
+        "capacityLiters": 3.3,
+        "changeIntervalKm": 7500
+      },
+      "confidence": "low",
+      "source": "Geely JL376QE 1.0 and JL378QE 1.3 (Panda, LC, CK). Small sump; capacity is a family estimate."
+    },
+    {
+      "codes": [
+        "5A-FE",
+        "8A-FE"
+      ],
+      "fuelType": "essence",
+      "spec": {
+        "viscosity": "5W-30",
+        "apiStandard": "SJ/SL",
+        "aceaStandard": null,
+        "oemApproval": null,
+        "capacityLiters": 3.7,
+        "changeIntervalKm": 7500
+      },
+      "confidence": "medium",
+      "source": "Genuine Toyota 5A-FE and 8A-FE units, which Geely licensed for its early cars. Same figures the Toyota table gives them."
+    }
+  ]
+}

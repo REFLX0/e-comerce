@@ -1,0 +1,192 @@
+{
+  "purgeFabricatedMakes": ["BYD", "DFSK", "GREAT WALL", "GEELY", "HAVAL", "MG", "SSANGYONG"],
+  "models": [
+    {
+      "make": "BYD", "model": "F3", "generation": "F3 (2005 - 2021)",
+      "yearFrom": 2005, "yearTo": 2021, "category": "automobile", "confidence": "medium",
+      "source": "BYD F3, the saloon that is BYD's only combustion model of any volume. kroon-oil.com product recommendation for the F3 1.5 (80 kW, 2014-2021) and carengineoilcapacity.com: the BYD473QE takes 3.5 L of 5W-30 or 0W-30. The same engine in the larger L3 is quoted at 4.0 L.",
+      "engines": [
+        { "engineCode": "BYD473QE", "displacementCc": 1497, "powerHp": 109, "fuelType": "essence",
+          "spec": { "viscosity": "5W-30", "apiStandard": "SL/SM", "aceaStandard": "A3/B4", "oemApproval": null, "capacityLiters": 3.5, "changeIntervalKm": 7500 } },
+        { "engineCode": "BYD483QB", "displacementCc": 1587, "powerHp": 105, "fuelType": "essence",
+          "spec": { "viscosity": "5W-30", "apiStandard": "SL/SM", "aceaStandard": "A3/B4", "oemApproval": null, "capacityLiters": 3.5, "changeIntervalKm": 7500 } }
+      ]
+    },
+    {
+      "make": "BYD", "model": "F0", "generation": "F0 (2008 - 2016)",
+      "yearFrom": 2008, "yearTo": 2016, "category": "automobile", "confidence": "low",
+      "source": "BYD F0 city car, 1.0 three-cylinder BYD371QA. Grade taken from the BYD473QE figures for the same era; the capacity is a family estimate for a 1.0 three-cylinder rather than a manual figure.",
+      "engines": [
+        { "engineCode": "BYD371QA", "displacementCc": 998, "powerHp": 68, "fuelType": "essence",
+          "spec": { "viscosity": "5W-30", "apiStandard": "SL/SM", "aceaStandard": "A3/B4", "oemApproval": null, "capacityLiters": 3.0, "changeIntervalKm": 7500 } }
+      ]
+    },
+
+    {
+      "make": "GEELY", "model": "Emgrand", "generation": "Emgrand EC7 / Emgrand 7 (2009 - Présent)",
+      "yearFrom": 2009, "yearTo": 9999, "category": "automobile", "confidence": "medium",
+      "source": "mymotorlist.com Geely JLY-4G15: 5W-30, 4.0 L, fitted to the Emgrand EC7 (FE-1, 2009-2016) and Emgrand 7 (FE-3, from 2014).",
+      "engines": [
+        { "engineCode": "JLY-4G15", "displacementCc": 1498, "powerHp": 109, "fuelType": "essence",
+          "spec": { "viscosity": "5W-30", "apiStandard": "SL/SN", "aceaStandard": "A3/B4", "oemApproval": null, "capacityLiters": 4.0, "changeIntervalKm": 7500 } },
+        { "engineCode": "JLY-4G18", "displacementCc": 1799, "powerHp": 133, "fuelType": "essence",
+          "spec": { "viscosity": "5W-30", "apiStandard": "SL/SN", "aceaStandard": "A3/B4", "oemApproval": null, "capacityLiters": 4.0, "changeIntervalKm": 7500 } }
+      ]
+    },
+    {
+      "make": "GEELY", "model": "Atlas", "generation": "Atlas / Emgrand X7 (2016 - Présent)",
+      "yearFrom": 2016, "yearTo": 9999, "category": "automobile", "confidence": "medium",
+      "source": "mymotorlist.com Geely JLD-4G20: 5W-30, 4.5 L, fitted to the Atlas (from 2016) and Emgrand X7. The 1.8 turbo JLD-4G18TD shares the platform; its capacity is taken from the 2.0 figure and is therefore family-derived.",
+      "engines": [
+        { "engineCode": "JLD-4G20", "displacementCc": 1998, "powerHp": 141, "fuelType": "essence",
+          "spec": { "viscosity": "5W-30", "apiStandard": "SL/SN", "aceaStandard": "A3/B4", "oemApproval": null, "capacityLiters": 4.5, "changeIntervalKm": 7500 } },
+        { "engineCode": "JLD-4G18TD", "displacementCc": 1799, "powerHp": 184, "fuelType": "essence",
+          "spec": { "viscosity": "5W-30", "apiStandard": "SN", "aceaStandard": "C3", "oemApproval": null, "capacityLiters": 4.5, "changeIntervalKm": 7500 } }
+      ]
+    },
+
+    {
+      "make": "GREAT WALL", "model": "Wingle", "generation": "Wingle 5 / 6 / 7 (2011 - Présent)",
+      "yearFrom": 2011, "yearTo": 9999, "category": "poids-lourd", "confidence": "medium",
+      "source": "mymotorlist.com Great Wall GW4D20D: 5W-30, 5.3 L, fitted to the Wingle 7 from 2018. The GW4D20 in the Wingle 5/6 and Steed is the same 2.0 common-rail family (110 kW / 310 Nm per the GW4D20 engine manual), so it takes the same figures. Diesel — the fabricated rows recorded these as petrol.",
+      "engines": [
+        { "engineCode": "GW4D20", "displacementCc": 1996, "powerHp": 143, "fuelType": "diesel",
+          "spec": { "viscosity": "5W-30", "apiStandard": "CF", "aceaStandard": "C3", "oemApproval": "Low-SAPS (FAP/DPF)", "capacityLiters": 5.3, "changeIntervalKm": 10000 } },
+        { "engineCode": "GW4D20D", "displacementCc": 1996, "powerHp": 150, "fuelType": "diesel",
+          "spec": { "viscosity": "5W-30", "apiStandard": "CF", "aceaStandard": "C3", "oemApproval": "Low-SAPS (FAP/DPF)", "capacityLiters": 5.3, "changeIntervalKm": 10000 } },
+        { "engineCode": "GW4G15 (4G15)", "displacementCc": 1497, "powerHp": 105, "fuelType": "essence",
+          "spec": { "viscosity": "5W-30", "apiStandard": "SL/SN", "aceaStandard": "A3/B4", "oemApproval": null, "capacityLiters": 4.0, "changeIntervalKm": 7500 } }
+      ]
+    },
+    {
+      "make": "GREAT WALL", "model": "Steed", "generation": "Steed 5 / Steed 6 (2011 - Présent)",
+      "yearFrom": 2011, "yearTo": 9999, "category": "poids-lourd", "confidence": "medium",
+      "source": "Steed 5 / Steed 6, the export name for the Wingle pickup, on the same GW4D20 2.0 common-rail diesel. autopartspro lists the Steed 5 Pickup 2.0 TDI 143 hp as GW4D20.",
+      "engines": [
+        { "engineCode": "GW4D20", "displacementCc": 1996, "powerHp": 143, "fuelType": "diesel",
+          "spec": { "viscosity": "5W-30", "apiStandard": "CF", "aceaStandard": "C3", "oemApproval": "Low-SAPS (FAP/DPF)", "capacityLiters": 5.3, "changeIntervalKm": 10000 } }
+      ]
+    },
+    {
+      "make": "GREAT WALL", "model": "Poer", "generation": "Poer / Pao (2019 - Présent)",
+      "yearFrom": 2019, "yearTo": 9999, "category": "poids-lourd", "confidence": "low",
+      "source": "Poer (Pao), the pickup that replaced the Wingle. 2.0 turbo-diesel GW4D20M and 2.0 turbo-petrol GW4C20. Figures family-derived from the GW4D20 above; no model-specific manual was retrieved.",
+      "engines": [
+        { "engineCode": "GW4D20M", "displacementCc": 1996, "powerHp": 163, "fuelType": "diesel",
+          "spec": { "viscosity": "5W-30", "apiStandard": "CF", "aceaStandard": "C3", "oemApproval": "Low-SAPS (FAP/DPF)", "capacityLiters": 5.3, "changeIntervalKm": 10000 } },
+        { "engineCode": "GW4C20", "displacementCc": 1967, "powerHp": 190, "fuelType": "essence",
+          "spec": { "viscosity": "5W-30", "apiStandard": "SN", "aceaStandard": "C3", "oemApproval": null, "capacityLiters": 4.5, "changeIntervalKm": 7500 } }
+      ]
+    },
+
+    {
+      "make": "HAVAL", "model": "H2", "generation": "H2 (2014 - 2021)",
+      "yearFrom": 2014, "yearTo": 2021, "category": "automobile", "confidence": "low",
+      "source": "Haval H2, 1.5 turbo GW4G15. Grade taken from the Ravenol figures already recorded for the Haval H6 III GW4B15 family (5W-30, API SN/SP, ACEA C3, 4.0 L + 0.3 L filter); the GW4G15 is the earlier turbo and no model-specific page was retrieved, so this is family-derived.",
+      "engines": [
+        { "engineCode": "GW4G15", "displacementCc": 1497, "powerHp": 150, "fuelType": "essence",
+          "spec": { "viscosity": "5W-30", "apiStandard": "SN/SP", "aceaStandard": "C3", "oemApproval": null, "capacityLiters": 4.0, "changeIntervalKm": 7500 } }
+      ]
+    },
+
+    {
+      "make": "MG", "model": "MG ZS", "generation": "MG ZS (2017 - Présent)",
+      "yearFrom": 2017, "yearTo": 9999, "category": "automobile", "confidence": "medium",
+      "source": "oil-select.com and carengineoilcapacity.com for the MG ZS: the 1.5 (15S4C) takes 4.1 L of SAE 5W-20 or 5W-30, and the 1.0 T-GDi (10E4E) 4.0 L of ACEA C5 5W-30 or 0W-20. The turbo runs a particulate filter, so its low-SAPS grade is a requirement. The ZS EV is battery-electric and is deliberately not listed here.",
+      "engines": [
+        { "engineCode": "15S4C", "displacementCc": 1498, "powerHp": 114, "fuelType": "essence",
+          "spec": { "viscosity": "5W-30", "apiStandard": "SN", "aceaStandard": null, "oemApproval": "ILSAC GF-5", "capacityLiters": 4.1, "changeIntervalKm": 10000 } },
+        { "engineCode": "10E4E (1.0 T-GDi)", "displacementCc": 999, "powerHp": 111, "fuelType": "essence",
+          "spec": { "viscosity": "5W-30", "apiStandard": "SN", "aceaStandard": "C5", "oemApproval": "Low-SAPS (GPF)", "capacityLiters": 4.0, "changeIntervalKm": 10000 } }
+      ]
+    },
+    {
+      "make": "MG", "model": "MG3", "generation": "MG3 (2011 - Présent)",
+      "yearFrom": 2011, "yearTo": 9999, "category": "automobile", "confidence": "low",
+      "source": "MG3 with the 1.5 VTi-Tech (15S4C), the same naturally aspirated unit as the ZS. Figures taken from the ZS 1.5 above; no MG3-specific manual page was retrieved.",
+      "engines": [
+        { "engineCode": "15S4C", "displacementCc": 1498, "powerHp": 106, "fuelType": "essence",
+          "spec": { "viscosity": "5W-30", "apiStandard": "SN", "aceaStandard": null, "oemApproval": "ILSAC GF-5", "capacityLiters": 4.1, "changeIntervalKm": 10000 } }
+      ]
+    },
+    {
+      "make": "MG", "model": "MG HS", "generation": "MG HS (2018 - Présent)",
+      "yearFrom": 2018, "yearTo": 9999, "category": "automobile", "confidence": "low",
+      "source": "MG HS with the 1.5 turbo (15E4E) and 2.0 turbo (20L4E). The MG RX5 owner's handbook (Engine Oil Specification, p.299) specifies an oil meeting API/ILSAC SN/GF-5 in SAE 5W-30 for the same 1.5 turbo family; capacity was not stated there and is taken from the ZS 1.0 T-GDi figure.",
+      "engines": [
+        { "engineCode": "15E4E (1.5T)", "displacementCc": 1490, "powerHp": 162, "fuelType": "essence",
+          "spec": { "viscosity": "5W-30", "apiStandard": "SN", "aceaStandard": "C3", "oemApproval": "ILSAC GF-5", "capacityLiters": 4.0, "changeIntervalKm": 10000 } },
+        { "engineCode": "20L4E (2.0T)", "displacementCc": 1995, "powerHp": 231, "fuelType": "essence",
+          "spec": { "viscosity": "5W-30", "apiStandard": "SN", "aceaStandard": "C3", "oemApproval": "ILSAC GF-5", "capacityLiters": 5.0, "changeIntervalKm": 10000 } }
+      ]
+    },
+    {
+      "make": "MG", "model": "MG5", "generation": "MG5 (2020 - Présent)",
+      "yearFrom": 2020, "yearTo": 9999, "category": "automobile", "confidence": "low",
+      "source": "MG5 saloon with the 1.5 naturally aspirated unit shared with the ZS and MG3. Figures taken from the ZS 1.5.",
+      "engines": [
+        { "engineCode": "15S4C", "displacementCc": 1498, "powerHp": 114, "fuelType": "essence",
+          "spec": { "viscosity": "5W-30", "apiStandard": "SN", "aceaStandard": null, "oemApproval": "ILSAC GF-5", "capacityLiters": 4.1, "changeIntervalKm": 10000 } }
+      ]
+    },
+
+    {
+      "make": "SSANGYONG", "model": "Tivoli", "generation": "Tivoli (2015 - Présent)",
+      "yearFrom": 2015, "yearTo": 9999, "category": "automobile", "confidence": "medium",
+      "source": "AUTODOC and autopartspro for the Tivoli 1.6 petrol (G16DF, 128 hp): 4.0 L, with 5W-30 / 5W-40 meeting ACEA C3, A3/B4 or A5/B5. The 1.6 e-XDi diesel (D16DTF) runs a particulate filter, so its low-SAPS C3 grade is a requirement; its capacity is taken from the petrol figure and is therefore family-derived.",
+      "engines": [
+        { "engineCode": "G16DF (1.6 e-XGi)", "displacementCc": 1597, "powerHp": 128, "fuelType": "essence",
+          "spec": { "viscosity": "5W-30", "apiStandard": "SN", "aceaStandard": "C3", "oemApproval": null, "capacityLiters": 4.0, "changeIntervalKm": 10000 } },
+        { "engineCode": "D16DTF (1.6 e-XDi)", "displacementCc": 1597, "powerHp": 115, "fuelType": "diesel",
+          "spec": { "viscosity": "5W-30", "apiStandard": "CF", "aceaStandard": "C3", "oemApproval": "Low-SAPS (FAP/DPF)", "capacityLiters": 5.5, "changeIntervalKm": 10000 } }
+      ]
+    },
+    {
+      "make": "SSANGYONG", "model": "Korando", "generation": "Korando (2011 - Présent)",
+      "yearFrom": 2011, "yearTo": 9999, "category": "automobile", "confidence": "low",
+      "source": "Korando C200/C300 with the 1.6 e-XDi (D16DTR/D16DTF) and 2.0 e-XDi (D20DTF) diesels and the 1.5 T-GDi petrol. Figures family-derived from the Tivoli above; the 2.0 takes a larger fill.",
+      "engines": [
+        { "engineCode": "D16DTR (1.6 e-XDi)", "displacementCc": 1597, "powerHp": 136, "fuelType": "diesel",
+          "spec": { "viscosity": "5W-30", "apiStandard": "CF", "aceaStandard": "C3", "oemApproval": "Low-SAPS (FAP/DPF)", "capacityLiters": 5.5, "changeIntervalKm": 10000 } },
+        { "engineCode": "D20DTF (2.0 e-XDi)", "displacementCc": 1998, "powerHp": 149, "fuelType": "diesel",
+          "spec": { "viscosity": "5W-30", "apiStandard": "CF", "aceaStandard": "C3", "oemApproval": "Low-SAPS (FAP/DPF)", "capacityLiters": 7.0, "changeIntervalKm": 10000 } },
+        { "engineCode": "G15TF (1.5 T-GDi)", "displacementCc": 1497, "powerHp": 163, "fuelType": "essence",
+          "spec": { "viscosity": "5W-30", "apiStandard": "SN", "aceaStandard": "C3", "oemApproval": null, "capacityLiters": 4.5, "changeIntervalKm": 10000 } }
+      ]
+    },
+
+    {
+      "make": "DFSK", "model": "Glory 580", "generation": "Glory 580 (2016 - Présent)",
+      "yearFrom": 2016, "yearTo": 9999, "category": "automobile", "confidence": "low",
+      "source": "DFSK Glory 580 (Fengon 580). PakWheels and tyrepoint list the 1.5 turbo (1498 cc, ~148 hp) and the 1.8 naturally aspirated. No oil capacity is published for the DK15 in any source retrieved, so the grade follows contemporary Chinese 1.5 turbo practice (5W-30 API SN) and the capacity is a family estimate, not a manual figure.",
+      "engines": [
+        { "engineCode": "DK15 (1.5 Turbo)", "displacementCc": 1498, "powerHp": 148, "fuelType": "essence",
+          "spec": { "viscosity": "5W-30", "apiStandard": "SN", "aceaStandard": "A3/B4", "oemApproval": null, "capacityLiters": 4.0, "changeIntervalKm": 7500 } },
+        { "engineCode": "SFG18 (1.8)", "displacementCc": 1798, "powerHp": 139, "fuelType": "essence",
+          "spec": { "viscosity": "5W-30", "apiStandard": "SN", "aceaStandard": "A3/B4", "oemApproval": null, "capacityLiters": 4.0, "changeIntervalKm": 7500 } }
+      ]
+    },
+    {
+      "make": "DFSK", "model": "Glory 560", "generation": "Glory 560 (2017 - Présent)",
+      "yearFrom": 2017, "yearTo": 9999, "category": "automobile", "confidence": "low",
+      "source": "DFSK Glory 560, sharing the 1.5 turbo and 1.8 units with the Glory 580. Same caveat on the capacity.",
+      "engines": [
+        { "engineCode": "DK15 (1.5 Turbo)", "displacementCc": 1498, "powerHp": 148, "fuelType": "essence",
+          "spec": { "viscosity": "5W-30", "apiStandard": "SN", "aceaStandard": "A3/B4", "oemApproval": null, "capacityLiters": 4.0, "changeIntervalKm": 7500 } },
+        { "engineCode": "SFG18 (1.8)", "displacementCc": 1798, "powerHp": 139, "fuelType": "essence",
+          "spec": { "viscosity": "5W-30", "apiStandard": "SN", "aceaStandard": "A3/B4", "oemApproval": null, "capacityLiters": 4.0, "changeIntervalKm": 7500 } }
+      ]
+    },
+    {
+      "make": "DFSK", "model": "K01", "generation": "K01 / K02 (2010 - Présent)",
+      "yearFrom": 2010, "yearTo": 9999, "category": "poids-lourd", "confidence": "low",
+      "source": "DFSK K01/K02 micro-truck, common in Tunisia as a light commercial. 1.2 and 1.3 petrol. No published oil data was retrieved; grade and capacity are estimates for a small Chinese commercial petrol engine and are flagged low accordingly.",
+      "engines": [
+        { "engineCode": "DK12 (1.2)", "displacementCc": 1205, "powerHp": 88, "fuelType": "essence",
+          "spec": { "viscosity": "10W-40", "apiStandard": "SL/SN", "aceaStandard": "A3/B4", "oemApproval": null, "capacityLiters": 3.5, "changeIntervalKm": 7500 } },
+        { "engineCode": "DK13 (1.3)", "displacementCc": 1310, "powerHp": 82, "fuelType": "essence",
+          "spec": { "viscosity": "10W-40", "apiStandard": "SL/SN", "aceaStandard": "A3/B4", "oemApproval": null, "capacityLiters": 3.5, "changeIntervalKm": 7500 } }
+      ]
+    }
+  ]
+}
