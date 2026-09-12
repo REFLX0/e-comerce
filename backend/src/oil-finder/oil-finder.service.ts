@@ -108,6 +108,17 @@ const normFuel = (fuelType: string): string => fuelType.trim().toLowerCase()
  * strings made the heavy-truck filter match nothing at all and return an empty
  * make list.
  */
+/**
+ * Seeded sources that are known to be generated rather than researched, and so
+ * must never be merged on top of a catalogue result. Matched exactly, because a
+ * researched row's `source` field is a free-text citation that could otherwise
+ * contain one of these names incidentally.
+ */
+const UNTRUSTED_SEED_SOURCES = [
+  'tecdoc-harvested',
+  'SpecPart OEM Catalogue Homologations',
+];
+
 export type VehicleCategory = 'automobile' | 'moto' | 'marine' | 'poids_lourd' | 'agricole';
 
 export function normalizeCategory(value?: string | null): VehicleCategory | undefined {
@@ -2887,15 +2898,17 @@ export class OilFinderService {
           ...(generationName
             ? { generation: { contains: generationName.trim(), mode: 'insensitive' } }
             : {}),
-          // The catalogue is itself built from the TecDoc harvest, so rows
-          // carrying that source add nothing to a catalogue result but their own
-          // defects — the harvest copied one engine list onto every model of a
-          // make, which is how a Mahindra Bolero ends up offering the KUV100's
-          // 1.2 mFalcon. They are still served when the catalogue has no entry
-          // for the model, since then they are the only data there is.
-          ...(excludeHarvested
-            ? { NOT: { source: { contains: 'tecdoc-harvested', mode: 'insensitive' } } }
-            : {}),
+          // Two seeded sources must never supplement a catalogue answer. The
+          // catalogue is itself built from the TecDoc harvest, so those rows add
+          // nothing but their own defects — the harvest copied one engine list
+          // onto every model of a make, which is how a Mahindra Bolero ends up
+          // offering the KUV100's 1.2 mFalcon. The OEM-homologation set has the
+          // same defect and describes engines by marketing name rather than
+          // code, so an Alfa 147 was listing "1.9 JTD" alongside the very same
+          // engine's real 937 A5.000, with one invented capacity for the whole
+          // make. Both are still served where the catalogue has no entry for the
+          // model, since there they are the only data there is.
+          ...(excludeHarvested ? { NOT: { source: { in: UNTRUSTED_SEED_SOURCES } } } : {}),
         },
         include: { oilSpec: true },
       });

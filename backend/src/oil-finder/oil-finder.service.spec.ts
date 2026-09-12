@@ -981,7 +981,7 @@ describe('OilFinderService', () => {
       // single engine list onto every model of a make — which is how a Mahindra
       // Bolero came to offer the KUV100's 1.2 mFalcon. Merging those rows back
       // over the catalogue would reintroduce exactly that.
-      it('does not merge tecdoc-harvested rows over a catalogue result', async () => {
+      it('does not merge either seeded source over a catalogue result', async () => {
         catalogueWith([
           { engineCode: '4.5 D-4D (VDJ200)', fuelType: 'diesel', displacementCc: 4461, powerHp: 235 },
         ]);
@@ -989,7 +989,12 @@ describe('OilFinderService', () => {
 
         await service.getEngines('TOYOTA', 'Land Cruiser');
         const where = prisma.oilFinderVehicle.findMany.mock.calls[0][0].where;
-        expect(where.NOT.source.contains).toBe('tecdoc-harvested');
+        expect(where.NOT.source.in).toEqual(
+          expect.arrayContaining([
+            'tecdoc-harvested',
+            'SpecPart OEM Catalogue Homologations',
+          ]),
+        );
       });
 
       it('does not offer the same engine twice when power differs', async () => {
