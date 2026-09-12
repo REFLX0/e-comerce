@@ -1,0 +1,35 @@
+{
+  "makes": ["VW", "VOLKSWAGEN", "AUDI", "SEAT", "SKODA"],
+  "note": "Narrow, deliberate correction: VW group's Pumpe-Duese (unit-injector) TDIs were all given 'VW 501.01/505.00', which is not a valid approval for them. In a PD engine a profiled camshaft lobe drives the injector plunger directly at over 2050 bar — the highest loading of any TDI fuel system — and VW created 505.01 specifically for the anti-wear package that contact needs. A 505.00 oil accelerates cam-lobe wear, the classic and expensive PD failure. 507.00 does not substitute for 505.01 either; it is the separate requirement for the particulate-filter versions. The rest of the VW catalogue (common-rail TDIs on 504.00/507.00, petrols on 502.00/505.01) already carries plausible approvals and is left alone. Codes are split 1.9 vs 2.0 for sump capacity, and DPF vs non-DPF for the approval.",
+
+  "engines": [
+    {
+      "codes": ["BLS", "BXF", "BXJ", "BVE"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "5W-30", "apiStandard": "CF", "aceaStandard": "C3", "oemApproval": "VW 507.00 (PD avec FAP)", "capacityLiters": 4.5, "changeIntervalKm": 15000 },
+      "confidence": "medium",
+      "source": "1.9 TDI PD fitted with a particulate filter (Golf V, Passat B6, Caddy, Octavia II). The DPF makes the low-SAPS 507.00 oil a requirement in place of 505.01."
+    },
+    {
+      "codes": ["ATD", "AXR", "AJM", "AUY", "ASZ", "ARL", "AVB", "AVF", "AWX", "BKC", "BRU", "BXE", "BJB", "BLT", "BEW", "BHW"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "5W-40", "apiStandard": "CF", "aceaStandard": "B4", "oemApproval": "VW 505.01 (Pompe-Injecteur / PD)", "capacityLiters": 4.5, "changeIntervalKm": 15000 },
+      "confidence": "high",
+      "source": "1.9 TDI PD without a particulate filter (Golf IV/V, Bora, Polo, Passat B5.5, Leon, Octavia I/II, A3 8L/8P). RWC Motorsport TDI fuel-system guide and TDIClub: the unit injector is driven by a dedicated camshaft lobe at pressures above 2050 bar and requires an oil certified to VW 505.01 — 505.00 is explicitly insufficient and 507.00 does not replace it."
+    },
+    {
+      "codes": ["BMM", "BMN", "BMR", "BMP", "BKP", "BLB", "BNA", "BSV", "BPW"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "5W-30", "apiStandard": "CF", "aceaStandard": "C3", "oemApproval": "VW 507.00 (PD avec FAP)", "capacityLiters": 4.3, "changeIntervalKm": 15000 },
+      "confidence": "medium",
+      "source": "2.0 TDI PD fitted with a particulate filter (Passat B6, Golf V, Touran, Octavia II, A3 8P). 507.00 in place of 505.01 because of the DPF."
+    },
+    {
+      "codes": ["BKD", "AZV", "BUY", "BVG", "BVH", "BRD", "BRE", "BRB", "BDK", "BKN"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "5W-40", "apiStandard": "CF", "aceaStandard": "B4", "oemApproval": "VW 505.01 (Pompe-Injecteur / PD)", "capacityLiters": 4.3, "changeIntervalKm": 15000 },
+      "confidence": "high",
+      "source": "2.0 TDI PD without a particulate filter (Golf V, Touran, Passat B6, Octavia II, A3 8P). Same 505.01 unit-injector requirement as the 1.9; the 2.0 takes a slightly smaller fill."
+    }
+  ]
+}

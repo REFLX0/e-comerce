@@ -1,0 +1,393 @@
+{
+  "makes": [
+    "PEUGEOT",
+    "CITROËN",
+    "CITROEN",
+    "DS",
+    "DS AUTOMOBILES"
+  ],
+  "note": "PSA names each engine '<build code> (<family>)' — RHR (DW10BTED4), DJY (XUD9A) — and the family is what determines the oil, so these are matched by family pattern rather than by listing thousands of build codes. Order matters: the more specific family must come first, since DW10F (BlueHDi with SCR) would otherwise be caught by the generic DW10 rule. 65% of Peugeot engine codes carried conflicting specs, up to four different ones for a single code, and whole diesel families (XUD, DW8, TUD5) were recorded as petrol and given a petrol grade. Approval logic per oilspecifications.org: B71 2294/2296 = high-SAPS ACEA A3/B4 for engines with no particulate filter; B71 2290 = ACEA C2 5W-30 low-SAPS for HDi/BlueHDi without SCR; B71 2312 = ACEA C2 0W-30 for BlueHDi with SCR (AdBlue) and the PureTech turbo petrols; B71 2297 = ACEA C3, PSA's own specification for hot and very hot markets, which is why it is offered as the hot-climate alternative to 2290 rather than a 40-weight that would break the low-SAPS chemistry.",
+  "engines": [
+    {
+      "patterns": [
+        "(?:\\(\\s*|^)DV5R"
+      ],
+      "fuelType": "diesel",
+      "spec": {
+        "viscosity": "0W-30",
+        "apiStandard": "SN",
+        "aceaStandard": "C2",
+        "oemApproval": "PSA B71 2312 (BlueHDi SCR/AdBlue)",
+        "capacityLiters": 4.0,
+        "changeIntervalKm": 25000
+      },
+      "confidence": "medium",
+      "source": "DV5R = 1.5 BlueHDi (Euro 6, SCR/AdBlue). oilspecifications.org: B71 2312 is required for BlueHDi engines fitted with SCR; ultra-low-SAPS 0W-30."
+    },
+    {
+      "patterns": [
+        "(?:\\(\\s*|^)DW10(F|CB)"
+      ],
+      "fuelType": "diesel",
+      "spec": {
+        "viscosity": "0W-30",
+        "apiStandard": "SN",
+        "aceaStandard": "C2",
+        "oemApproval": "PSA B71 2312 (BlueHDi SCR/AdBlue)",
+        "capacityLiters": 5.25,
+        "changeIntervalKm": 25000
+      },
+      "confidence": "medium",
+      "source": "DW10F / DW10CB = 2.0 BlueHDi (Euro 6, SCR/AdBlue), as fitted to the 308, 3008, 508, C4, C5 and Berlingo. B71 2312 per oilspecifications.org."
+    },
+    {
+      "patterns": [
+        "(?:\\(\\s*|^)DW12"
+      ],
+      "fuelType": "diesel",
+      "spec": {
+        "viscosity": "5W-30",
+        "apiStandard": "SN/CF",
+        "aceaStandard": "C2",
+        "oemApproval": "PSA B71 2290",
+        "capacityLiters": 5.75,
+        "changeIntervalKm": 20000
+      },
+      "confidence": "medium",
+      "source": "DW12 = 2.2 HDi (Jumper/Boxer, 407, Expert). Particulate filter fitted, so the low-SAPS C2 grade is a requirement."
+    },
+    {
+      "patterns": [
+        "(?:\\(\\s*|^)DW10(B|C|U)[A-Z]*TED"
+      ],
+      "fuelType": "diesel",
+      "spec": {
+        "viscosity": "5W-30",
+        "apiStandard": "SN/CF",
+        "aceaStandard": "C2",
+        "oemApproval": "PSA B71 2290",
+        "capacityLiters": 5.25,
+        "changeIntervalKm": 20000
+      },
+      "confidence": "medium",
+      "source": "DW10BTED4 / DW10CTED4 / DW10UTED4 = 2.0 HDi 136-163 with FAP (307, 308, 407, C4, C5, Berlingo). Low-SAPS C2 required by the particulate filter."
+    },
+    {
+      "patterns": [
+        "(?:\\(\\s*|^)DW10"
+      ],
+      "fuelType": "diesel",
+      "spec": {
+        "viscosity": "10W-40",
+        "apiStandard": "SL/CF",
+        "aceaStandard": "A3/B4",
+        "oemApproval": "PSA B71 2294",
+        "capacityLiters": 4.75,
+        "changeIntervalKm": 15000
+      },
+      "confidence": "medium",
+      "source": "DW10TD / DW10ATED = 2.0 HDi 90-110 without a particulate filter (306, 307, 406, Xsara, Berlingo). No FAP means no low-SAPS requirement; the high-SAPS A3/B4 grade is correct and suits hot climates."
+    },
+    {
+      "patterns": [
+        "(?:\\(\\s*|^)DV6(F|E|C)"
+      ],
+      "fuelType": "diesel",
+      "spec": {
+        "viscosity": "5W-30",
+        "apiStandard": "SN/CF",
+        "aceaStandard": "C2",
+        "oemApproval": "PSA B71 2290",
+        "capacityLiters": 3.75,
+        "changeIntervalKm": 20000
+      },
+      "confidence": "medium",
+      "source": "DV6C / DV6F / DV6E = 1.6 HDi / BlueHDi Euro 5-6 (208, 308, 2008, C3, C4, Berlingo, Partner). Particulate filter fitted; low-SAPS C2."
+    },
+    {
+      "patterns": [
+        "(?:\\(\\s*|^)DV6"
+      ],
+      "fuelType": "diesel",
+      "spec": {
+        "viscosity": "5W-30",
+        "apiStandard": "SN/CF",
+        "aceaStandard": "C2",
+        "oemApproval": "PSA B71 2290",
+        "capacityLiters": 3.75,
+        "changeIntervalKm": 20000
+      },
+      "confidence": "medium",
+      "source": "DV6TED4 / DV6ATED4 / DV6BTED4 = 1.6 HDi 90-110 (206, 207, 307, C3, C4, Xsara Picasso, Berlingo). Very common in Tunisia. Small 3.75 L sump; low-SAPS C2 where the FAP is fitted, which covers the great majority of these."
+    },
+    {
+      "patterns": [
+        "(?:\\(\\s*|^)DV4"
+      ],
+      "fuelType": "diesel",
+      "spec": {
+        "viscosity": "5W-30",
+        "apiStandard": "SN/CF",
+        "aceaStandard": "C2",
+        "oemApproval": "PSA B71 2290",
+        "capacityLiters": 3.75,
+        "changeIntervalKm": 20000
+      },
+      "confidence": "medium",
+      "source": "DV4TD / DV4C = 1.4 HDi (206, 207, 1007, C2, C3, Nemo). 3.75 L sump."
+    },
+    {
+      "patterns": [
+        "(?:\\(\\s*|^)DW8"
+      ],
+      "fuelType": "diesel",
+      "spec": {
+        "viscosity": "10W-40",
+        "apiStandard": "SL/CF",
+        "aceaStandard": "A3/B4",
+        "oemApproval": "PSA B71 2294",
+        "capacityLiters": 4.75,
+        "changeIntervalKm": 10000
+      },
+      "confidence": "high",
+      "source": "DW8 / DW8B = 1.9 D atmospheric (206, 306, Partner, Berlingo, Xsara) — extremely common in Tunisia and recorded as petrol throughout. motor-car.net DW engine data and the XUD/DW workshop figures give a 4.75 L change capacity; the manual recommends 10W-40 semi-synthetic for moderate climates and 15W-40 for hot. No particulate filter, so no low-SAPS requirement."
+    },
+    {
+      "patterns": [
+        "(?:\\(\\s*|^)XUD11"
+      ],
+      "fuelType": "diesel",
+      "spec": {
+        "viscosity": "10W-40",
+        "apiStandard": "SL/CF",
+        "aceaStandard": "A3/B4",
+        "oemApproval": "PSA B71 2294",
+        "capacityLiters": 5.5,
+        "changeIntervalKm": 10000
+      },
+      "confidence": "medium",
+      "source": "XUD11 = 2.1 D / TD (405, 406, 605, Xantia, Jumpy). Recorded as petrol. Larger sump than the 1.9."
+    },
+    {
+      "patterns": [
+        "(?:\\(\\s*|^)XUD"
+      ],
+      "fuelType": "diesel",
+      "spec": {
+        "viscosity": "10W-40",
+        "apiStandard": "SL/CF",
+        "aceaStandard": "A3/B4",
+        "oemApproval": "PSA B71 2294",
+        "capacityLiters": 4.75,
+        "changeIntervalKm": 10000
+      },
+      "confidence": "high",
+      "source": "XUD7 / XUD9 = 1.7 and 1.9 D / TD (205, 305, 306, 309, 405, BX, ZX, Xsara, Berlingo). AUTODOC and the XUD9 workshop manual give a 4.75 L change capacity and recommend 10W-40 semi-synthetic for moderate climates, 15W-40 for hot. Recorded as petrol throughout."
+    },
+    {
+      "patterns": [
+        "(?:\\(\\s*|^)TUD"
+      ],
+      "fuelType": "diesel",
+      "spec": {
+        "viscosity": "10W-40",
+        "apiStandard": "SL/CF",
+        "aceaStandard": "A3/B4",
+        "oemApproval": "PSA B71 2294",
+        "capacityLiters": 4.0,
+        "changeIntervalKm": 10000
+      },
+      "confidence": "low",
+      "source": "TUD5 = 1.5 D (106, 205, 206, Saxo, AX). Recorded as petrol. Grade taken from the contemporary XUD figures; the capacity is a family estimate rather than a manual figure."
+    },
+    {
+      "patterns": [
+        "(?:\\(\\s*|^)(P22DT|F28DT|F30DT)"
+      ],
+      "fuelType": "diesel",
+      "spec": {
+        "viscosity": "5W-30",
+        "apiStandard": "SN/CF",
+        "aceaStandard": "C2",
+        "oemApproval": "PSA B71 2290",
+        "capacityLiters": 6.5,
+        "changeIntervalKm": 20000
+      },
+      "confidence": "low",
+      "source": "P22DTE (2.2, Ford-PSA DuraTorq) and F28DTCR / F30DT (2.8 and 3.0 in the Boxer/Jumper and Ducato-based vans). Commercial-vehicle diesels with particulate filters; the capacity is a family figure, not a manual one."
+    },
+    {
+      "patterns": [
+        "(?:\\(\\s*|^)(DJ5|DT17|DT20)",
+        "^(T8A|T9A|THX|UHZ)\\b"
+      ],
+      "fuelType": "diesel",
+      "spec": {
+        "viscosity": "5W-40",
+        "apiStandard": "SL/CF",
+        "aceaStandard": "A3/B4",
+        "oemApproval": "PSA B71 2296",
+        "capacityLiters": 6.0,
+        "changeIntervalKm": 15000
+      },
+      "confidence": "low",
+      "source": "DJ5 = 2.5 D / TD (Boxer, Jumper, J5), DT17 = 2.7 HDi V6 (407, C6), DT20 = 2.2. Recorded as petrol. Grade is the high-SAPS A3/B4 used across PSA's pre-FAP commercial diesels; the capacity is a family figure rather than a manual one."
+    },
+    {
+      "patterns": [
+        "(?:\\(\\s*|^)(XD|U25|CRD93|8140|F28D)",
+        "^(XD[0-9P]|XDP)"
+      ],
+      "fuelType": "diesel",
+      "spec": {
+        "viscosity": "15W-40",
+        "apiStandard": "CF",
+        "aceaStandard": "B3/B4",
+        "oemApproval": null,
+        "capacityLiters": 6.0,
+        "changeIntervalKm": 7500
+      },
+      "confidence": "low",
+      "source": "XD2P / XD3P / XDP = Peugeot's older indirect-injection diesels (504, 505, J5), U25 and CRD93 the 2.5 units, 8140 the Sofim diesel shared with the Ducato. Recorded as petrol. 15W-40 is the conventional grade for pre-common-rail diesels of this era and suits hot climates; the capacity is a family estimate."
+    },
+    {
+      "patterns": [
+        "(?:\\(\\s*|^)(XC|XM7|XK|XL|XR|EC5|1KR)",
+        "^(NFP|CFB)\\b"
+      ],
+      "fuelType": "essence",
+      "spec": {
+        "viscosity": "10W-40",
+        "apiStandard": "SL/CF",
+        "aceaStandard": "A3/B4",
+        "oemApproval": "PSA B71 2294",
+        "capacityLiters": 3.5,
+        "changeIntervalKm": 10000
+      },
+      "confidence": "low",
+      "source": "XC / XK / XL / XM7 / XR = Peugeot's older petrol families (104, 204, 304, 305, 504), EC5 the 1.6 petrol, and CFB (1KR) the Toyota-built 1.0 three-cylinder in the 107 / C1. Capacity is a family estimate."
+    },
+    {
+      "codes": [
+        "EP6",
+        "EP3"
+      ],
+      "fuelType": "essence",
+      "spec": {
+        "viscosity": "5W-30",
+        "apiStandard": "SN/CF",
+        "aceaStandard": "C2",
+        "oemApproval": "PSA B71 2290",
+        "capacityLiters": 4.25,
+        "changeIntervalKm": 20000
+      },
+      "confidence": "medium",
+      "source": "The Prince-family 1.4/1.6 VTi where the catalogue records the family alone, with no build code in parentheses for the pattern rules to see."
+    },
+    {
+      "codes": [
+        "TU32",
+        "TU3A",
+        "TU1M",
+        "TU5JP",
+        "TU3M",
+        "TU3MC",
+        "TU9M",
+        "TU1JP",
+        "TU5JP4",
+        "TU3JP"
+      ],
+      "fuelType": "essence",
+      "spec": {
+        "viscosity": "10W-40",
+        "apiStandard": "SL/CF",
+        "aceaStandard": "A3/B4",
+        "oemApproval": "PSA B71 2294",
+        "capacityLiters": 3.2,
+        "changeIntervalKm": 10000
+      },
+      "confidence": "medium",
+      "source": "The older TU petrol families recorded as a bare family name. Same 10W-40 high-SAPS grade and 3.2 L sump as the parenthesised TU rule below — these are 106/206/306/Saxo-era engines with no particulate filter, not the Prince family."
+    },
+    {
+      "patterns": [
+        "(?:\\(\\s*|^)EB2"
+      ],
+      "fuelType": "essence",
+      "spec": {
+        "viscosity": "0W-30",
+        "apiStandard": "SN",
+        "aceaStandard": "C2",
+        "oemApproval": "PSA B71 2312 (PureTech)",
+        "capacityLiters": 4.0,
+        "changeIntervalKm": 20000
+      },
+      "confidence": "medium",
+      "source": "EB2 / EB2DT / EB2DTS = 1.2 PureTech (208, 2008, 308, 3008, C3, C4). oilspecifications.org: B71 2312 is required for all 1.2 PureTech turbo engines. The wet timing belt in these engines makes the correct grade particularly important."
+    },
+    {
+      "patterns": [
+        "(?:\\(\\s*|^)EP"
+      ],
+      "fuelType": "essence",
+      "spec": {
+        "viscosity": "5W-30",
+        "apiStandard": "SN/CF",
+        "aceaStandard": "C2",
+        "oemApproval": "PSA B71 2290",
+        "capacityLiters": 4.25,
+        "changeIntervalKm": 20000
+      },
+      "confidence": "medium",
+      "source": "EP3 / EP6 = 1.4 and 1.6 VTi / THP, the BMW-PSA Prince family (207, 208, 308, 3008, C4, DS3, Mini). B71 2290 per PSA."
+    },
+    {
+      "patterns": [
+        "(?:\\(\\s*|^)(EW|ES9)"
+      ],
+      "fuelType": "essence",
+      "spec": {
+        "viscosity": "5W-40",
+        "apiStandard": "SL/CF",
+        "aceaStandard": "A3/B4",
+        "oemApproval": "PSA B71 2296",
+        "capacityLiters": 4.25,
+        "changeIntervalKm": 15000
+      },
+      "confidence": "medium",
+      "source": "EW7 / EW10 / EW12 = 1.8, 2.0 and 2.2 petrol (306, 307, 406, 407, Xsara, C5), ES9 = 3.0 V6. High-SAPS A3/B4; no particulate filter on these petrols."
+    },
+    {
+      "patterns": [
+        "(?:\\(\\s*|^)(XU|XN|XY)"
+      ],
+      "fuelType": "essence",
+      "spec": {
+        "viscosity": "10W-40",
+        "apiStandard": "SL/CF",
+        "aceaStandard": "A3/B4",
+        "oemApproval": "PSA B71 2294",
+        "capacityLiters": 4.5,
+        "changeIntervalKm": 10000
+      },
+      "confidence": "medium",
+      "source": "XU5 / XU7 / XU9 / XU10 = 1.6 to 2.0 petrol (205 GTI, 306, 405, BX, ZX, Xantia), XN1 and XY7 contemporaries. Pre-1998 engines with wider bearing clearances; 10W-40 is the conventional grade and suits hot climates."
+    },
+    {
+      "patterns": [
+        "(?:\\(\\s*|^)(TU|ET3)"
+      ],
+      "fuelType": "essence",
+      "spec": {
+        "viscosity": "10W-40",
+        "apiStandard": "SL/CF",
+        "aceaStandard": "A3/B4",
+        "oemApproval": "PSA B71 2294",
+        "capacityLiters": 3.2,
+        "changeIntervalKm": 10000
+      },
+      "confidence": "medium",
+      "source": "TU1 / TU3 / TU5 / TU9 = 1.0 to 1.6 petrol (106, 206, 207, 306, Saxo, C3, Berlingo, Partner) and the ET3 1.4 16v. Small 3.2 L sump. Very common in Tunisia."
+    }
+  ]
+}

@@ -356,6 +356,27 @@ describe('OilFinderService', () => {
       expect(resolveHotClimateAlternative(spec)).toBeNull();
     });
 
+    // PSA publishes B71 2297 (ACEA C3) for hot and very hot markets. It keeps the
+    // low-SAPS chemistry the particulate filter needs while raising the
+    // high-temperature shear strength, so it beats thickening a C2 oil to a
+    // 40-weight — which would break the filter.
+    it('offers the constructor hot-market spec instead of a heavier grade', () => {
+      const alt = resolveHotClimateAlternative({
+        viscosity: '5W-30',
+        aceaStandard: 'C2',
+        oemApproval: 'PSA B71 2290',
+      });
+      expect(alt).not.toBeNull();
+      expect(alt!.viscosity).toBe('5W-30');
+      expect(alt!.reason).toContain('2297');
+    });
+
+    it('does not offer a hot-market spec to a make that has none', () => {
+      expect(
+        resolveHotClimateAlternative({ viscosity: '5W-30', aceaStandard: 'C2', oemApproval: 'VW 504.00/507.00' }),
+      ).toBeNull();
+    });
+
     it('refuses for thin-oil engines and for grades already heavy enough', () => {
       expect(resolveHotClimateAlternative({ viscosity: '0W-20', apiStandard: 'SN' })).toBeNull();
       expect(resolveHotClimateAlternative({ viscosity: '5W-20' })).toBeNull();

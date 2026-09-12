@@ -38,11 +38,21 @@ const normCode = (c) => (c || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
  * first so a variant can be given its own entry, then fall back to the base
  * code, which is what carries the oil requirement.
  */
-function lookup(byCode, rawCode) {
+function lookup(byCode, rawCode, patterns) {
   const exact = byCode.get(normCode(rawCode));
   if (exact) return exact;
   const base = (rawCode || '').replace(/\s*\(.*$/, '').trim();
-  return base && base !== rawCode ? byCode.get(normCode(base)) : undefined;
+  const byBase = base && base !== rawCode ? byCode.get(normCode(base)) : undefined;
+  if (byBase) return byBase;
+
+  // PSA names its engines "RHR (DW10BTED4)" — the parenthesised family is what
+  // determines the oil, and there are far too many build codes to list. Patterns
+  // are tried in table order, so put the more specific family first: DW10F
+  // (BlueHDi, SCR) must be matched before the generic DW10.
+  for (const { re, entry } of patterns) {
+    if (re.test(rawCode || '')) return entry;
+  }
+  return undefined;
 }
 
 /**
@@ -61,14 +71,21 @@ const fingerprint = (s, make) =>
 
 async function main() {
   const table = JSON.parse(fs.readFileSync(TABLE, 'utf8'));
-  const MAKE = table.make.toUpperCase();
+  // PSA sells the same engine as a Peugeot, a Citroen and a DS, so a table may
+  // name several marques.
+  const MAKES = (table.makes || [table.make]).map((m) => m.toUpperCase());
+  const MAKE = MAKES[0];
+  const isTargetMake = (name) => MAKES.includes((name || '').toUpperCase());
 
-  // code -> entry
+  // code -> entry, plus ordered family patterns for makes that name engines by
+  // family rather than by a fixed code list.
   const byCode = new Map();
+  const patterns = [];
   for (const e of table.engines) {
-    for (const c of e.codes) byCode.set(normCode(c), e);
+    for (const c of e.codes || []) byCode.set(normCode(c), e);
+    for (const p of e.patterns || []) patterns.push({ re: new RegExp(p, 'i'), entry: e });
   }
-  console.log(`${table.engines.length} spec entries covering ${byCode.size} engine codes for ${MAKE}\n`);
+  console.log(`${table.engines.length} spec entries: ${byCode.size} exact codes, ${patterns.length} family patterns for ${MAKE}\n`);
 
   const prisma = new PrismaClient();
   const report = { catalogEngines: 0, catalogFuel: 0, dbRows: 0, dbFuel: 0, unmatched: new Map() };
@@ -76,11 +93,11 @@ async function main() {
   // ── catalogue ──────────────────────────────────────────────────────────────
   const catalog = JSON.parse(fs.readFileSync(CATALOG, 'utf8'));
   for (const makeNode of Object.values(catalog)) {
-    if ((makeNode.makeName || '').toUpperCase() !== MAKE) continue;
+    if (!isTargetMake(makeNode.makeName)) continue;
     for (const modelNode of Object.values(makeNode.models || {})) {
       for (const genNode of Object.values(modelNode.generations || {})) {
         for (const eng of genNode.engines || []) {
-          const entry = lookup(byCode, eng.engineCode);
+          const entry = lookup(byCode, eng.engineCode, patterns);
           if (!entry) {
             const k = eng.engineCode || '(blank)';
             report.unmatched.set(k, (report.unmatched.get(k) || 0) + 1);
@@ -103,7 +120,7 @@ async function main() {
 
   // ── database ───────────────────────────────────────────────────────────────
   const rows = await prisma.oilFinderVehicle.findMany({
-    where: { make: { equals: MAKE, mode: 'insensitive' } },
+    where: { OR: MAKES.map((m) => ({ make: { equals: m, mode: 'insensitive' } })) },
     select: { id: true, engineCode: true, fuelType: true, model: true },
   });
 
@@ -111,7 +128,7 @@ async function main() {
   const specIdByFingerprint = new Map();
   const plan = [];
   for (const r of rows) {
-    const entry = lookup(byCode, r.engineCode);
+    const entry = lookup(byCode, r.engineCode, patterns);
     if (!entry) continue;
     plan.push({ row: r, entry });
   }

@@ -1,0 +1,106 @@
+{
+  "makes": ["HYUNDAI", "KIA"],
+  "note": "Hyundai and Kia share engine families, so one table covers both. The catalogue gave them the same fabricated 'Asian OEM Standard' approval Toyota had, assigned by era and displacement rather than by engine. Codes are systematic — G-prefix petrol, D-prefix and J3 diesel — which also recovers the D4CB, D4BH, D4BA/BF and J3 diesels that were recorded as petrol. Hyundai specifies API SM/SN with ILSAC GF-4/5 for its petrol engines (no ACEA C-class requirement, so the hot-climate alternative applies), and low-SAPS ACEA C2/C3 for the CRDi diesels, whose particulate filter makes the grade a requirement. Order matters: the longer prefixes are listed before the shorter ones they would otherwise be swallowed by.",
+
+  "engines": [
+    {
+      "patterns": ["^D4H"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "5W-30", "apiStandard": "CF", "aceaStandard": "C3", "oemApproval": "Low-SAPS (FAP/DPF)", "capacityLiters": 6.0, "changeIntervalKm": 15000 },
+      "confidence": "medium",
+      "source": "R-line 2.0/2.2 CRDi (D4HA, D4HB) — Santa Fe, Tucson, ix35, Sportage, Sorento. Particulate filter fitted, so the low-SAPS C3 grade is a requirement rather than a preference."
+    },
+    {
+      "patterns": ["^D4E"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "5W-30", "apiStandard": "CF", "aceaStandard": "C3", "oemApproval": "Low-SAPS (FAP/DPF)", "capacityLiters": 5.3, "changeIntervalKm": 15000 },
+      "confidence": "medium",
+      "source": "D4EA / D4EA-F 2.0 CRDi — Tucson, Sportage, Trajet, Santa Fe (first generation). "
+    },
+    {
+      "patterns": ["^D4C"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "5W-30", "apiStandard": "CF", "aceaStandard": "C3", "oemApproval": "Low-SAPS (FAP/DPF)", "capacityLiters": 8.0, "changeIntervalKm": 15000 },
+      "confidence": "low",
+      "source": "D4CB 2.5 CRDi — H-1 / Starex / iLoad, common as a light commercial in Tunisia and recorded as petrol. Large sump; the capacity is a family figure rather than a manual one."
+    },
+    {
+      "patterns": ["^D4B"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "15W-40", "apiStandard": "CF", "aceaStandard": "B3/B4", "oemApproval": null, "capacityLiters": 7.0, "changeIntervalKm": 7500 },
+      "confidence": "low",
+      "source": "D4BA / D4BF / D4BH 2.5 TCi — Galloper, Terracan, H-1, Porter. Pre-common-rail indirect injection with no particulate filter, so a conventional 15W-40 is correct and suits hot climates. Recorded as petrol. Capacity is a family estimate."
+    },
+    {
+      "patterns": ["^D3F"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "5W-30", "apiStandard": "CF", "aceaStandard": "C2", "oemApproval": "Low-SAPS (FAP/DPF)", "capacityLiters": 3.4, "changeIntervalKm": 15000 },
+      "confidence": "low",
+      "source": "D3FA 1.1 CRDi — i10, i20. Small three-cylinder diesel; capacity is a family estimate."
+    },
+    {
+      "patterns": ["^D[34]"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "5W-30", "apiStandard": "CF", "aceaStandard": "C2", "oemApproval": "Low-SAPS (FAP/DPF)", "capacityLiters": 5.3, "changeIntervalKm": 15000 },
+      "confidence": "medium",
+      "source": "U-line CRDi (D4FA 1.5, D4FB 1.6, D4FC 1.4, D4FD 1.7, D3EA 1.5) — i20, i30, i40, Accent, Elantra, Tucson, Ceed, Rio, Sportage. The commonest Hyundai/Kia diesels in Tunisia. Particulate filter fitted from Euro 4 onward, so low-SAPS C2."
+    },
+    {
+      "patterns": ["^J3"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "15W-40", "apiStandard": "CF", "aceaStandard": "B3/B4", "oemApproval": null, "capacityLiters": 7.5, "changeIntervalKm": 7500 },
+      "confidence": "low",
+      "source": "J3 2.9 CRDi — Terracan, Carnival. Recorded as petrol. Conventional grade for a pre-DPF diesel of this size; capacity is a family estimate."
+    },
+
+    {
+      "patterns": ["^G6"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "5W-30", "apiStandard": "SM/SN", "aceaStandard": null, "oemApproval": null, "capacityLiters": 5.5, "changeIntervalKm": 10000 },
+      "confidence": "low",
+      "source": "G6 V6 petrol family (G6BA 2.7, G6CU 3.5, G6DA/G6DB 3.3-3.8, G6DJ, G6EA, G6AT) — Santa Fe, Sonata, Grandeur, Coupe, Carnival, Sorento. API SM/SN with no ACEA requirement. Capacity is a family figure."
+    },
+    {
+      "patterns": ["^G4K"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "5W-30", "apiStandard": "SM/SN", "aceaStandard": null, "oemApproval": null, "capacityLiters": 4.6, "changeIntervalKm": 10000 },
+      "confidence": "medium",
+      "source": "Theta 2.0/2.4 (G4KA, G4KD, G4KE, G4KH, G4KJ) — Sonata, Tucson, ix35, Optima, Sportage. Hyundai specifies API SM/SN, ILSAC GF-4/5; no ACEA C-class requirement."
+    },
+    {
+      "patterns": ["^G4N"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "5W-30", "apiStandard": "SN", "aceaStandard": null, "oemApproval": null, "capacityLiters": 4.0, "changeIntervalKm": 10000 },
+      "confidence": "medium",
+      "source": "Nu 1.8/2.0 (G4NA, G4NB, G4NC) — i40, Elantra, Tucson, Ceed, Sportage."
+    },
+    {
+      "patterns": ["^(G4F|G4L|G3L|G4D)"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "5W-30", "apiStandard": "SM/SN", "aceaStandard": null, "oemApproval": null, "capacityLiters": 3.3, "changeIntervalKm": 10000 },
+      "confidence": "medium",
+      "source": "Gamma 1.4/1.6 (G4FA, G4FC, G4FD, G4FG, G4FJ), Kappa 1.0/1.2/1.4 (G3LA, G3LC, G4LA, G4LC, G4LD) and Smartstream G4DJ — i10, i20, i30, Accent, Elantra, Rio, Ceed, Picanto, Stonic. The commonest Hyundai/Kia petrols in Tunisia. Small 3.3 L sump; API SM/SN with no ACEA requirement."
+    },
+    {
+      "patterns": ["^(G4G|G4C|G4J)"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "5W-30", "apiStandard": "SL/SM", "aceaStandard": null, "oemApproval": null, "capacityLiters": 3.8, "changeIntervalKm": 10000 },
+      "confidence": "medium",
+      "source": "Beta 1.6/1.8/2.0 (G4GB, G4GC, G4GR) and Sirius 2.0/2.4 (G4CS, G4CP, G4JP, G4JS) — Elantra, Coupe, Tucson, Sonata, Carens, Cerato. Older port-injection petrols, API SL/SM."
+    },
+    {
+      "patterns": ["^G4E"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "5W-30", "apiStandard": "SL/SM", "aceaStandard": null, "oemApproval": null, "capacityLiters": 3.3, "changeIntervalKm": 10000 },
+      "confidence": "medium",
+      "source": "Alpha 1.3/1.5/1.6 (G4EA, G4EB, G4EC, G4ED, G4EE, G4EK) — Accent, Getz, Elantra, Rio, Cerato. Very common older Hyundai/Kia petrol."
+    },
+    {
+      "patterns": ["^G4H"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "5W-30", "apiStandard": "SL/SM", "aceaStandard": null, "oemApproval": null, "capacityLiters": 3.3, "changeIntervalKm": 10000 },
+      "confidence": "low",
+      "source": "G4HG 1.1 — Atos, i10, Picanto. Small sump; capacity is a family estimate."
+    }
+  ]
+}

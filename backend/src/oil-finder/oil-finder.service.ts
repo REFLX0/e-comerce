@@ -147,6 +147,30 @@ export function normalizeCategory(value?: string | null): VehicleCategory | unde
 const HARD_THIN_OIL_APPROVAL =
   /(C1|C2|C5|GF-?[456]|RESOURCE.?CONSERV|VW\s*50[45]|VW\s*50[89]|507|508|509|DEXOS|B71\s*23(1|2)|229\.5|LOW.?SAPS|DPF|FAP|HYBRID)/i;
 
+/**
+ * Where a manufacturer publishes its own hot-market specification, that beats
+ * raising the viscosity: it is the grade the constructor actually sanctions.
+ *
+ * PSA's B71 2297 is the case that matters here. An engine specified B71 2290
+ * runs an ACEA C2 oil, and thickening it to a 40-weight would break the low-SAPS
+ * chemistry its particulate filter depends on. B71 2297 keeps the low-SAPS
+ * chemistry but steps up to ACEA C3, whose minimum high-temperature shear
+ * strength (HTHS >= 3.5 vs C2's 2.9) is exactly what the heat asks for. PSA
+ * developed it for hot and very hot markets.
+ */
+const OEM_HOT_CLIMATE_SPECS: Array<{
+  match: RegExp;
+  viscosity: (current: string) => string;
+  reason: string;
+}> = [
+  {
+    match: /B71\s*2290/i,
+    viscosity: (current) => current,
+    reason:
+      'PSA B71 2297 (ACEA C3) — spécification constructeur pour marchés chauds. Même viscosité, meilleure tenue à haute température, compatible FAP.',
+  },
+];
+
 export function resolveHotClimateAlternative(spec: {
   viscosity?: string | null;
   aceaStandard?: string | null;
@@ -159,13 +183,21 @@ export function resolveHotClimateAlternative(spec: {
 
   const [, cold, hotStr] = m;
   const hot = Number(hotStr);
-  // 40-weight and above already suits the climate; 20 and below is a design
-  // choice about the engine, not about the weather.
-  if (hot >= 40 || hot <= 20) return null;
-
   const haystack = [spec.aceaStandard, spec.apiStandard, spec.oemApproval, v]
     .filter(Boolean)
     .join(' ');
+
+  // A constructor's own hot-market specification wins, and applies even to the
+  // thin-oil engines below — it is sanctioned precisely for them.
+  for (const oem of OEM_HOT_CLIMATE_SPECS) {
+    if (oem.match.test(haystack)) {
+      return { viscosity: oem.viscosity(v), reason: oem.reason };
+    }
+  }
+
+  // 40-weight and above already suits the climate; 20 and below is a design
+  // choice about the engine, not about the weather.
+  if (hot >= 40 || hot <= 20) return null;
   if (HARD_THIN_OIL_APPROVAL.test(haystack)) return null;
 
   return {
