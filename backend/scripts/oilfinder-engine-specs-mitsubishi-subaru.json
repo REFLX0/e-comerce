@@ -1,0 +1,84 @@
+{
+  "makes": ["MITSUBISHI", "SUBARU"],
+  "note": "Two makes whose engine codes do not collide. Mitsubishi's 4D5, 4M4 and 4N1 diesels and Subaru's EE20 boxer diesel were recorded as petrol. Mitsubishi's 4D56 powers the L200 and Pajero, which are common working vehicles in Tunisia. Subaru specifies 0W-20 for its FA/FB petrols. Capacities are family figures unless stated otherwise.",
+  "engines": [
+    {
+      "patterns": ["^4N1"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "5W-30", "apiStandard": "CF", "aceaStandard": "C3", "oemApproval": "Low-SAPS (FAP/DPF)", "capacityLiters": 5.5, "changeIntervalKm": 15000 },
+      "confidence": "low",
+      "source": "4N13 1.8 and 4N14/4N15 2.2-2.4 DI-D — ASX, Outlander, Lancer, L200. Particulate filter fitted, so the low-SAPS grade is a requirement. Recorded as petrol."
+    },
+    {
+      "patterns": ["^4M4"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "5W-30", "apiStandard": "CF", "aceaStandard": "C3", "oemApproval": "Low-SAPS (FAP/DPF)", "capacityLiters": 7.5, "changeIntervalKm": 10000 },
+      "confidence": "low",
+      "source": "4M40 2.8 and 4M41 3.2 DI-D — Pajero, Canter. Recorded as petrol."
+    },
+    {
+      "patterns": ["^4D[3568]"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "15W-40", "apiStandard": "CF", "aceaStandard": "B3/B4", "oemApproval": null, "capacityLiters": 6.0, "changeIntervalKm": 7500 },
+      "confidence": "low",
+      "source": "4D56 / 4D56T / 4D56TD 2.5, 4D65 1.8 and 4D68 2.0 — L200, Pajero, Galant, Space Wagon, Delica. Indirect injection with no particulate filter, so a conventional 15W-40 is correct and suits hot climates. Recorded as petrol or mixed."
+    },
+    {
+      "patterns": ["^(4A9|4B1|4J1)"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "5W-30", "apiStandard": "SM/SN", "aceaStandard": null, "oemApproval": null, "capacityLiters": 4.0, "changeIntervalKm": 10000 },
+      "confidence": "low",
+      "source": "4A91 1.5, 4A92 1.6, 4B10/4B11/4B12 1.8-2.4 and 4J10/4J11 — Colt, Lancer, ASX, Outlander, Space Star."
+    },
+    {
+      "patterns": ["^6[GB]"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "5W-30", "apiStandard": "SL/SM", "aceaStandard": "A3/B4", "oemApproval": null, "capacityLiters": 4.5, "changeIntervalKm": 10000 },
+      "confidence": "low",
+      "source": "6G7 and 6B3 V6 (6G72, 6G74, 6G75, 6B31) — Pajero, Galant, Outlander, Grandis, 3000GT."
+    },
+    {
+      "patterns": ["^4[GM]"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "10W-40", "apiStandard": "SL", "aceaStandard": "A3/B4", "oemApproval": null, "capacityLiters": 4.0, "changeIntervalKm": 7500 },
+      "confidence": "low",
+      "source": "4G1, 4G3, 4G5, 4G6 and 4G9 petrol families (4G13, 4G15, 4G32, 4G37, 4G52, 4G63, 4G64, 4G92, 4G93) — Colt, Lancer, Galant, Space Wagon, Pajero, Carisma. Pre-1998 designs in the main; 10W-40 suits hot climates."
+    },
+
+    {
+      "patterns": ["^EE2"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "5W-30", "apiStandard": "CF", "aceaStandard": "C3", "oemApproval": "Low-SAPS (FAP/DPF)", "capacityLiters": 5.4, "changeIntervalKm": 15000 },
+      "confidence": "low",
+      "source": "EE20Z 2.0 boxer diesel — Forester, Outback, Legacy, Impreza, XV. Subaru's only diesel, recorded as petrol throughout. Particulate filter fitted."
+    },
+    {
+      "patterns": ["^(FA|FB)"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "0W-20", "apiStandard": "SN", "aceaStandard": null, "oemApproval": "ILSAC GF-5", "capacityLiters": 5.0, "changeIntervalKm": 10000 },
+      "confidence": "low",
+      "source": "FA20 and FB16/FB20/FB25 boxer petrol — Impreza, XV, Forester, Outback, BRZ. Subaru specifies 0W-20; a heavier grade is withheld deliberately."
+    },
+    {
+      "patterns": ["^EZ"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "5W-30", "apiStandard": "SL/SM", "aceaStandard": null, "oemApproval": null, "capacityLiters": 6.5, "changeIntervalKm": 10000 },
+      "confidence": "low",
+      "source": "EZ30 and EZ36 flat-six — Outback, Legacy, Tribeca. Large sump."
+    },
+    {
+      "patterns": ["^(EJ|EL)"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "5W-30", "apiStandard": "SL/SM", "aceaStandard": "A3/B4", "oemApproval": null, "capacityLiters": 4.2, "changeIntervalKm": 10000 },
+      "confidence": "low",
+      "source": "EJ boxer petrol (EJ15, EJ16, EJ20, EJ22, EJ25 and the turbo EJ205/255/257) and EL15 — Impreza, Legacy, Forester, WRX. The commonest Subaru petrol."
+    },
+    {
+      "patterns": ["^(EA|EF|ER)"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "10W-40", "apiStandard": "SL", "aceaStandard": "A3/B4", "oemApproval": null, "capacityLiters": 3.5, "changeIntervalKm": 7500 },
+      "confidence": "low",
+      "source": "The older EA and EF engines (EA71, EA82, EF10, EF12) — Justy, Leone, Libero. Pre-1995 designs; capacity is a family estimate."
+    }
+  ]
+}

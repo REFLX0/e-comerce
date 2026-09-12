@@ -1,0 +1,63 @@
+{
+  "makes": ["LEXUS", "DAIHATSU"],
+  "note": "Lexus runs Toyota's engines under Toyota's codes, so the figures here match the Toyota table; only the V6/V8 families it does not share are added. Daihatsu's DL and CL diesels were recorded as petrol, and its 1KR-FE and 1NR-FE are Toyota units. Capacities are family figures unless stated otherwise.",
+  "engines": [
+    {
+      "codes": ["2AD-FTV", "2AD-FHV"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "5W-30", "apiStandard": "CF", "aceaStandard": "C2/C3", "oemApproval": "Low-SAPS (DPF)", "capacityLiters": 6.1, "changeIntervalKm": 10000 },
+      "confidence": "medium",
+      "source": "Toyota's 2.2 D-4D in the Lexus IS 220d / IS 200d, same figures as the Toyota table uses for it. 2AD-FHV was recorded as petrol."
+    },
+    {
+      "codes": ["2ZR-FXE", "2AR-FXE", "2GR-FXE", "2GR-FXS", "8GR-FXS", "5ZR-FXE"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "0W-20", "apiStandard": "SN", "aceaStandard": null, "oemApproval": "ILSAC GF-5 (moteur hybride)", "capacityLiters": 4.4, "changeIntervalKm": 15000 },
+      "confidence": "low",
+      "source": "The Lexus hybrid Atkinson-cycle engines (CT200h, IS300h, GS450h, RX450h, LS600h). Specified 0W-20; a heavier grade is withheld, and so is a hot-climate alternative, because the engine runs intermittently."
+    },
+    {
+      "codes": ["8AR-FTS", "V35A-FTS"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "0W-20", "apiStandard": "SN", "aceaStandard": null, "oemApproval": "ILSAC GF-5 (turbo)", "capacityLiters": 5.4, "changeIntervalKm": 10000 },
+      "confidence": "low",
+      "source": "8AR-FTS 2.0 turbo (NX200t/NX300, IS200t, RX200t) and V35A-FTS 3.5 twin-turbo (LS500). Turbocharged direct injection specified 0W-20."
+    },
+    {
+      "codes": ["1UZ-FE", "2UZ-FE", "3UZ-FE", "1UR-FE", "1UR-FSE", "2UR-GSE", "2UR-FSE", "1LR-GUE"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "5W-30", "apiStandard": "SL/SM", "aceaStandard": null, "oemApproval": null, "capacityLiters": 6.6, "changeIntervalKm": 10000 },
+      "confidence": "low",
+      "source": "Lexus V8 and V10 (1UZ/2UZ/3UZ-FE, 1UR/2UR, 1LR-GUE in the LFA) — LS, GS, SC, IS-F, LX. Large sump; API SL/SM with no ACEA requirement."
+    },
+    {
+      "codes": ["2GR-FE", "2GR-FSE", "3GR-FSE", "4GR-FSE", "2AR-FSE", "1MZ-FE", "3MZ-FE", "2VZ-FE", "3VZ-FE", "1G-FE", "2JZ-GE"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "5W-30", "apiStandard": "SL/SM", "aceaStandard": null, "oemApproval": null, "capacityLiters": 5.1, "changeIntervalKm": 10000 },
+      "confidence": "low",
+      "source": "Lexus V6 and the 2JZ straight-six (IS, GS, ES, RX, SC300). API SL/SM; no ACEA requirement, so the hot-climate alternative applies."
+    },
+
+    {
+      "patterns": ["^(DL|CL)\\b", "^(DL|CL)\\s*\\d"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "15W-40", "apiStandard": "CF", "aceaStandard": "B3/B4", "oemApproval": null, "capacityLiters": 5.5, "changeIntervalKm": 7500 },
+      "confidence": "low",
+      "source": "Daihatsu DL / DL51 / DL52 2.8 and CL / CL10 / CL11 / CL60 / CL61 1.0 diesels — Delta, Rocky, Charade. Recorded as petrol. Conventional 15W-40 for a pre-common-rail diesel; capacity is a family estimate."
+    },
+    {
+      "codes": ["1KR-FE", "1NR-FE", "3SZ-VE", "K3-VE", "EJ-VE", "EJ-DE", "HC-E", "HCE", "HD-E", "HD", "HDC", "HEEG"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "5W-30", "apiStandard": "SL/SM", "aceaStandard": null, "oemApproval": null, "capacityLiters": 3.0, "changeIntervalKm": 10000 },
+      "confidence": "low",
+      "source": "Daihatsu petrol — the Toyota-built 1KR-FE and 1NR-FE plus Daihatsu's own K3-VE, EJ-VE, 3SZ-VE, HC-E and HD-E (Sirion, Terios, Cuore, Materia, Charade). Small sump."
+    },
+    {
+      "patterns": ["^(CB|ED|CD)\\b", "^(CB|ED|CD)\\s*\\d"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "10W-40", "apiStandard": "SL", "aceaStandard": "A3/B4", "oemApproval": null, "capacityLiters": 2.8, "changeIntervalKm": 7500 },
+      "confidence": "low",
+      "source": "Daihatsu's older 0.8/1.0 petrols (CB, CB20/22/23/60/61/80/90, ED20, CD) — Charade, Cuore, Move. Very small sump; capacity is a family estimate."
+    }
+  ]
+}

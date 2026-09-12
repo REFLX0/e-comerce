@@ -1,0 +1,62 @@
+{
+  "makes": ["SUZUKI"],
+  "note": "Suzuki's diesels were all recorded as petrol: the Fiat-built 1.3 DDiS (Z13DT, D13A), the PSA XUD9 in the Vitara (DHW), and the PSA HDi units in the Grand Vitara. Suzuki's modern K-series petrols are specified 0W-20; the G and F series take a conventional grade suited to hot climates. Capacities are family figures unless stated otherwise.",
+  "engines": [
+    {
+      "patterns": ["^(Z13|D13)"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "5W-30", "apiStandard": "CF", "aceaStandard": "C2", "oemApproval": "Low-SAPS (FAP/DPF)", "capacityLiters": 3.2, "changeIntervalKm": 15000 },
+      "confidence": "low",
+      "source": "1.3 DDiS (Z13DT, D13A) — the Fiat-built Multijet fitted to the Swift, Ignis and SX4. Particulate filter fitted on the later builds. Recorded as petrol."
+    },
+    {
+      "patterns": ["^(DHW|DW8|XUD)", "XUD9"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "10W-40", "apiStandard": "SL/CF", "aceaStandard": "A3/B4", "oemApproval": "PSA B71 2294", "capacityLiters": 4.75, "changeIntervalKm": 10000 },
+      "confidence": "medium",
+      "source": "DHW is PSA's XUD9SD, fitted to the Suzuki Vitara — the same engine and the same 4.75 L figure used in the PSA table. Recorded as petrol."
+    },
+    {
+      "patterns": ["^(RHZ|RHW|RHX|F9Q)"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "5W-30", "apiStandard": "SN/CF", "aceaStandard": "C2", "oemApproval": "PSA B71 2290", "capacityLiters": 5.25, "changeIntervalKm": 20000 },
+      "confidence": "low",
+      "source": "PSA DW10 HDi units fitted to the Grand Vitara, and the Renault F9Q in some markets. Recorded as petrol."
+    },
+    {
+      "patterns": ["^(K10|K12|K14|K15)"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "0W-20", "apiStandard": "SN", "aceaStandard": null, "oemApproval": "ILSAC GF-5", "capacityLiters": 3.1, "changeIntervalKm": 10000 },
+      "confidence": "low",
+      "source": "K-series / Boosterjet (K10B, K12C Dualjet, K14C, K15B) — Swift, Baleno, Vitara, Ignis, S-Cross, Jimny. Suzuki specifies 0W-20 for these; a heavier grade is withheld deliberately."
+    },
+    {
+      "patterns": ["^(M13|M15|M16|M18)"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "5W-30", "apiStandard": "SL/SM", "aceaStandard": null, "oemApproval": null, "capacityLiters": 3.8, "changeIntervalKm": 10000 },
+      "confidence": "low",
+      "source": "M-series 1.3-1.8 (M13A, M15A, M16A, M18A) — Swift, Liana, SX4, Jimny, Grand Vitara."
+    },
+    {
+      "patterns": ["^(J18|J20|J23|J24|H20|H25|H27)"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "5W-30", "apiStandard": "SL", "aceaStandard": "A3/B4", "oemApproval": null, "capacityLiters": 4.5, "changeIntervalKm": 10000 },
+      "confidence": "low",
+      "source": "J-series and H-series V6 (J18A, J20A, J24B, H20A, H25A, H27A) — Grand Vitara, Vitara, XL-7."
+    },
+    {
+      "patterns": ["^(G10|G13|G15|G16)"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "10W-40", "apiStandard": "SL", "aceaStandard": "A3/B4", "oemApproval": null, "capacityLiters": 3.5, "changeIntervalKm": 7500 },
+      "confidence": "low",
+      "source": "G-series 1.0-1.6 (G10A, G13A/B/BA/BB, G16A/B) — Swift, Baleno, Vitara, Jimny, Wagon R. Very common older Suzuki in Tunisia."
+    },
+    {
+      "patterns": ["^(F8|F10|F6)"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "10W-40", "apiStandard": "SL", "aceaStandard": "A3/B4", "oemApproval": null, "capacityLiters": 3.0, "changeIntervalKm": 7500 },
+      "confidence": "low",
+      "source": "F-series 0.8/1.0 (F8A, F8B, F10A, F6A) — SJ410, Samurai, Alto, Maruti. Small sump; 10W-40 suits hot climates."
+    }
+  ]
+}

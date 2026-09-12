@@ -1,0 +1,90 @@
+{
+  "makes": ["MAZDA"],
+  "note": "Mazda's diesel families — RF (2.0 MZR-CD), R2 (2.2 MZR-CD and Skyactiv-D), SH (2.2 Skyactiv-D), S5 (1.5 Skyactiv-D), WL (2.5) and the PSA-built Y6 1.6 — were all recorded as petrol and handed a petrol grade. Skyactiv-G petrols are specified 0W-20 by Mazda; the older MZR and B/F-series take a conventional grade. Capacities are family figures unless stated otherwise.",
+  "engines": [
+    {
+      "patterns": ["^(SH|R2)"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "5W-30", "apiStandard": "CF", "aceaStandard": "C3", "oemApproval": "Mazda Dexelia / Low-SAPS (FAP/DPF)", "capacityLiters": 5.1, "changeIntervalKm": 15000 },
+      "confidence": "low",
+      "source": "SH-VPTS 2.2 Skyactiv-D and R2 / R2AA 2.2 MZR-CD — Mazda6, CX-5, Mazda3. Particulate filter fitted, so the low-SAPS grade is a requirement. Recorded as petrol."
+    },
+    {
+      "patterns": ["^S5"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "5W-30", "apiStandard": "CF", "aceaStandard": "C3", "oemApproval": "Mazda Dexelia / Low-SAPS (FAP/DPF)", "capacityLiters": 4.3, "changeIntervalKm": 15000 },
+      "confidence": "low",
+      "source": "S5-DPTS 1.5 Skyactiv-D — Mazda2, CX-3. Recorded as petrol."
+    },
+    {
+      "patterns": ["^RF"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "5W-30", "apiStandard": "CF", "aceaStandard": "C3", "oemApproval": "Low-SAPS (FAP/DPF)", "capacityLiters": 5.5, "changeIntervalKm": 10000 },
+      "confidence": "low",
+      "source": "RF 2.0 MZR-CD / DiTD (RF7J, RF4F, RF3F, RF1G, RF5C) — Mazda6, Mazda5, Premacy, 626. Recorded as petrol throughout."
+    },
+    {
+      "patterns": ["^Y6"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "5W-30", "apiStandard": "SN/CF", "aceaStandard": "C2", "oemApproval": "PSA B71 2290", "capacityLiters": 3.75, "changeIntervalKm": 20000 },
+      "confidence": "medium",
+      "source": "Y601 / Y655 1.6 MZ-CD — this is PSA's DV6 fitted to the Mazda2 and Mazda3, so it takes the PSA figures used elsewhere in this catalogue. Recorded as petrol."
+    },
+    {
+      "patterns": ["^WL"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "15W-40", "apiStandard": "CF", "aceaStandard": "B3/B4", "oemApproval": null, "capacityLiters": 6.0, "changeIntervalKm": 7500 },
+      "confidence": "low",
+      "source": "WL / WLT 2.5 diesel — B-series pickup, BT-50. Pre-DPF; conventional 15W-40 suits hot climates."
+    },
+    {
+      "patterns": ["^(P5|PE|PY)"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "0W-20", "apiStandard": "SN", "aceaStandard": null, "oemApproval": "Mazda Supra 0W-20 (Skyactiv-G)", "capacityLiters": 4.2, "changeIntervalKm": 15000 },
+      "confidence": "medium",
+      "source": "Skyactiv-G 1.5/2.0/2.5 (P5-VPS, PE-VPS, PY-VPS) — Mazda2, Mazda3, Mazda6, CX-3, CX-5. Mazda specifies 0W-20 for these high-compression engines; a heavier grade is withheld deliberately."
+    },
+    {
+      "patterns": ["^(L8|LF|L3|L5)"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "5W-30", "apiStandard": "SL/SM", "aceaStandard": null, "oemApproval": null, "capacityLiters": 4.3, "changeIntervalKm": 10000 },
+      "confidence": "low",
+      "source": "MZR 1.8/2.0/2.3/2.5 (L813, LF17, LF-DE, L3) — Mazda3, Mazda5, Mazda6, CX-7. API SL/SM with no ACEA requirement."
+    },
+    {
+      "patterns": ["^(Z5|Z6|ZY|ZJ|ZM)"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "5W-30", "apiStandard": "SL/SM", "aceaStandard": null, "oemApproval": null, "capacityLiters": 3.5, "changeIntervalKm": 10000 },
+      "confidence": "low",
+      "source": "Z-series 1.3/1.5/1.6 (Z5-DE, Z6, ZY-VE, ZJ-VE) — Mazda2, Mazda3, 323, Demio."
+    },
+    {
+      "patterns": ["^(KL|KF|AJ|GY|K8)"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "5W-30", "apiStandard": "SL", "aceaStandard": "A3/B4", "oemApproval": null, "capacityLiters": 4.2, "changeIntervalKm": 10000 },
+      "confidence": "low",
+      "source": "K-series and AJ V6 (KL, KF, K8, AJ, GY) — Xedos, 626, MPV, Tribute."
+    },
+    {
+      "patterns": ["^(FE|FS|FP|F8|F2)"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "10W-40", "apiStandard": "SL", "aceaStandard": "A3/B4", "oemApproval": null, "capacityLiters": 4.0, "changeIntervalKm": 7500 },
+      "confidence": "low",
+      "source": "F-series 1.8/2.0 petrol (FE, FS, FP, F8, F2) — 626, 323, MX-6, Premacy. Pre-1998 designs; 10W-40 suits hot climates."
+    },
+    {
+      "patterns": ["^(B3|B5|B6|BP|B8)"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "10W-40", "apiStandard": "SL", "aceaStandard": "A3/B4", "oemApproval": null, "capacityLiters": 3.5, "changeIntervalKm": 7500 },
+      "confidence": "low",
+      "source": "B-series 1.3-1.8 petrol (B3, B5, B6E, BP-ZE, BP DOHC) — 121, 323, MX-5, Demio. Shared with the Kia Pride and Sephia of the same era."
+    },
+    {
+      "patterns": ["^(NA|TC|UC|E5|E3)"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "10W-40", "apiStandard": "SL", "aceaStandard": "A3/B4", "oemApproval": null, "capacityLiters": 3.8, "changeIntervalKm": 7500 },
+      "confidence": "low",
+      "source": "The older small petrols (NA, TC, UC, E5, E3) — 121, 323, MX-5 NA. Capacity is a family estimate."
+    }
+  ]
+}

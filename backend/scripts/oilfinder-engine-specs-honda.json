@@ -1,0 +1,55 @@
+{
+  "makes": ["HONDA"],
+  "note": "Honda's i-CTDi / i-DTEC diesels (N22A, 20T2N, N16A1) were partly recorded as petrol. Honda specifies a thin oil for its modern i-VTEC petrols (0W-20) and a low-SAPS grade for the diesels, whose particulate filter makes it a requirement. The older D, B, F, A and E series take a conventional grade suited to hot climates. Capacities are family figures unless stated otherwise.",
+  "engines": [
+    {
+      "patterns": ["^(N22|N16|20T2|N15|N13)"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "5W-30", "apiStandard": "CF", "aceaStandard": "C3", "oemApproval": "Honda HFE / Low-SAPS (FAP/DPF)", "capacityLiters": 5.9, "changeIntervalKm": 12500 },
+      "confidence": "low",
+      "source": "i-CTDi / i-DTEC 1.6 and 2.2 (N22A1, N22A2, N16A1, 20T2N) — Accord, CR-V, Civic, FR-V. Particulate filter fitted, so the low-SAPS grade is a requirement. Part of the range was recorded as petrol."
+    },
+    {
+      "patterns": ["^(L13|L15|R18|R20|K20C|K23)"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "0W-20", "apiStandard": "SN", "aceaStandard": null, "oemApproval": "Honda HTO-06 / ILSAC GF-5", "capacityLiters": 3.7, "changeIntervalKm": 12500 },
+      "confidence": "low",
+      "source": "Modern i-VTEC and VTEC Turbo (L13, L15, R18, R20, K20C) — Jazz, Civic, CR-V, HR-V. Honda specifies 0W-20 for these; a heavier grade is withheld deliberately."
+    },
+    {
+      "patterns": ["^(K20|K24|J30|J35|J37)"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "5W-30", "apiStandard": "SL/SM", "aceaStandard": null, "oemApproval": null, "capacityLiters": 4.2, "changeIntervalKm": 10000 },
+      "confidence": "low",
+      "source": "K-series 2.0/2.4 i-VTEC and J-series V6 — Accord, CR-V, Civic Type R, Legend, Odyssey."
+    },
+    {
+      "patterns": ["^(H22|H23|F18|F20|F22|F23)"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "5W-30", "apiStandard": "SL", "aceaStandard": "A3/B4", "oemApproval": null, "capacityLiters": 4.2, "changeIntervalKm": 7500 },
+      "confidence": "low",
+      "source": "F-series and H-series 1.8-2.3 (F18B, F20A/B/Z, F22B, F23A, H22A, H23A) — Accord, Prelude, Shuttle."
+    },
+    {
+      "patterns": ["^(B16|B18|B20)"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "5W-30", "apiStandard": "SL", "aceaStandard": "A3/B4", "oemApproval": null, "capacityLiters": 3.8, "changeIntervalKm": 7500 },
+      "confidence": "low",
+      "source": "B-series 1.6-2.0 VTEC (B16A2, B18C, B20B) — Civic, Integra, CR-V."
+    },
+    {
+      "patterns": ["^(D13|D14|D15|D16|D17)"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "10W-40", "apiStandard": "SL", "aceaStandard": "A3/B4", "oemApproval": null, "capacityLiters": 3.5, "changeIntervalKm": 7500 },
+      "confidence": "low",
+      "source": "D-series 1.3-1.7 (D13B, D14A, D15B, D16Y, D17A) — Civic, CRX, HR-V, Logo. Very common older Honda."
+    },
+    {
+      "patterns": ["^(A16|A18|A20|EV|EW|EL|EK|EP|ES|E0)"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "10W-40", "apiStandard": "SL", "aceaStandard": "A3/B4", "oemApproval": null, "capacityLiters": 3.8, "changeIntervalKm": 7500 },
+      "confidence": "low",
+      "source": "A-series and the older E-series (A16A1, A20A, EV2, EW2/3, EL, EK) — Accord, Prelude, Civic, Concerto. Pre-1998 designs; 10W-40 suits hot climates."
+    }
+  ]
+}
