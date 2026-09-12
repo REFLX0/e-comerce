@@ -1,0 +1,77 @@
+{
+  "makes": ["ISUZU"],
+  "note": "Small make, comprehensively wrong: every Isuzu diesel was recorded as petrol, including the whole 4J family that powers the D-Max and Trooper. Isuzu's codes separate cleanly — 4E, 4F, 4J, C223 and RZ4E are diesels; 4X, 4Z, 6VD1, G200Z and the GM-built LL8/LH6 are petrols. Isuzu's own oil is BESCO; the DPF-equipped RZ4E requires the low-SAPS BESCO CLEAN (JASO DH-2), while the pre-DPF units take a conventional 15W-40 that suits Tunisian temperatures. Capacities are family figures unless stated otherwise.",
+
+  "engines": [
+    {
+      "patterns": ["^RZ4E"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "5W-30", "apiStandard": "SN/CF", "aceaStandard": "C3", "oemApproval": "Isuzu BESCO CLEAN (JASO DH-2, FAP/DPF)", "capacityLiters": 5.6, "changeIntervalKm": 10000 },
+      "confidence": "low",
+      "source": "RZ4E-TC 1.9 Ddi — D-Max Euro 6. Particulate filter fitted, so the low-SAPS BESCO CLEAN / JASO DH-2 grade is a requirement and no heavier alternative is offered."
+    },
+    {
+      "patterns": ["^4J[HJ]"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "15W-40", "apiStandard": "CF-4", "aceaStandard": "B3/B4", "oemApproval": "Isuzu BESCO (JASO DH-1)", "capacityLiters": 7.4, "changeIntervalKm": 10000 },
+      "confidence": "low",
+      "source": "4JH1-TC and 4JJ1-TC 3.0 common-rail — D-Max, Trooper. Recorded as petrol. Capacity is a family figure."
+    },
+    {
+      "patterns": ["^4JK"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "15W-40", "apiStandard": "CF-4", "aceaStandard": "B3/B4", "oemApproval": "Isuzu BESCO (JASO DH-1)", "capacityLiters": 6.9, "changeIntervalKm": 10000 },
+      "confidence": "low",
+      "source": "4JK1-TC 2.5 common-rail — D-Max. Part of the range was already recorded as diesel and part as petrol."
+    },
+    {
+      "patterns": ["^4J"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "15W-40", "apiStandard": "CF", "aceaStandard": "B3/B4", "oemApproval": null, "capacityLiters": 6.0, "changeIntervalKm": 7500 },
+      "confidence": "low",
+      "source": "4JA1 2.5, 4JB1-T/TC 2.8 and 4JG2 3.1 indirect-injection diesels — Campo, Trooper, Elf. Pre-common-rail, no particulate filter; conventional 15W-40."
+    },
+    {
+      "patterns": ["^C223"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "15W-40", "apiStandard": "CF", "aceaStandard": "B3/B4", "oemApproval": null, "capacityLiters": 6.0, "changeIntervalKm": 7500 },
+      "confidence": "low",
+      "source": "C223 / C223-T 2.2 diesel — Campo, Trooper. Recorded as petrol throughout."
+    },
+    {
+      "patterns": ["^4F"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "15W-40", "apiStandard": "CF", "aceaStandard": "B3/B4", "oemApproval": null, "capacityLiters": 5.5, "changeIntervalKm": 7500 },
+      "confidence": "low",
+      "source": "4FC1T / 4FD1 / 4FG1T 2.0-2.4 diesels — Midi. Recorded as petrol."
+    },
+    {
+      "patterns": ["^4E"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "15W-40", "apiStandard": "CF", "aceaStandard": "B3/B4", "oemApproval": null, "capacityLiters": 4.5, "changeIntervalKm": 7500 },
+      "confidence": "low",
+      "source": "4EC1 / 4EC1T 1.5 and 4EE1 1.7 diesels — Gemini. Recorded as petrol. Not to be confused with the 4XE1 petrol of the same displacement in the same model."
+    },
+    {
+      "patterns": ["^(LL8|LH6)"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "5W-30", "apiStandard": "SL/SM", "aceaStandard": null, "oemApproval": null, "capacityLiters": 6.6, "changeIntervalKm": 10000 },
+      "confidence": "low",
+      "source": "LL8 4.2 and LH6 5.3 — the GM engines in the Ascender. API SL/SM; capacity is a family figure."
+    },
+    {
+      "patterns": ["^6VD1"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "5W-30", "apiStandard": "SL", "aceaStandard": "A3/B4", "oemApproval": null, "capacityLiters": 5.0, "changeIntervalKm": 10000 },
+      "confidence": "low",
+      "source": "6VD1 3.2 V6 petrol — Trooper. Capacity is a family figure."
+    },
+    {
+      "patterns": ["^(4X|4Z|G200)"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "10W-40", "apiStandard": "SL/CF", "aceaStandard": "A3/B4", "oemApproval": null, "capacityLiters": 3.8, "changeIntervalKm": 7500 },
+      "confidence": "low",
+      "source": "4XC1 / 4XE1 / 4XF1 (Gemini, Impulse), 4ZC1 / 4ZD1 / 4ZE1 (Midi, Trooper) and G200Z (Campo) petrols. Pre-1998 designs; 10W-40 is the conventional grade and suits hot climates."
+    }
+  ]
+}

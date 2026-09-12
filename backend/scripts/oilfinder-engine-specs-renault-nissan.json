@@ -1,0 +1,128 @@
+{
+  "makes": ["RENAULT", "DACIA", "NISSAN"],
+  "note": "Renault, Dacia and Nissan share engines through the alliance — the K9K 1.5 dCi alone appears 278 times across the three — so one table covers them. Renault's own approvals were already present but applied inconsistently: the same engine code carried both RN0710 and RN0720 depending on which model it sat in. RN0700 is the petrol specification, RN0710 the diesel one without a particulate filter, and RN0720 the low-SAPS ACEA C4 for diesels with a filter. Where a family spans both, RN0720 is chosen: a C4 oil is harmless in a diesel without a filter, whereas an A3/B4 oil in one with a filter blocks it. Also recovers the diesels recorded as petrol — Renault's F8Q, F9Q and J8S, and Nissan's CD, LD, TD, YD and ZD families, none of which carry a fuel marker in the code.",
+
+  "engines": [
+    {
+      "patterns": ["^K9K"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "5W-30", "apiStandard": "SM/CF", "aceaStandard": "C4", "oemApproval": "Renault RN0720", "capacityLiters": 4.5, "changeIntervalKm": 15000 },
+      "confidence": "medium",
+      "source": "K9K 1.5 dCi — Clio, Mégane, Kangoo, Logan, Sandero, Duster, Micra, Juke, Qashqai. By far the commonest diesel on Tunisian roads. Particulate filter from Euro 4 onward makes the low-SAPS RN0720 the safe specification across the family."
+    },
+    {
+      "patterns": ["^R9M"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "5W-30", "apiStandard": "SM/CF", "aceaStandard": "C4", "oemApproval": "Renault RN0720", "capacityLiters": 5.4, "changeIntervalKm": 15000 },
+      "confidence": "medium",
+      "source": "R9M 1.6 dCi / Energy dCi 130 — Mégane III/IV, Scénic, Kadjar, Qashqai, X-Trail. Particulate filter fitted."
+    },
+    {
+      "patterns": ["^M9R"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "5W-30", "apiStandard": "SM/CF", "aceaStandard": "C4", "oemApproval": "Renault RN0720", "capacityLiters": 7.0, "changeIntervalKm": 15000 },
+      "confidence": "low",
+      "source": "M9R 2.0 dCi — Laguna III, Mégane, Espace, Trafic, X-Trail, Qashqai. Capacity is a family figure rather than a manual one."
+    },
+    {
+      "patterns": ["^M9T"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "5W-30", "apiStandard": "SM/CF", "aceaStandard": "C4", "oemApproval": "Renault RN0720", "capacityLiters": 7.5, "changeIntervalKm": 15000 },
+      "confidence": "low",
+      "source": "M9T 2.3 dCi — Master, Trafic III, NV400. Commercial diesel with a particulate filter; capacity is a family figure."
+    },
+    {
+      "patterns": ["^F9Q"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "5W-40", "apiStandard": "SL/CF", "aceaStandard": "A3/B4", "oemApproval": "Renault RN0710", "capacityLiters": 4.8, "changeIntervalKm": 10000 },
+      "confidence": "medium",
+      "source": "F9Q 1.9 dCi — Mégane I/II, Scénic, Laguna, Kangoo, Trafic. Largely pre-particulate-filter, so the high-SAPS RN0710 grade applies. Recorded as petrol in part of the catalogue."
+    },
+    {
+      "patterns": ["^F8Q"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "10W-40", "apiStandard": "SL/CF", "aceaStandard": "A3/B4", "oemApproval": null, "capacityLiters": 4.5, "changeIntervalKm": 7500 },
+      "confidence": "medium",
+      "source": "F8Q 1.9 D / dT — Clio I/II, Mégane I, Kangoo, R19, Express. Indirect injection, no filter; conventional 10W-40 suits hot climates. Recorded as petrol."
+    },
+    {
+      "patterns": ["^(G9T|G9U|J8S)"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "5W-40", "apiStandard": "SL/CF", "aceaStandard": "A3/B4", "oemApproval": "Renault RN0710", "capacityLiters": 6.5, "changeIntervalKm": 10000 },
+      "confidence": "low",
+      "source": "G9T 2.2 dCi and G9U 2.5 dCi (Laguna, Espace, Master, Trafic, Interstar, Primastar), J8S 2.1 D (R21, Espace I, Master). J8S recorded as petrol. Capacity is a family figure."
+    },
+
+    {
+      "patterns": ["^(H4M|H4B|H4J|H5F|M5M|B4D|M4R)"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "5W-30", "apiStandard": "SN", "aceaStandard": "C3", "oemApproval": "Renault RN17", "capacityLiters": 4.3, "changeIntervalKm": 15000 },
+      "confidence": "low",
+      "source": "The newer Renault/Dacia petrols — H4M 1.6 SCe, H4B 0.9 TCe, H5F 1.2 TCe, M5M 1.6 turbo, B4D 1.0 SCe, M4R 2.0 (Clio IV/V, Captur, Duster, Sandero, Mégane IV). Renault's RN17 specification covers these; the capacity is a family figure."
+    },
+    {
+      "patterns": ["^(K4M|K4J|K7M|K7J)"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "5W-40", "apiStandard": "SL/SN", "aceaStandard": "A3/B4", "oemApproval": "Renault RN0700", "capacityLiters": 4.8, "changeIntervalKm": 10000 },
+      "confidence": "medium",
+      "source": "K-series 1.4/1.6 petrol — Clio II/III, Mégane I/II, Scénic, Kangoo, Logan, Sandero, Duster. Extremely common in Tunisia. RN0700 is Renault's petrol specification; no particulate filter, so the high-SAPS grade applies."
+    },
+    {
+      "patterns": ["^(F4R|F4P|F3R|F3P|F7R|J7T|F7P)"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "5W-40", "apiStandard": "SL/SN", "aceaStandard": "A3/B4", "oemApproval": "Renault RN0700", "capacityLiters": 5.4, "changeIntervalKm": 10000 },
+      "confidence": "medium",
+      "source": "F-series 1.8/2.0 petrol — Mégane, Laguna, Scénic, Espace, Clio RS, Safrane. Larger sump than the 1.4/1.6."
+    },
+    {
+      "patterns": ["^(D4F|D7F)"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "5W-40", "apiStandard": "SL/SN", "aceaStandard": "A3/B4", "oemApproval": "Renault RN0700", "capacityLiters": 4.0, "changeIntervalKm": 10000 },
+      "confidence": "medium",
+      "source": "D-series 1.2 petrol — Clio II/III, Twingo, Modus, Kangoo, Logan. Small sump."
+    },
+    {
+      "patterns": ["^(E7J|C1E|C2J|C3J|F2N|F3N)"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "10W-40", "apiStandard": "SL/CF", "aceaStandard": "A3/B4", "oemApproval": null, "capacityLiters": 4.0, "changeIntervalKm": 7500 },
+      "confidence": "medium",
+      "source": "The older Renault petrols — E7J 1.4, C1E/C2J/C3J 1.1-1.4, F2N/F3N 1.7 (R5, R9, R11, R19, Clio I, Express). Pre-1998 designs; 10W-40 is the conventional grade and suits hot climates."
+    },
+
+    {
+      "patterns": ["^YD2"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "5W-30", "apiStandard": "CF", "aceaStandard": "C3", "oemApproval": "Low-SAPS (DPF)", "capacityLiters": 6.2, "changeIntervalKm": 10000 },
+      "confidence": "low",
+      "source": "Nissan YD22 / YD25DDTi — Navara, Pathfinder, X-Trail, Primera, Almera. Recorded as petrol in part of the catalogue. Capacity is a family figure."
+    },
+    {
+      "patterns": ["^ZD30"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "10W-30", "apiStandard": "CF", "aceaStandard": "B3/B4", "oemApproval": null, "capacityLiters": 8.0, "changeIntervalKm": 10000 },
+      "confidence": "low",
+      "source": "Nissan ZD30 / ZD30DDTi 3.0 — Patrol, Terrano, Interstar, Cabstar. Recorded as petrol. Capacity is a family figure."
+    },
+    {
+      "patterns": ["^(CD1|CD2|LD2|TD2|SD2|QD3|BD3|RD2)"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "15W-40", "apiStandard": "CF", "aceaStandard": "B3/B4", "oemApproval": null, "capacityLiters": 6.0, "changeIntervalKm": 7500 },
+      "confidence": "low",
+      "source": "Nissan's older indirect-injection diesels — CD17/CD20, LD20/LD23, TD25/TD27, SD22/SD25, QD32, BD30, RD28 (Sunny, Bluebird, Vanette, Patrol, Urvan, Cabstar). All recorded as petrol for want of a marker in the code. Conventional 15W-40 for a pre-common-rail diesel; capacity is a family estimate."
+    },
+    {
+      "patterns": ["^(HR1|MR1|MR2|QR2|QG1)"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "5W-30", "apiStandard": "SM/SN", "aceaStandard": null, "oemApproval": null, "capacityLiters": 4.3, "changeIntervalKm": 10000 },
+      "confidence": "low",
+      "source": "Nissan's modern petrols — HR15DE/HR16DE, MR16DDT/MR20DE, QR20DE/QR25DE, QG15DE/QG18DE (Micra, Note, Juke, Qashqai, X-Trail, Almera, Primera). API SM/SN with no ACEA requirement; capacity is a family figure."
+    },
+    {
+      "patterns": ["^(GA1|SR2|CG1|E1[356]|Z2[04])"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "10W-40", "apiStandard": "SL", "aceaStandard": "A3/B4", "oemApproval": null, "capacityLiters": 3.4, "changeIntervalKm": 7500 },
+      "confidence": "low",
+      "source": "Nissan's older petrols — GA14/GA16, SR20DE, CG10/CG13, E13/E15/E16, Z20/Z24 (Sunny, Almera, Micra, Primera, Vanette). Pre-1998 designs; capacity is a family estimate."
+    }
+  ]
+}
