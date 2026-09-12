@@ -1,0 +1,228 @@
+{
+  "models": [
+    {
+      "make": "NISSAN", "model": "Qashqai", "generation": "Qashqai II (J11) (2013 - 2021)",
+      "yearFrom": 2013, "yearTo": 2021, "category": "automobile", "confidence": "medium",
+      "source": "Qashqai J11. The catalogue stopped at the 2007 J10, so two whole generations were unreachable. AUTODOC lists the J11 1.3 DIG-T (HR13DDT); the 1.5 and 1.6 dCi are the Renault K9K and R9M already specified in the alliance table here.",
+      "engines": [
+        { "engineCode": "HR13DDT", "displacementCc": 1332, "powerHp": 158, "fuelType": "essence", "spec": { "viscosity": "5W-30", "apiStandard": "SN", "aceaStandard": "C3", "oemApproval": "Renault RN17", "capacityLiters": 5.4, "changeIntervalKm": 15000 } },
+        { "engineCode": "MR20DD", "displacementCc": 1997, "powerHp": 144, "fuelType": "essence", "spec": { "viscosity": "5W-30", "apiStandard": "SM/SN", "aceaStandard": null, "oemApproval": null, "capacityLiters": 4.3, "changeIntervalKm": 10000 } },
+        { "engineCode": "K9K 636", "displacementCc": 1461, "powerHp": 110, "fuelType": "diesel", "spec": { "viscosity": "5W-30", "apiStandard": "SM/CF", "aceaStandard": "C4", "oemApproval": "Renault RN0720", "capacityLiters": 4.5, "changeIntervalKm": 15000 } },
+        { "engineCode": "R9M 402", "displacementCc": 1598, "powerHp": 130, "fuelType": "diesel", "spec": { "viscosity": "5W-30", "apiStandard": "SM/CF", "aceaStandard": "C4", "oemApproval": "Renault RN0720", "capacityLiters": 5.4, "changeIntervalKm": 15000 } }
+      ]
+    },
+    {
+      "make": "NISSAN", "model": "Qashqai", "generation": "Qashqai III (J12) (2021 - Présent)",
+      "yearFrom": 2021, "yearTo": 9999, "category": "automobile", "confidence": "medium",
+      "source": "Qashqai J12. oil-select.com: the J12 1.3 DIG-T takes 5.4 L of SAE 5W-30 meeting ACEA C3 and Renault RN17 - the engine is shared with Renault under the alliance.",
+      "engines": [
+        { "engineCode": "HR13DDT", "displacementCc": 1332, "powerHp": 158, "fuelType": "essence", "spec": { "viscosity": "5W-30", "apiStandard": "SN", "aceaStandard": "C3", "oemApproval": "Renault RN17", "capacityLiters": 5.4, "changeIntervalKm": 15000 } },
+        { "engineCode": "KR15DDT (e-Power)", "displacementCc": 1497, "powerHp": 190, "fuelType": "essence", "spec": { "viscosity": "5W-30", "apiStandard": "SN", "aceaStandard": "C3", "oemApproval": "Renault RN17 (e-Power)", "capacityLiters": 5.4, "changeIntervalKm": 15000 } }
+      ]
+    },
+    {
+      "make": "NISSAN", "model": "Juke", "generation": "Juke II (F16) (2019 - Présent)",
+      "yearFrom": 2019, "yearTo": 9999, "category": "automobile", "confidence": "low",
+      "source": "Juke II. The catalogue held only the 2010 car. 1.0 DIG-T (HR10DET); oil-select gives the HR10DET in the Micra 5W-30 ACEA C3. Capacity is a family figure rather than a manual one.",
+      "engines": [
+        { "engineCode": "HR10DET", "displacementCc": 999, "powerHp": 117, "fuelType": "essence", "spec": { "viscosity": "5W-30", "apiStandard": "SN", "aceaStandard": "C3", "oemApproval": "Renault RN17", "capacityLiters": 4.3, "changeIntervalKm": 15000 } }
+      ]
+    },
+    {
+      "make": "NISSAN", "model": "X-Trail", "generation": "X-Trail IV (T33) (2021 - Présent)",
+      "yearFrom": 2021, "yearTo": 9999, "category": "automobile", "confidence": "low",
+      "source": "X-Trail T33, on the alliance CMF-C platform. 1.5 VC-Turbo e-Power (KR15DDT); figures taken from the Qashqai J12 entry, which uses the same unit.",
+      "engines": [
+        { "engineCode": "KR15DDT (e-Power)", "displacementCc": 1497, "powerHp": 204, "fuelType": "essence", "spec": { "viscosity": "5W-30", "apiStandard": "SN", "aceaStandard": "C3", "oemApproval": "Renault RN17 (e-Power)", "capacityLiters": 5.4, "changeIntervalKm": 15000 } },
+        { "engineCode": "MR20DD", "displacementCc": 1997, "powerHp": 163, "fuelType": "essence", "spec": { "viscosity": "5W-30", "apiStandard": "SM/SN", "aceaStandard": null, "oemApproval": null, "capacityLiters": 4.3, "changeIntervalKm": 10000 } }
+      ]
+    },
+    {
+      "make": "NISSAN", "model": "Micra", "generation": "Micra V (K14) (2017 - Présent)",
+      "yearFrom": 2017, "yearTo": 9999, "category": "automobile", "confidence": "low",
+      "source": "Micra K14, built on the Renault Clio platform. The catalogue stopped at the 2005 car. 1.0 DIG-T (HR10DET) and the Renault-sourced 0.9 TCe (H4B) and 1.0 SCe (B4D); figures follow the alliance table used for those units here.",
+      "engines": [
+        { "engineCode": "HR10DET", "displacementCc": 999, "powerHp": 117, "fuelType": "essence", "spec": { "viscosity": "5W-30", "apiStandard": "SN", "aceaStandard": "C3", "oemApproval": "Renault RN17", "capacityLiters": 4.3, "changeIntervalKm": 15000 } },
+        { "engineCode": "H4B 410", "displacementCc": 898, "powerHp": 90, "fuelType": "essence", "spec": { "viscosity": "5W-30", "apiStandard": "SN", "aceaStandard": "C3", "oemApproval": "Renault RN17", "capacityLiters": 4.3, "changeIntervalKm": 15000 } },
+        { "engineCode": "K9K 872", "displacementCc": 1461, "powerHp": 90, "fuelType": "diesel", "spec": { "viscosity": "5W-30", "apiStandard": "SM/CF", "aceaStandard": "C4", "oemApproval": "Renault RN0720", "capacityLiters": 4.5, "changeIntervalKm": 15000 } }
+      ]
+    },
+
+    {
+      "make": "SKODA", "model": "Octavia", "generation": "Octavia IV (NX) (2019 - Présent)",
+      "yearFrom": 2019, "yearTo": 9999, "category": "automobile", "confidence": "medium",
+      "source": "Octavia IV on MQB evo. The catalogue stopped at the 2012 car. Engines are the VW group EA211 and EA288 evo units already specified in the Golf VIII entry here; VW calls for 504.00/507.00 across the range.",
+      "engines": [
+        { "engineCode": "DLAA", "displacementCc": 999, "powerHp": 110, "fuelType": "essence", "spec": { "viscosity": "5W-30", "apiStandard": "SN", "aceaStandard": "C3", "oemApproval": "VW 504.00/507.00", "capacityLiters": 4.3, "changeIntervalKm": 15000 } },
+        { "engineCode": "DADA", "displacementCc": 1498, "powerHp": 150, "fuelType": "essence", "spec": { "viscosity": "5W-30", "apiStandard": "SN", "aceaStandard": "C3", "oemApproval": "VW 504.00/507.00", "capacityLiters": 4.3, "changeIntervalKm": 15000 } },
+        { "engineCode": "DTTA", "displacementCc": 1968, "powerHp": 150, "fuelType": "diesel", "spec": { "viscosity": "5W-30", "apiStandard": "SN", "aceaStandard": "C3", "oemApproval": "VW 507.00 (FAP)", "capacityLiters": 4.3, "changeIntervalKm": 15000 } }
+      ]
+    },
+    {
+      "make": "SKODA", "model": "Fabia", "generation": "Fabia IV (PJ) (2021 - Présent)",
+      "yearFrom": 2021, "yearTo": 9999, "category": "automobile", "confidence": "medium",
+      "source": "Fabia IV on MQB A0. The catalogue stopped at the 2014 car. EA211 1.0 MPI and 1.0 TSI.",
+      "engines": [
+        { "engineCode": "DLAA", "displacementCc": 999, "powerHp": 110, "fuelType": "essence", "spec": { "viscosity": "5W-30", "apiStandard": "SN", "aceaStandard": "C3", "oemApproval": "VW 504.00/507.00", "capacityLiters": 4.0, "changeIntervalKm": 15000 } },
+        { "engineCode": "DHYA", "displacementCc": 999, "powerHp": 80, "fuelType": "essence", "spec": { "viscosity": "5W-30", "apiStandard": "SN", "aceaStandard": "C3", "oemApproval": "VW 504.00/507.00", "capacityLiters": 4.0, "changeIntervalKm": 15000 } }
+      ]
+    },
+    {
+      "make": "SKODA", "model": "Kamiq", "generation": "Kamiq (2019 - Présent)",
+      "yearFrom": 2019, "yearTo": 9999, "category": "automobile", "confidence": "medium",
+      "source": "Kamiq, absent from the catalogue entirely. MQB A0 crossover sharing the Fabia and Scala EA211 engines.",
+      "engines": [
+        { "engineCode": "DLAA", "displacementCc": 999, "powerHp": 110, "fuelType": "essence", "spec": { "viscosity": "5W-30", "apiStandard": "SN", "aceaStandard": "C3", "oemApproval": "VW 504.00/507.00", "capacityLiters": 4.0, "changeIntervalKm": 15000 } },
+        { "engineCode": "DADA", "displacementCc": 1498, "powerHp": 150, "fuelType": "essence", "spec": { "viscosity": "5W-30", "apiStandard": "SN", "aceaStandard": "C3", "oemApproval": "VW 504.00/507.00", "capacityLiters": 4.3, "changeIntervalKm": 15000 } }
+      ]
+    },
+    {
+      "make": "SEAT", "model": "Leon", "generation": "Leon IV (KL) (2020 - Présent)",
+      "yearFrom": 2020, "yearTo": 9999, "category": "automobile", "confidence": "medium",
+      "source": "Leon IV on MQB evo, sharing the Golf VIII and Octavia IV engines.",
+      "engines": [
+        { "engineCode": "DLAA", "displacementCc": 999, "powerHp": 110, "fuelType": "essence", "spec": { "viscosity": "5W-30", "apiStandard": "SN", "aceaStandard": "C3", "oemApproval": "VW 504.00/507.00", "capacityLiters": 4.3, "changeIntervalKm": 15000 } },
+        { "engineCode": "DADA", "displacementCc": 1498, "powerHp": 150, "fuelType": "essence", "spec": { "viscosity": "5W-30", "apiStandard": "SN", "aceaStandard": "C3", "oemApproval": "VW 504.00/507.00", "capacityLiters": 4.3, "changeIntervalKm": 15000 } },
+        { "engineCode": "DTTA", "displacementCc": 1968, "powerHp": 150, "fuelType": "diesel", "spec": { "viscosity": "5W-30", "apiStandard": "SN", "aceaStandard": "C3", "oemApproval": "VW 507.00 (FAP)", "capacityLiters": 4.3, "changeIntervalKm": 15000 } }
+      ]
+    },
+    {
+      "make": "VW", "model": "Amarok", "generation": "Amarok II (2022 - Présent)",
+      "yearFrom": 2022, "yearTo": 9999, "category": "poids-lourd", "confidence": "low",
+      "source": "Amarok II, built on the Ford Ranger platform and using Ford's engines, so it takes Ford's specification rather than VW's. Ford WSS-M2C950-A per oil-select; the 2.0 EcoBlue capacity is the Ranger figure and the V6 is a family estimate.",
+      "engines": [
+        { "engineCode": "2.0 EcoBlue (YN2S)", "displacementCc": 1996, "powerHp": 170, "fuelType": "diesel", "spec": { "viscosity": "5W-30", "apiStandard": "CF", "aceaStandard": "C2", "oemApproval": "Ford WSS-M2C950-A (FAP)", "capacityLiters": 6.0, "changeIntervalKm": 15000 } },
+        { "engineCode": "3.0 V6 TDI", "displacementCc": 2993, "powerHp": 240, "fuelType": "diesel", "spec": { "viscosity": "5W-30", "apiStandard": "CF", "aceaStandard": "C2", "oemApproval": "Ford WSS-M2C950-A (FAP)", "capacityLiters": 9.0, "changeIntervalKm": 15000 } }
+      ]
+    },
+
+    {
+      "make": "HYUNDAI", "model": "Santa FÉ", "generation": "Santa Fe IV (TM) (2018 - Présent)",
+      "yearFrom": 2018, "yearTo": 9999, "category": "automobile", "confidence": "medium",
+      "source": "Santa Fe TM. The catalogue stopped at the 2012 car. Theta 2.0 T-GDi and the R-family 2.2 CRDi, both already specified in the Hyundai/Kia table here; the diesel's particulate filter makes its low-SAPS grade a requirement.",
+      "engines": [
+        { "engineCode": "G4KH", "displacementCc": 1998, "powerHp": 235, "fuelType": "essence", "spec": { "viscosity": "5W-30", "apiStandard": "SM/SN", "aceaStandard": null, "oemApproval": null, "capacityLiters": 4.6, "changeIntervalKm": 10000 } },
+        { "engineCode": "D4HB", "displacementCc": 2199, "powerHp": 202, "fuelType": "diesel", "spec": { "viscosity": "5W-30", "apiStandard": "CF", "aceaStandard": "C3", "oemApproval": "Low-SAPS (FAP/DPF)", "capacityLiters": 6.0, "changeIntervalKm": 15000 } }
+      ]
+    },
+    {
+      "make": "HYUNDAI", "model": "H-1", "generation": "Staria / H-1 III (2021 - Présent)",
+      "yearFrom": 2021, "yearTo": 9999, "category": "automobile", "confidence": "low",
+      "source": "Staria, which replaced the H-1 in 2021 and is sold alongside it in some markets. 2.2 CRDi (D4HE), the Smartstream evolution of the R-family; figures taken from the D4HB entry above.",
+      "engines": [
+        { "engineCode": "D4HE", "displacementCc": 2199, "powerHp": 177, "fuelType": "diesel", "spec": { "viscosity": "5W-30", "apiStandard": "CF", "aceaStandard": "C3", "oemApproval": "Low-SAPS (FAP/DPF)", "capacityLiters": 6.0, "changeIntervalKm": 15000 } }
+      ]
+    },
+    {
+      "make": "KIA", "model": "Cerato", "generation": "Cerato IV / K3 (BD) (2018 - Présent)",
+      "yearFrom": 2018, "yearTo": 9999, "category": "automobile", "confidence": "medium",
+      "source": "Cerato BD, sold as K3 and Forte in other markets. The catalogue stopped at the 2010 car. Gamma 1.6 MPi and Nu 2.0, both already specified in the Hyundai/Kia table here.",
+      "engines": [
+        { "engineCode": "G4FG", "displacementCc": 1591, "powerHp": 128, "fuelType": "essence", "spec": { "viscosity": "5W-30", "apiStandard": "SM/SN", "aceaStandard": null, "oemApproval": null, "capacityLiters": 3.3, "changeIntervalKm": 10000 } },
+        { "engineCode": "G4NA", "displacementCc": 1999, "powerHp": 150, "fuelType": "essence", "spec": { "viscosity": "5W-30", "apiStandard": "SN", "aceaStandard": null, "oemApproval": null, "capacityLiters": 4.0, "changeIntervalKm": 10000 } }
+      ]
+    },
+
+    {
+      "make": "ISUZU", "model": "D-Max", "generation": "D-Max III (RG) (2019 - Présent)",
+      "yearFrom": 2019, "yearTo": 9999, "category": "poids-lourd", "confidence": "low",
+      "source": "D-Max RG. The catalogue stopped at the 2012 car. 1.9 Ddi (RZ4E-TC) with a particulate filter, requiring the low-SAPS BESCO CLEAN, and the 3.0 (4JJ3-TCX); figures follow the Isuzu table here.",
+      "engines": [
+        { "engineCode": "RZ4E-TC", "displacementCc": 1898, "powerHp": 164, "fuelType": "diesel", "spec": { "viscosity": "5W-30", "apiStandard": "SN/CF", "aceaStandard": "C3", "oemApproval": "Isuzu BESCO CLEAN (JASO DH-2, FAP/DPF)", "capacityLiters": 5.6, "changeIntervalKm": 10000 } },
+        { "engineCode": "4JJ3-TCX", "displacementCc": 2999, "powerHp": 190, "fuelType": "diesel", "spec": { "viscosity": "15W-40", "apiStandard": "CF-4", "aceaStandard": "B3/B4", "oemApproval": "Isuzu BESCO (JASO DH-1)", "capacityLiters": 7.4, "changeIntervalKm": 10000 } }
+      ]
+    },
+    {
+      "make": "FORD", "model": "Ranger", "generation": "Ranger IV (P703) (2022 - Présent)",
+      "yearFrom": 2022, "yearTo": 9999, "category": "poids-lourd", "confidence": "medium",
+      "source": "Ranger P703. engineoiljournal gives the Ranger 2.0 EcoBlue 6 L of SAE 5W-30; oil-select confirms Ford WSS-M2C950-A covers the 2.0 EcoBlue and Ranger diesel. The V6 capacity is a family estimate.",
+      "engines": [
+        { "engineCode": "2.0 EcoBlue (YN2S)", "displacementCc": 1996, "powerHp": 170, "fuelType": "diesel", "spec": { "viscosity": "5W-30", "apiStandard": "CF", "aceaStandard": "C2", "oemApproval": "Ford WSS-M2C950-A (FAP)", "capacityLiters": 6.0, "changeIntervalKm": 15000 } },
+        { "engineCode": "3.0 V6 EcoBlue", "displacementCc": 2993, "powerHp": 240, "fuelType": "diesel", "spec": { "viscosity": "5W-30", "apiStandard": "CF", "aceaStandard": "C2", "oemApproval": "Ford WSS-M2C950-A (FAP)", "capacityLiters": 9.0, "changeIntervalKm": 15000 } }
+      ]
+    },
+
+    {
+      "make": "MITSUBISHI", "model": "Outlander", "generation": "Outlander IV (GN) (2021 - Présent)",
+      "yearFrom": 2021, "yearTo": 9999, "category": "automobile", "confidence": "low",
+      "source": "Outlander IV, on the alliance CMF-C/D platform with Nissan's 2.5. Figures taken from the Nissan MR/PR petrol entries here; no Mitsubishi manual was retrieved.",
+      "engines": [
+        { "engineCode": "PR25DD", "displacementCc": 2488, "powerHp": 181, "fuelType": "essence", "spec": { "viscosity": "5W-30", "apiStandard": "SM/SN", "aceaStandard": null, "oemApproval": null, "capacityLiters": 4.8, "changeIntervalKm": 10000 } }
+      ]
+    },
+    {
+      "make": "MITSUBISHI", "model": "Asx", "generation": "ASX II (2023 - Présent)",
+      "yearFrom": 2023, "yearTo": 9999, "category": "automobile", "confidence": "low",
+      "source": "ASX II, a rebadged Renault Captur II built in Spain, so it takes Renault's engines and specification rather than Mitsubishi's.",
+      "engines": [
+        { "engineCode": "H4M 630", "displacementCc": 1598, "powerHp": 143, "fuelType": "essence", "spec": { "viscosity": "5W-30", "apiStandard": "SN", "aceaStandard": "C3", "oemApproval": "Renault RN17", "capacityLiters": 4.3, "changeIntervalKm": 15000 } },
+        { "engineCode": "H5H 470", "displacementCc": 1333, "powerHp": 140, "fuelType": "essence", "spec": { "viscosity": "5W-30", "apiStandard": "SN", "aceaStandard": "C3", "oemApproval": "Renault RN17", "capacityLiters": 4.3, "changeIntervalKm": 15000 } }
+      ]
+    },
+
+    {
+      "make": "CITROËN", "model": "C5 Aircross", "generation": "C5 Aircross (2018 - Présent)",
+      "yearFrom": 2018, "yearTo": 9999, "category": "automobile", "confidence": "medium",
+      "source": "C5 Aircross, absent from the catalogue entirely. EMP2 platform with the PureTech 1.2 and BlueHDi 1.5/2.0, all on PSA B71 2312 per oilspecifications.org.",
+      "engines": [
+        { "engineCode": "EB2ADTS (HNS)", "displacementCc": 1199, "powerHp": 130, "fuelType": "essence", "spec": { "viscosity": "0W-30", "apiStandard": "SN", "aceaStandard": "C2", "oemApproval": "PSA B71 2312 (PureTech)", "capacityLiters": 4.0, "changeIntervalKm": 20000 } },
+        { "engineCode": "DV5RC (YHZ)", "displacementCc": 1499, "powerHp": 130, "fuelType": "diesel", "spec": { "viscosity": "0W-30", "apiStandard": "SN", "aceaStandard": "C2", "oemApproval": "PSA B71 2312 (BlueHDi SCR/AdBlue)", "capacityLiters": 4.0, "changeIntervalKm": 25000 } },
+        { "engineCode": "DW10FC (AHX)", "displacementCc": 1997, "powerHp": 177, "fuelType": "diesel", "spec": { "viscosity": "0W-30", "apiStandard": "SN", "aceaStandard": "C2", "oemApproval": "PSA B71 2312 (BlueHDi SCR/AdBlue)", "capacityLiters": 5.25, "changeIntervalKm": 25000 } }
+      ]
+    },
+    {
+      "make": "PEUGEOT", "model": "Partner", "generation": "Partner III (2018 - Présent)",
+      "yearFrom": 2018, "yearTo": 9999, "category": "poids-lourd", "confidence": "medium",
+      "source": "Partner III, the van sold alongside the Rifter passenger version on the EMP2 platform. The catalogue's Partner entry ended in 2015.",
+      "engines": [
+        { "engineCode": "EB2ADT (HNS)", "displacementCc": 1199, "powerHp": 110, "fuelType": "essence", "spec": { "viscosity": "0W-30", "apiStandard": "SN", "aceaStandard": "C2", "oemApproval": "PSA B71 2312 (PureTech)", "capacityLiters": 4.0, "changeIntervalKm": 20000 } },
+        { "engineCode": "DV5RD (YHY)", "displacementCc": 1499, "powerHp": 130, "fuelType": "diesel", "spec": { "viscosity": "0W-30", "apiStandard": "SN", "aceaStandard": "C2", "oemApproval": "PSA B71 2312 (BlueHDi SCR/AdBlue)", "capacityLiters": 4.0, "changeIntervalKm": 25000 } }
+      ]
+    },
+    {
+      "make": "FIAT", "model": "Doblo", "generation": "Doblo III (2022 - Présent)",
+      "yearFrom": 2022, "yearTo": 9999, "category": "poids-lourd", "confidence": "low",
+      "source": "Doblo III, a rebadged Citroen Berlingo / Peugeot Partner built by Stellantis on the EMP2 platform, so it takes PSA's engines and B71 2312 rather than Fiat's own specification.",
+      "engines": [
+        { "engineCode": "EB2ADT (HNS)", "displacementCc": 1199, "powerHp": 110, "fuelType": "essence", "spec": { "viscosity": "0W-30", "apiStandard": "SN", "aceaStandard": "C2", "oemApproval": "PSA B71 2312 (PureTech)", "capacityLiters": 4.0, "changeIntervalKm": 20000 } },
+        { "engineCode": "DV5RD (YHY)", "displacementCc": 1499, "powerHp": 130, "fuelType": "diesel", "spec": { "viscosity": "0W-30", "apiStandard": "SN", "aceaStandard": "C2", "oemApproval": "PSA B71 2312 (BlueHDi SCR/AdBlue)", "capacityLiters": 4.0, "changeIntervalKm": 25000 } }
+      ]
+    },
+
+    {
+      "make": "RENAULT", "model": "Kangoo", "generation": "Kangoo III (2021 - Présent)",
+      "yearFrom": 2021, "yearTo": 9999, "category": "poids-lourd", "confidence": "medium",
+      "source": "Kangoo III. The catalogue's plain Kangoo entry ended in 2010 and the 2008 car sat under a separate body-style model. 1.3 TCe and 1.5 Blue dCi, both already specified in the alliance table here.",
+      "engines": [
+        { "engineCode": "H5H 470", "displacementCc": 1333, "powerHp": 130, "fuelType": "essence", "spec": { "viscosity": "5W-30", "apiStandard": "SN", "aceaStandard": "C3", "oemApproval": "Renault RN17", "capacityLiters": 4.3, "changeIntervalKm": 15000 } },
+        { "engineCode": "K9K 872", "displacementCc": 1461, "powerHp": 115, "fuelType": "diesel", "spec": { "viscosity": "5W-30", "apiStandard": "SM/CF", "aceaStandard": "C4", "oemApproval": "Renault RN0720", "capacityLiters": 4.5, "changeIntervalKm": 15000 } }
+      ]
+    },
+    {
+      "make": "RENAULT", "model": "Express", "generation": "Express (2021 - Présent)",
+      "yearFrom": 2021, "yearTo": 9999, "category": "poids-lourd", "confidence": "low",
+      "source": "Express van, absent from the catalogue. Built on the Dacia Logan platform and common in Tunisia as a light commercial; shares the Sandero III engines.",
+      "engines": [
+        { "engineCode": "H4D 450", "displacementCc": 999, "powerHp": 100, "fuelType": "essence", "spec": { "viscosity": "5W-30", "apiStandard": "SN", "aceaStandard": "C3", "oemApproval": "Renault RN17", "capacityLiters": 4.3, "changeIntervalKm": 15000 } },
+        { "engineCode": "K9K 872", "displacementCc": 1461, "powerHp": 95, "fuelType": "diesel", "spec": { "viscosity": "5W-30", "apiStandard": "SM/CF", "aceaStandard": "C4", "oemApproval": "Renault RN0720", "capacityLiters": 4.5, "changeIntervalKm": 15000 } }
+      ]
+    },
+
+    {
+      "make": "TOYOTA", "model": "Land Cruiser Prado", "generation": "Land Cruiser Prado (J250) (2023 - Présent)",
+      "yearFrom": 2023, "yearTo": 9999, "category": "automobile", "confidence": "low",
+      "source": "Prado J250. The catalogue stopped at the 2009 J15. 2.8 turbo-diesel (1GD-FTV), already specified in the Toyota table here at 0W-30 Toyota LL-B.",
+      "engines": [
+        { "engineCode": "1GD-FTV", "displacementCc": 2755, "powerHp": 204, "fuelType": "diesel", "spec": { "viscosity": "0W-30", "apiStandard": "CJ-4", "aceaStandard": "C2", "oemApproval": "Toyota LL-B (DPF)", "capacityLiters": 7.0, "changeIntervalKm": 10000 } }
+      ]
+    },
+    {
+      "make": "GEELY", "model": "Emgrand", "generation": "Emgrand IV (SS11) (2021 - Présent)",
+      "yearFrom": 2021, "yearTo": 9999, "category": "automobile", "confidence": "low",
+      "source": "Emgrand SS11. choise.ravenol.com lists the Emgrand IV SS11 1.5 2WD (JLC-4G15) from 2021. Grade and capacity taken from the JLY-4G15 figures used elsewhere in this catalogue, since the Ravenol page's own figures were not retrieved.",
+      "engines": [
+        { "engineCode": "JLC-4G15", "displacementCc": 1498, "powerHp": 109, "fuelType": "essence", "spec": { "viscosity": "5W-30", "apiStandard": "SL/SN", "aceaStandard": "A3/B4", "oemApproval": null, "capacityLiters": 4.0, "changeIntervalKm": 7500 } }
+      ]
+    }
+  ]
+}
