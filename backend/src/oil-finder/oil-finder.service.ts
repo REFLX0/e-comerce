@@ -254,6 +254,13 @@ function isPlaceholderEngineCode(code?: string | null): boolean {
  * treating them as one would drop a real variant from the dropdown.
  */
 function sameBaseEngine(a?: string | null, b?: string | null): boolean {
+  // Identical codes are the same engine however they are punctuated, and this
+  // has to be settled before the guard below — two copies of
+  // "M30 B34 (34C20)" are both qualified, and treating that as "the qualifier
+  // distinguishes them" let every qualified code through twice.
+  const full = (c?: string | null) => String(c || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+  if (full(a) && full(a) === full(b)) return true;
+
   const base = baseEngineCode(a);
   if (!base || base !== baseEngineCode(b)) return false;
   const qualified = (c?: string | null) => /\(.*\)/.test(String(c || ''));

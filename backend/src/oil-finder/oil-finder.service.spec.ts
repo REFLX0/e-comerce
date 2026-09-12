@@ -1038,6 +1038,32 @@ describe('OilFinderService', () => {
 
       // ...but a qualifier that is the only thing telling two engines apart must
       // not collapse them: Alpina builds several engines on one block.
+      // Regression: the qualifier guard below, applied before checking for plain
+      // equality, let every qualified code appear once per generation listing it.
+      it('lists an identical qualified code once', async () => {
+        __setCleanCatalogForTests({
+          x: {
+            makeName: 'X', makeSlug: 'x', categories: ['automobile'],
+            models: {
+              y: {
+                modelName: 'Y', modelSlug: 'y', category: 'automobile',
+                generations: {
+                  a: { genName: 'A', genSlug: 'a', yearFrom: 2000, yearTo: 2005, engines: [
+                    { engineCode: '1.5 (JLy-4G15B)', fuelType: 'essence', displacementCc: 1498, powerHp: 109 },
+                  ] },
+                  b: { genName: 'B', genSlug: 'b', yearFrom: 2005, yearTo: null, engines: [
+                    { engineCode: '1.5 (JLy-4G15B)', fuelType: 'essence', displacementCc: 1498, powerHp: 109 },
+                  ] },
+                },
+              },
+            },
+          },
+        });
+        prisma.oilFinderVehicle.findMany.mockResolvedValue([]);
+
+        expect((await service.getEngines('X', 'Y'))).toHaveLength(1);
+      });
+
       it('keeps engines whose parenthetical qualifier is what distinguishes them', async () => {
         __setCleanCatalogForTests({
           alpina: {
