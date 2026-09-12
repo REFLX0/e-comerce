@@ -138,12 +138,14 @@ export function normalizeCategory(value?: string | null): VehicleCategory | unde
  *    dexos, MB 229.5x) where a thicker oil clogs the particulate filter or
  *    starves the hydraulic valve train;
  *  - engines designed around a thin oil (0W-16, 0W-20, 5W-20), where the
- *    bearing clearances and the variable-valve-timing actuators assume it.
+ *    bearing clearances and the variable-valve-timing actuators assume it;
+ *  - hybrids, whose engine runs in short intermittent bursts and rarely reaches
+ *    the temperature that would justify a heavier grade.
  *
  * Anything already 40-weight or heavier needs no alternative.
  */
 const HARD_THIN_OIL_APPROVAL =
-  /(C1|C2|C5|GF-?[456]|RESOURCE.?CONSERV|VW\s*50[45]|VW\s*50[89]|507|508|509|DEXOS|B71\s*23(1|2)|229\.5|LOW.?SAPS|DPF|FAP)/i;
+  /(C1|C2|C5|GF-?[456]|RESOURCE.?CONSERV|VW\s*50[45]|VW\s*50[89]|507|508|509|DEXOS|B71\s*23(1|2)|229\.5|LOW.?SAPS|DPF|FAP|HYBRID)/i;
 
 export function resolveHotClimateAlternative(spec: {
   viscosity?: string | null;

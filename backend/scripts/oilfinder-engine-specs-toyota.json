@@ -1,0 +1,259 @@
+{
+  "make": "TOYOTA",
+  "note": "Keyed on engine code, not model. The catalogue assigns oil specs by era + fuel + displacement bucket, so every Yaris engine from the 1.0 1KR-FE to the 1.8 2ZR-FE carried one generated value ('5W-30 / A5-B5 / C2 / Asian OEM Standard') and a capacity derived from displacement. Those ACEA C-class requirements are inventions: a 1ZZ-FE or 2ZR-FE asks only for API SL/SM, which is also why the hot-climate alternative was being suppressed on engines that tolerate it perfectly well. Codes listed here also apply to Lexus, Subaru, Mini and Ford models that use the same Toyota engine.",
+  "engines": [
+    {
+      "codes": ["2ZR-FE", "2ZR-FAE"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "5W-30", "apiStandard": "SL/SM/SN", "aceaStandard": null, "oemApproval": null, "capacityLiters": 4.2, "changeIntervalKm": 10000 },
+      "confidence": "high",
+      "source": "motorreviewer.com Toyota 2ZR-FE/FAE/FXE: SAE 5W-20, capacity 4.2 L. Toyota's European manuals list 5W-30 for this engine and the US manual 5W-20/0W-20; 5W-30 is the grade that covers both and suits Tunisian ambient temperatures. No ACEA C-class requirement - the catalogue's C2 was generated, not specified."
+    },
+    {
+      "codes": ["2ZR-FXE"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "0W-20", "apiStandard": "SN", "aceaStandard": null, "oemApproval": "ILSAC GF-5 (moteur hybride)", "capacityLiters": 4.2, "changeIntervalKm": 15000 },
+      "confidence": "high",
+      "source": "motorreviewer.com 2ZR-FXE capacity 4.2 L. Atkinson-cycle hybrid engine (Prius III, Auris HSD, CT200h) specified 0W-20 by Toyota; a heavier grade is not an option here, which is why the hot-climate alternative is withheld."
+    },
+    {
+      "codes": ["1ZZ-FE"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "5W-30", "apiStandard": "SJ/SL/SM", "aceaStandard": null, "oemApproval": null, "capacityLiters": 4.2, "changeIntervalKm": 10000 },
+      "confidence": "high",
+      "source": "AMSOIL / OilType factory lookup for Corolla 1.8 1ZZ-FE: 5W-30 all temperatures, API SJ/SL/SM, 4.4 US qt (4.2 L) with filter."
+    },
+    {
+      "codes": ["3ZZ-FE", "4ZZ-FE"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "5W-30", "apiStandard": "SJ/SL/SM", "aceaStandard": null, "oemApproval": null, "capacityLiters": 3.7, "changeIntervalKm": 10000 },
+      "confidence": "medium",
+      "source": "Same ZZ family as the 1ZZ-FE (Corolla E12 1.4/1.6), sharing its 5W-30 API SJ/SL/SM requirement; the smaller-displacement variants take ~3.7 L rather than 4.2 L. Family-derived from the sourced 1ZZ-FE figures, not a model-specific manual."
+    },
+    {
+      "codes": ["1ZR-FE", "1ZR-FAE"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "5W-30", "apiStandard": "SM/SN", "aceaStandard": null, "oemApproval": null, "capacityLiters": 4.2, "changeIntervalKm": 10000 },
+      "confidence": "medium",
+      "source": "ZR family shared with the sourced 2ZR-FE (Auris/Corolla E15 1.6 Valvematic), same 4.2 L sump. Family-derived."
+    },
+    {
+      "codes": ["3ZR-FE", "3ZR-FAE"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "5W-30", "apiStandard": "SM/SN", "aceaStandard": null, "oemApproval": null, "capacityLiters": 4.3, "changeIntervalKm": 10000 },
+      "confidence": "medium",
+      "source": "2.0 ZR (Avensis T27, RAV4 A3). Family-derived from the sourced 2ZR-FE; the 2.0 takes marginally more than the 1.8."
+    },
+    {
+      "codes": ["1NZ-FE", "2NZ-FE"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "5W-30", "apiStandard": "SJ/SL/SM", "aceaStandard": null, "oemApproval": null, "capacityLiters": 3.7, "changeIntervalKm": 10000 },
+      "confidence": "medium",
+      "source": "NZ family (Yaris P1/P9 1.3/1.5, Corolla). Toyota specifies 5W-30 API SL for this generation; ~3.7 L with filter. No ACEA requirement."
+    },
+    {
+      "codes": ["1NZ-FXE"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "5W-30", "apiStandard": "SL/SM", "aceaStandard": null, "oemApproval": "Moteur hybride", "capacityLiters": 3.9, "changeIntervalKm": 15000 },
+      "confidence": "medium",
+      "source": "Prius II / Yaris Hybrid Atkinson-cycle hybrid. Toyota listed 5W-30 for the Prius II era (0W-20 came with the 2ZR-FXE)."
+    },
+    {
+      "codes": ["1SZ-FE", "2SZ-FE"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "5W-30", "apiStandard": "SJ/SL", "aceaStandard": null, "oemApproval": null, "capacityLiters": 3.7, "changeIntervalKm": 10000 },
+      "confidence": "medium",
+      "source": "SZ family (Yaris P1 1.0/1.3). Toyota specifies 5W-30 API SJ/SL; no ACEA C-class requirement."
+    },
+    {
+      "codes": ["1KR-FE"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "5W-30", "apiStandard": "SL/SM", "aceaStandard": null, "oemApproval": null, "capacityLiters": 3.0, "changeIntervalKm": 10000 },
+      "confidence": "medium",
+      "source": "1.0 three-cylinder shared with the Aygo/C1/107. Small sump, ~3.0 L with filter. Later builds are specified 0W-20; 5W-30 covers the range sold in Tunisia."
+    },
+    {
+      "codes": ["1NR-FE"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "5W-30", "apiStandard": "SM/SN", "aceaStandard": null, "oemApproval": null, "capacityLiters": 3.9, "changeIntervalKm": 10000 },
+      "confidence": "medium",
+      "source": "1.33 Dual VVT-i (Yaris P13, Auris E15). Non-FKE variant, no low-SAPS requirement."
+    },
+    {
+      "codes": ["1NR-FKE", "2NR-FKE", "2NR-FE"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "0W-20", "apiStandard": "SN", "aceaStandard": null, "oemApproval": "ILSAC GF-5", "capacityLiters": 3.9, "changeIntervalKm": 10000 },
+      "confidence": "medium",
+      "source": "FKE denotes the Atkinson-cycle high-compression variants (Yaris P13 facelift, Yaris Ativ), which Toyota specifies 0W-20 for. A heavier grade is withheld deliberately."
+    },
+    {
+      "codes": ["8NR-FTS"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "0W-20", "apiStandard": "SN", "aceaStandard": null, "oemApproval": "ILSAC GF-5 (turbo)", "capacityLiters": 4.2, "changeIntervalKm": 10000 },
+      "confidence": "medium",
+      "source": "1.2 turbo (Auris E18, C-HR). Turbocharged direct injection specified 0W-20 by Toyota."
+    },
+    {
+      "codes": ["M15A-FKS", "M15A-FXE"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "0W-16", "apiStandard": "SP", "aceaStandard": null, "oemApproval": "ILSAC GF-6B", "capacityLiters": 3.9, "changeIntervalKm": 15000 },
+      "confidence": "medium",
+      "source": "Dynamic Force 1.5 (Yaris XP210). Specified 0W-16 with 0W-20 as the permitted alternative; both are thin-oil grades where a heavier oil is not an option."
+    },
+    {
+      "codes": ["1AZ-FE", "1AZ-FSE", "2AZ-FE", "2AZ-FSE"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "5W-30", "apiStandard": "SL/SM", "aceaStandard": null, "oemApproval": null, "capacityLiters": 4.3, "changeIntervalKm": 10000 },
+      "confidence": "medium",
+      "source": "AZ family (Avensis T25, RAV4 A2/A3, Camry). Toyota specifies 5W-30 API SL; ~4.3 L with filter."
+    },
+    {
+      "codes": ["1MZ-FE"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "5W-30", "apiStandard": "SJ/SL", "aceaStandard": null, "oemApproval": null, "capacityLiters": 4.5, "changeIntervalKm": 10000 },
+      "confidence": "medium",
+      "source": "3.0 V6 (Camry, Previa). 5W-30 API SJ/SL, ~4.5 L with filter."
+    },
+    {
+      "codes": ["5VZ-FE"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "5W-30", "apiStandard": "SJ/SL", "aceaStandard": null, "oemApproval": null, "capacityLiters": 5.4, "changeIntervalKm": 10000 },
+      "confidence": "medium",
+      "source": "3.4 V6 (4Runner, Land Cruiser Prado 90). 5W-30 API SJ/SL, ~5.4 L."
+    },
+    {
+      "codes": ["1GR-FE"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "5W-30", "apiStandard": "SL/SM", "aceaStandard": null, "oemApproval": null, "capacityLiters": 6.1, "changeIntervalKm": 10000 },
+      "confidence": "medium",
+      "source": "4.0 V6 (Land Cruiser Prado 120/150, FJ Cruiser, Hilux). 5W-30, ~6.1 L with filter."
+    },
+    {
+      "codes": ["2UZ-FE"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "5W-30", "apiStandard": "SL/SM", "aceaStandard": null, "oemApproval": null, "capacityLiters": 6.6, "changeIntervalKm": 10000 },
+      "confidence": "medium",
+      "source": "4.7 V8 (Land Cruiser 100/200, Lexus LX470). 5W-30, ~6.6 L with filter."
+    },
+    {
+      "codes": ["3RZ-FE", "2RZ-FE", "2RZ-E"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "5W-30", "apiStandard": "SJ/SL", "aceaStandard": null, "oemApproval": null, "capacityLiters": 5.2, "changeIntervalKm": 10000 },
+      "confidence": "medium",
+      "source": "RZ family (Hilux, Hiace, 4Runner 2.4/2.7). 5W-30 API SJ/SL."
+    },
+    {
+      "codes": ["4A-FE", "7A-FE", "4A-GE"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "10W-40", "apiStandard": "SG/SH/SJ", "aceaStandard": "A3/B4", "oemApproval": null, "capacityLiters": 3.5, "changeIntervalKm": 7500 },
+      "confidence": "medium",
+      "source": "A-series (Corolla E9-E11, Carina E). Pre-1998 engines with wider bearing clearances; Toyota's grade tables for these list 10W-30/10W-40 across normal ambient ranges and heavier still above 40 C."
+    },
+    {
+      "codes": ["3S-FE", "3S-GE", "5S-FE"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "10W-40", "apiStandard": "SG/SH/SJ", "aceaStandard": "A3/B4", "oemApproval": null, "capacityLiters": 3.9, "changeIntervalKm": 7500 },
+      "confidence": "medium",
+      "source": "S-series 2.0/2.2 (Carina E, Avensis T22, Celica, RAV4 A1). Same era and grade table as the A-series."
+    },
+
+    {
+      "codes": ["2GD-FTV"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "0W-30", "apiStandard": "CJ-4", "aceaStandard": "C2", "oemApproval": "Toyota LL-B (DPF)", "capacityLiters": 5.5, "changeIntervalKm": 10000 },
+      "confidence": "high",
+      "source": "TorqueBot / RoughTrax Hilux specifications: the 2GD-FTV and 1GD-FTV (2015+) take 0W-30 full synthetic meeting Toyota LL-B; 2GD-FTV capacity 5.5 L. DPF-equipped, so the low-SAPS grade is a requirement and no heavier alternative is offered."
+    },
+    {
+      "codes": ["1GD-FTV"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "0W-30", "apiStandard": "CJ-4", "aceaStandard": "C2", "oemApproval": "Toyota LL-B (DPF)", "capacityLiters": 7.0, "changeIntervalKm": 10000 },
+      "confidence": "high",
+      "source": "TorqueBot / RoughTrax Hilux specifications: 1GD-FTV 2.8 requires 7.0 L of 0W-30 Toyota LL-B."
+    },
+    {
+      "codes": ["1KD-FTV"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "5W-30", "apiStandard": "CF", "aceaStandard": "B4", "oemApproval": null, "capacityLiters": 6.0, "changeIntervalKm": 10000 },
+      "confidence": "high",
+      "source": "TorqueBot Hilux oil specifications: 1KD-FTV 3.0 D-4D takes 5W-30 diesel spec, 6.0 L including the 0.5 L filter."
+    },
+    {
+      "codes": ["2KD-FTV"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "5W-30", "apiStandard": "CF", "aceaStandard": "B4", "oemApproval": null, "capacityLiters": 6.7, "changeIntervalKm": 10000 },
+      "confidence": "high",
+      "source": "TorqueBot Hilux oil specifications: 2KD-FTV 2.5 D-4D recommended 5W-30 or 5W-40 depending on climate and driving conditions - the heavier grade is exactly the hot-climate case, so the alternative is offered here."
+    },
+    {
+      "codes": ["1ND-TV"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "5W-30", "apiStandard": "CF", "aceaStandard": "C2", "oemApproval": "Low-SAPS (FAP/DPF)", "capacityLiters": 3.9, "changeIntervalKm": 10000 },
+      "confidence": "medium",
+      "source": "1.4 D-4D (Yaris, Corolla E12, Verso, and the Mini One D and Subaru Trezia that use the same Toyota engine). Particulate-filter equipped in European trim, so a low-SAPS C2 oil is a requirement."
+    },
+    {
+      "codes": ["1CD-FTV"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "5W-30", "apiStandard": "CF", "aceaStandard": "B3/B4", "oemApproval": null, "capacityLiters": 5.9, "changeIntervalKm": 10000 },
+      "confidence": "medium",
+      "source": "2.0 D-4D (Avensis T22/T25, RAV4 A2, Corolla E12). Pre-DPF, so ACEA B-class rather than low-SAPS C-class."
+    },
+    {
+      "codes": ["1AD-FTV", "2AD-FTV", "2AD-FHV"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "5W-30", "apiStandard": "CF", "aceaStandard": "C2/C3", "oemApproval": "Low-SAPS (DPF)", "capacityLiters": 6.1, "changeIntervalKm": 10000 },
+      "confidence": "medium",
+      "source": "2.0/2.2 D-4D (Avensis T25/T27, RAV4 A3/A4, Auris, Lexus IS 220d). DPF-equipped, low-SAPS required."
+    },
+    {
+      "codes": ["1WW", "2WW"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "5W-30", "apiStandard": "CF", "aceaStandard": "C2/C3", "oemApproval": "Low-SAPS (DPF)", "capacityLiters": 4.5, "changeIntervalKm": 15000 },
+      "confidence": "medium",
+      "source": "1.6/2.0 D-4D in the Auris E18, Avensis T27 and Verso - BMW N47-derived units supplied to Toyota. DPF-equipped."
+    },
+    {
+      "codes": ["3WZ-TV", "4WZ-FTV", "4WZ-FHV", "2WZ-TV"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "5W-30", "apiStandard": "CF", "aceaStandard": "C2", "oemApproval": "Low-SAPS (FAP)", "capacityLiters": 4.5, "changeIntervalKm": 15000 },
+      "confidence": "low",
+      "source": "PSA-sourced HDi units in the Toyota Proace (badge-engineered Peugeot Expert / Citroen Jumpy). Grade taken from the PSA original (B71 2312 family, low-SAPS C2); capacity is the PSA DW10 figure and is not from a Toyota manual."
+    },
+    {
+      "codes": ["2L", "2L-T", "2L-TE", "3L", "5L", "5L-E"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "15W-40", "apiStandard": "CD/CF", "aceaStandard": "B3/B4", "oemApproval": null, "capacityLiters": 6.0, "changeIntervalKm": 7500 },
+      "confidence": "medium",
+      "source": "Toyota L-family indirect-injection diesels (Hilux, Hiace, Land Cruiser Prado 70/90). These carried no fuel marker in their engine code and were consequently recorded as petrol. Pre-common-rail, pre-DPF: a 15W-40 CD/CF mineral or semi-synthetic is the conventional grade and suits Tunisian ambient temperatures."
+    },
+    {
+      "codes": ["1C", "1C-L", "1C-TL", "1C-TLC", "2C", "2C-T", "2C-TE", "2C-E", "2C-L", "3C-TE"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "15W-40", "apiStandard": "CD/CF", "aceaStandard": "B3/B4", "oemApproval": null, "capacityLiters": 4.0, "changeIntervalKm": 7500 },
+      "confidence": "medium",
+      "source": "Toyota C-family 1.8/2.0/2.2 indirect-injection diesels (Corolla, Carina, Avensis T22, Corona). Also recorded as petrol for want of a marker in the code."
+    },
+    {
+      "codes": ["1KZ-T", "1KZ-TE"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "15W-40", "apiStandard": "CD/CF", "aceaStandard": "B3/B4", "oemApproval": null, "capacityLiters": 6.9, "changeIntervalKm": 7500 },
+      "confidence": "medium",
+      "source": "3.0 turbo-diesel (Land Cruiser Prado 90/95, Hilux Surf, 4Runner). Pre-common-rail; 15W-40 is the conventional grade for hot climates."
+    },
+    {
+      "codes": ["1HZ", "1H-Z", "1HD-T", "1HD-FT", "1HD-FTE"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "15W-40", "apiStandard": "CF/CF-4", "aceaStandard": "B3/B4", "oemApproval": null, "capacityLiters": 8.0, "changeIntervalKm": 7500 },
+      "confidence": "medium",
+      "source": "4.2 six-cylinder diesels (Land Cruiser 70/78/79/80/105). Large sump, ~8 L; 15W-40 CF-4 is the conventional grade."
+    },
+    {
+      "codes": ["3B", "13B", "13B-T", "11B", "14B", "15B-F", "15B-FT"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "15W-40", "apiStandard": "CD/CF", "aceaStandard": "B3/B4", "oemApproval": null, "capacityLiters": 8.0, "changeIntervalKm": 7500 },
+      "confidence": "low",
+      "source": "Toyota B-family diesels (Land Cruiser 70, Dyna, Coaster). Recorded as petrol. Grade is the conventional 15W-40 for pre-common-rail Toyota diesels; the capacity is a family figure, not from a model manual."
+    }
+  ]
+}
