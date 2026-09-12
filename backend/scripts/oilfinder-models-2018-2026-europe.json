@@ -1,0 +1,177 @@
+{
+  "models": [
+    {
+      "make": "RENAULT", "model": "Clio", "generation": "Clio V (2019 - Présent)",
+      "yearFrom": 2019, "yearTo": 9999, "category": "automobile", "confidence": "medium",
+      "source": "Clio V. The newest Clio generation in the catalogue started in 2012. Line-up per Renault: 1.0 SCe B4D, 1.0 TCe H4D, 1.3 TCe H5H, 1.5 Blue dCi K9K and the 1.6 E-Tech hybrid H4M. Oil figures match the per-engine Renault table already applied to this catalogue.",
+      "engines": [
+        { "engineCode": "B4D 400", "displacementCc": 999, "powerHp": 65, "fuelType": "essence", "spec": { "viscosity": "5W-30", "apiStandard": "SN", "aceaStandard": "C3", "oemApproval": "Renault RN17", "capacityLiters": 4.3, "changeIntervalKm": 15000 } },
+        { "engineCode": "H4D 450", "displacementCc": 999, "powerHp": 100, "fuelType": "essence", "spec": { "viscosity": "5W-30", "apiStandard": "SN", "aceaStandard": "C3", "oemApproval": "Renault RN17", "capacityLiters": 4.3, "changeIntervalKm": 15000 } },
+        { "engineCode": "H5H 470", "displacementCc": 1333, "powerHp": 130, "fuelType": "essence", "spec": { "viscosity": "5W-30", "apiStandard": "SN", "aceaStandard": "C3", "oemApproval": "Renault RN17", "capacityLiters": 4.3, "changeIntervalKm": 15000 } },
+        { "engineCode": "K9K 872", "displacementCc": 1461, "powerHp": 115, "fuelType": "diesel", "spec": { "viscosity": "5W-30", "apiStandard": "SM/CF", "aceaStandard": "C4", "oemApproval": "Renault RN0720", "capacityLiters": 4.5, "changeIntervalKm": 15000 } },
+        { "engineCode": "H4M 631 (E-Tech)", "displacementCc": 1598, "powerHp": 140, "fuelType": "essence", "spec": { "viscosity": "5W-30", "apiStandard": "SN", "aceaStandard": "C3", "oemApproval": "Renault RN17 (hybride)", "capacityLiters": 4.3, "changeIntervalKm": 15000 } }
+      ]
+    },
+    {
+      "make": "RENAULT", "model": "Captur", "generation": "Captur II (2019 - Présent)",
+      "yearFrom": 2019, "yearTo": 9999, "category": "automobile", "confidence": "medium",
+      "source": "Captur II, on the CMF-B platform shared with the Clio V, and sharing its engine line-up.",
+      "engines": [
+        { "engineCode": "H4D 450", "displacementCc": 999, "powerHp": 100, "fuelType": "essence", "spec": { "viscosity": "5W-30", "apiStandard": "SN", "aceaStandard": "C3", "oemApproval": "Renault RN17", "capacityLiters": 4.3, "changeIntervalKm": 15000 } },
+        { "engineCode": "H5H 470", "displacementCc": 1333, "powerHp": 130, "fuelType": "essence", "spec": { "viscosity": "5W-30", "apiStandard": "SN", "aceaStandard": "C3", "oemApproval": "Renault RN17", "capacityLiters": 4.3, "changeIntervalKm": 15000 } },
+        { "engineCode": "K9K 872", "displacementCc": 1461, "powerHp": 115, "fuelType": "diesel", "spec": { "viscosity": "5W-30", "apiStandard": "SM/CF", "aceaStandard": "C4", "oemApproval": "Renault RN0720", "capacityLiters": 4.5, "changeIntervalKm": 15000 } }
+      ]
+    },
+    {
+      "make": "DACIA", "model": "Sandero", "generation": "Sandero III (2020 - Présent)",
+      "yearFrom": 2020, "yearTo": 9999, "category": "automobile", "confidence": "medium",
+      "source": "Sandero III and Sandero Stepway, on the CMF-B platform. The catalogue stopped at the 2012 car. Line-up: 1.0 SCe B4D, 1.0 TCe H4D and the 1.5 Blue dCi K9K.",
+      "engines": [
+        { "engineCode": "B4D 411", "displacementCc": 999, "powerHp": 65, "fuelType": "essence", "spec": { "viscosity": "5W-30", "apiStandard": "SN", "aceaStandard": "C3", "oemApproval": "Renault RN17", "capacityLiters": 4.3, "changeIntervalKm": 15000 } },
+        { "engineCode": "H4D 450", "displacementCc": 999, "powerHp": 90, "fuelType": "essence", "spec": { "viscosity": "5W-30", "apiStandard": "SN", "aceaStandard": "C3", "oemApproval": "Renault RN17", "capacityLiters": 4.3, "changeIntervalKm": 15000 } },
+        { "engineCode": "K9K 872", "displacementCc": 1461, "powerHp": 95, "fuelType": "diesel", "spec": { "viscosity": "5W-30", "apiStandard": "SM/CF", "aceaStandard": "C4", "oemApproval": "Renault RN0720", "capacityLiters": 4.5, "changeIntervalKm": 15000 } }
+      ]
+    },
+    {
+      "make": "DACIA", "model": "Logan", "generation": "Logan III (2020 - Présent)",
+      "yearFrom": 2020, "yearTo": 9999, "category": "automobile", "confidence": "medium",
+      "source": "Logan III, the saloon on the same CMF-B platform as the Sandero III, sharing its engines.",
+      "engines": [
+        { "engineCode": "B4D 411", "displacementCc": 999, "powerHp": 65, "fuelType": "essence", "spec": { "viscosity": "5W-30", "apiStandard": "SN", "aceaStandard": "C3", "oemApproval": "Renault RN17", "capacityLiters": 4.3, "changeIntervalKm": 15000 } },
+        { "engineCode": "H4D 450", "displacementCc": 999, "powerHp": 90, "fuelType": "essence", "spec": { "viscosity": "5W-30", "apiStandard": "SN", "aceaStandard": "C3", "oemApproval": "Renault RN17", "capacityLiters": 4.3, "changeIntervalKm": 15000 } },
+        { "engineCode": "K9K 872", "displacementCc": 1461, "powerHp": 95, "fuelType": "diesel", "spec": { "viscosity": "5W-30", "apiStandard": "SM/CF", "aceaStandard": "C4", "oemApproval": "Renault RN0720", "capacityLiters": 4.5, "changeIntervalKm": 15000 } }
+      ]
+    },
+    {
+      "make": "DACIA", "model": "Duster", "generation": "Duster II (2017 - 2023)",
+      "yearFrom": 2017, "yearTo": 2023, "category": "automobile", "confidence": "medium",
+      "source": "Duster II. The catalogue held only the 2010 original. Line-up: 1.6 SCe H4M, 1.3 TCe H5H and the 1.5 dCi K9K.",
+      "engines": [
+        { "engineCode": "H4M 738", "displacementCc": 1598, "powerHp": 115, "fuelType": "essence", "spec": { "viscosity": "5W-30", "apiStandard": "SN", "aceaStandard": "C3", "oemApproval": "Renault RN17", "capacityLiters": 4.3, "changeIntervalKm": 15000 } },
+        { "engineCode": "H5H 470", "displacementCc": 1333, "powerHp": 150, "fuelType": "essence", "spec": { "viscosity": "5W-30", "apiStandard": "SN", "aceaStandard": "C3", "oemApproval": "Renault RN17", "capacityLiters": 4.3, "changeIntervalKm": 15000 } },
+        { "engineCode": "K9K 872", "displacementCc": 1461, "powerHp": 115, "fuelType": "diesel", "spec": { "viscosity": "5W-30", "apiStandard": "SM/CF", "aceaStandard": "C4", "oemApproval": "Renault RN0720", "capacityLiters": 4.5, "changeIntervalKm": 15000 } }
+      ]
+    },
+    {
+      "make": "PEUGEOT", "model": "208", "generation": "208 II (2019 - Présent)",
+      "yearFrom": 2019, "yearTo": 9999, "category": "automobile", "confidence": "medium",
+      "source": "208 II on the CMP platform. The catalogue held only the 2012 car. PureTech 1.2 (EB2) and BlueHDi 1.5 (DV5R), both on PSA B71 2312 per oilspecifications.org.",
+      "engines": [
+        { "engineCode": "EB2F (HMZ)", "displacementCc": 1199, "powerHp": 75, "fuelType": "essence", "spec": { "viscosity": "0W-30", "apiStandard": "SN", "aceaStandard": "C2", "oemApproval": "PSA B71 2312 (PureTech)", "capacityLiters": 4.0, "changeIntervalKm": 20000 } },
+        { "engineCode": "EB2ADTS (HNS)", "displacementCc": 1199, "powerHp": 130, "fuelType": "essence", "spec": { "viscosity": "0W-30", "apiStandard": "SN", "aceaStandard": "C2", "oemApproval": "PSA B71 2312 (PureTech)", "capacityLiters": 4.0, "changeIntervalKm": 20000 } },
+        { "engineCode": "DV5RC (YHZ)", "displacementCc": 1499, "powerHp": 100, "fuelType": "diesel", "spec": { "viscosity": "0W-30", "apiStandard": "SN", "aceaStandard": "C2", "oemApproval": "PSA B71 2312 (BlueHDi SCR/AdBlue)", "capacityLiters": 4.0, "changeIntervalKm": 25000 } }
+      ]
+    },
+    {
+      "make": "PEUGEOT", "model": "2008", "generation": "2008 II (2019 - Présent)",
+      "yearFrom": 2019, "yearTo": 9999, "category": "automobile", "confidence": "medium",
+      "source": "2008 II, the crossover on the same CMP platform as the 208 II, sharing its engines.",
+      "engines": [
+        { "engineCode": "EB2ADT (HNP)", "displacementCc": 1199, "powerHp": 100, "fuelType": "essence", "spec": { "viscosity": "0W-30", "apiStandard": "SN", "aceaStandard": "C2", "oemApproval": "PSA B71 2312 (PureTech)", "capacityLiters": 4.0, "changeIntervalKm": 20000 } },
+        { "engineCode": "EB2ADTS (HNS)", "displacementCc": 1199, "powerHp": 130, "fuelType": "essence", "spec": { "viscosity": "0W-30", "apiStandard": "SN", "aceaStandard": "C2", "oemApproval": "PSA B71 2312 (PureTech)", "capacityLiters": 4.0, "changeIntervalKm": 20000 } },
+        { "engineCode": "DV5RC (YHZ)", "displacementCc": 1499, "powerHp": 110, "fuelType": "diesel", "spec": { "viscosity": "0W-30", "apiStandard": "SN", "aceaStandard": "C2", "oemApproval": "PSA B71 2312 (BlueHDi SCR/AdBlue)", "capacityLiters": 4.0, "changeIntervalKm": 25000 } }
+      ]
+    },
+    {
+      "make": "PEUGEOT", "model": "308", "generation": "308 III (2021 - Présent)",
+      "yearFrom": 2021, "yearTo": 9999, "category": "automobile", "confidence": "medium",
+      "source": "308 III on the EMP2 v3 platform. The catalogue stopped at the 2013 car.",
+      "engines": [
+        { "engineCode": "EB2ADTS (HNS)", "displacementCc": 1199, "powerHp": 130, "fuelType": "essence", "spec": { "viscosity": "0W-30", "apiStandard": "SN", "aceaStandard": "C2", "oemApproval": "PSA B71 2312 (PureTech)", "capacityLiters": 4.0, "changeIntervalKm": 20000 } },
+        { "engineCode": "DV5RC (YHZ)", "displacementCc": 1499, "powerHp": 130, "fuelType": "diesel", "spec": { "viscosity": "0W-30", "apiStandard": "SN", "aceaStandard": "C2", "oemApproval": "PSA B71 2312 (BlueHDi SCR/AdBlue)", "capacityLiters": 4.0, "changeIntervalKm": 25000 } }
+      ]
+    },
+    {
+      "make": "CITROËN", "model": "C4", "generation": "C4 III (2020 - Présent)",
+      "yearFrom": 2020, "yearTo": 9999, "category": "automobile", "confidence": "medium",
+      "source": "C4 III on the CMP platform. The catalogue stopped at the 2009 car. Shares the 208 and 2008 engines.",
+      "engines": [
+        { "engineCode": "EB2ADT (HNP)", "displacementCc": 1199, "powerHp": 100, "fuelType": "essence", "spec": { "viscosity": "0W-30", "apiStandard": "SN", "aceaStandard": "C2", "oemApproval": "PSA B71 2312 (PureTech)", "capacityLiters": 4.0, "changeIntervalKm": 20000 } },
+        { "engineCode": "EB2ADTS (HNS)", "displacementCc": 1199, "powerHp": 130, "fuelType": "essence", "spec": { "viscosity": "0W-30", "apiStandard": "SN", "aceaStandard": "C2", "oemApproval": "PSA B71 2312 (PureTech)", "capacityLiters": 4.0, "changeIntervalKm": 20000 } },
+        { "engineCode": "DV5RC (YHZ)", "displacementCc": 1499, "powerHp": 110, "fuelType": "diesel", "spec": { "viscosity": "0W-30", "apiStandard": "SN", "aceaStandard": "C2", "oemApproval": "PSA B71 2312 (BlueHDi SCR/AdBlue)", "capacityLiters": 4.0, "changeIntervalKm": 25000 } }
+      ]
+    },
+    {
+      "make": "CITROËN", "model": "Berlingo", "generation": "Berlingo III (2018 - Présent)",
+      "yearFrom": 2018, "yearTo": 9999, "category": "automobile", "confidence": "medium",
+      "source": "Berlingo III on the EMP2 platform, sold alongside the Peugeot Rifter. The newest Berlingo in the catalogue started in 2014.",
+      "engines": [
+        { "engineCode": "EB2ADT (HNS)", "displacementCc": 1199, "powerHp": 110, "fuelType": "essence", "spec": { "viscosity": "0W-30", "apiStandard": "SN", "aceaStandard": "C2", "oemApproval": "PSA B71 2312 (PureTech)", "capacityLiters": 4.0, "changeIntervalKm": 20000 } },
+        { "engineCode": "DV5RD (YHY)", "displacementCc": 1499, "powerHp": 130, "fuelType": "diesel", "spec": { "viscosity": "0W-30", "apiStandard": "SN", "aceaStandard": "C2", "oemApproval": "PSA B71 2312 (BlueHDi SCR/AdBlue)", "capacityLiters": 4.0, "changeIntervalKm": 25000 } }
+      ]
+    },
+    {
+      "make": "VW", "model": "Golf", "generation": "Golf VIII (2019 - Présent)",
+      "yearFrom": 2019, "yearTo": 9999, "category": "automobile", "confidence": "medium",
+      "source": "Golf VIII on MQB evo. The newest Golf generation in the catalogue started in 2012. VW specifies 504.00/507.00 across the modern TSI and TDI range.",
+      "engines": [
+        { "engineCode": "DLAA", "displacementCc": 999, "powerHp": 110, "fuelType": "essence", "spec": { "viscosity": "5W-30", "apiStandard": "SN", "aceaStandard": "C3", "oemApproval": "VW 504.00/507.00", "capacityLiters": 4.3, "changeIntervalKm": 15000 } },
+        { "engineCode": "DADA", "displacementCc": 1498, "powerHp": 150, "fuelType": "essence", "spec": { "viscosity": "5W-30", "apiStandard": "SN", "aceaStandard": "C3", "oemApproval": "VW 504.00/507.00", "capacityLiters": 4.3, "changeIntervalKm": 15000 } },
+        { "engineCode": "DTTA", "displacementCc": 1968, "powerHp": 150, "fuelType": "diesel", "spec": { "viscosity": "5W-30", "apiStandard": "SN", "aceaStandard": "C3", "oemApproval": "VW 507.00 (FAP)", "capacityLiters": 4.3, "changeIntervalKm": 15000 } }
+      ]
+    },
+    {
+      "make": "VW", "model": "Polo", "generation": "Polo VI (AW) (2017 - Présent)",
+      "yearFrom": 2017, "yearTo": 9999, "category": "automobile", "confidence": "medium",
+      "source": "Polo VI (AW) on MQB A0. The newest Polo entry in the catalogue covers the previous car.",
+      "engines": [
+        { "engineCode": "CHZB", "displacementCc": 999, "powerHp": 95, "fuelType": "essence", "spec": { "viscosity": "5W-30", "apiStandard": "SN", "aceaStandard": "C3", "oemApproval": "VW 504.00/507.00", "capacityLiters": 4.0, "changeIntervalKm": 15000 } },
+        { "engineCode": "DLAA", "displacementCc": 999, "powerHp": 110, "fuelType": "essence", "spec": { "viscosity": "5W-30", "apiStandard": "SN", "aceaStandard": "C3", "oemApproval": "VW 504.00/507.00", "capacityLiters": 4.0, "changeIntervalKm": 15000 } },
+        { "engineCode": "DGTA", "displacementCc": 1598, "powerHp": 95, "fuelType": "diesel", "spec": { "viscosity": "5W-30", "apiStandard": "SN", "aceaStandard": "C3", "oemApproval": "VW 507.00 (FAP)", "capacityLiters": 4.3, "changeIntervalKm": 15000 } }
+      ]
+    },
+    {
+      "make": "HYUNDAI", "model": "I10", "generation": "i10 III (AC3) (2019 - Présent)",
+      "yearFrom": 2019, "yearTo": 9999, "category": "automobile", "confidence": "medium",
+      "source": "i10 III. Kappa 1.0 and 1.2; oil figures match the per-engine Hyundai/Kia table already applied to this catalogue.",
+      "engines": [
+        { "engineCode": "G3LA", "displacementCc": 998, "powerHp": 67, "fuelType": "essence", "spec": { "viscosity": "5W-30", "apiStandard": "SM/SN", "aceaStandard": null, "oemApproval": null, "capacityLiters": 3.3, "changeIntervalKm": 10000 } },
+        { "engineCode": "G4LA", "displacementCc": 1197, "powerHp": 84, "fuelType": "essence", "spec": { "viscosity": "5W-30", "apiStandard": "SM/SN", "aceaStandard": null, "oemApproval": null, "capacityLiters": 3.3, "changeIntervalKm": 10000 } }
+      ]
+    },
+    {
+      "make": "HYUNDAI", "model": "I20", "generation": "i20 III (BC3) (2020 - Présent)",
+      "yearFrom": 2020, "yearTo": 9999, "category": "automobile", "confidence": "medium",
+      "source": "i20 III. Kappa 1.0 T-GDi and 1.2 MPi.",
+      "engines": [
+        { "engineCode": "G3LC", "displacementCc": 998, "powerHp": 100, "fuelType": "essence", "spec": { "viscosity": "5W-30", "apiStandard": "SM/SN", "aceaStandard": null, "oemApproval": null, "capacityLiters": 3.3, "changeIntervalKm": 10000 } },
+        { "engineCode": "G4LA", "displacementCc": 1197, "powerHp": 84, "fuelType": "essence", "spec": { "viscosity": "5W-30", "apiStandard": "SM/SN", "aceaStandard": null, "oemApproval": null, "capacityLiters": 3.3, "changeIntervalKm": 10000 } }
+      ]
+    },
+    {
+      "make": "HYUNDAI", "model": "Tucson", "generation": "Tucson IV (NX4) (2020 - Présent)",
+      "yearFrom": 2020, "yearTo": 9999, "category": "automobile", "confidence": "medium",
+      "source": "Tucson NX4. The newest Tucson in the catalogue started in 2015. Smartstream 1.6 T-GDi petrol and 1.6 CRDi diesel; the diesel has a particulate filter, which makes the low-SAPS grade a requirement.",
+      "engines": [
+        { "engineCode": "G4FP", "displacementCc": 1598, "powerHp": 150, "fuelType": "essence", "spec": { "viscosity": "5W-30", "apiStandard": "SM/SN", "aceaStandard": null, "oemApproval": null, "capacityLiters": 3.3, "changeIntervalKm": 10000 } },
+        { "engineCode": "D4FE", "displacementCc": 1598, "powerHp": 136, "fuelType": "diesel", "spec": { "viscosity": "5W-30", "apiStandard": "CF", "aceaStandard": "C2", "oemApproval": "Low-SAPS (FAP/DPF)", "capacityLiters": 5.3, "changeIntervalKm": 15000 } }
+      ]
+    },
+    {
+      "make": "HYUNDAI", "model": "Accent", "generation": "Accent V (HC) (2017 - Présent)",
+      "yearFrom": 2017, "yearTo": 9999, "category": "automobile", "confidence": "medium",
+      "source": "Accent / Verna HC, sold widely outside Europe including North Africa. The catalogue stopped at the 2010 car. Kappa 1.4 MPi.",
+      "engines": [
+        { "engineCode": "G4LC", "displacementCc": 1368, "powerHp": 100, "fuelType": "essence", "spec": { "viscosity": "5W-30", "apiStandard": "SM/SN", "aceaStandard": null, "oemApproval": null, "capacityLiters": 3.3, "changeIntervalKm": 10000 } }
+      ]
+    },
+    {
+      "make": "HYUNDAI", "model": "Creta", "generation": "Creta (2015 - Présent)",
+      "yearFrom": 2015, "yearTo": 9999, "category": "automobile", "confidence": "low",
+      "source": "Creta, a model absent from the catalogue entirely though widely sold outside Europe. The line-up varies by market; the 1.5 petrol and 1.5 CRDi are the common pair.",
+      "engines": [
+        { "engineCode": "G4FL", "displacementCc": 1497, "powerHp": 115, "fuelType": "essence", "spec": { "viscosity": "5W-30", "apiStandard": "SM/SN", "aceaStandard": null, "oemApproval": null, "capacityLiters": 3.3, "changeIntervalKm": 10000 } },
+        { "engineCode": "D4FL", "displacementCc": 1493, "powerHp": 115, "fuelType": "diesel", "spec": { "viscosity": "5W-30", "apiStandard": "CF", "aceaStandard": "C2", "oemApproval": "Low-SAPS (FAP/DPF)", "capacityLiters": 5.3, "changeIntervalKm": 15000 } }
+      ]
+    },
+    {
+      "make": "KIA", "model": "Sportage", "generation": "Sportage V (NQ5) (2021 - Présent)",
+      "yearFrom": 2021, "yearTo": 9999, "category": "automobile", "confidence": "medium",
+      "source": "Sportage NQ5. The newest Sportage in the catalogue started in 2015. Shares the Tucson NX4 Smartstream engines.",
+      "engines": [
+        { "engineCode": "G4FP", "displacementCc": 1598, "powerHp": 150, "fuelType": "essence", "spec": { "viscosity": "5W-30", "apiStandard": "SM/SN", "aceaStandard": null, "oemApproval": null, "capacityLiters": 3.3, "changeIntervalKm": 10000 } },
+        { "engineCode": "D4FE", "displacementCc": 1598, "powerHp": 136, "fuelType": "diesel", "spec": { "viscosity": "5W-30", "apiStandard": "CF", "aceaStandard": "C2", "oemApproval": "Low-SAPS (FAP/DPF)", "capacityLiters": 5.3, "changeIntervalKm": 15000 } }
+      ]
+    }
+  ]
+}

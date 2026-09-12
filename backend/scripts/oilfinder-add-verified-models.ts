@@ -23,7 +23,12 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 const APPLY = process.argv.includes('--apply');
-const DATA_PATH = path.join(__dirname, 'oilfinder-verified-models.json');
+// A data file may be named as the first argument, so several batches can be kept
+// side by side instead of the file being rewritten for each one.
+const DATA_ARG = process.argv.slice(2).find((a) => !a.startsWith('--'));
+const DATA_PATH = DATA_ARG
+  ? path.resolve(DATA_ARG)
+  : path.join(__dirname, 'oilfinder-verified-models.json');
 const SNAPSHOT_PATH = path.join(
   __dirname,
   `oilfinder-replaced-snapshot-${new Date().toISOString().slice(0, 10)}.json`,
@@ -93,11 +98,16 @@ const VEHICLE_TYPE_BY_CATEGORY: Record<string, 'AUTOMOBILE' | 'MOTO' | 'POIDS_LO
 /** Ensures the make -> model -> generation -> engine chain exists so the car is browsable. */
 async function upsertCatalogue(m: ModelInput, category: string): Promise<number> {
   const makeSlug = slugify(m.make);
-  const make = await prisma.vehicleMake.upsert({
-    where: { slug: makeSlug },
-    update: {},
-    create: { name: m.make, slug: makeSlug },
+  // VehicleMake is unique on BOTH name and slug, and the two do not always agree:
+  // Volkswagen is stored as name "VW" with slug "volkswagen". Keying the upsert on
+  // slug alone therefore tried to create a second row with an existing name and
+  // failed the unique constraint, so resolve on either before creating.
+  let make = await prisma.vehicleMake.findFirst({
+    where: { OR: [{ slug: makeSlug }, { name: { equals: m.make, mode: "insensitive" } }] },
   });
+  if (!make) {
+    make = await prisma.vehicleMake.create({ data: { name: m.make, slug: makeSlug } });
+  }
 
   const modelSlug = slugify(`${m.make} ${m.model}`);
   const model = await prisma.vehicleModel.upsert({
@@ -159,6 +169,23 @@ async function upsertCatalogue(m: ModelInput, category: string): Promise<number>
  * verified models into that file, which is bind-mounted and therefore survives
  * container recreation.
  */
+/**
+ * The catalogue key is not always slugify(makeName) - Volkswagen lives under
+ * "volkswagen" while its makeName is "VW" - so a make must be resolved on either
+ * before a node is created, or the brand ends up in the file twice and appears
+ * twice in the dropdown.
+ */
+function findMakeKey(catalog: Record<string, any>, makeName: string): string | undefined {
+  const makeSlug = slugify(makeName);
+  if (catalog[makeSlug]) return makeSlug;
+  return Object.keys(catalog).find(
+    (k) =>
+      catalog[k]?.makeSlug === makeSlug ||
+      slugify(catalog[k]?.makeName || '') === makeSlug ||
+      String(catalog[k]?.makeName || '').toUpperCase() === makeName.toUpperCase(),
+  );
+}
+
 async function updateCleanCatalog(models: ModelInput[]): Promise<{ added: number; carried: number; path: string } | null> {
   const candidates = [
     '/app/oil-finder-full-dataset/clean-catalog-hierarchy.json',
@@ -175,10 +202,16 @@ async function updateCleanCatalog(models: ModelInput[]): Promise<{ added: number
 
   for (const m of models) {
     const makeSlug = slugify(m.make);
-    if (!catalog[makeSlug]) {
-      catalog[makeSlug] = { makeName: m.make, makeSlug, categories: [], models: {} };
+    // The catalogue key is not always slugify(makeName): Volkswagen is stored
+    // under "volkswagen" while its makeName is "VW". Keying on the slug alone
+    // would add a second node and the brand would appear twice in the dropdown,
+    // so match an existing node on either before creating one.
+    let makeKey = findMakeKey(catalog, m.make);
+    if (!makeKey) {
+      makeKey = makeSlug;
+      catalog[makeKey] = { makeName: m.make, makeSlug, categories: [], models: {} };
     }
-    const makeNode = catalog[makeSlug];
+    const makeNode = catalog[makeKey];
     makeNode.models = makeNode.models || {};
 
     const category = m.category || 'automobile';
@@ -239,12 +272,20 @@ async function updateCleanCatalog(models: ModelInput[]): Promise<{ added: number
   // (that is how Changan's Hunter/Kaicene and Haval's H2 disappeared). Carry
   // those across for every make touched here.
   let carried = 0;
-  for (const makeSlug of new Set(models.map((m) => slugify(m.make)))) {
-    const makeNode = catalog[makeSlug];
+  for (const makeName of new Set(models.map((m) => m.make))) {
+    const makeKey = findMakeKey(catalog, makeName);
+    const makeNode = makeKey ? catalog[makeKey] : undefined;
     if (!makeNode) continue;
 
     const dbModels = await prisma.vehicleModel.findMany({
-      where: { make: { slug: makeSlug } },
+      where: {
+        make: {
+          OR: [
+            { slug: slugify(makeName) },
+            { name: { equals: makeName, mode: 'insensitive' } },
+          ],
+        },
+      },
       include: {
         generations: { include: { engines: { include: { oilSpec: true } } } },
       },

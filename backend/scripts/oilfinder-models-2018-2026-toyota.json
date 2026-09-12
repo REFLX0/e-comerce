@@ -1,0 +1,156 @@
+{
+  "models": [
+    {
+      "make": "TOYOTA",
+      "model": "Yaris",
+      "generation": "Yaris III (XP130) (2011 - 2020)",
+      "yearFrom": 2011,
+      "yearTo": 2020,
+      "category": "automobile",
+      "confidence": "medium",
+      "source": "Toyota Yaris XP130, the generation between the XP90 and the current XP210. The catalogue's newest Yaris generation ended in 2011, so nine model years were unreachable. Engine line-up per Toyota Europe: 1.0 1KR-FE, 1.33 1NR-FE and 1NR-FKE, 1.5 2NR-FKE, 1.4 D-4D 1ND-TV and the 1.5 Hybrid 1NZ-FXE. Oil figures match the per-engine-code Toyota table already applied to this catalogue.",
+      "engines": [
+        { "engineCode": "1KR-FE", "displacementCc": 998, "powerHp": 69, "fuelType": "essence",
+          "spec": { "viscosity": "5W-30", "apiStandard": "SL/SM", "aceaStandard": null, "oemApproval": null, "capacityLiters": 3.0, "changeIntervalKm": 10000 } },
+        { "engineCode": "1NR-FE", "displacementCc": 1329, "powerHp": 99, "fuelType": "essence",
+          "spec": { "viscosity": "5W-30", "apiStandard": "SM/SN", "aceaStandard": null, "oemApproval": null, "capacityLiters": 3.9, "changeIntervalKm": 10000 } },
+        { "engineCode": "1NR-FKE", "displacementCc": 1329, "powerHp": 111, "fuelType": "essence",
+          "spec": { "viscosity": "0W-20", "apiStandard": "SN", "aceaStandard": null, "oemApproval": "ILSAC GF-5", "capacityLiters": 3.9, "changeIntervalKm": 10000 } },
+        { "engineCode": "2NR-FKE", "displacementCc": 1496, "powerHp": 111, "fuelType": "essence",
+          "spec": { "viscosity": "0W-20", "apiStandard": "SN", "aceaStandard": null, "oemApproval": "ILSAC GF-5", "capacityLiters": 3.9, "changeIntervalKm": 10000 } },
+        { "engineCode": "1ND-TV", "displacementCc": 1364, "powerHp": 90, "fuelType": "diesel",
+          "spec": { "viscosity": "5W-30", "apiStandard": "CF", "aceaStandard": "C2", "oemApproval": "Low-SAPS (FAP/DPF)", "capacityLiters": 3.9, "changeIntervalKm": 10000 } },
+        { "engineCode": "1NZ-FXE", "displacementCc": 1497, "powerHp": 100, "fuelType": "essence",
+          "spec": { "viscosity": "5W-30", "apiStandard": "SL/SM", "aceaStandard": null, "oemApproval": "Moteur hybride", "capacityLiters": 3.9, "changeIntervalKm": 15000 } }
+      ]
+    },
+    {
+      "make": "TOYOTA",
+      "model": "Yaris",
+      "generation": "Yaris IV (XP210) (2020 - Présent)",
+      "yearFrom": 2020,
+      "yearTo": 9999,
+      "category": "automobile",
+      "confidence": "medium",
+      "source": "Toyota Yaris XP210, the current car, absent from the catalogue entirely. Dynamic Force three-cylinder: 1.5 M15A-FKS petrol and 1.5 M15A-FXE full hybrid. Toyota specifies 0W-16 with 0W-20 as the permitted alternative for the Dynamic Force family.",
+      "engines": [
+        { "engineCode": "M15A-FKS", "displacementCc": 1490, "powerHp": 125, "fuelType": "essence",
+          "spec": { "viscosity": "0W-16", "apiStandard": "SP", "aceaStandard": null, "oemApproval": "ILSAC GF-6B", "capacityLiters": 3.9, "changeIntervalKm": 15000 } },
+        { "engineCode": "M15A-FXE", "displacementCc": 1490, "powerHp": 116, "fuelType": "essence",
+          "spec": { "viscosity": "0W-16", "apiStandard": "SP", "aceaStandard": null, "oemApproval": "ILSAC GF-6B (moteur hybride)", "capacityLiters": 3.9, "changeIntervalKm": 15000 } }
+      ]
+    },
+    {
+      "make": "TOYOTA",
+      "model": "Yaris Cross",
+      "generation": "Yaris Cross (2020 - Présent)",
+      "yearFrom": 2020,
+      "yearTo": 9999,
+      "category": "automobile",
+      "confidence": "medium",
+      "source": "Yaris Cross, the crossover on the GA-B platform, not present in the catalogue. Shares the Yaris XP210 Dynamic Force engines.",
+      "engines": [
+        { "engineCode": "M15A-FKS", "displacementCc": 1490, "powerHp": 125, "fuelType": "essence",
+          "spec": { "viscosity": "0W-16", "apiStandard": "SP", "aceaStandard": null, "oemApproval": "ILSAC GF-6B", "capacityLiters": 3.9, "changeIntervalKm": 15000 } },
+        { "engineCode": "M15A-FXE", "displacementCc": 1490, "powerHp": 116, "fuelType": "essence",
+          "spec": { "viscosity": "0W-16", "apiStandard": "SP", "aceaStandard": null, "oemApproval": "ILSAC GF-6B (moteur hybride)", "capacityLiters": 3.9, "changeIntervalKm": 15000 } }
+      ]
+    },
+    {
+      "make": "TOYOTA",
+      "model": "GR Yaris",
+      "generation": "GR Yaris (2020 - Présent)",
+      "yearFrom": 2020,
+      "yearTo": 9999,
+      "category": "automobile",
+      "confidence": "low",
+      "source": "GR Yaris, the homologation three-cylinder turbo. G16E-GTS is a high-output engine specified 0W-20 by Toyota; the capacity is a family figure rather than a manual one.",
+      "engines": [
+        { "engineCode": "G16E-GTS", "displacementCc": 1618, "powerHp": 261, "fuelType": "essence",
+          "spec": { "viscosity": "0W-20", "apiStandard": "SP", "aceaStandard": null, "oemApproval": "ILSAC GF-6A (turbo)", "capacityLiters": 5.2, "changeIntervalKm": 10000 } }
+      ]
+    },
+    {
+      "make": "TOYOTA",
+      "model": "Corolla",
+      "generation": "Corolla XII (E210) (2019 - Présent)",
+      "yearFrom": 2019,
+      "yearTo": 9999,
+      "category": "automobile",
+      "confidence": "medium",
+      "source": "Corolla E210 — hatchback, Touring Sports and saloon. The catalogue's newest Corolla generation was the E18 of 2013. Line-up per Toyota Europe: 1.2 turbo 8NR-FTS, 1.8 Hybrid 2ZR-FXE and 2.0 Hybrid M20A-FXS.",
+      "engines": [
+        { "engineCode": "8NR-FTS", "displacementCc": 1197, "powerHp": 116, "fuelType": "essence",
+          "spec": { "viscosity": "0W-20", "apiStandard": "SN", "aceaStandard": null, "oemApproval": "ILSAC GF-5 (turbo)", "capacityLiters": 4.2, "changeIntervalKm": 10000 } },
+        { "engineCode": "2ZR-FXE", "displacementCc": 1798, "powerHp": 122, "fuelType": "essence",
+          "spec": { "viscosity": "0W-20", "apiStandard": "SN", "aceaStandard": null, "oemApproval": "ILSAC GF-5 (moteur hybride)", "capacityLiters": 4.2, "changeIntervalKm": 15000 } },
+        { "engineCode": "M20A-FXS", "displacementCc": 1987, "powerHp": 184, "fuelType": "essence",
+          "spec": { "viscosity": "0W-16", "apiStandard": "SP", "aceaStandard": null, "oemApproval": "ILSAC GF-6B (moteur hybride)", "capacityLiters": 4.2, "changeIntervalKm": 15000 } },
+        { "engineCode": "M20A-FKS", "displacementCc": 1987, "powerHp": 170, "fuelType": "essence",
+          "spec": { "viscosity": "0W-16", "apiStandard": "SP", "aceaStandard": null, "oemApproval": "ILSAC GF-6B", "capacityLiters": 4.2, "changeIntervalKm": 15000 } }
+      ]
+    },
+    {
+      "make": "TOYOTA",
+      "model": "Corolla Cross",
+      "generation": "Corolla Cross (2021 - Présent)",
+      "yearFrom": 2021,
+      "yearTo": 9999,
+      "category": "automobile",
+      "confidence": "low",
+      "source": "Corolla Cross, absent from the catalogue. Shares the Corolla E210's Dynamic Force 2.0 hybrid.",
+      "engines": [
+        { "engineCode": "M20A-FXS", "displacementCc": 1987, "powerHp": 184, "fuelType": "essence",
+          "spec": { "viscosity": "0W-16", "apiStandard": "SP", "aceaStandard": null, "oemApproval": "ILSAC GF-6B (moteur hybride)", "capacityLiters": 4.2, "changeIntervalKm": 15000 } }
+      ]
+    },
+    {
+      "make": "TOYOTA",
+      "model": "Rav 4",
+      "generation": "Rav 4 V (XA50) (2018 - Présent)",
+      "yearFrom": 2018,
+      "yearTo": 9999,
+      "category": "automobile",
+      "confidence": "medium",
+      "source": "RAV4 XA50. The catalogue's newest RAV4 was the XA40 of 2012. Line-up: 2.0 M20A-FKS petrol and the 2.5 A25A-FXS full hybrid.",
+      "engines": [
+        { "engineCode": "M20A-FKS", "displacementCc": 1987, "powerHp": 175, "fuelType": "essence",
+          "spec": { "viscosity": "0W-16", "apiStandard": "SP", "aceaStandard": null, "oemApproval": "ILSAC GF-6B", "capacityLiters": 4.2, "changeIntervalKm": 15000 } },
+        { "engineCode": "A25A-FXS", "displacementCc": 2487, "powerHp": 218, "fuelType": "essence",
+          "spec": { "viscosity": "0W-16", "apiStandard": "SP", "aceaStandard": null, "oemApproval": "ILSAC GF-6B (moteur hybride)", "capacityLiters": 4.5, "changeIntervalKm": 15000 } }
+      ]
+    },
+    {
+      "make": "TOYOTA",
+      "model": "C-Hr",
+      "generation": "C-HR II (2023 - Présent)",
+      "yearFrom": 2023,
+      "yearTo": 9999,
+      "category": "automobile",
+      "confidence": "low",
+      "source": "Second-generation C-HR. Shares the Dynamic Force hybrids with the Corolla E210.",
+      "engines": [
+        { "engineCode": "M20A-FXS", "displacementCc": 1987, "powerHp": 197, "fuelType": "essence",
+          "spec": { "viscosity": "0W-16", "apiStandard": "SP", "aceaStandard": null, "oemApproval": "ILSAC GF-6B (moteur hybride)", "capacityLiters": 4.2, "changeIntervalKm": 15000 } },
+        { "engineCode": "M15A-FXE", "displacementCc": 1490, "powerHp": 140, "fuelType": "essence",
+          "spec": { "viscosity": "0W-16", "apiStandard": "SP", "aceaStandard": null, "oemApproval": "ILSAC GF-6B (moteur hybride)", "capacityLiters": 3.9, "changeIntervalKm": 15000 } }
+      ]
+    },
+    {
+      "make": "TOYOTA",
+      "model": "Land Cruiser 300",
+      "generation": "Land Cruiser 300 (J300) (2021 - Présent)",
+      "yearFrom": 2021,
+      "yearTo": 9999,
+      "category": "automobile",
+      "confidence": "low",
+      "source": "Land Cruiser J300, which replaced the J200 in 2021 and is absent from the catalogue. V35A-FTS 3.5 twin-turbo petrol and F33A-FTV 3.3 twin-turbo diesel. Capacities are family figures rather than manual ones.",
+      "engines": [
+        { "engineCode": "V35A-FTS", "displacementCc": 3444, "powerHp": 415, "fuelType": "essence",
+          "spec": { "viscosity": "0W-20", "apiStandard": "SP", "aceaStandard": null, "oemApproval": "ILSAC GF-6A (turbo)", "capacityLiters": 6.5, "changeIntervalKm": 10000 } },
+        { "engineCode": "F33A-FTV", "displacementCc": 3346, "powerHp": 309, "fuelType": "diesel",
+          "spec": { "viscosity": "0W-30", "apiStandard": "CJ-4", "aceaStandard": "C2", "oemApproval": "Toyota LL-B (DPF)", "capacityLiters": 7.5, "changeIntervalKm": 10000 } }
+      ]
+    }
+  ]
+}
