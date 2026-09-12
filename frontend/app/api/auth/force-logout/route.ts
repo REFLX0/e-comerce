@@ -55,8 +55,17 @@ export async function GET(req: NextRequest) {
   // absolute URL from it sends the browser to http://0.0.0.0:3000. Browsers
   // resolve a relative Location against the request URL, which is the public one.
   const response = new NextResponse(null, { status: 307, headers: { Location: target } })
+  const isHttps = req.nextUrl.protocol === 'https:'
   for (const name of AUTH_COOKIES) {
-    response.cookies.set(name, '', { path: '/', maxAge: 0 })
+    // Browsers silently reject any Set-Cookie for a `__Secure-`/`__Host-`
+    // prefixed name that lacks the `Secure` attribute -- including one meant
+    // to clear it. Without this, __Secure-authjs.session-token (the cookie
+    // Auth.js actually uses in production, since it enables secure cookies
+    // automatically over HTTPS) never gets cleared: the backend's own
+    // access_token/refresh_token cookies clear fine (no prefix, no such
+    // rule), so email/password logout looked fixed while Google-authenticated
+    // sessions stayed silently logged in.
+    response.cookies.set(name, '', { path: '/', maxAge: 0, secure: isHttps, httpOnly: true })
   }
   return response
 }
