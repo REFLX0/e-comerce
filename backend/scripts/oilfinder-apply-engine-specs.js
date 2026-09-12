@@ -148,19 +148,24 @@ async function main() {
     return;
   }
 
-  let sourceCollisions = 0;
-  for (const { row, entry } of plan) {
+  // The fingerprint encodes every field written here, so a spec row that already
+  // carries it is already correct and needs no update.
+  const resolveSpecId = async (entry) => {
     const fp = fingerprint(entry.spec, MAKE);
     let specId = specIdByFingerprint.get(fp);
     if (!specId) {
-      // The fingerprint encodes every field written here, so a row that already
-      // carries it is already correct and needs no update.
       const existing = await prisma.oilFinderOilSpec.findFirst({ where: { fingerprint: fp } });
       const spec = existing
         ?? (await prisma.oilFinderOilSpec.create({ data: { ...entry.spec, fingerprint: fp } }));
       specId = spec.id;
       specIdByFingerprint.set(fp, specId);
     }
+    return specId;
+  };
+
+  let sourceCollisions = 0;
+  for (const { row, entry } of plan) {
+    const specId = await resolveSpecId(entry);
     const data = {
       oilSpecId: specId,
       ...(entry.fuelType ? { fuelType: entry.fuelType } : {}),
@@ -186,6 +191,34 @@ async function main() {
   if (sourceCollisions > 0) {
     console.log(`  ${sourceCollisions} duplicate rows kept their original source (spec still corrected)`);
   }
+
+  // VehicleEngine is a third store, and the add-models script copies oil specs
+  // out of it when it carries a make's database-only models into the catalogue.
+  // Leaving it stale therefore re-poisons the catalogue on the next such run -
+  // Toyota went from 26 fabricated approvals back up to 328 that way. Correct it
+  // here so all three stores agree.
+  let engineRows = 0;
+  const dbEngines = await prisma.vehicleEngine.findMany({
+    where: {
+      generation: {
+        model: {
+          make: { OR: MAKES.flatMap((m) => [{ slug: slugify(m) }, { name: { equals: m, mode: 'insensitive' } }]) },
+        },
+      },
+    },
+    select: { id: true, engineCode: true },
+  });
+  for (const e of dbEngines) {
+    const entry = lookup(byCode, e.engineCode, patterns);
+    if (!entry) continue;
+    const specId = await resolveSpecId(entry);
+    await prisma.vehicleEngine.update({
+      where: { id: e.id },
+      data: { oilSpecId: specId, ...(entry.fuelType ? { fuelType: entry.fuelType } : {}) },
+    });
+    engineRows++;
+  }
+  if (engineRows > 0) console.log(`VehicleEngine rows updated: ${engineRows}`);
 
   fs.writeFileSync(CATALOG, JSON.stringify(catalog));
   console.log(`Catalogue file rewritten: ${CATALOG}`);
