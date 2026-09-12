@@ -77,6 +77,18 @@ function slugify(text: string): string {
     .replace(/^-+|-+$/g, '');
 }
 
+/**
+ * An engine code reduced to what identifies the engine: punctuation dropped and
+ * any trailing parenthetical trim removed, so "D16DTF (1.6 e-XDi)" and "D16DTF"
+ * are recognised as one engine across the two stores.
+ */
+function baseEngineCode(code?: string | null): string {
+  return String(code || '')
+    .replace(/\s*\(.*$/, '')
+    .toUpperCase()
+    .replace(/[^A-Z0-9]/g, '');
+}
+
 function fingerprintOf(spec: OilSpecInput): string {
   // Must include apiStandard: without it, specs that differ only by API text
   // collapse onto one row and overwrite each other (see tecdoc-catalog-harvester).
@@ -245,7 +257,11 @@ async function updateCleanCatalog(models: ModelInput[]): Promise<{ added: number
     genNode.engines = genNode.engines || [];
 
     for (const eng of m.engines) {
-      if (genNode.engines.some((e: any) => e.engineCode === eng.engineCode)) continue;
+      // Compare on the base code, not the exact string. The catalogue and a
+      // verified entry routinely punctuate the same engine differently or append
+      // a trim, so an exact-match check added "D16DTF (1.6 e-XDi)" alongside the
+      // catalogue's own "D16DTF" and the customer was offered both.
+      if (genNode.engines.some((e: any) => baseEngineCode(e.engineCode) === baseEngineCode(eng.engineCode))) continue;
       genNode.engines.push({
         engineCode: eng.engineCode,
         fuelType: eng.fuelType,

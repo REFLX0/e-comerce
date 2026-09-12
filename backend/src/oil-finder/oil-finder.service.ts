@@ -234,6 +234,21 @@ function baseEngineCode(code?: string | null): string {
     .replace(/[^A-Z0-9]/g, '');
 }
 
+/**
+ * Whether two engine codes name the same engine.
+ *
+ * Same base code is enough only when at least one side carries no parenthetical
+ * qualifier. Where both do, the qualifier is what tells them apart — Alpina's
+ * "M30 B34 (34T36)" and "M30 B34 (34C20)" are two engines on one block — and
+ * treating them as one would drop a real variant from the dropdown.
+ */
+function sameBaseEngine(a?: string | null, b?: string | null): boolean {
+  const base = baseEngineCode(a);
+  if (!base || base !== baseEngineCode(b)) return false;
+  const qualified = (c?: string | null) => /\(.*\)/.test(String(c || ''));
+  return !(qualified(a) && qualified(b));
+}
+
 /** The oil summary shown against an engine in the selector. */
 function toPreviewOil(spec: any): any {
   if (!spec) return undefined;
@@ -2933,8 +2948,8 @@ export class OilFinderService {
         // stores also punctuate differently and one often appends a trim — the
         // catalogue's "D16DTF" and a verified row's "D16DTF (1.6 e-XDi)" are one
         // engine — so compare on the normalised base code.
-        const codeOnly = [...seen].some(
-          (k) => baseEngineCode(k.split('_')[0]) === baseEngineCode(r.engineCode),
+        const codeOnly = [...seen].some((k) =>
+          sameBaseEngine(k.slice(0, k.lastIndexOf('_', k.lastIndexOf('_') - 1)), r.engineCode),
         );
         if (seen.has(key) || codeOnly) continue;
         seen.add(key);
@@ -2992,8 +3007,16 @@ export class OilFinderService {
             if (eng.isTemplatedSeed) {
               continue;
             }
+            // Engines are gathered across every generation when no single one is
+            // asked for, and the same engine is often spelled differently in two
+            // of them — a SsangYong Tivoli carried both "G16DF" and
+            // "G16DF (1.6 e-XGi)" and offered the customer each. Key on the
+            // normalised code so one engine is listed once.
             const key = `${eng.engineCode.toLowerCase()}_${eng.powerHp || ''}_${eng.fuelType || ''}`;
-            if (!seen.has(key)) {
+            const alreadyListed = [...seen].some((k) =>
+              sameBaseEngine(k.slice(0, k.lastIndexOf('_', k.lastIndexOf('_') - 1)), eng.engineCode),
+            );
+            if (!seen.has(key) && !alreadyListed) {
               seen.add(key);
               result.push({
                 engineCode: eng.engineCode,

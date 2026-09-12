@@ -1011,6 +1011,56 @@ describe('OilFinderService', () => {
         expect(codes).toEqual(['D16DTF']);
       });
 
+      // Engines are gathered across every generation when none is asked for, and
+      // the same engine is often spelled differently in two of them.
+      it('lists an engine once when two generations spell its code differently', async () => {
+        __setCleanCatalogForTests({
+          ssangyong: {
+            makeName: 'SSANGYONG', makeSlug: 'ssangyong', categories: ['automobile'],
+            models: {
+              tivoli: {
+                modelName: 'Tivoli', modelSlug: 'tivoli', category: 'automobile',
+                generations: {
+                  a: { genName: 'A', genSlug: 'a', yearFrom: 2015, yearTo: 2019,
+                       engines: [{ engineCode: 'G16DF', fuelType: 'essence', displacementCc: 1597, powerHp: 128 }] },
+                  b: { genName: 'B', genSlug: 'b', yearFrom: 2019, yearTo: null,
+                       engines: [{ engineCode: 'G16DF (1.6 e-XGi)', fuelType: 'essence', displacementCc: 1597, powerHp: 128 }] },
+                },
+              },
+            },
+          },
+        });
+        prisma.oilFinderVehicle.findMany.mockResolvedValue([]);
+
+        const codes = (await service.getEngines('SSANGYONG', 'Tivoli')).map((e) => e.engineCode);
+        expect(codes).toEqual(['G16DF']);
+      });
+
+      // ...but a qualifier that is the only thing telling two engines apart must
+      // not collapse them: Alpina builds several engines on one block.
+      it('keeps engines whose parenthetical qualifier is what distinguishes them', async () => {
+        __setCleanCatalogForTests({
+          alpina: {
+            makeName: 'ALPINA', makeSlug: 'alpina', categories: ['automobile'],
+            models: {
+              b10: {
+                modelName: 'B10', modelSlug: 'b10', category: 'automobile',
+                generations: {
+                  a: { genName: 'A', genSlug: 'a', yearFrom: 1985, yearTo: 1990, engines: [
+                    { engineCode: 'M30 B34 (34T36)', fuelType: 'essence', displacementCc: 3430, powerHp: 261 },
+                    { engineCode: 'M30 B34 (34C20)', fuelType: 'essence', displacementCc: 3430, powerHp: 254 },
+                  ] },
+                },
+              },
+            },
+          },
+        });
+        prisma.oilFinderVehicle.findMany.mockResolvedValue([]);
+
+        const codes = (await service.getEngines('ALPINA', 'B10')).map((e) => e.engineCode);
+        expect(codes).toHaveLength(2);
+      });
+
       it('does not offer the same engine twice when power differs', async () => {
         catalogueWith([
           { engineCode: '3UR-FE', fuelType: 'essence', displacementCc: 5663, powerHp: null },
