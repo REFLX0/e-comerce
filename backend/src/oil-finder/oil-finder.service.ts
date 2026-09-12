@@ -260,6 +260,29 @@ function sameBaseEngine(a?: string | null, b?: string | null): boolean {
   return !(qualified(a) && qualified(b));
 }
 
+/**
+ * Whether an engine is already in the list being built.
+ *
+ * Both sources of engines run through this, so a row added from the database
+ * cannot reintroduce one the catalogue pass already dropped.
+ */
+function isDuplicateEngine(
+  listed: Array<{ engineCode?: string | null; displacementCc?: number | null; fuelType?: string | null }>,
+  candidate: { engineCode?: string | null; displacementCc?: number | null; fuelType?: string | null },
+): boolean {
+  return listed.some((e) => {
+    if (sameBaseEngine(e.engineCode, candidate.engineCode)) return true;
+    // A displacement-only placeholder is redundant against a real code for the
+    // same displacement and fuel, whichever generation each came from.
+    if (isPlaceholderEngineCode(e.engineCode) === isPlaceholderEngineCode(candidate.engineCode)) return false;
+    return (
+      candidate.displacementCc != null &&
+      candidate.displacementCc === e.displacementCc &&
+      (candidate.fuelType || null) === (e.fuelType || null)
+    );
+  });
+}
+
 /** The oil summary shown against an engine in the selector. */
 function toPreviewOil(spec: any): any {
   if (!spec) return undefined;
@@ -2922,7 +2945,6 @@ export class OilFinderService {
    */
   private async mergeVerifiedEngines(
     result: any[],
-    seen: Set<string>,
     makeName: string,
     modelName: string,
     generationName?: string,
@@ -2952,18 +2974,7 @@ export class OilFinderService {
       });
       for (const r of rows) {
         if (!r.engineCode) continue;
-        const key = `${r.engineCode.toLowerCase()}_${r.powerHp || ''}_${r.fuelType || ''}`;
-        // Also treat a bare code match as a duplicate: the catalogue frequently
-        // has the same engine with power left null, and offering the customer
-        // "2.2 mHawk" twice is worse than losing the second row's spec. The two
-        // stores also punctuate differently and one often appends a trim — the
-        // catalogue's "D16DTF" and a verified row's "D16DTF (1.6 e-XDi)" are one
-        // engine — so compare on the normalised base code.
-        const codeOnly = [...seen].some((k) =>
-          sameBaseEngine(k.slice(0, k.lastIndexOf('_', k.lastIndexOf('_') - 1)), r.engineCode),
-        );
-        if (seen.has(key) || codeOnly) continue;
-        seen.add(key);
+        if (isDuplicateEngine(result, r)) continue;
         result.push({
           engineCode: r.engineCode,
           yearFrom: r.yearFrom || null,
@@ -3011,10 +3022,6 @@ export class OilFinderService {
         }
 
         if (targetEngines.length > 0) {
-          const seen = new Set<string>();
-          // code (lowercased) -> displacement, so a placeholder can be compared
-          // against an already-listed real code without re-walking `result`.
-          const listedDisplacement = new Map<string, number | null>();
           const result: any[] = [];
           for (const eng of targetEngines) {
             // Templated phantom entries from generic seed templates must never be served in the selector dropdown
@@ -3024,27 +3031,8 @@ export class OilFinderService {
             // Engines are gathered across every generation when no single one is
             // asked for, and the same engine is often spelled differently in two
             // of them — a SsangYong Tivoli carried both "G16DF" and
-            // "G16DF (1.6 e-XGi)" and offered the customer each. Key on the
-            // normalised code so one engine is listed once.
-            const key = `${eng.engineCode.toLowerCase()}_${eng.powerHp || ''}_${eng.fuelType || ''}`;
-            const alreadyListed = [...seen].some((k) => {
-              const other = k.slice(0, k.lastIndexOf('_', k.lastIndexOf('_') - 1));
-              if (sameBaseEngine(other, eng.engineCode)) return true;
-              // A displacement-only placeholder is redundant against a real code
-              // of the same displacement and fuel, whichever generation each sits
-              // in: a Geely Emgrand listed "1.5 (JLy-4G15B)" beside "JLY-4G15".
-              if (isPlaceholderEngineCode(other) === isPlaceholderEngineCode(eng.engineCode)) return false;
-              const parts = k.split('_');
-              const otherFuel = parts[parts.length - 1];
-              return (
-                listedDisplacement.get(other) != null &&
-                listedDisplacement.get(other) === eng.displacementCc &&
-                otherFuel === (eng.fuelType || '')
-              );
-            });
-            if (!seen.has(key) && !alreadyListed) {
-              listedDisplacement.set(eng.engineCode.toLowerCase(), eng.displacementCc ?? null);
-              seen.add(key);
+            // "G16DF (1.6 e-XGi)" and offered the customer each.
+            if (!isDuplicateEngine(result, eng)) {
               result.push({
                 engineCode: eng.engineCode,
                 yearFrom: eng.yearFrom || null,
@@ -3057,7 +3045,7 @@ export class OilFinderService {
               });
             }
           }
-          await this.mergeVerifiedEngines(result, seen, makeName, modelName, generationName, { excludeHarvested: true });
+          await this.mergeVerifiedEngines(result, makeName, modelName, generationName, { excludeHarvested: true });
           return result.sort((a, b) => (a.powerHp || 0) - (b.powerHp || 0));
         }
       }
@@ -3088,19 +3076,15 @@ export class OilFinderService {
         orderBy: { powerHp: 'asc' },
       });
       if (dbEngines && dbEngines.length > 0) {
-        const seen = new Set<string>();
-        const result = dbEngines.map((e: any) => {
-          seen.add(`${(e.engineCode || '').toLowerCase()}_${e.powerHp || ''}_${e.fuelType || ''}`);
-          return {
-            engineCode: e.engineCode,
-            fuelType: e.fuelType,
-            displacementCc: e.displacementCc,
-            powerHp: e.powerHp,
-            powerKw: e.powerKw,
-            previewOil: toPreviewOil(e.oilSpec),
-          };
-        });
-        await this.mergeVerifiedEngines(result, seen, makeName, modelName, generationName, { excludeHarvested: true });
+        const result = dbEngines.map((e: any) => ({
+          engineCode: e.engineCode,
+          fuelType: e.fuelType,
+          displacementCc: e.displacementCc,
+          powerHp: e.powerHp,
+          powerKw: e.powerKw,
+          previewOil: toPreviewOil(e.oilSpec),
+        }));
+        await this.mergeVerifiedEngines(result, makeName, modelName, generationName, { excludeHarvested: true });
         return result;
       }
     } catch {
@@ -3110,7 +3094,7 @@ export class OilFinderService {
     // 3. Verified OilFinderVehicle rows on their own — a model seeded only by a
     // manual correction has neither a catalogue node nor a VehicleEngine row.
     const verifiedOnly: any[] = [];
-    await this.mergeVerifiedEngines(verifiedOnly, new Set<string>(), makeName, modelName, generationName);
+    await this.mergeVerifiedEngines(verifiedOnly, makeName, modelName, generationName);
     if (verifiedOnly.length > 0) {
       return verifiedOnly.sort((a, b) => (a.powerHp || 0) - (b.powerHp || 0));
     }
