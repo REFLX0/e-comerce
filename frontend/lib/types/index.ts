@@ -114,7 +114,6 @@ export interface VehicleEngine {
      * engine's approval makes oil thickness a requirement (DPF low-SAPS oils,
      * engines designed around a 0W-20), so it is never a free substitution.
      */
-    hotClimateAlternative?: { viscosity: string; reason: string } | null
   }
 }
 

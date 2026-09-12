@@ -133,109 +133,6 @@ export function normalizeCategory(value?: string | null): VehicleCategory | unde
 }
 
 /**
- * A heavier hot-weather grade, where the engine's own specification allows one.
- *
- * Tunisian summers sit well above the ~35 °C ceiling the European grade tables
- * assume, and Toyota's own Gulf distributor lists 20W-50 / 15W-40 / 10W-40 /
- * 5W-40 as the preferred grades above 40 °C. The catalogue ships European
- * figures, so a customer is told 5W-30 for a car every local workshop fills
- * with 5W-40.
- *
- * This only ever raises the high-temperature number (5W-30 -> 5W-40), never the
- * cold-start one, and refuses outright for engines whose approval makes oil
- * thickness a hard requirement rather than a preference:
- *
- *  - low-SAPS / low-HTHS approvals (ACEA C1/C2/C5, VW 504/507, PSA B71 2312,
- *    dexos, MB 229.5x) where a thicker oil clogs the particulate filter or
- *    starves the hydraulic valve train;
- *  - engines designed around a thin oil (0W-16, 0W-20, 5W-20), where the
- *    bearing clearances and the variable-valve-timing actuators assume it;
- *  - hybrids, whose engine runs in short intermittent bursts and rarely reaches
- *    the temperature that would justify a heavier grade.
- *
- * Anything already 40-weight or heavier needs no alternative.
- */
-const HARD_THIN_OIL_APPROVAL =
-  // Every ACEA C grade is low-SAPS: the limit on sulphated ash, phosphorus and
-  // sulphur is what keeps the particulate filter from blocking, and it has
-  // nothing to do with viscosity. So a C-grade oil can never be swapped for an
-  // A3/B4 40-weight however hot it gets, whatever the HTHS of the grade.
-  /\bC[1-6]\b|GF-?[456]|RESOURCE.?CONSERV|VW\s*50[45]|VW\s*50[89]|507|508|509|DEXOS|B71\s*23(1|2)|RN0?72|RN17|229\.5|LOW.?SAPS|DPF|FAP|HYBRID/i;
-
-/**
- * Where a manufacturer publishes its own hot-market specification, that beats
- * raising the viscosity: it is the grade the constructor actually sanctions.
- *
- * PSA's B71 2297 is the case that matters here. An engine specified B71 2290
- * runs an ACEA C2 oil, and thickening it to a 40-weight would break the low-SAPS
- * chemistry its particulate filter depends on. B71 2297 keeps the low-SAPS
- * chemistry but steps up to ACEA C3, whose minimum high-temperature shear
- * strength (HTHS >= 3.5 vs C2's 2.9) is exactly what the heat asks for. PSA
- * developed it for hot and very hot markets.
- */
-const OEM_HOT_CLIMATE_SPECS: Array<{
-  match: RegExp;
-  viscosity: (current: string) => string;
-  reason: string;
-}> = [
-  {
-    match: /B71\s*2290/i,
-    viscosity: (current) => current,
-    reason:
-      'PSA B71 2297 (ACEA C3) — spécification constructeur pour marchés chauds. Même viscosité, meilleure tenue à haute température, compatible FAP.',
-  },
-];
-
-export function resolveHotClimateAlternative(
-  spec: {
-    viscosity?: string | null;
-    aceaStandard?: string | null;
-    apiStandard?: string | null;
-    oemApproval?: string | null;
-  },
-  vehicle?: { yearFrom?: number | null; fuelType?: string | null },
-): { viscosity: string; reason: string } | null {
-  const v = (spec.viscosity || '').trim().toUpperCase();
-  const m = /^(\d+W)-?(\d+)$/.exec(v);
-  if (!m) return null;
-
-  // Every direct-injection petrol sold from the Euro 6d-TEMP deadline in
-  // September 2018 carries a particulate filter, and a high-SAPS 40-weight
-  // blocks a GPF exactly as it blocks a DPF. Not every 2018 petrol is direct
-  // injection — Hyundai's port-injected G4LA and G4LC are not — but the engine
-  // code does not say which, and withholding the alternative from an engine
-  // that could have taken it costs the customer nothing, while offering it to a
-  // GPF engine costs them the filter. So the whole year is withheld.
-  const petrol = !vehicle?.fuelType || /essence|petrol|gasoline/i.test(vehicle.fuelType);
-  if (petrol && (vehicle?.yearFrom ?? 0) >= 2018) return null;
-
-  const [, cold, hotStr] = m;
-  const hot = Number(hotStr);
-  const haystack = [spec.aceaStandard, spec.apiStandard, spec.oemApproval, v]
-    .filter(Boolean)
-    .join(' ');
-
-  // A constructor's own hot-market specification wins, and applies even to the
-  // thin-oil engines below — it is sanctioned precisely for them.
-  for (const oem of OEM_HOT_CLIMATE_SPECS) {
-    if (oem.match.test(haystack)) {
-      return { viscosity: oem.viscosity(v), reason: oem.reason };
-    }
-  }
-
-  // 40-weight and above already suits the climate; 20 and below is a design
-  // choice about the engine, not about the weather.
-  if (hot >= 40 || hot <= 20) return null;
-  if (HARD_THIN_OIL_APPROVAL.test(haystack)) return null;
-
-  return {
-    viscosity: `${cold}-40`,
-    reason:
-      'Grade plus épais toléré par temps chaud (> 40 °C). La spécification constructeur reste la référence.',
-  };
-}
-
-/**
  * An engine code reduced to what identifies the engine, for comparing entries
  * that came from different stores: punctuation dropped and any trailing
  * parenthetical trim removed, so "D16DTF (1.6 e-XDi)" and "D16DTF" match.
@@ -304,16 +201,12 @@ function isDuplicateEngine(
 }
 
 /** The oil summary shown against an engine in the selector. */
-function toPreviewOil(
-  spec: any,
-  vehicle?: { yearFrom?: number | null; fuelType?: string | null },
-): any {
+function toPreviewOil(spec: any): any {
   if (!spec) return undefined;
   return {
     viscosity: spec.viscosity,
     oemApproval: spec.oemApproval,
     jasoStandard: spec.jasoStandard,
-    hotClimateAlternative: resolveHotClimateAlternative(spec, vehicle),
   };
 }
 
@@ -3006,7 +2899,7 @@ export class OilFinderService {
           displacementCc: r.displacementCc,
           powerHp: r.powerHp,
           powerKw: r.powerKw,
-          previewOil: toPreviewOil(r.oilSpec, { yearFrom: r.yearFrom, fuelType: r.fuelType }),
+          previewOil: toPreviewOil(r.oilSpec),
         });
       }
     } catch {
@@ -3064,7 +2957,7 @@ export class OilFinderService {
                 displacementCc: eng.displacementCc,
                 powerHp: eng.powerHp,
                 powerKw: eng.powerKw,
-                previewOil: toPreviewOil(eng.oilSpec, { yearFrom: eng.yearFrom, fuelType: eng.fuelType }),
+                previewOil: toPreviewOil(eng.oilSpec),
               });
             }
           }
@@ -3105,7 +2998,7 @@ export class OilFinderService {
           displacementCc: e.displacementCc,
           powerHp: e.powerHp,
           powerKw: e.powerKw,
-          previewOil: toPreviewOil(e.oilSpec, { fuelType: e.fuelType }),
+          previewOil: toPreviewOil(e.oilSpec),
         }));
         await this.mergeVerifiedEngines(result, makeName, modelName, generationName, { excludeHarvested: true });
         return result;

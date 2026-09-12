@@ -5,7 +5,6 @@ import {
   extractEngineVariants,
   extractModelKeywords,
   __setCleanCatalogForTests,
-  resolveHotClimateAlternative,
 } from './oil-finder.service';
 import { PrismaService } from '../prisma/prisma.service';
 
@@ -324,94 +323,6 @@ describe('OilFinderService', () => {
       if (res.status === 'not_found') {
         expect(res.message).toContain('Aucune spécification d\'huile trouvée pour les caractéristiques');
       }
-    });
-  });
-
-  describe('resolveHotClimateAlternative', () => {
-    it('offers a 40-weight for a plain 30-weight spec', () => {
-      expect(
-        resolveHotClimateAlternative({ viscosity: '5W-30', aceaStandard: 'A3/B4', apiStandard: 'SL/CF' }),
-      ).toMatchObject({ viscosity: '5W-40' });
-      expect(
-        resolveHotClimateAlternative({ viscosity: '10W-30', apiStandard: 'SL' }),
-      ).toMatchObject({ viscosity: '10W-40' });
-    });
-
-    it('never changes the cold-start number', () => {
-      expect(resolveHotClimateAlternative({ viscosity: '0W-30', apiStandard: 'SN' })?.viscosity).toBe('0W-40');
-    });
-
-    // A thicker oil in a DPF engine clogs the filter, and in an engine built
-    // around a thin oil it starves the valve train. These must never be offered.
-    it.each([
-      ['ACEA C1', { viscosity: '5W-30', aceaStandard: 'C1' }],
-      ['ACEA C2 low-SAPS', { viscosity: '5W-30', aceaStandard: 'C2' }],
-      ['ACEA C3 on its own', { viscosity: '5W-30', aceaStandard: 'C3' }],
-      ['ACEA C3 low-SAPS', { viscosity: '5W-30', aceaStandard: 'C2 / C3' }],
-      // Renault's RN0720 is an ACEA C4 oil. C4 is low-SAPS like the rest of the
-      // C range, so the K9K behind half the diesels in Tunisia must not be
-      // offered a 5W-40 that would block its filter.
-      ['ACEA C4 / Renault RN0720', { viscosity: '5W-30', aceaStandard: 'C4', oemApproval: 'Renault RN0720' }],
-      ['Renault RN17', { viscosity: '5W-30', aceaStandard: 'C3', oemApproval: 'Renault RN17' }],
-      ['VW 504.00/507.00', { viscosity: '5W-30', oemApproval: 'VW 504.00/507.00' }],
-      ['PSA B71 2312', { viscosity: '0W-30', oemApproval: 'PSA B71 2312' }],
-      ['dexos', { viscosity: '5W-30', oemApproval: 'dexos1 Gen3' }],
-      ['MB 229.51', { viscosity: '5W-30', oemApproval: 'MB 229.51' }],
-      ['ILSAC GF-6', { viscosity: '5W-30', apiStandard: 'SP', oemApproval: 'ILSAC GF-6A' }],
-      ['explicit DPF wording', { viscosity: '5W-30', oemApproval: 'Asian OEM C2/C3 DPF' }],
-    ])('refuses for %s', (_label, spec) => {
-      expect(resolveHotClimateAlternative(spec)).toBeNull();
-    });
-
-    // PSA publishes B71 2297 (ACEA C3) for hot and very hot markets. It keeps the
-    // low-SAPS chemistry the particulate filter needs while raising the
-    // high-temperature shear strength, so it beats thickening a C2 oil to a
-    // 40-weight — which would break the filter.
-    it('offers the constructor hot-market spec instead of a heavier grade', () => {
-      const alt = resolveHotClimateAlternative({
-        viscosity: '5W-30',
-        aceaStandard: 'C2',
-        oemApproval: 'PSA B71 2290',
-      });
-      expect(alt).not.toBeNull();
-      expect(alt!.viscosity).toBe('5W-30');
-      expect(alt!.reason).toContain('2297');
-    });
-
-    it('does not offer a hot-market spec to a make that has none', () => {
-      expect(
-        resolveHotClimateAlternative({ viscosity: '5W-30', aceaStandard: 'C2', oemApproval: 'VW 504.00/507.00' }),
-      ).toBeNull();
-    });
-
-    it('refuses for thin-oil engines and for grades already heavy enough', () => {
-      expect(resolveHotClimateAlternative({ viscosity: '0W-20', apiStandard: 'SN' })).toBeNull();
-      expect(resolveHotClimateAlternative({ viscosity: '5W-20' })).toBeNull();
-      expect(resolveHotClimateAlternative({ viscosity: '5W-40', aceaStandard: 'A3/B4' })).toBeNull();
-      expect(resolveHotClimateAlternative({ viscosity: '15W-40' })).toBeNull();
-      expect(resolveHotClimateAlternative({ viscosity: '20W-50' })).toBeNull();
-    });
-
-    // Every direct-injection petrol from the Euro 6d-TEMP deadline carries a
-    // particulate filter, and a high-SAPS 40-weight blocks a GPF as surely as it
-    // blocks a DPF. A Hyundai Tucson NX4's 1.6 T-GDi was being offered 5W-40.
-    it('withholds a heavier grade from a petrol engine built from 2018', () => {
-      const spec = { viscosity: '5W-30', apiStandard: 'SM/SN' };
-      expect(resolveHotClimateAlternative(spec, { yearFrom: 2020, fuelType: 'essence' })).toBeNull();
-      expect(resolveHotClimateAlternative(spec, { yearFrom: 2018, fuelType: 'essence' })).toBeNull();
-    });
-
-    it('still offers one to an older petrol engine, where the advice belongs', () => {
-      const spec = { viscosity: '5W-30', apiStandard: 'SL/SM' };
-      expect(
-        resolveHotClimateAlternative(spec, { yearFrom: 2011, fuelType: 'essence' }),
-      ).toMatchObject({ viscosity: '5W-40' });
-    });
-
-    it('returns null rather than guessing at an unparseable grade', () => {
-      expect(resolveHotClimateAlternative({ viscosity: null })).toBeNull();
-      expect(resolveHotClimateAlternative({ viscosity: 'SAE 30' })).toBeNull();
-      expect(resolveHotClimateAlternative({ viscosity: '75W-90' })).toBeNull();
     });
   });
 

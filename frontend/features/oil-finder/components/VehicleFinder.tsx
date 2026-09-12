@@ -4,7 +4,7 @@ import { useState, useEffect, useMemo, useRef } from 'react'
 import {
   Search, Car, ChevronDown, Check,
   Loader2, X, Sparkles, RotateCcw,
-  ShieldCheck, Gauge, ArrowRight, Layers, Sun
+  ShieldCheck, Gauge, ArrowRight, Layers
 } from 'lucide-react'
 import { useRouter, usePathname } from 'next/navigation'
 import { productsApi } from '@/lib/api/products'
@@ -954,11 +954,6 @@ export function VehicleFinder({ onClose, initialVehicleType }: VehicleFinderProp
                             {eng.previewOil?.viscosity && (
                               <span className="ml-auto inline-flex items-center gap-1 rounded-md bg-amber-50 border border-amber-200 px-1.5 py-0.5 text-[10px] font-black text-amber-900">
                                 Huile : <strong className="text-amber-800">{eng.previewOil.viscosity}</strong>
-                                {eng.previewOil.hotClimateAlternative && (
-                                  <span className="font-bold text-amber-700/80">
-                                    ou {eng.previewOil.hotClimateAlternative.viscosity}
-                                  </span>
-                                )}
                               </span>
                             )}
                           </div>
@@ -1015,18 +1010,6 @@ export function VehicleFinder({ onClose, initialVehicleType }: VehicleFinderProp
                       {activeSpec.oemApproval && <span className="opacity-75">({activeSpec.oemApproval})</span>}
                       {activeSpec.jasoStandard && <span className="opacity-75">· JASO {activeSpec.jasoStandard}</span>}
                     </span>
-                    {/* Tunisian summers run well past the temperatures the
-                        constructor's European grade table assumes. Offered only
-                        where the engine's approval tolerates a thicker oil. */}
-                    {activeSpec.hotClimateAlternative && (
-                      <span
-                        title={activeSpec.hotClimateAlternative.reason}
-                        className="inline-flex items-center gap-1 rounded-lg bg-orange-500/15 border border-orange-400/30 px-2 py-0.5 text-[11px] font-black text-orange-300"
-                      >
-                        <Sun size={11} />
-                        Climat chaud : <strong>{activeSpec.hotClimateAlternative.viscosity}</strong>
-                      </span>
-                    )}
                   </div>
                 )}
               </div>
