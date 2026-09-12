@@ -121,6 +121,69 @@ export function normalizeCategory(value?: string | null): VehicleCategory | unde
   return undefined;
 }
 
+/**
+ * A heavier hot-weather grade, where the engine's own specification allows one.
+ *
+ * Tunisian summers sit well above the ~35 °C ceiling the European grade tables
+ * assume, and Toyota's own Gulf distributor lists 20W-50 / 15W-40 / 10W-40 /
+ * 5W-40 as the preferred grades above 40 °C. The catalogue ships European
+ * figures, so a customer is told 5W-30 for a car every local workshop fills
+ * with 5W-40.
+ *
+ * This only ever raises the high-temperature number (5W-30 -> 5W-40), never the
+ * cold-start one, and refuses outright for engines whose approval makes oil
+ * thickness a hard requirement rather than a preference:
+ *
+ *  - low-SAPS / low-HTHS approvals (ACEA C1/C2/C5, VW 504/507, PSA B71 2312,
+ *    dexos, MB 229.5x) where a thicker oil clogs the particulate filter or
+ *    starves the hydraulic valve train;
+ *  - engines designed around a thin oil (0W-16, 0W-20, 5W-20), where the
+ *    bearing clearances and the variable-valve-timing actuators assume it.
+ *
+ * Anything already 40-weight or heavier needs no alternative.
+ */
+const HARD_THIN_OIL_APPROVAL =
+  /(C1|C2|C5|GF-?[456]|RESOURCE.?CONSERV|VW\s*50[45]|VW\s*50[89]|507|508|509|DEXOS|B71\s*23(1|2)|229\.5|LOW.?SAPS|DPF|FAP)/i;
+
+export function resolveHotClimateAlternative(spec: {
+  viscosity?: string | null;
+  aceaStandard?: string | null;
+  apiStandard?: string | null;
+  oemApproval?: string | null;
+}): { viscosity: string; reason: string } | null {
+  const v = (spec.viscosity || '').trim().toUpperCase();
+  const m = /^(\d+W)-?(\d+)$/.exec(v);
+  if (!m) return null;
+
+  const [, cold, hotStr] = m;
+  const hot = Number(hotStr);
+  // 40-weight and above already suits the climate; 20 and below is a design
+  // choice about the engine, not about the weather.
+  if (hot >= 40 || hot <= 20) return null;
+
+  const haystack = [spec.aceaStandard, spec.apiStandard, spec.oemApproval, v]
+    .filter(Boolean)
+    .join(' ');
+  if (HARD_THIN_OIL_APPROVAL.test(haystack)) return null;
+
+  return {
+    viscosity: `${cold}-40`,
+    reason:
+      'Grade plus épais toléré par temps chaud (> 40 °C). La spécification constructeur reste la référence.',
+  };
+}
+
+/** The oil summary shown against an engine in the selector. */
+function toPreviewOil(spec: any): any {
+  if (!spec) return undefined;
+  return {
+    viscosity: spec.viscosity,
+    oemApproval: spec.oemApproval,
+    jasoStandard: spec.jasoStandard,
+    hotClimateAlternative: resolveHotClimateAlternative(spec),
+  };
+}
+
 function slugify(text: string): string {
   return text
     .toLowerCase()
@@ -2817,13 +2880,7 @@ export class OilFinderService {
           displacementCc: r.displacementCc,
           powerHp: r.powerHp,
           powerKw: r.powerKw,
-          previewOil: r.oilSpec
-            ? {
-                viscosity: r.oilSpec.viscosity,
-                oemApproval: r.oilSpec.oemApproval,
-                jasoStandard: r.oilSpec.jasoStandard,
-              }
-            : undefined,
+          previewOil: toPreviewOil(r.oilSpec),
         });
       }
     } catch {
@@ -2880,11 +2937,7 @@ export class OilFinderService {
                 displacementCc: eng.displacementCc,
                 powerHp: eng.powerHp,
                 powerKw: eng.powerKw,
-                previewOil: eng.oilSpec ? {
-                  viscosity: eng.oilSpec.viscosity,
-                  oemApproval: eng.oilSpec.oemApproval,
-                  jasoStandard: eng.oilSpec.jasoStandard,
-                } : undefined,
+                previewOil: toPreviewOil(eng.oilSpec),
               });
             }
           }
@@ -2918,11 +2971,7 @@ export class OilFinderService {
             displacementCc: e.displacementCc,
             powerHp: e.powerHp,
             powerKw: e.powerKw,
-            previewOil: e.oilSpec ? {
-              viscosity: e.oilSpec.viscosity,
-              oemApproval: e.oilSpec.oemApproval,
-              jasoStandard: e.oilSpec.jasoStandard,
-            } : undefined,
+            previewOil: toPreviewOil(e.oilSpec),
           };
         });
         await this.mergeVerifiedEngines(result, seen, makeName, modelName, generationName, { excludeHarvested: true });

@@ -5,6 +5,7 @@ import {
   extractEngineVariants,
   extractModelKeywords,
   __setCleanCatalogForTests,
+  resolveHotClimateAlternative,
 } from './oil-finder.service';
 import { PrismaService } from '../prisma/prisma.service';
 
@@ -323,6 +324,50 @@ describe('OilFinderService', () => {
       if (res.status === 'not_found') {
         expect(res.message).toContain('Aucune spécification d\'huile trouvée pour les caractéristiques');
       }
+    });
+  });
+
+  describe('resolveHotClimateAlternative', () => {
+    it('offers a 40-weight for a plain 30-weight spec', () => {
+      expect(
+        resolveHotClimateAlternative({ viscosity: '5W-30', aceaStandard: 'A3/B4', apiStandard: 'SL/CF' }),
+      ).toMatchObject({ viscosity: '5W-40' });
+      expect(
+        resolveHotClimateAlternative({ viscosity: '10W-30', apiStandard: 'SL' }),
+      ).toMatchObject({ viscosity: '10W-40' });
+    });
+
+    it('never changes the cold-start number', () => {
+      expect(resolveHotClimateAlternative({ viscosity: '0W-30', apiStandard: 'SN' })?.viscosity).toBe('0W-40');
+    });
+
+    // A thicker oil in a DPF engine clogs the filter, and in an engine built
+    // around a thin oil it starves the valve train. These must never be offered.
+    it.each([
+      ['ACEA C2 low-SAPS', { viscosity: '5W-30', aceaStandard: 'C2' }],
+      ['ACEA C3 low-SAPS', { viscosity: '5W-30', aceaStandard: 'C2 / C3' }],
+      ['VW 504.00/507.00', { viscosity: '5W-30', oemApproval: 'VW 504.00/507.00' }],
+      ['PSA B71 2312', { viscosity: '0W-30', oemApproval: 'PSA B71 2312' }],
+      ['dexos', { viscosity: '5W-30', oemApproval: 'dexos1 Gen3' }],
+      ['MB 229.51', { viscosity: '5W-30', oemApproval: 'MB 229.51' }],
+      ['ILSAC GF-6', { viscosity: '5W-30', apiStandard: 'SP', oemApproval: 'ILSAC GF-6A' }],
+      ['explicit DPF wording', { viscosity: '5W-30', oemApproval: 'Asian OEM C2/C3 DPF' }],
+    ])('refuses for %s', (_label, spec) => {
+      expect(resolveHotClimateAlternative(spec)).toBeNull();
+    });
+
+    it('refuses for thin-oil engines and for grades already heavy enough', () => {
+      expect(resolveHotClimateAlternative({ viscosity: '0W-20', apiStandard: 'SN' })).toBeNull();
+      expect(resolveHotClimateAlternative({ viscosity: '5W-20' })).toBeNull();
+      expect(resolveHotClimateAlternative({ viscosity: '5W-40', aceaStandard: 'A3/B4' })).toBeNull();
+      expect(resolveHotClimateAlternative({ viscosity: '15W-40' })).toBeNull();
+      expect(resolveHotClimateAlternative({ viscosity: '20W-50' })).toBeNull();
+    });
+
+    it('returns null rather than guessing at an unparseable grade', () => {
+      expect(resolveHotClimateAlternative({ viscosity: null })).toBeNull();
+      expect(resolveHotClimateAlternative({ viscosity: 'SAE 30' })).toBeNull();
+      expect(resolveHotClimateAlternative({ viscosity: '75W-90' })).toBeNull();
     });
   });
 
