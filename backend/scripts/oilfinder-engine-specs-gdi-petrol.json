@@ -1,0 +1,49 @@
+{
+  "makes": ["HYUNDAI", "KIA", "GENESIS", "FORD", "CHERY", "CHANGAN", "GEELY", "DFSK", "HAVAL", "MG"],
+  "note": "Gives the turbocharged direct-injection petrols the API SN / ILSAC GF-5 rating they are actually specified with, which is the honest reason a 40-weight is wrong for them. It is not mainly about the particulate filter: a turbo GDI is vulnerable to low-speed pre-ignition, and the additive chemistry that prevents LSPI is precisely what the GF-5 and SN Plus / SP categories require. An older A3/B4 40-weight can lack it, and LSPI destroys pistons rather than merely clogging a filter. The year-based rule in resolveHotClimateAlternative catches these by proxy where the generation is new enough, but the same engine code often appears in an older generation too, so it is recorded on the spec instead. Port-injected engines of the same families - Hyundai's G4LA and G4LC, for instance - are deliberately left alone and keep the hot-climate alternative.",
+
+  "engines": [
+    {
+      "codes": ["G4FD", "G4FJ", "G4FP", "G4FL", "G3LC", "G4LD"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "5W-30", "apiStandard": "SN", "aceaStandard": null, "oemApproval": "ILSAC GF-5 (GDI turbo - protection LSPI)", "capacityLiters": 3.3, "changeIntervalKm": 10000 },
+      "confidence": "medium",
+      "source": "Hyundai and Kia's Gamma and Kappa direct-injection turbos - the 1.0 T-GDi (G3LC), 1.4 T-GDi (G4LD) and 1.6 GDI/T-GDi (G4FD, G4FJ, G4FP, G4FL) in the i20, i30, Tucson, Sportage, Ceed and Stonic. Hyundai specifies API SN with ILSAC GF-5; that rating is what carries the LSPI protection a turbo GDI needs."
+    },
+    {
+      "codes": ["G4KH", "G4KJ", "G4NC"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "5W-30", "apiStandard": "SN", "aceaStandard": null, "oemApproval": "ILSAC GF-5 (GDI turbo - protection LSPI)", "capacityLiters": 4.6, "changeIntervalKm": 10000 },
+      "confidence": "medium",
+      "source": "Theta and Nu direct injection - the 2.0 T-GDi (G4KH), 2.4 GDI (G4KJ) and 2.0 GDI (G4NC) in the Sonata, Santa Fe, Optima and Sportage."
+    },
+    {
+      "codes": ["G6DN", "G6DP"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "5W-30", "apiStandard": "SN", "aceaStandard": null, "oemApproval": "ILSAC GF-5 (GDI)", "capacityLiters": 5.7, "changeIntervalKm": 10000 },
+      "confidence": "low",
+      "source": "Hyundai's Lambda GDI V6 in the Genesis."
+    },
+    {
+      "codes": ["M2MA", "M3MA", "R9CD", "R9CI", "M1DA", "M1JA", "SFJA", "SFJB", "YZJA", "YZJB"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "5W-30", "apiStandard": "SN", "aceaStandard": "C2", "oemApproval": "Ford WSS-M2C948-B (EcoBoost - protection LSPI)", "capacityLiters": 4.1, "changeIntervalKm": 15000 },
+      "confidence": "low",
+      "source": "Ford's EcoBoost three- and four-cylinder turbos. Ford specifies WSS-M2C948-B, a low-SAPS C2 grade, for these; a 40-weight is neither that nor LSPI-rated."
+    },
+    {
+      "patterns": ["^SQR.*T1[05]", "^1\\.[056]T \\(SQR", "^2\\.0T \\(SQRD4T20\\)"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "5W-30", "apiStandard": "SP", "aceaStandard": "A3/B4", "oemApproval": "Chery ACTECO turbo (protection LSPI)", "capacityLiters": 4.0, "changeIntervalKm": 10000 },
+      "confidence": "low",
+      "source": "Chery's ACTECO turbocharged direct-injection family in the Tiggo and Arrizo. Ravenol lists API SP for these, which carries the LSPI protection; the earlier naturally aspirated units are not affected."
+    },
+    {
+      "codes": ["1.5T (JL473ZQ7)", "JL473ZQ7", "JL473ZQ3", "JL473ZQ9", "DK15 (1.5 Turbo)", "JLD-4G18TD", "GW4C20", "GW4B15A", "GW4B15D", "GW4B15C", "GW4B15L"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "5W-30", "apiStandard": "SP", "aceaStandard": "C3", "oemApproval": "Turbo GDI (protection LSPI)", "capacityLiters": 4.0, "changeIntervalKm": 10000 },
+      "confidence": "low",
+      "source": "The Chinese turbocharged direct-injection petrols - Changan's JL473, DFSK's DK15, Geely's JLD-4G18TD and Great Wall / Haval's GW4B15 and GW4C20. All modern turbo GDI, so LSPI-rated oil applies and a 40-weight does not."
+    }
+  ]
+}
