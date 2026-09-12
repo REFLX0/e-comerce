@@ -344,8 +344,15 @@ describe('OilFinderService', () => {
     // A thicker oil in a DPF engine clogs the filter, and in an engine built
     // around a thin oil it starves the valve train. These must never be offered.
     it.each([
+      ['ACEA C1', { viscosity: '5W-30', aceaStandard: 'C1' }],
       ['ACEA C2 low-SAPS', { viscosity: '5W-30', aceaStandard: 'C2' }],
+      ['ACEA C3 on its own', { viscosity: '5W-30', aceaStandard: 'C3' }],
       ['ACEA C3 low-SAPS', { viscosity: '5W-30', aceaStandard: 'C2 / C3' }],
+      // Renault's RN0720 is an ACEA C4 oil. C4 is low-SAPS like the rest of the
+      // C range, so the K9K behind half the diesels in Tunisia must not be
+      // offered a 5W-40 that would block its filter.
+      ['ACEA C4 / Renault RN0720', { viscosity: '5W-30', aceaStandard: 'C4', oemApproval: 'Renault RN0720' }],
+      ['Renault RN17', { viscosity: '5W-30', aceaStandard: 'C3', oemApproval: 'Renault RN17' }],
       ['VW 504.00/507.00', { viscosity: '5W-30', oemApproval: 'VW 504.00/507.00' }],
       ['PSA B71 2312', { viscosity: '0W-30', oemApproval: 'PSA B71 2312' }],
       ['dexos', { viscosity: '5W-30', oemApproval: 'dexos1 Gen3' }],

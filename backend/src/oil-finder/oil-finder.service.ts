@@ -145,7 +145,11 @@ export function normalizeCategory(value?: string | null): VehicleCategory | unde
  * Anything already 40-weight or heavier needs no alternative.
  */
 const HARD_THIN_OIL_APPROVAL =
-  /(C1|C2|C5|GF-?[456]|RESOURCE.?CONSERV|VW\s*50[45]|VW\s*50[89]|507|508|509|DEXOS|B71\s*23(1|2)|229\.5|LOW.?SAPS|DPF|FAP|HYBRID)/i;
+  // Every ACEA C grade is low-SAPS: the limit on sulphated ash, phosphorus and
+  // sulphur is what keeps the particulate filter from blocking, and it has
+  // nothing to do with viscosity. So a C-grade oil can never be swapped for an
+  // A3/B4 40-weight however hot it gets, whatever the HTHS of the grade.
+  /\bC[1-6]\b|GF-?[456]|RESOURCE.?CONSERV|VW\s*50[45]|VW\s*50[89]|507|508|509|DEXOS|B71\s*23(1|2)|RN0?72|RN17|229\.5|LOW.?SAPS|DPF|FAP|HYBRID/i;
 
 /**
  * Where a manufacturer publishes its own hot-market specification, that beats
