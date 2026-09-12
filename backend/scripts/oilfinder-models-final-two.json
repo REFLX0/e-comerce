@@ -1,0 +1,22 @@
+{
+  "models": [
+    {
+      "make": "VW", "model": "Passat", "generation": "Passat B9 (2023 - Présent)",
+      "yearFrom": 2023, "yearTo": 9999, "category": "automobile", "confidence": "medium",
+      "source": "Passat B9, sold as an estate only in Europe. The catalogue's newest Passat generation started in 2014. MQB evo engines shared with the Golf VIII and Octavia IV, on VW 504.00/507.00.",
+      "engines": [
+        { "engineCode": "DADA", "displacementCc": 1498, "powerHp": 150, "fuelType": "essence", "spec": { "viscosity": "5W-30", "apiStandard": "SN", "aceaStandard": "C3", "oemApproval": "VW 504.00/507.00", "capacityLiters": 4.3, "changeIntervalKm": 15000 } },
+        { "engineCode": "DTTA", "displacementCc": 1968, "powerHp": 150, "fuelType": "diesel", "spec": { "viscosity": "5W-30", "apiStandard": "SN", "aceaStandard": "C3", "oemApproval": "VW 507.00 (FAP)", "capacityLiters": 4.3, "changeIntervalKm": 15000 } },
+        { "engineCode": "DTRA", "displacementCc": 1968, "powerHp": 193, "fuelType": "diesel", "spec": { "viscosity": "5W-30", "apiStandard": "SN", "aceaStandard": "C3", "oemApproval": "VW 507.00 (FAP)", "capacityLiters": 4.3, "changeIntervalKm": 15000 } }
+      ]
+    },
+    {
+      "make": "MG", "model": "MG3", "generation": "MG3 II (2024 - Présent)",
+      "yearFrom": 2024, "yearTo": 9999, "category": "automobile", "confidence": "low",
+      "source": "MG3 II, the Hybrid+ generation. 1.5 Atkinson-cycle petrol paired with an electric motor. MG's published requirement for its recent engines is an API/ILSAC SN/GF-5 5W-30 (per the RX5 owner's handbook, Engine Oil Specification); no MG3 II manual was retrieved, so the capacity is taken from the MG ZS 1.5 figure and this is flagged low.",
+      "engines": [
+        { "engineCode": "15S4Y (Hybrid+)", "displacementCc": 1498, "powerHp": 102, "fuelType": "essence", "spec": { "viscosity": "5W-30", "apiStandard": "SN", "aceaStandard": null, "oemApproval": "ILSAC GF-5 (moteur hybride)", "capacityLiters": 4.1, "changeIntervalKm": 10000 } }
+      ]
+    }
+  ]
+}
