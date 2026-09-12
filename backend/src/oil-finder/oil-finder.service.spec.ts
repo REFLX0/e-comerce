@@ -1061,6 +1061,53 @@ describe('OilFinderService', () => {
         expect(codes).toHaveLength(2);
       });
 
+      it('drops a displacement-only placeholder when a real code covers it', async () => {
+        __setCleanCatalogForTests({
+          geely: {
+            makeName: 'GEELY', makeSlug: 'geely', categories: ['automobile'],
+            models: {
+              emgrand: {
+                modelName: 'Emgrand', modelSlug: 'emgrand', category: 'automobile',
+                generations: {
+                  a: { genName: 'A', genSlug: 'a', yearFrom: 2009, yearTo: 2016, engines: [
+                    { engineCode: '1.5 (JLy-4G15B)', fuelType: 'essence', displacementCc: 1498, powerHp: 109 },
+                  ] },
+                  b: { genName: 'B', genSlug: 'b', yearFrom: 2016, yearTo: null, engines: [
+                    { engineCode: 'JLY-4G15', fuelType: 'essence', displacementCc: 1498, powerHp: 109 },
+                  ] },
+                },
+              },
+            },
+          },
+        });
+        prisma.oilFinderVehicle.findMany.mockResolvedValue([]);
+
+        const codes = (await service.getEngines('GEELY', 'Emgrand')).map((e) => e.engineCode);
+        expect(codes).toHaveLength(1);
+      });
+
+      it('keeps two real codes of the same displacement', async () => {
+        __setCleanCatalogForTests({
+          x: {
+            makeName: 'X', makeSlug: 'x', categories: ['automobile'],
+            models: {
+              y: {
+                modelName: 'Y', modelSlug: 'y', category: 'automobile',
+                generations: {
+                  a: { genName: 'A', genSlug: 'a', yearFrom: 2000, yearTo: null, engines: [
+                    { engineCode: 'AAA111', fuelType: 'essence', displacementCc: 1598, powerHp: 105 },
+                    { engineCode: 'BBB222', fuelType: 'essence', displacementCc: 1598, powerHp: 115 },
+                  ] },
+                },
+              },
+            },
+          },
+        });
+        prisma.oilFinderVehicle.findMany.mockResolvedValue([]);
+
+        expect((await service.getEngines('X', 'Y'))).toHaveLength(2);
+      });
+
       it('does not offer the same engine twice when power differs', async () => {
         catalogueWith([
           { engineCode: '3UR-FE', fuelType: 'essence', displacementCc: 5663, powerHp: null },

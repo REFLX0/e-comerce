@@ -235,6 +235,17 @@ function baseEngineCode(code?: string | null): string {
 }
 
 /**
+ * A code that is really just a displacement — "1.5", "2.0 Diesel",
+ * "1.6 Essence", "1.5 (JLy-4G15B)". The TecDoc import left these wherever it had
+ * no engine code, and they carry nothing a real code does not.
+ */
+function isPlaceholderEngineCode(code?: string | null): boolean {
+  return /^\s*\d[.,]\d\s*(\(|$|l|litre|essence|diesel|hybrid|tdi|hdi|dci|t|turbo)/i.test(
+    String(code || ''),
+  );
+}
+
+/**
  * Whether two engine codes name the same engine.
  *
  * Same base code is enough only when at least one side carries no parenthetical
@@ -3001,6 +3012,9 @@ export class OilFinderService {
 
         if (targetEngines.length > 0) {
           const seen = new Set<string>();
+          // code (lowercased) -> displacement, so a placeholder can be compared
+          // against an already-listed real code without re-walking `result`.
+          const listedDisplacement = new Map<string, number | null>();
           const result: any[] = [];
           for (const eng of targetEngines) {
             // Templated phantom entries from generic seed templates must never be served in the selector dropdown
@@ -3013,10 +3027,23 @@ export class OilFinderService {
             // "G16DF (1.6 e-XGi)" and offered the customer each. Key on the
             // normalised code so one engine is listed once.
             const key = `${eng.engineCode.toLowerCase()}_${eng.powerHp || ''}_${eng.fuelType || ''}`;
-            const alreadyListed = [...seen].some((k) =>
-              sameBaseEngine(k.slice(0, k.lastIndexOf('_', k.lastIndexOf('_') - 1)), eng.engineCode),
-            );
+            const alreadyListed = [...seen].some((k) => {
+              const other = k.slice(0, k.lastIndexOf('_', k.lastIndexOf('_') - 1));
+              if (sameBaseEngine(other, eng.engineCode)) return true;
+              // A displacement-only placeholder is redundant against a real code
+              // of the same displacement and fuel, whichever generation each sits
+              // in: a Geely Emgrand listed "1.5 (JLy-4G15B)" beside "JLY-4G15".
+              if (isPlaceholderEngineCode(other) === isPlaceholderEngineCode(eng.engineCode)) return false;
+              const parts = k.split('_');
+              const otherFuel = parts[parts.length - 1];
+              return (
+                listedDisplacement.get(other) != null &&
+                listedDisplacement.get(other) === eng.displacementCc &&
+                otherFuel === (eng.fuelType || '')
+              );
+            });
             if (!seen.has(key) && !alreadyListed) {
+              listedDisplacement.set(eng.engineCode.toLowerCase(), eng.displacementCc ?? null);
               seen.add(key);
               result.push({
                 engineCode: eng.engineCode,
