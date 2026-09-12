@@ -1,0 +1,94 @@
+{
+  "makes": ["LDV", "LIGIER", "MAN", "LTI", "METROCAB", "DAIHATSU", "MAHINDRA", "ASIA MOTORS", "MAZDA",
+            "GENESIS", "KTM", "AC", "CATERHAM", "ARTEGA", "MCLAREN", "ROLLS-ROYCE", "SPYKER",
+            "SHUANGHUAN", "PLYMOUTH", "MITSUOKA", "SSANGYONG", "SANTANA", "SUBARU", "TATA", "TOYOTA", "ARO"],
+  "note": "The long tail - small makes whose engines almost all came from somebody else, which is why the generic approval survived here longest. Applied with --only-generic. The pattern repeats: the diesels were recorded as petrol. LDV's VM Motori 2.5, Ligier's Lombardini, SsangYong's licensed Mercedes OM661/OM662, Santana's Iveco Sofim and PSA DV6, Metrocab's Toyota 2L-T, LTI's Nissan TD27, Tata's 483 DL. Each engine is given its originator's figures. Codes that could not be identified confidently are left out.",
+
+  "engines": [
+    {
+      "patterns": ["^(BS58|VM39|VM40|VMR4|EN ?55|ET ?70)"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "15W-40", "apiStandard": "CF", "aceaStandard": "B3/B4", "oemApproval": null, "capacityLiters": 7.0, "changeIntervalKm": 10000 },
+      "confidence": "low",
+      "source": "VM Motori 2.5 turbo-diesels in the LDV Convoy, Pilot and Maxus. Recorded as petrol. Pre-particulate-filter, so a conventional 15W-40 is correct and suits hot climates."
+    },
+    {
+      "codes": ["LD23", "TD27", "2L-T", "XDP 290", "D2FA"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "15W-40", "apiStandard": "CF", "aceaStandard": "B3/B4", "oemApproval": null, "capacityLiters": 6.5, "changeIntervalKm": 7500 },
+      "confidence": "low",
+      "source": "Nissan's LD23 and TD27 in the LDV and the London taxi, Toyota's 2L-T in the Metrocab, Mahindra's XDP 290 and Ford's D2FA. All indirect-injection diesels recorded as petrol."
+    },
+    {
+      "codes": ["MB-OM 661", "MB-OM 662", "MB-OM661", "MB-OM662"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "15W-40", "apiStandard": "CF", "aceaStandard": "B3/B4", "oemApproval": "MB 229.1", "capacityLiters": 7.5, "changeIntervalKm": 7500 },
+      "confidence": "low",
+      "source": "The Mercedes OM661 2.3 and OM662 2.9 that SsangYong built under licence for the Musso, Korando and Istana. Recorded as petrol - the same engines the SsangYong table already corrects under their plain OM designations."
+    },
+    {
+      "codes": ["8140.43P", "DV6ATED4"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "5W-30", "apiStandard": "SN/CF", "aceaStandard": "C2", "oemApproval": "PSA B71 2290", "capacityLiters": 4.5, "changeIntervalKm": 15000 },
+      "confidence": "low",
+      "source": "Santana built the Iveco Sofim 8140 and the PSA DV6 1.6 HDi under licence for its Land Rover-derived vehicles. Both recorded as petrol; the DV6 takes the PSA figures used throughout this catalogue."
+    },
+    {
+      "codes": ["LDW502", "LDW12", "DLT-C", "483 DL", "483 DL 45", "R2", "SS"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "15W-40", "apiStandard": "CF", "aceaStandard": "B3/B4", "oemApproval": null, "capacityLiters": 4.0, "changeIntervalKm": 7500 },
+      "confidence": "low",
+      "source": "Lombardini's LDW502 and LDW12 in the Ligier microcars and Daihatsu, Daihatsu's own DLT-C 2.8, Tata's 483 DL 1.9, and the Mazda-derived R2 2.2 and SS 2.7 in the Asia Motors vans. All recorded as petrol."
+    },
+    {
+      "codes": ["RTJ", "RTK", "S8Y1"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "5W-30", "apiStandard": "CF", "aceaStandard": "C2", "oemApproval": "Low-SAPS (FAP/DPF)", "capacityLiters": 4.3, "changeIntervalKm": 15000 },
+      "confidence": "low",
+      "source": "Ford's 1.8 Duratorq TDCi as Mazda fitted it to the Mazda 3 and 5. Recorded as petrol."
+    },
+    {
+      "codes": ["1WZ", "3WZ-HV", "4WZ-FTW"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "5W-30", "apiStandard": "CF", "aceaStandard": "C2", "oemApproval": "Low-SAPS (FAP)", "capacityLiters": 4.5, "changeIntervalKm": 15000 },
+      "confidence": "low",
+      "source": "The remaining PSA-sourced units in the Toyota Proace, alongside the 2WZ/3WZ/4WZ codes the Toyota table already covers. Recorded as petrol."
+    },
+    {
+      "patterns": ["^DA[SUVW][AB]$"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "5W-30", "apiStandard": "SN", "aceaStandard": "C3", "oemApproval": "VW 507.00 (FAP)", "capacityLiters": 5.5, "changeIntervalKm": 15000 },
+      "confidence": "low",
+      "source": "The 2.0 TDI in the MAN TGE, which is the VW Crafter under another badge, so it takes VW's specification rather than a truck oil."
+    },
+
+    {
+      "codes": ["LGW523", "LGW 523", "JB", "JB-DET", "HDEP", "F804", "475 DL", "475 Si", "4G64-S4M", "EGM", "R 425 DOHC", "C3G 702", "K18K4"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "10W-40", "apiStandard": "SL", "aceaStandard": "A3/B4", "oemApproval": null, "capacityLiters": 3.5, "changeIntervalKm": 7500 },
+      "confidence": "low",
+      "source": "The small petrols in this group - Lombardini's LGW523 in the Ligier, Daihatsu's JB 0.7 and HDEP 1.6, Tata's 475 1.4, the Mitsubishi 4G64 in the Shuanghuan, Plymouth's EGM 3.3, and the Rover K-series in the Caterham. Conventional grade suited to hot climates."
+    },
+    {
+      "codes": ["G6DN", "G6DP", "3MZ-FE", "LF-VE", "EG33 DOHC"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "5W-30", "apiStandard": "SL/SM", "aceaStandard": null, "oemApproval": null, "capacityLiters": 5.0, "changeIntervalKm": 10000 },
+      "confidence": "low",
+      "source": "Hyundai's Lambda V6 in the Genesis, Toyota's 3MZ-FE and Mazda's LF-VE in the Mitsuoka, and Subaru's EG33 flat-six. API SL/SM with no ACEA requirement."
+    },
+    {
+      "codes": ["1KR-FE", "1NR-FE", "1NR-FKE", "1ND-TV", "G13BB", "M13A", "M15A"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "5W-30", "apiStandard": "SL/SM", "aceaStandard": null, "oemApproval": null, "capacityLiters": 3.3, "changeIntervalKm": 10000 },
+      "confidence": "low",
+      "source": "The Toyota and Suzuki engines Subaru fitted to the Justy and Trezia. Same figures the Toyota and Suzuki tables give them; 1ND-TV keeps the diesel classification it already carries."
+    },
+    {
+      "codes": ["LS3", "LS9 (6,2L)", "99E", "BWS", "BFM", "BHT", "S70/2", "N73 B68 A", "CAEB", "CDLA"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "5W-40", "apiStandard": "SN", "aceaStandard": "A3/B4", "oemApproval": null, "capacityLiters": 7.0, "changeIntervalKm": 10000 },
+      "confidence": "low",
+      "source": "Large petrol engines bought in by small manufacturers - GM's LS3 and LS9 in the AC, Audi's V8 in the Spyker and its 2.0 TFSI in the KTM X-Bow, BMW's N73 V12 in the Rolls-Royce, and the Mercedes V12 in the McLaren F1. A 5W-40 full synthetic covers the range; no manufacturer approval is asserted without a source."
+    }
+  ]
+}

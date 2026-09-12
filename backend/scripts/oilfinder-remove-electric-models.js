@@ -27,6 +27,11 @@ const ELECTRIC = {
   MG: ['MG ZS EV', 'ZS EV', 'MG4', 'MG4 EV', 'MARVEL R', 'MG5 EV'],
   NISSAN: ['Leaf'],
   RENAULT: ['Zoe'],
+  // Tesla's L1S and L2S "engines" are drive units; the catalogue had them on a
+  // petrol spec.
+  // The catalogue holds Tesla's whole range under one model literally named
+  // "Model", with L1S/L2S drive units on a petrol spec.
+  TESLA: ['Model', 'Model S', 'Model 3', 'Model X', 'Model Y', 'Roadster'],
 };
 
 const slug = (t) => String(t || '').toLowerCase().normalize('NFD')

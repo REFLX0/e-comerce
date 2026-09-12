@@ -1,0 +1,118 @@
+{
+  "makes": ["MAZDA", "TOYOTA", "MASERATI", "HONDA", "RENAULT TRUCKS", "SUZUKI", "MORGAN", "AIXAM", "HYUNDAI", "KIA"],
+  "note": "The last of the generated approvals. Applied with --only-generic, so any engine already carrying a real manufacturer approval is left alone. Exact codes throughout rather than family patterns, because several of these makes share short codes. More diesels recorded as petrol turn up here: Toyota's H-family in the Land Cruiser, Mazda's Ford- and PSA-sourced units, Renault Trucks' Sofim fours, and Kubota's engines in the Aixam microcars. Codes that could not be identified confidently are deliberately left out rather than guessed at.",
+
+  "engines": [
+    {
+      "codes": ["H", "2H", "1HZ", "12H-T"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "15W-40", "apiStandard": "CF/CF-4", "aceaStandard": "B3/B4", "oemApproval": null, "capacityLiters": 8.0, "changeIntervalKm": 7500 },
+      "confidence": "low",
+      "source": "Toyota's H-family 3.6 and 4.0 six-cylinder diesels in the Land Cruiser 40/60 series, recorded as petrol. Same conventional 15W-40 the Toyota table gives the 1HZ."
+    },
+    {
+      "codes": ["1VD-FTV"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "5W-30", "apiStandard": "CJ-4", "aceaStandard": "C3", "oemApproval": "Low-SAPS (DPF)", "capacityLiters": 10.5, "changeIntervalKm": 10000 },
+      "confidence": "low",
+      "source": "1VD-FTV 4.5 V8 turbo-diesel, Land Cruiser 200 and 70. Large sump; the capacity is a family figure rather than a manual one."
+    },
+    {
+      "codes": ["A25A-FKS", "A25A-FXS", "M20A-FKS", "2NR-VE", "2AR-FXE", "2AR-FE"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "0W-16", "apiStandard": "SP", "aceaStandard": null, "oemApproval": "ILSAC GF-6B", "capacityLiters": 4.2, "changeIntervalKm": 15000 },
+      "confidence": "low",
+      "source": "Toyota Dynamic Force and the 2AR hybrid family - Camry, RAV4, Corolla. Specified 0W-16 with 0W-20 permitted; a heavier grade is withheld deliberately."
+    },
+    {
+      "codes": ["1UR-FE", "2JZ-GTE", "2VZ-FE", "3VZ-FE", "2F", "F", "22RE", "12R", "5R", "4JM"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "10W-40", "apiStandard": "SL", "aceaStandard": "A3/B4", "oemApproval": null, "capacityLiters": 5.0, "changeIntervalKm": 7500 },
+      "confidence": "low",
+      "source": "Toyota's remaining older petrols - the F-family sixes in the Land Cruiser, 22RE and 12R/5R fours, and the 2JZ-GTE and VZ V6. Conventional grade suited to hot climates."
+    },
+
+    {
+      "codes": ["Y404", "Y406", "F6JA", "F6JB", "4EE1-T", "MD25NA", "MD25TI"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "5W-30", "apiStandard": "CF", "aceaStandard": "C2", "oemApproval": "Low-SAPS (FAP/DPF)", "capacityLiters": 3.9, "changeIntervalKm": 15000 },
+      "confidence": "low",
+      "source": "The diesels Mazda bought in and the catalogue recorded as petrol: PSA's DV4/DV6 as Y404/Y406 in the Mazda 2 MZ-CD, Ford's 1.4 Duratorq as F6JA/F6JB, Isuzu's 4EE1-T in the 121, and Nissan's MD25 in the pickups."
+    },
+    {
+      "codes": ["13B-MSP", "KJ -ZEM", "KJ-ZEM", "CAY1", "CAY5", "CAY6", "CA", "CYC4", "JK26", "PEX3", "FS2C", "FS7G", "FP", "YF", "ZL05", "ZL06", "J4R", "J4T", "JJK", "JJM", "DHF", "DHG", "FUJA", "FXJA", "FYJA", "8AN1"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "5W-30", "apiStandard": "SL/SM", "aceaStandard": null, "oemApproval": null, "capacityLiters": 4.0, "changeIntervalKm": 10000 },
+      "confidence": "low",
+      "source": "Mazda's petrol range not covered by the main table - the 13B-MSP Renesis rotary, the KJ-ZEM 2.3 Miller, the CA/CAY 3.7 and CYC4 3.5 V6, and the Ford-shared small fours in the Mazda 2 and 121. API SL/SM with no ACEA requirement."
+    },
+
+    {
+      "patterns": ["^(M ?1[0-9]{2}|AM ?5[0-9]{2}|F160AM|A630HP|24V DOHC|475$|6\\.0 Essence)"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "5W-40", "apiStandard": "SN", "aceaStandard": "A3/B4", "oemApproval": "Selenia / Shell Helix (Maserati)", "capacityLiters": 7.0, "changeIntervalKm": 15000 },
+      "confidence": "low",
+      "source": "Maserati's V6 and V8 range (AM 574/578/585, M 138/139/145/156, F160AM). Maserati's own fill is a 5W-40 full synthetic; the capacity is a family figure for a large V8 rather than a manual one."
+    },
+
+    {
+      "codes": ["ECA1", "L12A1", "L12A4", "L12B1", "LDA1", "LDA2", "LDA3", "LEA1", "LEA3", "P10A2"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "0W-20", "apiStandard": "SN", "aceaStandard": null, "oemApproval": "Honda HTO-06 / ILSAC GF-5", "capacityLiters": 3.6, "changeIntervalKm": 12500 },
+      "confidence": "low",
+      "source": "Honda's small petrols and IMA hybrids - Jazz, Insight, CR-Z, City. Specified 0W-20, so no heavier alternative is offered."
+    },
+    {
+      "codes": ["C30A3", "C30A4", "C32B2", "C35A2", "C35A8", "JNC1"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "5W-30", "apiStandard": "SL/SM", "aceaStandard": null, "oemApproval": null, "capacityLiters": 5.2, "changeIntervalKm": 10000 },
+      "confidence": "low",
+      "source": "Honda's C-series V6 in the NSX and Legend, and the JNC1 3.5 in the Pilot. Larger sump than the fours."
+    },
+
+    {
+      "patterns": ["^8140\\.", "^DXi", "^ZD3"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "15W-40", "apiStandard": "CF/CI-4", "aceaStandard": "E7", "oemApproval": "Renault Trucks RLD", "capacityLiters": 7.0, "changeIntervalKm": 10000 },
+      "confidence": "low",
+      "source": "The Sofim 8140 fours in the Mascott and Messenger - the same family Iveco fits to the Daily - plus the DXi and the ZD3 2.5 dCi. All recorded as petrol. Commercial-duty 15W-40, which also suits Tunisian temperatures."
+    },
+
+    {
+      "codes": ["Z402", "Z 482", "Z482", "LGW 523", "LGW523"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "15W-40", "apiStandard": "CF", "aceaStandard": "B3/B4", "oemApproval": null, "capacityLiters": 1.8, "changeIntervalKm": 5000 },
+      "confidence": "low",
+      "source": "Kubota Z402 and Z482 and the Lombardini LGW523 in the Aixam microcars. Very small industrial diesels; the capacity is a family estimate, and the change interval is short because these run at near-constant load."
+    },
+    {
+      "codes": ["46 D", "AODA", "MEBA", "RHBA", "RQB", "X121E", "ZH18P", "ZSG416", "M62448S2", "N62 B48 B", "N62B44A"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "5W-40", "apiStandard": "SL/SN", "aceaStandard": "A3/B4", "oemApproval": null, "capacityLiters": 5.5, "changeIntervalKm": 10000 },
+      "confidence": "low",
+      "source": "Morgan fits other makers' engines: Ford's AODA 2.0 and MEBA 3.0 V6, and BMW's M62 and N62 V8. A 5W-40 full synthetic covers the range; the BMW V8s would normally take a BMW Longlife oil, which is not asserted here without a source."
+    },
+
+    {
+      "codes": ["D6AB", "D6CB", "D6CC"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "15W-40", "apiStandard": "CI-4", "aceaStandard": "E7", "oemApproval": null, "capacityLiters": 32.0, "changeIntervalKm": 20000 },
+      "confidence": "low",
+      "source": "Hyundai's 11-12.7 litre heavy truck diesels in the HD and Xcient. Heavy-duty grade and a very large sump; the capacity is a class figure, not a manual one."
+    },
+    {
+      "codes": ["D6EA", "D6EB"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "5W-30", "apiStandard": "CF", "aceaStandard": "C3", "oemApproval": "Low-SAPS (FAP/DPF)", "capacityLiters": 7.5, "changeIntervalKm": 15000 },
+      "confidence": "low",
+      "source": "Hyundai's 3.0 V6 CRDi in the ix55 / Veracruz. Particulate filter fitted."
+    },
+    {
+      "codes": ["G4LD", "G4FG", "G4KE", "G4KH", "G4NG", "OK280"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "5W-30", "apiStandard": "SM/SN", "aceaStandard": null, "oemApproval": null, "capacityLiters": 4.0, "changeIntervalKm": 10000 },
+      "confidence": "low",
+      "source": "Hyundai and Kia petrol codes the family table did not reach - Gamma G4FG and G4LD, Theta G4KE/G4KH, Nu G4NG. Same figures those families take elsewhere here."
+    }
+  ]
+}

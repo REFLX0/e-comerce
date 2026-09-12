@@ -1,0 +1,56 @@
+{
+  "makes": ["ROVER", "CHRYSLER", "DODGE", "PLYMOUTH"],
+  "note": "Two unrelated groups whose engine codes do not collide. Rover's range was half its own K-series petrol and half bought-in: Honda petrol fours in the 200/400/600, its own L-series 2.0 diesel, and a PSA XUD. The L-series and the XUD were both recorded as petrol. Chrysler, Dodge and Plymouth share one engine-code scheme, nearly all of it petrol; the exception is the VM Motori 2.5 turbo-diesel, which Dodge and Plymouth recorded as petrol while Chrysler had it right. Capacities are family figures unless stated otherwise.",
+  "engines": [
+    {
+      "patterns": ["^20 ?T", "^XUD"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "10W-40", "apiStandard": "CF", "aceaStandard": "B3/B4", "oemApproval": null, "capacityLiters": 5.7, "changeIntervalKm": 10000 },
+      "confidence": "low",
+      "source": "Rover's own L-series 2.0 diesel (20 T2N, 20 T2R, 20 T4G, 20 T4H) in the 200, 400, 600 and 25/45, and the PSA XUD 7TE in the earlier cars. Both recorded as petrol. Pre-common-rail with no particulate filter, so a conventional 10W-40 is correct."
+    },
+    {
+      "patterns": ["^\\d{2} ?K[24]"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "10W-40", "apiStandard": "SL", "aceaStandard": "A3/B4", "oemApproval": null, "capacityLiters": 4.5, "changeIntervalKm": 7500 },
+      "confidence": "low",
+      "source": "Rover K-series petrol (11 K2D, 14 K2A/K2D/K2F/K4F, 16 K4F, 18 K4F/K4K, 25 K4F) - Metro, 200, 25, 45, MGF. The head-gasket reputation of this engine makes the correct grade and a disciplined change interval worth respecting."
+    },
+    {
+      "patterns": ["^[DFH] ?\\d{2} ?[A-Z]", "^D16", "^BB$"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "10W-40", "apiStandard": "SL", "aceaStandard": "A3/B4", "oemApproval": null, "capacityLiters": 3.8, "changeIntervalKm": 7500 },
+      "confidence": "low",
+      "source": "The Honda petrol fours Rover fitted to the 200, 400 and 600 under licence (D 16 A8, D 16 Y2, D 16 Z2, D16B2, F 18 A3, F 20 Z1, F 20 Z2, H 23 A3). Same figures the Honda table gives them."
+    },
+
+    {
+      "codes": ["ENC", "425 CLIRS/X"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "15W-40", "apiStandard": "CF", "aceaStandard": "B3/B4", "oemApproval": null, "capacityLiters": 6.0, "changeIntervalKm": 7500 },
+      "confidence": "low",
+      "source": "The VM Motori 2.5 turbo-diesel in the Voyager and Cherokee. Chrysler had it recorded as diesel and Dodge and Plymouth as petrol - the same engine, three different answers."
+    },
+    {
+      "codes": ["ELF", "ELN", "EML", "ETB", "ETC", "EPD", "EWA", "EWZ"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "5W-30", "apiStandard": "SL/SM", "aceaStandard": "A3/B4", "oemApproval": null, "capacityLiters": 6.0, "changeIntervalKm": 10000 },
+      "confidence": "low",
+      "source": "Chrysler and Dodge V8 and V10 (5.2, 5.9 and 8.0) - Ram, Durango, Viper. Large sump."
+    },
+    {
+      "codes": ["EFA", "EGE", "EGG", "EGH", "EGP", "EER", "EHC", "F00", "F01", "R00", "L00", "H00", "B00", "C00", "625H"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "5W-30", "apiStandard": "SL/SM", "aceaStandard": "A3/B4", "oemApproval": null, "capacityLiters": 4.3, "changeIntervalKm": 10000 },
+      "confidence": "low",
+      "source": "Chrysler, Dodge and Plymouth V6 (2.5 to 3.9) - Voyager, Neon, Stratus, Sebring, Cherokee."
+    },
+    {
+      "codes": ["ECB", "ECC", "ECH", "EDZ", "EBD", "EEB", "420H", "420T", "420X"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "5W-30", "apiStandard": "SL", "aceaStandard": "A3/B4", "oemApproval": null, "capacityLiters": 4.3, "changeIntervalKm": 10000 },
+      "confidence": "low",
+      "source": "Chrysler, Dodge and Plymouth four-cylinder petrol (1.8 to 2.5) - Neon, Stratus, PT Cruiser, Voyager."
+    }
+  ]
+}

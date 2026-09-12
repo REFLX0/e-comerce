@@ -1,0 +1,55 @@
+{
+  "makes": ["MINELLI", "MITSUBISHI", "SUZUKI", "TOYOTA"],
+  "note": "The last real engine codes on a generated approval. All are descriptive names the family patterns could not key on - a code like \"2.4 DI-D (4N15)\" reduces to \"2.4\" under the base-code fallback - so they are listed exactly. Applied with --only-generic.",
+  "engines": [
+    {
+      "codes": ["2.4 DI-D (4N15)"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "5W-30", "apiStandard": "CF", "aceaStandard": "C3", "oemApproval": "Low-SAPS (FAP/DPF)", "capacityLiters": 5.5, "changeIntervalKm": 15000 },
+      "confidence": "low",
+      "source": "Mitsubishi 4N15 2.4 DI-D in the L200 and Pajero Sport, written out in full here. Same figures the Mitsubishi table gives the 4N1 family."
+    },
+    {
+      "codes": ["2.5 DI-D (4D56T)"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "15W-40", "apiStandard": "CF", "aceaStandard": "B3/B4", "oemApproval": null, "capacityLiters": 6.0, "changeIntervalKm": 7500 },
+      "confidence": "low",
+      "source": "Mitsubishi 4D56T 2.5 in the L200 and Pajero. Same figures the Mitsubishi table gives the 4D5 family."
+    },
+    {
+      "codes": ["2.0 D (WWA42_)", "2.2 D-4D 4WD"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "5W-30", "apiStandard": "CF", "aceaStandard": "C2/C3", "oemApproval": "Low-SAPS (DPF)", "capacityLiters": 6.1, "changeIntervalKm": 10000 },
+      "confidence": "low",
+      "source": "Toyota's 2.0 and 2.2 D-4D written as trim descriptions rather than engine codes. Same figures the Toyota table gives the AD-family."
+    },
+    {
+      "codes": ["1.6 DDiS", "Z 13 DTJ", "RHP"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "5W-30", "apiStandard": "SN/CF", "aceaStandard": "C2", "oemApproval": "Low-SAPS (FAP/DPF)", "capacityLiters": 4.0, "changeIntervalKm": 15000 },
+      "confidence": "low",
+      "source": "Suzuki's bought-in diesels written descriptively - the Fiat 1.6 Multijet, the 1.3 Multijet as Z13DTJ, and the PSA DW10 as RHP. Same figures the Suzuki table gives them."
+    },
+    {
+      "codes": ["1.4 Boosterjet"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "0W-20", "apiStandard": "SN", "aceaStandard": null, "oemApproval": "ILSAC GF-5", "capacityLiters": 3.1, "changeIntervalKm": 10000 },
+      "confidence": "low",
+      "source": "Suzuki's K14C Boosterjet written as a marketing name. Specified 0W-20, so no heavier alternative is offered."
+    },
+    {
+      "codes": ["1.6 VVT", "G13A", "J15"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "10W-40", "apiStandard": "SL", "aceaStandard": "A3/B4", "oemApproval": null, "capacityLiters": 3.5, "changeIntervalKm": 7500 },
+      "confidence": "low",
+      "source": "Suzuki's older petrols - the M16A written as \"1.6 VVT\", the G13A, and the J15. Conventional grade suited to hot climates."
+    },
+    {
+      "codes": ["18 K4F"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "10W-40", "apiStandard": "SL", "aceaStandard": "A3/B4", "oemApproval": null, "capacityLiters": 4.5, "changeIntervalKm": 7500 },
+      "confidence": "low",
+      "source": "The Rover K-series 1.8 in the Minelli Tf, a Rover-based kit car. Same figures the Rover table gives it."
+    }
+  ]
+}

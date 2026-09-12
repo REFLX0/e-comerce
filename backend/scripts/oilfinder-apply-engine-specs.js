@@ -19,6 +19,16 @@ const { PrismaClient } = require('@prisma/client');
 
 const TABLE = process.argv[2];
 const APPLY = process.argv.includes('--apply');
+/**
+ * Only rewrite engines that are currently on a generated approval, leaving any
+ * engine that already carries a real one alone. Needed for tables that match by
+ * family: the Chrysler rule reaches 180 engines, but 21 of those already carry
+ * DaimlerChrysler MS-6395, which is more specific than anything the table can
+ * offer, and rewriting them would be a regression.
+ */
+const ONLY_GENERIC = process.argv.includes('--only-generic');
+const GENERIC_APPROVAL = /Asian OEM|Universal |MB Sheet 229\.1 or/i;
+const isGenericSpec = (s) => !s || !s.oemApproval || GENERIC_APPROVAL.test(s.oemApproval);
 const CATALOG = '/app/oil-finder-full-dataset/clean-catalog-hierarchy.json';
 
 if (!TABLE || TABLE.startsWith('--')) {
@@ -88,7 +98,7 @@ async function main() {
   console.log(`${table.engines.length} spec entries: ${byCode.size} exact codes, ${patterns.length} family patterns for ${MAKE}\n`);
 
   const prisma = new PrismaClient();
-  const report = { catalogEngines: 0, catalogFuel: 0, dbRows: 0, dbFuel: 0, unmatched: new Map() };
+  const report = { catalogEngines: 0, catalogFuel: 0, dbRows: 0, dbFuel: 0, keptSpecific: 0, unmatched: new Map() };
 
   // ── catalogue ──────────────────────────────────────────────────────────────
   const catalog = JSON.parse(fs.readFileSync(CATALOG, 'utf8'));
@@ -103,6 +113,7 @@ async function main() {
             report.unmatched.set(k, (report.unmatched.get(k) || 0) + 1);
             continue;
           }
+          if (ONLY_GENERIC && !isGenericSpec(eng.oilSpec)) { report.keptSpecific++; continue; }
           report.catalogEngines++;
           if (entry.fuelType && eng.fuelType !== entry.fuelType) report.catalogFuel++;
           if (APPLY) {
@@ -121,7 +132,7 @@ async function main() {
   // ── database ───────────────────────────────────────────────────────────────
   const rows = await prisma.oilFinderVehicle.findMany({
     where: { OR: MAKES.map((m) => ({ make: { equals: m, mode: 'insensitive' } })) },
-    select: { id: true, engineCode: true, fuelType: true, model: true },
+    select: { id: true, engineCode: true, fuelType: true, model: true, oilSpec: true },
   });
 
   // Resolve each distinct spec once, then point rows at it.
@@ -130,6 +141,7 @@ async function main() {
   for (const r of rows) {
     const entry = lookup(byCode, r.engineCode, patterns);
     if (!entry) continue;
+    if (ONLY_GENERIC && !isGenericSpec(r.oilSpec)) { report.keptSpecific++; continue; }
     plan.push({ row: r, entry });
   }
   report.dbRows = plan.length;
@@ -137,6 +149,7 @@ async function main() {
 
   console.log(`Catalogue engines matched: ${report.catalogEngines} (fuelType corrections: ${report.catalogFuel})`);
   console.log(`OilFinderVehicle rows matched: ${report.dbRows} (fuelType corrections: ${report.dbFuel})`);
+  if (ONLY_GENERIC) console.log(`left alone, already on a real approval: ${report.keptSpecific}`);
   console.log(`\nCatalogue engine codes with NO entry in the table: ${report.unmatched.size}`);
   const unmatched = [...report.unmatched.entries()].sort((a, b) => b[1] - a[1]);
   console.log('  ' + unmatched.slice(0, 30).map(([c, n]) => `${c}(${n})`).join(', '));
@@ -206,11 +219,12 @@ async function main() {
         },
       },
     },
-    select: { id: true, engineCode: true },
+    select: { id: true, engineCode: true, oilSpec: true },
   });
   for (const e of dbEngines) {
     const entry = lookup(byCode, e.engineCode, patterns);
     if (!entry) continue;
+    if (ONLY_GENERIC && !isGenericSpec(e.oilSpec)) continue;
     const specId = await resolveSpecId(entry);
     await prisma.vehicleEngine.update({
       where: { id: e.id },

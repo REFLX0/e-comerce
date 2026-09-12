@@ -1,0 +1,127 @@
+{
+  "makes": ["MITSUBISHI", "SUZUKI", "PIAGGIO"],
+  "note": "Three makes whose remaining generic entries are mostly engines they bought from somebody else, and which were recorded as petrol. Mitsubishi fitted Renault, VW, PSA, Hyundai and Mercedes diesels across the Carisma, Lancer, Outlander, Pajero and Colt; Suzuki fitted Fiat, PSA and Renault diesels across the Swift, SX4, Vitara and Jimny; Piaggio fits Lombardini diesels to the Porter. Each is given its originator's specification, because that is whose engine it is. Exact codes only, so nothing the existing per-make tables already resolve can be caught by a loose pattern.",
+  "engines": [
+    {
+      "codes": ["F8QT", "F9Q1", "F9Q2"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "5W-40", "apiStandard": "SL/CF", "aceaStandard": "A3/B4", "oemApproval": "Renault RN0710", "capacityLiters": 4.8, "changeIntervalKm": 10000 },
+      "confidence": "low",
+      "source": "Renault's F8Q and F9Q 1.9 diesels, fitted to the Mitsubishi Carisma and Space Star. Same figures the Renault table gives them."
+    },
+    {
+      "codes": ["BKD", "BSY", "BWC"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "5W-40", "apiStandard": "CF", "aceaStandard": "B4", "oemApproval": "VW 505.01 (Pompe-Injecteur / PD)", "capacityLiters": 4.3, "changeIntervalKm": 15000 },
+      "confidence": "low",
+      "source": "VW's 2.0 TDI Pumpe-Duese, fitted to the Mitsubishi Lancer as the 2.0 DI-D. These are unit-injector engines and need VW 505.01 specifically - the same requirement the VW group table documents, and the reason 505.00 is not enough."
+    },
+    {
+      "codes": ["4HK", "4HN"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "5W-30", "apiStandard": "SN/CF", "aceaStandard": "C2", "oemApproval": "PSA B71 2290", "capacityLiters": 5.75, "changeIntervalKm": 20000 },
+      "confidence": "low",
+      "source": "PSA's DW12 2.2 HDi, fitted to the Mitsubishi Outlander as the 2.2 DI-D. Particulate filter fitted."
+    },
+    {
+      "codes": ["9HD"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "5W-30", "apiStandard": "SN/CF", "aceaStandard": "C2", "oemApproval": "PSA B71 2290", "capacityLiters": 3.75, "changeIntervalKm": 20000 },
+      "confidence": "low",
+      "source": "PSA's DV6 1.6 HDi, fitted to the Mitsubishi ASX as the 1.6 DI-D."
+    },
+    {
+      "codes": ["OM 639.939", "OM639.939"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "5W-30", "apiStandard": "CF", "aceaStandard": "C3", "oemApproval": "MB 229.51", "capacityLiters": 4.5, "changeIntervalKm": 15000 },
+      "confidence": "low",
+      "source": "Mercedes OM639 1.5 CDI, fitted to the Mitsubishi Colt CZ as the 1.5 DI-D."
+    },
+    {
+      "codes": ["D4BF", "D4BH"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "15W-40", "apiStandard": "CF", "aceaStandard": "B3/B4", "oemApproval": null, "capacityLiters": 7.0, "changeIntervalKm": 7500 },
+      "confidence": "low",
+      "source": "Hyundai's D4B 2.5 TCi, which also appears under Mitsubishi. Same figures the Hyundai/Kia table gives it: indirect injection, no particulate filter, conventional 15W-40."
+    },
+    {
+      "codes": ["3A90", "3A91", "3A92", "4B40", "4B11", "4B12"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "5W-30", "apiStandard": "SM/SN", "aceaStandard": null, "oemApproval": null, "capacityLiters": 4.0, "changeIntervalKm": 10000 },
+      "confidence": "low",
+      "source": "Mitsubishi's 3A9 1.0-1.2 three-cylinder (Colt, Mirage, Space Star) and 4B4 1.5."
+    },
+    {
+      "codes": ["6A12", "6A13", "6G7", "G6AT", "8A80"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "5W-30", "apiStandard": "SL/SM", "aceaStandard": "A3/B4", "oemApproval": null, "capacityLiters": 4.5, "changeIntervalKm": 10000 },
+      "confidence": "low",
+      "source": "Mitsubishi V6 (6A12 2.0, 6A13 2.5) and the larger units - Galant, Sigma, Diamante."
+    },
+    {
+      "codes": ["G15B", "G37B", "G63B", "G64B", "4G", "S61", "Y61", "Y4F1", "4HK1"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "10W-40", "apiStandard": "SL", "aceaStandard": "A3/B4", "oemApproval": null, "capacityLiters": 4.0, "changeIntervalKm": 7500 },
+      "confidence": "low",
+      "source": "Mitsubishi's older Orion and Sirius petrol fours (G15B 1.5, G37B 1.8, G63B 2.0, G64B 2.4) - Lancer, Galant, Space Wagon, Pajero."
+    },
+
+    {
+      "codes": ["D16AA", "D20AA"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "5W-30", "apiStandard": "SN/CF", "aceaStandard": "C2", "oemApproval": "Low-SAPS (FAP/DPF)", "capacityLiters": 4.5, "changeIntervalKm": 15000 },
+      "confidence": "low",
+      "source": "Fiat's 1.6 and 2.0 Multijet, fitted to the Suzuki SX4 S-Cross and Vitara as the DDiS. Particulate filter fitted."
+    },
+    {
+      "codes": ["D19AA", "RF"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "5W-40", "apiStandard": "CF", "aceaStandard": "A3/B4", "oemApproval": null, "capacityLiters": 4.8, "changeIntervalKm": 10000 },
+      "confidence": "low",
+      "source": "Fiat's 1.9 JTD in the Suzuki SX4 1.9 DDiS, and the Mazda RF 2.0 diesel Suzuki also used. Pre-particulate-filter."
+    },
+    {
+      "codes": ["8HY", "9HX"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "5W-30", "apiStandard": "SN/CF", "aceaStandard": "C2", "oemApproval": "PSA B71 2290", "capacityLiters": 3.75, "changeIntervalKm": 20000 },
+      "confidence": "low",
+      "source": "PSA's DV4 1.4 and DV6 1.6 HDi, fitted to the Suzuki Liana and Swift as the DDiS."
+    },
+    {
+      "codes": ["K9K 266", "K9K 700"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "5W-30", "apiStandard": "SM/CF", "aceaStandard": "C4", "oemApproval": "Renault RN0720", "capacityLiters": 4.5, "changeIntervalKm": 15000 },
+      "confidence": "low",
+      "source": "Renault's K9K 1.5 dCi, fitted to the Suzuki Jimny and Grand Vitara. Same figures the alliance table gives it."
+    },
+    {
+      "codes": ["Z 10 XEP", "Z 12 XEP", "Z10XEP", "Z12XEP"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "5W-30", "apiStandard": "SL/SM", "aceaStandard": "A3/B4", "oemApproval": "GM-LL-A-025", "capacityLiters": 3.5, "changeIntervalKm": 10000 },
+      "confidence": "low",
+      "source": "GM's Z10XEP 1.0 and Z12XEP 1.2, fitted to the Suzuki Agila / Opel Agila twins."
+    },
+    {
+      "codes": ["H 20 A", "H 25 A", "H 27 A", "H20A", "H25A", "H27A", "N32A"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "5W-30", "apiStandard": "SL", "aceaStandard": "A3/B4", "oemApproval": null, "capacityLiters": 4.5, "changeIntervalKm": 10000 },
+      "confidence": "low",
+      "source": "Suzuki's H-series and N32A V6 - Grand Vitara, XL-7. Same figures the Suzuki table gives them."
+    },
+
+    {
+      "patterns": ["^LD[AW]"],
+      "fuelType": "diesel",
+      "spec": { "viscosity": "15W-40", "apiStandard": "CF", "aceaStandard": "B3/B4", "oemApproval": "Lombardini (diesel)", "capacityLiters": 2.8, "changeIntervalKm": 7500 },
+      "confidence": "low",
+      "source": "Lombardini LDW702, LDW1204, LDW1404 and LDA422 diesels in the Piaggio Porter and Ape. Small industrial units; recorded as petrol. Capacity is a family estimate."
+    },
+    {
+      "codes": ["CB41", "CB42", "DA471QLR", "HCEL", "G 435 A", "TL3T"],
+      "fuelType": "essence",
+      "spec": { "viscosity": "10W-40", "apiStandard": "SL", "aceaStandard": "A3/B4", "oemApproval": null, "capacityLiters": 3.0, "changeIntervalKm": 7500 },
+      "confidence": "low",
+      "source": "The petrol engines in the Piaggio Porter and Ape - Daihatsu-derived CB41/CB42 1.0 and HCEL 1.3, and the Chinese DA471QLR 1.3. Small sump; capacity is a family estimate."
+    }
+  ]
+}
