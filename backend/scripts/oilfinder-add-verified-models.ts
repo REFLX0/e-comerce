@@ -287,6 +287,21 @@ async function updateCleanCatalog(models: ModelInput[]): Promise<{ added: number
   // model that only existed in the DB would silently vanish from the dropdown
   // (that is how Changan's Hunter/Kaicene and Haval's H2 disappeared). Carry
   // those across for every make touched here.
+  // make|model -> category, from the rows that actually describe these vehicles.
+  const categoryRows = await prisma.oilFinderVehicle.findMany({
+    select: { make: true, model: true, category: true },
+    distinct: ['make', 'model', 'category'],
+  });
+  const categoryByModel = new Map<string, string>();
+  for (const r of categoryRows) {
+    const key = `${slugify(r.make)}|${slugify(r.model)}`;
+    // A non-automobile category is the informative one: where a make has both,
+    // the row that says "moto" is the one worth carrying.
+    if (r.category && (r.category !== 'automobile' || !categoryByModel.has(key))) {
+      categoryByModel.set(key, r.category === 'poids-lourd' ? 'poids_lourd' : r.category);
+    }
+  }
+
   let carried = 0;
   for (const makeName of new Set(models.map((m) => m.make))) {
     const makeKey = findMakeKey(catalog, makeName);
@@ -341,10 +356,16 @@ async function updateCleanCatalog(models: ModelInput[]): Promise<{ added: number
       }
       if (!Object.keys(generations).length) continue;
 
+      // Carry the model's real category across. Hardcoding 'automobile' here put
+      // Suzuki's GSX-S750, Hayabusa, Burgman and V-Strom into the car catalogue,
+      // where their entries then outranked the researched motorcycle specs and a
+      // wet-clutch bike was offered a 5W-30 car oil.
+      const carriedCategory =
+        categoryByModel.get(`${slugify(makeName)}|${slugify(dbModel.name)}`) || 'automobile';
       makeNode.models[slug] = {
         modelName: dbModel.name,
         modelSlug: slug,
-        category: 'automobile',
+        category: carriedCategory,
         generations,
       };
       carried++;
