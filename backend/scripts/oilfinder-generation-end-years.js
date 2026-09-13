@@ -188,6 +188,28 @@ const RESEARCHED = [
   ['SKODA', 'Rapid Spaceback', 'Rapid Spaceback (NH1)', 2019, 'European Rapid Spaceback ended 2019, replaced by the Scala'],
 
   ['CITROËN', 'C4 Grand Picasso', 'C4 Grand Picasso II', 2018, 'renamed Grand C4 SpaceTourer in 2018, which the catalogue holds as a separate model from 2018'],
+
+  // -- sixth batch, from a scan for rows whose engines disagree with their label --
+
+  // The Jumper is the Boxer under another badge and behaves identically. Its
+  // unqualified "Jumper Box" and "Jumper Bus" rows carry 16 and 14 engines
+  // including AHM/AHN/AHP and the Iveco F1C, so they span both generations and
+  // stay open. The rows that name the 244 hold four and five engines, nothing
+  // later than that era, and close with it.
+  ['CITROËN', 'Jumper Box', 'Jumper Box (244)', 2006, 'Jumper 244 2002-2006, replaced by the Ducato-platform 250'],
+  ['CITROËN', 'Jumper Bus', 'Jumper Bus (244, Z_)', 2006, 'Jumper 244 2002-2006'],
+
+  // The Doblo 263 looked like the same defect from the spread of its engine
+  // dates, and is not: every code in it is a Fiat internal number of its own era
+  // and none belongs to the Stellantis Doblo III, which the catalogue already
+  // carries separately from 2022. A real generation boundary, just undated.
+  ['FIAT', 'Doblo', 'Doblo Box Body / Estate (263_)', 2022, 'Doblo 263 2010-2022, replaced by the Stellantis Doblo III'],
+  ['FIAT', 'Doblo', 'Doblo Kombi (263_)', 2022, 'Doblo 263 2010-2022'],
+  ['FIAT', 'Doblo', 'Doblo Platform/Chassis (263_)', 2022, 'Doblo 263 2010-2022'],
+  ['FIAT', 'Doblo Box Body / Estate', 'Doblo Box Body / Estate (263_)', 2022, 'Doblo 263 2010-2022'],
+  ['FIAT', 'Doblo Box Body /', 'Doblo Box Body / Estate (263_)', 2022, 'Doblo 263 2010-2022'],
+  ['FIAT', 'Doblo Kombi', 'Doblo Kombi (263_)', 2022, 'Doblo 263 2010-2022'],
+  ['FIAT', 'Doblo Platform/Chassis', 'Doblo Platform/Chassis (263_)', 2022, 'Doblo 263 2010-2022'],
 ];
 
 const key = (s) => String(s || '').toUpperCase().replace(/\s+/g, ' ').trim();
