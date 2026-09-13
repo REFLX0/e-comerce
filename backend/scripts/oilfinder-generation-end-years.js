@@ -75,6 +75,49 @@ const RESEARCHED = [
   ['FORD', 'Focus', 'Focus IV', 2025, 'last Focus built at Saarlouis 14 November 2025; no successor assigned'],
   ['FORD', 'Focus Iv Turnier', 'Focus Iv Turnier', 2025, 'last Focus built at Saarlouis 14 November 2025; no successor assigned'],
   ['FORD', 'Ranger', 'Ranger (TKE)', 2022, 'Ranger T6 2011-2022, T6.2 revealed late 2021 for 2022'],
+
+  // -- second batch --
+  ['VW', 'Golf', 'Golf VI Convertible (517)', 2016, 'Golf VI Cabriolet 2011-2016 per VW own history; the open-top Golf was then discontinued, and the Mk7 hatchback launch in 2012 is not its successor'],
+  ['VW', 'Golf Vi Convertible', 'Golf Vi Convertible (517)', 2016, 'Golf VI Cabriolet 2011-2016, discontinued with no successor'],
+
+  ['KIA', 'Picanto', 'Picanto (SA)', 2011, 'Picanto SA 2004-2011, replaced by the TA'],
+  ['KIA', 'Picanto', 'Picanto (TA)', 2017, 'Picanto TA 2011-2017, replaced by the JA'],
+  ['KIA', 'Rio', 'Rio II (JB)', 2011, 'Rio JB 2005-2011, replaced by the UB'],
+  ['KIA', 'Rio', 'Rio III (UB)', 2017, 'Rio UB 2011-2017, replaced by the YB'],
+  ['KIA', 'Rio Ii Saloon', 'Rio Ii Saloon (JB)', 2011, 'Rio JB 2005-2011'],
+  ['KIA', 'Rio Iii Saloon', 'Rio Iii Saloon (UB)', 2017, 'Rio UB 2011-2017'],
+  ['KIA', 'Sportage', 'Sportage (JE_, KM_)', 2010, 'Sportage JE/KM 2004-2010, replaced by the SL'],
+  // The QL was launched in 2015, but the SL sold on into 2016 and TecDoc's own
+  // 31 vehicles for it run to 2016. Where a successor's launch and a production
+  // record disagree by a year, the later one wins: an overlap lists a car twice,
+  // a short range tells its owner the car is not covered.
+  ['KIA', 'Sportage', 'Sportage (SL)', 2016, 'Sportage SL 2010-2016; QL launched 2015 and the two overlapped'],
+  ['KIA', 'Sportage', 'Sportage (QL, QLE)', 2021, 'Sportage QL 2015-2021, replaced by the NQ5'],
+
+  ['SUZUKI', 'Swift', 'Swift V (AZ)', 2024, 'Swift AZ 2017-2024, all-new generation on sale April 2024'],
+
+  ['NISSAN', 'Micra', 'Micra V (K14)', 2023, 'K14 combustion production ended January 2023 at Flins; the next Micra is an unrelated EV'],
+  ['NISSAN', 'Micra', 'Micra V (K14) (2017 - Présent)', 2023, 'K14 combustion production ended January 2023 at Flins'],
+
+  // -- third batch: the vans, where the body-style split is heaviest --
+  ['NISSAN', 'Qashqai Ii Closed Off-Road Vehicle', 'Qashqai Ii Closed Off-Road Vehicle (J11, J11_)', 2021,
+    'Qashqai J11 2013-2021, replaced by the J12 in February 2021'],
+
+  ['IVECO', 'Daily Line', 'Daily Line Bus', 2025,
+    'the 2014 Daily ran to late 2025 through the 2016, 2019, 2022 and MY24 updates; 2016 is a refresh year, not a new generation'],
+  ['IVECO', 'Daily Tourys', 'Daily Tourys Bus', 2025,
+    'the 2014 Daily ran to late 2025 through its mid-cycle updates'],
+
+  // The Transit Custom and the Transit Courier each have their own generation
+  // cycle, separate from the big Transit, which has run unbroken since 2013 and
+  // is deliberately left open.
+  ['FORD', 'Transit Custom', 'Transit Custom Box', 2023, 'Transit Custom I 2012-2023, all-new generation launched in Europe Q4 2023'],
+  ['FORD', 'Transit Custom Box', 'Transit Custom Box', 2023, 'Transit Custom I 2012-2023'],
+  ['FORD', 'Transit Custom Bus', 'Transit Custom Bus', 2023, 'Transit Custom I 2012-2023'],
+  ['FORD', 'Transit Courier', 'Transit Courier Box', 2023,
+    'Transit Courier I 2014-2023, second generation into production at Craiova in 2023; the "Courier discontinued" reports are North America only'],
+  ['FORD', 'Transit Courier Box', 'Transit Courier Box', 2023, 'Transit Courier I 2014-2023'],
+  ['FORD', 'Transit Courier Kombi', 'Transit Courier Kombi', 2023, 'Transit Courier I 2014-2023'],
 ];
 
 const key = (s) => String(s || '').toUpperCase().replace(/\s+/g, ' ').trim();
