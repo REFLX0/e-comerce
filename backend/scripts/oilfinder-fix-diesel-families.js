@@ -64,7 +64,7 @@ const EXPLICIT = [
   { make: 'FORD', codes: ['4EB', '4EC', 'P7PA', 'P7PB', 'R2PA', 'FMBA', 'RTJ', 'RTK', 'WL'], fuelType: 'diesel' },
   { make: 'MAZDA', codes: ['WL', 'RTJ', 'RTK'], fuelType: 'diesel' },
   // Volvo names diesels D and petrols B, so the prefix settles both directions.
-  { make: 'VOLVO', codes: ['D 24', 'D 4204 T', 'D 5244 T9'], fuelType: 'diesel' },
+  { make: 'VOLVO', codes: ['D 24', 'D 4204 T', 'D 5244 T9', 'D 5244 T17'], fuelType: 'diesel' },
   { make: 'VOLVO', codes: ['B 4164 T', 'B 4164 T3'], fuelType: 'essence' },
   { make: 'NISSAN', codes: ['BD-30TI'], fuelType: 'diesel' },
   // GM's 2.0 VCDi and the Captiva diesel.

@@ -26,6 +26,15 @@ const { PrismaClient } = require('@prisma/client');
 
 const APPLY = process.argv.includes('--apply');
 const VERBOSE = process.argv.includes('--list');
+/**
+ * Accept a verdict for the whole engine code when TecDoc gives no displacement
+ * to match on. Only for a code TecDoc is unanimous about across at least three
+ * vehicles — enough that a single mis-filed entry cannot carry it. Needed for
+ * the Fiat internal type numbers on the Ducato ("230 A2.000", "280 A1.000"),
+ * whose rows in the catalogue carry no displacement at all.
+ */
+const LOOSE = process.argv.includes('--loose');
+const LOOSE_MIN_VOTES = 3;
 const CATALOG = '/app/oil-finder-full-dataset/clean-catalog-hierarchy.json';
 const SNAPSHOT = `/app/fuel-from-tecdoc-snapshot-${Date.now()}.json`;
 
@@ -103,15 +112,23 @@ async function main() {
     // Without a displacement there is nothing to match on, and a bare code is
     // shared across fuels often enough that the vote would be meaningless:
     // TecDoc files "1Y" against both a 1.9 D and a 1.6 petrol.
-    if (cc == null) return undefined;
+    if (cc == null && !LOOSE) return undefined;
     const m = seen.get(base(code));
     if (!m) return undefined;
     const votes = new Map();
     for (const [k, n] of m) {
       const [ccStr, fuel] = k.split('|');
       if (ccStr === 'x') continue;
-      if (!ccMatches(cc, Number(ccStr))) continue;
+      if (cc == null || !ccMatches(cc, Number(ccStr))) continue;
       votes.set(fuel, (votes.get(fuel) || 0) + n);
+    }
+    if (!votes.size && LOOSE) {
+      // Nothing at this displacement: fall back to the code as a whole.
+      for (const [k, n] of m) {
+        const fuel = k.split('|')[1];
+        votes.set(fuel, (votes.get(fuel) || 0) + n);
+      }
+      if (votes.size !== 1 || [...votes.values()][0] < LOOSE_MIN_VOTES) return undefined;
     }
     if (!votes.size) return undefined;
     if (votes.size > 1) {
