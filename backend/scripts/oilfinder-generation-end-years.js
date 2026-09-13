@@ -167,6 +167,27 @@ const RESEARCHED = [
   ['RENAULT', 'Modus / Grand Modus', 'Modus / Grand Modus (F/JP0_)', 2012, 'Modus 2004-2012; Renault left the mini-MPV segment, the Captur is a crossover and not a direct successor'],
 
   ['FIAT', 'Punto', 'Punto (199_)', 2018, 'Punto taken off sale 2018 after 13 years, no successor built'],
+
+  // -- fifth batch: the three held-back items, each resolved from evidence --
+
+  // Only the rows that name the 244 generation are closed. The unqualified
+  // "Boxer Box", "Boxer Bus" and "Boxer Platform/Chassis" rows carry 16-18
+  // engines against these five or six, and the extras are AHM/AHN/AHP — the
+  // DW10 with a particulate filter — and the Iveco F1C 3.0 litre, none of which
+  // existed in 2002. Those rows span both generations and stay open; closing
+  // them at 2006 would remove every Boxer built since from the plain label.
+  ['PEUGEOT', 'Boxer Box', 'Boxer Box (244)', 2006, 'Boxer 244 2002-2006, replaced by the Ducato-platform 250'],
+  ['PEUGEOT', 'Boxer Bus', 'Boxer Bus (244, Z_)', 2006, 'Boxer 244 2002-2006'],
+  ['PEUGEOT', 'Boxer Platform/Chassis', 'Boxer Platform/Chassis (244)', 2006, 'Boxer 244 2002-2006'],
+
+  // Tunisia's Rapids came through Ennakl Automobiles, Skoda's official importer
+  // and part of VW Group distribution, not the Russian or Indian lines — and
+  // Ennakl's own range says the Scala replaced the Rapid Spaceback. So the
+  // European end date is the one that applies here.
+  ['SKODA', 'Rapid', 'Rapid (NH3)', 2019, 'European Rapid ended 2019, replaced by the Scala; Tunisia was supplied by Ennakl from the European line'],
+  ['SKODA', 'Rapid Spaceback', 'Rapid Spaceback (NH1)', 2019, 'European Rapid Spaceback ended 2019, replaced by the Scala'],
+
+  ['CITROËN', 'C4 Grand Picasso', 'C4 Grand Picasso II', 2018, 'renamed Grand C4 SpaceTourer in 2018, which the catalogue holds as a separate model from 2018'],
 ];
 
 const key = (s) => String(s || '').toUpperCase().replace(/\s+/g, ' ').trim();
