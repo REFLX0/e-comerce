@@ -118,6 +118,55 @@ const RESEARCHED = [
     'Transit Courier I 2014-2023, second generation into production at Craiova in 2023; the "Courier discontinued" reports are North America only'],
   ['FORD', 'Transit Courier Box', 'Transit Courier Box', 2023, 'Transit Courier I 2014-2023'],
   ['FORD', 'Transit Courier Kombi', 'Transit Courier Kombi', 2023, 'Transit Courier I 2014-2023'],
+
+  // -- fourth batch, worked in order of how many engines sit behind each row --
+  ['SEAT', 'Leon', 'Leon (5F1)', 2020, 'Leon III 2012-2020'],
+  ['SEAT', 'Leon St', 'Leon St (5F8)', 2020, 'Leon III 2012-2020'],
+  ['SEAT', 'Leon Sc', 'Leon Sc (5F5)', 2020, 'Leon III 2012-2020'],
+
+  ['VW', 'Beetle', 'Beetle (5C1, 5C2)', 2019, 'last Beetle built July 2019; VW retired the nameplate entirely'],
+  ['VW', 'Beetle Convertible', 'Beetle Convertible (5C7, 5C8)', 2019, 'last Beetle built July 2019, no successor'],
+  ['VW', 'Passat', 'Passat (3G2)', 2023, 'Passat B8 2014-2023'],
+  ['VW', 'Passat Variant', 'Passat Variant (3G5)', 2023, 'Passat B8 2014-2023'],
+  ['VW', 'Touareg', 'Touareg (7P5, 7P6)', 2018, 'Touareg II 2010-2018, replaced by the Touareg III'],
+  ['VW', 'Sharan', 'Sharan (7N1, 7N2)', 2022, 'Sharan II 2010-2022; VW left the minivan segment, no successor'],
+  ['VW', 'Caddy Iv Box', 'Caddy Iv Box (SAA, SAH)', 2020, 'Caddy IV 2015-2020, fifth generation revealed February 2020'],
+  ['VW', 'Caddy Iv Estate', 'Caddy Iv Estate (SAB, SAJ)', 2020, 'Caddy IV 2015-2020'],
+
+  ['FORD', 'C-Max', 'C-Max II (DXA/CB7, DXA/CEU)', 2019, 'C-Max II ended at Saarlouis June 2019, no successor'],
+  ['FORD', 'Grand C-Max', 'Grand C-Max (DXA/CB7, DXA/CEU)', 2019, 'Grand C-Max ended June 2019, no successor'],
+  ['FORD', 'Mondeo', 'Mondeo V Hatchback', 2022, 'European Mondeo production ended March 2022, no EU successor'],
+  ['FORD', 'Mondeo V Hatchback', 'Mondeo V Hatchback', 2022, 'European Mondeo production ended March 2022'],
+  ['FORD', 'Mondeo V Saloon', 'Mondeo V Saloon', 2022, 'European Mondeo production ended March 2022'],
+  ['FORD', 'Mondeo V Turnier', 'Mondeo V Turnier', 2022, 'European Mondeo production ended March 2022'],
+  ['FORD', 'Kuga', 'Kuga II (DM2)', 2019, 'Kuga II 2013-2019, Kuga III debuted April 2019'],
+
+  ['CITROËN', 'C5', 'C5 III (RD_)', 2017, 'C5 III 2008-2017; the C5 X and C5 Aircross are a different body segment, not a direct successor'],
+  ['CITROËN', 'C5', 'C5 III Break (RW_)', 2017, 'C5 III 2008-2017'],
+  ['CITROËN', 'C5 Iii Break', 'C5 Iii Break (RW_)', 2017, 'C5 III 2008-2017'],
+  // A rename rather than a new generation - the car became the C4 SpaceTourer in
+  // early 2018 - but the catalogue already carries C4 Spacetourer as its own
+  // model from 2018, so closing this one here keeps the two consistent instead
+  // of listing the same car twice from 2018 on.
+  ['CITROËN', 'C4 Picasso', 'C4 Picasso II', 2018, 'renamed C4 SpaceTourer in early 2018, which the catalogue holds as a separate model'],
+
+  ['RENAULT', 'ScÉNic', 'ScÉNic III (JZ0/1_)', 2016, 'Scenic III 2009-2016'],
+  ['RENAULT', 'Grand ScÉNic', 'Grand ScÉNic III (JZ0/1_)', 2016, 'Grand Scenic III 2009-2016'],
+  ['RENAULT', 'Kangoo', 'Kangoo / Grand Kangoo (KW0/1_)', 2021, 'Kangoo II 2008-2021, Kangoo III presented November 2020'],
+  ['RENAULT', 'Kangoo / Grand Kangoo', 'Kangoo / Grand Kangoo (KW0/1_)', 2021, 'Kangoo II 2008-2021'],
+  ['RENAULT', 'Master', 'Master III Box (FV)', 2024, 'Batilly halted Master III production August 2024, replaced by Master IV'],
+  ['RENAULT', 'Master', 'Master III Platform/Chassis (EV, HV, UV)', 2024, 'Master III ended August 2024'],
+  ['RENAULT', 'Master Iii Box', 'Master Iii Box (FV)', 2024, 'Master III ended August 2024'],
+  ['RENAULT', 'Master Iii Platform/Chassis', 'Master Iii Platform/Chassis (EV, HV, UV)', 2024, 'Master III ended August 2024'],
+  // The row the file's "successor starts 2011" hint was pointing at. It is the
+  // Master III bus body arriving a year after the van, not a new generation, and
+  // its own name says Master III — so the same August 2024 end applies. Naming
+  // the generation is what makes this a match rather than an inference from a
+  // sibling row.
+  ['RENAULT', 'Master', 'Master III Bus (JV)', 2024, 'Master III ended August 2024; the bus body launched a year after the van'],
+  ['RENAULT', 'Modus / Grand Modus', 'Modus / Grand Modus (F/JP0_)', 2012, 'Modus 2004-2012; Renault left the mini-MPV segment, the Captur is a crossover and not a direct successor'],
+
+  ['FIAT', 'Punto', 'Punto (199_)', 2018, 'Punto taken off sale 2018 after 13 years, no successor built'],
 ];
 
 const key = (s) => String(s || '').toUpperCase().replace(/\s+/g, ' ').trim();
