@@ -54,9 +54,18 @@ const pickSpec = (s) => {
 const specKey = (s) => SPEC_FIELDS.map((k) => s?.[k] ?? '-').join('|');
 const completeness = (s) => SPEC_FIELDS.filter((k) => s?.[k] != null && s[k] !== '').length;
 
-const base = (c) => String(c || '').trim().toUpperCase().replace(/\s*\([^)]*\)\s*$/, '').trim();
+/**
+ * The qualifier after an engine code is not noise, it is the variant, and the
+ * variant is often what decides the oil: PSA writes the same RHZ five ways on a
+ * Jumpy — RHZ (DW10ATED) has no particulate filter and takes a full-SAPS
+ * 40-weight, RHZ (DW10CTED) has one and must have a low-SAPS 30-weight. Toyota's
+ * "2ZR-FE (SC)" is supercharged where the plain 2ZR-FE is not. So grouping is on
+ * the code exactly as written: collapsing the qualifier here would harmonise
+ * variants that genuinely differ onto one answer.
+ */
+const norm = (c) => String(c || '').toUpperCase().replace(/\s+/g, ' ').trim();
 const groupKey = (make, code, cc) =>
-  `${String(make || '').toUpperCase()}|${base(code)}|${cc ?? '?'}`;
+  `${String(make || '').toUpperCase()}|${norm(code)}|${cc ?? '?'}`;
 
 const slugify = (t) => (t || '').toLowerCase().normalize('NFD')
   .replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
