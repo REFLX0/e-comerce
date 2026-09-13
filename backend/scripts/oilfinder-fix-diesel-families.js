@@ -86,6 +86,11 @@ const EXPLICIT = [
   { make: 'JEEP', codes: ['ENC'], fuelType: 'diesel' },
   { make: 'FORD', codes: ['WL-T'], fuelType: 'diesel' },
   { make: 'OPEL', codes: ['Z 20 DMH'], fuelType: 'diesel' },
+  // Fiat's 1.9 turbodiesel of the 1980s, sold as the Regata 80 Turbo DS and the
+  // Lancia Delta and Prisma 1.9 Turbo DS. Parts listings for both marques give
+  // it as a diesel; the catalogue had it both ways.
+  { make: 'FIAT', codes: ['831 D1.000'], fuelType: 'diesel' },
+  { make: 'LANCIA', codes: ['831 D1.000'], fuelType: 'diesel' },
   // The battery-electric vans, which have no oil at all.
   { make: 'CITROËN', codes: ['Y4F1'], fuelType: 'electrique' },
   { make: 'RENAULT', codes: ['5AQ 604'], fuelType: 'electrique' },
