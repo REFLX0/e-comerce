@@ -19,14 +19,14 @@
  * was approved for, in a climate that argues the other way. And the filter
  * variants must keep it, because a high-SAPS 40-weight would block the filter.
  *
- * Two things had gone wrong. The unqualified rows — bare RHZ on the Fiat Scudo,
- * bare RHW — were all given the filter specification regardless, and one
- * RHZ (DW10ATED) row had drifted onto it as well.
+ * What had gone wrong on RHZ specifically: one RHZ (DW10ATED) row had drifted
+ * onto the filter specification despite its qualifier saying otherwise.
  *
- * Only the non-filter variants are rewritten here. The filter and BlueHDi rows
- * already carry the right specification and are left untouched, which is also
- * why this is a named list rather than a rule over the whole RH family: RHBA is
- * a Ford code, and RHP carries a generic low-SAPS note that needs its own look.
+ * Only rows whose qualifier states the variant are rewritten. The filter and
+ * BlueHDi rows already carry the right specification and are left untouched, and
+ * this is a named list rather than a rule over the RH family for the same reason
+ * the list is short — RHBA is a Ford code, RHP carries a generic low-SAPS note,
+ * and the unqualified rows say nothing about a filter at all.
  *
  * Runs read-only unless --apply is passed. Snapshots every row it changes.
  */
@@ -37,14 +37,26 @@ const APPLY = process.argv.includes('--apply');
 const CATALOG = '/app/oil-finder-full-dataset/clean-catalog-hierarchy.json';
 const SNAPSHOT = `/app/dw10-fap-split-snapshot-${Date.now()}.json`;
 
-/** The DW10 variants built without a particulate filter. */
-const NO_FAP = [
-  'RHM (DW10ATED4)', 'RHS (DW10ATED)', 'RHT (DW10ATED4)', 'RHW (DW10ATED4)',
-  'RHZ (DW10ATED)', 'RHV (DW10)', 'RHV (DW10TD)', 'RHV (DW10UTD)', 'RHY (DW10TD)',
-  // Unqualified in the catalogue. RHZ is the DW10ATED and RHW the DW10ATED4;
-  // both were given the filter specification for want of a qualifier.
-  'RHZ', 'RHW',
-];
+/**
+ * One entry, and deliberately only one.
+ *
+ * This started as the whole non-filter half of the DW10 family — RHM, RHS, RHT,
+ * RHW, RHV, RHY and the unqualified rows — and that was reverted, because those
+ * rows were being moved on the strength of belonging to the same engine family
+ * rather than on anything the data says about them. Resemblance is not evidence,
+ * and propagating a specification across a family on resemblance is how the
+ * generated data got here.
+ *
+ * RHZ (DW10ATED) stays because its own qualifier names the variant: ATED is the
+ * pre-filter build, so the absence of a particulate filter is recorded in the
+ * row itself and the specification follows from it. Bare RHZ is not included for
+ * the same reason in reverse — with no qualifier, nothing in the row supports a
+ * filter or no-filter reading either way, so it keeps the value it had.
+ *
+ * Adding a code here needs the variant to be stated in the data, not inferred
+ * from a sibling.
+ */
+const NO_FAP = ['RHZ (DW10ATED)'];
 
 /** What PSA specifies for them: a full-SAPS synthetic 40-weight. */
 const SPEC = {
