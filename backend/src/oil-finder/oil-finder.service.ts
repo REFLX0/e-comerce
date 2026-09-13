@@ -2719,15 +2719,23 @@ export class OilFinderService {
         const gens = Object.values(mod.generations || {}) as any[];
         let yearFrom: number | null = null;
         let yearTo: number | null = null;
+        // A generation with no end year is still in production, and a model is
+        // still in production if any of its generations is. Skipping those
+        // rather than treating them as open ended the model at whichever
+        // generation happened to have a closing year: the Kia Sportage read
+        // 1994-2003 because the K00 ends in 2003, while the four later
+        // generations — including the one on sale — were all passed over.
+        let stillMade = false;
         for (const g of gens) {
           if (g.yearFrom && (!yearFrom || g.yearFrom < yearFrom)) yearFrom = g.yearFrom;
-          if (g.yearTo && (!yearTo || g.yearTo > yearTo)) yearTo = g.yearTo;
+          if (g.yearTo == null || g.yearTo === 9999) stillMade = true;
+          else if (!yearTo || g.yearTo > yearTo) yearTo = g.yearTo;
         }
         return {
           name: mod.modelName,
           slug: mod.modelSlug,
           yearFrom,
-          yearTo: yearTo === 9999 ? null : yearTo,
+          yearTo: stillMade ? null : yearTo,
         };
       });
 
