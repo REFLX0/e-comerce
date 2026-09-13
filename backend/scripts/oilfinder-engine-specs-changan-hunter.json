@@ -1,0 +1,21 @@
+{
+  "makes": ["CHANGAN"],
+  "note": "The Hunter's 2.0 turbodiesel was the last engine in the 2010-and-newer range still carrying a specification that described neither its fuel nor its era: 15W-40 with API SF, SG, SH or SJ, which are obsolete petrol categories from the 1980s and 90s. Changan's own overseas-version distributor deck for the Hunter settles it. The truck has a particulate filter - the deck lists 'Filtro DPF: Regeneration with Bottom', carries a dedicated DPF section, and prints a full forced-regeneration procedure - and the DPF section instructs, verbatim: 'Use lubricant 5W30 ACEA C4 and quantity indicated by manufacturer 5L'. ACEA C4 is the low-SAPS class with a full-strength high-temperature shear rating, which is what a filter-equipped diesel of this size wants. The same deck contradicts itself on the emissions rating, giving Euro II in the specification table and Euro V on a later slide; that does not reach the oil, since both the filter and the 5W-30 C4 instruction are stated independently of either claim. Capacity is moved from a generated 5.5 L to the 5 L the manufacturer states.",
+
+  "engines": [
+    {
+      "codes": ["D20TCIE", "D20TCIE (2.0 TDI)", "D20TCI"],
+      "fuelType": "diesel",
+      "spec": {
+        "viscosity": "5W-30",
+        "apiStandard": null,
+        "aceaStandard": "C4",
+        "oemApproval": "Changan - moteur avec FAP (ACEA C4 exige)",
+        "capacityLiters": 5,
+        "changeIntervalKm": 10000
+      },
+      "confidence": "high",
+      "source": "Changan Auto distributor technical deck for the Hunter pickup, 'Overseas Version' - the export specification issued to international importers rather than the Chinese-domestic Kaicene F70. DPF presence stated three times including a forced-regeneration procedure; oil instruction quoted verbatim from the DPF section."
+    }
+  ]
+}
