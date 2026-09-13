@@ -119,6 +119,18 @@ async function main() {
     const best = (pool) => pool.slice().sort((a, b) =>
       completeness(b.spec) - completeness(a.spec) || b.n - a.n)[0].spec;
 
+    // A disagreement about the viscosity itself is never harmonised, whatever
+    // the approvals say. Two grades on one engine usually means the rows are
+    // answering about different years — a Pajero 4M41 is 15W-40 API CF before
+    // the particulate filter and 5W-30 ACEA C3 after it, and neither row
+    // carries an approval to tell them apart. Picking by frequency there would
+    // quietly delete a distinction someone made on purpose.
+    if (new Set(all.map((v) => v.spec.viscosity)).size > 1
+        && !(approved.length === 1 && all.length === 2)) {
+      stats.skipped++;
+      skipped.push(`${k}  ${all.map((v) => `${v.spec.viscosity} ${v.spec.oemApproval || '(sans homologation)'}`).join('  VS  ')}`);
+      continue;
+    }
     if (approved.length === 1) { winners.set(k, approved[0].spec); stats.one++; continue; }
     if (approved.length === 0) { winners.set(k, best(all)); stats.none++; continue; }
     if (new Set(approved.map((v) => v.spec.viscosity)).size === 1) {
