@@ -153,11 +153,21 @@ export function CategoryNav() {
 
   return (
     <>
-      {/* ── Desktop & Tablet Nav Bar (>= md) ── */}
+      {/* ── Desktop Nav Bar (>= lg) ──
+          Below lg, the four category tabs (each shrink-0, icon + label + chevron)
+          need ~600-720px to lay out without wrapping, but this row only gets
+          the space left after the "Tout le catalogue" button — which is under
+          that from 768px (the old md breakpoint) up to roughly 1000px. Since
+          shrink-0 items refuse to shrink and the row has no overflow handling,
+          the overflow doesn't wrap or scroll, it spills out and renders under
+          the button next to it: on any tablet, or a desktop browser zoomed to
+          125-150%, "Marine" sat half-hidden behind "TOUT LE CATALOGUE". Below
+          lg we now show the mobile bar instead, whose pills already scroll
+          horizontally on overflow rather than spilling. */}
       <nav
         ref={navRef}
         aria-label={t('catalog')}
-        className="hidden border-b border-slate-200 bg-white md:block"
+        className="hidden border-b border-slate-200 bg-white lg:block"
         style={{ boxShadow: '0 2px 12px rgba(22,37,76,0.06)' }}
       >
         <div className="section-padding flex h-[52px] items-center justify-between gap-1 sm:gap-2">
@@ -280,8 +290,8 @@ export function CategoryNav() {
         </div>
       </nav>
 
-      {/* ── Mobile Category Navigation (< md) ── */}
-      <div ref={mobileNavRef} className="relative md:hidden border-b border-slate-200/80 bg-white/95 backdrop-blur-md">
+      {/* ── Mobile/Tablet Category Navigation (< lg) ── */}
+      <div ref={mobileNavRef} className="relative lg:hidden border-b border-slate-200/80 bg-white/95 backdrop-blur-md">
         {/* Horizontal Category Pills Strip */}
         <nav
           aria-label={t('catalog')}
