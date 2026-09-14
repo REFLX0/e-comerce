@@ -6,8 +6,9 @@
 # a 1-hour cooldown (state file under /tmp) so a sustained problem pages once,
 # not every run.
 #
-# Install: crontab -e, then add:
-#   */5 * * * * /home/ubuntu/e-comerce/scripts/monitor.sh >> /home/ubuntu/e-comerce/logs/monitor.log 2>&1
+# Install: crontab -e, then add (the `timeout 60` is a hard ceiling on top of
+# the per-step timeouts inside the script - belt and suspenders):
+#   */5 * * * * timeout 60 /home/ubuntu/e-comerce/scripts/monitor.sh >> /home/ubuntu/e-comerce/logs/monitor.log 2>&1
 #
 # Reads BREVO_API_KEY and ADMIN_NOTIFICATION_EMAIL from backend/.env (same
 # credentials the app already uses to mail admins - no new secret).
@@ -54,8 +55,12 @@ CPU_PCT=$(awk -v l="$CPU_LOAD" -v n="$NPROC" 'BEGIN{printf "%.0f", l/n*100}')
 [ "$CPU_PCT" -gt 85 ] 2>/dev/null && alert "cpu" "Host CPU load above 85%" "1-min load avg ${CPU_LOAD} / ${NPROC} cores = ${CPU_PCT}%"
 
 # ── Container restarts ───────────────────────────────────────────────────────
+# Every external/docker call below is wrapped in `timeout` - a hung docker exec
+# (observed in practice: the nginx log grep below blocked indefinitely with no
+# apparent cause, piling up cron invocations every 5 minutes until killed by
+# hand) must never be allowed to leave a cron-spawned process running forever.
 for c in specpart-backend specpart-frontend specpart-db specpart-db-replica specpart-redis specpart-nginx; do
-  restarts=$(docker inspect "$c" --format '{{.RestartCount}}' 2>/dev/null || echo 0)
+  restarts=$(timeout 10 docker inspect "$c" --format '{{.RestartCount}}' 2>/dev/null || echo 0)
   prev_file="$STATE_DIR/restarts_$c"
   prev=0
   [ -f "$prev_file" ] && prev=$(cat "$prev_file")
@@ -66,7 +71,7 @@ for c in specpart-backend specpart-frontend specpart-db specpart-db-replica spec
 done
 
 # ── Postgres connections ─────────────────────────────────────────────────────
-PG_STATS=$(docker compose exec -T db psql -U specparttn -d specparttn -t -c \
+PG_STATS=$(timeout 10 docker compose exec -T db psql -U specparttn -d specparttn -t -c \
   "SELECT count(*), (SELECT setting::int FROM pg_settings WHERE name='max_connections') FROM pg_stat_activity;" 2>/dev/null)
 PG_TOTAL=$(echo "$PG_STATS" | awk -F'|' '{print $1}' | tr -d ' ')
 PG_MAX=$(echo "$PG_STATS" | awk -F'|' '{print $2}' | tr -d ' ')
@@ -80,9 +85,11 @@ READY_MS=$(curl -s -o /dev/null -w '%{time_total}' --max-time 5 -A "monitor" htt
 READY_MS_INT=$(awk -v t="${READY_MS:-99}" 'BEGIN{printf "%.0f", t*1000}')
 [ "$READY_MS_INT" -gt 1000 ] 2>/dev/null && alert "readiness_slow" "Backend readiness check slow" "${READY_MS_INT}ms (expected well under 100ms)"
 
-# ── HTTP 5xx spike (last 5 minutes of nginx access log) ─────────────────────
-FIVE_MIN_AGO=$(date -d '5 minutes ago' '+%d/%b/%Y:%H:%M' 2>/dev/null || date -v-5M '+%d/%b/%Y:%H:%M')
-FIVEXX_COUNT=$(docker compose exec -T nginx sh -c "grep -c ' 5[0-9][0-9] ' /var/log/nginx/access.log 2>/dev/null" 2>/dev/null || echo 0)
-[ "${FIVEXX_COUNT:-0}" -gt 20 ] 2>/dev/null && alert "5xx_spike" "Elevated 5xx count in nginx access log" "$FIVEXX_COUNT total 5xx lines currently in the log"
+# ── HTTP 5xx spike (last ~500 access log lines, not the whole history - a
+# plain grep -c over the full log both misrepresents "spike" as "ever" and,
+# on a log that's been running for days, is needlessly slow) ────────────────
+FIVEXX_COUNT=$(timeout 10 docker compose exec -T nginx sh -c "tail -n 500 /var/log/nginx/access.log 2>/dev/null | grep -c ' 5[0-9][0-9] '" 2>/dev/null)
+FIVEXX_COUNT="${FIVEXX_COUNT:-0}"
+[ "$FIVEXX_COUNT" -gt 20 ] 2>/dev/null && alert "5xx_spike" "Elevated 5xx count in nginx access log" "$FIVEXX_COUNT 5xx lines in the last 500 requests"
 
 echo "[$(date -u +%FT%TZ)] monitor run complete: mem=${MEM_PCT}% disk=${DISK_PCT}% cpu=${CPU_PCT}% pg=${PG_TOTAL:-?}/${PG_MAX:-?} ready=${READY_MS_INT:-?}ms"
