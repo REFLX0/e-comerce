@@ -29,6 +29,12 @@ export class CacheService implements OnModuleInit, OnModuleDestroy {
 
   constructor(private readonly config: ConfigService) {}
 
+  /** Whether Redis is currently reachable. Used by /readiness — never gates it, since every
+   * caller already degrades to a DB lookup when this is false. */
+  isReady(): boolean {
+    return this.isConnected;
+  }
+
   onModuleInit() {
     const host = this.config.get<string>('REDIS_HOST');
     const port = this.config.get<number>('REDIS_PORT') || 6379;

@@ -286,7 +286,8 @@ export class MailService {
     const resetUrl = `${this.frontendUrl}/auth/reset-password/${token}`;
 
     if (!this.isConfigured()) {
-      this.logger.log(`[MAIL MOCK] Password reset link for ${email}: ${resetUrl}`);
+      // Never log the reset URL/token itself — it's a bearer credential for the account.
+      this.logger.log(`[MAIL MOCK] Password reset requested for ${email}`);
       return;
     }
 
