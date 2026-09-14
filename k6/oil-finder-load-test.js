@@ -98,8 +98,35 @@ function deliberateMissPath() {
   });
 }
 
+// STAGE_VUS controls a single, isolated ramp-hold-ramp-down stage (2m up, 3m hold,
+// 1m down) for controlled stage-by-stage execution where the operator inspects
+// host/DB/Redis health BEFORE deciding to run the next stage, per the "do not
+// auto-escalate" requirement. Omit it to run the full 100->250->500->1000 sweep
+// in one shot (only appropriate once individual stages are already known-safe).
+const STAGE_VUS = __ENV.STAGE_VUS ? parseInt(__ENV.STAGE_VUS, 10) : null;
+
 export const options = __ENV.SMOKE
   ? { vus: 1, iterations: 1 }
+  : STAGE_VUS
+  ? {
+      scenarios: {
+        single_stage: {
+          executor: 'ramping-vus',
+          startVUs: 0,
+          stages: [
+            { duration: '2m', target: STAGE_VUS },
+            { duration: '3m', target: STAGE_VUS },
+            { duration: '1m', target: 0 },
+          ],
+        },
+      },
+      thresholds: {
+        'oil_finder_dropdown_duration': ['p(95)<200'],
+        'vehicle_lookup_duration': ['p(95)<300'],
+        'catalogue_duration': ['p(95)<300'],
+        'errors': ['rate<0.01'],
+      },
+    }
   : {
       scenarios: {
         ramping_load: {
