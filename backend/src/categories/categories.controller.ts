@@ -8,6 +8,7 @@ import {
   Body,
   UseGuards,
 } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
@@ -22,18 +23,24 @@ import { Roles } from '../common/decorators/roles.decorator';
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
+  // Public read-only routes only - overrides the global 100/60s default to match
+  // nginx's general API tier. Admin write routes below keep the stricter default.
+  @Throttle({ default: { limit: 1200, ttl: 60000 } })
   @Get() findAll() {
     return this.categoriesService.findAll();
   }
 
+  @Throttle({ default: { limit: 1200, ttl: 60000 } })
   @Get('tree') getTree() {
     return this.categoriesService.getTree();
   }
 
+  @Throttle({ default: { limit: 1200, ttl: 60000 } })
   @Get('featured') getFeatured() {
     return this.categoriesService.getFeatured();
   }
 
+  @Throttle({ default: { limit: 1200, ttl: 60000 } })
   @Get(':slug') findOne(@Param('slug') slug: string) {
     return this.categoriesService.findBySlug(slug);
   }

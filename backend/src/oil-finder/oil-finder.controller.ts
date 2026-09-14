@@ -1,4 +1,5 @@
 import { Controller, Get, Query, Param, BadRequestException, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 import { ApiTags } from '@nestjs/swagger';
 import { OilFinderService, OilSpecRef } from './oil-finder.service';
 import { ProductsService } from '../products/products.service';
@@ -179,6 +180,12 @@ export class OilFinderController {
     };
   }
 
+  // Overrides the global default (100 req/60s per IP, from ThrottlerModule.forRoot in
+  // app.module.ts) - that default is far stricter than the nginx tier already sized for
+  // this route (3r/s ~ 180/60s in nginx.prod.conf), and was silently the real ceiling:
+  // discovered when a staging load test hit ~98% errors at just 100 single-IP virtual
+  // users, well before CPU/DB/Redis showed any real strain.
+  @Throttle({ default: { limit: 180, ttl: 60000 } })
   @Get('vehicle')
   @UsePipes(new ValidationPipe({ transform: true, whitelist: true }))
   async findByVehicle(@Query() dto: FindByVehicleDto) {
@@ -211,6 +218,7 @@ export class OilFinderController {
     };
   }
 
+  @Throttle({ default: { limit: 180, ttl: 60000 } })
   @Get('specs')
   @UsePipes(new ValidationPipe({ transform: true, whitelist: true }))
   async findByCharacteristics(@Query() dto: FindByCharacteristicsDto) {
@@ -249,11 +257,16 @@ export class OilFinderController {
     };
   }
 
+  // Dropdown lookups - matches nginx's dropdown tier (10r/s ~ 600/60s). These are
+  // Redis-cached (see CacheService usage in OilFinderService), so a higher ceiling
+  // than the app-wide default is safe.
+  @Throttle({ default: { limit: 600, ttl: 60000 } })
   @Get('makes')
   async getMakes(@Query('category') category?: string) {
     return this.oilFinderService.getMakes(category);
   }
 
+  @Throttle({ default: { limit: 600, ttl: 60000 } })
   @Get('makes/:make/models')
   async getModels(
     @Param('make') make: string,
@@ -262,6 +275,7 @@ export class OilFinderController {
     return this.oilFinderService.getModels(make, category);
   }
 
+  @Throttle({ default: { limit: 600, ttl: 60000 } })
   @Get('models/:make/:model/generations')
   async getGenerations(
     @Param('make') make: string,
@@ -270,6 +284,7 @@ export class OilFinderController {
     return this.oilFinderService.getGenerations(make, model);
   }
 
+  @Throttle({ default: { limit: 600, ttl: 60000 } })
   @Get('models/:make/:model/generations/:generation/engines')
   async getGenerationEngines(
     @Param('make') make: string,
@@ -279,6 +294,7 @@ export class OilFinderController {
     return this.oilFinderService.getEngines(make, model, generation);
   }
 
+  @Throttle({ default: { limit: 600, ttl: 60000 } })
   @Get('models/:make/:model/engines')
   async getEngines(
     @Param('make') make: string,

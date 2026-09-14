@@ -5,10 +5,17 @@ import {
   Query,
   NotFoundException,
 } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 import { ApiTags, ApiQuery } from '@nestjs/swagger';
 import { ProductsService } from './products.service';
 import { OilRecommendationsDto } from './dto/oil-recommendations.dto';
 
+// Controller-wide override of the global default (100 req/60s per IP, see
+// app.module.ts) - matches nginx's general API tier (20r/s ~ 1200/60s). The
+// global default is sized for sensitive/write-ish routes, not public read-only
+// catalogue browsing; left as-is it silently became the real ceiling for this
+// controller well before CPU/DB/Redis showed any real load.
+@Throttle({ default: { limit: 1200, ttl: 60000 } })
 @ApiTags('products')
 @Controller('products')
 export class ProductsController {
