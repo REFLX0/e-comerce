@@ -8,7 +8,10 @@ const globalForPrisma = globalThis as unknown as {
 
 const connectionString = `${process.env.DATABASE_URL}`
 
-const pool = new Pool({ connectionString })
+// Explicit pool size instead of pg's implicit default (10) — this is the
+// entire connection budget for the frontend against Postgres, since the
+// Prisma driver adapter bypasses Prisma's own connection_limit handling.
+const pool = new Pool({ connectionString, max: 10, idleTimeoutMillis: 30000 })
 const adapter = new PrismaPg(pool)
 
 export const db =

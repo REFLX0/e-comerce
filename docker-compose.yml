@@ -19,6 +19,8 @@ services:
       frontend:
         condition: service_started
     restart: unless-stopped
+    mem_limit: 128m
+    cpus: 0.5
     networks:
       - frontend-net
       - backend-net
@@ -33,6 +35,8 @@ services:
     depends_on:
       - nginx
     entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+    mem_limit: 128m
+    cpus: 0.25
 
   # ── Database Backups ──────────────────────────────────────────────
   pg-backups:
@@ -54,6 +58,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    mem_limit: 256m
+    cpus: 0.5
     networks:
       - backend-net
 
@@ -67,7 +73,11 @@ services:
     env_file: backend/.env
     environment:
       - NODE_ENV=production
-      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}?schema=public
+      # connection_limit=10: explicit Prisma pool cap. Measured (2026-09-14): max_connections=100,
+      # 7 live connections at idle, so this has ample headroom without raising max_connections or
+      # adding PgBouncer. Explicit so the pool doesn't silently grow (Prisma default is num_cpus*2+1)
+      # if this box is ever resized to more vCPUs.
+      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}?schema=public&connection_limit=10&pool_timeout=10
       - KAFKA_BROKERS=kafka:9092
       - REDIS_HOST=redis
       - REDIS_PORT=6379
@@ -90,6 +100,8 @@ services:
       timeout: 10s
       retries: 5
       start_period: 90s
+    mem_limit: 768m
+    cpus: 1.5
     networks:
       - backend-net
 
@@ -147,6 +159,8 @@ services:
       timeout: 10s
       retries: 3
       start_period: 30s
+    mem_limit: 512m
+    cpus: 1.0
     networks:
       - frontend-net
       - backend-net
@@ -161,8 +175,20 @@ services:
       POSTGRES_USER: ${POSTGRES_USER:?POSTGRES_USER is required}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
       POSTGRES_DB: ${POSTGRES_DB:?POSTGRES_DB is required}
-    # Configure Postgres for streaming replication
-    command: ["postgres", "-c", "wal_level=replica", "-c", "max_wal_senders=3", "-c", "max_replication_slots=3", "-c", "hot_standby=on"]
+    # Configure Postgres for streaming replication, plus memory/planner tuning off
+    # the factory defaults (measured 2026-09-14: shared_buffers=128MB, work_mem=4MB,
+    # effective_cache_size=4GB, random_page_cost=4 — all untouched stock values on a
+    # 7.6GB host with ~2.5GB available and EBS SSD-backed storage). Kept conservative:
+    # this host runs 12+ other containers, not a dedicated DB box.
+    command: ["postgres",
+      "-c", "wal_level=replica", "-c", "max_wal_senders=3", "-c", "max_replication_slots=3", "-c", "hot_standby=on",
+      "-c", "shared_buffers=512MB",
+      "-c", "effective_cache_size=2GB",
+      "-c", "work_mem=8MB",
+      "-c", "maintenance_work_mem=128MB",
+      "-c", "random_page_cost=1.1",
+      "-c", "effective_io_concurrency=200"
+    ]
     volumes:
       - specpart_pgdata:/var/lib/postgresql/data
       - ./docker/postgres/init-replication-hba.sh:/docker-entrypoint-initdb.d/init-replication-hba.sh:ro
@@ -172,6 +198,8 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    mem_limit: 1536m
+    cpus: 1.5
     networks:
       - backend-net
 
@@ -214,6 +242,8 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    mem_limit: 1024m
+    cpus: 1.0
     networks:
       - backend-net
 
@@ -231,6 +261,8 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    mem_limit: 256m
+    cpus: 0.5
     networks:
       - backend-net
 
@@ -253,6 +285,8 @@ services:
       interval: 30s
       timeout: 20s
       retries: 3
+    mem_limit: 384m
+    cpus: 0.5
     networks:
       - backend-net
 
@@ -301,6 +335,8 @@ services:
       timeout: 10s
       retries: 5
       start_period: 60s
+    mem_limit: 1536m
+    cpus: 1.0
     networks:
       - backend-net
 
@@ -317,6 +353,8 @@ services:
       opensearch:
         condition: service_healthy
     restart: unless-stopped
+    mem_limit: 384m
+    cpus: 0.5
     networks:
       - backend-net
 
@@ -336,9 +374,14 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      # Explicit heap cap — the image otherwise defaults to -Xmx1G, which measured
+      # ~953MB RSS with no ceiling. 768m heap + mem_limit below leaves off-heap room.
+      KAFKA_HEAP_OPTS: "-Xms768m -Xmx768m"
     volumes:
       - kafka_data:/var/lib/kafka/data
     restart: unless-stopped
+    mem_limit: 1280m
+    cpus: 1.0
     networks:
       - backend-net
 
@@ -354,6 +397,8 @@ services:
     depends_on:
       - kafka
     restart: unless-stopped
+    mem_limit: 384m
+    cpus: 0.5
     networks:
       - backend-net
 
