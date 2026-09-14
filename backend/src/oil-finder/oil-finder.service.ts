@@ -1,8 +1,9 @@
-import { Injectable, Logger } from '@nestjs/common'
-import { PrismaService } from '../prisma/prisma.service'
-import type { OilFinderOilSpec } from '@prisma/client'
-import * as fs from 'fs'
-import * as path from 'path'
+import { Injectable, Logger } from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service';
+import { CacheService } from '../cache/cache.service';
+import type { OilFinderOilSpec } from '@prisma/client';
+import * as fs from 'fs';
+import * as path from 'path';
 
 let cachedCleanCatalog: any = null;
 function getCleanCatalog(): Record<string, any> {
@@ -13,21 +14,71 @@ function getCleanCatalog(): Record<string, any> {
       // Every other candidate below is baked into the image at build time from whatever was last
       // committed to git, so it silently reverts on every deploy if checked first. Keep this first.
       '/app/oil-finder-full-dataset/clean-catalog-hierarchy.json',
-      path.join(process.cwd(), 'oil-finder-full-dataset', 'clean-catalog-hierarchy.json'),
-      path.join(process.cwd(), 'backend', 'oil-finder-full-dataset', 'clean-catalog-hierarchy.json'),
-      path.join(__dirname, '..', '..', 'oil-finder-full-dataset', 'clean-catalog-hierarchy.json'),
+      path.join(
+        process.cwd(),
+        'oil-finder-full-dataset',
+        'clean-catalog-hierarchy.json',
+      ),
+      path.join(
+        process.cwd(),
+        'backend',
+        'oil-finder-full-dataset',
+        'clean-catalog-hierarchy.json',
+      ),
+      path.join(
+        __dirname,
+        '..',
+        '..',
+        'oil-finder-full-dataset',
+        'clean-catalog-hierarchy.json',
+      ),
 
       path.join(__dirname, 'clean-catalog-hierarchy.json'),
       path.join(__dirname, 'src', 'oil-finder', 'clean-catalog-hierarchy.json'),
       path.join(__dirname, 'oil-finder', 'clean-catalog-hierarchy.json'),
       path.join(__dirname, '..', 'oil-finder', 'clean-catalog-hierarchy.json'),
-      path.join(__dirname, '..', 'src', 'oil-finder', 'clean-catalog-hierarchy.json'),
-      path.join(__dirname, '..', '..', 'src', 'oil-finder', 'clean-catalog-hierarchy.json'),
+      path.join(
+        __dirname,
+        '..',
+        'src',
+        'oil-finder',
+        'clean-catalog-hierarchy.json',
+      ),
+      path.join(
+        __dirname,
+        '..',
+        '..',
+        'src',
+        'oil-finder',
+        'clean-catalog-hierarchy.json',
+      ),
       path.join(process.cwd(), 'clean-catalog-hierarchy.json'),
-      path.join(process.cwd(), 'src', 'oil-finder', 'clean-catalog-hierarchy.json'),
-      path.join(process.cwd(), 'backend', 'src', 'oil-finder', 'clean-catalog-hierarchy.json'),
-      path.join(process.cwd(), 'dist', 'src', 'oil-finder', 'clean-catalog-hierarchy.json'),
-      path.join(process.cwd(), 'dist', 'oil-finder', 'clean-catalog-hierarchy.json'),
+      path.join(
+        process.cwd(),
+        'src',
+        'oil-finder',
+        'clean-catalog-hierarchy.json',
+      ),
+      path.join(
+        process.cwd(),
+        'backend',
+        'src',
+        'oil-finder',
+        'clean-catalog-hierarchy.json',
+      ),
+      path.join(
+        process.cwd(),
+        'dist',
+        'src',
+        'oil-finder',
+        'clean-catalog-hierarchy.json',
+      ),
+      path.join(
+        process.cwd(),
+        'dist',
+        'oil-finder',
+        'clean-catalog-hierarchy.json',
+      ),
       path.join(process.cwd(), 'dist', 'clean-catalog-hierarchy.json'),
       '/app/clean-catalog-hierarchy.json',
       '/app/dist/clean-catalog-hierarchy.json',
@@ -51,52 +102,61 @@ function getCleanCatalog(): Record<string, any> {
  * candidate paths that includes stale `dist/` build output, so a suite's result
  * depends on whether the box happens to have a built copy lying around.
  */
-export function __setCleanCatalogForTests(catalog: Record<string, any> | null): void {
+export function __setCleanCatalogForTests(
+  catalog: Record<string, any> | null,
+): void {
   cachedCleanCatalog = catalog;
 }
 
 export type OilSpecRef = Pick<
   OilFinderOilSpec,
-  'id' | 'viscosity' | 'apiStandard' | 'aceaStandard' | 'oemApproval' | 'jasoStandard' | 'capacityLiters' | 'changeIntervalKm'
->
+  | 'id'
+  | 'viscosity'
+  | 'apiStandard'
+  | 'aceaStandard'
+  | 'oemApproval'
+  | 'jasoStandard'
+  | 'capacityLiters'
+  | 'changeIntervalKm'
+>;
 
 export interface OilFinderCandidate {
-  make: string
-  model: string
-  generation: string
-  yearFrom: number | null
-  yearTo: number | null
-  engineCode: string
-  displacementCc: number | null
-  powerKw: number | null
-  powerHp: number | null
-  fuelType: string
-  source: string
-  confidence: string
-  matchAmbiguity: unknown
-  oilSpec: OilSpecRef
+  make: string;
+  model: string;
+  generation: string;
+  yearFrom: number | null;
+  yearTo: number | null;
+  engineCode: string;
+  displacementCc: number | null;
+  powerKw: number | null;
+  powerHp: number | null;
+  fuelType: string;
+  source: string;
+  confidence: string;
+  matchAmbiguity: unknown;
+  oilSpec: OilSpecRef;
 }
 
 export type OilFinderResult =
   | {
-      status: 'found'
-      oilSpec: OilSpecRef
-      resolvedBy: 'exact' | 'minor-conflict-auto-resolve'
-      confidence: 'high' | 'medium'
-      backingRows: number
-      candidates: OilFinderCandidate[]
+      status: 'found';
+      oilSpec: OilSpecRef;
+      resolvedBy: 'exact' | 'minor-conflict-auto-resolve';
+      confidence: 'high' | 'medium';
+      backingRows: number;
+      candidates: OilFinderCandidate[];
     }
   | {
-      status: 'ambiguous'
-      message: string
-      candidates: OilFinderCandidate[]
+      status: 'ambiguous';
+      message: string;
+      candidates: OilFinderCandidate[];
     }
   | {
-      status: 'not_found'
-      message: string
-    }
+      status: 'not_found';
+      message: string;
+    };
 
-const normFuel = (fuelType: string): string => fuelType.trim().toLowerCase()
+const normFuel = (fuelType: string): string => fuelType.trim().toLowerCase();
 
 /**
  * Canonical vehicle categories. Everything that reaches a comparison — the
@@ -119,14 +179,18 @@ const UNTRUSTED_SEED_SOURCES = [
   'SpecPart OEM Catalogue Homologations',
 ];
 
-export type VehicleCategory = 'automobile' | 'moto' | 'marine' | 'poids_lourd' | 'agricole';
+export type VehicleCategory =
+  'automobile' | 'moto' | 'marine' | 'poids_lourd' | 'agricole';
 
-export function normalizeCategory(value?: string | null): VehicleCategory | undefined {
+export function normalizeCategory(
+  value?: string | null,
+): VehicleCategory | undefined {
   if (!value) return undefined;
   const v = value.toLowerCase().trim();
   if (/moto|scooter|2-roues|deux-roues|karting|bike/.test(v)) return 'moto';
   if (/marine|boat|bateau|outboard|hors-bord/.test(v)) return 'marine';
-  if (/poids|lourd|truck|camion|commercial|utilitaire|bus/.test(v)) return 'poids_lourd';
+  if (/poids|lourd|truck|camion|commercial|utilitaire|bus/.test(v))
+    return 'poids_lourd';
   if (/agri|tractor|tracteur|farm/.test(v)) return 'agricole';
   if (/auto|car|voiture|vl\b/.test(v)) return 'automobile';
   return undefined;
@@ -168,7 +232,10 @@ function sameBaseEngine(a?: string | null, b?: string | null): boolean {
   // has to be settled before the guard below — two copies of
   // "M30 B34 (34C20)" are both qualified, and treating that as "the qualifier
   // distinguishes them" let every qualified code through twice.
-  const full = (c?: string | null) => String(c || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+  const full = (c?: string | null) =>
+    String(c || '')
+      .toUpperCase()
+      .replace(/[^A-Z0-9]/g, '');
   if (full(a) && full(a) === full(b)) return true;
 
   const base = baseEngineCode(a);
@@ -184,14 +251,26 @@ function sameBaseEngine(a?: string | null, b?: string | null): boolean {
  * cannot reintroduce one the catalogue pass already dropped.
  */
 function isDuplicateEngine(
-  listed: Array<{ engineCode?: string | null; displacementCc?: number | null; fuelType?: string | null }>,
-  candidate: { engineCode?: string | null; displacementCc?: number | null; fuelType?: string | null },
+  listed: Array<{
+    engineCode?: string | null;
+    displacementCc?: number | null;
+    fuelType?: string | null;
+  }>,
+  candidate: {
+    engineCode?: string | null;
+    displacementCc?: number | null;
+    fuelType?: string | null;
+  },
 ): boolean {
   return listed.some((e) => {
     if (sameBaseEngine(e.engineCode, candidate.engineCode)) return true;
     // A displacement-only placeholder is redundant against a real code for the
     // same displacement and fuel, whichever generation each came from.
-    if (isPlaceholderEngineCode(e.engineCode) === isPlaceholderEngineCode(candidate.engineCode)) return false;
+    if (
+      isPlaceholderEngineCode(e.engineCode) ===
+      isPlaceholderEngineCode(candidate.engineCode)
+    )
+      return false;
     return (
       candidate.displacementCc != null &&
       candidate.displacementCc === e.displacementCc &&
@@ -211,15 +290,17 @@ function toPreviewOil(spec: any): any {
 }
 
 function slugify(text: string): string {
-  return text
-    .toLowerCase()
-    // Normalize accented characters (é→e, ë→e, ü→u, etc.)
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    // Replace non-alphanumeric (including parens, slashes, etc.) with dash
-    .replace(/[^a-z0-9]+/g, '-')
-    // Trim leading/trailing dashes
-    .replace(/^-+|-+$/g, '');
+  return (
+    text
+      .toLowerCase()
+      // Normalize accented characters (é→e, ë→e, ü→u, etc.)
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      // Replace non-alphanumeric (including parens, slashes, etc.) with dash
+      .replace(/[^a-z0-9]+/g, '-')
+      // Trim leading/trailing dashes
+      .replace(/^-+|-+$/g, '')
+  );
 }
 
 export const BRAND_ALIASES: Record<string, string[]> = {
@@ -229,10 +310,16 @@ export const BRAND_ALIASES: Record<string, string[]> = {
   bmw: ['bmw', 'b-m-w', 'bmw-ag'],
   mini: ['mini', 'mini-bmw', 'cooper'],
   mercedes: ['mercedes-benz', 'mercedes', 'merce', 'mercedes benz', 'daimler'],
-  'mercedes-benz': ['mercedes-benz', 'mercedes', 'merce', 'mercedes benz', 'daimler'],
+  'mercedes-benz': [
+    'mercedes-benz',
+    'mercedes',
+    'merce',
+    'mercedes benz',
+    'daimler',
+  ],
   smart: ['smart'],
   citroen: ['citroen', 'citroën', 'citro', 'citro-n'],
-  'citroën': ['citroen', 'citroën', 'citro', 'citro-n'],
+  citroën: ['citroen', 'citroën', 'citro', 'citro-n'],
   peugeot: ['peugeot', 'psa'],
   ds: ['ds', 'ds-automobiles', 'citroen-ds', 'ds automobiles'],
   renault: ['renault', 'dacia'],
@@ -248,7 +335,7 @@ export const BRAND_ALIASES: Record<string, string[]> = {
   seat: ['seat', 'cupra'],
   cupra: ['seat', 'cupra'],
   skoda: ['skoda', 'škoda'],
-  'škoda': ['skoda', 'škoda'],
+  škoda: ['skoda', 'škoda'],
   audi: ['audi'],
   toyota: ['toyota'],
   lexus: ['lexus'],
@@ -262,8 +349,24 @@ export const BRAND_ALIASES: Record<string, string[]> = {
   mitsubishi: ['mitsubishi', 'mitsu'],
   subaru: ['subaru'],
   suzuki: ['suzuki'],
-  'land-rover': ['land-rover', 'land rover', 'landrover', 'range-rover', 'range rover', 'rangerover', 'rover'],
-  'land rover': ['land-rover', 'land rover', 'landrover', 'range-rover', 'range rover', 'rangerover', 'rover'],
+  'land-rover': [
+    'land-rover',
+    'land rover',
+    'landrover',
+    'range-rover',
+    'range rover',
+    'rangerover',
+    'rover',
+  ],
+  'land rover': [
+    'land-rover',
+    'land rover',
+    'landrover',
+    'range-rover',
+    'range rover',
+    'rangerover',
+    'rover',
+  ],
   jaguar: ['jaguar', 'jag'],
   porsche: ['porsche'],
   chevrolet: ['chevrolet', 'chevy'],
@@ -282,22 +385,62 @@ export const BRAND_ALIASES: Record<string, string[]> = {
   lada: ['lada', 'vaz', 'avtovaz'],
 
   // Motorbikes
-  yamaha: ['yamaha', 'yamah', 'yamaha-motorcycles', 'yamaha-mot', 'yamaha motorcycles', 'yamaha mot'],
-  'harley-davidson': ['harley-davidson', 'harley-davidson-mc', 'harley-dav', 'harley-davidson mc', 'harley'],
-  harley: ['harley-davidson', 'harley-davidson-mc', 'harley-dav', 'harley-davidson mc', 'harley'],
-  vespa: ['vespa', 'vespa-motorcycles', 'vespa-moto', 'vespa motorcycles', 'vespa moto', 'piaggio'],
-  'bmw-motorrad': ['bmw-motorrad', 'motorrad', 'motorrad-motorcycles', 'motorrad motorcycles', 'bmw'],
-  motorrad: ['motorrad', 'motorrad-motorcycles', 'motorrad motorcycles', 'bmw-motorrad'],
+  yamaha: [
+    'yamaha',
+    'yamah',
+    'yamaha-motorcycles',
+    'yamaha-mot',
+    'yamaha motorcycles',
+    'yamaha mot',
+  ],
+  'harley-davidson': [
+    'harley-davidson',
+    'harley-davidson-mc',
+    'harley-dav',
+    'harley-davidson mc',
+    'harley',
+  ],
+  harley: [
+    'harley-davidson',
+    'harley-davidson-mc',
+    'harley-dav',
+    'harley-davidson mc',
+    'harley',
+  ],
+  vespa: [
+    'vespa',
+    'vespa-motorcycles',
+    'vespa-moto',
+    'vespa motorcycles',
+    'vespa moto',
+    'piaggio',
+  ],
+  'bmw-motorrad': [
+    'bmw-motorrad',
+    'motorrad',
+    'motorrad-motorcycles',
+    'motorrad motorcycles',
+    'bmw',
+  ],
+  motorrad: [
+    'motorrad',
+    'motorrad-motorcycles',
+    'motorrad motorcycles',
+    'bmw-motorrad',
+  ],
 };
 
-export const BRAND_DEFAULT_SPECS: Record<string, {
-  viscosity: string;
-  apiStandard: string;
-  aceaStandard: string;
-  oemApproval: string;
-  capacityLiters: number;
-  changeIntervalKm: number;
-}> = {
+export const BRAND_DEFAULT_SPECS: Record<
+  string,
+  {
+    viscosity: string;
+    apiStandard: string;
+    aceaStandard: string;
+    oemApproval: string;
+    capacityLiters: number;
+    changeIntervalKm: number;
+  }
+> = {
   volkswagen: {
     viscosity: '5W-30',
     apiStandard: 'SN',
@@ -386,7 +529,7 @@ export const BRAND_DEFAULT_SPECS: Record<string, {
     capacityLiters: 4.5,
     changeIntervalKm: 15000,
   },
-  'škoda': {
+  škoda: {
     viscosity: '5W-30',
     apiStandard: 'SN',
     aceaStandard: 'C3',
@@ -410,7 +553,7 @@ export const BRAND_DEFAULT_SPECS: Record<string, {
     capacityLiters: 3.8,
     changeIntervalKm: 15000,
   },
-  'citroën': {
+  citroën: {
     viscosity: '5W-30',
     apiStandard: 'SN/CF',
     aceaStandard: 'C2',
@@ -790,7 +933,10 @@ export function extractEngineVariants(engineCode?: string | null): string[] {
   // Inside parens: could be comma-separated codes ("CRBC, CRLB") or spaced ("N47 D20 C")
   if (insideParen) {
     set.add(insideParen);
-    const codes = insideParen.split(/[,/|]+/).map((s) => s.trim()).filter(Boolean);
+    const codes = insideParen
+      .split(/[,/|]+/)
+      .map((s) => s.trim())
+      .filter(Boolean);
     codes.forEach((c) => {
       set.add(c);
       const cCompact = c.replace(/\s+/g, '');
@@ -802,13 +948,23 @@ export function extractEngineVariants(engineCode?: string | null): string[] {
 
   // Toyota Land Cruiser / Lexus engine & chassis recognition
   const lower = raw.toLowerCase();
-  if (lower.includes('4.7') || lower.includes('2uz') || lower.includes('uzj200') || lower.includes('uzj100')) {
+  if (
+    lower.includes('4.7') ||
+    lower.includes('2uz') ||
+    lower.includes('uzj200') ||
+    lower.includes('uzj100')
+  ) {
     set.add('2UZ-FE');
     set.add('4.7 VVT-i V8');
     set.add('4.7 V8');
     set.add('4.7');
   }
-  if (lower.includes('5.7') || lower.includes('3ur') || lower.includes('urj202') || lower.includes('urj200')) {
+  if (
+    lower.includes('5.7') ||
+    lower.includes('3ur') ||
+    lower.includes('urj202') ||
+    lower.includes('urj200')
+  ) {
     set.add('3UR-FE');
     set.add('5.7 V8');
     set.add('5.7');
@@ -818,20 +974,36 @@ export function extractEngineVariants(engineCode?: string | null): string[] {
     set.add('4.6 V8');
     set.add('4.6');
   }
-  if (lower.includes('4.5') && (lower.includes('vd') || lower.includes('d-4d') || lower.includes('diesel') || lower.includes('d4d'))) {
+  if (
+    lower.includes('4.5') &&
+    (lower.includes('vd') ||
+      lower.includes('d-4d') ||
+      lower.includes('diesel') ||
+      lower.includes('d4d'))
+  ) {
     set.add('1VD-FTV');
     set.add('4.5 D-4D V8');
     set.add('4.5 D-4D');
   }
-  if (lower.includes('4.0') || lower.includes('1gr') || lower.includes('grj200')) {
+  if (
+    lower.includes('4.0') ||
+    lower.includes('1gr') ||
+    lower.includes('grj200')
+  ) {
     set.add('1GR-FE');
     set.add('4.0 V6');
     set.add('4.0');
   }
-  if (lower.includes('3.5') && (lower.includes('v35a') || lower.includes('j300'))) {
+  if (
+    lower.includes('3.5') &&
+    (lower.includes('v35a') || lower.includes('j300'))
+  ) {
     set.add('V35A-FTS');
   }
-  if (lower.includes('2.8') && (lower.includes('1gd') || lower.includes('prado'))) {
+  if (
+    lower.includes('2.8') &&
+    (lower.includes('1gd') || lower.includes('prado'))
+  ) {
     set.add('1GD-FTV');
   }
 
@@ -843,7 +1015,10 @@ export function extractModelKeywords(model: string): string[] {
   if (!model || !model.trim()) return [];
   const raw = model.trim();
   const withoutParen = raw.replace(/\s*\([^)]*\)/g, '').trim();
-  const spaceSeparated = raw.replace(/[-_]+/g, ' ').replace(/\s*\([^)]*\)/g, '').trim();
+  const spaceSeparated = raw
+    .replace(/[-_]+/g, ' ')
+    .replace(/\s*\([^)]*\)/g, '')
+    .trim();
 
   const set = new Set<string>();
   if (raw) set.add(raw);
@@ -851,11 +1026,28 @@ export function extractModelKeywords(model: string): string[] {
   if (spaceSeparated && spaceSeparated !== raw) set.add(spaceSeparated);
 
   const stopWords = new Set([
-    'hatchback', 'saloon', 'estate', 'box', 'body', 'mpv', 'suv', 'pickup',
-    'coupe', 'convertible', 'variant', 'avant', 'touring', 'combi',
+    'hatchback',
+    'saloon',
+    'estate',
+    'box',
+    'body',
+    'mpv',
+    'suv',
+    'pickup',
+    'coupe',
+    'convertible',
+    'variant',
+    'avant',
+    'touring',
+    'combi',
   ]);
 
-  const words = spaceSeparated.split(/\s+/).filter((w) => (w.length >= 2 || /^\d+$/.test(w)) && !stopWords.has(w.toLowerCase()));
+  const words = spaceSeparated
+    .split(/\s+/)
+    .filter(
+      (w) =>
+        (w.length >= 2 || /^\d+$/.test(w)) && !stopWords.has(w.toLowerCase()),
+    );
   words.forEach((w) => set.add(w));
 
   if (words.length >= 2) {
@@ -897,11 +1089,23 @@ export function resolveAutomotiveOemSpec(
     if (yearMatch) {
       detectedYear = parseInt(yearMatch[1], 10);
     } else {
-      if (/saxo|106|205|306|406|xantia|xsara|golf\s*(?:iv|4|iii|3)|polo\s*6n|clio\s*(?:ii|2|i|1)|megane\s*(?:i|1)|punto\s*(?:1|i)|e36|e39|w124|w202/.test(combined)) {
+      if (
+        /saxo|106|205|306|406|xantia|xsara|golf\s*(?:iv|4|iii|3)|polo\s*6n|clio\s*(?:ii|2|i|1)|megane\s*(?:i|1)|punto\s*(?:1|i)|e36|e39|w124|w202/.test(
+          combined,
+        )
+      ) {
         detectedYear = 1999;
-      } else if (/golf\s*(?:v|5|vi|6)|clio\s*(?:iii|3)|megane\s*(?:ii|2)|206|207|307|c3\s*i|c4\s*i|astra\s*(?:g|h)|e90|w203|w204/.test(combined)) {
+      } else if (
+        /golf\s*(?:v|5|vi|6)|clio\s*(?:iii|3)|megane\s*(?:ii|2)|206|207|307|c3\s*i|c4\s*i|astra\s*(?:g|h)|e90|w203|w204/.test(
+          combined,
+        )
+      ) {
         detectedYear = 2008;
-      } else if (/golf\s*(?:vii|7|viii|8)|clio\s*(?:iv|4|v|5)|208|308|c3\s*(?:ii|iii)|c4\s*ii|astra\s*(?:j|k)|f30|g20|w205|captur|kadjar|duster|sandero/.test(combined)) {
+      } else if (
+        /golf\s*(?:vii|7|viii|8)|clio\s*(?:iv|4|v|5)|208|308|c3\s*(?:ii|iii)|c4\s*ii|astra\s*(?:j|k)|f30|g20|w205|captur|kadjar|duster|sandero/.test(
+          combined,
+        )
+      ) {
         detectedYear = 2016;
       } else {
         detectedYear = 2012;
@@ -911,7 +1115,9 @@ export function resolveAutomotiveOemSpec(
 
   // 2. Parse displacement (Cc) if present
   let displacementCc: number | null = null;
-  const dispMatch = combined.match(/(\d+[.,]\d+)\s*(?:l|dci|tdi|hdi|tce|tsi|puretech|vti|16v)?/i);
+  const dispMatch = combined.match(
+    /(\d+[.,]\d+)\s*(?:l|dci|tdi|hdi|tce|tsi|puretech|vti|16v)?/i,
+  );
   if (dispMatch) {
     const val = parseFloat(dispMatch[1].replace(',', '.'));
     if (val >= 0.6 && val <= 7.0) {
@@ -921,7 +1127,9 @@ export function resolveAutomotiveOemSpec(
 
   // 3. Parse power (Hp) if present
   let powerHp: number | null = null;
-  const hpMatch = combined.match(/(?:dci|tdi|hdi|puretech|tce|tsi|\s)(\d{2,3})\s*(?:ch|hp|ps|cv)?\b/i);
+  const hpMatch = combined.match(
+    /(?:dci|tdi|hdi|puretech|tce|tsi|\s)(\d{2,3})\s*(?:ch|hp|ps|cv)?\b/i,
+  );
   if (hpMatch) {
     const val = parseInt(hpMatch[1], 10);
     if (val >= 40 && val <= 600) {
@@ -930,11 +1138,20 @@ export function resolveAutomotiveOemSpec(
   }
 
   // 4. Enhanced fuel type & injection technology detection
-  const isDiesel = /(?:dci|tdi|hdi|bluehdi|cdti|crdi|multijet|jtd|jtdm|d-4d|d4d|d-cat|did|di-d|tdci|cdi|bluetec|ddis|crd|\bd\b|diesel|sdi|ecoblue|tdv6|sdv6|tdv8|sdv8|aj200d|\bd\d{2,3}\b|\bd[2-5]\b|[12]gd|1vd|1nd|1kd|2kd|199b\w*|199a2|937a\w*|330a\w*|f1a\w+|55266388|55268532|55268818|d13a|d16a|d4f\w+|d4h\w+|d4e\w+|d4c\w+|dv5\w*|dv6\w*|a15dt|f15dt|a20dt|m9t|4m41|4d56|4n13|yd25|k9k|xwdb|xwfa|xwka|psdb|xvca|xvcb|xvcc|a270d02)/i.test(combined);
-  const isHybrid = /(?:hybrid|e-tech|phev|mhev|prius|2zr-fxe|fxe\b)/i.test(combined);
+  const isDiesel =
+    /(?:dci|tdi|hdi|bluehdi|cdti|crdi|multijet|jtd|jtdm|d-4d|d4d|d-cat|did|di-d|tdci|cdi|bluetec|ddis|crd|\bd\b|diesel|sdi|ecoblue|tdv6|sdv6|tdv8|sdv8|aj200d|\bd\d{2,3}\b|\bd[2-5]\b|[12]gd|1vd|1nd|1kd|2kd|199b\w*|199a2|937a\w*|330a\w*|f1a\w+|55266388|55268532|55268818|d13a|d16a|d4f\w+|d4h\w+|d4e\w+|d4c\w+|dv5\w*|dv6\w*|a15dt|f15dt|a20dt|m9t|4m41|4d56|4n13|yd25|k9k|xwdb|xwfa|xwka|psdb|xvca|xvcb|xvcc|a270d02)/i.test(
+      combined,
+    );
+  const isHybrid = /(?:hybrid|e-tech|phev|mhev|prius|2zr-fxe|fxe\b)/i.test(
+    combined,
+  );
   const isPureTech = /puretech|eb2/i.test(combined);
-  const isEcoBoost = /ecoboost|m1da|m1je|m1na|m2da|m2dc|sfja|sfjb|yyja|yyjb/i.test(combined);
-  const isTurboPetrol = /(?:tce|tsi|tfsi|puretech|ecoboost|thp|turbo|t-gdi|tgdi|8nr|1\.2t|1\.0t|1\.5t|1\.4t|1\.6t|dlaa|chzb|dada|dpba|dkta|dkza|dnpa|czpa|g3lc|g4ld|g4lh|g4fj)/i.test(combined);
+  const isEcoBoost =
+    /ecoboost|m1da|m1je|m1na|m2da|m2dc|sfja|sfjb|yyja|yyjb/i.test(combined);
+  const isTurboPetrol =
+    /(?:tce|tsi|tfsi|puretech|ecoboost|thp|turbo|t-gdi|tgdi|8nr|1\.2t|1\.0t|1\.5t|1\.4t|1\.6t|dlaa|chzb|dada|dpba|dkta|dkza|dnpa|czpa|g3lc|g4ld|g4lh|g4fj)/i.test(
+      combined,
+    );
 
   const fuelType = isDiesel ? 'diesel' : isHybrid ? 'hybrid' : 'essence';
 
@@ -949,15 +1166,53 @@ export function resolveAutomotiveOemSpec(
 
   // 5. Brand families
   const isRenaultFamily = ['renault', 'dacia'].includes(mfrSlug);
-  const isPsaFamily = ['peugeot', 'citroen', 'citroën', 'ds', 'ds-automobiles'].includes(mfrSlug);
-  const isVagFamily = ['volkswagen', 'vw', 'audi', 'seat', 'skoda', 'škoda', 'cupra'].includes(mfrSlug);
+  const isPsaFamily = [
+    'peugeot',
+    'citroen',
+    'citroën',
+    'ds',
+    'ds-automobiles',
+  ].includes(mfrSlug);
+  const isVagFamily = [
+    'volkswagen',
+    'vw',
+    'audi',
+    'seat',
+    'skoda',
+    'škoda',
+    'cupra',
+  ].includes(mfrSlug);
   const isBmwFamily = ['bmw', 'mini'].includes(mfrSlug);
-  const isMercedesFamily = ['mercedes', 'mercedes-benz', 'smart'].includes(mfrSlug);
+  const isMercedesFamily = ['mercedes', 'mercedes-benz', 'smart'].includes(
+    mfrSlug,
+  );
   const isFordFamily = ['ford'].includes(mfrSlug);
-  const isFiatFamily = ['fiat', 'alfa-romeo', 'alfa', 'lancia', 'jeep', 'abarth'].includes(mfrSlug);
+  const isFiatFamily = [
+    'fiat',
+    'alfa-romeo',
+    'alfa',
+    'lancia',
+    'jeep',
+    'abarth',
+  ].includes(mfrSlug);
   const isOpelFamily = ['opel', 'vauxhall'].includes(mfrSlug);
   const isChevroletFamily = ['chevrolet', 'chevy'].includes(mfrSlug);
-  const isAsianFamily = ['toyota', 'lexus', 'hyundai', 'kia', 'nissan', 'infiniti', 'honda', 'mazda', 'mitsubishi', 'subaru', 'suzuki', 'ssangyong', 'mahindra', 'isuzu'].includes(mfrSlug);
+  const isAsianFamily = [
+    'toyota',
+    'lexus',
+    'hyundai',
+    'kia',
+    'nissan',
+    'infiniti',
+    'honda',
+    'mazda',
+    'mitsubishi',
+    'subaru',
+    'suzuki',
+    'ssangyong',
+    'mahindra',
+    'isuzu',
+  ].includes(mfrSlug);
   const isJlrFamily = ['land-rover', 'range-rover', 'jaguar'].includes(mfrSlug);
   const isVolvo = ['volvo'].includes(mfrSlug);
   const isPorsche = ['porsche'].includes(mfrSlug);
@@ -1058,7 +1313,12 @@ export function resolveAutomotiveOemSpec(
         powerHp: 73,
       };
     }
-    if (detectedYear >= 2018 || /1\.3|1\.0\s*tce/i.test(combined) || combined.includes('megane') || /b4d/i.test(combined)) {
+    if (
+      detectedYear >= 2018 ||
+      /1\.3|1\.0\s*tce/i.test(combined) ||
+      combined.includes('megane') ||
+      /b4d/i.test(combined)
+    ) {
       return {
         viscosity: '5W-30',
         apiStandard: 'SN',
@@ -1099,7 +1359,10 @@ export function resolveAutomotiveOemSpec(
 
   // ── PSA (PEUGEOT / CITROËN / DS) ──
   if (isPsaFamily) {
-    if (detectedYear < 2001 || /saxo|106|205|306|xantia|xsara/i.test(combined)) {
+    if (
+      detectedYear < 2001 ||
+      /saxo|106|205|306|xantia|xsara/i.test(combined)
+    ) {
       return {
         viscosity: '10W-40',
         apiStandard: 'SL/CF',
@@ -1115,7 +1378,11 @@ export function resolveAutomotiveOemSpec(
 
     // Modern PSA 0W-20 standard (PSA B71 2010 / Stellantis FPW9.55535/03):
     // 1.5 BlueHDi (DV5RD, DV5RC, DV5) and latest EB2 PureTech (EB2ADTS, EB2ADTD, EB2DTS 2018+)
-    if (/b71\s*2010|fpw|dv5|eb2adt|eb2dts/i.test(combined) || (detectedYear >= 2018 && (/1\.5\s*(?:blue)?hdi/i.test(combined) || /puretech/i.test(combined)))) {
+    if (
+      /b71\s*2010|fpw|dv5|eb2adt|eb2dts/i.test(combined) ||
+      (detectedYear >= 2018 &&
+        (/1\.5\s*(?:blue)?hdi/i.test(combined) || /puretech/i.test(combined)))
+    ) {
       return {
         viscosity: '0W-20',
         apiStandard: 'SN Plus / SP',
@@ -1229,7 +1496,10 @@ export function resolveAutomotiveOemSpec(
 
   // ── VOLKSWAGEN GROUP (VW, AUDI, SEAT, SKODA, CUPRA) ──
   if (isVagFamily) {
-    if (detectedYear < 2000 || /golf\s*(?:iii|3)|polo\s*6n|passat\s*b4/i.test(combined)) {
+    if (
+      detectedYear < 2000 ||
+      /golf\s*(?:iii|3)|polo\s*6n|passat\s*b4/i.test(combined)
+    ) {
       return {
         viscosity: '10W-40',
         apiStandard: 'SL/CF',
@@ -1243,7 +1513,10 @@ export function resolveAutomotiveOemSpec(
       };
     }
     if (isDiesel) {
-      if (detectedYear >= 2005 || /cr|common\s*rail|golf\s*(?:vi|6|vii|7|viii|8)/i.test(combined)) {
+      if (
+        detectedYear >= 2005 ||
+        /cr|common\s*rail|golf\s*(?:vi|6|vii|7|viii|8)/i.test(combined)
+      ) {
         return {
           viscosity: '5W-30',
           apiStandard: 'SN',
@@ -1271,10 +1544,14 @@ export function resolveAutomotiveOemSpec(
 
     // Modern downsized VAG EA211evo / EA888 Gen 3B/4 petrols (2018+, 1.0 TSI, 1.5 TSI Evo, 2.0 TSI GPF):
     // Factory specification strictly requires 0W-20 VW 508 00 / 509 00 (LongLife IV)
-    const isVagTsiEvo = !isDiesel && (
-      /1\.5\s*t[fs]i|1\.0\s*t[fs]i|evo\b|dlaa|chzb|dada|dpba|dkta|dkza|dnpa|czpa|dsca|dhsa/i.test(combined) ||
-      (detectedYear >= 2018 && ((combined.includes('polo') && /chyb/i.test(combined)) || (isTurboPetrol && !/chyb/i.test(combined))))
-    );
+    const isVagTsiEvo =
+      !isDiesel &&
+      (/1\.5\s*t[fs]i|1\.0\s*t[fs]i|evo\b|dlaa|chzb|dada|dpba|dkta|dkza|dnpa|czpa|dsca|dhsa/i.test(
+        combined,
+      ) ||
+        (detectedYear >= 2018 &&
+          ((combined.includes('polo') && /chyb/i.test(combined)) ||
+            (isTurboPetrol && !/chyb/i.test(combined)))));
     if (isVagTsiEvo) {
       return {
         viscosity: '0W-20',
@@ -1388,7 +1665,9 @@ export function resolveAutomotiveOemSpec(
   // ── FORD ──
   if (isFordFamily) {
     // EcoBlue diesels (Focus, Kuga, Ranger, Transit, Mondeo, EcoSport): 0W-30 WSS-M2C950-A
-    const isEcoBlue = /ecoblue|xwdb|xwfa|xwka|psdb/i.test(combined) || (isDiesel && detectedYear >= 2016);
+    const isEcoBlue =
+      /ecoblue|xwdb|xwfa|xwka|psdb/i.test(combined) ||
+      (isDiesel && detectedYear >= 2016);
     if (isEcoBlue && isDiesel) {
       return {
         viscosity: '0W-30',
@@ -1404,7 +1683,10 @@ export function resolveAutomotiveOemSpec(
     }
 
     // 1.0 EcoBoost: 5W-20 WSS-M2C948-B
-    if (isEcoBoost || /m1da|m1je|m1na|m2da|m2dc|sfja|sfjb|yyja|yyjb/i.test(combined)) {
+    if (
+      isEcoBoost ||
+      /m1da|m1je|m1na|m2da|m2dc|sfja|sfjb|yyja|yyjb/i.test(combined)
+    ) {
       return {
         viscosity: '5W-20',
         apiStandard: 'SN',
@@ -1437,7 +1719,10 @@ export function resolveAutomotiveOemSpec(
     const isGiuliaOrStelvio = /giulia|stelvio|952|949/i.test(combined);
     if (isGiuliaOrStelvio) {
       // 2.9 V6 Biturbo Quadrifoglio (510ch, 670050436)
-      if (/2\.9|quadrifoglio|67005/i.test(combined) || (powerHp && powerHp >= 500)) {
+      if (
+        /2\.9|quadrifoglio|67005/i.test(combined) ||
+        (powerHp && powerHp >= 500)
+      ) {
         return {
           viscosity: '0W-40',
           apiStandard: 'SN',
@@ -1582,7 +1867,11 @@ export function resolveAutomotiveOemSpec(
     // Modern MultiJet diesels Euro 6 (Tipo, 500X, Doblo, Fiorino, Ducato): 0W-30 Fiat 9.55535-DS1 / S1
     if (isDiesel) {
       // Fiat Tipo 1.6 Multijet 130 AdBlue Euro 6d (2018+, 937AM5000): 0W-20 Fiat 9.55535-DSX
-      if (combined.includes('tipo') && /937am/i.test(combined) && (detectedYear >= 2018 || /adblue|130|357/i.test(combined))) {
+      if (
+        combined.includes('tipo') &&
+        /937am/i.test(combined) &&
+        (detectedYear >= 2018 || /adblue|130|357/i.test(combined))
+      ) {
         return {
           viscosity: '0W-20',
           apiStandard: 'SN',
@@ -1595,7 +1884,10 @@ export function resolveAutomotiveOemSpec(
           powerHp: 130,
         };
       }
-      if (detectedYear >= 2015 || /199b1|937am|199a2|f1a|330a1/i.test(combined)) {
+      if (
+        detectedYear >= 2015 ||
+        /199b1|937am|199a2|f1a|330a1/i.test(combined)
+      ) {
         return {
           viscosity: '0W-30',
           apiStandard: 'SN',
@@ -1734,7 +2026,10 @@ export function resolveAutomotiveOemSpec(
 
   // ── CHEVROLET ──
   if (isChevroletFamily) {
-    if (/li5|li6|lsy|lyx/i.test(combined) || (detectedYear >= 2018 && !isDiesel)) {
+    if (
+      /li5|li6|lsy|lyx/i.test(combined) ||
+      (detectedYear >= 2018 && !isDiesel)
+    ) {
       return {
         viscosity: '0W-20',
         apiStandard: 'SP',
@@ -1787,7 +2082,8 @@ export function resolveAutomotiveOemSpec(
           capacityLiters: 7.5,
           changeIntervalKm: 15000,
           fuelType: 'essence',
-          displacementCc: combined.includes('5.7') || /3ur/i.test(combined) ? 5663 : 4608,
+          displacementCc:
+            combined.includes('5.7') || /3ur/i.test(combined) ? 5663 : 4608,
           powerHp: powerHp || 381,
         };
       }
@@ -1799,7 +2095,12 @@ export function resolveAutomotiveOemSpec(
           apiStandard: 'SN/CF',
           aceaStandard: 'C2',
           oemApproval: 'Toyota DL-1 / ACEA C2',
-          capacityLiters: (displacementCc || 0) >= 4000 ? 9.2 : (displacementCc || 0) >= 2400 ? 7.5 : 4.2,
+          capacityLiters:
+            (displacementCc || 0) >= 4000
+              ? 9.2
+              : (displacementCc || 0) >= 2400
+                ? 7.5
+                : 4.2,
           changeIntervalKm: 15000,
           fuelType: 'diesel',
           displacementCc: displacementCc || 2393,
@@ -1821,13 +2122,22 @@ export function resolveAutomotiveOemSpec(
         };
       }
       // Toyota modern petrols (1KR, 8NR, M15A, M20A, hybrids):
-      if (/8nr|1kr|m15a|m20a/i.test(combined) || isHybrid || (detectedYear >= 2018 && (displacementCc || 0) <= 2000)) {
+      if (
+        /8nr|1kr|m15a|m20a/i.test(combined) ||
+        isHybrid ||
+        (detectedYear >= 2018 && (displacementCc || 0) <= 2000)
+      ) {
         return {
           viscosity: '0W-20',
           apiStandard: 'SP',
           aceaStandard: 'ILSAC GF-6A',
           oemApproval: 'Toyota / Lexus API SP / ILSAC GF-6A',
-          capacityLiters: (combined.includes('rav') || (displacementCc || 0) >= 2400) ? 4.4 : (displacementCc || 0) <= 1200 ? 3.6 : 4.2,
+          capacityLiters:
+            combined.includes('rav') || (displacementCc || 0) >= 2400
+              ? 4.4
+              : (displacementCc || 0) <= 1200
+                ? 3.6
+                : 4.2,
           changeIntervalKm: 15000,
           fuelType: isHybrid ? 'hybrid' : 'essence',
           displacementCc,
@@ -1850,13 +2160,22 @@ export function resolveAutomotiveOemSpec(
     // 2. Hyundai & Kia
     if (mfrSlug === 'hyundai' || mfrSlug === 'kia') {
       // 0W-20 modern MPI/DPI & compact turbo (G4FJ on Kona/Tucson, G3LA, G4LA, G4FC, G4FG, G4NL, G4NA, G6DC, G4KN 2016+)
-      if (!isDiesel && (/kona.*g4fj|tucson.*g4fj/i.test(combined) || /g3la|g4la|g4fc|g4fg|g4nl|g4na|g6dc|g4kn/i.test(combined))) {
+      if (
+        !isDiesel &&
+        (/kona.*g4fj|tucson.*g4fj/i.test(combined) ||
+          /g3la|g4la|g4fc|g4fg|g4nl|g4na|g6dc|g4kn/i.test(combined))
+      ) {
         return {
           viscosity: '0W-20',
           apiStandard: 'SP',
           aceaStandard: 'ILSAC GF-6A',
           oemApproval: 'Hyundai / Kia API SP / ILSAC GF-6A',
-          capacityLiters: (displacementCc || 0) >= 2000 ? 5.8 : (displacementCc || 0) <= 1200 ? 3.1 : 4.0,
+          capacityLiters:
+            (displacementCc || 0) >= 2000
+              ? 5.8
+              : (displacementCc || 0) <= 1200
+                ? 3.1
+                : 4.0,
           changeIntervalKm: 15000,
           fuelType: 'essence',
           displacementCc: displacementCc || 1197,
@@ -1864,7 +2183,11 @@ export function resolveAutomotiveOemSpec(
         };
       }
       // 0W-30 engines: T-GDI (G3LC, G4LD, G4LH, G4FJ), Smartstream (G4KL), and CRDi diesels (D4FA, D4FC, D4FE, D4HA, D4HE)
-      if (/g3lc|g4ld|g4lh|g4fj|g4kl|d4fa|d4fc|d4fe|d4ha|d4he|d4cb|d4ea/i.test(combined)) {
+      if (
+        /g3lc|g4ld|g4lh|g4fj|g4kl|d4fa|d4fc|d4fe|d4ha|d4he|d4cb|d4ea/i.test(
+          combined,
+        )
+      ) {
         return {
           viscosity: '0W-30',
           apiStandard: 'SN',
@@ -2013,7 +2336,6 @@ export function resolveAutomotiveOemSpec(
       };
     }
 
-
     // Honda & Mazda (retaining existing excellent calibrations)
     if (mfrSlug === 'honda') {
       return {
@@ -2057,7 +2379,13 @@ export function resolveAutomotiveOemSpec(
 
   // ── JAGUAR / LAND ROVER / RANGE ROVER ──
   if (isJlrFamily) {
-    if (isDiesel && (combined.includes('3.0') || combined.includes('2.7') || (displacementCc && displacementCc >= 2500) || /tdv6|sdv6|306dt|276dt/i.test(combined))) {
+    if (
+      isDiesel &&
+      (combined.includes('3.0') ||
+        combined.includes('2.7') ||
+        (displacementCc && displacementCc >= 2500) ||
+        /tdv6|sdv6|306dt|276dt/i.test(combined))
+    ) {
       return {
         viscosity: '5W-30',
         apiStandard: 'SN',
@@ -2070,7 +2398,12 @@ export function resolveAutomotiveOemSpec(
         powerHp: powerHp || 258,
       };
     }
-    if (isDiesel && (detectedYear >= 2015 || /ingenium|d150|d180|d200|d240|aj200d/i.test(combined) || (displacementCc && displacementCc <= 2200))) {
+    if (
+      isDiesel &&
+      (detectedYear >= 2015 ||
+        /ingenium|d150|d180|d200|d240|aj200d/i.test(combined) ||
+        (displacementCc && displacementCc <= 2200))
+    ) {
       return {
         viscosity: '0W-30',
         apiStandard: 'SN',
@@ -2083,7 +2416,12 @@ export function resolveAutomotiveOemSpec(
         powerHp: powerHp || 180,
       };
     }
-    if (!isDiesel && (detectedYear >= 2017 || /ingenium|p200|p250|p300|aj200p|si4/i.test(combined)) && (displacementCc || 0) <= 2000) {
+    if (
+      !isDiesel &&
+      (detectedYear >= 2017 ||
+        /ingenium|p200|p250|p300|aj200p|si4/i.test(combined)) &&
+      (displacementCc || 0) <= 2000
+    ) {
       return {
         viscosity: '0W-20',
         apiStandard: 'SN Plus / SP',
@@ -2096,7 +2434,11 @@ export function resolveAutomotiveOemSpec(
         powerHp: powerHp || 250,
       };
     }
-    if (!isDiesel && ((displacementCc && displacementCc >= 3000) || /v8|supercharged|aj133|aj126/i.test(combined))) {
+    if (
+      !isDiesel &&
+      ((displacementCc && displacementCc >= 3000) ||
+        /v8|supercharged|aj133|aj126/i.test(combined))
+    ) {
       return {
         viscosity: '0W-20',
         apiStandard: 'SN',
@@ -2124,7 +2466,10 @@ export function resolveAutomotiveOemSpec(
 
   // ── VOLVO ──
   if (isVolvo) {
-    const isDriveE = detectedYear >= 2014 || /drive-e|vea|d4204|b4204/i.test(combined) || ((displacementCc || 0) <= 2000 && detectedYear >= 2013);
+    const isDriveE =
+      detectedYear >= 2014 ||
+      /drive-e|vea|d4204|b4204/i.test(combined) ||
+      ((displacementCc || 0) <= 2000 && detectedYear >= 2013);
     if (isDriveE) {
       return {
         viscosity: '0W-20',
@@ -2205,13 +2550,61 @@ export function resolveAutomotiveOemSpec(
   };
 }
 
+// Oil Finder-specific cache TTLs. Separate from CacheService.TTL because these
+// answer a different question ("how stable is this data, not how big is it")
+// and the two schedules happen to share no members today only by coincidence.
+const OF_TTL = {
+  MAKES: 60 * 60 * 6, // 6h — catalog-derived, changes on deploy/correction batches, not live traffic
+  MODELS: 60 * 60 * 6, // 6h — same
+  GENERATIONS: 60 * 60 * 6, // 6h — same
+  ENGINES: 60 * 60 * 1, // 1h — getEngines always merges live OilFinderVehicle rows (hand corrections
+  //      land same-day per this project's own history), so this one needs a
+  //      shorter leash than the three pure-catalog lookups above.
+  VEHICLE_FOUND: 60 * 60 * 1, // 1h — only ever applied to status:'found' results, see findByVehicle below.
+} as const;
+
+/** Deterministic, collision-safe cache key: lowercases and trims every segment. */
+function ofKey(...parts: (string | undefined | null)[]): string {
+  return (
+    'oil-finder:' +
+    parts.map((p) => (p ?? '').trim().toLowerCase() || '_').join(':')
+  );
+}
+
 @Injectable()
 export class OilFinderService {
-  private readonly logger = new Logger(OilFinderService.name)
+  private readonly logger = new Logger(OilFinderService.name);
 
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly cache: CacheService,
+  ) {}
 
-  async findByVehicle(make: string, model: string, engineCode?: string | null): Promise<OilFinderResult> {
+  async findByVehicle(
+    make: string,
+    model: string,
+    engineCode?: string | null,
+  ): Promise<OilFinderResult> {
+    const cacheKey = ofKey('vehicle', make, model, engineCode);
+    const cached = await this.cache.get<OilFinderResult>(cacheKey);
+    if (cached) return cached;
+
+    const result = await this.findByVehicleUncached(make, model, engineCode);
+    // Only ever cache a confirmed match. Caching 'not_found'/'ambiguous' would keep
+    // serving that answer for the TTL window even after a same-day OilFinderVehicle
+    // correction lands — exactly the class of stale-data bug this whole project's
+    // correction history has been about catching, not reintroducing via the cache.
+    if (result.status === 'found') {
+      await this.cache.set(cacheKey, result, OF_TTL.VEHICLE_FOUND);
+    }
+    return result;
+  }
+
+  private async findByVehicleUncached(
+    make: string,
+    model: string,
+    engineCode?: string | null,
+  ): Promise<OilFinderResult> {
     const makeNorm = make.trim().toUpperCase();
     const modelNorm = model.trim().toUpperCase();
     const eUpper = (engineCode || '').toUpperCase();
@@ -2220,14 +2613,23 @@ export class OilFinderService {
     const where = {
       make: { equals: make.trim(), mode: 'insensitive' as const },
       model: { equals: model.trim(), mode: 'insensitive' as const },
-      ...(engineCode ? { engineCode: { equals: engineCode.trim(), mode: 'insensitive' as const } } : {}),
+      ...(engineCode
+        ? {
+            engineCode: {
+              equals: engineCode.trim(),
+              mode: 'insensitive' as const,
+            },
+          }
+        : {}),
     };
 
-    let rows = await this.prisma.oilFinderVehicle.findMany({
-      where,
-      include: { oilSpec: true },
-      orderBy: [{ source: 'asc' }, { id: 'asc' }],
-    }).catch(() => []);
+    let rows = await this.prisma.oilFinderVehicle
+      .findMany({
+        where,
+        include: { oilSpec: true },
+        orderBy: [{ source: 'asc' }, { id: 'asc' }],
+      })
+      .catch(() => []);
 
     const brandSlugs = resolveBrandSlugs(make);
     const engineVariants = extractEngineVariants(engineCode);
@@ -2237,14 +2639,17 @@ export class OilFinderService {
     if (rows.length === 0) {
       const makeSlug = slugify(make.trim());
       const modelSlug = slugify(model.trim());
-      const allRows = await this.prisma.oilFinderVehicle.findMany({
-        select: { make: true, model: true },
-        distinct: ['make', 'model'],
-      }).catch(() => [] as { make: string; model: string }[]);
+      const allRows = await this.prisma.oilFinderVehicle
+        .findMany({
+          select: { make: true, model: true },
+          distinct: ['make', 'model'],
+        })
+        .catch(() => [] as { make: string; model: string }[]);
 
       const candidateMatches = allRows.filter((r) => {
         const rMakeSlug = slugify(r.make);
-        if (rMakeSlug !== makeSlug && !brandSlugs.includes(rMakeSlug)) return false;
+        if (rMakeSlug !== makeSlug && !brandSlugs.includes(rMakeSlug))
+          return false;
         const rModelSlug = slugify(r.model);
         return (
           rModelSlug === modelSlug ||
@@ -2252,22 +2657,31 @@ export class OilFinderService {
           rModelSlug.startsWith(modelSlug) ||
           modelKeywords.some((kw) => {
             const kwSlug = slugify(kw);
-            return kwSlug.length >= 2 && (rModelSlug.includes(kwSlug) || kwSlug.includes(rModelSlug));
+            return (
+              kwSlug.length >= 2 &&
+              (rModelSlug.includes(kwSlug) || kwSlug.includes(rModelSlug))
+            );
           })
         );
       });
 
       for (const match of candidateMatches) {
         for (const alt of engineVariants) {
-          rows = await this.prisma.oilFinderVehicle.findMany({
-            where: {
-              make: { equals: match.make, mode: 'insensitive' as const },
-              model: { equals: match.model, mode: 'insensitive' as const },
-              ...(alt ? { engineCode: { equals: alt, mode: 'insensitive' as const } } : { engineCode: '' }),
-            },
-            include: { oilSpec: true },
-            orderBy: [{ source: 'asc' }, { id: 'asc' }],
-          }).catch(() => []);
+          rows = await this.prisma.oilFinderVehicle
+            .findMany({
+              where: {
+                make: { equals: match.make, mode: 'insensitive' as const },
+                model: { equals: match.model, mode: 'insensitive' as const },
+                ...(alt
+                  ? {
+                      engineCode: { equals: alt, mode: 'insensitive' as const },
+                    }
+                  : { engineCode: '' }),
+              },
+              include: { oilSpec: true },
+              orderBy: [{ source: 'asc' }, { id: 'asc' }],
+            })
+            .catch(() => []);
           if (rows.length > 0) break;
         }
         if (rows.length > 0) break;
@@ -2279,28 +2693,44 @@ export class OilFinderService {
       for (const bSlug of brandSlugs) {
         for (const kw of modelKeywords) {
           for (const eng of engineVariants) {
-            rows = await this.prisma.oilFinderVehicle.findMany({
-              where: {
-                make: { contains: bSlug, mode: 'insensitive' as const },
-                AND: [
-                  {
-                    OR: [
-                      { model: { equals: kw, mode: 'insensitive' as const } },
-                      { model: { contains: kw, mode: 'insensitive' as const } },
-                    ],
-                  },
-                  eng ? {
-                    OR: [
-                      { engineCode: { equals: eng, mode: 'insensitive' as const } },
-                      { engineCode: { contains: eng, mode: 'insensitive' as const } },
-                      { engineCode: '' },
-                    ],
-                  } : { engineCode: '' },
-                ],
-              },
-              include: { oilSpec: true },
-              orderBy: [{ source: 'asc' }, { id: 'asc' }],
-            }).catch(() => []);
+            rows = await this.prisma.oilFinderVehicle
+              .findMany({
+                where: {
+                  make: { contains: bSlug, mode: 'insensitive' as const },
+                  AND: [
+                    {
+                      OR: [
+                        { model: { equals: kw, mode: 'insensitive' as const } },
+                        {
+                          model: { contains: kw, mode: 'insensitive' as const },
+                        },
+                      ],
+                    },
+                    eng
+                      ? {
+                          OR: [
+                            {
+                              engineCode: {
+                                equals: eng,
+                                mode: 'insensitive' as const,
+                              },
+                            },
+                            {
+                              engineCode: {
+                                contains: eng,
+                                mode: 'insensitive' as const,
+                              },
+                            },
+                            { engineCode: '' },
+                          ],
+                        }
+                      : { engineCode: '' },
+                  ],
+                },
+                include: { oilSpec: true },
+                orderBy: [{ source: 'asc' }, { id: 'asc' }],
+              })
+              .catch(() => []);
             if (rows.length > 0) break;
           }
           if (rows.length > 0) break;
@@ -2313,17 +2743,19 @@ export class OilFinderService {
     if (rows.length === 0) {
       for (const kw of modelKeywords) {
         for (const bSlug of brandSlugs) {
-          const candidateRows = await this.prisma.oilFinderVehicle.findMany({
-            where: {
-              make: { contains: bSlug, mode: 'insensitive' as const },
-              OR: [
-                { model: { equals: kw, mode: 'insensitive' as const } },
-                { model: { contains: kw, mode: 'insensitive' as const } },
-              ],
-            },
-            include: { oilSpec: true },
-            orderBy: [{ source: 'asc' }, { id: 'asc' }],
-          }).catch(() => []);
+          const candidateRows = await this.prisma.oilFinderVehicle
+            .findMany({
+              where: {
+                make: { contains: bSlug, mode: 'insensitive' as const },
+                OR: [
+                  { model: { equals: kw, mode: 'insensitive' as const } },
+                  { model: { contains: kw, mode: 'insensitive' as const } },
+                ],
+              },
+              include: { oilSpec: true },
+              orderBy: [{ source: 'asc' }, { id: 'asc' }],
+            })
+            .catch(() => []);
           if (candidateRows.length > 0) {
             const distinct = groupBySpec(candidateRows);
             if (distinct.length === 1) {
@@ -2341,7 +2773,8 @@ export class OilFinderService {
       return {
         status: 'found',
         oilSpec: distinct[0].spec,
-        resolvedBy: distinct.length === 1 ? 'exact' : 'minor-conflict-auto-resolve',
+        resolvedBy:
+          distinct.length === 1 ? 'exact' : 'minor-conflict-auto-resolve',
         confidence: distinct.length === 1 ? 'high' : 'medium',
         backingRows: rows.length,
         candidates: toCandidates(rows),
@@ -2356,7 +2789,8 @@ export class OilFinderService {
 
     try {
       const tecdocStart = performance.now();
-      const tecdocInfo: any[] = await this.prisma.$queryRawUnsafe(`
+      const tecdocInfo: any[] = await this.prisma.$queryRawUnsafe(
+        `
         SELECT 
           COALESCE(m.is_commercial_vehicle, mfr.is_commercial_vehicle, false) AS is_truck,
           COALESCE(m.is_motorbike, mfr.is_motorbike, false) AS is_moto,
@@ -2378,13 +2812,20 @@ export class OilFinderService {
           OR LOWER(m.description) ILIKE '%' || $2 || '%'
         )
         LIMIT 1
-      `, brandSlugs, slugify(model));
+      `,
+        brandSlugs,
+        slugify(model),
+      );
       const tecdocDuration = Math.round(performance.now() - tecdocStart);
 
       if (tecdocDuration > 50) {
-        this.logger.warn(`[SLOW QUERY] TecDoc classification query for "${make} ${model}" took ${tecdocDuration}ms (threshold: 50ms)`);
+        this.logger.warn(
+          `[SLOW QUERY] TecDoc classification query for "${make} ${model}" took ${tecdocDuration}ms (threshold: 50ms)`,
+        );
       } else {
-        this.logger.log(`TecDoc classification query for "${make} ${model}" completed in ${tecdocDuration}ms`);
+        this.logger.log(
+          `TecDoc classification query for "${make} ${model}" completed in ${tecdocDuration}ms`,
+        );
       }
 
       if (tecdocInfo.length > 0) {
@@ -2395,7 +2836,8 @@ export class OilFinderService {
         isPassengerCar = Boolean(r.is_car);
       } else {
         const mfrStart = performance.now();
-        const mfrRows: any[] = await this.prisma.$queryRawUnsafe(`
+        const mfrRows: any[] = await this.prisma.$queryRawUnsafe(
+          `
           SELECT is_commercial_vehicle, is_motorbike, is_engine, is_passenger_car, is_transporter
           FROM tecdoc.manufacturers
           WHERE LOWER(REGEXP_REPLACE(matchcode, '[^a-zA-Z0-9]+', '-', 'g')) = ANY($1::text[])
@@ -2403,13 +2845,19 @@ export class OilFinderService {
              OR LOWER(COALESCE(NULLIF(description, ''), matchcode)) = ANY($1::text[])
              OR LOWER(REGEXP_REPLACE(COALESCE(NULLIF(description, ''), matchcode), '[^a-zA-Z0-9]+', '-', 'g')) = ANY($1::text[])
           LIMIT 1
-        `, brandSlugs);
+        `,
+          brandSlugs,
+        );
         const mfrDuration = Math.round(performance.now() - mfrStart);
 
         if (mfrDuration > 50) {
-          this.logger.warn(`[SLOW QUERY] TecDoc manufacturer lookup for "${make}" took ${mfrDuration}ms (threshold: 50ms)`);
+          this.logger.warn(
+            `[SLOW QUERY] TecDoc manufacturer lookup for "${make}" took ${mfrDuration}ms (threshold: 50ms)`,
+          );
         } else {
-          this.logger.log(`TecDoc manufacturer lookup for "${make}" completed in ${mfrDuration}ms`);
+          this.logger.log(
+            `TecDoc manufacturer lookup for "${make}" completed in ${mfrDuration}ms`,
+          );
         }
 
         if (mfrRows.length > 0) {
@@ -2421,19 +2869,48 @@ export class OilFinderService {
         }
       }
     } catch (err) {
-      this.logger.error(`Error querying TecDoc classification for ${make} ${model}`, err);
+      this.logger.error(
+        `Error querying TecDoc classification for ${make} ${model}`,
+        err,
+      );
     }
 
-    const isMarine = isEngineCategory && (
-      makeNorm.includes('MARINE') || makeNorm.includes('PENTA') || makeNorm.includes('YANMAR') || makeNorm.includes('MERCURY') ||
-      modelNorm.includes('BOAT') || modelNorm.includes('BATEAU') || modelNorm.includes('HORS-BORD') || modelNorm.includes('OUTBOARD') ||
-      modelNorm.includes('INBOARD') || eUpper.includes('MARINE')
-    ) || makeNorm.includes('MARINE') || makeNorm.includes('BATEAU');
+    const isMarine =
+      (isEngineCategory &&
+        (makeNorm.includes('MARINE') ||
+          makeNorm.includes('PENTA') ||
+          makeNorm.includes('YANMAR') ||
+          makeNorm.includes('MERCURY') ||
+          modelNorm.includes('BOAT') ||
+          modelNorm.includes('BATEAU') ||
+          modelNorm.includes('HORS-BORD') ||
+          modelNorm.includes('OUTBOARD') ||
+          modelNorm.includes('INBOARD') ||
+          eUpper.includes('MARINE'))) ||
+      makeNorm.includes('MARINE') ||
+      makeNorm.includes('BATEAU');
 
-    const isAgri = (isEngineCategory || isTruck) && (
-      makeNorm.includes('AGRI') || makeNorm.includes('TRACT') || modelNorm.includes('TRACT') ||
-      ['DEUTZ', 'FENDT', 'CLAAS', 'KUBOTA', 'VALTRA', 'SAME', 'STEYR', 'LANDINI', 'MCCORMICK', 'AGCO', 'JOHN DEERE', 'MASSEY'].some(m => makeNorm.includes(m))
-    ) || makeNorm.includes('TRACTEUR') || makeNorm.includes('TRACTOR');
+    const isAgri =
+      ((isEngineCategory || isTruck) &&
+        (makeNorm.includes('AGRI') ||
+          makeNorm.includes('TRACT') ||
+          modelNorm.includes('TRACT') ||
+          [
+            'DEUTZ',
+            'FENDT',
+            'CLAAS',
+            'KUBOTA',
+            'VALTRA',
+            'SAME',
+            'STEYR',
+            'LANDINI',
+            'MCCORMICK',
+            'AGCO',
+            'JOHN DEERE',
+            'MASSEY',
+          ].some((m) => makeNorm.includes(m)))) ||
+      makeNorm.includes('TRACTEUR') ||
+      makeNorm.includes('TRACTOR');
 
     if (isMoto) {
       return {
@@ -2466,15 +2943,20 @@ export class OilFinderService {
     // 3. Automobile / Passenger Car Fallback:
     // If make is recognized as a known car manufacturer, resolve the authentic
     // manufacturer homologation tailored to this car's motorisation, fuel technology, and era.
-    const matchedBrandKey = brandSlugs.find((b) => BRAND_DEFAULT_SPECS[b] || BRAND_ALIASES[b]);
+    const matchedBrandKey = brandSlugs.find(
+      (b) => BRAND_DEFAULT_SPECS[b] || BRAND_ALIASES[b],
+    );
     if (matchedBrandKey) {
       let tecdocYearFrom: number | null = null;
       let tecdocYearTo: number | null = null;
       let tecdocTrim = '';
 
       try {
-        const engineFilter = engineCode ? `%${engineCode.trim().toLowerCase()}%` : null;
-        const pcRows: any[] = await this.prisma.$queryRawUnsafe(`
+        const engineFilter = engineCode
+          ? `%${engineCode.trim().toLowerCase()}%`
+          : null;
+        const pcRows: any[] = await this.prisma.$queryRawUnsafe(
+          `
           SELECT 
             COALESCE(NULLIF(pc.description, ''), pc.full_description) AS "description",
             CASE WHEN pc.date_from::text ~ '^[12]\\d{3}' THEN SUBSTRING(pc.date_from::text, 1, 4)::int ELSE NULL END AS "yearFrom",
@@ -2494,14 +2976,22 @@ export class OilFinderService {
             OR $2 ILIKE '%' || LOWER(m.description) || '%'
             OR LOWER(m.description) ILIKE '%' || $2 || '%'
           )
-          ${engineFilter ? `AND (
+          ${
+            engineFilter
+              ? `AND (
             LOWER(pc.description) ILIKE $3
             OR LOWER(pc.full_description) ILIKE $3
             OR $3 ILIKE '%' || LOWER(pc.description) || '%'
-          )` : ''}
+          )`
+              : ''
+          }
           ORDER BY (CASE WHEN pc.description IS NOT NULL AND pc.description != '' THEN 0 ELSE 1 END), pc.id ASC
           LIMIT 1
-        `, ...(engineFilter ? [brandSlugs, slugify(model), engineFilter] : [brandSlugs, slugify(model)]));
+        `,
+          ...(engineFilter
+            ? [brandSlugs, slugify(model), engineFilter]
+            : [brandSlugs, slugify(model)]),
+        );
 
         if (pcRows.length > 0) {
           if (pcRows[0].yearFrom) tecdocYearFrom = pcRows[0].yearFrom;
@@ -2524,31 +3014,54 @@ export class OilFinderService {
       );
 
       // Search DB for existing OilFinderOilSpec strictly matching the resolved specification's viscosity and OEM/ACEA standard
-      const dbSpec = await (this.prisma as any).oilFinderOilSpec?.findFirst?.({
-        where: {
-          viscosity: resolved.viscosity,
-          OR: [
-            ...(resolved.oemApproval ? [{ oemApproval: { contains: resolved.oemApproval.split('/')[0].trim(), mode: 'insensitive' } }] : []),
-            ...(resolved.aceaStandard ? [{ aceaStandard: { contains: resolved.aceaStandard.split('/')[0].trim(), mode: 'insensitive' } }] : []),
-          ],
-        },
-        orderBy: { id: 'asc' },
-      }).catch(() => null);
+      const dbSpec = await (this.prisma as any).oilFinderOilSpec
+        ?.findFirst?.({
+          where: {
+            viscosity: resolved.viscosity,
+            OR: [
+              ...(resolved.oemApproval
+                ? [
+                    {
+                      oemApproval: {
+                        contains: resolved.oemApproval.split('/')[0].trim(),
+                        mode: 'insensitive',
+                      },
+                    },
+                  ]
+                : []),
+              ...(resolved.aceaStandard
+                ? [
+                    {
+                      aceaStandard: {
+                        contains: resolved.aceaStandard.split('/')[0].trim(),
+                        mode: 'insensitive',
+                      },
+                    },
+                  ]
+                : []),
+            ],
+          },
+          orderBy: { id: 'asc' },
+        })
+        .catch(() => null);
 
-      const specToReturn: OilSpecRef = dbSpec ? {
-        id: dbSpec.id,
-        viscosity: resolved.viscosity || dbSpec.viscosity,
-        apiStandard: resolved.apiStandard || dbSpec.apiStandard,
-        aceaStandard: resolved.aceaStandard || dbSpec.aceaStandard,
-        oemApproval: resolved.oemApproval || dbSpec.oemApproval,
-        jasoStandard: dbSpec.jasoStandard,
-        capacityLiters: resolved.capacityLiters || dbSpec.capacityLiters,
-        changeIntervalKm: resolved.changeIntervalKm || dbSpec.changeIntervalKm,
-      } : {
-        id: `oem-${matchedBrandKey}-${slugify(resolved.viscosity)}`,
-        jasoStandard: null,
-        ...resolved,
-      };
+      const specToReturn: OilSpecRef = dbSpec
+        ? {
+            id: dbSpec.id,
+            viscosity: resolved.viscosity || dbSpec.viscosity,
+            apiStandard: resolved.apiStandard || dbSpec.apiStandard,
+            aceaStandard: resolved.aceaStandard || dbSpec.aceaStandard,
+            oemApproval: resolved.oemApproval || dbSpec.oemApproval,
+            jasoStandard: dbSpec.jasoStandard,
+            capacityLiters: resolved.capacityLiters || dbSpec.capacityLiters,
+            changeIntervalKm:
+              resolved.changeIntervalKm || dbSpec.changeIntervalKm,
+          }
+        : {
+            id: `oem-${matchedBrandKey}-${slugify(resolved.viscosity)}`,
+            jasoStandard: null,
+            ...resolved,
+          };
 
       return {
         status: 'found',
@@ -2556,22 +3069,26 @@ export class OilFinderService {
         resolvedBy: 'minor-conflict-auto-resolve',
         confidence: 'medium',
         backingRows: 1,
-        candidates: [{
-          make,
-          model,
-          generation: '',
-          yearFrom: tecdocYearFrom,
-          yearTo: tecdocYearTo,
-          engineCode: tecdocTrim || engineCode || '',
-          displacementCc: resolved.displacementCc,
-          powerKw: resolved.powerHp ? Math.round(resolved.powerHp * 0.7457) : null,
-          powerHp: resolved.powerHp,
-          fuelType: resolved.fuelType,
-          source: 'manufacturer-standard',
-          confidence: 'medium',
-          matchAmbiguity: null,
-          oilSpec: specToReturn,
-        }],
+        candidates: [
+          {
+            make,
+            model,
+            generation: '',
+            yearFrom: tecdocYearFrom,
+            yearTo: tecdocYearTo,
+            engineCode: tecdocTrim || engineCode || '',
+            displacementCc: resolved.displacementCc,
+            powerKw: resolved.powerHp
+              ? Math.round(resolved.powerHp * 0.7457)
+              : null,
+            powerHp: resolved.powerHp,
+            fuelType: resolved.fuelType,
+            source: 'manufacturer-standard',
+            confidence: 'medium',
+            matchAmbiguity: null,
+            oilSpec: specToReturn,
+          },
+        ],
       };
     }
 
@@ -2588,22 +3105,29 @@ export class OilFinderService {
     };
   }
 
-  async findByCharacteristics(displacementCc: number, powerHp: number, fuelType: string): Promise<OilFinderResult> {
+  async findByCharacteristics(
+    displacementCc: number,
+    powerHp: number,
+    fuelType: string,
+  ): Promise<OilFinderResult> {
     const fuel = normFuel(fuelType);
     const key = { displacementCc, powerHp, fuelType: fuel };
 
-    const rows = await this.prisma.oilFinderVehicle.findMany({
-      where: key,
-      include: { oilSpec: true },
-      orderBy: [{ source: 'asc' }, { id: 'asc' }],
-    }).catch(() => []);
+    const rows = await this.prisma.oilFinderVehicle
+      .findMany({
+        where: key,
+        include: { oilSpec: true },
+        orderBy: [{ source: 'asc' }, { id: 'asc' }],
+      })
+      .catch(() => []);
 
     if (rows.length > 0) {
       const distinct = groupBySpec(rows);
       return {
         status: 'found',
         oilSpec: distinct[0].spec,
-        resolvedBy: distinct.length === 1 ? 'exact' : 'minor-conflict-auto-resolve',
+        resolvedBy:
+          distinct.length === 1 ? 'exact' : 'minor-conflict-auto-resolve',
         confidence: distinct.length === 1 ? 'high' : 'medium',
         backingRows: rows.length,
         candidates: toCandidates(rows),
@@ -2617,6 +3141,14 @@ export class OilFinderService {
   }
 
   async getMakes(category?: string) {
+    return this.cache.wrap(
+      ofKey('makes', category),
+      () => this.getMakesUncached(category),
+      OF_TTL.MAKES,
+    );
+  }
+
+  private async getMakesUncached(category?: string) {
     const catalog = getCleanCatalog();
     const makeMap = new Map<string, string>();
 
@@ -2636,7 +3168,7 @@ export class OilFinderService {
       catsBySlug.get(slug)!.add(c);
     };
 
-    for (const m of Object.values(catalog) as any[]) {
+    for (const m of Object.values(catalog)) {
       if (!m.makeSlug || !Array.isArray(m.categories)) continue;
       for (const c of m.categories) addCat(m.makeSlug, c);
     }
@@ -2657,7 +3189,7 @@ export class OilFinderService {
 
     // 1. Normalized Clean Hierarchy. A catalogue make with no category at all is
     // kept for every filter rather than hidden from all of them.
-    for (const m of Object.values(catalog) as any[]) {
+    for (const m of Object.values(catalog)) {
       if (!m.makeName || !m.makeSlug) continue;
       const cats = catsBySlug.get(m.makeSlug);
       if (!targetCat || !cats?.size || cats.has(targetCat)) {
@@ -2694,25 +3226,40 @@ export class OilFinderService {
     if (makeMap.size > 0) {
       return Array.from(makeMap.entries())
         .map(([slug, name]) => ({ slug, name }))
-        .sort((a, b) => a.name.localeCompare(b.name, 'fr', { sensitivity: 'base' }));
+        .sort((a, b) =>
+          a.name.localeCompare(b.name, 'fr', { sensitivity: 'base' }),
+        );
     }
 
     return [];
   }
 
   async getModels(makeName: string, category?: string) {
+    return this.cache.wrap(
+      ofKey('models', makeName, category),
+      () => this.getModelsUncached(makeName, category),
+      OF_TTL.MODELS,
+    );
+  }
+
+  private async getModelsUncached(makeName: string, category?: string) {
     const catalog = getCleanCatalog();
     const mSlug = slugify(makeName);
 
     const targetCat = normalizeCategory(category);
 
     // 1. Clean Normalized Hierarchy
-    const makeObj = catalog[mSlug] || Object.values(catalog).find((m: any) => slugify(m.makeName) === mSlug || m.makeSlug === mSlug);
+    const makeObj =
+      catalog[mSlug] ||
+      Object.values(catalog).find(
+        (m: any) => slugify(m.makeName) === mSlug || m.makeSlug === mSlug,
+      );
     if (makeObj && makeObj.models) {
-      let modelList = Object.values(makeObj.models) as any[];
+      let modelList = Object.values(makeObj.models);
       if (targetCat) {
         modelList = modelList.filter(
-          (mod: any) => !mod.category || normalizeCategory(mod.category) === targetCat,
+          (mod: any) =>
+            !mod.category || normalizeCategory(mod.category) === targetCat,
         );
       }
       const cleanModels = modelList.map((mod: any) => {
@@ -2727,7 +3274,8 @@ export class OilFinderService {
         // generations — including the one on sale — were all passed over.
         let stillMade = false;
         for (const g of gens) {
-          if (g.yearFrom && (!yearFrom || g.yearFrom < yearFrom)) yearFrom = g.yearFrom;
+          if (g.yearFrom && (!yearFrom || g.yearFrom < yearFrom))
+            yearFrom = g.yearFrom;
           if (g.yearTo == null || g.yearTo === 9999) stillMade = true;
           else if (!yearTo || g.yearTo > yearTo) yearTo = g.yearTo;
         }
@@ -2740,7 +3288,9 @@ export class OilFinderService {
       });
 
       if (cleanModels.length > 0) {
-        return cleanModels.sort((a, b) => a.name.localeCompare(b.name, 'fr', { sensitivity: 'base' }));
+        return cleanModels.sort((a, b) =>
+          a.name.localeCompare(b.name, 'fr', { sensitivity: 'base' }),
+        );
       }
     }
 
@@ -2785,12 +3335,16 @@ export class OilFinderService {
             if (filtered.length > 0) list = filtered;
           }
         }
-        return list.map((m: any) => ({
-          name: m.name,
-          slug: m.slug,
-          yearFrom: null,
-          yearTo: null,
-        })).sort((a: any, b: any) => a.name.localeCompare(b.name, 'fr', { sensitivity: 'base' }));
+        return list
+          .map((m: any) => ({
+            name: m.name,
+            slug: m.slug,
+            yearFrom: null,
+            yearTo: null,
+          }))
+          .sort((a: any, b: any) =>
+            a.name.localeCompare(b.name, 'fr', { sensitivity: 'base' }),
+          );
       }
     } catch {
       // ignore
@@ -2800,20 +3354,41 @@ export class OilFinderService {
   }
 
   async getGenerations(makeName: string, modelName: string) {
+    return this.cache.wrap(
+      ofKey('generations', makeName, modelName),
+      () => this.getGenerationsUncached(makeName, modelName),
+      OF_TTL.GENERATIONS,
+    );
+  }
+
+  private async getGenerationsUncached(makeName: string, modelName: string) {
     const catalog = getCleanCatalog();
     const mSlug = slugify(makeName);
     const modSlug = slugify(modelName);
 
     // 1. Clean Normalized Hierarchy
-    const makeObj = catalog[mSlug] || Object.values(catalog).find((m: any) => slugify(m.makeName) === mSlug || m.makeSlug === mSlug);
+    const makeObj =
+      catalog[mSlug] ||
+      Object.values(catalog).find(
+        (m: any) => slugify(m.makeName) === mSlug || m.makeSlug === mSlug,
+      );
     if (makeObj && makeObj.models) {
-      const modelObj = makeObj.models[modSlug] || Object.values(makeObj.models).find((mod: any) => slugify(mod.modelName) === modSlug || mod.modelSlug === modSlug);
+      const modelObj =
+        makeObj.models[modSlug] ||
+        Object.values(makeObj.models).find(
+          (mod: any) =>
+            slugify(mod.modelName) === modSlug || mod.modelSlug === modSlug,
+        );
       if (modelObj && modelObj.generations) {
         return Object.values(modelObj.generations)
           .map((g: any) => {
-            const cleanBase = (g.genName || '').replace(/\s*\(\d{4}\s*-\s*[^)]+\)$/, '').trim();
+            const cleanBase = (g.genName || '')
+              .replace(/\s*\(\d{4}\s*-\s*[^)]+\)$/, '')
+              .trim();
             const to = g.yearTo === 9999 ? null : g.yearTo || null;
-            const yearRange = g.yearFrom ? ` (${g.yearFrom} - ${to ? to : 'Présent'})` : '';
+            const yearRange = g.yearFrom
+              ? ` (${g.yearFrom} - ${to ? to : 'Présent'})`
+              : '';
             return {
               name: `${cleanBase}${yearRange}`,
               rawName: cleanBase,
@@ -2880,7 +3455,12 @@ export class OilFinderService {
           make: { equals: makeName.trim(), mode: 'insensitive' },
           model: { equals: modelName.trim(), mode: 'insensitive' },
           ...(generationName
-            ? { generation: { contains: generationName.trim(), mode: 'insensitive' } }
+            ? {
+                generation: {
+                  contains: generationName.trim(),
+                  mode: 'insensitive',
+                },
+              }
             : {}),
           // Two seeded sources must never supplement a catalogue answer. The
           // catalogue is itself built from the TecDoc harvest, so those rows add
@@ -2892,7 +3472,9 @@ export class OilFinderService {
           // engine's real 937 A5.000, with one invented capacity for the whole
           // make. Both are still served where the catalogue has no entry for the
           // model, since there they are the only data there is.
-          ...(excludeHarvested ? { NOT: { source: { in: UNTRUSTED_SEED_SOURCES } } } : {}),
+          ...(excludeHarvested
+            ? { NOT: { source: { in: UNTRUSTED_SEED_SOURCES } } }
+            : {}),
         },
         include: { oilSpec: true },
       });
@@ -2915,25 +3497,55 @@ export class OilFinderService {
     }
   }
 
-  async getEngines(makeName: string, modelName: string, generationName?: string) {
+  async getEngines(
+    makeName: string,
+    modelName: string,
+    generationName?: string,
+  ) {
+    return this.cache.wrap(
+      ofKey('engines', makeName, modelName, generationName),
+      () => this.getEnginesUncached(makeName, modelName, generationName),
+      OF_TTL.ENGINES,
+    );
+  }
+
+  private async getEnginesUncached(
+    makeName: string,
+    modelName: string,
+    generationName?: string,
+  ) {
     const catalog = getCleanCatalog();
     const mSlug = slugify(makeName);
     const modSlug = slugify(modelName);
 
     // 1. Clean Normalized Hierarchy
-    const makeObj = catalog[mSlug] || Object.values(catalog).find((m: any) => slugify(m.makeName) === mSlug || m.makeSlug === mSlug);
+    const makeObj =
+      catalog[mSlug] ||
+      Object.values(catalog).find(
+        (m: any) => slugify(m.makeName) === mSlug || m.makeSlug === mSlug,
+      );
     if (makeObj && makeObj.models) {
-      const modelObj = makeObj.models[modSlug] || Object.values(makeObj.models).find((mod: any) => slugify(mod.modelName) === modSlug || mod.modelSlug === modSlug);
+      const modelObj =
+        makeObj.models[modSlug] ||
+        Object.values(makeObj.models).find(
+          (mod: any) =>
+            slugify(mod.modelName) === modSlug || mod.modelSlug === modSlug,
+        );
       if (modelObj && modelObj.generations) {
         let targetEngines: any[] = [];
         if (generationName) {
           const genSlug = slugify(generationName);
-          const genObj = modelObj.generations[genSlug] || Object.values(modelObj.generations).find((g: any) =>
-            slugify(g.genName) === genSlug ||
-            g.genSlug === genSlug ||
-            g.genName.toLowerCase().includes(generationName.toLowerCase()) ||
-            generationName.toLowerCase().includes(g.genName.toLowerCase())
-          );
+          const genObj =
+            modelObj.generations[genSlug] ||
+            Object.values(modelObj.generations).find(
+              (g: any) =>
+                slugify(g.genName) === genSlug ||
+                g.genSlug === genSlug ||
+                g.genName
+                  .toLowerCase()
+                  .includes(generationName.toLowerCase()) ||
+                generationName.toLowerCase().includes(g.genName.toLowerCase()),
+            );
           if (genObj && genObj.engines) {
             targetEngines = genObj.engines;
           }
@@ -2969,7 +3581,13 @@ export class OilFinderService {
               });
             }
           }
-          await this.mergeVerifiedEngines(result, makeName, modelName, generationName, { excludeHarvested: true });
+          await this.mergeVerifiedEngines(
+            result,
+            makeName,
+            modelName,
+            generationName,
+            { excludeHarvested: true },
+          );
           return result.sort((a, b) => (a.powerHp || 0) - (b.powerHp || 0));
         }
       }
@@ -2993,7 +3611,14 @@ export class OilFinderService {
                 ],
               },
             },
-            ...(generationName ? { name: { contains: generationName.trim(), mode: 'insensitive' } } : {}),
+            ...(generationName
+              ? {
+                  name: {
+                    contains: generationName.trim(),
+                    mode: 'insensitive',
+                  },
+                }
+              : {}),
           },
         },
         include: { oilSpec: true },
@@ -3008,7 +3633,13 @@ export class OilFinderService {
           powerKw: e.powerKw,
           previewOil: toPreviewOil(e.oilSpec),
         }));
-        await this.mergeVerifiedEngines(result, makeName, modelName, generationName, { excludeHarvested: true });
+        await this.mergeVerifiedEngines(
+          result,
+          makeName,
+          modelName,
+          generationName,
+          { excludeHarvested: true },
+        );
         return result;
       }
     } catch {
@@ -3018,27 +3649,40 @@ export class OilFinderService {
     // 3. Verified OilFinderVehicle rows on their own — a model seeded only by a
     // manual correction has neither a catalogue node nor a VehicleEngine row.
     const verifiedOnly: any[] = [];
-    await this.mergeVerifiedEngines(verifiedOnly, makeName, modelName, generationName);
+    await this.mergeVerifiedEngines(
+      verifiedOnly,
+      makeName,
+      modelName,
+      generationName,
+    );
     if (verifiedOnly.length > 0) {
       return verifiedOnly.sort((a, b) => (a.powerHp || 0) - (b.powerHp || 0));
     }
 
-    return [{ engineCode: 'Moteur standard / D’origine', yearFrom: null, yearTo: null }];
+    return [
+      {
+        engineCode: 'Moteur standard / D’origine',
+        yearFrom: null,
+        yearTo: null,
+      },
+    ];
   }
 }
 
-function groupBySpec(rows: Array<{ oilSpec: OilFinderOilSpec }>): Array<{ spec: OilSpecRef; count: number }> {
-  const map = new Map<string, { spec: OilSpecRef; count: number }>()
+function groupBySpec(
+  rows: Array<{ oilSpec: OilFinderOilSpec }>,
+): Array<{ spec: OilSpecRef; count: number }> {
+  const map = new Map<string, { spec: OilSpecRef; count: number }>();
   for (const row of rows) {
-    const entry = map.get(row.oilSpec.id) ?? { spec: row.oilSpec, count: 0 }
-    entry.count += 1
-    map.set(row.oilSpec.id, entry)
+    const entry = map.get(row.oilSpec.id) ?? { spec: row.oilSpec, count: 0 };
+    entry.count += 1;
+    map.set(row.oilSpec.id, entry);
   }
   return [...map.values()].sort((a, b) => {
     // Most-supported spec wins. Tie-break on id for stable, deterministic output.
-    if (b.count !== a.count) return b.count - a.count
-    return a.spec.id.localeCompare(b.spec.id)
-  })
+    if (b.count !== a.count) return b.count - a.count;
+    return a.spec.id.localeCompare(b.spec.id);
+  });
 }
 
 function toCandidates(rows: Array<OilFinderCandidate>): OilFinderCandidate[] {
@@ -3057,5 +3701,5 @@ function toCandidates(rows: Array<OilFinderCandidate>): OilFinderCandidate[] {
     confidence: r.confidence,
     matchAmbiguity: r.matchAmbiguity,
     oilSpec: r.oilSpec,
-  }))
+  }));
 }

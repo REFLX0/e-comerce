@@ -7,6 +7,18 @@ import {
   __setCleanCatalogForTests,
 } from './oil-finder.service';
 import { PrismaService } from '../prisma/prisma.service';
+import { CacheService } from '../cache/cache.service';
+
+// Always-miss stub: exercises the service exactly as if Redis were unreachable
+// (its own documented graceful-degradation mode), so every test still hits the
+// real resolution logic and no test can leak a cached value into another.
+const cacheStub = {
+  get: jest.fn().mockResolvedValue(null),
+  set: jest.fn().mockResolvedValue(undefined),
+  del: jest.fn().mockResolvedValue(undefined),
+  delPattern: jest.fn().mockResolvedValue(undefined),
+  wrap: jest.fn((_key: string, fn: () => Promise<unknown>) => fn()),
+};
 
 // ── Fixtures (mirroring staging vehicle & spec rows) ──────────────────────────
 const spec5w40 = {
@@ -69,6 +81,10 @@ describe('OilFinderService', () => {
         {
           provide: PrismaService,
           useValue: prisma,
+        },
+        {
+          provide: CacheService,
+          useValue: cacheStub,
         },
       ],
     }).compile();
@@ -280,11 +296,17 @@ describe('OilFinderService', () => {
       prisma.oilFinderVehicle.findMany.mockResolvedValue([]);
       prisma.$queryRawUnsafe.mockResolvedValue([]);
 
-      const result = await service.findByVehicle('UnknownBrand', 'ModelX', '1.6L');
+      const result = await service.findByVehicle(
+        'UnknownBrand',
+        'ModelX',
+        '1.6L',
+      );
 
       expect(result.status).toBe('not_found');
       if (result.status === 'not_found') {
-        expect(result.message).toContain('Aucune spécification d\'huile trouvée');
+        expect(result.message).toContain(
+          "Aucune spécification d'huile trouvée",
+        );
       }
     });
   });
@@ -321,7 +343,9 @@ describe('OilFinderService', () => {
       const res = await service.findByCharacteristics(1400, 90, 'essence');
       expect(res.status).toBe('not_found');
       if (res.status === 'not_found') {
-        expect(res.message).toContain('Aucune spécification d\'huile trouvée pour les caractéristiques');
+        expect(res.message).toContain(
+          "Aucune spécification d'huile trouvée pour les caractéristiques",
+        );
       }
     });
   });
@@ -339,7 +363,10 @@ describe('OilFinderService', () => {
       prisma.vehicleMake.findMany.mockResolvedValue(
         [...new Set(rows.map((r) => r.make))].map((name) => ({
           name,
-          slug: name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, ''),
+          slug: name
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/^-+|-+$/g, ''),
         })),
       );
     };
@@ -362,7 +389,9 @@ describe('OilFinderService', () => {
         { make: 'RENAULT', category: 'automobile' },
       ]);
       const names = (await service.getMakes('agricole')).map((m) => m.name);
-      expect(names).toEqual(expect.arrayContaining(['JOHN DEERE', 'MASSEY FERGUSON']));
+      expect(names).toEqual(
+        expect.arrayContaining(['JOHN DEERE', 'MASSEY FERGUSON']),
+      );
       expect(names).not.toContain('RENAULT');
     });
 
@@ -378,7 +407,9 @@ describe('OilFinderService', () => {
           { make: 'RENAULT', category: 'automobile' },
         ]);
         const names = (await service.getMakes(query)).map((m) => m.name);
-        expect(names).toEqual(expect.arrayContaining(['SCANIA', 'VOLVO TRUCKS']));
+        expect(names).toEqual(
+          expect.arrayContaining(['SCANIA', 'VOLVO TRUCKS']),
+        );
         expect(names).not.toContain('RENAULT');
       },
     );
@@ -401,11 +432,20 @@ describe('OilFinderService', () => {
     // sports car — never appeared under moto despite its bikes being seeded.
     it('unions catalogue and database categories for the same make', async () => {
       __setCleanCatalogForTests({
-        ktm: { makeName: 'KTM', makeSlug: 'ktm', categories: ['automobile'], models: {} },
+        ktm: {
+          makeName: 'KTM',
+          makeSlug: 'ktm',
+          categories: ['automobile'],
+          models: {},
+        },
       });
       seed([{ make: 'KTM', category: 'moto' }]);
-      expect((await service.getMakes('moto')).map((m) => m.name)).toContain('KTM');
-      expect((await service.getMakes('automobile')).map((m) => m.name)).toContain('KTM');
+      expect((await service.getMakes('moto')).map((m) => m.name)).toContain(
+        'KTM',
+      );
+      expect(
+        (await service.getMakes('automobile')).map((m) => m.name),
+      ).toContain('KTM');
     });
 
     it('still lists a genuinely dual-category brand under both', async () => {
@@ -413,8 +453,12 @@ describe('OilFinderService', () => {
         { make: 'MERCEDES-BENZ', category: 'automobile' },
         { make: 'MERCEDES-BENZ', category: 'poids-lourd' },
       ]);
-      expect((await service.getMakes('automobile')).map((m) => m.name)).toContain('MERCEDES-BENZ');
-      expect((await service.getMakes('poids_lourd')).map((m) => m.name)).toContain('MERCEDES-BENZ');
+      expect(
+        (await service.getMakes('automobile')).map((m) => m.name),
+      ).toContain('MERCEDES-BENZ');
+      expect(
+        (await service.getMakes('poids_lourd')).map((m) => m.name),
+      ).toContain('MERCEDES-BENZ');
     });
   });
 
@@ -567,7 +611,11 @@ describe('OilFinderService', () => {
       prisma.oilFinderVehicle.findMany.mockResolvedValue([]);
       prisma.$queryRawUnsafe.mockResolvedValue([]);
 
-      const res = await service.findByVehicle('vw', 'golf-vii-5g1-bq1-be1-be2', '2.0 TDI');
+      const res = await service.findByVehicle(
+        'vw',
+        'golf-vii-5g1-bq1-be1-be2',
+        '2.0 TDI',
+      );
       expect(res.status).toBe('found');
       if (res.status === 'found') {
         expect(res.oilSpec.viscosity).toBe('5W-30');
@@ -580,7 +628,11 @@ describe('OilFinderService', () => {
       prisma.oilFinderVehicle.findMany.mockResolvedValue([]);
       prisma.$queryRawUnsafe.mockResolvedValue([]);
 
-      const res = await service.findByVehicle('renault', 'clio-iv-bh-', '1.5 dCi 90 (BHN1)');
+      const res = await service.findByVehicle(
+        'renault',
+        'clio-iv-bh-',
+        '1.5 dCi 90 (BHN1)',
+      );
       expect(res.status).toBe('found');
       if (res.status === 'found') {
         expect(res.oilSpec.viscosity).toBe('5W-30');
@@ -593,7 +645,11 @@ describe('OilFinderService', () => {
       prisma.oilFinderVehicle.findMany.mockResolvedValue([]);
       prisma.$queryRawUnsafe.mockResolvedValue([]);
 
-      const res = await service.findByVehicle('citroen', 'saxo-s0-s1-', '1.1 X,SX (1996-2003)');
+      const res = await service.findByVehicle(
+        'citroen',
+        'saxo-s0-s1-',
+        '1.1 X,SX (1996-2003)',
+      );
       expect(res.status).toBe('found');
       if (res.status === 'found') {
         expect(res.oilSpec.viscosity).toBe('10W-40');
@@ -606,7 +662,11 @@ describe('OilFinderService', () => {
       prisma.oilFinderVehicle.findMany.mockResolvedValue([]);
       prisma.$queryRawUnsafe.mockResolvedValue([]);
 
-      const res = await service.findByVehicle('peugeot', '208-i-ca-cc-', '1.2 PureTech 82 (2015)');
+      const res = await service.findByVehicle(
+        'peugeot',
+        '208-i-ca-cc-',
+        '1.2 PureTech 82 (2015)',
+      );
       expect(res.status).toBe('found');
       if (res.status === 'found') {
         expect(res.oilSpec.viscosity).toBe('0W-30');
@@ -619,7 +679,11 @@ describe('OilFinderService', () => {
       prisma.oilFinderVehicle.findMany.mockResolvedValue([]);
       prisma.$queryRawUnsafe.mockResolvedValue([]);
 
-      const res = await service.findByVehicle('TOYOTA', 'Land Cruiser 200', '4.7 VVT-i V8, UZJ200 (2008-2010)');
+      const res = await service.findByVehicle(
+        'TOYOTA',
+        'Land Cruiser 200',
+        '4.7 VVT-i V8, UZJ200 (2008-2010)',
+      );
       expect(res.status).toBe('found');
       if (res.status === 'found') {
         expect(res.oilSpec.viscosity).toBe('5W-40');
@@ -632,7 +696,11 @@ describe('OilFinderService', () => {
       prisma.oilFinderVehicle.findMany.mockResolvedValue([]);
       prisma.$queryRawUnsafe.mockResolvedValue([]);
 
-      const res = await service.findByVehicle('TOYOTA', 'Land Cruiser', '5.7 V8 (3UR-FE)');
+      const res = await service.findByVehicle(
+        'TOYOTA',
+        'Land Cruiser',
+        '5.7 V8 (3UR-FE)',
+      );
       expect(res.status).toBe('found');
       if (res.status === 'found') {
         expect(res.oilSpec.viscosity).toBe('0W-20');
@@ -644,13 +712,19 @@ describe('OilFinderService', () => {
       prisma.oilFinderVehicle.findMany.mockResolvedValue([]);
       prisma.$queryRawUnsafe.mockResolvedValue([]);
 
-      const res = await service.findByVehicle('TOYOTA', 'RAV 4', '2.5 Hybrid 4WD (AVA44_)');
+      const res = await service.findByVehicle(
+        'TOYOTA',
+        'RAV 4',
+        '2.5 Hybrid 4WD (AVA44_)',
+      );
       expect(res.status).toBe('found');
       if (res.status === 'found') {
         expect(res.oilSpec.viscosity).toBe('0W-20');
         expect(res.oilSpec.capacityLiters).toBe(4.4);
         expect((res.oilSpec as any).fuelType).toBe('hybrid');
-        expect(res.oilSpec.oemApproval).toContain('Toyota / Lexus API SP / ILSAC GF-6A');
+        expect(res.oilSpec.oemApproval).toContain(
+          'Toyota / Lexus API SP / ILSAC GF-6A',
+        );
       }
     });
 
@@ -658,7 +732,11 @@ describe('OilFinderService', () => {
       prisma.oilFinderVehicle.findMany.mockResolvedValue([]);
       prisma.$queryRawUnsafe.mockResolvedValue([]);
 
-      const res = await service.findByVehicle('HYUNDAI', 'i20 II', '1.0L (G3LC) - 100ch');
+      const res = await service.findByVehicle(
+        'HYUNDAI',
+        'i20 II',
+        '1.0L (G3LC) - 100ch',
+      );
       expect(res.status).toBe('found');
       if (res.status === 'found') {
         expect(res.oilSpec.viscosity).toBe('0W-30');
@@ -672,7 +750,11 @@ describe('OilFinderService', () => {
       prisma.oilFinderVehicle.findMany.mockResolvedValue([]);
       prisma.$queryRawUnsafe.mockResolvedValue([]);
 
-      const res = await service.findByVehicle('ALFA ROMEO', 'GIULIA (952_)', '2.0 (952ABA25B)');
+      const res = await service.findByVehicle(
+        'ALFA ROMEO',
+        'GIULIA (952_)',
+        '2.0 (952ABA25B)',
+      );
       expect(res.status).toBe('found');
       if (res.status === 'found') {
         expect(res.oilSpec.viscosity).toBe('0W-30');
@@ -686,7 +768,11 @@ describe('OilFinderService', () => {
       prisma.oilFinderVehicle.findMany.mockResolvedValue([]);
       prisma.$queryRawUnsafe.mockResolvedValue([]);
 
-      const res = await service.findByVehicle('VOLVO', 'XC60 II', '2.0 D4 (D4204T14) - 190ch');
+      const res = await service.findByVehicle(
+        'VOLVO',
+        'XC60 II',
+        '2.0 D4 (D4204T14) - 190ch',
+      );
       expect(res.status).toBe('found');
       if (res.status === 'found') {
         expect(res.oilSpec.viscosity).toBe('0W-20');
@@ -700,7 +786,11 @@ describe('OilFinderService', () => {
       prisma.oilFinderVehicle.findMany.mockResolvedValue([]);
       prisma.$queryRawUnsafe.mockResolvedValue([]);
 
-      const res = await service.findByVehicle('VOLVO', 'XC60 I', '2.4 D5 AWD (D5244T) - 205ch (2011)');
+      const res = await service.findByVehicle(
+        'VOLVO',
+        'XC60 I',
+        '2.4 D5 AWD (D5244T) - 205ch (2011)',
+      );
       expect(res.status).toBe('found');
       if (res.status === 'found') {
         expect(res.oilSpec.viscosity).toBe('0W-30');
@@ -713,7 +803,11 @@ describe('OilFinderService', () => {
       prisma.oilFinderVehicle.findMany.mockResolvedValue([]);
       prisma.$queryRawUnsafe.mockResolvedValue([]);
 
-      const res = await service.findByVehicle('Land Rover', 'Range Rover Evoque', '2.0 D180 (AJ200D) - 180ch (2019)');
+      const res = await service.findByVehicle(
+        'Land Rover',
+        'Range Rover Evoque',
+        '2.0 D180 (AJ200D) - 180ch (2019)',
+      );
       expect(res.status).toBe('found');
       if (res.status === 'found') {
         expect(res.oilSpec.viscosity).toBe('0W-30');
@@ -727,7 +821,11 @@ describe('OilFinderService', () => {
       prisma.oilFinderVehicle.findMany.mockResolvedValue([]);
       prisma.$queryRawUnsafe.mockResolvedValue([]);
 
-      const res = await service.findByVehicle('Land Rover', 'Discovery Sport', '2.0 Si4 (AJ200P) - 240ch (2018)');
+      const res = await service.findByVehicle(
+        'Land Rover',
+        'Discovery Sport',
+        '2.0 Si4 (AJ200P) - 240ch (2018)',
+      );
       expect(res.status).toBe('found');
       if (res.status === 'found') {
         expect(res.oilSpec.viscosity).toBe('0W-20');
@@ -740,7 +838,11 @@ describe('OilFinderService', () => {
       prisma.oilFinderVehicle.findMany.mockResolvedValue([]);
       prisma.$queryRawUnsafe.mockResolvedValue([]);
 
-      const res = await service.findByVehicle('Land Rover', 'Range Rover Sport', '3.0 SDV6 (306DT) - 306ch (2017)');
+      const res = await service.findByVehicle(
+        'Land Rover',
+        'Range Rover Sport',
+        '3.0 SDV6 (306DT) - 306ch (2017)',
+      );
       expect(res.status).toBe('found');
       if (res.status === 'found') {
         expect(res.oilSpec.viscosity).toBe('5W-30');
@@ -754,7 +856,11 @@ describe('OilFinderService', () => {
       prisma.oilFinderVehicle.findMany.mockResolvedValue([]);
       prisma.$queryRawUnsafe.mockResolvedValue([]);
 
-      const res = await service.findByVehicle('Ford', 'Focus III', '1.0 EcoBoost');
+      const res = await service.findByVehicle(
+        'Ford',
+        'Focus III',
+        '1.0 EcoBoost',
+      );
       expect(res.status).toBe('found');
       if (res.status === 'found') {
         expect(res.oilSpec.viscosity).toBe('5W-20');
@@ -780,7 +886,11 @@ describe('OilFinderService', () => {
       prisma.oilFinderVehicle.findMany.mockResolvedValue([]);
       prisma.$queryRawUnsafe.mockResolvedValue([]);
 
-      const res = await service.findByVehicle('Ford', 'Focus IV', '1.5 EcoBlue - 120ch (2019)');
+      const res = await service.findByVehicle(
+        'Ford',
+        'Focus IV',
+        '1.5 EcoBlue - 120ch (2019)',
+      );
       expect(res.status).toBe('found');
       if (res.status === 'found') {
         expect(res.oilSpec.viscosity).toBe('0W-30');
@@ -794,7 +904,11 @@ describe('OilFinderService', () => {
       prisma.oilFinderVehicle.findMany.mockResolvedValue([]);
       prisma.$queryRawUnsafe.mockResolvedValue([]);
 
-      const res = await service.findByVehicle('Porsche', '911 (991)', '3.0 Carrera S - 420ch (2016)');
+      const res = await service.findByVehicle(
+        'Porsche',
+        '911 (991)',
+        '3.0 Carrera S - 420ch (2016)',
+      );
       expect(res.status).toBe('found');
       if (res.status === 'found') {
         expect(res.oilSpec.viscosity).toBe('0W-40');
@@ -807,7 +921,11 @@ describe('OilFinderService', () => {
       prisma.oilFinderVehicle.findMany.mockResolvedValue([]);
       prisma.$queryRawUnsafe.mockResolvedValue([]);
 
-      const res = await service.findByVehicle('Porsche', 'Macan', '3.0 S Diesel - 258ch (2015)');
+      const res = await service.findByVehicle(
+        'Porsche',
+        'Macan',
+        '3.0 S Diesel - 258ch (2015)',
+      );
       expect(res.status).toBe('found');
       if (res.status === 'found') {
         expect(res.oilSpec.viscosity).toBe('5W-30');
@@ -821,7 +939,11 @@ describe('OilFinderService', () => {
       prisma.oilFinderVehicle.findMany.mockResolvedValue([]);
       prisma.$queryRawUnsafe.mockResolvedValue([]);
 
-      const res = await service.findByVehicle('Volkswagen', 'Golf VIII', '1.5 TSI - 130ch (2020)');
+      const res = await service.findByVehicle(
+        'Volkswagen',
+        'Golf VIII',
+        '1.5 TSI - 130ch (2020)',
+      );
       expect(res.status).toBe('found');
       if (res.status === 'found') {
         expect(res.oilSpec.viscosity).toBe('0W-20');
@@ -835,11 +957,17 @@ describe('OilFinderService', () => {
       prisma.oilFinderVehicle.findMany.mockResolvedValue([]);
       prisma.$queryRawUnsafe.mockResolvedValue([]);
 
-      const res = await service.findByVehicle('Honda', 'Civic X', '1.0 VTEC Turbo - 126ch (2019)');
+      const res = await service.findByVehicle(
+        'Honda',
+        'Civic X',
+        '1.0 VTEC Turbo - 126ch (2019)',
+      );
       expect(res.status).toBe('found');
       if (res.status === 'found') {
         expect(res.oilSpec.viscosity).toBe('0W-20');
-        expect(res.oilSpec.oemApproval).toContain('Honda Type 2.0 / API SP / ILSAC GF-6A');
+        expect(res.oilSpec.oemApproval).toContain(
+          'Honda Type 2.0 / API SP / ILSAC GF-6A',
+        );
       }
     });
 
@@ -847,7 +975,11 @@ describe('OilFinderService', () => {
       prisma.oilFinderVehicle.findMany.mockResolvedValue([]);
       prisma.$queryRawUnsafe.mockResolvedValue([]);
 
-      const res = await service.findByVehicle('Mazda', 'CX-5', '2.0 SkyActiv-G - 165ch (2019)');
+      const res = await service.findByVehicle(
+        'Mazda',
+        'CX-5',
+        '2.0 SkyActiv-G - 165ch (2019)',
+      );
       expect(res.status).toBe('found');
       if (res.status === 'found') {
         expect(res.oilSpec.viscosity).toBe('0W-20');
@@ -860,7 +992,11 @@ describe('OilFinderService', () => {
       prisma.oilFinderVehicle.findMany.mockResolvedValue([]);
       prisma.$queryRawUnsafe.mockResolvedValue([]);
 
-      const res = await service.findByVehicle('Opel', 'Corsa F', '1.2 Turbo - 100ch (2020)');
+      const res = await service.findByVehicle(
+        'Opel',
+        'Corsa F',
+        '1.2 Turbo - 100ch (2020)',
+      );
       expect(res.status).toBe('found');
       if (res.status === 'found') {
         expect(res.oilSpec.viscosity).toBe('0W-20');
@@ -884,7 +1020,13 @@ describe('OilFinderService', () => {
                 modelSlug: 'land-cruiser',
                 category: 'automobile',
                 generations: {
-                  'j20': { genName: 'J20', genSlug: 'j20', yearFrom: 2008, yearTo: 2021, engines },
+                  j20: {
+                    genName: 'J20',
+                    genSlug: 'j20',
+                    yearFrom: 2008,
+                    yearTo: 2021,
+                    engines,
+                  },
                 },
               },
             },
@@ -893,15 +1035,44 @@ describe('OilFinderService', () => {
 
       it('appends verified engines the catalogue is missing', async () => {
         catalogueWith([
-          { engineCode: '4.5 D-4D (VDJ200)', fuelType: 'diesel', displacementCc: 4461, powerHp: 235 },
+          {
+            engineCode: '4.5 D-4D (VDJ200)',
+            fuelType: 'diesel',
+            displacementCc: 4461,
+            powerHp: 235,
+          },
         ]);
         prisma.oilFinderVehicle.findMany.mockResolvedValue([
-          { engineCode: '3UR-FE', yearFrom: 2008, yearTo: 2021, displacementCc: 5663, powerHp: 381, fuelType: 'essence', oilSpec: null },
-          { engineCode: '4.7 VVT-i V8', yearFrom: 2008, yearTo: 2012, displacementCc: 4664, powerHp: 288, fuelType: 'essence', oilSpec: null },
+          {
+            engineCode: '3UR-FE',
+            yearFrom: 2008,
+            yearTo: 2021,
+            displacementCc: 5663,
+            powerHp: 381,
+            fuelType: 'essence',
+            oilSpec: null,
+          },
+          {
+            engineCode: '4.7 VVT-i V8',
+            yearFrom: 2008,
+            yearTo: 2012,
+            displacementCc: 4664,
+            powerHp: 288,
+            fuelType: 'essence',
+            oilSpec: null,
+          },
         ]);
 
-        const codes = (await service.getEngines('TOYOTA', 'Land Cruiser')).map((e) => e.engineCode);
-        expect(codes).toEqual(expect.arrayContaining(['4.5 D-4D (VDJ200)', '3UR-FE', '4.7 VVT-i V8']));
+        const codes = (await service.getEngines('TOYOTA', 'Land Cruiser')).map(
+          (e) => e.engineCode,
+        );
+        expect(codes).toEqual(
+          expect.arrayContaining([
+            '4.5 D-4D (VDJ200)',
+            '3UR-FE',
+            '4.7 VVT-i V8',
+          ]),
+        );
       });
 
       // The catalogue is built from the TecDoc harvest, and that harvest copied a
@@ -910,7 +1081,12 @@ describe('OilFinderService', () => {
       // over the catalogue would reintroduce exactly that.
       it('does not merge either seeded source over a catalogue result', async () => {
         catalogueWith([
-          { engineCode: '4.5 D-4D (VDJ200)', fuelType: 'diesel', displacementCc: 4461, powerHp: 235 },
+          {
+            engineCode: '4.5 D-4D (VDJ200)',
+            fuelType: 'diesel',
+            displacementCc: 4461,
+            powerHp: 235,
+          },
         ]);
         prisma.oilFinderVehicle.findMany.mockResolvedValue([]);
 
@@ -928,13 +1104,28 @@ describe('OilFinderService', () => {
       // "D16DTF" and "D16DTF (1.6 e-XDi)" reached the customer as two engines.
       it('treats a trailing trim in the code as the same engine', async () => {
         catalogueWith([
-          { engineCode: 'D16DTF', fuelType: 'diesel', displacementCc: 1597, powerHp: 115 },
+          {
+            engineCode: 'D16DTF',
+            fuelType: 'diesel',
+            displacementCc: 1597,
+            powerHp: 115,
+          },
         ]);
         prisma.oilFinderVehicle.findMany.mockResolvedValue([
-          { engineCode: 'D16DTF (1.6 e-XDi)', yearFrom: 2015, yearTo: 9999, displacementCc: 1597, powerHp: 136, fuelType: 'diesel', oilSpec: null },
+          {
+            engineCode: 'D16DTF (1.6 e-XDi)',
+            yearFrom: 2015,
+            yearTo: 9999,
+            displacementCc: 1597,
+            powerHp: 136,
+            fuelType: 'diesel',
+            oilSpec: null,
+          },
         ]);
 
-        const codes = (await service.getEngines('TOYOTA', 'Land Cruiser')).map((e) => e.engineCode);
+        const codes = (await service.getEngines('TOYOTA', 'Land Cruiser')).map(
+          (e) => e.engineCode,
+        );
         expect(codes).toEqual(['D16DTF']);
       });
 
@@ -943,15 +1134,43 @@ describe('OilFinderService', () => {
       it('lists an engine once when two generations spell its code differently', async () => {
         __setCleanCatalogForTests({
           ssangyong: {
-            makeName: 'SSANGYONG', makeSlug: 'ssangyong', categories: ['automobile'],
+            makeName: 'SSANGYONG',
+            makeSlug: 'ssangyong',
+            categories: ['automobile'],
             models: {
               tivoli: {
-                modelName: 'Tivoli', modelSlug: 'tivoli', category: 'automobile',
+                modelName: 'Tivoli',
+                modelSlug: 'tivoli',
+                category: 'automobile',
                 generations: {
-                  a: { genName: 'A', genSlug: 'a', yearFrom: 2015, yearTo: 2019,
-                       engines: [{ engineCode: 'G16DF', fuelType: 'essence', displacementCc: 1597, powerHp: 128 }] },
-                  b: { genName: 'B', genSlug: 'b', yearFrom: 2019, yearTo: null,
-                       engines: [{ engineCode: 'G16DF (1.6 e-XGi)', fuelType: 'essence', displacementCc: 1597, powerHp: 128 }] },
+                  a: {
+                    genName: 'A',
+                    genSlug: 'a',
+                    yearFrom: 2015,
+                    yearTo: 2019,
+                    engines: [
+                      {
+                        engineCode: 'G16DF',
+                        fuelType: 'essence',
+                        displacementCc: 1597,
+                        powerHp: 128,
+                      },
+                    ],
+                  },
+                  b: {
+                    genName: 'B',
+                    genSlug: 'b',
+                    yearFrom: 2019,
+                    yearTo: null,
+                    engines: [
+                      {
+                        engineCode: 'G16DF (1.6 e-XGi)',
+                        fuelType: 'essence',
+                        displacementCc: 1597,
+                        powerHp: 128,
+                      },
+                    ],
+                  },
                 },
               },
             },
@@ -959,7 +1178,9 @@ describe('OilFinderService', () => {
         });
         prisma.oilFinderVehicle.findMany.mockResolvedValue([]);
 
-        const codes = (await service.getEngines('SSANGYONG', 'Tivoli')).map((e) => e.engineCode);
+        const codes = (await service.getEngines('SSANGYONG', 'Tivoli')).map(
+          (e) => e.engineCode,
+        );
         expect(codes).toEqual(['G16DF']);
       });
 
@@ -970,17 +1191,43 @@ describe('OilFinderService', () => {
       it('lists an identical qualified code once', async () => {
         __setCleanCatalogForTests({
           x: {
-            makeName: 'X', makeSlug: 'x', categories: ['automobile'],
+            makeName: 'X',
+            makeSlug: 'x',
+            categories: ['automobile'],
             models: {
               y: {
-                modelName: 'Y', modelSlug: 'y', category: 'automobile',
+                modelName: 'Y',
+                modelSlug: 'y',
+                category: 'automobile',
                 generations: {
-                  a: { genName: 'A', genSlug: 'a', yearFrom: 2000, yearTo: 2005, engines: [
-                    { engineCode: '1.5 (JLy-4G15B)', fuelType: 'essence', displacementCc: 1498, powerHp: 109 },
-                  ] },
-                  b: { genName: 'B', genSlug: 'b', yearFrom: 2005, yearTo: null, engines: [
-                    { engineCode: '1.5 (JLy-4G15B)', fuelType: 'essence', displacementCc: 1498, powerHp: 109 },
-                  ] },
+                  a: {
+                    genName: 'A',
+                    genSlug: 'a',
+                    yearFrom: 2000,
+                    yearTo: 2005,
+                    engines: [
+                      {
+                        engineCode: '1.5 (JLy-4G15B)',
+                        fuelType: 'essence',
+                        displacementCc: 1498,
+                        powerHp: 109,
+                      },
+                    ],
+                  },
+                  b: {
+                    genName: 'B',
+                    genSlug: 'b',
+                    yearFrom: 2005,
+                    yearTo: null,
+                    engines: [
+                      {
+                        engineCode: '1.5 (JLy-4G15B)',
+                        fuelType: 'essence',
+                        displacementCc: 1498,
+                        powerHp: 109,
+                      },
+                    ],
+                  },
                 },
               },
             },
@@ -988,21 +1235,41 @@ describe('OilFinderService', () => {
         });
         prisma.oilFinderVehicle.findMany.mockResolvedValue([]);
 
-        expect((await service.getEngines('X', 'Y'))).toHaveLength(1);
+        expect(await service.getEngines('X', 'Y')).toHaveLength(1);
       });
 
       it('keeps engines whose parenthetical qualifier is what distinguishes them', async () => {
         __setCleanCatalogForTests({
           alpina: {
-            makeName: 'ALPINA', makeSlug: 'alpina', categories: ['automobile'],
+            makeName: 'ALPINA',
+            makeSlug: 'alpina',
+            categories: ['automobile'],
             models: {
               b10: {
-                modelName: 'B10', modelSlug: 'b10', category: 'automobile',
+                modelName: 'B10',
+                modelSlug: 'b10',
+                category: 'automobile',
                 generations: {
-                  a: { genName: 'A', genSlug: 'a', yearFrom: 1985, yearTo: 1990, engines: [
-                    { engineCode: 'M30 B34 (34T36)', fuelType: 'essence', displacementCc: 3430, powerHp: 261 },
-                    { engineCode: 'M30 B34 (34C20)', fuelType: 'essence', displacementCc: 3430, powerHp: 254 },
-                  ] },
+                  a: {
+                    genName: 'A',
+                    genSlug: 'a',
+                    yearFrom: 1985,
+                    yearTo: 1990,
+                    engines: [
+                      {
+                        engineCode: 'M30 B34 (34T36)',
+                        fuelType: 'essence',
+                        displacementCc: 3430,
+                        powerHp: 261,
+                      },
+                      {
+                        engineCode: 'M30 B34 (34C20)',
+                        fuelType: 'essence',
+                        displacementCc: 3430,
+                        powerHp: 254,
+                      },
+                    ],
+                  },
                 },
               },
             },
@@ -1010,24 +1277,52 @@ describe('OilFinderService', () => {
         });
         prisma.oilFinderVehicle.findMany.mockResolvedValue([]);
 
-        const codes = (await service.getEngines('ALPINA', 'B10')).map((e) => e.engineCode);
+        const codes = (await service.getEngines('ALPINA', 'B10')).map(
+          (e) => e.engineCode,
+        );
         expect(codes).toHaveLength(2);
       });
 
       it('drops a displacement-only placeholder when a real code covers it', async () => {
         __setCleanCatalogForTests({
           geely: {
-            makeName: 'GEELY', makeSlug: 'geely', categories: ['automobile'],
+            makeName: 'GEELY',
+            makeSlug: 'geely',
+            categories: ['automobile'],
             models: {
               emgrand: {
-                modelName: 'Emgrand', modelSlug: 'emgrand', category: 'automobile',
+                modelName: 'Emgrand',
+                modelSlug: 'emgrand',
+                category: 'automobile',
                 generations: {
-                  a: { genName: 'A', genSlug: 'a', yearFrom: 2009, yearTo: 2016, engines: [
-                    { engineCode: '1.5 (JLy-4G15B)', fuelType: 'essence', displacementCc: 1498, powerHp: 109 },
-                  ] },
-                  b: { genName: 'B', genSlug: 'b', yearFrom: 2016, yearTo: null, engines: [
-                    { engineCode: 'JLY-4G15', fuelType: 'essence', displacementCc: 1498, powerHp: 109 },
-                  ] },
+                  a: {
+                    genName: 'A',
+                    genSlug: 'a',
+                    yearFrom: 2009,
+                    yearTo: 2016,
+                    engines: [
+                      {
+                        engineCode: '1.5 (JLy-4G15B)',
+                        fuelType: 'essence',
+                        displacementCc: 1498,
+                        powerHp: 109,
+                      },
+                    ],
+                  },
+                  b: {
+                    genName: 'B',
+                    genSlug: 'b',
+                    yearFrom: 2016,
+                    yearTo: null,
+                    engines: [
+                      {
+                        engineCode: 'JLY-4G15',
+                        fuelType: 'essence',
+                        displacementCc: 1498,
+                        powerHp: 109,
+                      },
+                    ],
+                  },
                 },
               },
             },
@@ -1035,22 +1330,44 @@ describe('OilFinderService', () => {
         });
         prisma.oilFinderVehicle.findMany.mockResolvedValue([]);
 
-        const codes = (await service.getEngines('GEELY', 'Emgrand')).map((e) => e.engineCode);
+        const codes = (await service.getEngines('GEELY', 'Emgrand')).map(
+          (e) => e.engineCode,
+        );
         expect(codes).toHaveLength(1);
       });
 
       it('keeps two real codes of the same displacement', async () => {
         __setCleanCatalogForTests({
           x: {
-            makeName: 'X', makeSlug: 'x', categories: ['automobile'],
+            makeName: 'X',
+            makeSlug: 'x',
+            categories: ['automobile'],
             models: {
               y: {
-                modelName: 'Y', modelSlug: 'y', category: 'automobile',
+                modelName: 'Y',
+                modelSlug: 'y',
+                category: 'automobile',
                 generations: {
-                  a: { genName: 'A', genSlug: 'a', yearFrom: 2000, yearTo: null, engines: [
-                    { engineCode: 'AAA111', fuelType: 'essence', displacementCc: 1598, powerHp: 105 },
-                    { engineCode: 'BBB222', fuelType: 'essence', displacementCc: 1598, powerHp: 115 },
-                  ] },
+                  a: {
+                    genName: 'A',
+                    genSlug: 'a',
+                    yearFrom: 2000,
+                    yearTo: null,
+                    engines: [
+                      {
+                        engineCode: 'AAA111',
+                        fuelType: 'essence',
+                        displacementCc: 1598,
+                        powerHp: 105,
+                      },
+                      {
+                        engineCode: 'BBB222',
+                        fuelType: 'essence',
+                        displacementCc: 1598,
+                        powerHp: 115,
+                      },
+                    ],
+                  },
                 },
               },
             },
@@ -1058,18 +1375,33 @@ describe('OilFinderService', () => {
         });
         prisma.oilFinderVehicle.findMany.mockResolvedValue([]);
 
-        expect((await service.getEngines('X', 'Y'))).toHaveLength(2);
+        expect(await service.getEngines('X', 'Y')).toHaveLength(2);
       });
 
       it('does not offer the same engine twice when power differs', async () => {
         catalogueWith([
-          { engineCode: '3UR-FE', fuelType: 'essence', displacementCc: 5663, powerHp: null },
+          {
+            engineCode: '3UR-FE',
+            fuelType: 'essence',
+            displacementCc: 5663,
+            powerHp: null,
+          },
         ]);
         prisma.oilFinderVehicle.findMany.mockResolvedValue([
-          { engineCode: '3UR-FE', yearFrom: 2008, yearTo: 2021, displacementCc: 5663, powerHp: 381, fuelType: 'essence', oilSpec: null },
+          {
+            engineCode: '3UR-FE',
+            yearFrom: 2008,
+            yearTo: 2021,
+            displacementCc: 5663,
+            powerHp: 381,
+            fuelType: 'essence',
+            oilSpec: null,
+          },
         ]);
 
-        const codes = (await service.getEngines('TOYOTA', 'Land Cruiser')).map((e) => e.engineCode);
+        const codes = (await service.getEngines('TOYOTA', 'Land Cruiser')).map(
+          (e) => e.engineCode,
+        );
         expect(codes.filter((c) => c === '3UR-FE')).toHaveLength(1);
       });
 
@@ -1094,7 +1426,15 @@ describe('OilFinderService', () => {
       it('serves verified rows for a model the catalogue does not know at all', async () => {
         __setCleanCatalogForTests({});
         prisma.oilFinderVehicle.findMany.mockResolvedValue([
-          { engineCode: '1.5 mHawk D70', yearFrom: 2011, yearTo: 9999, displacementCc: 1493, powerHp: null, fuelType: 'diesel', oilSpec: null },
+          {
+            engineCode: '1.5 mHawk D70',
+            yearFrom: 2011,
+            yearTo: 9999,
+            displacementCc: 1493,
+            powerHp: null,
+            fuelType: 'diesel',
+            oilSpec: null,
+          },
         ]);
 
         const engines = await service.getEngines('MAHINDRA', 'Bolero');
