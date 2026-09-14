@@ -182,6 +182,10 @@ export function VehicleFinder({ onClose, initialVehicleType }: VehicleFinderProp
   const [selectedGeneration, setSelectedGeneration] = useState<VehicleGeneration | null>(null)
   const [selectedEngine, setSelectedEngine] = useState<VehicleEngine | null>(null)
 
+  // Guards against a slower, superseded request (e.g. clicking Make A then Make B
+  // before A's models respond) overwriting the result of a newer one.
+  const requestSeqRef = useRef(0)
+
   const containerRef = useRef<HTMLDivElement>(null)
   const makeInputRef = useRef<HTMLInputElement>(null)
   const modelInputRef = useRef<HTMLInputElement>(null)
@@ -331,6 +335,7 @@ export function VehicleFinder({ onClose, initialVehicleType }: VehicleFinderProp
   }, [engines, engineFuelFilter, engineSearch])
 
   const loadModels = async (make: VehicleMake) => {
+    const seq = ++requestSeqRef.current
     setLoading(true)
     setError('')
     setModels([])
@@ -338,48 +343,54 @@ export function VehicleFinder({ onClose, initialVehicleType }: VehicleFinderProp
     setEngines([])
     try {
       const data = await productsApi.getModels(make.name, initialVehicleType ?? undefined)
+      if (seq !== requestSeqRef.current) return
       if (Array.isArray(data)) setModels(data)
     } catch {
-      setError('Impossible de charger les modèles pour cette marque')
+      if (seq === requestSeqRef.current) setError('Impossible de charger les modèles pour cette marque')
     } finally {
-      setLoading(false)
+      if (seq === requestSeqRef.current) setLoading(false)
     }
   }
 
   const loadGenerations = async (make: VehicleMake, model: VehicleModel) => {
+    const seq = ++requestSeqRef.current
     setLoading(true)
     setError('')
     setGenerations([])
     setEngines([])
     try {
       const data = await productsApi.getGenerations(make.name, model.name)
+      if (seq !== requestSeqRef.current) return
       if (Array.isArray(data) && data.length > 0) {
         setGenerations(data)
         setActiveDropdown('generation')
       } else {
         // Fallback if no specific generation: load engines directly
         const engData = await productsApi.getEngines(make.name, model.name)
+        if (seq !== requestSeqRef.current) return
         if (Array.isArray(engData)) setEngines(engData)
         setActiveDropdown('engine')
       }
     } catch {
-      setError('Impossible de charger les versions pour ce modèle')
+      if (seq === requestSeqRef.current) setError('Impossible de charger les versions pour ce modèle')
     } finally {
-      setLoading(false)
+      if (seq === requestSeqRef.current) setLoading(false)
     }
   }
 
   const loadEngines = async (make: VehicleMake, model: VehicleModel, generation?: VehicleGeneration | null) => {
+    const seq = ++requestSeqRef.current
     setLoading(true)
     setError('')
     setEngines([])
     try {
       const data = await productsApi.getEngines(make.name, model.name, generation?.name)
+      if (seq !== requestSeqRef.current) return
       if (Array.isArray(data)) setEngines(data)
     } catch {
-      setError('Impossible de charger les motorisations pour cette version')
+      if (seq === requestSeqRef.current) setError('Impossible de charger les motorisations pour cette version')
     } finally {
-      setLoading(false)
+      if (seq === requestSeqRef.current) setLoading(false)
     }
   }
 
