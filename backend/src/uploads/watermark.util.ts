@@ -2,9 +2,11 @@ import sharp from 'sharp';
 
 /**
  * "specpart" repeated diagonally across the entire photo (not just a corner
- * tag) so the mark can't be cropped or cloned out. Bold, low-opacity white
- * text with a faint dark shadow for legibility over both light and dark
- * backgrounds.
+ * tag) so the mark can't be cropped or cloned out. Normal-weight, low-opacity
+ * white text with a faint dark shadow for legibility over both light and dark
+ * backgrounds - was bold (700) and visually dominated the product photo
+ * instead of sitting as a subtle overlay; reported as looking bad in
+ * practice, confirmed by inspecting live product images.
  */
 export async function applyWatermark(buffer: Buffer): Promise<Buffer> {
   const image = sharp(buffer, { failOn: 'none' });
@@ -21,10 +23,10 @@ export async function applyWatermark(buffer: Buffer): Promise<Buffer> {
     <svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <pattern id="wm" width="${tileWidth}" height="${tileHeight}" patternUnits="userSpaceOnUse" patternTransform="rotate(-30)">
-          <text x="1" y="${textY + 1}" font-family="Arial, Helvetica, sans-serif" font-weight="700"
-            font-size="${fontSize}" fill="black" fill-opacity="0.16">specpart</text>
-          <text x="0" y="${textY}" font-family="Arial, Helvetica, sans-serif" font-weight="700"
-            font-size="${fontSize}" fill="white" fill-opacity="0.3">specpart</text>
+          <text x="1" y="${textY + 1}" font-family="Arial, Helvetica, sans-serif" font-weight="400"
+            font-size="${fontSize}" fill="black" fill-opacity="0.10">specpart</text>
+          <text x="0" y="${textY}" font-family="Arial, Helvetica, sans-serif" font-weight="400"
+            font-size="${fontSize}" fill="white" fill-opacity="0.22">specpart</text>
         </pattern>
       </defs>
       <rect width="${width}" height="${height}" fill="url(#wm)" />
