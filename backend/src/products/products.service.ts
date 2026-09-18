@@ -149,6 +149,21 @@ export const TAXONOMY_ALIAS_GROUPS: Record<string, string[]> = {
   'marine-graisses': ['marine-graisses'],
 };
 
+/**
+ * Coerce an untrusted numeric query param into a usable integer.
+ * Returns `fallback` for NaN/Infinity/non-numbers instead of letting them
+ * through to Prisma's take/skip.
+ */
+function clampInt(
+  value: number | undefined,
+  fallback: number,
+  min: number,
+  max: number,
+): number {
+  if (typeof value !== 'number' || !Number.isFinite(value)) return fallback;
+  return Math.min(Math.max(Math.trunc(value), min), max);
+}
+
 @Injectable()
 export class ProductsService {
   private readonly logger = new Logger(ProductsService.name);
@@ -327,8 +342,10 @@ export class ProductsService {
       if (cached) return cached;
     } catch {}
 
-    const page = Math.max(filters.page ?? 1, 1);
-    const limit = Math.min(filters.limit ?? 24, 100);
+    // clampInt, not Math.min/Math.max: `?limit=abc` parsed to NaN, and
+    // Math.min(NaN, 100) is NaN, which reached Prisma's `take` and 500'd.
+    const page = clampInt(filters.page, 1, 1, 10_000);
+    const limit = clampInt(filters.limit, 24, 1, 100);
     const skip = (page - 1) * limit;
 
     try {
@@ -844,7 +861,8 @@ export class ProductsService {
     ]);
   }
 
-  async findBestSellers(limit = 8) {
+  async findBestSellers(rawLimit = 8) {
+    const limit = clampInt(rawLimit, 8, 1, 48);
     return this.cache.wrap(
       `products:best-sellers:${limit}`,
       () => this._findBestSellers(limit),
@@ -912,7 +930,8 @@ export class ProductsService {
     }
   }
 
-  async findNew(limit = 8) {
+  async findNew(rawLimit = 8) {
+    const limit = clampInt(rawLimit, 8, 1, 48);
     return this.cache.wrap(
       `products:new:${limit}`,
       async () => {

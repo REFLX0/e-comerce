@@ -1,60 +1,102 @@
+#!/usr/bin/env node
+/**
+ * Generates a production `.env` from `.env.production.example`.
+ *
+ * It used to carry its own hardcoded copy of the env template, which had
+ * drifted badly from reality: stale database names, an old domain, RESEND_API_KEY
+ * instead of BREVO_API_KEY, and none of the MINIO_* / NEXT_PUBLIC_* variables
+ * docker-compose now requires. It also wrote `.env.production`, which nothing
+ * reads — docker-compose reads `.env`.
+ *
+ * The example file is now the single source of truth: this script copies it and
+ * fills in the CHANGE_ME_* placeholders with generated values.
+ *
+ * Usage:
+ *   node scripts/generate-secrets.js [--domain example.com] [--force]
+ */
+
 const fs = require('fs');
 const crypto = require('crypto');
 const path = require('path');
 
-const generateSecret = (length = 32) => crypto.randomBytes(length).toString('hex');
-const generateStrongPassword = (length = 24) => crypto.randomBytes(length).toString('base64').replace(/[^a-zA-Z0-9]/g, '').slice(0, length);
+const ROOT = path.join(__dirname, '..');
+const EXAMPLE_PATH = path.join(ROOT, '.env.production.example');
+const OUTPUT_PATH = path.join(ROOT, '.env');
 
-const envTemplate = `# ═══════════════════════════════════════════════════════════════════
-# specpart — Production Environment Variables
-# ═══════════════════════════════════════════════════════════════════
+const args = process.argv.slice(2);
+const force = args.includes('--force');
+const domainIndex = args.indexOf('--domain');
+const domain = domainIndex !== -1 ? args[domainIndex + 1] : null;
 
-# ── Application ───────────────────────────────────────────────────
-NODE_ENV=production
-# Update these to your actual production domains:
-DOMAIN=specpart.tn
-FRONTEND_URL=https://specpart.tn
+const randomSecret = (bytes = 48) =>
+  crypto.randomBytes(bytes).toString('base64').replace(/=+$/, '');
 
-# ── Database ──────────────────────────────────────────────────────
-POSTGRES_USER=kiosquetn_prod
-POSTGRES_PASSWORD={{POSTGRES_PASSWORD}}
-POSTGRES_DB=kiosquetn_prod
-DATABASE_URL=postgresql://kiosquetn_prod:{{POSTGRES_PASSWORD}}@db:5432/kiosquetn_prod?schema=public
+/** Alphanumeric only — these end up inside a Postgres connection URL. */
+const randomPassword = (length = 32) =>
+  crypto
+    .randomBytes(length * 2)
+    .toString('base64')
+    .replace(/[^a-zA-Z0-9]/g, '')
+    .slice(0, length);
 
-# ── Authentication ────────────────────────────────────────────────
-JWT_SECRET={{JWT_SECRET}}
-NEXTAUTH_URL=https://specpart.tn
-NEXTAUTH_SECRET={{NEXTAUTH_SECRET}}
-
-# ── Cloudinary (image uploads) ────────────────────────────────────
-# Replace with your real Cloudinary credentials
-CLOUDINARY_CLOUD_NAME=your_cloud_name
-CLOUDINARY_API_KEY=your_api_key
-CLOUDINARY_API_SECRET=your_api_secret
-
-# ── Resend (transactional email) ──────────────────────────────────
-RESEND_API_KEY=your_resend_api_key
-
-# ── Redis ─────────────────────────────────────────────────────────
-REDIS_HOST=redis
-REDIS_PORT=6379
-
-# ── Domain Configuration (For Certbot) ─────────────────────────────
-CERTBOT_DOMAIN=specpart.tn
-CERTBOT_EMAIL=admin@specpart.tn
-`;
-
-const envContent = envTemplate
-  .replace(/{{POSTGRES_PASSWORD}}/g, generateStrongPassword(24))
-  .replace('{{JWT_SECRET}}', generateSecret(32))
-  .replace('{{NEXTAUTH_SECRET}}', generateSecret(32));
-
-const envFilePath = path.join(__dirname, '..', '.env.production');
-
-if (fs.existsSync(envFilePath)) {
-  console.log('⚠️  .env.production already exists. Skipping generation to avoid overwriting.');
-} else {
-  fs.writeFileSync(envFilePath, envContent);
-  console.log('✅ Generated .env.production with secure cryptographic secrets.');
-  console.log('Please open .env.production and update the DOMAIN, Cloudinary, and Resend keys before deploying.');
+if (!fs.existsSync(EXAMPLE_PATH)) {
+  console.error(`✖  Missing ${path.relative(ROOT, EXAMPLE_PATH)}`);
+  process.exit(1);
 }
+
+if (fs.existsSync(OUTPUT_PATH) && !force) {
+  console.error(
+    `⚠️  ${path.relative(ROOT, OUTPUT_PATH)} already exists. Refusing to overwrite.\n` +
+      '    Re-run with --force if you really want to regenerate every secret\n' +
+      '    (this invalidates all sessions and breaks the existing database login).'
+  );
+  process.exit(1);
+}
+
+const secrets = {
+  POSTGRES_PASSWORD: randomPassword(32),
+  JWT_SECRET: randomSecret(48),
+  NEXTAUTH_SECRET: randomSecret(48),
+  MINIO_USER: `specpart-${crypto.randomBytes(4).toString('hex')}`,
+  MINIO_PASSWORD: randomPassword(32),
+};
+
+let content = fs.readFileSync(EXAMPLE_PATH, 'utf8');
+
+// The DB password appears both standalone and inside the connection URLs.
+content = content
+  .replace(/CHANGE_ME_STRONG_DB_PASSWORD/g, secrets.POSTGRES_PASSWORD)
+  .replace(/^JWT_SECRET=.*$/m, `JWT_SECRET=${secrets.JWT_SECRET}`)
+  .replace(/^NEXTAUTH_SECRET=.*$/m, `NEXTAUTH_SECRET=${secrets.NEXTAUTH_SECRET}`)
+  .replace(/^MINIO_ROOT_USER=.*$/m, `MINIO_ROOT_USER=${secrets.MINIO_USER}`)
+  .replace(
+    /^MINIO_ROOT_PASSWORD=.*$/m,
+    `MINIO_ROOT_PASSWORD=${secrets.MINIO_PASSWORD}`
+  );
+
+if (domain) {
+  const bare = domain.replace(/^https?:\/\//, '').replace(/\/$/, '');
+  content = content
+    .replace(/^DOMAIN=.*$/m, `DOMAIN=${bare}`)
+    .replace(/^FRONTEND_URL=.*$/m, `FRONTEND_URL=https://${bare}`)
+    .replace(/^NEXTAUTH_URL=.*$/m, `NEXTAUTH_URL=https://${bare}`)
+    .replace(/^NEXT_PUBLIC_SITE_URL=.*$/m, `NEXT_PUBLIC_SITE_URL=https://${bare}`);
+}
+
+fs.writeFileSync(OUTPUT_PATH, content, { mode: 0o600 });
+
+const remaining = content
+  .split('\n')
+  .filter((line) => /CHANGE_ME|yourdomain\.com/.test(line))
+  .map((line) => `     ${line.split('=')[0]}`);
+
+console.log(`✔  Wrote ${path.relative(ROOT, OUTPUT_PATH)} (mode 0600)`);
+console.log('   Generated: POSTGRES_PASSWORD, JWT_SECRET, NEXTAUTH_SECRET, MINIO_ROOT_*');
+if (remaining.length > 0) {
+  console.log('\n⚠️  Still needs a real value before deploying:');
+  console.log(remaining.join('\n'));
+}
+console.log(
+  '\n   NEXT_PUBLIC_* are inlined at build time — rebuild the frontend image\n' +
+    '   after changing the domain: docker compose build frontend'
+);

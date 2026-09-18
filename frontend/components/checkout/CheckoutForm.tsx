@@ -3,7 +3,7 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useCartStore } from '@/lib/store/cart.store'
 import { ordersApi } from '@/lib/api/orders'
 import { couponsApi } from '@/lib/api/coupons'
@@ -19,6 +19,12 @@ export function CheckoutForm() {
   const t = useTranslations('Checkout')
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
+  // Idempotency key for this checkout attempt. The backend keys off it to
+  // return the already-created order instead of placing a second one, so it
+  // has to survive a retry after a timeout or a network error - which means it
+  // must NOT be regenerated per submit. It is only rotated once an order has
+  // actually been placed.
+  const idempotencyKeyRef = useRef<string | null>(null)
   const [promoInput, setPromoInput] = useState('')
   const [promoLoading, setPromoLoading] = useState(false)
   const [promoError, setPromoError] = useState('')
@@ -121,6 +127,15 @@ export function CheckoutForm() {
       toast.error(t('emptyCart'))
       return
     }
+    // Guard against a second submit while the first is still in flight.
+    if (isLoading) return
+
+    if (!idempotencyKeyRef.current) {
+      idempotencyKeyRef.current =
+        typeof crypto !== 'undefined' && 'randomUUID' in crypto
+          ? crypto.randomUUID()
+          : `${Date.now()}-${Math.random().toString(36).slice(2)}`
+    }
 
     setIsLoading(true)
     try {
@@ -141,9 +156,12 @@ export function CheckoutForm() {
           vehicleVin: data.vehicleVin?.trim() || undefined,
           shippingCost,
           promoCode,
+          idempotencyKey: idempotencyKeyRef.current,
         }
       )
 
+      // Order is in; the next checkout is a genuinely new one.
+      idempotencyKeyRef.current = null
       clearCart()
       toast.success(t('orderPlaced'), { preset: 'bouncy' })
       router.push(`/checkout/success?orderId=${order.id}`)

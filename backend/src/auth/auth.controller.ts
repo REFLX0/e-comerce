@@ -6,6 +6,7 @@ import {
   HttpStatus,
   Res,
   Req,
+  UnauthorizedException,
 } from '@nestjs/common';
 import type { Response, Request } from 'express';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
@@ -14,15 +15,9 @@ import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
-
-const COOKIE_OPTIONS = {
-  httpOnly: true,
-  secure:
-    process.env.NODE_ENV === 'production' &&
-    process.env.FRONTEND_URL?.startsWith('https'),
-  sameSite: 'lax' as const,
-  maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-};
+import { EmailDto } from './dto/email.dto';
+import { RefreshTokenDto } from './dto/refresh-token.dto';
+import { clearAuthCookies, setAuthCookies } from '../common/utils/auth-cookies';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -37,8 +32,7 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ) {
     const data = await this.authService.register(dto);
-    res.cookie('access_token', data.accessToken, COOKIE_OPTIONS);
-    res.cookie('refresh_token', data.refreshToken, COOKIE_OPTIONS);
+    setAuthCookies(res, data);
     return data;
   }
 
@@ -50,40 +44,51 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ) {
     const data = await this.authService.login(dto);
-    res.cookie('access_token', data.accessToken, COOKIE_OPTIONS);
-    res.cookie('refresh_token', data.refreshToken, COOKIE_OPTIONS);
+    setAuthCookies(res, data);
     return data;
   }
 
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
   @Throttle({ default: { limit: 20, ttl: 60000 } })
-  refresh(@Body('refreshToken') token: string) {
-    return this.authService.refresh(token);
+  async refresh(
+    @Body() dto: RefreshTokenDto,
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    // Browser clients only ever hold the token in the HttpOnly cookie, so the
+    // cookie has to be a valid source here the way it already is for logout.
+    const token = dto.refreshToken || req.cookies?.refresh_token;
+    if (!token) {
+      throw new UnauthorizedException('Missing refresh token');
+    }
+    const data = await this.authService.refresh(token);
+    setAuthCookies(res, data);
+    return data;
   }
 
   @Post('logout')
   @HttpCode(HttpStatus.OK)
   @Throttle({ default: { limit: 20, ttl: 60000 } })
   logout(
-    @Body('refreshToken') token: string,
+    @Body() dto: RefreshTokenDto,
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const refreshToken = token || req.cookies?.refresh_token;
-    res.clearCookie('access_token');
-    res.clearCookie('refresh_token');
+    const refreshToken = dto.refreshToken || req.cookies?.refresh_token;
+    clearAuthCookies(res);
     if (refreshToken) {
       return this.authService.logout(refreshToken);
     }
-    return { success: true };
+    return { message: 'Logged out successfully' };
   }
 
   @Post('forgot-password')
   @HttpCode(HttpStatus.OK)
   @Throttle({ default: { limit: 3, ttl: 60000 } })
-  forgotPassword(@Body('email') email: string) {
-    return this.authService.forgotPassword(email);
+  @ApiOperation({ summary: 'Send a password reset link if the account exists' })
+  forgotPassword(@Body() dto: EmailDto) {
+    return this.authService.forgotPassword(dto.email);
   }
 
   @Post('reset-password')
@@ -96,7 +101,7 @@ export class AuthController {
   @Post('newsletter')
   @HttpCode(HttpStatus.OK)
   @Throttle({ default: { limit: 3, ttl: 60000 } })
-  subscribeNewsletter(@Body('email') email: string) {
-    return this.authService.subscribeNewsletter(email);
+  subscribeNewsletter(@Body() dto: EmailDto) {
+    return this.authService.subscribeNewsletter(dto.email);
   }
 }

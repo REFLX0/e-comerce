@@ -1414,7 +1414,7 @@
     "articles": {
       "0": {
         "title": "Article 1 – Purpose",
-        "content": "These general conditions of sale (CGV) govern all transactions carried out on the specpart.tn website. Any order implies unconditional acceptance of these CGV."
+        "content": "These general conditions of sale (CGV) govern all transactions carried out on the {siteDomain} website. Any order implies unconditional acceptance of these CGV."
       },
       "1": {
         "title": "Article 2 – Products",
@@ -1426,7 +1426,7 @@
       },
       "3": {
         "title": "Article 4 – Orders",
-        "content": "The customer places an order on the specpart.tn website. Validating the order implies acceptance of these CGV and constitutes a sales contract. specpart will confirm the order by email."
+        "content": "The customer places an order on the {siteDomain} website. Validating the order implies acceptance of these CGV and constitutes a sales contract. specpart will confirm the order by email."
       },
       "4": {
         "title": "Article 5 – Shipping",
@@ -1838,9 +1838,9 @@
   },
   "Legal": {
     "metaTitle": "Legal Notice | specpart",
-    "metaDescription": "Legal notice of the specpart.tn website.",
+    "metaDescription": "Legal notice of the {siteDomain} website.",
     "title": "Legal Notice",
-    "subtitle": "Legal information about the specpart.tn website",
+    "subtitle": "Legal information about the {siteDomain} website",
     "breadcrumb": "Legal notice",
     "editor": "Website publisher",
     "editorContent": "Legal form: SARL",

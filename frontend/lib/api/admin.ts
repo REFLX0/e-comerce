@@ -69,6 +69,10 @@ export const adminApi = {
   getCatalogBrands: () =>
     api.get<CatalogBrand[]>('/admin/catalog/brands'),
 
+  /** Find-or-create: returns the existing brand if the name already exists. */
+  createCatalogBrand: (name: string) =>
+    api.post<CatalogBrand>('/admin/catalog/brands', { name }),
+
   getCatalogCategories: () =>
     api.get<CatalogCategory[]>('/admin/catalog/categories'),
 

@@ -2,8 +2,12 @@ import { Type } from 'class-transformer';
 import {
   IsString,
   IsArray,
+  ArrayMinSize,
+  ArrayMaxSize,
+  IsEmail,
   IsInt,
   IsNumber,
+  Max,
   Min,
   IsOptional,
   ValidateNested,
@@ -11,7 +15,7 @@ import {
 
 export class OrderItemDto {
   @IsString() variantId: string;
-  @IsInt() @Min(1) quantity: number;
+  @IsInt() @Min(1) @Max(1000) quantity: number;
 }
 
 export class ShippingDto {
@@ -19,11 +23,14 @@ export class ShippingDto {
   @IsString() phone: string;
   @IsString() wilaya: string;
   @IsString() city: string;
-  @IsOptional() @IsString() email?: string;
+  // Stored on the order so guest checkouts can still be emailed later.
+  @IsOptional() @IsEmail() email?: string;
 }
 
 export class CreateOrderDto {
   @IsArray()
+  @ArrayMinSize(1)
+  @ArrayMaxSize(200)
   @ValidateNested({ each: true })
   @Type(() => OrderItemDto)
   items: OrderItemDto[];

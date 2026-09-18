@@ -289,11 +289,19 @@ export class UsersService {
     if (!valid) throw new ForbiddenException('Ancien mot de passe incorrect');
 
     const hash = await bcrypt.hash(dto.newPassword, 12);
-    await this.prisma.user.update({
+    const updated = await this.prisma.user.update({
       where: { id: userId },
-      data: { passwordHash: hash },
+      data: {
+        passwordHash: hash,
+        // Signs out every other session holding a token minted before now.
+        // The caller re-issues a cookie for this session (see the controller).
+        passwordChangedAt: new Date(),
+      },
     });
-    return { success: true };
+    return {
+      success: true,
+      user: { id: updated.id, email: updated.email, role: updated.role },
+    };
   }
 
   private optionalString(value?: string) {

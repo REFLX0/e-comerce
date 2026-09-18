@@ -100,69 +100,43 @@ AUTH_TRUST_HOST=true
 
 ---
 
-## 📁 4. Root Production Template (`/.env.production`)
+## 📁 4. Root Production `.env`
 
-Production template for deployment on **AWS EC2** or **Oracle Cloud**:
+**Single source of truth: [`.env.production.example`](.env.production.example).**
 
-```env
-# ── Application ───────────────────────────────────────────────────
-NODE_ENV=production
-DOMAIN=specpart.tn
-FRONTEND_URL=https://specpart.tn
-NEXT_PUBLIC_SITE_URL=https://specpart.tn
-NEXT_PUBLIC_API_URL=/api
+This section used to inline a second copy of the production template, which had
+drifted from the real one (stale domain, `RESEND_*` instead of `BREVO_*`, and
+none of the `MINIO_ROOT_*` variables `docker-compose.yml` requires). Copy the
+example file instead, or let the generator fill the secrets in for you:
 
-# ── Database (PostgreSQL) ─────────────────────────────────────────
-POSTGRES_USER=specpart
-POSTGRES_PASSWORD=CHANGE_ME_STRONG_DB_PASSWORD
-POSTGRES_DB=specpart
-DATABASE_URL=postgresql://specpart:CHANGE_ME_STRONG_DB_PASSWORD@db:5432/specpart?schema=public
-
-# ── Kafka ─────────────────────────────────────────────────────────
-KAFKA_BROKERS=kafka:9092
-
-# ── Authentication ────────────────────────────────────────────────
-JWT_SECRET=CHANGE_ME_GENERATE_WITH_OPENSSL
-NEXTAUTH_URL=https://specpart.tn
-NEXTAUTH_SECRET=CHANGE_ME_GENERATE_WITH_OPENSSL
-AUTH_SECRET=CHANGE_ME_GENERATE_WITH_OPENSSL
-AUTH_TRUST_HOST=true
-
-# ── Google OAuth ──────────────────────────────────────────────────
-GOOGLE_CLIENT_ID=your_google_client_id
-GOOGLE_CLIENT_SECRET=your_google_client_secret
-
-# ── Cloudinary (Product image CDN) ────────────────────────────────
-CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
-CLOUDINARY_API_KEY=your_cloudinary_api_key
-CLOUDINARY_API_SECRET=your_cloudinary_api_secret
-
-# ── Transactional Email (Resend) ──────────────────────────────────
-RESEND_API_KEY=re_your_resend_api_key_here
-RESEND_FROM="Specpart <noreply@specpart.tn>"
-ADMIN_NOTIFICATION_EMAIL=specpart@hotmail.com
-
-# ── Redis Cache & Queues ──────────────────────────────────────────
-REDIS_HOST=redis
-REDIS_PORT=6379
-
-# ── AI Chatbot Assistant ──────────────────────────────────────────
-OPENROUTER_API_KEY=your_openrouter_api_key
-OPENROUTER_MODEL=openai/gpt-4o-mini
-
-# ── Sentry Error Tracking (Optional) ──────────────────────────────
-SENTRY_DSN=
-NEXT_PUBLIC_SENTRY_DSN=
+```bash
+# Fills POSTGRES_PASSWORD / JWT_SECRET / NEXTAUTH_SECRET / MINIO_ROOT_* and
+# writes .env with mode 0600. Pass --domain to set every URL at once.
+node scripts/generate-secrets.js --domain yourdomain.com
 ```
 
----
+> `docker compose` reads `.env` at the repo root — not `.env.production`.
+
+### Changing domain
+
+`DOMAIN`, `FRONTEND_URL`, `NEXTAUTH_URL` and `NEXT_PUBLIC_SITE_URL` all move
+together. Two things are easy to miss:
+
+1. **`NEXT_PUBLIC_*` are inlined at build time.** Restarting the frontend is not
+   enough — the image must be rebuilt (`docker compose build frontend`) or
+   canonical URLs, the sitemap, `robots.txt` and the legal pages keep pointing at
+   the old domain. The deploy workflow rebuilds, so updating `.env` before
+   deploying is sufficient.
+2. **Issue the TLS certificate for the new host first.** `DOMAIN` drives both
+   nginx's `server_name` and the `/etc/letsencrypt/live/<DOMAIN>/` certificate
+   path, so nginx will refuse to start if the certificate is not there yet.
 
 ## 📋 5. Summary Table of Environment Variables
 
 | Variable | Category | Required | Description |
 |---|---|---|---|
 | `NODE_ENV` | App | Yes | `production` or `development` |
-| `DOMAIN` | App | Yes | Primary domain (e.g., `specpart.tn` or `localhost`) |
+| `DOMAIN` | App | **Yes** | Primary domain. Drives nginx `server_name` **and** the Let's Encrypt certificate path. |
 | `FRONTEND_URL` | App | Yes | Base frontend URL |
 | `DATABASE_URL` | Database | Yes | PostgreSQL connection string |
 | `JWT_SECRET` | Auth | **Yes** | Secret key for signing backend JWTs (**min 16 chars** — validated by Joi at startup) |
@@ -176,6 +150,8 @@ NEXT_PUBLIC_SENTRY_DSN=
 | `CLOUDINARY_CLOUD_NAME` | Media | Optional | Cloudinary storage bucket name |
 | `CLOUDINARY_API_KEY` | Media | Optional | Cloudinary API Key |
 | `CLOUDINARY_API_SECRET` | Media | Optional | Cloudinary Secret |
+| `MINIO_ROOT_USER` | Media | **Yes** | MinIO root user. `docker-compose.yml` fails to start without it. |
+| `MINIO_ROOT_PASSWORD` | Media | **Yes** | MinIO root password. `docker-compose.yml` fails to start without it. |
 | `MINIO_ENDPOINT` | Media | Optional | Full MinIO S3-compatible endpoint URL (e.g. `http://minio:9000`). If set, uploads go to MinIO instead of Cloudinary. |
 | `MINIO_BUCKET` | Media | Optional | MinIO bucket name (default: `specpart`) |
 | `MINIO_ACCESS_KEY` | Media | Optional | MinIO access key ID (default: `admin`) |

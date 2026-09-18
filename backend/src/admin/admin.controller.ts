@@ -24,6 +24,7 @@ import { RolesGuard } from '../common/guards/roles.guard';
 import { Roles } from '../common/decorators/roles.decorator';
 import { AdminService } from './admin.service';
 import { CreateProductDto } from './dto/create-product.dto';
+import { CreateBrandDto } from './dto/create-brand.dto';
 
 @ApiTags('admin')
 @ApiBearerAuth()
@@ -52,6 +53,14 @@ export class AdminController {
   }
   @Get('catalog/brands') getCatalogBrands() {
     return this.adminService.getCatalogBrands();
+  }
+
+  // Lets the product form add a manufacturer that isn't in the list yet.
+  // Find-or-create, so typing an existing brand never makes a duplicate.
+  @Post('catalog/brands')
+  @HttpCode(HttpStatus.OK)
+  createCatalogBrand(@Body() dto: CreateBrandDto) {
+    return this.adminService.findOrCreateBrand(dto.name);
   }
   @Get('catalog/categories') getCatalogCategories() {
     return this.adminService.getCatalogCategories();

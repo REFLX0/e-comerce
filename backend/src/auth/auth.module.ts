@@ -11,8 +11,11 @@ import { JwtStrategy } from './strategies/jwt.strategy';
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.registerAsync({
       imports: [ConfigModule],
+      // getOrThrow, not a default: a baked-in fallback secret means a container
+      // started without JWT_SECRET happily signs tokens with a value that is
+      // public in this repo.
       useFactory: (config: ConfigService) => ({
-        secret: config.get('JWT_SECRET', 'fallback-dev-secret'),
+        secret: config.getOrThrow<string>('JWT_SECRET'),
         signOptions: { expiresIn: '7d' },
       }),
       inject: [ConfigService],

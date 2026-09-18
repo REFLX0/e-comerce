@@ -14,12 +14,16 @@ import { MailService } from '../mail/mail.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { Redis } from 'ioredis';
+import { normalizeEmail } from '../common/utils/normalize-email';
 
 @Injectable()
 export class AuthService {
   private readonly logger = new Logger(AuthService.name);
   private redis: Redis | null = null;
-  private inMemoryTokens = new Map<string, { userId: string; expiresAt: number }>();
+  private inMemoryTokens = new Map<
+    string,
+    { userId: string; expiresAt: number }
+  >();
 
   constructor(
     private readonly prisma: PrismaService,
@@ -48,11 +52,12 @@ export class AuthService {
     }
   }
 
-
-
   async register(dto: RegisterDto) {
+    // Stored canonicalised so it always matches the lookups in login() and
+    // forgotPassword(), which normalise too.
+    const email = normalizeEmail(dto.email) as string;
     const existing = await this.prisma.user.findUnique({
-      where: { email: dto.email },
+      where: { email },
     });
     if (existing) throw new ConflictException('Email already registered');
 
@@ -60,7 +65,7 @@ export class AuthService {
     const user = await this.prisma.user.create({
       data: {
         name: `${dto.firstName} ${dto.lastName}`,
-        email: dto.email,
+        email,
         passwordHash: hash,
         phone: dto.phone,
         role: 'CUSTOMER',
@@ -68,21 +73,23 @@ export class AuthService {
     });
 
     // Send Welcome Email to User + New User Alert to Admin
-    this.mailService.sendWelcomeEmails({
-      email: user.email,
-      name: user.name ?? 'Client',
-      phone: user.phone,
-    }).catch(() => {});
+    this.mailService
+      .sendWelcomeEmails({
+        email: user.email,
+        name: user.name ?? 'Client',
+        phone: user.phone,
+      })
+      .catch(() => {});
 
     return this.generateTokens(user);
   }
 
   async login(dto: LoginDto) {
     try {
-      const email = (dto.email || '').toLowerCase().trim();
+      const email = normalizeEmail(dto.email || '') as string;
       const password = (dto.password || '').trim();
 
-      let user = await this.prisma.user.findUnique({
+      const user = await this.prisma.user.findUnique({
         where: { email },
       });
 
@@ -106,13 +113,23 @@ export class AuthService {
           .catch(() => {});
       } catch {}
 
-      return await this.generateTokens(user as any);
+      return await this.generateTokens(user);
     } catch (err: any) {
-      if (err instanceof UnauthorizedException || err instanceof ConflictException) {
+      if (
+        err instanceof UnauthorizedException ||
+        err instanceof ConflictException
+      ) {
         throw err;
       }
-      this.logger.error(`Login error for ${dto.email}: ${err.message}`, err.stack);
-      throw new UnauthorizedException(err.message || 'Erreur de connexion. Veuillez vérifier vos identifiants.');
+      this.logger.error(
+        `Login error for ${dto.email}: ${err.message}`,
+        err.stack,
+      );
+      // Never surface the underlying error text: a DB/Redis failure would
+      // otherwise be echoed to the client inside a 401.
+      throw new UnauthorizedException(
+        'Erreur de connexion. Veuillez vérifier vos identifiants.',
+      );
     }
   }
 
@@ -207,12 +224,15 @@ export class AuthService {
         image: user.image ?? undefined,
         role: user.role,
         addresses: [],
-        createdAt: user.createdAt ? new Date(user.createdAt).toISOString() : new Date().toISOString(),
+        createdAt: user.createdAt
+          ? new Date(user.createdAt).toISOString()
+          : new Date().toISOString(),
       },
     };
   }
 
-  async forgotPassword(email: string) {
+  async forgotPassword(rawEmail: string) {
+    const email = normalizeEmail(rawEmail) as string;
     const user = await this.prisma.user.findUnique({ where: { email } });
     if (user) {
       const token = crypto.randomBytes(32).toString('hex');
@@ -241,6 +261,8 @@ export class AuthService {
         passwordHash: hash,
         resetPasswordToken: null,
         resetPasswordExpires: null,
+        // Invalidates every access token issued before now (see JwtStrategy).
+        passwordChangedAt: new Date(),
       },
     });
     return { message: 'Password reset successfully' };

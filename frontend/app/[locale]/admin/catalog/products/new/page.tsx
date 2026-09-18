@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from 'react'
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { adminApi } from '@/lib/api/admin'
+import { BrandPicker, NEW_BRAND, resolveBrandId } from '@/components/admin/BrandPicker'
 import { useRouter } from 'next/navigation'
 import { gooeyToast as toast } from 'goey-toast'
 import {
@@ -72,6 +73,8 @@ export default function NewProductPage() {
   const [description, setDescription] = useState('')
   const [shortDescription, setShortDescription] = useState('')
   const [brandId, setBrandId] = useState('')
+  const [newBrandName, setNewBrandName] = useState('')
+  const queryClient = useQueryClient()
   const [categoryId, setCategoryId] = useState('')
   const [isPublished, setIsPublished] = useState(false)
   const [isFeatured, setIsFeatured] = useState(false)
@@ -260,6 +263,11 @@ export default function NewProductPage() {
       return
     }
 
+    if (brandId === NEW_BRAND && !newBrandName.trim()) {
+      toast.error('Veuillez saisir le nom de la nouvelle marque.')
+      return
+    }
+
     if (productType === 'piece' && (!price || parseFloat(price) <= 0)) {
       toast.error('Veuillez saisir un prix valide pour cette pièce.')
       return
@@ -273,6 +281,21 @@ export default function NewProductPage() {
     setIsUploading(true)
 
     try {
+      // 0. Create the brand first if it was typed in manually
+      const resolvedBrandId = await resolveBrandId(
+        brandId,
+        newBrandName,
+        adminApi.createCatalogBrand
+      )
+      if (!resolvedBrandId) throw new Error('Marque invalide')
+      if (brandId === NEW_BRAND) {
+        // Keep the form on the real id so a retry after a later failure does
+        // not try to create the brand again, and refresh the list for next time.
+        setBrandId(resolvedBrandId)
+        setNewBrandName('')
+        queryClient.invalidateQueries({ queryKey: ['admin-catalog-brands'] })
+      }
+
       // 1. Upload all local product images in order
       const primaryItem = images.find((img) => img.isPrimary) || images[0]
       const orderedImages = primaryItem
@@ -318,7 +341,7 @@ export default function NewProductPage() {
         sku: sku.trim() || `SKU-${slug.toUpperCase()}-${Date.now().toString().slice(-4)}`,
         description: description.trim() || nameFr.trim(),
         shortDescription: shortDescription.trim() || undefined,
-        brandId,
+        brandId: resolvedBrandId,
         categoryId,
         isPublished,
         isFeatured,
@@ -482,19 +505,13 @@ export default function NewProductPage() {
               <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">
                 Marque Fabricant <span className="text-rose-500">*</span>
               </label>
-              <select
-                value={brandId}
-                onChange={(e) => setBrandId(e.target.value)}
-                className="w-full rounded-2xl border border-slate-200 bg-slate-50/60 px-4 py-3 text-sm font-semibold text-slate-800 outline-none transition-all focus:border-[#16254c] focus:bg-white focus:ring-2 focus:ring-[#16254c]/10"
-                required
-              >
-                <option value="">-- Sélectionner une marque --</option>
-                {brandsData.map((b: any) => (
-                  <option key={b.id} value={b.id}>
-                    {b.name || b.nameFr}
-                  </option>
-                ))}
-              </select>
+              <BrandPicker
+                brands={brandsData}
+                brandId={brandId}
+                onBrandIdChange={setBrandId}
+                newBrandName={newBrandName}
+                onNewBrandNameChange={setNewBrandName}
+              />
             </div>
 
             <div className="space-y-1.5">

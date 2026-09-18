@@ -5,6 +5,7 @@ import { Phone, Mail, MapPin, Clock, Send } from 'lucide-react'
 import { useState } from 'react'
 import { gooeyToast as toast } from 'goey-toast'
 import { useTranslations } from 'next-intl'
+import { CONTACT_EMAIL } from '@/lib/site'
 // Logo is served directly from public/logo.jpg
 
 const Facebook = ({ size = 20 }: { size?: number }) => (
@@ -217,8 +218,8 @@ export default function Footer() {
               </li>
               <li className="flex items-center gap-3">
                 <Mail size={15} className="text-brand-accent shrink-0" />
-                <a href="mailto:contact@specpart.tn" className="text-white/45 hover:text-white transition-colors">
-                  contact@specpart.tn
+                <a href={`mailto:${CONTACT_EMAIL}`} className="text-white/45 hover:text-white transition-colors">
+                  {CONTACT_EMAIL}
                 </a>
               </li>
               <li className="flex items-start gap-3">

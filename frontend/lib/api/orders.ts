@@ -16,6 +16,11 @@ interface CreateOrderPayload {
   notes?: string
   vehicleVin?: string
   shippingCost?: number
+  /**
+   * Stable per checkout attempt. Without it the backend generates a throwaway
+   * key per request, which made its duplicate-order guard a no-op.
+   */
+  idempotencyKey?: string
 }
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || '/api'

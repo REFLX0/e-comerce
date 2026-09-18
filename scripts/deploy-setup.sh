@@ -17,20 +17,16 @@ else
   git clone https://github.com/REFLX0/e-comerce.git .
 fi
 
-echo "=== Setting up production NGINX config ==="
-cp nginx/nginx.prod.conf nginx/nginx.conf
+# NGINX: no copy step any more. docker-compose mounts
+# nginx/nginx.prod.conf.template into /etc/nginx/templates/ and the nginx
+# image renders it with ${DOMAIN} at container start.
 
 echo "=== Generating secure defaults for .env ==="
-cp .env.production.example .env
-# We'll auto-generate the secrets using openssl
-JWT_SECRET=$(openssl rand -base64 48)
-NEXTAUTH_SECRET=$(openssl rand -base64 48)
-DB_PASSWORD=$(openssl rand -base64 24 | tr -dc 'a-zA-Z0-9' | head -c 16)
-
-# Use sed to replace the placeholders in .env
-sed -i "s/CHANGE_ME_GENERATE_WITH_OPENSSL/$JWT_SECRET/1" .env
-sed -i "s/CHANGE_ME_GENERATE_WITH_OPENSSL/$NEXTAUTH_SECRET/1" .env
-sed -i "s/CHANGE_ME_STRONG_DB_PASSWORD/$DB_PASSWORD/g" .env
+# Delegated to the generator so every required placeholder is filled - the
+# hand-rolled sed version here missed MINIO_ROOT_USER/PASSWORD (which
+# docker-compose requires, so the stack would not start) and could be
+# mangled by the "/" characters in a base64 secret.
+node scripts/generate-secrets.js
 
 echo "=== Environment variables initialized (API Keys still need manual entry) ==="
 

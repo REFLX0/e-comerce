@@ -1,3 +1,17 @@
+# ═══════════════════════════════════════════════════════════════════════════
+# NGINX config TEMPLATE.
+#
+# Mounted at /etc/nginx/templates/nginx.conf.template; the official nginx image
+# runs envsubst over it at container start and writes /etc/nginx/nginx.conf
+# (NGINX_ENVSUBST_OUTPUT_DIR=/etc/nginx in docker-compose.yml). Only variables
+# that are actually exported are substituted, so nginx's own $host / $scheme /
+# $remote_addr are left alone.
+#
+# ${DOMAIN} is the only thing that changes when the site moves domains - it is
+# required by docker-compose.yml, and the certbot service issues/renews the
+# certificate for the same value.
+# ═══════════════════════════════════════════════════════════════════════════
+
 events {
     worker_connections 2048;
     multi_accept on;
@@ -109,8 +123,10 @@ http {
 
     # ── HTTP Server (Port 80) -> Redirect to HTTPS ────────────────────────────
     server {
-        listen 80;
-        server_name specpart.tech www.specpart.tech _;
+        # default_server: requests with an unrecognised Host (including the
+        # internal `Host: nginx:8082` used for SSR) must still land here.
+        listen 80 default_server;
+        server_name ${DOMAIN} www.${DOMAIN};
 
         location /.well-known/acme-challenge/ {
             root /var/www/certbot;
@@ -123,12 +139,12 @@ http {
 
     # ── HTTPS Main Server (Port 443 & Port 8082) ───────────────────────────────
     server {
-        listen 443 ssl;
-        listen 8082;
-        server_name specpart.tech www.specpart.tech _;
+        listen 443 ssl default_server;
+        listen 8082 default_server;
+        server_name ${DOMAIN} www.${DOMAIN};
 
-        ssl_certificate     /etc/letsencrypt/live/specpart.tech/fullchain.pem;
-        ssl_certificate_key /etc/letsencrypt/live/specpart.tech/privkey.pem;
+        ssl_certificate     /etc/letsencrypt/live/${DOMAIN}/fullchain.pem;
+        ssl_certificate_key /etc/letsencrypt/live/${DOMAIN}/privkey.pem;
         ssl_protocols TLSv1.2 TLSv1.3;
         ssl_ciphers HIGH:!aNULL:!MD5;
         ssl_prefer_server_ciphers on;
@@ -139,8 +155,12 @@ http {
         set $frontend "frontend:3000";
 
         # ── Security Headers ───────────────────────────────────────────────────
-        # Handled authoritatively by Next.js middleware (frontend) and NestJS Helmet (backend)
-        # to prevent duplicate headers in responses.
+        # Per-response headers (CSP, X-Frame-Options, ...) stay authoritative in
+        # Next.js middleware (frontend) and Helmet (backend) so they are not
+        # duplicated. HSTS is set here too because locations served directly by
+        # nginx - /uploads/, /storage/, /_next/static/ - never pass through
+        # either, and `always` keeps it on error responses.
+        add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
 
         # ── Anti-Bot / Flood Baseline ──────────────────────────────────────────
         # Caps simultaneous connections per IP (blunts connection-flood/DDoS-style
@@ -186,6 +206,20 @@ http {
         }
 
         location = /api/auth/refresh {
+            proxy_pass http://$backend;
+            proxy_http_version 1.1;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+            proxy_pass_header Set-Cookie;
+        }
+
+        # Backend endpoint, and it must be listed explicitly: the /api/auth/
+        # prefix below sends everything else to Next.js, which rewrites
+        # /api/auth/newsletter straight back here - an infinite proxy loop.
+        location = /api/auth/newsletter {
+            limit_req zone=api_limit burst=20 nodelay;
             proxy_pass http://$backend;
             proxy_http_version 1.1;
             proxy_set_header Host $host;
@@ -260,7 +294,7 @@ http {
             proxy_set_header Host $host;
             proxy_set_header X-Real-IP $remote_addr;
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-            proxy_set_header X-Forwarded-Proto $http_x_forwarded_proto;
+            proxy_set_header X-Forwarded-Proto $scheme;
             proxy_connect_timeout 60s;
             proxy_send_timeout    60s;
             proxy_read_timeout    60s;
@@ -352,6 +386,13 @@ http {
             expires 30d;
             add_header Cache-Control "public, max-age=2592000";
             add_header Vary "Accept";
+            # These files come from user uploads. The upload endpoints now
+            # derive the stored extension from the validated MIME type, and
+            # these headers are the second layer: no MIME sniffing, no inline
+            # rendering, and a CSP that neuters any script that does slip in.
+            add_header X-Content-Type-Options "nosniff" always;
+            add_header Content-Security-Policy "default-src 'none'; img-src 'self'; style-src 'unsafe-inline'; sandbox" always;
+            add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
             access_log off;
         }
 
@@ -373,11 +414,15 @@ http {
         # policy level in MinIO (s3:ListBucket is not granted). autoindex is
         # explicitly disabled here as a defense-in-depth measure.
         location /storage/ {
+            # Same reasoning as /uploads/ - object storage holds user uploads.
+            add_header X-Content-Type-Options "nosniff" always;
+            add_header Content-Security-Policy "default-src 'none'; img-src 'self'; style-src 'unsafe-inline'; sandbox" always;
+            add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
             proxy_pass http://minio:9000/;
             proxy_set_header Host $http_host;
             proxy_set_header X-Real-IP $remote_addr;
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-            proxy_set_header X-Forwarded-Proto $http_x_forwarded_proto;
+            proxy_set_header X-Forwarded-Proto $scheme;
             autoindex off;
             expires max;
             add_header Cache-Control "public, max-age=31536000, immutable";

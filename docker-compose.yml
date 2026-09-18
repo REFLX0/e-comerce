@@ -8,8 +8,14 @@ services:
       - "80:80"
       - "443:443"
       - "8082:8082"
+    environment:
+      # The config is a template; the image's envsubst step renders it to
+      # /etc/nginx/nginx.conf at start. DOMAIN is the single value that changes
+      # when the site moves to another domain (server_name + cert paths).
+      - DOMAIN=${DOMAIN:?DOMAIN is required}
+      - NGINX_ENVSUBST_OUTPUT_DIR=/etc/nginx
     volumes:
-      - ./nginx/nginx.prod.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/nginx.prod.conf.template:/etc/nginx/templates/nginx.conf.template:ro
       - ./uploads:/srv/uploads
       - /etc/letsencrypt:/etc/letsencrypt:ro
       - /var/www/certbot:/var/www/certbot:ro
@@ -19,6 +25,17 @@ services:
       frontend:
         condition: service_started
     restart: unless-stopped
+    # Reload every 6h so a certificate renewed by the certbot service is picked
+    # up. Nothing did this before, so even a successful renewal would not have
+    # reached the running nginx until the next manual restart.
+    #
+    # /docker-entrypoint.sh is invoked explicitly: the image only runs its init
+    # scripts (including the envsubst template render) when its first argument
+    # is `nginx`, so overriding `command` with a shell would otherwise silently
+    # skip the templating and leave /etc/nginx/nginx.conf as the stock default.
+    command: >
+      /bin/sh -c "while :; do sleep 6h & wait $${!}; nginx -s reload; done &
+      exec /docker-entrypoint.sh nginx -g 'daemon off;'"
     mem_limit: 128m
     cpus: 0.5
     networks:
@@ -29,12 +46,17 @@ services:
   certbot:
     image: certbot/certbot
     container_name: certbot
+    # These MUST be the same host paths nginx reads. They used to be the named
+    # volumes certbot-etc / certbot-var, which nginx never mounted: the ACME
+    # challenge was written where nginx could not serve it, so renewal failed,
+    # and a renewed certificate would have landed somewhere nginx never looks.
+    # The certificate simply expired and took the site down with it.
     volumes:
-      - certbot-etc:/etc/letsencrypt
-      - certbot-var:/var/www/certbot
+      - /etc/letsencrypt:/etc/letsencrypt
+      - /var/www/certbot:/var/www/certbot
     depends_on:
       - nginx
-    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew --webroot -w /var/www/certbot --quiet; sleep 12h & wait $${!}; done;'"
     mem_limit: 128m
     cpus: 0.25
 
@@ -73,11 +95,13 @@ services:
     env_file: backend/.env
     environment:
       - NODE_ENV=production
-      # connection_limit=10: explicit Prisma pool cap. Measured (2026-09-14): max_connections=100,
-      # 7 live connections at idle, so this has ample headroom without raising max_connections or
-      # adding PgBouncer. Explicit so the pool doesn't silently grow (Prisma default is num_cpus*2+1)
-      # if this box is ever resized to more vCPUs.
-      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}?schema=public&connection_limit=10&pool_timeout=10
+      # NOTE: connection_limit / pool_timeout in the URL are Prisma *engine*
+      # options and are ignored when a driver adapter is used - this app uses
+      # @prisma/adapter-pg, so the pool is the pg Pool configured in
+      # PrismaService. Set DATABASE_POOL_SIZE to change the cap.
+      # Measured (2026-09-14): max_connections=100, 7 live connections at idle.
+      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}?schema=public
+      - DATABASE_POOL_SIZE=${DATABASE_POOL_SIZE:-10}
       - KAFKA_BROKERS=kafka:9092
       - REDIS_HOST=redis
       - REDIS_PORT=6379
@@ -89,6 +113,8 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
     volumes:
       - ./uploads:/app/uploads
       - ./oil-finder-full-dataset:/app/oil-finder-full-dataset
@@ -106,6 +132,10 @@ services:
       - backend-net
 
   # ── Database Migrations (one-shot) ────────────────────────────────
+  # This used to be `node -e "console.log('DB migration ready')"` - a no-op that
+  # printed a reassuring line and applied nothing. It now actually runs the
+  # migrations, and `backend` waits for it to exit 0, so a failed migration
+  # stops the deploy instead of leaving the API running against a stale schema.
   migrate:
     image: specpart-backend:latest
     build:
@@ -114,7 +144,10 @@ services:
     env_file: backend/.env
     environment:
       - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}?schema=public
-    command: ["node", "-e", "console.log('DB migration ready'); process.exit(0);"]
+    # Direct binary rather than `npx`: the container runs as an unprivileged
+    # system user, and npx can try to touch a HOME-relative cache it cannot
+    # write. prisma is a production dependency, so the binary is always present.
+    command: ["./node_modules/.bin/prisma", "migrate", "deploy"]
     depends_on:
       db:
         condition: service_healthy
@@ -268,7 +301,7 @@ services:
 
   # ── MinIO (S3 Compatible Storage) ─────────────────────────────────
   minio:
-    image: minio/minio:latest
+    image: quay.io/minio/minio:latest
     container_name: specpart-minio
     ports:
       - "9000:9000"
@@ -291,7 +324,7 @@ services:
       - backend-net
 
   minio-setup:
-    image: minio/mc:latest
+    image: quay.io/minio/mc:latest
     container_name: specpart-minio-setup
     depends_on:
       minio:
@@ -413,8 +446,6 @@ volumes:
   specpart_pgdata:
   specpart_pgdata_replica:
   specpart_redis:
-  certbot-etc:
-  certbot-var:
   minio_data:
   opensearch_data:
   kafka_data:

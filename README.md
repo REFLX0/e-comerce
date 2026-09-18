@@ -2,7 +2,7 @@
 
 > **Production-ready** full-stack e-commerce platform built for the Tunisian market, featuring a Next.js 16 storefront, NestJS REST API, and enterprise DevOps infrastructure.
 
-[![Deploy to Oracle VM](https://github.com/REFLX0/e-comerce/actions/workflows/deploy.yml/badge.svg)](https://github.com/REFLX0/e-comerce/actions/workflows/deploy.yml)
+[![Deploy to Contabo VPS](https://github.com/REFLX0/e-comerce/actions/workflows/deploy.yml/badge.svg)](https://github.com/REFLX0/e-comerce/actions/workflows/deploy.yml)
 
 ---
 
@@ -10,7 +10,7 @@
 
 ```
 ┌─────────────────────────────────────────────────────┐
-│                    AWS EC2 Instance                 │
+│                    Contabo VPS (EU)                 │
 │                                                     │
 │  ┌─────────────┐   ┌──────────────────────────┐    │
 │  │   NGINX     │   │  Docker Compose Stack    │    │
@@ -30,7 +30,7 @@
 | **Frontend** | Next.js 16, TypeScript, TailwindCSS, TanStack Query |
 | **Backend** | NestJS, Prisma ORM, PostgreSQL 16, Redis 7 |
 | **Auth** | JWT (HttpOnly cookies), Bcrypt |
-| **Infrastructure** | Docker Compose, NGINX, AWS EC2 |
+| **Infrastructure** | Docker Compose, NGINX, Contabo VPS |
 | **CI/CD** | GitHub Actions — auto-deploy on push to `main` |
 | **Observability** | Structured JSON logging, `/api/health` endpoint |
 
@@ -79,31 +79,30 @@ See [`.env.production.example`](.env.production.example) for the full reference.
 
 ---
 
-## Production Deployment (AWS EC2)
+## Production Deployment (Contabo VPS)
 
 ### GitHub Actions Secrets required
 
 | Secret | Value |
 |---|---|
-| `SERVER_SSH_KEY` | Content of your AWS EC2 private key |
+| `SERVER_SSH_KEY` | Content of your VPS private key |
 | `REPO_URL` | `git@github.com:REFLX0/e-comerce.git` |
 
-### First-time setup on the AWS EC2
+### First-time setup on the VPS
 
 ```bash
 # SSH into your VM
-ssh ubuntu@84.8.254.244
+ssh root@194.163.169.140
 
-# Open port 8080
-sudo firewall-cmd --zone=public --add-port=8080/tcp --permanent
-sudo firewall-cmd --reload
+# Open ports 80/443
+sudo ufw allow 80/tcp
+sudo ufw allow 443/tcp
 
 # Create deploy directory
-sudo mkdir -p /opt/specpart
-sudo chown ubuntu:ubuntu /opt/specpart
+mkdir -p /root/e-comerce
+cd /root/e-comerce
 
 # Clone the repo
-cd /opt/specpart
 git clone https://github.com/REFLX0/e-comerce.git .
 
 # Set up .env
@@ -164,7 +163,7 @@ e-comerce/
 ├── backend/           # NestJS REST API
 ├── nginx/
 │   ├── nginx.conf     # Dev config (port 8080, no SSL)
-│   └── nginx.prod.conf# Production config (port 8080, hardened)
+│   └── nginx.prod.conf.template # Production config template (${DOMAIN} via envsubst)
 ├── scripts/
 │   └── backup.sh      # Automated PostgreSQL backup
 ├── .github/workflows/

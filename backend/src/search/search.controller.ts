@@ -1,6 +1,11 @@
-import { Controller, Get, Post, Query, Headers, UnauthorizedException } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
+import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { SearchService } from './search.service';
+import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
+import { RolesGuard } from '../common/guards/roles.guard';
+import { Roles } from '../common/decorators/roles.decorator';
+import { SearchQueryDto } from './dto/search-query.dto';
+import { SuggestionsQueryDto } from './dto/suggestions-query.dto';
 
 @ApiTags('search')
 @Controller('search')
@@ -8,42 +13,34 @@ export class SearchController {
   constructor(private readonly searchService: SearchService) {}
 
   @Get()
-  search(
-    @Query('q') q: string,
-    @Query('page') page?: string,
-    @Query('limit') limit?: string,
-  ) {
-    return this.searchService.fullSearch(
-      q,
-      page ? +page : 1,
-      limit ? +limit : 20,
-    );
+  search(@Query() query: SearchQueryDto) {
+    return this.searchService.fullSearch(query.q, query.page, query.limit);
   }
 
   @Get('products')
-  searchProducts(@Query('q') q: string, @Query('limit') limit?: string) {
-    return this.searchService.searchProducts(q, limit ? +limit : 5);
+  searchProducts(@Query() query: SearchQueryDto) {
+    return this.searchService.searchProducts(query.q, query.limit);
   }
 
   @Get('suggestions')
-  suggestions(@Query('q') q: string) {
-    return this.searchService.getSuggestionsWithFallback(q);
+  suggestions(@Query() query: SuggestionsQueryDto) {
+    return this.searchService.getSuggestionsWithFallback(query.q);
   }
 
   /**
    * POST /api/search/reindex
-   * Admin-only: triggers a full bulk re-index from PostgreSQL → OpenSearch.
-   * Requires header: x-admin-key matching the JWT_SECRET env var.
+   * Full bulk re-index from PostgreSQL to OpenSearch.
    *
-   * Usage from VM:
-   *   curl -X POST https://specpart.tech/api/search/reindex \
-   *        -H "x-admin-key: <JWT_SECRET>"
+   * Previously gated on an `x-admin-key` header compared against JWT_SECRET:
+   * that put the token-signing secret in curl invocations and shell history,
+   * where leaking it meant an attacker could mint admin tokens. It now uses the
+   * same admin session as the rest of the back office.
    */
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN')
   @Post('reindex')
-  async reindex(@Headers('x-admin-key') key: string) {
-    if (!key || key !== process.env.JWT_SECRET) {
-      throw new UnauthorizedException('Invalid admin key');
-    }
+  async reindex() {
     return this.searchService.bulkReindex();
   }
 }

@@ -86,6 +86,19 @@ export interface RetryOptions {
   jitter?: number
   timeoutMs?: number
   retryOn?: number[]
+  /**
+   * Retry a non-idempotent method anyway. Off by default: a 502/504 does not
+   * tell you whether the server already applied the write, so blindly retrying
+   * a POST can duplicate whatever it created.
+   */
+  retryUnsafeMethods?: boolean
+}
+
+/** Methods that are safe to replay because they have no side effects. */
+const IDEMPOTENT_METHODS = new Set(['GET', 'HEAD', 'OPTIONS', 'PUT', 'DELETE'])
+
+function isRetryableMethod(method: string | undefined): boolean {
+  return IDEMPOTENT_METHODS.has((method ?? 'GET').toUpperCase())
 }
 
 function sleep(ms: number): Promise<void> {
@@ -104,13 +117,20 @@ export async function fetchWithRetry(
   retryOptions: RetryOptions = {}
 ): Promise<Response> {
   const {
-    retries = 3,
     baseDelayMs = 100,
     maxDelayMs = 5_000,
     jitter = 0.2,
     timeoutMs = DEFAULT_TIMEOUT_MS,
     retryOn = [429, 500, 502, 503, 504],
+    retryUnsafeMethods = false,
   } = retryOptions
+
+  // A POST that times out may well have succeeded server-side, so replaying it
+  // is how you end up with two orders / two invoices. Opt in explicitly when
+  // the endpoint really is idempotent.
+  const canRetry =
+    retryUnsafeMethods || isRetryableMethod(options.method as string | undefined)
+  const retries = canRetry ? (retryOptions.retries ?? 3) : 0
 
   let lastStatus: number | undefined
   let attempt = 0

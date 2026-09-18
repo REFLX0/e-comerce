@@ -142,6 +142,9 @@ model User {
   emailVerified        DateTime?
   resetPasswordToken   String?
   resetPasswordExpires DateTime?
+  // Access tokens issued before this instant are rejected by JwtStrategy, so a
+  // password reset or change actually ends the sessions it was meant to end.
+  passwordChangedAt    DateTime?
   image                String?
   accounts             Account[]
   sessions             Session[]
@@ -570,10 +573,17 @@ model Order {
   idempotencyKey String?         @unique
   shipFullName   String
   shipPhone      String
+  // Guest checkouts have no userId, so without this the address collected at
+  // checkout was used once for the confirmation mail and then lost - guests
+  // never received the shipping notice.
+  shipEmail      String?
   shipWilaya     String
   shipCity       String
   vehicleVin     String?
   notes          String?
+  // Set when the order's stock (and coupon use) has been credited back, so a
+  // repeated cancel or a CANCELLED -> RETURNED move cannot restock twice.
+  stockReleasedAt DateTime?
   items          OrderItem[]
   supportTickets SupportTicket[]
   payments       Payment[]

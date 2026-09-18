@@ -44,15 +44,20 @@ export default auth(async (req: NextRequest & { auth?: unknown }) => {
   // ── 1. Request ID — generated once per request, propagated everywhere ──
   const requestId = req.headers.get('x-request-id') ?? crypto.randomUUID()
 
-  // ── 2. Nonce — used by the CSP script-src directive ───────────────────
-  const nonce = Buffer.from(crypto.randomUUID()).toString('base64')
-
-  // ── 3. Content-Security-Policy ────────────────────────────────────────
+  // ── 2. Content-Security-Policy ────────────────────────────────────────
   const isDev = process.env.NODE_ENV === 'development'
+
+  // 'unsafe-inline' is still required: Next.js injects inline bootstrap and
+  // flight-data scripts, and switching to a nonce means threading it through
+  // the root layout and every <Script>. 'unsafe-eval' is only needed by the
+  // dev-mode React refresh runtime, so production no longer grants it.
+  const scriptSrc = isDev
+    ? `script-src 'self' 'unsafe-inline' 'unsafe-eval' blob:`
+    : `script-src 'self' 'unsafe-inline' blob:`
 
   const cspHeader = [
     `default-src 'self'`,
-    `script-src 'self' 'unsafe-inline' 'unsafe-eval' blob:`,
+    scriptSrc,
     `style-src 'self' 'unsafe-inline' https://fonts.googleapis.com`,
     `font-src 'self' https://fonts.gstatic.com`,
     `img-src 'self' blob: data: https://res.cloudinary.com https://images.unsplash.com https://www.google.com https://lh3.googleusercontent.com https://imagedelivery.net`,
@@ -65,7 +70,7 @@ export default auth(async (req: NextRequest & { auth?: unknown }) => {
     `frame-ancestors 'none'`,
   ].join('; ')
 
-  // ── 4. Route protection ───────────────────────────────────────────────
+  // ── 3. Route protection ───────────────────────────────────────────────
   const { nextUrl } = req
   const backendAuth = await getBackendAuth(req)
   const isLoggedIn = !!(req as { auth?: unknown }).auth || !!backendAuth
@@ -148,14 +153,13 @@ export default auth(async (req: NextRequest & { auth?: unknown }) => {
     }
   }
 
-  // ── 5. Run next-intl middleware for localized routing ───────────────────
+  // ── 4. Run next-intl middleware for localized routing ───────────────────
   const response = intlMiddleware(req)
 
-  // ── 6. Build response with all security headers ───────────────────────
+  // ── 5. Build response with all security headers ───────────────────────
 
   // Tracing
   response.headers.set('x-request-id', requestId)
-  response.headers.set('x-nonce', nonce)
 
   // CSP
   response.headers.set('Content-Security-Policy', cspHeader)
@@ -174,6 +178,15 @@ export default auth(async (req: NextRequest & { auth?: unknown }) => {
     'Permissions-Policy',
     'camera=(), microphone=(), geolocation=(), payment=(), usb=(), bluetooth=()'
   )
+
+  // HSTS. Also set in next.config.ts headers(); repeated here because the
+  // middleware response is what is actually returned for matched routes.
+  if (!isDev) {
+    response.headers.set(
+      'Strict-Transport-Security',
+      'max-age=31536000; includeSubDomains'
+    )
+  }
 
   // Cross-Origin isolation
   response.headers.set('Cross-Origin-Opener-Policy', 'same-origin')

@@ -5,6 +5,7 @@ import { db } from '@/lib/db'
 import { FAQSchema } from '@/components/common/FAQSchema'
 import { Breadcrumb } from '@/components/common/Breadcrumb'
 import { Droplets, Gauge, Fuel, ChevronRight, ShoppingCart } from 'lucide-react'
+import { SITE_DOMAIN } from '@/lib/site'
 
 interface Props {
   params: Promise<{ make: string; model: string; locale: string }>
@@ -90,22 +91,26 @@ export default async function HuileMoteurModelPage({ params }: Props) {
     new Map(oilSpecs.map(s => [`${s.spec.viscosity}-${s.spec.oemApproval}`, s])).values()
   )
 
+  // Hoisted: `distinctSpecs.length > 0` does not narrow `distinctSpecs[0]`
+  // under noUncheckedIndexedAccess, so indexing it inline was a type error.
+  const primarySpec = distinctSpecs[0]
+
   const faqs = [
     {
       question: `Quelle huile moteur pour ${makeName} ${modelName} ?`,
-      answer: distinctSpecs.length > 0
-        ? `La ${makeName} ${modelName} nécessite une huile ${distinctSpecs[0].spec.viscosity} avec approbation ${distinctSpecs[0].spec.oemApproval ?? distinctSpecs[0].spec.aceaStandard}. Vérifiez votre version précise pour confirmer la spécification exacte.`
+      answer: primarySpec
+        ? `La ${makeName} ${modelName} nécessite une huile ${primarySpec.spec.viscosity} avec approbation ${primarySpec.spec.oemApproval ?? primarySpec.spec.aceaStandard}. Vérifiez votre version précise pour confirmer la spécification exacte.`
         : `Consultez le guide du propriétaire de votre ${makeName} ${modelName} ou utilisez notre sélecteur de véhicule pour obtenir la recommandation exacte.`,
     },
     {
       question: `Quelle quantité d'huile pour ${makeName} ${modelName} ?`,
-      answer: distinctSpecs.length > 0 && distinctSpecs[0].spec.capacityLiters
-        ? `En général, le moteur de la ${makeName} ${modelName} nécessite environ ${distinctSpecs[0].spec.capacityLiters} litres d'huile lors d'une vidange complète (filtre inclus).`
+      answer: primarySpec?.spec.capacityLiters
+        ? `En général, le moteur de la ${makeName} ${modelName} nécessite environ ${primarySpec.spec.capacityLiters} litres d'huile lors d'une vidange complète (filtre inclus).`
         : `La capacité d'huile varie selon la motorisation de votre ${makeName} ${modelName}. Référez-vous à votre manuel ou contactez-nous.`,
     },
     {
       question: `Combien coûte une vidange ${makeName} ${modelName} en Tunisie ?`,
-      answer: `Le prix d'une vidange pour ${makeName} ${modelName} en Tunisie varie entre 60 et 150 TND selon la qualité de l'huile choisie. Commandez votre huile sur specpart.tn et économisez sur la pièce.`,
+      answer: `Le prix d'une vidange pour ${makeName} ${modelName} en Tunisie varie entre 60 et 150 TND selon la qualité de l'huile choisie. Commandez votre huile sur ${SITE_DOMAIN} et économisez sur la pièce.`,
     },
   ]
 

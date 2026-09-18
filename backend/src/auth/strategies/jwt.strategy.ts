@@ -23,11 +23,30 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(payload: { sub: string; email: string; role: string }) {
+  async validate(payload: {
+    sub: string;
+    email: string;
+    role: string;
+    iat?: number;
+  }) {
     const user = await this.prisma.user.findUnique({
       where: { id: payload.sub },
     });
     if (!user) throw new UnauthorizedException();
+
+    // Tokens minted before the last password change are dead, so resetting a
+    // password actually signs out whoever else was holding a token.
+    if (user.passwordChangedAt && payload.iat) {
+      const issuedAtMs = payload.iat * 1000;
+      // 1s of slack: `iat` is second-resolution, so a token minted in the same
+      // second as the change would otherwise be rejected.
+      if (issuedAtMs < user.passwordChangedAt.getTime() - 1000) {
+        throw new UnauthorizedException(
+          'Session expired, please sign in again',
+        );
+      }
+    }
+
     return { id: user.id, email: user.email, role: user.role };
   }
 }

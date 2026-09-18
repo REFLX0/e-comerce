@@ -12,6 +12,17 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { generateDeliveryNotePDF } from './invoice-pdf';
 import { CacheService } from '../cache/cache.service';
 import { MailService, OrderEmailPayload } from '../mail/mail.service';
+import { OrdersService } from '../orders/orders.service';
+
+/** URL-safe brand slug: lower-case, accents stripped, non-alphanumerics -> '-'. */
+function slugifyBrand(name: string): string {
+  return name
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
 
 @Injectable()
 export class AdminService {
@@ -22,6 +33,7 @@ export class AdminService {
     private readonly kafka: KafkaService,
     private readonly cache: CacheService,
     private readonly mail: MailService,
+    private readonly ordersService: OrdersService,
   ) {}
 
   // ─── Dashboard Stats ───────────────────────────────────────────────────────
@@ -121,6 +133,42 @@ export class AdminService {
       orderBy: { name: 'asc' },
       include: { _count: { select: { products: true } } },
     });
+  }
+
+  /**
+   * Returns the existing brand when the name matches one (case/accents/spacing
+   * insensitive via the slug), otherwise creates it. Used by the product form's
+   * "brand not in the list" field, so a typo-free re-entry of an existing brand
+   * reuses it instead of creating a near-duplicate.
+   */
+  async findOrCreateBrand(rawName: string) {
+    const name = rawName.trim().replace(/\s+/g, ' ');
+    const slug = slugifyBrand(name);
+    if (!slug) {
+      throw new BadRequestException('Nom de marque invalide');
+    }
+
+    const existing =
+      (await this.prisma.brand.findUnique({ where: { slug } })) ??
+      (await this.prisma.brand.findFirst({
+        where: { name: { equals: name, mode: 'insensitive' } },
+      }));
+    if (existing) return existing;
+
+    try {
+      return await this.prisma.brand.create({ data: { name, slug } });
+    } catch (err) {
+      // Two admins adding the same brand at once: the slug is unique, so the
+      // loser just gets the row the winner created.
+      if (
+        err instanceof Prisma.PrismaClientKnownRequestError &&
+        err.code === 'P2002'
+      ) {
+        const created = await this.prisma.brand.findUnique({ where: { slug } });
+        if (created) return created;
+      }
+      throw err;
+    }
   }
 
   async getCatalogCategories() {
@@ -723,7 +771,17 @@ export class AdminService {
         totalAmount: updated.totalAmount,
         shippingCost: updated.shippingCost,
         customerName: updated.shipFullName,
-        customerEmail: (await this.prisma.user.findUnique({ where: { id: updated.userId || '' } }))?.email || null,
+        // Guests have no userId; the address captured at checkout is now stored
+        // on the order, so they get the shipping notice too.
+        customerEmail:
+          updated.shipEmail ||
+          (updated.userId
+            ? (
+                await this.prisma.user.findUnique({
+                  where: { id: updated.userId },
+                })
+              )?.email || null
+            : null),
         phone: updated.shipPhone,
         wilaya: updated.shipWilaya,
         city: updated.shipCity,
@@ -754,6 +812,12 @@ export class AdminService {
         where: { orderId: id },
         data: { status: 'REFUNDED' },
       });
+    }
+
+    // Give the reserved units (and the coupon use) back. Idempotent via
+    // Order.stockReleasedAt, so re-saving the same status is harmless.
+    if (status === 'CANCELLED' || status === 'RETURNED') {
+      await this.ordersService.releaseOrderReservations(id);
     }
 
     return updated;

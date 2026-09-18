@@ -9,5 +9,8 @@ import { ShippingModule } from '../shipping/shipping.module';
   imports: [CouponsModule, ShippingModule],
   controllers: [OrdersController],
   providers: [OrdersService, NotificationsService],
+  // AdminModule reuses releaseOrderReservations() when an order is cancelled
+  // or returned from the back office.
+  exports: [OrdersService],
 })
 export class OrdersModule {}

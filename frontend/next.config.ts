@@ -4,12 +4,31 @@ import { withSentryConfig } from '@sentry/nextjs'
 
 const withNextIntl = createNextIntlPlugin('./i18n.ts')
 
+/** next/image remote patterns for whatever domain this build is for. */
+function siteImagePatterns() {
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL
+  if (!siteUrl) return []
+  try {
+    const { protocol, hostname } = new URL(siteUrl)
+    const scheme = protocol.replace(':', '') as 'http' | 'https'
+    const bare = hostname.replace(/^www\./, '')
+    return [
+      { protocol: scheme, hostname: bare },
+      { protocol: scheme, hostname: `www.${bare}` },
+    ]
+  } catch {
+    return []
+  }
+}
+
 const nextConfig: NextConfig = {
   // ── Output ──────────────────────────────────────────────────────────────
   output: 'standalone',
 
   typescript: {
-    ignoreBuildErrors: true,
+    // The repo typechecks clean (`npm run typecheck`); leaving this on meant a
+    // production image could be built and shipped from broken code.
+    ignoreBuildErrors: false,
   },
 
   // ── Security ────────────────────────────────────────────────────────────
@@ -27,6 +46,10 @@ const nextConfig: NextConfig = {
     unoptimized: true,
     remotePatterns: [
       { protocol: 'http', hostname: 'localhost' },
+      // Current site - derived from NEXT_PUBLIC_SITE_URL so a domain change
+      // does not silently leave next/image unable to load our own images.
+      ...siteImagePatterns(),
+      // Legacy .tn URLs still present on un-migrated product rows.
       { protocol: 'https', hostname: 'www.specpart.tn' },
       { protocol: 'https', hostname: 'specpart.tn' },
       // autopart.tn — original source of product images (fallback for un-migrated URLs)
@@ -72,10 +95,14 @@ const nextConfig: NextConfig = {
             key: 'X-DNS-Prefetch-Control',
             value: 'on',
           },
-          // {
-          //   key: 'Strict-Transport-Security',
-          //   value: 'max-age=63072000; includeSubDomains; preload',
-          // },
+          // Matches the value Helmet already sends on /api/* from this same
+          // origin, so the browser gets a consistent policy for the whole site
+          // instead of HSTS only on API responses. No `preload` - that is
+          // effectively irreversible and should be a deliberate, separate call.
+          {
+            key: 'Strict-Transport-Security',
+            value: 'max-age=31536000; includeSubDomains',
+          },
           {
             key: 'X-Frame-Options',
             value: 'DENY',

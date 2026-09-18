@@ -2,6 +2,7 @@ import { useTranslations } from 'next-intl'
 import { getTranslations } from 'next-intl/server'
 import { Breadcrumb } from '@/components/common/Breadcrumb'
 import type { Metadata } from 'next'
+import { SITE_DOMAIN } from '@/lib/site'
 
 export async function generateMetadata({
   params,
@@ -11,8 +12,8 @@ export async function generateMetadata({
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: 'Legal' })
   return {
-    title: t('metaTitle'),
-    description: t('metaDescription'),
+    title: t('metaTitle', { siteDomain: SITE_DOMAIN }),
+    description: t('metaDescription', { siteDomain: SITE_DOMAIN }),
   }
 }
 
@@ -24,7 +25,7 @@ export default function MentionsLegalesPage() {
       <section className="from-brand-primary to-brand-primary-dark bg-gradient-to-br py-16 text-white">
         <div className="section-padding text-center">
           <h1 className="font-display mb-4 text-4xl font-bold md:text-5xl">{t('title')}</h1>
-          <p className="text-white/70">{t('subtitle')}</p>
+          <p className="text-white/70">{t('subtitle', { siteDomain: SITE_DOMAIN })}</p>
         </div>
       </section>
 

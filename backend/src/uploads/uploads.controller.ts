@@ -15,9 +15,7 @@ import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { Roles } from '../common/decorators/roles.decorator';
 import { UploadsService } from './uploads.service';
-
-/** Allowed MIME types for product image uploads */
-const ALLOWED_IMAGE_MIMES = /^image\/(jpeg|png|webp|gif|avif)$/;
+import { IMAGE_UPLOAD_LIMITS, imageFileFilter } from './image-upload';
 
 @ApiTags('uploads')
 @ApiBearerAuth()
@@ -32,18 +30,8 @@ export class UploadsController {
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(
     FileInterceptor('file', {
-      limits: { fileSize: 10 * 1024 * 1024 }, // 10 MB max
-      fileFilter: (_req, file, cb) => {
-        if (!ALLOWED_IMAGE_MIMES.test(file.mimetype)) {
-          return cb(
-            new BadRequestException(
-              `Unsupported file type "${file.mimetype}". Only JPEG, PNG, WebP, GIF, and AVIF images are allowed.`,
-            ),
-            false,
-          );
-        }
-        cb(null, true);
-      },
+      limits: { fileSize: IMAGE_UPLOAD_LIMITS.productBytes },
+      fileFilter: imageFileFilter,
     }),
   )
   async uploadImage(
@@ -53,7 +41,10 @@ export class UploadsController {
     if (!file) {
       throw new BadRequestException('No image file received');
     }
-    const url = await this.uploadsService.uploadImage(file, watermark === 'true');
+    const url = await this.uploadsService.uploadImage(
+      file,
+      watermark === 'true',
+    );
     return { url };
   }
 }

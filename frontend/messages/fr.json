@@ -1414,7 +1414,7 @@
     "articles": {
       "0": {
         "title": "Article 1 – Objet",
-        "content": "Les présentes conditions générales de vente (CGV) régissent l'ensemble des transactions effectuées sur le site specpart.tn. Toute commande implique l'acceptation sans réserve des présentes CGV."
+        "content": "Les présentes conditions générales de vente (CGV) régissent l'ensemble des transactions effectuées sur le site {siteDomain}. Toute commande implique l'acceptation sans réserve des présentes CGV."
       },
       "1": {
         "title": "Article 2 – Produits",
@@ -1426,7 +1426,7 @@
       },
       "3": {
         "title": "Article 4 – Commandes",
-        "content": "Le client passe commande sur le site internet specpart.tn. La validation de la commande implique l'acceptation des présentes CGV et constitue un contrat de vente. specpart confirmera la commande par email."
+        "content": "Le client passe commande sur le site internet {siteDomain}. La validation de la commande implique l'acceptation des présentes CGV et constitue un contrat de vente. specpart confirmera la commande par email."
       },
       "4": {
         "title": "Article 5 – Livraison",
@@ -1838,9 +1838,9 @@
   },
   "Legal": {
     "metaTitle": "Mentions Légales | specpart",
-    "metaDescription": "Mentions légales du site specpart.tn.",
+    "metaDescription": "Mentions légales du site {siteDomain}.",
     "title": "Mentions Légales",
-    "subtitle": "Informations légales relatives au site specpart.tn",
+    "subtitle": "Informations légales relatives au site {siteDomain}",
     "breadcrumb": "Mentions légales",
     "editor": "Éditeur du site",
     "editorContent": "Forme juridique : SARL",

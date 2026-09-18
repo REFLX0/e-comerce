@@ -38,6 +38,8 @@ export class MailService {
   private readonly adminEmail: string;
   private readonly fromEmail: string;
   private readonly frontendUrl: string;
+  private readonly siteDomain: string;
+  private readonly siteName: string;
   private templates: Record<string, handlebars.TemplateDelegate> = {};
 
   constructor(private readonly config: ConfigService) {
@@ -52,14 +54,34 @@ export class MailService {
         'specpart.tn@gmail.com',
       ),
     );
-    this.fromEmail = this.config.get<string>(
-      'BREVO_FROM',
-      'Specpart <specpart.tn@gmail.com>',
-    );
-    this.frontendUrl = this.config.get<string>(
-      'FRONTEND_URL',
-      'https://specpart.tn',
-    );
+    // BREVO_FROM_EMAIL is the documented name (see .env.production.example and
+    // the Next.js side); BREVO_FROM stays supported so existing deployments
+    // keep working.
+    this.fromEmail =
+      this.config.get<string>('BREVO_FROM_EMAIL') ||
+      this.config.get<string>('BREVO_FROM') ||
+      'Specpart <specpart.tn@gmail.com>';
+    // Falls back to localhost, not to a hardcoded production domain: links in
+    // password-reset mails must never silently point at a host this
+    // deployment does not own. FRONTEND_URL is set from NEXTAUTH_URL by
+    // docker-compose, so production always has a real value.
+    this.frontendUrl = this.config
+      .get<string>('FRONTEND_URL', 'http://localhost:3000')
+      .replace(/\/$/, '');
+    if (!this.config.get<string>('FRONTEND_URL')) {
+      this.logger.warn(
+        'FRONTEND_URL is not set - password reset links will point at localhost',
+      );
+    }
+
+    this.siteDomain = (() => {
+      try {
+        return new URL(this.frontendUrl).host;
+      } catch {
+        return 'localhost:3000';
+      }
+    })();
+    this.siteName = this.config.get<string>('SITE_NAME', 'Specpart');
 
     this.initializeTemplates();
   }
@@ -75,7 +97,7 @@ export class MailService {
       'order-confirmation',
       'delivery-notice',
       'password-reset',
-      'login-alert'
+      'login-alert',
     ];
 
     const candidateDirs = [
@@ -86,7 +108,7 @@ export class MailService {
       path.join(process.cwd(), 'dist', 'mail', 'templates'),
     ];
 
-    templateNames.forEach(name => {
+    templateNames.forEach((name) => {
       let source: string | null = null;
       for (const dir of candidateDirs) {
         const filePath = path.join(dir, `${name}.hbs`);
@@ -121,7 +143,15 @@ export class MailService {
       this.logger.error(`Template ${name} is not loaded`);
       return '';
     }
-    return template({ ...data, frontendUrl: this.frontendUrl, year: new Date().getFullYear() });
+    return template({
+      ...data,
+      frontendUrl: this.frontendUrl,
+      // Templates referenced the domain literally, so the copy went stale the
+      // moment the site moved. Injected globally instead.
+      siteDomain: this.siteDomain,
+      siteName: this.siteName,
+      year: new Date().getFullYear(),
+    });
   }
 
   private cleanEmail(raw?: string): string {
@@ -131,7 +161,8 @@ export class MailService {
   }
 
   private extractSender(fromInput?: string): { name: string; email: string } {
-    const raw = fromInput || this.fromEmail || 'Specpart <specpart.tn@gmail.com>';
+    const raw =
+      fromInput || this.fromEmail || 'Specpart <specpart.tn@gmail.com>';
     const emailMatch = raw.match(/<([^>]+)>/);
     const email = (emailMatch ? emailMatch[1] : raw).trim();
     let name = 'Specpart';
@@ -141,9 +172,16 @@ export class MailService {
     return { name, email };
   }
 
-  private async sendEmailViaBrevo(options: { to: string; subject: string; html: string; from?: string }): Promise<void> {
+  private async sendEmailViaBrevo(options: {
+    to: string;
+    subject: string;
+    html: string;
+    from?: string;
+  }): Promise<void> {
     if (!this.apiKey) {
-      this.logger.warn(`Brevo API key not set — email to ${options.to} skipped.`);
+      this.logger.warn(
+        `Brevo API key not set — email to ${options.to} skipped.`,
+      );
       return;
     }
     const sender = this.extractSender(options.from);
@@ -156,26 +194,34 @@ export class MailService {
       const response = await fetch('https://api.brevo.com/v3/smtp/email', {
         method: 'POST',
         headers: {
-          'accept': 'application/json',
+          accept: 'application/json',
           'api-key': this.apiKey,
-          'content-type': 'application/json'
+          'content-type': 'application/json',
         },
         body: JSON.stringify({
           sender: { name: sender.name, email: sender.email },
           to: [{ email: recipient }],
           subject: options.subject,
-          htmlContent: options.html
-        })
+          htmlContent: options.html,
+        }),
       });
       if (!response.ok) {
         const errText = await response.text();
-        this.logger.error(`Brevo email to ${recipient} failed (${response.status}): ${errText}`);
+        this.logger.error(
+          `Brevo email to ${recipient} failed (${response.status}): ${errText}`,
+        );
       } else {
-        const resData = (await response.json().catch(() => null)) as { messageId?: string } | null;
-        this.logger.log(`Brevo email dispatched to ${recipient} (MessageId: ${resData?.messageId || 'sent'})`);
+        const resData = (await response.json().catch(() => null)) as {
+          messageId?: string;
+        } | null;
+        this.logger.log(
+          `Brevo email dispatched to ${recipient} (MessageId: ${resData?.messageId || 'sent'})`,
+        );
       }
     } catch (err: any) {
-      this.logger.error(`Failed to send email via Brevo to ${recipient}: ${err.message}`);
+      this.logger.error(
+        `Failed to send email via Brevo to ${recipient}: ${err.message}`,
+      );
     }
   }
 
@@ -184,13 +230,15 @@ export class MailService {
     const orderRef = order.id.slice(-8).toUpperCase();
 
     if (!this.isConfigured()) {
-      this.logger.log(`[MAIL MOCK] Order #${orderRef} created for ${order.customerName}`);
+      this.logger.log(
+        `[MAIL MOCK] Order #${orderRef} created for ${order.customerName}`,
+      );
       return;
     }
 
-    const itemsWithTotal = order.items.map(item => ({
+    const itemsWithTotal = order.items.map((item) => ({
       ...item,
-      totalLinePrice: item.unitPrice * item.quantity
+      totalLinePrice: item.unitPrice * item.quantity,
     }));
 
     const promises: Promise<any>[] = [];
@@ -209,7 +257,7 @@ export class MailService {
           to: order.customerEmail,
           subject: `Confirmation de votre commande #${orderRef} — Specpart`,
           html,
-        })
+        }),
       );
     }
 
@@ -234,7 +282,7 @@ export class MailService {
             </p>
           </div>
         `,
-      })
+      }),
     );
 
     await Promise.all(promises);
@@ -257,7 +305,7 @@ export class MailService {
           to: user.email,
           subject: 'Bienvenue chez Specpart ! 🎉',
           html,
-        })
+        }),
       );
     }
 
@@ -275,7 +323,7 @@ export class MailService {
             <p><strong>Téléphone :</strong> ${user.phone || 'Non renseigné'}</p>
           </div>
         `,
-      })
+      }),
     );
 
     await Promise.all(promises);
@@ -306,18 +354,23 @@ export class MailService {
   async sendLoginAlerts(user: UserEmailPayload): Promise<void> {
     if (!this.isConfigured()) return;
 
-    const time = new Date().toLocaleString('fr-FR', { timeZone: 'Africa/Tunis' });
+    const time = new Date().toLocaleString('fr-FR', {
+      timeZone: 'Africa/Tunis',
+    });
     const promises: Promise<any>[] = [];
 
     if (this.templates['login-alert']) {
-      const html = this.renderTemplate('login-alert', { name: user.name || user.email, time });
+      const html = this.renderTemplate('login-alert', {
+        name: user.name || user.email,
+        time,
+      });
       promises.push(
         this.sendEmailViaBrevo({
           from: this.fromEmail,
           to: user.email,
           subject: 'Nouvelle connexion détectée — Specpart',
           html,
-        })
+        }),
       );
     }
 
@@ -328,7 +381,7 @@ export class MailService {
           to: this.adminEmail,
           subject: `🔐 [Alerte Sécurité Admin] Connexion de ${user.email}`,
           html: `<p>L'administrateur <strong>${user.email}</strong> s'est connecté au tableau de bord le ${time}.</p>`,
-        })
+        }),
       );
     }
 

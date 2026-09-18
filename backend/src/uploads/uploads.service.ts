@@ -1,9 +1,10 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { v2 as cloudinary } from 'cloudinary';
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 import * as fs from 'fs';
 import * as path from 'path';
 import { applyWatermark } from './watermark.util';
+import { isAllowedImageMime, safeImageFilename } from './image-upload';
 
 @Injectable()
 export class UploadsService {
@@ -44,16 +45,29 @@ export class UploadsService {
     }
   }
 
-  async uploadImage(file: Express.Multer.File, watermark = false): Promise<string> {
+  async uploadImage(
+    file: Express.Multer.File,
+    watermark = false,
+  ): Promise<string> {
     if (!file) {
-      throw new Error('Aucun fichier reçu.');
+      throw new BadRequestException('Aucun fichier reçu.');
+    }
+    // Defence in depth: the route-level fileFilter should already have rejected
+    // this, but the stored extension and Content-Type are both derived from
+    // the MIME type, so it must never be an unvalidated value.
+    if (!isAllowedImageMime(file.mimetype)) {
+      throw new BadRequestException(
+        `Unsupported file type "${file.mimetype}". Only JPEG, PNG, WebP, GIF, and AVIF images are allowed.`,
+      );
     }
 
     if (watermark) {
       try {
         file = { ...file, buffer: await applyWatermark(file.buffer) };
       } catch (err: any) {
-        this.logger.warn(`Watermarking failed (${err?.message}), uploading original image.`);
+        this.logger.warn(
+          `Watermarking failed (${err?.message}), uploading original image.`,
+        );
       }
     }
 
@@ -61,7 +75,9 @@ export class UploadsService {
       try {
         return await this.uploadToMinio(file);
       } catch (err: any) {
-        this.logger.warn(`MinIO upload failed (${err?.message}), falling back to local disk.`);
+        this.logger.warn(
+          `MinIO upload failed (${err?.message}), falling back to local disk.`,
+        );
       }
     }
 
@@ -69,7 +85,9 @@ export class UploadsService {
       try {
         return await this.uploadToCloudinary(file);
       } catch (err: any) {
-        this.logger.warn(`Cloudinary upload failed (${err?.message}), falling back to local disk.`);
+        this.logger.warn(
+          `Cloudinary upload failed (${err?.message}), falling back to local disk.`,
+        );
       }
     }
 
@@ -77,18 +95,19 @@ export class UploadsService {
   }
 
   private async uploadToMinio(file: Express.Multer.File): Promise<string> {
-    const ext = path.extname(file.originalname || '') || '.jpg';
-    const filename = `${Date.now()}-${Math.round(Math.random() * 1e9)}${ext}`;
-    
+    const filename = safeImageFilename(file.mimetype);
+
     await this.s3Client!.send(
       new PutObjectCommand({
         Bucket: this.minioBucket,
         Key: filename,
         Body: file.buffer,
-        ContentType: file.mimetype || 'image/jpeg',
-      })
+        // Validated above, so this can't be used to have MinIO serve the
+        // object back as text/html.
+        ContentType: file.mimetype,
+      }),
     );
-    
+
     this.logger.log(`File uploaded to MinIO: ${filename}`);
     return `/storage/${this.minioBucket}/${filename}`;
   }
@@ -110,8 +129,7 @@ export class UploadsService {
   private async uploadToLocalDisk(file: Express.Multer.File): Promise<string> {
     const uploadDir = path.join(process.cwd(), 'uploads', 'products');
     await fs.promises.mkdir(uploadDir, { recursive: true });
-    const ext = path.extname(file.originalname || '') || '.jpg';
-    const filename = `${Date.now()}-${Math.round(Math.random() * 1e9)}${ext}`;
+    const filename = safeImageFilename(file.mimetype);
     const filePath = path.join(uploadDir, filename);
     await fs.promises.writeFile(filePath, file.buffer);
     this.logger.log(`File saved locally: ${filePath}`);

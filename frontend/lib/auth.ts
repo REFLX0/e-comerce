@@ -8,8 +8,27 @@ import { db } from '@/lib/db'
 import { authConfig } from './auth.config'
 import { SignJWT } from 'jose'
 
+const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000').replace(/\/$/, '')
+const SITE_NAME = process.env.NEXT_PUBLIC_SITE_NAME || 'Specpart'
+const MAIL_FROM = process.env.BREVO_FROM_EMAIL || 'specpart.tn@gmail.com'
+
+/** Minimal HTML escape - these values come from the OAuth profile. */
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+}
+
 async function generateNestToken(user: { id: string; email: string; role: string }) {
-  const secretString = process.env.JWT_SECRET || 'fallback-dev-secret'
+  // No fallback: a baked-in default would be a secret that is public in this
+  // repo, and any token signed with it is one the backend must never accept.
+  const secretString = process.env.JWT_SECRET
+  if (!secretString) {
+    throw new Error('JWT_SECRET is not configured - cannot mint a backend access token')
+  }
   const secret = new TextEncoder().encode(secretString)
   return new SignJWT({ sub: user.id, email: user.email, role: user.role })
     .setProtectedHeader({ alg: 'HS256' })
@@ -38,8 +57,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           throw new CredentialsSignin("Email and password are required")
         }
 
+        // Emails are stored canonicalised (lower-cased, trimmed); looking up the
+        // raw input meant anyone who signed up with an uppercase letter could
+        // not sign in here either.
+        const email = String(credentials.email).trim().toLowerCase()
         const user = await db.user.findUnique({
-          where: { email: credentials.email as string },
+          where: { email },
         })
 
         if (!user || !user.passwordHash) {
@@ -131,9 +154,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             'content-type': 'application/json',
           },
           body: JSON.stringify({
-            sender: { name: 'Specpart', email: 'specpart.tn@gmail.com' },
+            sender: { name: SITE_NAME, email: MAIL_FROM },
             to: [{ email: user.email }],
-            subject: 'Bienvenue chez Specpart ! 🎉',
+            subject: `Bienvenue chez ${SITE_NAME} ! 🎉`,
             htmlContent: `
 <!DOCTYPE html>
 <html>
@@ -161,16 +184,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       <p>Pièces auto & Lubrifiants</p>
     </div>
     <div class="content">
-      <h2 class="title">Bienvenue ${user.name || ''} ! 👋</h2>
+      <h2 class="title">Bienvenue ${escapeHtml(user.name || '')} ! 👋</h2>
       <p class="text">
-        Votre compte a été créé avec succès sur <strong>specpart.tn</strong> via Google. Vous pouvez dès à présent ajouter vos véhicules à votre garage virtuel, commander vos pièces certifiées et suivre l'état de vos livraisons.
+        Votre compte a été créé avec succès sur <strong>${new URL(SITE_URL).host}</strong> via Google. Vous pouvez dès à présent ajouter vos véhicules à votre garage virtuel, commander vos pièces certifiées et suivre l'état de vos livraisons.
       </p>
       <div class="button-container">
-        <a href="https://specpart.tn/catalogue" class="button">Explorer le catalogue →</a>
+        <a href="${SITE_URL}/fr/catalogue" class="button">Explorer le catalogue →</a>
       </div>
       <div class="footer">
         Service client disponible du Lundi au Samedi au <strong>+216 29 294 195</strong>.<br/>
-        &copy; ${new Date().getFullYear()} Specpart. Tous droits réservés.
+        &copy; ${new Date().getFullYear()} ${SITE_NAME}. Tous droits réservés.
       </div>
     </div>
   </div>
@@ -180,7 +203,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           }),
         })
 
-        const adminEmail = (process.env.ADMIN_NOTIFICATION_EMAIL || 'specpart.tn@gmail.com').replace(/<([^>]+)>/, '$1').trim()
+        const adminEmail = (process.env.ADMIN_NOTIFICATION_EMAIL || MAIL_FROM).replace(/<([^>]+)>/, '$1').trim()
         fetch('https://api.brevo.com/v3/smtp/email', {
           method: 'POST',
           headers: {
@@ -189,14 +212,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             'content-type': 'application/json',
           },
           body: JSON.stringify({
-            sender: { name: 'Specpart', email: 'specpart.tn@gmail.com' },
+            sender: { name: SITE_NAME, email: MAIL_FROM },
             to: [{ email: adminEmail }],
             subject: `👤 [Nouveau Client Google] ${user.name || 'Utilisateur'} (${user.email})`,
             htmlContent: `
               <div style="font-family: sans-serif; padding: 16px; border: 1px solid #e2e8f0; border-radius: 10px;">
                 <h3 style="color: #16254c; margin-top: 0;">Un nouveau client s'est connecté via Google :</h3>
-                <p><strong>Nom :</strong> ${user.name || 'Non spécifié'}</p>
-                <p><strong>Email :</strong> ${user.email}</p>
+                <p><strong>Nom :</strong> ${escapeHtml(user.name || 'Non spécifié')}</p>
+                <p><strong>Email :</strong> ${escapeHtml(user.email)}</p>
               </div>
             `,
           }),

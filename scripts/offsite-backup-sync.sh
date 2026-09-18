@@ -15,8 +15,8 @@
 set -euo pipefail
 
 SSH_KEY="/c/Users/Asus/.ssh/specpart_vm"
-REMOTE="ubuntu@13.49.134.212"
-REMOTE_DIR="/home/ubuntu/e-comerce/backups"
+REMOTE="root@194.163.169.140"
+REMOTE_DIR="/root/e-comerce/backups"
 LOCAL_DIR="/c/Users/Asus/OneDrive/specpart-offsite-backups"
 RETAIN_DAILY=7
 RETAIN_WEEKLY=4

@@ -11,7 +11,11 @@ import {
   UseInterceptors,
   HttpCode,
   HttpStatus,
+  BadRequestException,
+  Res,
 } from '@nestjs/common';
+import type { Response } from 'express';
+import { JwtService } from '@nestjs/jwt';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiTags, ApiBearerAuth, ApiConsumes } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
@@ -23,6 +27,8 @@ import { CreateAddressDto } from './dto/create-address.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { CreateUserCarDto } from './dto/create-user-car.dto';
 import { UpdateUserCarDto } from './dto/update-user-car.dto';
+import { IMAGE_UPLOAD_LIMITS, imageFileFilter } from '../uploads/image-upload';
+import { setAccessTokenCookie } from '../common/utils/auth-cookies';
 
 @ApiTags('users')
 @ApiBearerAuth()
@@ -32,6 +38,7 @@ export class UsersController {
   constructor(
     private readonly usersService: UsersService,
     private readonly uploadsService: UploadsService,
+    private readonly jwtService: JwtService,
   ) {}
 
   @Get('me')
@@ -48,12 +55,22 @@ export class UsersController {
   @HttpCode(HttpStatus.OK)
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(
-    FileInterceptor('file', { limits: { fileSize: 5 * 1024 * 1024 } }),
+    // Without a fileFilter any signed-in customer could upload an arbitrary
+    // file type; the stored name keeps its extension and nginx serves
+    // /uploads/ straight off disk, so an .html/.svg upload became script
+    // execution on our own origin.
+    FileInterceptor('file', {
+      limits: { fileSize: IMAGE_UPLOAD_LIMITS.avatarBytes },
+      fileFilter: imageFileFilter,
+    }),
   )
   async uploadAvatar(
     @CurrentUser('id') userId: string,
     @UploadedFile() file: Express.Multer.File,
   ) {
+    if (!file) {
+      throw new BadRequestException('No image file received');
+    }
     const url = await this.uploadsService.uploadImage(file);
     return this.usersService.update(userId, { image: url });
   }
@@ -109,10 +126,21 @@ export class UsersController {
   }
 
   @Post('me/change-password')
-  changePassword(
+  async changePassword(
     @CurrentUser('id') userId: string,
     @Body() dto: ChangePasswordDto,
+    @Res({ passthrough: true }) res: Response,
   ) {
-    return this.usersService.changePassword(userId, dto);
+    const result = await this.usersService.changePassword(userId, dto);
+    // The change invalidates every token minted before it, including the one
+    // that authenticated this request - hand this session a fresh cookie so
+    // only the *other* sessions get signed out.
+    const accessToken = this.jwtService.sign({
+      sub: result.user.id,
+      email: result.user.email,
+      role: result.user.role,
+    });
+    setAccessTokenCookie(res, accessToken);
+    return { success: true };
   }
 }

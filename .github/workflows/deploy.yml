@@ -1,4 +1,4 @@
-name: Deploy specpart to AWS EC2
+name: Deploy specpart to Contabo VPS
 
 on:
   push:
@@ -7,51 +7,89 @@ on:
   workflow_dispatch:
 
 env:
-  SERVER_HOST: 13.49.134.212
-  SERVER_USER: ubuntu
-  DEPLOY_DIR: /home/ubuntu/e-comerce
+  SERVER_HOST: 194.163.169.140
+  SERVER_USER: root
+  DEPLOY_DIR: /root/e-comerce
   IMAGE_PREFIX: specpart
   DOMAIN: specpart.tech
 
 jobs:
   deploy:
-    name: Deploy to AWS EC2
+    name: Deploy to Contabo VPS
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     steps:
       - name: Deploy via SSH
+        # NOTE: `continue-on-error: true` used to be set here. With a single
+        # step, that made the job report success no matter what happened on the
+        # box - a broken deploy still showed a green badge.
         uses: appleboy/ssh-action@v1.0.3
-        continue-on-error: true
         with:
           host: ${{ env.SERVER_HOST }}
           username: ${{ env.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
-            set -e
-            echo "=== Deploying specpart to AWS EC2 (specpart.tech) ==="
-            
+            set -euo pipefail
+            echo "=== Deploying specpart to Contabo VPS (${{ env.DOMAIN }}) ==="
+
             cd ${{ env.DEPLOY_DIR }}
-            
+
             # Pull latest changes from GitHub. --ff-only (not reset --hard) so
             # this fails loudly instead of silently destroying any uncommitted
             # work sitting on the VM if the working tree isn't clean.
             git fetch origin main
             git merge --ff-only origin/main
-            
-            # Build custom app images
+
+            # The backend container runs as uid 1001 (non-root), so the
+            # bind-mounted uploads directory has to be writable by it.
+            mkdir -p ./uploads
+            chown -R 1001:1001 ./uploads
+
+            # Build custom app images.
+            # NOTE: NEXT_PUBLIC_* are inlined at build time, so a change to
+            # NEXTAUTH_URL / the domain only takes effect because the frontend
+            # image is rebuilt here. Update .env BEFORE deploying.
             docker compose build frontend backend
-            # Start/update ALL services defined in docker-compose.yml
+
+            # Start/update ALL services. The `migrate` service runs
+            # `prisma migrate deploy` and `backend` waits for it to exit 0, so a
+            # failed migration aborts this command instead of leaving the API
+            # serving against a stale schema.
             docker compose up -d
-            
-            # Run Prisma migrations to create/update any new DB tables
-            echo "--- Running DB migrations ---"
-            docker compose exec -T backend npx prisma migrate deploy || true
-            
-            # Flush Redis cache to pick up any code changes
-            docker compose exec -T redis redis-cli FLUSHALL || true
-            
+
+            # nginx renders its config from a template via envsubst at CONTAINER
+            # START, so a change to nginx.prod.conf.template (or to DOMAIN) is
+            # not picked up by `up -d` alone - the bind mount changes but the
+            # rendered /etc/nginx/nginx.conf does not. Recreate it explicitly.
+            docker compose up -d --force-recreate --no-deps nginx
+
+            # Drop only the application cache. This used to be `redis-cli
+            # FLUSHALL`, which also wiped the refresh:* keys and signed every
+            # user out on each deploy.
+            echo "--- Clearing application cache keys ---"
+            docker compose exec -T redis sh -c '
+              redis-cli --scan --pattern "products:*" | xargs -r -n 100 redis-cli DEL
+              redis-cli --scan --pattern "categories:*" | xargs -r -n 100 redis-cli DEL
+              redis-cli --scan --pattern "oil-finder:*" | xargs -r -n 100 redis-cli DEL
+              redis-cli --scan --pattern "search:*" | xargs -r -n 100 redis-cli DEL
+            '
+
             # Clean up dangling build cache to save disk space
             docker image prune -f
-            
-            echo "=== Deployment successful: https://specpart.tech ==="
 
+            echo "--- Waiting for the stack to report healthy ---"
+            for attempt in $(seq 1 30); do
+              if curl -fsS -A "deploy-healthcheck" http://localhost:8082/api/health > /dev/null; then
+                echo "Backend healthy after ${attempt} attempt(s)"
+                break
+              fi
+              if [ "$attempt" -eq 30 ]; then
+                echo "Backend did not become healthy - deployment failed"
+                docker compose ps
+                docker compose logs --tail=100 backend frontend nginx
+                exit 1
+              fi
+              sleep 5
+            done
+
+            echo "=== Deployment successful: https://${{ env.DOMAIN }} ==="

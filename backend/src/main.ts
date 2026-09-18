@@ -18,15 +18,25 @@ async function bootstrap() {
   // Serve local uploads (fallback when Cloudinary is not configured)
   app.useStaticAssets(join(process.cwd(), 'uploads'), { prefix: '/uploads' });
 
+  // Trust the reverse proxy (nginx) so req.ip is the real client IP rather than
+  // the nginx container's docker-bridge address. Without this every request
+  // shares a single ThrottlerGuard bucket and the @Throttle limits on login,
+  // orders, reviews, etc. apply site-wide instead of per user.
+  app.set('trust proxy', 1);
+
   // Security
   app.use(helmet());
   app.use(cookieParser());
+
+  const isProduction = process.env.NODE_ENV === 'production';
+  const frontendUrl = process.env.FRONTEND_URL ?? 'http://localhost:3000';
+  // Localhost origins are only trusted outside production - in production they
+  // would let any app running on a visitor's machine make credentialed calls.
+  const corsOrigins = isProduction
+    ? [frontendUrl]
+    : [frontendUrl, 'http://127.0.0.1:3000', 'http://localhost:3000'];
   app.enableCors({
-    origin: [
-      process.env.FRONTEND_URL ?? 'http://localhost:3000',
-      'http://127.0.0.1:3000',
-      'http://localhost:3000',
-    ],
+    origin: Array.from(new Set(corsOrigins)),
     credentials: true,
   });
 
@@ -54,6 +64,10 @@ async function bootstrap() {
     const document = SwaggerModule.createDocument(app, config);
     SwaggerModule.setup('api/docs', app, document);
   }
+
+  // Let Nest run onModuleDestroy/onApplicationShutdown on SIGTERM so in-flight
+  // requests finish and the Prisma pool closes cleanly on `docker compose down`.
+  app.enableShutdownHooks();
 
   const port = process.env.PORT ?? 4000;
   await app.listen(port);

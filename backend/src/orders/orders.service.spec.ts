@@ -50,9 +50,21 @@ function makeCreatedOrder() {
 
 function makePrisma() {
   const tx: Record<string, any> = {
-    coupon: { update: jest.fn() },
-    order: { findUnique: jest.fn().mockResolvedValue(null), create: jest.fn() },
-    productVariant: { update: jest.fn() },
+    coupon: {
+      update: jest.fn(),
+      // Claiming a coupon use is conditional now, so the guard can reject it.
+      updateMany: jest.fn().mockResolvedValue({ count: 1 }),
+    },
+    order: {
+      findUnique: jest.fn().mockResolvedValue(null),
+      create: jest.fn(),
+      update: jest.fn().mockResolvedValue({}),
+    },
+    productVariant: {
+      update: jest.fn(),
+      // Stock is decremented conditionally (stockQty >= quantity).
+      updateMany: jest.fn().mockResolvedValue({ count: 1 }),
+    },
     payment: { create: jest.fn() },
     invoice: {
       create: jest.fn().mockResolvedValue({ id: 'inv-1', sequenceNumber: 1 }),
@@ -124,15 +136,55 @@ describe('OrdersService', () => {
       expect((prisma as any)._tx.order.create).toHaveBeenCalledTimes(1);
     });
 
-    it('decrements stock for each ordered variant', async () => {
+    it('decrements stock for each ordered variant, guarded on availability', async () => {
       await service.create(makeDto());
 
-      expect((prisma as any)._tx.productVariant.update).toHaveBeenCalledWith(
+      expect((prisma as any)._tx.productVariant.updateMany).toHaveBeenCalledWith(
         expect.objectContaining({
-          where: { id: 'variant-1' },
+          where: { id: 'variant-1', stockQty: { gte: 2 } },
           data: { stockQty: { decrement: 2 } },
         }),
       );
+    });
+
+    it('rejects the order when the guarded decrement matches no row', async () => {
+      // Another checkout took the last units between the pre-check and the
+      // transaction, so the conditional update matches nothing.
+      (prisma as any)._tx.productVariant.updateMany.mockResolvedValueOnce({
+        count: 0,
+      });
+
+      await expect(service.create(makeDto())).rejects.toThrow(
+        BadRequestException,
+      );
+    });
+
+    it('collapses repeated lines for the same variant', async () => {
+      await service.create(
+        makeDto({
+          items: [
+            { variantId: 'variant-1', quantity: 2 },
+            { variantId: 'variant-1', quantity: 3 },
+          ],
+        }),
+      );
+
+      expect(
+        (prisma as any)._tx.productVariant.updateMany,
+      ).toHaveBeenCalledTimes(1);
+      expect((prisma as any)._tx.productVariant.updateMany).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: { id: 'variant-1', stockQty: { gte: 5 } },
+          data: { stockQty: { decrement: 5 } },
+        }),
+      );
+    });
+
+    it('does not consult the idempotency index when no key is supplied', async () => {
+      await service.create(makeDto({ idempotencyKey: undefined }));
+
+      expect(prisma.order.findUnique).not.toHaveBeenCalled();
+      expect((prisma as any)._tx.order.create).toHaveBeenCalledTimes(1);
     });
 
     it('prevents duplicate orders via idempotency key', async () => {
@@ -156,13 +208,47 @@ describe('OrdersService', () => {
 
       await service.create(makeDto({ promoCode: 'SAVE5' }));
 
-      // tx.coupon.update should be called to increment usage
-      expect((prisma as any)._tx.coupon.update).toHaveBeenCalledWith(
+      // The use is claimed conditionally so concurrent checkouts cannot push a
+      // coupon past maxUses.
+      expect((prisma as any)._tx.coupon.updateMany).toHaveBeenCalledWith(
         expect.objectContaining({
-          where: { code: 'SAVE5' },
+          where: expect.objectContaining({ code: 'SAVE5', isActive: true }),
           data: { currentUses: { increment: 1 } },
         }),
       );
+    });
+
+    it('guards the coupon claim on maxUses when the coupon has a limit', async () => {
+      couponsService.validateCode.mockResolvedValueOnce({
+        discount: 5,
+        type: 'FIXED',
+        id: 'coupon-1',
+        code: 'SAVE5',
+        maxUses: 100,
+      });
+
+      await service.create(makeDto({ promoCode: 'SAVE5' }));
+
+      expect((prisma as any)._tx.coupon.updateMany).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: expect.objectContaining({ currentUses: { lt: 100 } }),
+        }),
+      );
+    });
+
+    it('rejects the order when the coupon limit was taken concurrently', async () => {
+      couponsService.validateCode.mockResolvedValueOnce({
+        discount: 5,
+        type: 'FIXED',
+        id: 'coupon-1',
+        code: 'SAVE5',
+        maxUses: 100,
+      });
+      (prisma as any)._tx.coupon.updateMany.mockResolvedValueOnce({ count: 0 });
+
+      await expect(
+        service.create(makeDto({ promoCode: 'SAVE5' })),
+      ).rejects.toThrow(BadRequestException);
     });
   });
 
@@ -205,9 +291,70 @@ describe('OrdersService', () => {
       });
       (prisma.order.update as jest.Mock).mockResolvedValueOnce({ status: 'CANCELLED' });
 
+      (prisma as any)._tx.order.findUnique.mockResolvedValueOnce({
+        id: 'order-1',
+        promoCode: null,
+        stockReleasedAt: null,
+        items: [{ variantId: 'variant-1', quantity: 2 }],
+      });
+
       const result = await service.cancel('order-1', 'user-1');
 
       expect(result.status).toBe('CANCELLED');
+    });
+
+    it('puts the reserved stock back when cancelling', async () => {
+      (prisma.order.findFirst as jest.Mock).mockResolvedValueOnce({
+        id: 'order-1',
+        status: 'PENDING',
+        userId: 'user-1',
+      });
+      (prisma.order.update as jest.Mock).mockResolvedValueOnce({
+        status: 'CANCELLED',
+      });
+      (prisma as any)._tx.order.findUnique.mockResolvedValueOnce({
+        id: 'order-1',
+        promoCode: 'SAVE5',
+        stockReleasedAt: null,
+        items: [{ variantId: 'variant-1', quantity: 2 }],
+      });
+
+      await service.cancel('order-1', 'user-1');
+
+      expect((prisma as any)._tx.productVariant.update).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: { id: 'variant-1' },
+          data: { stockQty: { increment: 2 } },
+        }),
+      );
+      // ...and the coupon use is released too.
+      expect((prisma as any)._tx.coupon.updateMany).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: { code: 'SAVE5', currentUses: { gt: 0 } },
+          data: { currentUses: { decrement: 1 } },
+        }),
+      );
+    });
+
+    it('does not restock an order whose stock was already released', async () => {
+      (prisma.order.findFirst as jest.Mock).mockResolvedValueOnce({
+        id: 'order-1',
+        status: 'PENDING',
+        userId: 'user-1',
+      });
+      (prisma.order.update as jest.Mock).mockResolvedValueOnce({
+        status: 'CANCELLED',
+      });
+      (prisma as any)._tx.order.findUnique.mockResolvedValueOnce({
+        id: 'order-1',
+        promoCode: null,
+        stockReleasedAt: new Date(),
+        items: [{ variantId: 'variant-1', quantity: 2 }],
+      });
+
+      await service.cancel('order-1', 'user-1');
+
+      expect((prisma as any)._tx.productVariant.update).not.toHaveBeenCalled();
     });
 
     it('throws NotFoundException when order is not found', async () => {

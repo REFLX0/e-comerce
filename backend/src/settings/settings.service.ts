@@ -11,7 +11,12 @@ const DEFAULT_SETTINGS: Record<string, string> = {
   SEO_DESCRIPTION:
     '"Découvrez notre large gamme de lubrifiants et huiles moteur en Tunisie."',
   SEO_INDEX: 'true',
-  EMAIL_SENDER: '"noreply@specpart.tn"',
+  // Seeded from the environment so it tracks the live domain; the DB value is
+  // editable from the admin UI afterwards.
+  EMAIL_SENDER: JSON.stringify(
+    process.env.BREVO_FROM_EMAIL ||
+      `noreply@${(process.env.FRONTEND_URL || 'http://localhost:3000').replace(/^https?:\/\//, '').replace(/[/:].*$/, '')}`,
+  ),
   EMAIL_ORDER_CONFIRMATION: 'true',
   EMAIL_SHIP_CONFIRMATION: 'true',
   PAYMENT_COD_ENABLED: 'true',
@@ -50,15 +55,27 @@ export class SettingsService implements OnModuleInit {
       }
 
       // Force update address and matricule if they still have old Carthage or Chaker values
-      const currentAddr = await this.prisma.setting.findUnique({ where: { key: 'FACTURE_ADDRESS' } });
-      if (currentAddr && (currentAddr.value.includes('Carthage') || currentAddr.value.includes('Chaker'))) {
+      const currentAddr = await this.prisma.setting.findUnique({
+        where: { key: 'FACTURE_ADDRESS' },
+      });
+      if (
+        currentAddr &&
+        (currentAddr.value.includes('Carthage') ||
+          currentAddr.value.includes('Chaker'))
+      ) {
         await this.prisma.setting.update({
           where: { key: 'FACTURE_ADDRESS' },
-          data: { value: JSON.stringify('03, rue Mohamed Bayram 5, Sidi Daoud la Marsa, 2046') },
+          data: {
+            value: JSON.stringify(
+              '03, rue Mohamed Bayram 5, Sidi Daoud la Marsa, 2046',
+            ),
+          },
         });
       }
 
-      const currentMf = await this.prisma.setting.findUnique({ where: { key: 'FACTURE_MATRICULE_FISCALE' } });
+      const currentMf = await this.prisma.setting.findUnique({
+        where: { key: 'FACTURE_MATRICULE_FISCALE' },
+      });
       if (currentMf && currentMf.value.includes('1823940')) {
         await this.prisma.setting.update({
           where: { key: 'FACTURE_MATRICULE_FISCALE' },
@@ -66,7 +83,9 @@ export class SettingsService implements OnModuleInit {
         });
       }
     } catch (err: any) {
-      this.logger.warn(`Could not seed default settings on module init: ${err.message}`);
+      this.logger.warn(
+        `Could not seed default settings on module init: ${err.message}`,
+      );
     }
   }
 

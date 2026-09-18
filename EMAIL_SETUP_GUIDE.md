@@ -3,7 +3,7 @@
 > **Note for the Next Developer / AI Agent:**
 > **All backend email code is ALREADY fully implemented and integrated!**
 > You do **NOT** need to write or modify any code.
-> To activate live email delivery in production (Oracle Cloud / VPS), you only need to configure the API credentials and DNS records below.
+> To activate live email delivery in production (VPS), you only need to configure the API credentials and DNS records below.
 
 ---
 
