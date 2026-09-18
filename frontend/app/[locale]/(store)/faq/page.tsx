@@ -4,6 +4,7 @@ import { Breadcrumb } from '@/components/common/Breadcrumb'
 import { HelpCircle } from 'lucide-react'
 import FaqItem from '@/components/faq/FaqItem'
 import type { Metadata } from 'next'
+import { asList } from '@/lib/i18n-list'
 
 export async function generateMetadata({
   params,
@@ -20,7 +21,10 @@ export async function generateMetadata({
 
 export default function FaqPage() {
   const t = useTranslations('Faq')
-  const sections = t.raw('sections') as Array<{category: string, items: {q: string, a: string}[]}>
+  const sections = asList<{category: string, items: unknown}>(t.raw('sections')).map((section) => ({
+    ...section,
+    items: asList<{q: string, a: string}>(section.items),
+  }))
 
   return (
     <>

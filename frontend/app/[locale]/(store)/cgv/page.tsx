@@ -3,6 +3,7 @@ import { getTranslations } from 'next-intl/server'
 import { Breadcrumb } from '@/components/common/Breadcrumb'
 import type { Metadata } from 'next'
 import { SITE_DOMAIN, withSiteDomain } from '@/lib/site'
+import { asList } from '@/lib/i18n-list'
 
 export async function generateMetadata({
   params,
@@ -21,7 +22,7 @@ export default function CgvPage() {
   const t = useTranslations('Cgv')
   // t.raw() does not interpolate, so the {siteDomain} token in the legal copy
   // is substituted here.
-  const articles = (t.raw('articles') as Array<{title: string, content: string}>).map(
+  const articles = asList<{title: string, content: string}>(t.raw('articles')).map(
     (article) => ({
       title: withSiteDomain(article.title),
       content: withSiteDomain(article.content),

@@ -4,6 +4,7 @@ import { useTranslations } from 'next-intl'
 import { Breadcrumb } from '@/components/common/Breadcrumb'
 import { PackageSearch, ShieldCheck, CalendarClock, Undo2, Banknote } from 'lucide-react'
 import { Link } from '@/i18n/routing'
+import { asList } from '@/lib/i18n-list'
 
 export async function generateMetadata({
   params,
@@ -20,8 +21,8 @@ export async function generateMetadata({
 
 export default function RetoursPage() {
   const t = useTranslations('Returns')
-  const conditions = t.raw('conditions') as string[]
-  const steps = t.raw('steps') as Array<{ title: string; desc: string }>
+  const conditions = asList<string>(t.raw('conditions'))
+  const steps = asList<{ title: string; desc: string }>(t.raw('steps'))
 
   return (
     <>

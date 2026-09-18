@@ -3,6 +3,7 @@ import { getTranslations } from 'next-intl/server'
 import { useTranslations } from 'next-intl'
 import { Breadcrumb } from '@/components/common/Breadcrumb'
 import { Truck, Timer, CreditCard, MapPin, PackageSearch } from 'lucide-react'
+import { asList } from '@/lib/i18n-list'
 
 export async function generateMetadata({
   params,
@@ -19,8 +20,8 @@ export async function generateMetadata({
 
 export default function LivraisonPage() {
   const t = useTranslations('Shipping')
-  const features = t.raw('features') as Array<{ icon: string; title: string; desc: string }>
-  const zones = t.raw('zones') as Array<{ label: string; desc: string }>
+  const features = asList<{ icon: string; title: string; desc: string }>(t.raw('features'))
+  const zones = asList<{ label: string; desc: string }>(t.raw('zones'))
 
   return (
     <>

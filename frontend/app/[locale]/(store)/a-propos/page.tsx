@@ -4,6 +4,7 @@ import { getTranslations } from 'next-intl/server'
 import { Breadcrumb } from '@/components/common/Breadcrumb'
 import { Shield, Award, Truck, Users, MapPin, Clock } from 'lucide-react'
 import type { Metadata } from 'next'
+import { asList } from '@/lib/i18n-list'
 
 export async function generateMetadata({
   params,
@@ -20,8 +21,8 @@ export async function generateMetadata({
 
 export default function AProposPage() {
   const t = useTranslations('About')
-  const values = t.raw('values') as Array<{title: string, desc: string}>
-  const stats = t.raw('stats') as Array<{value: string, label: string}>
+  const values = asList<{title: string, desc: string}>(t.raw('values'))
+  const stats = asList<{value: string, label: string}>(t.raw('stats'))
 
   return (
     <>
