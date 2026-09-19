@@ -1,6 +1,7 @@
 import { HeroBanner } from '@/components/home/HeroBanner'
 import { BestSellers } from '@/components/home/BestSellers'
 import { TrustBadges } from '@/components/common/TrustBadges'
+import { WhatsAppHelpBanner } from '@/components/home/WhatsAppHelpBanner'
 import { BrandsBar } from '@/components/home/BrandsBar'
 import { WhySpecpart } from '@/components/home/WhySpecpart'
 import { OilFinderTabs } from '@/features/oil-finder/components/OilFinderTabs'
@@ -38,6 +39,7 @@ export default function Home() {
       <section className="bg-white py-10 md:py-14 border-b border-gray-100">
         <div className="section-padding">
           <TrustBadges />
+          <WhatsAppHelpBanner className="mt-8 md:mt-10" />
         </div>
       </section>
 

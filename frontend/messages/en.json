@@ -150,7 +150,11 @@
     "statsQuality": "QUALITY",
     "statsGuaranteed": "Guaranteed",
     "ourCatalog": "Our Catalog",
-    "findExact": "Find exactly what you need"
+    "findExact": "Find exactly what you need",
+    "whatsappHelpTitle": "Not sure which part fits your car?",
+    "whatsappHelpDesc": "Send us a photo of your registration card (carte grise) or the old part on WhatsApp and our technical team will help you right away.",
+    "whatsappHelpCta": "Talk to an expert on WhatsApp",
+    "whatsappHelpMessage": "Hello Specpart, I'm not sure which part fits my car. I'm sending you a photo of my registration card / the old part."
   },
   "Product": {
     "ref": "Ref:",
@@ -532,6 +536,12 @@
     "fastDeliveryDesc": "24/48h anywhere in Tunisia",
     "easyReturnsDesc": "14 days to change your mind",
     "securePaymentDesc": "Cash on delivery available",
+    "vinCheck": "VIN-verified fitment",
+    "vinCheckDesc": "We check the part fits your vehicle using its chassis number (VIN) before shipping",
+    "vinCheckShort": "Checked against your VIN",
+    "expertAdvice": "Free expert advice",
+    "expertAdviceDesc": "Our mechanics help you choose the right part and brand for your car",
+    "expertAdviceShort": "Free expert advice",
     "loadingProduct": "Loading product...",
     "loadingCategories": "Loading categories...",
     "loading": "Loading...",

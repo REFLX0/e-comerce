@@ -150,7 +150,11 @@
     "statsQuality": "جودة عالية",
     "statsGuaranteed": "مضمونة",
     "ourCatalog": "كتالوجنا المميز",
-    "findExact": "اعثر على ما تحتاجه بدقة لسيارتك"
+    "findExact": "اعثر على ما تحتاجه بدقة لسيارتك",
+    "whatsappHelpTitle": "مش متأكد من القطعة المناسبة لسيارتك؟",
+    "whatsappHelpDesc": "أرسل لنا صورة البطاقة الرمادية (Carte Grise) أو القطعة القديمة عبر الواتساب وسيساعدك فريقنا الفني فوراً.",
+    "whatsappHelpCta": "تواصل مع خبير عبر WhatsApp",
+    "whatsappHelpMessage": "مرحبا Specpart، مش متأكد من القطعة المناسبة لسيارتي. نبعثلكم صورة البطاقة الرمادية / القطعة القديمة."
   },
   "Product": {
     "ref": "المرجع:",
@@ -532,6 +536,12 @@
     "fastDeliveryDesc": "24/48 ساعة في جميع أنحاء تونس",
     "easyReturnsDesc": "14 يوماً لتغيير رأيك",
     "securePaymentDesc": "الدفع عند الاستلام متاح",
+    "vinCheck": "التثبت بالرقم الهيكلي (VIN)",
+    "vinCheckDesc": "نتثبت من ملاءمة القطعة لسيارتك باستخدام رقم الهيكل (N° Châssis / VIN) قبل الشحن",
+    "vinCheckShort": "مطابقة برقم الهيكل",
+    "expertAdvice": "استشارة ميكانيكية مجانية",
+    "expertAdviceDesc": "مساعدة جادة لاختيار القطعة والماركة المناسبة لسيارتك",
+    "expertAdviceShort": "استشارة مجانية",
     "loadingProduct": "جارٍ تحميل المنتج...",
     "loadingCategories": "جارٍ تحميل الفئات...",
     "loading": "جارٍ التحميل...",

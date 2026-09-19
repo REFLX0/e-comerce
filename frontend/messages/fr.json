@@ -150,7 +150,11 @@
     "statsQuality": "QUALITÉ",
     "statsGuaranteed": "Garantie",
     "ourCatalog": "Notre catalogue",
-    "findExact": "Trouvez exactement ce qu'il vous faut"
+    "findExact": "Trouvez exactement ce qu'il vous faut",
+    "whatsappHelpTitle": "Pas sûr de la pièce adaptée à votre voiture ?",
+    "whatsappHelpDesc": "Envoyez-nous une photo de votre carte grise ou de l'ancienne pièce sur WhatsApp, notre équipe technique vous aide immédiatement.",
+    "whatsappHelpCta": "Parler à un expert sur WhatsApp",
+    "whatsappHelpMessage": "Bonjour Specpart, je ne suis pas sûr de la pièce adaptée à ma voiture. Je vous envoie une photo de ma carte grise / de l'ancienne pièce."
   },
   "Product": {
     "ref": "Réf :",
@@ -532,6 +536,12 @@
     "fastDeliveryDesc": "24/48h partout en Tunisie",
     "easyReturnsDesc": "Retours acceptés sous conditions",
     "securePaymentDesc": "Paiement à la livraison disponible",
+    "vinCheck": "Compatibilité vérifiée par VIN",
+    "vinCheckDesc": "Nous vérifions que la pièce correspond à votre véhicule grâce au numéro de châssis (VIN) avant l'expédition",
+    "vinCheckShort": "Vérifiée par N° de châssis",
+    "expertAdvice": "Conseil technique gratuit",
+    "expertAdviceDesc": "Nos mécaniciens vous aident à choisir la bonne pièce et la bonne marque pour votre voiture",
+    "expertAdviceShort": "Conseil d'expert gratuit",
     "loadingProduct": "Chargement du produit...",
     "loadingCategories": "Chargement des catégories...",
     "loading": "Chargement...",

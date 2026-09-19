@@ -1,12 +1,16 @@
 "use client"
 
 import { useTranslations } from 'next-intl'
-import { Truck, ShieldCheck, CreditCard } from 'lucide-react'
+import { Truck, ScanSearch, Wrench } from 'lucide-react'
 
+// What sets the store apart for a parts buyer: the part is checked against the
+// car's chassis number before it ships, and a mechanic helps pick the right
+// part/brand. `shortKey` is the one-liner used in the compact strip under the
+// product page's Add to Cart button, where the full description is too long.
 const BADGES = [
-  { icon: ShieldCheck, titleKey: 'authentic', descKey: 'authenticDesc', color: 'text-emerald-600', bg: 'bg-emerald-50' },
-  { icon: Truck, titleKey: 'fastDelivery', descKey: 'fastDeliveryDesc', color: 'text-blue-600', bg: 'bg-blue-50' },
-  { icon: CreditCard, titleKey: 'securePayment', descKey: 'securePaymentDesc', color: 'text-amber-600', bg: 'bg-amber-50' },
+  { icon: ScanSearch, titleKey: 'vinCheck', descKey: 'vinCheckDesc', shortKey: 'vinCheckShort', color: 'text-emerald-600', bg: 'bg-emerald-50' },
+  { icon: Wrench, titleKey: 'expertAdvice', descKey: 'expertAdviceDesc', shortKey: 'expertAdviceShort', color: 'text-amber-600', bg: 'bg-amber-50' },
+  { icon: Truck, titleKey: 'fastDelivery', descKey: 'fastDeliveryDesc', shortKey: 'fastDeliveryDesc', color: 'text-blue-600', bg: 'bg-blue-50' },
 ]
 
 interface TrustBadgesProps {
@@ -25,7 +29,7 @@ export function TrustBadges({ variant = 'grid', className }: TrustBadgesProps) {
           {BADGES.map((b) => (
             <div key={b.titleKey} className="flex items-center gap-2 text-xs text-gray-500">
               <b.icon size={14} className="shrink-0 text-gray-400" />
-              <span className="leading-tight">{t(b.descKey)}</span>
+              <span className="leading-tight">{t(b.shortKey)}</span>
             </div>
           ))}
         </div>
